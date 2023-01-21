@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using Match = Gordon360.Models.CCT.Match;
 using Azure.Identity;
 using Microsoft.AspNetCore.Server.IIS;
+using Microsoft.AspNetCore.Http;
 
 namespace Gordon360.Services.RecIM
 {
@@ -122,7 +123,7 @@ namespace Gordon360.Services.RecIM
                                                 Role = _context.RoleType
                                                 .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
                                                 .Description
-                                            }),
+                                    }),
                                 MatchHistory = _context.Match
                                     .Where(mh => mh.StatusID == 6)
                                         .Join(_context.MatchTeam
@@ -174,9 +175,9 @@ namespace Gordon360.Services.RecIM
                                            }),
                             })
                         }).FirstOrDefault();
-            return match; 
+            return match;
         }
-       
+
         public IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID)
         {
             var vm = _context.Match
@@ -266,7 +267,7 @@ namespace Gordon360.Services.RecIM
             await _context.Match.AddAsync(match);
             await _context.SaveChangesAsync();
 
-            foreach(var teamID in m.TeamIDs)
+            foreach (var teamID in m.TeamIDs)
             {
                 await CreateMatchTeamMappingAsync(teamID, match.ID);
             }

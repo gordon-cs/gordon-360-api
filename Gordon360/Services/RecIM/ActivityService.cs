@@ -18,7 +18,7 @@ namespace Gordon360.Services.RecIM
         private readonly ISeriesService _seriesService;
 
         public ActivityService(CCTContext context, ISeriesService seriesService)
-        { 
+        {
             _context = context;
             _seriesService = seriesService;
         }
@@ -129,7 +129,7 @@ namespace Gordon360.Services.RecIM
                                     },
                                     Logo = t.Logo
                                 })
-                            
+
                             })
                             .FirstOrDefault();
             return activity;

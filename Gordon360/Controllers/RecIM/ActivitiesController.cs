@@ -39,7 +39,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 var activeResults = _activityService.GetActivities();
                 return Ok(activeResults);
-                
+
             }
             var result = _activityService.GetActivitiesByTime(time);
             return Ok(result);

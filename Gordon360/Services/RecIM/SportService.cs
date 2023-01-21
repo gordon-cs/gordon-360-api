@@ -39,7 +39,7 @@ namespace Gordon360.Services.RecIM
                 Name = newSport.Name,
                 Description = newSport.Description,
                 Rules = newSport.Rules,
-                Logo = newSport.Logo ?? "defaultSportPicture.jpg" //will be a good idea to make default pictures
+                Logo = newSport.Logo
             };
             await _context.Sport.AddAsync(sport);
             await _context.SaveChangesAsync();
@@ -48,7 +48,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task<SportViewModel> UpdateSportAsync(SportViewModel updatedSport)
         {
-            var sport = _context.Sport.FirstOrDefault(s => s.ID == updatedSport.ID);
+            var sport = _context.Sport.FirstOrDefault(s => s.ID == sportID);
             sport.Name = updatedSport.Name ?? sport.Name;
             sport.Description = updatedSport.Description ?? sport.Description;
             sport.Rules = updatedSport.Rules ?? sport.Rules;

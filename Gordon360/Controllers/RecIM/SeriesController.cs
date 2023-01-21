@@ -64,7 +64,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
-        /// 
+        /// Updates Series Information
         /// </summary>
         /// <param name="seriesID"></param>
         /// <param name="updatedSeries"></param>
