@@ -26,6 +26,11 @@
         public const string CHECKIN = "Info relating to a student's Academic Check-In";
         public const string SHIFT = "A shift that a student has worked";
         public const string CLIFTON_STRENGTHS = "A student's uploaded clifton strengthsfinder results";
+        public const string RECIM_ACTIVITY = "A RecIM activity resource";
+        public const string RECIM_SERIES = "A RecIM series resource";
+        public const string RECIM_MATCH = "A RecIM match resource";
+        public const string RECIM_TEAM = "A RecIM team resource";
+        public const string RECIM_SPORT = "A RecIM sport resource";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";

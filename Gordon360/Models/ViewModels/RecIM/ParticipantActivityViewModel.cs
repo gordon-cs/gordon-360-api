@@ -3,7 +3,7 @@ using System;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class ParticipantActivityCreatedViewModel
+    public class ParticipantActivityViewModel
     {
         public int ID { get; set; }
         public int ActivityID { get; set; }
@@ -11,9 +11,9 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int PrivTypeID { get; set; }
         public bool IsFreeAgent { get; set; }
 
-        public static implicit operator ParticipantActivityCreatedViewModel(ParticipantActivity p)
+        public static implicit operator ParticipantActivityViewModel(ParticipantActivity p)
         {
-            return new ParticipantActivityCreatedViewModel
+            return new ParticipantActivityViewModel
             {
                 ID = p.ID,
                 ActivityID = p.ActivityID,

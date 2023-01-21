@@ -22,11 +22,36 @@ namespace Gordon360.Services.RecIM
             _context = context;
             _matchService = matchService;
         }
-
-        public IEnumerable<SeriesViewModel> GetSeries(bool active = false)
+        public IEnumerable<LookupViewModel> GetSeriesLookup(string type)
+        {
+            if (type == "status")
+            {
+                var res = _context.SeriesStatus
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            if (type == "series")
+            {
+                var res = _context.SeriesType
+                    .Select(s => new LookupViewModel
+                    {
+                        ID = s.ID,
+                        Description = s.Description
+                    })
+                    .AsEnumerable();
+                return res;
+            }
+            return null;
+        }
+            public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
-                            .Select(s => new SeriesViewModel
+                            .Select(s => new SeriesExtendedViewModel
                             {
                                 ID = s.ID,
                                 Name = s.Name,
@@ -62,11 +87,11 @@ namespace Gordon360.Services.RecIM
             }
             return series;
         }
-        public IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID)
-        {
+        public IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID)
+        { 
             var series = _context.Series
                 .Where(s => s.ActivityID == activityID)
-                .Select(s => new SeriesViewModel
+                .Select(s => new SeriesExtendedViewModel
                 {
                     ID = s.ID,
                     Name = s.Name,
@@ -97,11 +122,11 @@ namespace Gordon360.Services.RecIM
                 });
             return series;
         }
-        public SeriesViewModel GetSeriesByID(int seriesID)
+        public SeriesExtendedViewModel GetSeriesByID(int seriesID)
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
-        public async Task<SeriesCreatedViewModel> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID)
+        public async Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             var series = new Series
             {
@@ -110,26 +135,36 @@ namespace Gordon360.Services.RecIM
                 EndDate = newSeries.EndDate,
                 ActivityID = newSeries.ActivityID,
                 TypeID = newSeries.TypeID,
-                StatusID = 1 //default unconfirmed series
+                StatusID = 1, //default unconfirmed series
+                ScheduleID = 2 //temporary while autoscheduling is not completed
             };
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
 
-            int seriesID = referenceSeriesID ?? series.ID;
-            IEnumerable<int> teams = _context.SeriesTeam
-                                .Where(st => st.SeriesID == seriesID)
+            IEnumerable<int> teams = new List<int>();
+            if (referenceSeriesID is not null)
+            {
+                teams = _context.Team
+                        .Where(t => t.ActivityID == series.ActivityID)
+                        .Select(t => t.ID)
+                        .AsEnumerable();
+            }
+            else
+            {
+                teams = _context.SeriesTeam
+                                .Where(st => st.SeriesID == referenceSeriesID)
                                 .OrderByDescending(st => st.Win)
                                 .Select(st => st.TeamID);
-
+            }
             if (newSeries.NumberOfTeamsAdmitted is not null)
             {
                 teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
             }
-
-            await CreateSeriesTeamMapping(teams, series.ID);
+            
+            await CreateSeriesTeamMappingAsync(teams, series.ID);
             return series;
         }
-        public async Task<SeriesCreatedViewModel> UpdateSeries(int seriesID, SeriesPatchViewModel update)
+        public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
             var s = await _context.Series.FindAsync(seriesID);
             s.Name = update.Name ?? s.Name;
@@ -149,7 +184,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        private async Task CreateSeriesTeamMapping(IEnumerable<int> teams, int seriesID)
+        private async Task CreateSeriesTeamMappingAsync(IEnumerable<int> teams, int seriesID)
         {
             foreach (var teamID in teams)
             {
@@ -187,7 +222,7 @@ namespace Gordon360.Services.RecIM
             }
             if (typeCode == "l")
             {
-                await ScheduleLadder(seriesID);
+                await ScheduleLadderAsync(seriesID);
             }
         }
         private async Task ScheduleRoundRobin(int seriesID)
@@ -246,7 +281,7 @@ namespace Gordon360.Services.RecIM
                 }
             }
         }
-        private async Task ScheduleLadder(int seriesID)
+        private async Task ScheduleLadderAsync(int seriesID)
         {
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
@@ -261,6 +296,7 @@ namespace Gordon360.Services.RecIM
                 SurfaceID = 1,
                 TeamIDs = teams
             };
+
             await _matchService.PostMatchAsync(match);
         }
         private async Task ScheduleDoubleElimination(int seriesID)

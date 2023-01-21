@@ -37,6 +37,7 @@ namespace Gordon360.Models.CCT
         public int MaxCapacity { get; set; }
         public bool SoloRegistration { get; set; }
         public bool Completed { get; set; }
+        public int TypeID { get; set; }
 
         [ForeignKey("SportID")]
         [InverseProperty("Activity")]
@@ -44,6 +45,9 @@ namespace Gordon360.Models.CCT
         [ForeignKey("StatusID")]
         [InverseProperty("Activity")]
         public virtual ActivityStatus Status { get; set; }
+        [ForeignKey("TypeID")]
+        [InverseProperty("Activity")]
+        public virtual ActivityType Type { get; set; }
         [InverseProperty("Activity")]
         public virtual ICollection<ParticipantActivity> ParticipantActivity { get; set; }
         [InverseProperty("Activity")]

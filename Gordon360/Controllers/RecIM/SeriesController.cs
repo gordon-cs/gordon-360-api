@@ -1,6 +1,8 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +32,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>Enumerable Set of Series</returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<SeriesViewModel>> GetSeries([FromQuery] bool active)
+        public ActionResult<IEnumerable<SeriesExtendedViewModel>> GetSeries([FromQuery] bool active)
         {
             var result = _seriesService.GetSeries(active);
             return Ok(result);
@@ -43,7 +45,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("{seriesID}")]
-        public ActionResult<SeriesViewModel> GetSeriesByID(int seriesID)
+        public ActionResult<SeriesExtendedViewModel> GetSeriesByID(int seriesID)
         {
             var result = _seriesService.GetSeriesByID(seriesID);
             return Ok(result);
@@ -53,16 +55,14 @@ namespace Gordon360.Controllers.RecIM
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetSeriesTypes(string type)
         {
-            if (type == "series")
+            var res = _seriesService.GetSeriesLookup(type);
+            if (res is not null)
             {
-
+                return Ok(res);
             }
-            if (type == "status")
-            {
-
-            }
-            throw new NotImplementedException();
+            return BadRequest();
         }
+
         /// <summary>
         /// Updates Series Information
         /// </summary>
@@ -71,9 +71,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>modified series</returns>
         [HttpPatch]
         [Route("{seriesID}")]
-        public async Task<ActionResult> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult<SeriesViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
-            var series = await _seriesService.UpdateSeries(seriesID, updatedSeries);
+            var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
             return CreatedAtAction("UpdateSeries", series);
         }
 
@@ -85,9 +86,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>created series</returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery] int? referenceSeriesID)
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult<SeriesViewModel>> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
-            var series = await _seriesService.PostSeries(newSeries, referenceSeriesID);
+            var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
             return CreatedAtAction("CreateSeries", series);
         }
 

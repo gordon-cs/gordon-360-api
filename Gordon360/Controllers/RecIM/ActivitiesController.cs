@@ -1,6 +1,8 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,8 +33,8 @@ namespace Gordon360.Controllers.RecIM
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ActivityViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
-        {
+        public ActionResult<IEnumerable<ActivityExtendedViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
+        {   
             if (time is null && active)
             {
                 var activeResults = _activityService.GetActivities();
@@ -50,7 +52,7 @@ namespace Gordon360.Controllers.RecIM
         /// </returns>
         [HttpGet]
         [Route("{activityID}")]
-        public ActionResult<ActivityViewModel> GetActivityByID(int activityID)
+        public ActionResult<ActivityExtendedViewModel> GetActivityByID(int activityID)
         {
             var result = _activityService.GetActivityByID(activityID);
             return Ok(result);
@@ -60,11 +62,12 @@ namespace Gordon360.Controllers.RecIM
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetActivityTypes(string type)
         {
-            if (type == "status")
+            var res = _activityService.GetActivityLookup(type);
+            if (res is not null)
             {
-
+                return Ok(res);
             }
-            throw new NotImplementedException();
+            return BadRequest();
         }
 
         /// <summary>
@@ -74,11 +77,13 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>Posted Activity</returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateActivity(ActivityUploadViewModel newActivity)
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_ACTIVITY)]
+        public async Task<ActionResult<ActivityViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
         {
-            var activity = await _activityService.PostActivity(newActivity);
+            var activity = await _activityService.PostActivityAsync(newActivity);
             return CreatedAtAction("CreateActivity", activity);
         }
+
         /// <summary>
         /// Updates Activity based on input
         /// </summary>
@@ -87,9 +92,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{activityID}")]
-        public async Task<ActionResult> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_ACTIVITY)]
+        public async Task<ActionResult<ActivityViewModel>> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var activity = await _activityService.UpdateActivity(activityID, updatedActivity);
+            var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
             return CreatedAtAction("UpdateActivity", activity);
         }
     }

@@ -311,66 +311,74 @@ namespace Gordon360.Services
     {
         public interface IActivityService
         {
-            IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivities();
-            Models.ViewModels.RecIM.ActivityViewModel? GetActivityByID(int activityID);
-            IEnumerable<Models.ViewModels.RecIM.ActivityViewModel> GetActivitiesByTime(DateTime? time);
-            Task<ActivityCreatedViewModel> UpdateActivity(int activytID, ActivityPatchViewModel updatedActivity);
-            Task<ActivityCreatedViewModel> PostActivity(ActivityUploadViewModel newActivity);
-
+            IEnumerable<LookupViewModel> GetActivityLookup(string type);
+            IEnumerable<Models.ViewModels.RecIM.ActivityExtendedViewModel> GetActivities();
+            Models.ViewModels.RecIM.ActivityExtendedViewModel? GetActivityByID(int activityID);
+            IEnumerable<Models.ViewModels.RecIM.ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time);
+            Task<Models.ViewModels.RecIM.ActivityViewModel> UpdateActivityAsync(int activytID, ActivityPatchViewModel updatedActivity);
+            Task<Models.ViewModels.RecIM.ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
+            Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
+            bool IsReferee(string username, int activityID);
         }
         public interface ISeriesService
         {
-            IEnumerable<SeriesViewModel> GetSeries(bool active);
-            IEnumerable<SeriesViewModel> GetSeriesByActivityID(int activityID);
-            SeriesViewModel GetSeriesByID(int seriesID);
-            Task<SeriesCreatedViewModel> PostSeries(SeriesUploadViewModel newSeries, int? referenceSeriesID);
-            Task<SeriesCreatedViewModel> UpdateSeries(int seriesID, SeriesPatchViewModel series);
-            Task ScheduleMatches(int seriesID);
+            IEnumerable<LookupViewModel> GetSeriesLookup(string type);
+            IEnumerable<SeriesExtendedViewModel> GetSeries(bool active);
+            IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID);
+            SeriesExtendedViewModel GetSeriesByID(int seriesID);
+            Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID);
+            Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel series);
+            Task ScheduleMatchesAsync(int seriesID);
             Task<EliminationRound> ScheduleElimRound(IEnumerable<SeriesTeam> teams);
             Task<EliminationRound> ScheduleElimRound(IEnumerable<Match>? matches);
         }
 
         public interface ITeamService
         {
-            TeamViewModel GetTeamByID(int teamID);
-            Task<TeamCreatedViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
+            IEnumerable<LookupViewModel> GetTeamLookup(string type);
+            double GetTeamSportsmanshipScore(int teamID);
+            TeamExtendedViewModel GetTeamByID(int teamID);
+            Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
             Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant);
-            Task<TeamCreatedViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
+            Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
             Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant);
-            bool IsTeamCaptain(int teamID, string username);
+            bool IsTeamCaptain(string username, int teamID);
         }
 
         public interface IParticipantService
         {
+            IEnumerable<LookupViewModel> GetParticipantLookup(string type);
             ACCOUNT GetAccountByParticipantID(int ID);
-            IEnumerable<ParticipantViewModel> GetParticipants();
-            IEnumerable<ParticipantStatusViewModel> GetParticipantStatusHistory(string username);
-            ParticipantViewModel GetParticipantByUsername(string username);
-            IEnumerable<TeamViewModel> GetParticipantTeams(string username);
-            Task<ParticipantViewModel> PostParticipant(string username);
-            Task<ParticipantViewModel> UpdateParticipant(string username, bool isAdmin);
-            Task<ParticipantNotificationCreatedViewModel> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM);
-            Task<ParticipantActivityCreatedViewModel> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipant);
-            Task<ParticipantStatusCreatedViewModel> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel participantStatus);
+            IEnumerable<ParticipantExtendedViewModel> GetParticipants();
+            IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
+            ParticipantExtendedViewModel GetParticipantByUsername(string username);
+            IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
+            Task<ParticipantExtendedViewModel> PostParticipantAsync(string username);
+            Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool isAdmin);
+            Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM);
+            Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant);
+            Task<ParticipantStatusViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus);
+            bool IsAdmin(string username);
         }
 
         public interface ISportService
         {
             IEnumerable<SportViewModel> GetSports();
             SportViewModel GetSportByID(int sportID);
-            Task<SportViewModel> PostSport(SportUploadViewModel newSport);
-            Task<SportViewModel> UpdateSport(SportViewModel updatedSport);
+            Task<SportViewModel> PostSportAsync(SportUploadViewModel newSport);
+            Task<SportViewModel> UpdateSportAsync(SportViewModel updatedSport);
         }
 
         public interface IMatchService
         {
-            MatchViewModel GetMatchByID(int matchID);
-            IEnumerable<MatchViewModel> GetMatchBySeriesID(int seriesID);
-            Task<MatchCreatedViewModel> PostMatch(MatchUploadViewModel match);
-            Task<MatchTeamViewModel> UpdateTeamStats(int matchID, MatchStatsPatchViewModel match);
-            Task<MatchCreatedViewModel> UpdateMatch(int matchID, MatchPatchViewModel match);
+            IEnumerable<LookupViewModel> GetMatchLookup(string type);
+            MatchExtendedViewModel GetMatchByID(int matchID);
+            IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID);
+            Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel match);
+            Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel match);
+            Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel match);
             Task AddTeamToMatchAsync(int teamID, int matchID);
-            Task<MatchParticipantViewModel> AddParticipantAttendance(string username, int matchID);
+            Task<MatchParticipantViewModel> AddParticipantAttendanceAsync(string username, int matchID);
             IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
         }
     }

@@ -1,6 +1,8 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -53,9 +55,10 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{sportID}")]
-        public async Task<ActionResult> UpdateSport(int sportID, SportPatchViewModel updatedSport)
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SPORT)]
+        public async Task<ActionResult<SportViewModel>> UpdateSport(int sportID, SportViewModel updatedSport)
         {
-            var sport = await _sportService.UpdateSport(updatedSport);
+            var sport = await _sportService.UpdateSportAsync(updatedSport);
             return CreatedAtAction("UpdateSport", sport);
         }
         /// <summary>
@@ -65,10 +68,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult> CreateSport(SportUploadViewModel newSport)
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SPORT)]
+        public async Task<ActionResult<SportViewModel>> CreateSport(SportUploadViewModel newSport)
         {
-            var sport = await _sportService.PostSport(newSport);
-            return CreatedAtAction("UpdateSport", sport);
+            var sport = await _sportService.PostSportAsync(newSport);
+            return CreatedAtAction("CreateSport", sport);
         }
 
     }

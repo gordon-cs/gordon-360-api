@@ -10,17 +10,32 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Name { get; set; }
         public DateTime RegistrationStart { get; set; }
         public DateTime RegistrationEnd { get; set; }
-        public bool RegistrationOpen { get; set; }
-        public SportViewModel Sport { get; set; }
-        public string Status { get; set; }
-        public int? MinCapacity { get; set; }
+        public int SportID { get; set; }
+        public int StatusID { get; set; }
+        public int MinCapacity { get; set; }
         public int? MaxCapacity { get; set; }
         public bool SoloRegistration { get; set; }
-        public string Logo { get; set; }
+        public string? Logo { get; set; }
         public bool Completed { get; set; }
+        public int TypeID { get; set; }
 
-        public IEnumerable<SeriesViewModel> Series { get; set; }
-        public IEnumerable<TeamViewModel> Team { get; set; }
-
+        public static implicit operator ActivityViewModel(Activity a)
+        {
+            return new ActivityViewModel
+            {
+                ID = a.ID,
+                Name = a.Name,
+                RegistrationStart = a.RegistrationStart,
+                RegistrationEnd = a.RegistrationEnd,
+                SportID = a.SportID,
+                StatusID = a.StatusID,
+                MinCapacity = a.MinCapacity,
+                MaxCapacity = a.MaxCapacity,
+                SoloRegistration = a.SoloRegistration,
+                Logo = a.Logo,
+                Completed = a.Completed,
+                TypeID = a.TypeID,
+            };
+        }
     }
 }
