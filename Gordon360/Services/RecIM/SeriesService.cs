@@ -200,6 +200,10 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
+        // Scheduler does not currently handle overlaps
+        // eventually:
+        // - ensure that matches that occur within 1 hour do not share the same surface
+        //    unless they're in the same series
         public async Task ScheduleMatchesAsync(int seriesID)
         {
             var typeCode = _context.SeriesType
@@ -241,26 +245,27 @@ namespace Gordon360.Services.RecIM
                                         .Where(ss => ss.SeriesID == seriesID)
                                         .ToArray();
 
+            //day = starting datetime accurate to minute and seconds based on scheduler
             var day = series.StartDate;
             day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
             string dayOfWeek = day.DayOfWeek.ToString();
+            
             int surfaceIndex = 0;
-
-            for (int i = 0; i < teams.Length - 1; i++)
+            for (int cycles = 0; cycles < teams.Length - 1; cycles++)
             {
-                for (int j = i + 1; j < teams.Length; j++)
+                int i = 0;
+                int j = teams.Length - 1;
+                while (i < j) //middlepoint algorithm to match opposite teams
                 {
-                    // autoscheduling currently will not work due to the algorithm requiring match pairs to be
-                    // made in order, will fix in next commit
-
-                    if (surfaceIndex == availableSurfaces.Length)
+                    if (surfaceIndex == availableSurfaces.Length - 1)
                     {
                         surfaceIndex = 0;
-                        day.AddMinutes(schedule.EstMatchTime + 15);
+                        day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
                     }
 
-                    //ensure matchtime is in an available day
-                    //will be a bug if the match goes beyond 12AM
+                    //ensure matchtime is in an available day will be a "bug" if the match goes beyond 12AM
+                    //minor bug as it just means that some games will be scheduled on the next possible day
+                    //even if they are "hypothetically" able to play on the original day
                     while (!schedule.AvailableDays[dayOfWeek] ||
                         day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
                         )
@@ -279,8 +284,10 @@ namespace Gordon360.Services.RecIM
                         TeamIDs = new List<int>() { teams[i].TeamID, teams[j].TeamID }.AsEnumerable()
                     });
                     surfaceIndex++;
+                    i++;
+                    j--;
                 }
-            }
+            }   
         }
         private async Task ScheduleLadderAsync(int seriesID)
         {
