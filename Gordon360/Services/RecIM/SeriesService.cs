@@ -208,21 +208,22 @@ namespace Gordon360.Services.RecIM
                     .FirstOrDefault(s => s.ID == seriesID)
                     .TypeID
                 ).TypeCode;
-            if (typeCode == "rr")
+            switch (typeCode)
             {
-                await ScheduleRoundRobin(seriesID);
-            }
-            if (typeCode == "se")
-            {
-                await ScheduleSingleElimination(seriesID);
-            }
-            if (typeCode == "de")
-            {
-                await ScheduleDoubleElimination(seriesID);
-            }
-            if (typeCode == "l")
-            {
-                await ScheduleLadderAsync(seriesID);
+                case "rr":
+                    await ScheduleRoundRobin(seriesID);
+                    break;
+                case "se":
+                    await ScheduleSingleElimination(seriesID);
+                    break;
+                case "de":
+                    await ScheduleDoubleElimination(seriesID);
+                    break;
+                case "l":
+                    await ScheduleLadderAsync(seriesID);
+                    break;
+                default:
+                    break;
             }
         }
         private async Task ScheduleRoundRobin(int seriesID)
