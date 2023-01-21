@@ -235,7 +235,7 @@ namespace Gordon360.Services.RecIM
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
-                .ToArray();
+                .ToList();
             SeriesScheduleViewModel schedule = _context.SeriesSchedule
                             .FirstOrDefault(ss => ss.ID ==
                                 _context.Series
@@ -243,7 +243,7 @@ namespace Gordon360.Services.RecIM
                                     .ScheduleID);
             var availableSurfaces = _context.SeriesSurface
                                         .Where(ss => ss.SeriesID == seriesID)
-                                        .ToArray();
+                                        .ToList();
 
             //day = starting datetime accurate to minute and seconds based on scheduler
             var day = series.StartDate;
@@ -251,13 +251,13 @@ namespace Gordon360.Services.RecIM
             string dayOfWeek = day.DayOfWeek.ToString();
             
             int surfaceIndex = 0;
-            for (int cycles = 0; cycles < teams.Length - 1; cycles++)
+            for (int cycles = 0; cycles < teams.Count - 1; cycles++)
             {
                 int i = 0;
-                int j = teams.Length - 1;
+                int j = teams.Count - 1;
                 while (i < j) //middlepoint algorithm to match opposite teams
                 {
-                    if (surfaceIndex == availableSurfaces.Length - 1)
+                    if (surfaceIndex == availableSurfaces.Count - 1)
                     {
                         surfaceIndex = 0;
                         day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
@@ -287,6 +287,9 @@ namespace Gordon360.Services.RecIM
                     i++;
                     j--;
                 }
+                var temp = teams[0];
+                teams.RemoveAt(0);
+                teams.Add(temp);
             }   
         }
         private async Task ScheduleLadderAsync(int seriesID)
