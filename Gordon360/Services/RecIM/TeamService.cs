@@ -78,7 +78,7 @@ namespace Gordon360.Services.RecIM
                             .Select(t => new TeamExtendedViewModel
                             {
                                 ID = teamID,
-                                ActivityID = t.ActivityID,
+                                Activity = _context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
                                 Name = t.Name,
                                 Status = _context.TeamStatus
                                             .FirstOrDefault(ts => ts.ID == t.StatusID)
@@ -168,9 +168,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            var participantID = Int32.Parse(_accountService.GetAccountByUsername(username).GordonID);
-            // return null if ParticipantActivity contains an instance of both t.ActivityID & participantID
-            // ^handle this in the future (unable to implement right now as this would lock our accounts out)
+            
             var team = new Team
             {
                 Name = t.Name,
@@ -187,6 +185,19 @@ namespace Gordon360.Services.RecIM
                 RoleTypeID = 5
             };
             await AddUserToTeamAsync(team.ID, captain);
+
+            var existingSeries = _context.Series.Where(s => s.ActivityID == t.ActivityID).OrderBy(s => s.StartDate)?.FirstOrDefault();
+            if (existingSeries is not null) {
+                var seriesTeam = new SeriesTeam
+                {
+                    TeamID = team.ID,
+                    SeriesID = existingSeries.ID,
+                    Win = 0,
+                    Loss = 0,
+                };
+                await _context.SeriesTeam.AddAsync(seriesTeam);
+                await _context.SaveChangesAsync();
+            }
 
             return team;
         }
