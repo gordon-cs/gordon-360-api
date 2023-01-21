@@ -275,13 +275,13 @@ namespace Gordon360.Services.RecIM
             return match;
         }
 
-        private async Task CreateMatchTeamMappingAsync(int teamID, int matchID)
+        public async Task CreateMatchTeamMappingAsync(int teamID, int matchID)
         {
             var matchTeam = new MatchTeam
             {
                 TeamID = teamID,
                 MatchID = matchID,
-                StatusID = 1, //default unconfirmed
+                StatusID = 2, //default confirmed
                 Score = 0,
                 Sportsmanship = 5 //default max
             };

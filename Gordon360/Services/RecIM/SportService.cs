@@ -46,7 +46,7 @@ namespace Gordon360.Services.RecIM
             return sport;
         }
 
-        public async Task<SportViewModel> UpdateSportAsync(SportViewModel updatedSport)
+        public async Task<SportViewModel> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport)
         {
             var sport = _context.Sport.FirstOrDefault(s => s.ID == sportID);
             sport.Name = updatedSport.Name ?? sport.Name;

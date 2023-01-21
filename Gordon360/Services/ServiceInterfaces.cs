@@ -366,7 +366,7 @@ namespace Gordon360.Services
             IEnumerable<SportViewModel> GetSports();
             SportViewModel GetSportByID(int sportID);
             Task<SportViewModel> PostSportAsync(SportUploadViewModel newSport);
-            Task<SportViewModel> UpdateSportAsync(SportViewModel updatedSport);
+            Task<SportViewModel> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport);
         }
 
         public interface IMatchService
@@ -377,7 +377,7 @@ namespace Gordon360.Services
             Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel match);
             Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel match);
             Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel match);
-            Task AddTeamToMatchAsync(int teamID, int matchID);
+            Task CreateMatchTeamMappingAsync(int teamID, int matchID);
             Task<MatchParticipantViewModel> AddParticipantAttendanceAsync(string username, int matchID);
             IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
         }

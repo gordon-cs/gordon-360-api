@@ -398,10 +398,9 @@ namespace Gordon360.Services.RecIM
                     dayOfWeek = day.DayOfWeek.ToString();
                     surfaceIndex = 0;
                 }
-                await _matchService.UpdateMatchAsync(
+                await _matchService.UpdateMatchAsync(matchID,
                     new MatchPatchViewModel
                     {
-                        ID = matchID,
                         Time = day,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
@@ -474,15 +473,14 @@ namespace Gordon360.Services.RecIM
 
             foreach (var teamPair in teamPairings)
             {
-                matchIDs.Add(
-                    await _matchService.PostMatchAsync(new MatchUploadViewModel
-                    {
-                        StartTime = series.StartDate, //temporary before autoscheduling
-                        SeriesID = series.ID,
-                        SurfaceID = 1, //temporary before 25live integration
-                        TeamIDs = teamPair
-                    })
-                );
+                var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                {
+                    StartTime = series.StartDate, //temporary before autoscheduling
+                    SeriesID = series.ID,
+                    SurfaceID = 1, //temporary before 25live integration
+                    TeamIDs = teamPair
+                });
+                matchIDs.Add(createdMatch.ID);
             }
             return new EliminationRound
             {

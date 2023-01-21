@@ -192,7 +192,6 @@ namespace Gordon360.Services.RecIM
 
 
             await _context.SaveChangesAsync();
-            return username;
             return participantActivity;
         }
 
