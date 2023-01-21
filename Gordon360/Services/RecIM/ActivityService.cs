@@ -123,7 +123,10 @@ namespace Gordon360.Services.RecIM
                                     Status = _context.TeamStatus
                                                 .FirstOrDefault(ts => ts.ID == t.StatusID)
                                                 .Description,
-                                    ActivityID = t.ActivityID,
+                                    Activity = new ActivityExtendedViewModel {
+                                        ID = t.ActivityID, 
+                                        Name = a.Name
+                                    },
                                     Logo = t.Logo
                                 })
                             

@@ -114,6 +114,7 @@ namespace Gordon360.Services.RecIM
         }
         public IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username)
         {
+       
             //to be handled by teamservice
             var teams = _context.ParticipantTeam
                             .Where(pt => pt.ParticipantUsername == username)
@@ -123,7 +124,7 @@ namespace Gordon360.Services.RecIM
                                     (pt, t) => new TeamExtendedViewModel
                                     {
                                         ID = t.ID,
-                                        ActivityID = t.ActivityID,
+                                        Activity = _context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
                                         Name = t.Name,
                                         Status = _context.TeamStatus
                                                     .FirstOrDefault(ts => ts.ID == t.StatusID)
