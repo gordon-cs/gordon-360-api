@@ -93,5 +93,16 @@ namespace Gordon360.Controllers.RecIM
             return CreatedAtAction("CreateSeries", series);
         }
 
+        /// <summary>
+        /// Automatically creates Matches based on given Series
+        /// </summary>
+        /// <param name="seriesID"></param>
+        [HttpPost]
+        [Route("schedule/{seriesID}")]
+        public async Task<ActionResult> ScheduleMatches(int seriesID)
+        {
+            await _seriesService.ScheduleMatchesAsync(seriesID);
+            return Ok();
+        }
     }
 }

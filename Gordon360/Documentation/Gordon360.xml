@@ -825,6 +825,12 @@
             <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
             <returns>created series</returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32)">
+            <summary>
+            Automatically creates Matches based on given Series
+            </summary>
+            <param name="seriesID"></param>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
             <summary>
             Fetches all Sports in the RecIM database

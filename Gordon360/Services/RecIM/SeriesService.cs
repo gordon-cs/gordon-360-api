@@ -206,36 +206,43 @@ namespace Gordon360.Services.RecIM
         //    unless they're in the same series
         public async Task ScheduleMatchesAsync(int seriesID)
         {
+            var series = _context.Series
+                    .FirstOrDefault(s => s.ID == seriesID);
             var typeCode = _context.SeriesType
                 .FirstOrDefault(st =>
-                    st.ID == _context.Series
-                    .FirstOrDefault(s => s.ID == seriesID)
-                    .TypeID
+                    st.ID == series.TypeID
                 ).TypeCode;
-            switch (typeCode)
+
+            if (typeCode == "RR")
             {
-                case "rr":
-                    await ScheduleRoundRobin(seriesID);
-                    break;
-                case "se":
-                    await ScheduleSingleElimination(seriesID);
-                    break;
-                case "de":
-                    await ScheduleDoubleElimination(seriesID);
-                    break;
-                case "l":
-                    await ScheduleLadderAsync(seriesID);
-                    break;
-                default:
-                    break;
+                await ScheduleRoundRobin(seriesID);
             }
+            if (typeCode == "SE")
+            {
+                await ScheduleSingleElimination(seriesID);
+            }
+            if (typeCode == "DE")
+            {
+                await ScheduleDoubleElimination(seriesID);
+            }
+            if (typeCode == "L")
+            {
+                await ScheduleLadderAsync(seriesID);
+            }
+
+            
         }
         private async Task ScheduleRoundRobin(int seriesID)
         {
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
-                .Where(st => st.ID == seriesID)
+                .Where(st => st.SeriesID == seriesID)
+                .Select(st => st.TeamID)
                 .ToList();
+
+            //algorithm requires odd number of teams
+            teams.Add(0);//0 is not a valid true team ID thus will act as dummy team
+
             SeriesScheduleViewModel schedule = _context.SeriesSchedule
                             .FirstOrDefault(ss => ss.ID ==
                                 _context.Series
@@ -243,21 +250,21 @@ namespace Gordon360.Services.RecIM
                                     .ScheduleID);
             var availableSurfaces = _context.SeriesSurface
                                         .Where(ss => ss.SeriesID == seriesID)
-                                        .ToList();
+                                        .ToArray();
 
             //day = starting datetime accurate to minute and seconds based on scheduler
             var day = series.StartDate;
             day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
             string dayOfWeek = day.DayOfWeek.ToString();
-            
+
             int surfaceIndex = 0;
-            for (int cycles = 0; cycles < teams.Count - 1; cycles++)
+            for (int cycles = 0; cycles < teams.Count; cycles++)
             {
                 int i = 0;
                 int j = teams.Count - 1;
                 while (i < j) //middlepoint algorithm to match opposite teams
                 {
-                    if (surfaceIndex == availableSurfaces.Count - 1)
+                    if (surfaceIndex == availableSurfaces.Length)
                     {
                         surfaceIndex = 0;
                         day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
@@ -275,21 +282,25 @@ namespace Gordon360.Services.RecIM
                         dayOfWeek = day.DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
-
-                    await _matchService.PostMatchAsync(new MatchUploadViewModel
+         
+                    var teamIDs = new List<int>() { teams[i], teams[j] };
+                    if (!teamIDs.Contains(0))
                     {
-                        StartTime = day,
-                        SeriesID = seriesID,
-                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
-                        TeamIDs = new List<int>() { teams[i].TeamID, teams[j].TeamID }.AsEnumerable()
-                    });
-                    surfaceIndex++;
+                        var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                        {
+                            StartTime = day,
+                            SeriesID = seriesID,
+                            SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
+                            TeamIDs = teamIDs
+                        });
+                        surfaceIndex++;
+                    }
                     i++;
                     j--;
                 }
                 var temp = teams[0];
-                teams.RemoveAt(0);
                 teams.Add(temp);
+                teams.RemoveAt(0);  
             }   
         }
         private async Task ScheduleLadderAsync(int seriesID)
@@ -373,9 +384,9 @@ namespace Gordon360.Services.RecIM
         private async Task ScheduleSingleElimination(int seriesID)
         {
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
-            //Teams are defaulted to be ordered by Wins if there was a reference series
             var teams = _context.SeriesTeam
-               .Where(st => st.ID == seriesID);
+               .Where(st => st.SeriesID == seriesID)
+               .OrderByDescending(st => st.Win);
 
             SeriesScheduleViewModel schedule = _context.SeriesSchedule
                             .FirstOrDefault(ss => ss.ID ==
@@ -504,20 +515,22 @@ namespace Gordon360.Services.RecIM
             throw new NotImplementedException();
         }
 
-
-        private IEnumerable<IEnumerable<int>> EliminationRoundTeamPairs(IEnumerable<SeriesTeam> teams)
+        private static IEnumerable<IEnumerable<int>> EliminationRoundTeamPairs(IEnumerable<SeriesTeam> teams)
         {
             var res = new List<IEnumerable<int>>();
             var teamsArr = teams.ToArray();
+            int i = 0;
+            int j = teamsArr.Length - 1;
 
-            for (int i = 0; i < teamsArr.Length / 2; i++)
+            while(i<j)
             {
-                int j = (teamsArr.Length / 2 - 1) - i;
                 res.Add(new List<int>
                 {
                     teamsArr[i].TeamID,
                     teamsArr[j].TeamID
                 }.AsEnumerable());
+                i++;
+                j--;
             }
             return res.AsEnumerable();
         }

@@ -261,7 +261,7 @@ namespace Gordon360.Services.RecIM
             {
                 SeriesID = m.SeriesID,
                 Time = m.StartTime,
-                SurfaceID = m.SurfaceID ?? 0, //unknown surface id
+                SurfaceID = m.SurfaceID ?? 1, //unknown surface id
                 StatusID = 1 //default unconfirmed
             };
             await _context.Match.AddAsync(match);
