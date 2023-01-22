@@ -267,7 +267,7 @@ namespace Gordon360.Services.RecIM
                     if (surfaceIndex == availableSurfaces.Length)
                     {
                         surfaceIndex = 0;
-                        day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
                     }
 
                     //ensure matchtime is in an available day will be a "bug" if the match goes beyond 12AM
@@ -286,6 +286,7 @@ namespace Gordon360.Services.RecIM
                     var teamIDs = new List<int>() { teams[i], teams[j] };
                     if (!teamIDs.Contains(0))
                     {
+                        day = day;
                         var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                         {
                             StartTime = day,
