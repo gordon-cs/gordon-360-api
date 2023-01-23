@@ -216,6 +216,11 @@ namespace Gordon360.Services.RecIM
             return status;
         }
 
+        public bool IsParticipant(string username)
+        {
+            return _context.Participant.Any(p => p.Username == username);
+        }
+
         public bool IsAdmin(string username)
         {
             return _context.Participant.Any(p => p.Username == username && p.IsAdmin == true);
