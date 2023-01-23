@@ -226,8 +226,6 @@ namespace Gordon360.Services.RecIM
         }
         public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var activityID = _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
-
             var participantTeam = new ParticipantTeam
             {
                 TeamID = teamID,
