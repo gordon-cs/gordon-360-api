@@ -286,7 +286,6 @@ namespace Gordon360.Services.RecIM
                     var teamIDs = new List<int>() { teams[i], teams[j] };
                     if (!teamIDs.Contains(0))
                     {
-                        day = day;
                         var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                         {
                             StartTime = day,
