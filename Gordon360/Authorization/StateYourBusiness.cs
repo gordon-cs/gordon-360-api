@@ -44,6 +44,13 @@ namespace Gordon360.Authorization
 
         private AccountService _accountService;
 
+        //RecIM services
+        private ParticipantService _participantService;
+        private Gordon360.Services.RecIM.ActivityService _activityService;
+        private SeriesService _seriesService;
+        private TeamService _teamService;
+        private MatchService _matchService;
+
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
         private string user_id { get; set; }
@@ -58,6 +65,13 @@ namespace Gordon360.Authorization
             _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
             _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
             _accountService = context.HttpContext.RequestServices.GetService<AccountService>();
+
+            // RecIM services
+            _participantService = context.HttpContext.RequestServices.GetService<ParticipantService>();
+            _activityService = context.HttpContext.RequestServices.GetService<Gordon360.Services.RecIM.ActivityService>();
+            _seriesService = context.HttpContext.RequestServices.GetService<SeriesService>();
+            _teamService = context.HttpContext.RequestServices.GetService<TeamService>();
+            _matchService = context.HttpContext.RequestServices.GetService<MatchService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
@@ -479,8 +493,7 @@ namespace Gordon360.Authorization
                 case Resource.RECIM_MATCH:
                 case Resource.RECIM_SPORT:
                     {
-                        var participantService = new ParticipantService(_CCTContext, _accountService);
-                        return participantService.IsAdmin(user_name);
+                        return _participantService.IsAdmin(user_name);
                     }
                 default: return false;
             }
@@ -680,29 +693,21 @@ namespace Gordon360.Authorization
                 case Resource.RECIM_SERIES:
                 case Resource.RECIM_SPORT:
                     {
-                        var participantService = new ParticipantService(_CCTContext, _accountService);
-                        return participantService.IsAdmin(user_name);
+                        return _participantService.IsAdmin(user_name);
                     }
 
                 case Resource.RECIM_TEAM:
                     {
                         var teamID = (int)context.ActionArguments["teamID"];
-                        var participantService = new ParticipantService(_CCTContext, _accountService);
-                        var matchService = new MatchService(_CCTContext, _accountService);
-                        var teamService = new TeamService(_CCTContext, matchService, participantService, _accountService);
-                        return teamService.IsTeamCaptain(user_name, teamID) || participantService.IsAdmin(user_name);
+                        return _teamService.IsTeamCaptain(user_name, teamID) || _participantService.IsAdmin(user_name);
                     }
 
                 case Resource.RECIM_MATCH:
                     {
                         var matchID = (int)context.ActionArguments["matchID"];
-                        var participantService = new ParticipantService(_CCTContext, _accountService);
-                        var matchService = new MatchService(_CCTContext, _accountService);
-                        var seriesService = new SeriesService(_CCTContext, matchService);
-                        var activityService = new Gordon360.Services.RecIM.ActivityService(_CCTContext, seriesService);
-                        var match = matchService.GetMatchByID(matchID);
-                        var series = seriesService.GetSeriesByID(match.SeriesID);
-                        return activityService.IsReferee(user_name, series.ActivityID) || participantService.IsAdmin(user_name);
+                        var match = _matchService.GetMatchByID(matchID);
+                        var series = _seriesService.GetSeriesByID(match.SeriesID);
+                        return _activityService.IsReferee(user_name, series.ActivityID) || _participantService.IsAdmin(user_name);
                     }
                 default: return false;
             }
