@@ -102,9 +102,16 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            participant.RoleTypeID = participant.RoleTypeID ?? 3;
-            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
-            return CreatedAtAction("UpdateTeamParticipant", participantTeam);
+            var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
+
+            if (!_teamService.HasUserJoined(activityID, participant.Username))
+            {
+                participant.RoleTypeID = participant.RoleTypeID ?? 3;
+                var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
+                return CreatedAtAction("UpdateTeamParticipant", participantTeam);
+            }
+
+            return Conflict("This participant has already joined the activity.");
         }
 
         /// <summary>
@@ -120,6 +127,15 @@ namespace Gordon360.Controllers.RecIM
         {
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
             return CreatedAtAction("UpdateTeamInfo", updatedTeam);
-;        }
+;       }
+
+        // delete before merge
+        [HttpGet]
+        [Route("test-route")]
+        public bool HasUserJoined(int activityID, string username)
+        {
+            var hasJoined = _teamService.HasUserJoined(activityID, username);
+            return hasJoined;
+        }
     }
 }
