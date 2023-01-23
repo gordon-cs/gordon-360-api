@@ -66,12 +66,12 @@ namespace Gordon360.Authorization
             _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
             _accountService = context.HttpContext.RequestServices.GetService<AccountService>();
 
-            // RecIM services
-            _participantService = context.HttpContext.RequestServices.GetService<ParticipantService>();
-            _activityService = context.HttpContext.RequestServices.GetService<Gordon360.Services.RecIM.ActivityService>();
-            _seriesService = context.HttpContext.RequestServices.GetService<SeriesService>();
-            _teamService = context.HttpContext.RequestServices.GetService<TeamService>();
-            _matchService = context.HttpContext.RequestServices.GetService<MatchService>();
+            // set RecIM services
+            _participantService = new ParticipantService(_CCTContext, _accountService);
+            _matchService = new MatchService(_CCTContext, _accountService);
+            _teamService = new TeamService(_CCTContext, _matchService, _participantService, _accountService);
+            _seriesService = new SeriesService(_CCTContext, _matchService);
+            _activityService = new Services.RecIM.ActivityService(_CCTContext, _seriesService);
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
