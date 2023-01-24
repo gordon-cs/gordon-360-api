@@ -22,12 +22,10 @@ namespace Gordon360.Controllers
     public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public NewsController(CCTContext context, MyGordonContext myGordonContext, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
+        public NewsController(INewsService newsService)
         {
-            _newsService = new NewsService(myGordonContext, context, webHostEnvironment, serverUtils);
-            _webHostEnvironment = webHostEnvironment;
+            _newsService = newsService;
         }
 
         /// <summary>Gets a news item by id from the database</summary>
@@ -48,8 +46,7 @@ namespace Gordon360.Controllers
 
             if (result.Image != null)
             {
-                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", Path.GetFileName(result.Image));
-
+                var imagePath = _newsService.GetImagePath(Path.GetFileName(result.Image));
                 result.Image = ImageUtils.RetrieveImageFromPath(imagePath);
             }
 
@@ -71,9 +68,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", Path.GetFileName(result.Image));
-
-            return Ok(ImageUtils.RetrieveImageFromPath(imagePath));
+            return Ok(result.Image);
         }
 
         /** Call the service that gets all approved student news entries not yet expired, filtering
