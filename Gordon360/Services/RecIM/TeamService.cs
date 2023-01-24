@@ -166,6 +166,52 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
+        // return type is wrong
+        public IEnumerable<ParticipantTeamExtendedViewModel> GetTeamInvites(string username)
+        {
+            var teamRequestToJoin = _context.ParticipantTeam
+                    .Where(pt => pt.ParticipantUsername == username)
+                    .Join(_context.Team
+                        .Join(_context.Activity,
+                            t => t.ActivityID,
+                            a => a.ID,
+                            (t, a) => new
+                            {
+                                ActivityID = a.ID,
+                                ActivityName = a.Name,
+                                TeamID = t.ID,
+                                TeamName = t.Name,
+                            }
+                        ),
+                        pt => pt.TeamID,
+                        t => t.TeamID,
+                        (pt, t) => new
+                        {
+                            ActivityID = t.ActivityID,
+                            ActivityName = t.ActivityName,
+                            TeamID = t.TeamID,
+                            TeamName = t.TeamName,
+                            Username = username,
+                            SignDate = pt.SignDate,
+                        }
+                    )
+                    .OrderBy(pt => pt.ActivityID)
+                    .OrderBy(pt => pt.SignDate)
+                    .AsEnumerable();
+
+            var activityRequestToJoin = teamRequestToJoin
+                    .DistinctBy(tr => tr.ActivityID)
+                    .Select(tr => tr.ActivityID)
+                    .ToArray();
+
+            var res = activityRequestToJoin
+                    .Select(pt => new ParticipantTeamExtendedViewModel
+                    {
+
+                    }).AsEnumerable();
+            return res;
+        }
+        
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
             
