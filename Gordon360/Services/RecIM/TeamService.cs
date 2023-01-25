@@ -245,7 +245,7 @@ namespace Gordon360.Services.RecIM
             var participantTeams = _context.Activity
                         .Where(a => a.ID == activityID)
                         .Join(_context.Team
-                            .Join(_context.ParticipantTeam,
+                            .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
                                 t => t.ID,
                                 pt => pt.TeamID,
                                 (t, pt) => new {

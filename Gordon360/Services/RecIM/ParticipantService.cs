@@ -218,7 +218,18 @@ namespace Gordon360.Services.RecIM
 
         public bool IsParticipant(string username)
         {
-            return _context.Participant.Any(p => p.Username == username);
+            if (_context.Participant.FirstOrDefault(p => p.Username == username) is null)
+            {
+                return false;
+            }
+            var isPending = _context.ParticipantStatusHistory
+                    .Where(psh => psh.ParticipantUsername == username)
+                    .OrderByDescending(psh => psh.ID)
+                    .FirstOrDefault()
+                    .StatusID == 1;
+
+            // 1 is pending
+            return !isPending;
         }
 
         public bool IsAdmin(string username)
