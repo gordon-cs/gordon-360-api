@@ -167,17 +167,16 @@ namespace Gordon360.Services.RecIM
         }
 
         // return type is wrong
-        public IEnumerable<ParticipantTeamExtendedViewModel> GetTeamInvites(string username)
+        public IEnumerable<TeamInviteViewModel> GetTeamInvites(string username)
         {
             var teamRequestToJoin = _context.ParticipantTeam
-                    .Where(pt => pt.ParticipantUsername == username)
+                    .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2)
                     .Join(_context.Team
                         .Join(_context.Activity,
                             t => t.ActivityID,
                             a => a.ID,
                             (t, a) => new
                             {
-                                ActivityID = a.ID,
                                 ActivityName = a.Name,
                                 TeamID = t.ID,
                                 TeamName = t.Name,
@@ -185,31 +184,16 @@ namespace Gordon360.Services.RecIM
                         ),
                         pt => pt.TeamID,
                         t => t.TeamID,
-                        (pt, t) => new
+                        (pt, t) => new TeamInviteViewModel
                         {
-                            ActivityID = t.ActivityID,
                             ActivityName = t.ActivityName,
                             TeamID = t.TeamID,
                             TeamName = t.TeamName,
-                            Username = username,
-                            SignDate = pt.SignDate,
                         }
                     )
-                    .OrderBy(pt => pt.ActivityID)
-                    .OrderBy(pt => pt.SignDate)
                     .AsEnumerable();
 
-            var activityRequestToJoin = teamRequestToJoin
-                    .DistinctBy(tr => tr.ActivityID)
-                    .Select(tr => tr.ActivityID)
-                    .ToArray();
-
-            var res = activityRequestToJoin
-                    .Select(pt => new ParticipantTeamExtendedViewModel
-                    {
-
-                    }).AsEnumerable();
-            return res;
+            return teamRequestToJoin;
         }
         
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)

@@ -122,10 +122,13 @@ namespace Gordon360.Controllers.RecIM
             return CreatedAtAction("UpdateTeamInfo", updatedTeam);
 ;       }
 
-        // delete before merge
+        /// <summary>
+        /// Get all team invites of the user
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        [Route("test-route")]
-        public ActionResult<IEnumerable<ParticipantTeamExtendedViewModel>> GetTeamInvites()
+        [Route("invites")]
+        public ActionResult<IEnumerable<TeamInviteViewModel>> GetTeamInvites()
         {
             var username = AuthUtils.GetUsername(User);
             return CreatedAtAction("getTeamInvites", _teamService.GetTeamInvites(username));

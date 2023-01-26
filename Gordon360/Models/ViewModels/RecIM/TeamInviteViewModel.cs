@@ -4,6 +4,7 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class TeamInviteViewModel
     {
+        public string ActivityName { get; set; }
         public int TeamID { get; set; }
         public string TeamName { get; set; }
     }
