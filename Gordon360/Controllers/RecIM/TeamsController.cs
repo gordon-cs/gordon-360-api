@@ -19,10 +19,12 @@ namespace Gordon360.Controllers.RecIM
     public class TeamsController : GordonControllerBase
     {
         private readonly ITeamService _teamService;
+        private readonly IParticipantService _participantService;
 
-        public TeamsController(ITeamService teamService)
+        public TeamsController(ITeamService teamService, IParticipantService participantService)
         {
             _teamService = teamService;
+            _participantService = participantService;
         }
 
         ///<summary>
@@ -86,9 +88,23 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            participant.RoleTypeID = participant.RoleTypeID ?? 3;
-            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
-            return CreatedAtAction("AddParticipantToTeam", participantTeam);
+            // check participant is in RecIM
+            if (!_participantService.IsParticipant(participant.Username))
+            {
+                return Conflict("This participant has not yet joined the RecIM.");
+            }
+
+            var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
+
+            // check participant has joined a certain activity
+            if (!_teamService.HasUserJoined(activityID, participant.Username))
+            {
+                participant.RoleTypeID = participant.RoleTypeID ?? 3;
+                var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
+                return CreatedAtAction("AddParticipantToTeam", participantTeam);
+            }
+
+            return Conflict("This participant has already joined the activity.");
         }
 
         /// <summary>
@@ -120,6 +136,6 @@ namespace Gordon360.Controllers.RecIM
         {
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
             return CreatedAtAction("UpdateTeamInfo", updatedTeam);
-;        }
+;       }
     }
 }
