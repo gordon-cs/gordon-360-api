@@ -864,6 +864,12 @@
             <param name="teamID"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamInvites">
+            <summary>
+            Get all team invites of the user
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
             <summary>
             Gets all Membership Request Objects

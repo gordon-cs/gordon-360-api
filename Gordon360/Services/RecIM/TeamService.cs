@@ -177,6 +177,7 @@ namespace Gordon360.Services.RecIM
                             a => a.ID,
                             (t, a) => new
                             {
+                                ActivityID = t.ActivityID,
                                 ActivityName = a.Name,
                                 TeamID = t.ID,
                                 TeamName = t.Name,
@@ -186,6 +187,7 @@ namespace Gordon360.Services.RecIM
                         t => t.TeamID,
                         (pt, t) => new TeamInviteViewModel
                         {
+                            ActivityID = t.ActivityID,
                             ActivityName = t.ActivityName,
                             TeamID = t.TeamID,
                             TeamName = t.TeamName,
