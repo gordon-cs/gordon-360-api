@@ -167,6 +167,38 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
+        // return type is wrong
+        public IEnumerable<TeamInviteViewModel> GetTeamInvites(string username)
+        {
+            var teamRequestToJoin = _context.ParticipantTeam
+                    .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2)
+                    .Join(_context.Team
+                        .Join(_context.Activity,
+                            t => t.ActivityID,
+                            a => a.ID,
+                            (t, a) => new
+                            {
+                                ActivityID = t.ActivityID,
+                                ActivityName = a.Name,
+                                TeamID = t.ID,
+                                TeamName = t.Name,
+                            }
+                        ),
+                        pt => pt.TeamID,
+                        t => t.TeamID,
+                        (pt, t) => new TeamInviteViewModel
+                        {
+                            ActivityID = t.ActivityID,
+                            ActivityName = t.ActivityName,
+                            TeamID = t.TeamID,
+                            TeamName = t.TeamName,
+                        }
+                    )
+                    .AsEnumerable();
+
+            return teamRequestToJoin;
+        }
+        
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
             
