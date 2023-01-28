@@ -307,8 +307,15 @@ namespace Gordon360.Services.RecIM
             //if user is currently requested to join and have just accepted to join the team, user should have other instances of themselves removed from other teams
             if (participantTeam.RoleTypeID == 2 && roleID == 3)
             {
-                var otherInstancesPTs = _context.ParticipantTeam.Where(pt => pt.ID != participantTeam.ID).ToList();
-                _context.ParticipantTeam.RemoveRange(otherInstancesPTs);
+                var activityID = _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
+                var otherInstances = _context.ParticipantTeam
+                    .Where(pt => pt.ID != participantTeam.ID && pt.ParticipantUsername == participantTeam.ParticipantUsername)
+                    .Join(_context.Team.Where(t => t.ActivityID == activityID),
+                    pt => pt.TeamID,
+                    t => t.ID,
+                    (pt, t) => pt)
+                    .ToList();
+                _context.ParticipantTeam.RemoveRange(otherInstances);
             }
 
             participantTeam.RoleTypeID = roleID;
