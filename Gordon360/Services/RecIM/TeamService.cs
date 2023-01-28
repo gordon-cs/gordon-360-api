@@ -302,8 +302,16 @@ namespace Gordon360.Services.RecIM
         public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantUsername == participant.Username && pt.TeamID == teamID);
-            participantTeam.RoleTypeID = participant.RoleTypeID ?? 3;
+            var roleID = participant.RoleTypeID ?? 3;
 
+            //if user is currently requested to join and have just accepted to join the team, user should have other instances of themselves removed from other teams
+            if (participantTeam.RoleTypeID == 2 && roleID == 3)
+            {
+                var otherInstancesPTs = _context.ParticipantTeam.Where(pt => pt.ID != participantTeam.ID).ToList();
+                _context.ParticipantTeam.RemoveRange(otherInstancesPTs);
+            }
+
+            participantTeam.RoleTypeID = roleID;
             await _context.SaveChangesAsync();
 
             return participantTeam;
