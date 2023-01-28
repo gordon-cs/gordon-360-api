@@ -308,6 +308,12 @@ namespace Gordon360.Services.RecIM
 
             return participantTeam;
         }
+        public async Task DeleteTeamParticipantAsync(int teamID, string username)
+        {
+            var teamParticipant = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == username);
+            _context.ParticipantTeam.Remove(teamParticipant);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
@@ -320,6 +326,7 @@ namespace Gordon360.Services.RecIM
 
             return t;
         }
+        
         public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
             var participantTeam = new ParticipantTeam

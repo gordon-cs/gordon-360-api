@@ -117,7 +117,6 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}/participants")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
         {
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
@@ -135,7 +134,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}/participants")]
         public async Task<ActionResult> DeleteTeamParticipant(int teamID, string username)
         {
-            throw new NotImplementedException();
+            await _teamService.DeleteTeamParticipantAsync(teamID, username);
+            return NoContent();
         }
 
         /// <summary>
