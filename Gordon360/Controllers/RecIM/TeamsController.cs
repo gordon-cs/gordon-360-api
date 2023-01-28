@@ -26,6 +26,19 @@ namespace Gordon360.Controllers.RecIM
         }
 
         ///<summary>
+        ///Get all team objects stored in rec-im
+        ///</summary>
+        /// <param name="active"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public ActionResult<TeamExtendedViewModel> GetTeams([FromQuery] bool active)
+        {
+            var team = _teamService.GetTeams(active);
+            return Ok(team);
+        }
+
+        ///<summary>
         ///Get a Team object by ID number
         ///</summary>
         /// <param name="teamID"></param>

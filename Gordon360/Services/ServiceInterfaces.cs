@@ -335,6 +335,7 @@ namespace Gordon360.Services
         {
             IEnumerable<LookupViewModel> GetTeamLookup(string type);
             double GetTeamSportsmanshipScore(int teamID);
+            IEnumerable<TeamExtendedViewModel> GetTeams(bool active);
             TeamExtendedViewModel GetTeamByID(int teamID);
             IEnumerable<TeamInviteViewModel> GetTeamInvites(string username);
             Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);

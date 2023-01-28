@@ -71,7 +71,71 @@ namespace Gordon360.Services.RecIM
             }
             return sportsmanshipScores.Average(ss => ss.score);
         }
-
+        public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
+        {
+            var teams = _context.Team
+                .Where(t => !t.Activity.Completed == active)
+                .Select(t => new TeamExtendedViewModel
+                {
+                    ID = t.ID,
+                    Activity = _context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
+                    Name = t.Name,
+                    Status = _context.TeamStatus
+                                            .FirstOrDefault(ts => ts.ID == t.StatusID)
+                                            .Description,
+                    Logo = t.Logo,
+                    Participant = t.ParticipantTeam
+                        .Select(pt => new ParticipantExtendedViewModel
+                        {
+                            Username = pt.ParticipantUsername,
+                            Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
+                            Role = _context.RoleType
+                                                .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
+                                                .Description,
+                        }),
+                    TeamRecord = t.SeriesTeam
+                                            .Select(st => new TeamRecordViewModel
+                                            {
+                                                ID = st.ID,
+                                                Name = t.Name,
+                                                Win = st.Win,
+                                                // for now Loss is calculated with query, just for no dummy data added to database
+                                                Loss = t.MatchTeam
+                                                    .Where(mt => mt.Match.StatusID == 6
+                                                    && mt.Score < _context.MatchTeam
+                                                    .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
+                                                    && opmt.TeamID != t.ID)
+                                                    .Score)
+                                                    .Count(),
+                                                Tie = t.MatchTeam
+                                                    .Where(mt => mt.Match.StatusID == 6
+                                                    && mt.Score == _context.MatchTeam
+                                                    .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
+                                                    && opmt.TeamID != t.ID)
+                                                    .Score)
+                                                    .Count(),
+                                            }).AsEnumerable(),
+                    Sportsmanship = _context.Match
+                                    .Where(m => m.StatusID == 6)
+                                        .Join(_context.MatchTeam
+                                            .Where(mt => mt.TeamID == t.ID),
+                                            m => m.ID,
+                                            mt => mt.MatchID,
+                                            (m, mt) => new { score = mt.Sportsmanship }
+                                        ).Count() == 0 
+                                        ? 5
+                                        : _context.Match
+                                    .Where(m => m.StatusID == 6)
+                                        .Join(_context.MatchTeam
+                                            .Where(mt => mt.TeamID == t.ID),
+                                            m => m.ID,
+                                            mt => mt.MatchID,
+                                            (m, mt) => new { score = mt.Sportsmanship }
+                                        ).Average(ss => ss.score) 
+                })
+                .AsEnumerable();
+            return teams;
+        }
         public TeamExtendedViewModel GetTeamByID(int teamID)
         {
             var team = _context.Team
