@@ -103,6 +103,10 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault(m => m.ID == mt.MatchID)
                             .StatusID)
                         .Description,
+                    Surface = _context.Surface
+                                        .FirstOrDefault(s => s.ID == _context.Match
+                            .FirstOrDefault(m => m.ID == mt.MatchID).SurfaceID)
+                                        .Description,
                     Team = _context.MatchTeam
                         .Where(_mt => _mt.MatchID == mt.MatchID)
                         .Select(_mt => new TeamExtendedViewModel
