@@ -56,6 +56,11 @@ namespace Gordon360.Controllers.RecIM
             return Ok(team);
         }
 
+        /// <summary>
+        /// Returns all team lookup types
+        /// </summary>
+        /// <param name="type">specified team type</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetTeamTypes(string type)
@@ -118,6 +123,19 @@ namespace Gordon360.Controllers.RecIM
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
             var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
             return CreatedAtAction("UpdateTeamParticipant", participantTeam);
+        }
+
+        /// <summary>
+        /// Removes specified user from a team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{teamID}/participants")]
+        public async Task<ActionResult> DeleteTeamParticipant(int teamID, string username)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

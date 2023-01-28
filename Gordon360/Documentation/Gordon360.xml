@@ -839,6 +839,13 @@
              <param name="teamID"></param>
              <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamTypes(System.String)">
+            <summary>
+            Returns all team lookup types
+            </summary>
+            <param name="type">specified team type</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.CreateTeam(System.String,Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
             <summary>
             Create a new team with the requesting user set to team captain
@@ -861,6 +868,14 @@
             </summary>
             <param name="teamID"></param>
             <param name="participant">Default Role Value value 3 (Member)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeamParticipant(System.Int32,System.String)">
+            <summary>
+            Removes specified user from a team
+            </summary>
+            <param name="teamID"></param>
+            <param name="username"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamInfo(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamPatchViewModel)">
