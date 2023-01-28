@@ -86,7 +86,7 @@ namespace Gordon360.Services.RecIM
                                             .Description,
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
-                                            .Select(mt => _matchService.GetMatchByID(mt.MatchID)),
+                                            .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)),
                                 Participant = t.ParticipantTeam
                                                 .Select(pt => new ParticipantExtendedViewModel
                                                 {
@@ -97,46 +97,46 @@ namespace Gordon360.Services.RecIM
                                                                         .Description,
                                                 }),
                                 MatchHistory = _context.Match
-                            .Join(_context.MatchTeam
-                                .Where(mt => mt.TeamID == teamID)
+                                                .Join(_context.MatchTeam
+                                                    .Where(mt => mt.TeamID == teamID)
 
-                                    .Join(
-                                        _context.MatchTeam.Where(mt => mt.TeamID != teamID),
-                                        mt0 => mt0.MatchID,
-                                        mt1 => mt1.MatchID,
-                                        (mt0, mt1) => new
-                                        {
-                                            TeamID = mt0.TeamID,
-                                            MatchID = mt0.MatchID,
-                                            OwnScore = mt0.Score,
-                                            OpposingTeamID = mt1.TeamID,
-                                            OpposingTeamScore = mt1.Score,
-                                            Status = mt0.Score > mt1.Score
-                                                    ? "Win"
-                                                    : mt0.Score < mt1.Score
-                                                        ? "Lose"
-                                                        : "Tie"
-                                        }),
-
-                                match => match.ID,
-                                matchTeamJoin => matchTeamJoin.MatchID,
-                                (match, matchTeamJoin) => new TeamMatchHistoryViewModel
-                                {
-                                    TeamID = matchTeamJoin.TeamID,
-                                    MatchID = match.ID,
-                                    Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingTeamID)
-                                        .Select(o => new TeamExtendedViewModel
-                                        {
-                                            ID = o.ID,
-                                            Name = o.Name,
-                                            Logo = o.Logo
-                                        }).FirstOrDefault(),
-                                    TeamScore = matchTeamJoin.OwnScore,
-                                    OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
-                                    Status = matchTeamJoin.Status,
-                                    MatchStatusID = match.StatusID,
-                                    Time = match.Time
-                                }).AsEnumerable(),
+                                                        .Join(
+                                                            _context.MatchTeam.Where(mt => mt.TeamID != teamID),
+                                                            mt0 => mt0.MatchID,
+                                                            mt1 => mt1.MatchID,
+                                                            (mt0, mt1) => new
+                                                            {
+                                                                TeamID = mt0.TeamID,
+                                                                MatchID = mt0.MatchID,
+                                                                OwnScore = mt0.Score,
+                                                                OpposingTeamID = mt1.TeamID,
+                                                                OpposingTeamScore = mt1.Score,
+                                                                Status = mt0.Score > mt1.Score
+                                                                        ? "Win"
+                                                                        : mt0.Score < mt1.Score
+                                                                            ? "Lose"
+                                                                            : "Tie"
+                                                            }),
+                                                            match => match.ID,
+                                                            matchTeamJoin => matchTeamJoin.MatchID,
+                                                            (match, matchTeamJoin) => new TeamMatchHistoryViewModel
+                                                            {
+                                                                TeamID = matchTeamJoin.TeamID,
+                                                                MatchID = match.ID,
+                                                                Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingTeamID)
+                                                                    .Select(o => new TeamExtendedViewModel
+                                                                    {
+                                                                        ID = o.ID,
+                                                                        Name = o.Name,
+                                                                        Logo = o.Logo
+                                                                    }).FirstOrDefault(),
+                                                                TeamScore = matchTeamJoin.OwnScore,
+                                                                OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
+                                                                Status = matchTeamJoin.Status,
+                                                                MatchStatusID = match.StatusID,
+                                                                Time = match.Time
+                                                            }
+                                                ).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam
                                             .Select(st => new TeamRecordViewModel
                                             {

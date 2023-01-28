@@ -68,6 +68,58 @@ namespace Gordon360.Services.RecIM
                     return null;
             }
         }
+        //this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
+        //within other queries. The only solution is to return each individual instance and have the original
+        //query handle the enumeration.
+        public MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID)
+        {
+            var activity = _context.Activity
+                .Where(a => a.ID == _context.Series
+                    .FirstOrDefault(s => s.ID == _context.Match
+                        .FirstOrDefault(m => m.ID == matchID)
+                    .SeriesID)
+                .ActivityID)
+                .Select(a => new ActivityExtendedViewModel
+                {
+                    ID = a.ID,
+                    Name = a.Name
+                })
+                .FirstOrDefault();
+
+            var match = _context.MatchTeam
+                .Where(mt => mt.MatchID == matchID)
+                .Select(mt => new MatchExtendedViewModel
+                {
+                    ID = mt.MatchID,
+                    Scores = _context.MatchTeam
+                        .Where(s => s.MatchID == mt.MatchID)
+                        .Select(mt => new TeamMatchHistoryViewModel
+                        {
+                            TeamID = mt.TeamID,
+                            TeamScore = mt.Score
+                        }).AsEnumerable(),
+                    Status = _context.MatchStatus
+                        .FirstOrDefault(ms => ms.ID == _context.Match
+                            .FirstOrDefault(m => m.ID == mt.MatchID)
+                            .StatusID)
+                        .Description,
+                    Team = _context.MatchTeam
+                        .Where(_mt => _mt.MatchID == mt.MatchID)
+                        .Select(_mt => new TeamExtendedViewModel
+                        {
+                            ID = mt.TeamID,
+                            Name = _context.Team
+                                       .FirstOrDefault(t => t.ID == _mt.TeamID)
+                                       .Name,
+                        })
+                        .AsEnumerable(),
+                    Activity = activity,
+
+                })
+                .FirstOrDefault();
+            return match;
+        }
+ 
         public MatchExtendedViewModel GetMatchByID(int matchID)
         {
             var match = _context.Match
