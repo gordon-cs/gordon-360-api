@@ -79,8 +79,8 @@ namespace Gordon360.Services.RecIM
                                         .Where(mt => mt.MatchID == matchID)
                                         .Select(mt => new TeamMatchHistoryViewModel
                                         {
-                                            OwnID = mt.TeamID,
-                                            OwnScore = mt.Score
+                                            TeamID = mt.TeamID,
+                                            TeamScore = mt.Score
                                         }).AsEnumerable(),
                             Time = m.Time,
                             Surface = _context.Surface
@@ -133,11 +133,11 @@ namespace Gordon360.Services.RecIM
                                                 mt1 => mt1.MatchID,
                                                 (mt0, mt1) => new
                                                 {
-                                                    OwnID = mt0.TeamID,
+                                                    TeamID = mt0.TeamID,
                                                     MatchID = mt0.MatchID,
-                                                    OwnScore = mt0.Score,
+                                                    Score = mt0.Score,
                                                     OpposingID = mt1.TeamID,
-                                                    OpposingScore = mt1.Score,
+                                                    OpposingTeamScore = mt1.Score,
                                                     Status = mt0.Score > mt1.Score
                                                             ? "Win"
                                                             : mt0.Score < mt1.Score
@@ -148,7 +148,7 @@ namespace Gordon360.Services.RecIM
                                         matchTeamJoin => matchTeamJoin.MatchID,
                                         (match, matchTeamJoin) => new TeamMatchHistoryViewModel
                                         {
-                                            OwnID = matchTeamJoin.OwnID,
+                                            TeamID = matchTeamJoin.TeamID,
                                             MatchID = match.ID,
                                             Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
                                                 .Select(o => new TeamExtendedViewModel
@@ -157,8 +157,8 @@ namespace Gordon360.Services.RecIM
                                                     Name = o.Name,
                                                     Logo = o.Logo
                                                 }).FirstOrDefault(),
-                                            OwnScore = matchTeamJoin.OwnScore,
-                                            OpposingScore = matchTeamJoin.OpposingScore,
+                                            TeamScore = matchTeamJoin.Score,
+                                            OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                             Status = matchTeamJoin.Status,
                                             MatchStatusID = match.StatusID,
                                             Time = match.Time
@@ -189,11 +189,11 @@ namespace Gordon360.Services.RecIM
                                         mt1 => mt1.MatchID,
                                         (mt0, mt1) => new
                                         {
-                                            OwnID = mt0.TeamID,
+                                            TeamID = mt0.TeamID,
                                             MatchID = mt0.MatchID,
-                                            OwnScore = mt0.Score,
+                                            Score = mt0.Score,
                                             OpposingID = mt1.TeamID,
-                                            OpposingScore = mt1.Score,
+                                            OpposingTeamScore = mt1.Score,
                                             Status = mt0.Score > mt1.Score
                                                     ? "Win"
                                                     : mt0.Score < mt1.Score
@@ -206,7 +206,7 @@ namespace Gordon360.Services.RecIM
                                 matchTeamJoin => matchTeamJoin.MatchID,
                                 (match, matchTeamJoin) => new TeamMatchHistoryViewModel
                                 {
-                                    OwnID = matchTeamJoin.OwnID,
+                                    TeamID = matchTeamJoin.TeamID,
                                     MatchID = match.ID,
                                     Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
                                         .Select(o => new TeamExtendedViewModel
@@ -215,8 +215,8 @@ namespace Gordon360.Services.RecIM
                                             Name = o.Name,
                                             Logo = o.Logo
                                         }).FirstOrDefault(),
-                                    OwnScore = matchTeamJoin.OwnScore,
-                                    OpposingScore = matchTeamJoin.OpposingScore,
+                                    TeamScore = matchTeamJoin.Score,
+                                    OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                     Status = matchTeamJoin.Status,
                                     MatchStatusID = match.StatusID,
                                     Time = match.Time
