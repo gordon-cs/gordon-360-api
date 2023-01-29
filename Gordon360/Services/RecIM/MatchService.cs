@@ -73,50 +73,68 @@ namespace Gordon360.Services.RecIM
         //query handle the enumeration.
         public MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID)
         {
-            var activity = _context.Activity
-                .Where(a => a.ID == _context.Series
-                    .FirstOrDefault(s => s.ID == _context.Match
-                        .FirstOrDefault(m => m.ID == matchID)
-                    .SeriesID)
-                .ActivityID)
-                .Select(a => new ActivityExtendedViewModel
-                {
-                    ID = a.ID,
-                    Name = a.Name
-                })
-                .FirstOrDefault();
+            var activity = (from a in _context.Activity
+                            where a.ID == (from s in _context.Series
+                                           where s.ID == (from m in _context.Match
+                                                          where m.ID == matchID
+                                                          select m
+                                                         ).FirstOrDefault().SeriesID
+                                           select s
+                                          ).FirstOrDefault().ActivityID
+                            select a
+                           )
+                           .Select(a => new ActivityExtendedViewModel
+                           {
+                               ID = a.ID,
+                               Name = a.Name
+                           })
+                           .FirstOrDefault();
 
-            var match = _context.MatchTeam
-                .Where(mt => mt.MatchID == matchID)
-                .Select(mt => new MatchExtendedViewModel
-                {
-                    ID = mt.MatchID,
-                    Scores = _context.MatchTeam
-                        .Where(s => s.MatchID == mt.MatchID)
-                        .Select(mt => new TeamMatchHistoryViewModel
-                        {
-                            TeamID = mt.TeamID,
-                            TeamScore = mt.Score
-                        }).AsEnumerable(),
-                    Status = _context.MatchStatus
-                        .FirstOrDefault(ms => ms.ID == _context.Match
-                            .FirstOrDefault(m => m.ID == mt.MatchID)
-                            .StatusID)
-                        .Description,
-                    Team = _context.MatchTeam
-                        .Where(_mt => _mt.MatchID == mt.MatchID)
-                        .Select(_mt => new TeamExtendedViewModel
-                        {
-                            ID = mt.TeamID,
-                            Name = _context.Team
-                                       .FirstOrDefault(t => t.ID == _mt.TeamID)
-                                       .Name,
-                        })
-                        .AsEnumerable(),
-                    Activity = activity,
+            var match = (from mt in _context.MatchTeam
+                         where mt.MatchID == matchID
+                         select mt
+                         )
+                         .Select(mt => new MatchExtendedViewModel
+                         {
+                             ID = mt.MatchID,
+                             Scores = (from s in _context.MatchTeam
+                                       where s.MatchID == mt.MatchID
+                                       select s
+                                       )
+                                       .Select(mt => new TeamMatchHistoryViewModel
+                                       {
+                                           TeamID = mt.TeamID,
+                                           TeamScore = mt.Score,
+                                       }).AsEnumerable(),
+                             Status = (from ms in _context.MatchStatus
+                                       where ms.ID == (from m in _context.Match
+                                                       where m.ID == mt.MatchID
+                                                       select m
+                                                       )
+                                                       .FirstOrDefault()
+                                                       .StatusID
+                                        select ms
+                                        ).FirstOrDefault()
+                                        .Description,
+                             Team = (from _mt in _context.MatchTeam
+                                     where _mt.MatchID == mt.MatchID
+                                     select _mt
+                                     )
+                                     .Select(_mt => new TeamExtendedViewModel
+                                     {
+                                         ID = mt.TeamID,
+                                         Name = (from t in _context.Team
+                                                 where t.ID == mt.TeamID
+                                                 select t
+                                                 )
+                                                 .FirstOrDefault()
+                                                 .Name,
+                                     })
+                                     .AsEnumerable(),
+                             Activity = activity,
+                         })
+                         .FirstOrDefault();
 
-                })
-                .FirstOrDefault();
             return match;
         }
  
