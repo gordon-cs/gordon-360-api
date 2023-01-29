@@ -98,6 +98,7 @@ namespace Gordon360.Services.RecIM
                             TeamID = mt.TeamID,
                             TeamScore = mt.Score
                         }).AsEnumerable(),
+                    Time = _context.Match.FirstOrDefault(m => m.ID == mt.MatchID).Time,
                     Status = _context.MatchStatus
                         .FirstOrDefault(ms => ms.ID == _context.Match
                             .FirstOrDefault(m => m.ID == mt.MatchID)
