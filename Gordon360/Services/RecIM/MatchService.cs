@@ -359,13 +359,7 @@ namespace Gordon360.Services.RecIM
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;
             teamstats.Sportsmanship = vm.Sportsmanship ?? teamstats.Sportsmanship;
-
-            if (vm.Status is not null)
-            {
-                teamstats.StatusID = _context.MatchTeamStatus
-                    .FirstOrDefault(mts => mts.Description == vm.Status)
-                    .ID;
-            }
+            teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
             await _context.SaveChangesAsync();
             return teamstats;
 
