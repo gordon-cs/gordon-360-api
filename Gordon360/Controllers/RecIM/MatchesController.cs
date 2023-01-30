@@ -125,9 +125,9 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpGet]
         [Route("test-route")]
-        public ActionResult<MatchExtendedViewModel> TestRoute(int matchID)
+        public ActionResult<MatchExtendedViewModel> TestRoute(int teamID)
         {
-            var match = _matchService.GetMatchForTeamByMatchID(matchID);
+            var match = _matchService.GetMatchesForTeamID(teamID);
             return Ok(match);
         }
     }

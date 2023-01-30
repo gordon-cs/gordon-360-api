@@ -149,8 +149,7 @@ namespace Gordon360.Services.RecIM
                                             .FirstOrDefault(ts => ts.ID == t.StatusID)
                                             .Description,
                                 Logo = t.Logo,
-                                Match = t.MatchTeam
-                                            .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)),
+                                Match = _matchService.GetMatchesForTeamID(teamID),
                                 Participant = t.ParticipantTeam
                                                 .Select(pt => new ParticipantExtendedViewModel
                                                 {
