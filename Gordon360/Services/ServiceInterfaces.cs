@@ -335,11 +335,13 @@ namespace Gordon360.Services
         {
             IEnumerable<LookupViewModel> GetTeamLookup(string type);
             double GetTeamSportsmanshipScore(int teamID);
+            IEnumerable<TeamExtendedViewModel> GetTeams(bool active);
             TeamExtendedViewModel GetTeamByID(int teamID);
             IEnumerable<TeamInviteViewModel> GetTeamInvites(string username);
             Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
             Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant);
             Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
+            Task DeleteTeamParticipantAsync(int teamID, string username);
             Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant);
             bool HasUserJoined(int activityID, string username);
             bool IsTeamCaptain(string username, int teamID);
@@ -373,6 +375,7 @@ namespace Gordon360.Services
         public interface IMatchService
         {
             IEnumerable<LookupViewModel> GetMatchLookup(string type);
+            MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID);
             MatchExtendedViewModel GetMatchByID(int matchID);
             IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID);
             Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel match);

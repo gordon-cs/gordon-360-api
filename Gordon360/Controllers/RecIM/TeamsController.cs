@@ -26,6 +26,19 @@ namespace Gordon360.Controllers.RecIM
         }
 
         ///<summary>
+        ///Get all team objects stored in rec-im
+        ///</summary>
+        /// <param name="active"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("")]
+        public ActionResult<TeamExtendedViewModel> GetTeams([FromQuery] bool active)
+        {
+            var team = _teamService.GetTeams(active);
+            return Ok(team);
+        }
+
+        ///<summary>
         ///Get a Team object by ID number
         ///</summary>
         /// <param name="teamID"></param>
@@ -43,6 +56,11 @@ namespace Gordon360.Controllers.RecIM
             return Ok(team);
         }
 
+        /// <summary>
+        /// Returns all team lookup types
+        /// </summary>
+        /// <param name="type">specified team type</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetTeamTypes(string type)
@@ -99,12 +117,25 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}/participants")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
         {
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
             var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
             return CreatedAtAction("UpdateTeamParticipant", participantTeam);
+        }
+
+        /// <summary>
+        /// Removes specified user from a team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{teamID}/participants")]
+        public async Task<ActionResult> DeleteTeamParticipant(int teamID, string username)
+        {
+            await _teamService.DeleteTeamParticipantAsync(teamID, username);
+            return NoContent();
         }
 
         /// <summary>
