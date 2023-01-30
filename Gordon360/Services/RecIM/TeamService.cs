@@ -73,8 +73,11 @@ namespace Gordon360.Services.RecIM
         }
         public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
         {
-            var teams = _context.Team
-                .Where(t => !t.Activity.Completed == active)
+            var teamQuery = active 
+                ? _context.Team.Where(t => !t.Activity.Completed == active)
+                : _context.Team;    
+
+            var teams = teamQuery
                 .Select(t => new TeamExtendedViewModel
                 {
                     ID = t.ID,
