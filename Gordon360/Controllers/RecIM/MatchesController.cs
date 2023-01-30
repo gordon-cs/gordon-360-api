@@ -72,7 +72,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{matchID}/stats")]
-        // [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<MatchTeamViewModel>> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
             var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
