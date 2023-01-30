@@ -73,8 +73,11 @@ namespace Gordon360.Services.RecIM
         }
         public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
         {
-            var teams = _context.Team
-                .Where(t => !t.Activity.Completed == active)
+            var teamQuery = active 
+                ? _context.Team.Where(t => !t.Activity.Completed == active)
+                : _context.Team;    
+
+            var teams = teamQuery
                 .Select(t => new TeamExtendedViewModel
                 {
                     ID = t.ID,
@@ -301,8 +304,23 @@ namespace Gordon360.Services.RecIM
         public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantUsername == participant.Username && pt.TeamID == teamID);
-            participantTeam.RoleTypeID = participant.RoleTypeID ?? 3;
+            var roleID = participant.RoleTypeID ?? 3;
 
+            //if user is currently requested to join and have just accepted to join the team, user should have other instances of themselves removed from other teams
+            if (participantTeam.RoleTypeID == 2 && roleID == 3)
+            {
+                var activityID = _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
+                var otherInstances = _context.ParticipantTeam
+                    .Where(pt => pt.ID != participantTeam.ID && pt.ParticipantUsername == participantTeam.ParticipantUsername)
+                    .Join(_context.Team.Where(t => t.ActivityID == activityID),
+                    pt => pt.TeamID,
+                    t => t.ID,
+                    (pt, t) => pt)
+                    .ToList();
+                _context.ParticipantTeam.RemoveRange(otherInstances);
+            }
+
+            participantTeam.RoleTypeID = roleID;
             await _context.SaveChangesAsync();
 
             return participantTeam;
