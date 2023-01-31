@@ -44,12 +44,6 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            if (result.Image != null)
-            {
-                var imagePath = _newsService.GetImagePath(Path.GetFileName(result.Image));
-                result.Image = ImageUtils.RetrieveImageFromPath(imagePath);
-            }
-
             return Ok(result);
         }
 

@@ -21,8 +21,6 @@ namespace Gordon360.Services
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ServerUtils _serverUtils;
 
-        private string NewsUploadsPath => GetImagePath("news");
-
         public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _context = context;
