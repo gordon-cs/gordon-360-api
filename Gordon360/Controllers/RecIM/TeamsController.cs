@@ -108,7 +108,7 @@ namespace Gordon360.Controllers.RecIM
             var participantTeam = await _teamService.AddParticipantToTeamAsync(inviterUsername, teamID, participant);
             return CreatedAtAction("AddParticipantToTeam", participantTeam);
         }
-
+        
         /// <summary>
         /// Updates Participant role in a team
         /// </summary>

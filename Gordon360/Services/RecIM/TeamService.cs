@@ -289,7 +289,7 @@ namespace Gordon360.Services.RecIM
                 Username = username,
                 RoleTypeID = 5
             };
-            await AddParticipantToTeamAsync("",team.ID, captain);
+            await AddParticipantToTeamAsync(team.ID, captain);
 
             var existingSeries = _context.Series.Where(s => s.ActivityID == t.ActivityID).OrderBy(s => s.StartDate)?.FirstOrDefault();
             if (existingSeries is not null) {
@@ -350,7 +350,7 @@ namespace Gordon360.Services.RecIM
             return t;
         }
 
-        private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
+        private async Task SendInviteEmail(int teamID, string inviteeUsername, string? inviterUsername)
         {
             var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
             var activity = _context.Activity.FirstOrDefault(a => a.ID == team.ActivityID);
@@ -389,7 +389,7 @@ namespace Gordon360.Services.RecIM
             smtpClient.Send(message);
         }
         
-        public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(string inviterUsername, int teamID, ParticipantTeamUploadViewModel participant)
+        public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync( int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
         {
             var participantTeam = new ParticipantTeam
             {
@@ -401,7 +401,7 @@ namespace Gordon360.Services.RecIM
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();
             
-            if (participant.RoleTypeID == 2) //if this is an invite, send an email
+            if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
                 await SendInviteEmail(teamID, participant.Username, inviterUsername);
             }
@@ -433,6 +433,7 @@ namespace Gordon360.Services.RecIM
 
             return participantTeams.Any(pt => pt.Participant == username);
         }
+
         public bool IsTeamCaptain(string username, int teamID)
         {
             return _context.ParticipantTeam.Any(t =>
