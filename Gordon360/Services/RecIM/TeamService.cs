@@ -357,7 +357,7 @@ namespace Gordon360.Services.RecIM
             var invitee = _accountService.GetAccountByUsername(inviteeUsername);
             var inviter = _accountService.GetAccountByUsername(inviterUsername);
 
-            string from_email = _config["Emails:Sender:Username"];
+            string from_email = _config["Emails:RecIM:Username"];
             string to_email = invitee.Email;
             string messageBody =
                  $"Hey {invitee.FirstName}!<br><br>" +
@@ -372,7 +372,7 @@ namespace Gordon360.Services.RecIM
                 Credentials = new NetworkCredential
                 {
                     UserName = from_email,
-                    Password = _config["Emails:Sender:Password"]
+                    Password = _config["Emails:RecIM:Password"]
                 },
                 Host = _config["SmtpHost"],
                 EnableSsl = true,
