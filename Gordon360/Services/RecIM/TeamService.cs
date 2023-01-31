@@ -352,7 +352,41 @@ namespace Gordon360.Services.RecIM
 
         private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
         {
-     
+            var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == team.ActivityID);
+            var invitee = _accountService.GetAccountByUsername(inviteeUsername);
+            var inviter = _accountService.GetAccountByUsername(inviterUsername);
+
+            string from_email = _config["Emails:Sender:Username"];
+            string to_email = invitee.Email;
+            string messageBody =
+                 $"Hey {invitee.FirstName}!<br><br>" +
+                $"{inviter.FirstName} {inviter.LastName} has invited you join <b>{team.Name}</b> for <b>{activity.Name}</b> <br>" +
+                $"Registration closes on <i>{activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
+                //$"check it out <a href='https://360.gordon.edu/recim'>here</a>! <br><br>" + //for production
+                $"check it out <a href='https://360recim.gordon.edu/recim'>here</a>! <br><br>" +//for development
+                $"Gordon Rec-IM";
+
+            using var smtpClient = new SmtpClient()
+            {
+                Credentials = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = _config["Emails:Sender:Password"]
+                },
+                Host = _config["SmtpHost"],
+                EnableSsl = true,
+                Port = 587,
+            };
+
+            var message = new MailMessage(from_email, to_email)
+            {
+                Subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!",
+                Body = messageBody,
+            };
+            message.IsBodyHtml = true;
+
+            smtpClient.Send(message);
         }
         
         public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(string inviterUsername, int teamID, ParticipantTeamUploadViewModel participant)
