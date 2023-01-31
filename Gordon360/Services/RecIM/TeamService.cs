@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Authorization;
 using Gordon360.Models.ViewModels;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Gordon360.Services.RecIM
 {
@@ -166,6 +167,38 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
+        // return type is wrong
+        public IEnumerable<TeamInviteViewModel> GetTeamInvites(string username)
+        {
+            var teamRequestToJoin = _context.ParticipantTeam
+                    .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2)
+                    .Join(_context.Team
+                        .Join(_context.Activity,
+                            t => t.ActivityID,
+                            a => a.ID,
+                            (t, a) => new
+                            {
+                                ActivityID = t.ActivityID,
+                                ActivityName = a.Name,
+                                TeamID = t.ID,
+                                TeamName = t.Name,
+                            }
+                        ),
+                        pt => pt.TeamID,
+                        t => t.TeamID,
+                        (pt, t) => new TeamInviteViewModel
+                        {
+                            ActivityID = t.ActivityID,
+                            ActivityName = t.ActivityName,
+                            TeamID = t.TeamID,
+                            TeamName = t.TeamName,
+                        }
+                    )
+                    .AsEnumerable();
+
+            return teamRequestToJoin;
+        }
+        
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
             
@@ -238,6 +271,31 @@ namespace Gordon360.Services.RecIM
             return participantTeam;
         }
 
+        public bool HasUserJoined(int activityID, string username)
+        {
+            // get all the partipantTeam from the teams with the activityID
+            var participantTeams = _context.Activity
+                        .Where(a => a.ID == activityID)
+                        .Join(_context.Team
+                            .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
+                                t => t.ID,
+                                pt => pt.TeamID,
+                                (t, pt) => new {
+                                    ActivityID = activityID,
+                                    TeamName = t.Name,
+                                    Participant = pt.ParticipantUsername,
+
+                                }),
+                            a => a.ID,
+                            t => t.ActivityID,
+                            (a, t) => new {
+                                teamName = t.TeamName,
+                                Participant = t.Participant,
+                            }
+                        ).AsEnumerable();
+
+            return participantTeams.Any(pt => pt.Participant == username);
+        }
         public bool IsTeamCaptain(string username, int teamID)
         {
             return _context.ParticipantTeam.Any(t =>

@@ -338,10 +338,12 @@ namespace Gordon360.Services
             IEnumerable<LookupViewModel> GetTeamLookup(string type);
             double GetTeamSportsmanshipScore(int teamID);
             TeamExtendedViewModel GetTeamByID(int teamID);
+            IEnumerable<TeamInviteViewModel> GetTeamInvites(string username);
             Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
             Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant);
             Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
             Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant);
+            bool HasUserJoined(int activityID, string username);
             bool IsTeamCaptain(string username, int teamID);
         }
 
@@ -358,6 +360,7 @@ namespace Gordon360.Services
             Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM);
             Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant);
             Task<ParticipantStatusViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus);
+            bool IsParticipant(string username);
             bool IsAdmin(string username);
         }
 
