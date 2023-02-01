@@ -165,10 +165,6 @@ namespace Gordon360.Services
                 // Use a unique alphanumeric GUID string as the file name
                 var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
                 var imagePath = GetImagePath(filename);
-
-                var serverAddress = _serverUtils.GetAddress();
-                if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
-
                 var url = GetImageURL(filename);
 
                 ImageUtils.UploadImage(imagePath, data, format);
@@ -254,8 +250,6 @@ namespace Gordon360.Services
                     // Use a unique alphanumeric GUID string as the file name
                     var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
                     imagePath = GetImagePath(filename);
-                    var serverAddress = _serverUtils.GetAddress();
-                    if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
                     var url = GetImageURL(filename);
                     newsItem.Image = url;
                 }
@@ -278,7 +272,7 @@ namespace Gordon360.Services
             return newsItem;
         }
 
-        public string GetImagePath(string filename)
+        private string GetImagePath(string filename)
         {
             return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "news", filename);
         }
