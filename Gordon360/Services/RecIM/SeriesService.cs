@@ -162,6 +162,17 @@ namespace Gordon360.Services.RecIM
             }
             
             await CreateSeriesTeamMappingAsync(teams, series.ID);
+            //TEMPORARY
+            //TEMPORARY
+            var seriessurface = new SeriesSurface
+            {
+                SeriesID = series.ID,
+                SurfaceID = 1
+            };
+            await _context.SeriesSurface.AddAsync(seriessurface);
+            //TEMPORARY
+            //TEMPORARY
+
             return series;
         }
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
