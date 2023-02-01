@@ -3,6 +3,7 @@ using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using Gordon360.Authorization;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Internal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Gordon360.Services.RecIM
 {
@@ -268,7 +270,9 @@ namespace Gordon360.Services.RecIM
         
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            
+            if (_context.Team.FirstOrDefault(t => t.Name == t.Name) is not null)
+                throw new ResourceCreationException() { ExceptionMessage = $"The name: {t.Name} has already been taken." };
+
             var team = new Team
             {
                 Name = t.Name,
@@ -335,6 +339,10 @@ namespace Gordon360.Services.RecIM
 
         public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
+            if (update.Name is not null)
+                if (_context.Team.FirstOrDefault(t => t.Name == update.Name) is not null)
+                    throw new ResourceCreationException() { ExceptionMessage = $"The name: {update.Name} has already been taken." };
+
             var t = await _context.Team.FindAsync(teamID);
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
