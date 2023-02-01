@@ -8,6 +8,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     public class SeriesScheduleUploadViewModel
     {
         public IEnumerable<ScheduleDayViewModel> AvailableDays { get; set; }
+        public IEnumerable<int> AvailableSurfaces { get; set; }
         public DateTime DailyStartTime { get; set; }
         public DateTime DailyEndTime { get; set; }
         public int EstMatchTime { get; set; }
