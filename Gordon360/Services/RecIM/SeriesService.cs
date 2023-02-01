@@ -175,6 +175,11 @@ namespace Gordon360.Services.RecIM
 
             return series;
         }
+
+        public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
             var s = await _context.Series.FindAsync(seriesID);
@@ -209,12 +214,6 @@ namespace Gordon360.Services.RecIM
                 await _context.SeriesTeam.AddAsync(seriesTeam);
             }
             await _context.SaveChangesAsync();
-        }
-
-
-        public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
-        {
-            throw new NotImplementedException();
         }
 
         // Scheduler does not currently handle overlaps
