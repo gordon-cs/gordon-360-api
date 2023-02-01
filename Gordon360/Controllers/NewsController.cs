@@ -23,9 +23,9 @@ namespace Gordon360.Controllers
     {
         private readonly INewsService _newsService;
 
-        public NewsController(CCTContext context, MyGordonContext myGordonContext, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
+        public NewsController(INewsService newsService)
         {
-            _newsService = new NewsService(myGordonContext, context, webHostEnvironment, serverUtils);
+            _newsService = newsService;
         }
 
         /// <summary>Gets a news item by id from the database</summary>
@@ -43,8 +43,6 @@ namespace Gordon360.Controllers
             {
                 return NotFound();
             }
-
-            result.Image = ImageUtils.RetrieveImageFromPath(result.Image);
 
             return Ok(result);
         }
@@ -64,7 +62,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
 
-            return Ok(ImageUtils.RetrieveImageFromPath(result.Image));
+            return Ok(result.Image);
         }
 
         /** Call the service that gets all approved student news entries not yet expired, filtering
@@ -187,17 +185,17 @@ namespace Gordon360.Controllers
         /// (Controller) Edits a news item in the database
         /// </summary>
         /// <param name="newsID">The id of the news item to edit</param>
-        /// <param name="newData">The news object that contains updated values</param>
+        /// <param name="studentNewsEdit">The news object that contains updated values</param>
         /// <returns>The updated news item</returns>
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         [HttpPut]
         [Route("{newsID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
-        public ActionResult<StudentNewsViewModel> EditPosting(int newsID, [FromBody] StudentNews newData)
+        public ActionResult<StudentNewsViewModel> EditPosting(int newsID, [FromBody] StudentNewsUploadViewModel studentNewsEdit)
         {
             // StateYourBusiness verifies that user is authenticated
-            var result = _newsService.EditPosting(newsID, newData);
+            var result = _newsService.EditPosting(newsID, studentNewsEdit);
             return Ok(result);
         }
     }
