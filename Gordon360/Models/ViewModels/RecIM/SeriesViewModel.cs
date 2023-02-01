@@ -13,6 +13,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int ActivityID { get; set; }
         public int TypeID { get; set; }
         public int StatusID { get; set; }
+        public int? ScheduleID { get; set; }
 
         public static implicit operator SeriesViewModel(Series s)
         {
@@ -24,7 +25,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 EndDate = s.EndDate,
                 ActivityID = s.ActivityID,
                 TypeID = s.TypeID,
-                StatusID = s.StatusID
+                StatusID = s.StatusID,
+                ScheduleID = s.ScheduleID
             };
         }
     }

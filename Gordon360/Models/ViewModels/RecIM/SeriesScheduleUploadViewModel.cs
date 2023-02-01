@@ -16,7 +16,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         );
     public class SeriesScheduleUploadViewModel
     {
-        public int SeriesID { get; set; }
+        public int? SeriesID { get; set; }
         public Schedule AvailableDays { get; set; }
         public IEnumerable<int> AvailableSurfaceIDs { get; set; }
         public DateTime DailyStartTime { get; set; }

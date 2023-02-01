@@ -136,7 +136,7 @@ namespace Gordon360.Services.RecIM
                 ActivityID = newSeries.ActivityID,
                 TypeID = newSeries.TypeID,
                 StatusID = 1, //default unconfirmed series
-                ScheduleID = 2 //temporary while autoscheduling is not completed
+                ScheduleID = 0 //updated when admin is ready to set up the schedule
             };
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
