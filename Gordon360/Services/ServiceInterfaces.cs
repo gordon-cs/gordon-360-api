@@ -344,6 +344,7 @@ namespace Gordon360.Services
             Task DeleteTeamParticipantAsync(int teamID, string username);
             Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant);
             bool HasUserJoined(int activityID, string username);
+            bool HasTeamNameTaken(int activityID, string teamName);
             bool IsTeamCaptain(string username, int teamID);
         }
 
