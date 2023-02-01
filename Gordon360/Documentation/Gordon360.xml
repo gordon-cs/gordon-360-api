@@ -825,12 +825,12 @@
             <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
             <returns>created series</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeams(System.Boolean)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeriesSchedule(Gordon360.Models.ViewModels.RecIM.SeriesScheduleUploadViewModel)">
             <summary>
-            Get all team objects stored in rec-im
+            Creates schedule or finds existing schedule
             </summary>
-             <param name="active"></param>
-             <returns></returns>
+            <param name="seriesSchedule">created schedule for series</param>
+            <returns>created series schedule</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32)">
             <summary>
@@ -865,6 +865,13 @@
             </summary>
             <param name="newSport"></param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeams(System.Boolean)">
+            <summary>
+            Get all team objects stored in rec-im
+            </summary>
+             <param name="active"></param>
+             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamByID(System.Int32)">
             <summary>

@@ -93,6 +93,21 @@ namespace Gordon360.Controllers.RecIM
             return CreatedAtAction("CreateSeries", series);
         }
 
+
+        /// <summary>
+        /// Creates schedule or finds existing schedule
+        /// </summary>
+        /// <param name="seriesSchedule">created schedule for series</param>
+        /// <returns>created series schedule</returns>
+        [HttpPut]
+        [Route("schedule")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult<SeriesViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
+        {
+            var schedule = await _seriesService.PutSeriesScheduleAsync(seriesSchedule);
+            return CreatedAtAction("CreateSeriesSchedule", schedule);
+        }
+
         /// <summary>
         /// Automatically creates Matches based on given Series
         /// </summary>

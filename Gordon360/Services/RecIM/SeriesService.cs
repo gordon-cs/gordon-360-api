@@ -200,6 +200,12 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
+
+        public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
+        {
+            throw new NotImplementedException();
+        }
+
         // Scheduler does not currently handle overlaps
         // eventually:
         // - ensure that matches that occur within 1 hour do not share the same surface
