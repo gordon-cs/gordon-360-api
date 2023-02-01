@@ -169,7 +169,7 @@ namespace Gordon360.Services
                 var serverAddress = _serverUtils.GetAddress();
                 if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
 
-                var url = $"{serverAddress}/browseable/uploads/news/{filename}";
+                var url = GetImageURL(serverAddress, filename);
 
                 ImageUtils.UploadImage(imagePath, data, format);
 
@@ -256,7 +256,7 @@ namespace Gordon360.Services
                     imagePath = GetImagePath(filename);
                     var serverAddress = _serverUtils.GetAddress();
                     if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
-                    var url = $"{serverAddress}/browseable/uploads/news/{filename}";
+                    var url = GetImageURL(serverAddress, filename);
                     newsItem.Image = url;
                 }
 
@@ -281,6 +281,12 @@ namespace Gordon360.Services
         public string GetImagePath(string filename)
         {
             return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "news", filename);
+        }
+
+        private string GetImageURL(string serverAddress, string filename)
+        {
+            var url = $"{serverAddress}/browseable/uploads/news/{filename}";
+            return url;
         }
 
         /// <summary>
