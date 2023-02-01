@@ -280,7 +280,7 @@ namespace Gordon360.Services
 
         public string GetImagePath(string filename)
         {
-            return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
+            return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "news", filename);
         }
 
         /// <summary>
