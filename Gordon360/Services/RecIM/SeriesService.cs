@@ -309,6 +309,8 @@ namespace Gordon360.Services.RecIM
                 teams.RemoveAt(0);  
             }   
         }
+
+        //rudamentary implementation (only allows all teams into 1 match)
         private async Task ScheduleLadderAsync(int seriesID)
         {
             var teams = _context.SeriesTeam
