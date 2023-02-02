@@ -162,23 +162,60 @@ namespace Gordon360.Services.RecIM
             }
             
             await CreateSeriesTeamMappingAsync(teams, series.ID);
-            //TEMPORARY
-            //TEMPORARY
-            var seriessurface = new SeriesSurface
-            {
-                SeriesID = series.ID,
-                SurfaceID = 1
-            };
-            await _context.SeriesSurface.AddAsync(seriessurface);
-            //TEMPORARY
-            //TEMPORARY
-
             return series;
         }
 
         public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
         {
-            throw new NotImplementedException();
+            var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss => 
+                ss.StartTime.Hour == seriesSchedule.DailyStartTime.Hour &&
+                ss.StartTime.Minute == seriesSchedule.DailyStartTime.Minute &&
+                ss.EndTime.Hour == seriesSchedule.DailyEndTime.Hour &&
+                ss.EndTime.Minute == seriesSchedule.DailyEndTime.Minute &&
+                ss.EstMatchTime == seriesSchedule.EstMatchTime &&
+                ss.Sun == seriesSchedule.AvailableDays.Sun &&
+                ss.Mon == seriesSchedule.AvailableDays.Mon &&
+                ss.Tue == seriesSchedule.AvailableDays.Tue &&
+                ss.Wed == seriesSchedule.AvailableDays.Wed &&
+                ss.Thu == seriesSchedule.AvailableDays.Thu &&  
+                ss.Fri == seriesSchedule.AvailableDays.Fri &&
+                ss.Sat == seriesSchedule.AvailableDays.Sat 
+            );
+            if (existingSchedule is not null)
+            {
+                if (seriesSchedule.SeriesID is not null)
+                {
+                    var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                    series.ScheduleID = existingSchedule.ID;
+                    await _context.SaveChangesAsync();
+                }
+                return existingSchedule;
+            }
+
+            var schedule = new SeriesSchedule
+            {
+                Sun = seriesSchedule.AvailableDays.Sun,
+                Mon = seriesSchedule.AvailableDays.Mon,
+                Tue = seriesSchedule.AvailableDays.Tue,
+                Wed = seriesSchedule.AvailableDays.Wed,
+                Thu = seriesSchedule.AvailableDays.Thu,
+                Fri = seriesSchedule.AvailableDays.Fri,
+                Sat = seriesSchedule.AvailableDays.Sat,
+                EstMatchTime = seriesSchedule.EstMatchTime,
+                StartTime = seriesSchedule.DailyStartTime,
+                EndTime = seriesSchedule.DailyEndTime
+            };
+            await _context.SeriesSchedule.AddAsync(schedule);
+            await _context.SaveChangesAsync();
+
+            if (seriesSchedule.SeriesID is not null)
+            {
+                var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                series.ScheduleID = schedule.ID;
+            }
+            await _context.SaveChangesAsync();
+            return schedule;
+
         }
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
