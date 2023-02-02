@@ -114,6 +114,22 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
+            participant.RoleTypeID = participant.RoleTypeID ?? 3;
+            var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
+            return CreatedAtAction("AddParticipantToTeam", participantTeam);
+        }
+
+        /// <summary>
+        /// Updates Participant role in a team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="participant">Default Role Value value 3 (Member)</param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("{teamID}/participants")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
+        public async Task<ActionResult<ParticipantTeamViewModel>> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
+        {
             var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
             if (!_teamService.HasUserJoined(activityID, participant.Username))
             {
