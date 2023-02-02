@@ -167,9 +167,8 @@ namespace Gordon360.Controllers.RecIM
             {
                 var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
                 if (_teamService.HasTeamNameTaken(activityID, team.Name))
-                {
                     return Conflict($"{team.Name} has already been taken by another team in this activity");
-                }
+
             }
 
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
