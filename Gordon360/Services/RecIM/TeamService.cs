@@ -270,7 +270,7 @@ namespace Gordon360.Services.RecIM
         
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            if (_context.Team.FirstOrDefault(t => t.Name == t.Name) is not null)
+            if (_context.Team.FirstOrDefault(team => team.Name == t.Name && team.ActivityID == t.ActivityID) is not null)
                 throw new ResourceCreationException() { ExceptionMessage = $"The name: {t.Name} has already been taken." };
 
             var team = new Team
@@ -339,8 +339,9 @@ namespace Gordon360.Services.RecIM
 
         public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
+            var teamToUpdate = _context.Team.FirstOrDefault(t => t.ID == teamID);
             if (update.Name is not null)
-                if (_context.Team.FirstOrDefault(t => t.Name == update.Name) is not null)
+                if (_context.Team.FirstOrDefault(t => t.Name == update.Name && teamToUpdate.ActivityID == t.ActivityID) is not null)
                     throw new ResourceCreationException() { ExceptionMessage = $"The name: {update.Name} has already been taken." };
 
             var t = await _context.Team.FindAsync(teamID);
