@@ -84,14 +84,11 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
             if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
-            {
                 return Conflict($"{newTeam.Name} has already been taken by another team in this activity");
-            }
-
+           //redudant check for API as countermeasure against postman navigation around UI check
             if (_teamService.HasUserJoined(newTeam.ActivityID, username))
-            {
                 return Conflict($"{username} already is a part of a team in this activity");
-            }
+         
 
             var team = await _teamService.PostTeamAsync(newTeam, username);
             // future error handling
