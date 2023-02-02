@@ -83,6 +83,13 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
+            if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
+                return Conflict($"{newTeam.Name} has already been taken by another team in this activity");
+           //redudant check for API as countermeasure against postman navigation around UI check
+            if (_teamService.HasUserJoined(newTeam.ActivityID, username))
+                return Conflict($"{username} already is a part of a team in this activity");
+         
+
             var team = await _teamService.PostTeamAsync(newTeam, username);
             // future error handling
             // (cannot implement at the moment as we only have 4 developer accs)
@@ -117,11 +124,18 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}/participants")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            participant.RoleTypeID = participant.RoleTypeID ?? 3;
-            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
-            return CreatedAtAction("UpdateTeamParticipant", participantTeam);
+            var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
+            if (!_teamService.HasUserJoined(activityID, participant.Username))
+            {
+                participant.RoleTypeID = participant.RoleTypeID ?? 3;
+                var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
+                return CreatedAtAction("AddParticipantToTeam", participantTeam);
+            }
+            else
+                return Conflict($"{participant.Username} already is a part of a team in this activity");
         }
 
         /// <summary>
@@ -149,6 +163,14 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<TeamViewModel>> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
+            if (team.Name is not null)
+            {
+                var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
+                if (_teamService.HasTeamNameTaken(activityID, team.Name))
+                    return Conflict($"{team.Name} has already been taken by another team in this activity");
+
+            }
+
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
             return CreatedAtAction("UpdateTeamInfo", updatedTeam);
 ;       }
