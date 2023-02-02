@@ -350,7 +350,7 @@ namespace Gordon360.Services.RecIM
             return t;
         }
 
-        private async Task SendInviteEmail(int teamID, string inviteeUsername, string? inviterUsername)
+        private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
         {
             var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
             var activity = _context.Activity.FirstOrDefault(a => a.ID == team.ActivityID);
