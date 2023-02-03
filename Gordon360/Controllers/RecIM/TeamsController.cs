@@ -131,7 +131,7 @@ namespace Gordon360.Controllers.RecIM
             if (!_teamService.HasUserJoined(activityID, participant.Username))
             {
                 participant.RoleTypeID = participant.RoleTypeID ?? 3;
-                var participantTeam = await _teamService.AddUserToTeamAsync(teamID, participant);
+                var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant);
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
             }
             else

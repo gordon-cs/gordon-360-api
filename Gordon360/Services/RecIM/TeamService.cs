@@ -389,7 +389,7 @@ namespace Gordon360.Services.RecIM
             smtpClient.Send(message);
         }
         
-        public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync( int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
+        public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
         {
             var participantTeam = new ParticipantTeam
             {
