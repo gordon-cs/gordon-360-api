@@ -434,6 +434,14 @@ namespace Gordon360.Services.RecIM
             return participantTeams.Any(pt => pt.Participant == username);
         }
 
+        public bool HasTeamNameTaken(int activityID, string teamName)
+        {
+            return _context.Team.Any(t =>
+                        t.ActivityID == activityID
+                        && t.Name == teamName
+            );
+        }
+
         public bool IsTeamCaptain(string username, int teamID)
         {
             return _context.ParticipantTeam.Any(t =>
