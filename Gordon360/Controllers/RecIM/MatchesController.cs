@@ -122,13 +122,5 @@ namespace Gordon360.Controllers.RecIM
             var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
             return CreatedAtAction("AddAttendance", attendance);
         }
-
-        [HttpGet]
-        [Route("test-route")]
-        public ActionResult<MatchExtendedViewModel> TestRoute(int teamID)
-        {
-            var match = _matchService.GetMatchesForTeamID(teamID);
-            return Ok(match);
-        }
     }
 }
