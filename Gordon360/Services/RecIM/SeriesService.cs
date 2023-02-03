@@ -257,10 +257,8 @@ namespace Gordon360.Services.RecIM
         // eventually:
         // - ensure that matches that occur within 1 hour do not share the same surface
         //    unless they're in the same series
-        public async Task<IEnumerable<MatchViewModel>> ScheduleMatchesAsync(int seriesID)
+        public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID)
         {
-            var createdMatches = new List<MatchViewModel>();
-
             var series = _context.Series
                     .FirstOrDefault(s => s.ID == seriesID);
             var typeCode = _context.SeriesType
@@ -270,22 +268,21 @@ namespace Gordon360.Services.RecIM
 
             if (typeCode == "RR")
             {
-                await ScheduleRoundRobin(seriesID);
+                return await ScheduleRoundRobin(seriesID);
             }
             if (typeCode == "SE")
             {
-                await ScheduleSingleElimination(seriesID);
+                return await ScheduleSingleElimination(seriesID);
             }
             if (typeCode == "DE")
             {
-                await ScheduleDoubleElimination(seriesID);
+                return  await ScheduleDoubleElimination(seriesID);
             }
             if (typeCode == "L")
             {
-                await ScheduleLadderAsync(seriesID);
+                return  await ScheduleLadderAsync(seriesID);
             }
-
-            return createdMatches;
+            return null;
         }
         private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
         {
