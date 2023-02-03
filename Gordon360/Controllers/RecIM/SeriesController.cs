@@ -116,8 +116,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("schedule/{seriesID}")]
         public async Task<ActionResult> ScheduleMatches(int seriesID)
         {
-            await _seriesService.ScheduleMatchesAsync(seriesID);
-            return Ok();
+            var createdMatches = await _seriesService.ScheduleMatchesAsync(seriesID);
+            return CreatedAtAction("ScheduleMatchesAsync", createdMatches);
         }
     }
 }

@@ -257,8 +257,10 @@ namespace Gordon360.Services.RecIM
         // eventually:
         // - ensure that matches that occur within 1 hour do not share the same surface
         //    unless they're in the same series
-        public async Task ScheduleMatchesAsync(int seriesID)
+        public async Task<IEnumerable<MatchViewModel>> ScheduleMatchesAsync(int seriesID)
         {
+            var createdMatches = new List<MatchViewModel>();
+
             var series = _context.Series
                     .FirstOrDefault(s => s.ID == seriesID);
             var typeCode = _context.SeriesType
@@ -283,10 +285,11 @@ namespace Gordon360.Services.RecIM
                 await ScheduleLadderAsync(seriesID);
             }
 
-            
+            return createdMatches;
         }
-        private async Task ScheduleRoundRobin(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
         {
+            var createdMatches = new List<MatchViewModel>();
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.SeriesID == seriesID)
@@ -346,6 +349,7 @@ namespace Gordon360.Services.RecIM
                             SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                             TeamIDs = teamIDs
                         });
+                        createdMatches.Add(createdMatch);
                         surfaceIndex++;
                     }
                     i++;
@@ -354,33 +358,41 @@ namespace Gordon360.Services.RecIM
                 var temp = teams[0];
                 teams.Add(temp);
                 teams.RemoveAt(0);  
-            }   
+            }
+            return createdMatches;
         }
 
         //rudamentary implementation (only allows all teams into 1 match)
-        private async Task ScheduleLadderAsync(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID)
         {
+            var createdMatches = new List<MatchViewModel>();
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
                 .Select(st => st.ID);
             var series = _context.Series
                 .FirstOrDefault(s => s.ID == seriesID);
+            var availableSurfaces = _context.SeriesSurface
+                                        .Where(ss => ss.SeriesID == seriesID)?
+                                        .ToArray();
+            var surfaceIndex = 0;
             var match = new MatchUploadViewModel
             {
                 StartTime = series.StartDate,
                 SeriesID = seriesID,
-                //to be replaced by proper match surface scheduler
-                SurfaceID = 1,
+                SurfaceID = availableSurfaces is null ? 1 : availableSurfaces[surfaceIndex].SurfaceID,
                 TeamIDs = teams
             };
+            //surfaceIndex++; //surfaceIndex can be incremented if we plan to rework ladder match logic (to make more than 1 match)
 
-            await _matchService.PostMatchAsync(match);
+           var res = await _matchService.PostMatchAsync(match);
+            createdMatches.Add(res);
+            return createdMatches;
         }
-        private async Task ScheduleDoubleElimination(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
             throw new NotImplementedException();
         }
-        private async Task ScheduleSingleElimination(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
             throw new NotImplementedException();
             }
