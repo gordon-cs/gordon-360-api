@@ -180,17 +180,17 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return participant;
         }
-
+        
         public async Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant)
         {           
             var participantActivity = _context.ParticipantActivity
-                                        .FirstOrDefault(pa => pa.ParticipantUsername == username 
+                                        .FirstOrDefault(pa => pa.ParticipantUsername == username
                                             && pa.ActivityID == updatedParticipant.ActivityID);
 
             participantActivity.PrivTypeID = updatedParticipant.ActivityPrivID ?? participantActivity.PrivTypeID;
             participantActivity.IsFreeAgent = updatedParticipant.IsFreeAgent ?? participantActivity.IsFreeAgent;
-                                                
-        
+
+
             await _context.SaveChangesAsync();
             return participantActivity;
         }

@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using Match = Gordon360.Models.CCT.Match;
 using Azure.Identity;
 using Microsoft.AspNetCore.Server.IIS;
+using Microsoft.AspNetCore.Http;
 
 namespace Gordon360.Services.RecIM
 {
@@ -179,7 +180,7 @@ namespace Gordon360.Services.RecIM
                                                 Role = _context.RoleType
                                                 .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
                                                 .Description
-                                            }),
+                                    }),
                                 MatchHistory = _context.Match
                                     .Where(mh => mh.StatusID == 6)
                                         .Join(_context.MatchTeam
@@ -231,9 +232,9 @@ namespace Gordon360.Services.RecIM
                                            }),
                             })
                         }).FirstOrDefault();
-            return match; 
+            return match;
         }
-       
+
         public IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID)
         {
             var vm = _context.Match
@@ -317,13 +318,13 @@ namespace Gordon360.Services.RecIM
             {
                 SeriesID = m.SeriesID,
                 Time = m.StartTime,
-                SurfaceID = m.SurfaceID ?? 0, //unknown surface id
+                SurfaceID = m.SurfaceID ?? 1, //unknown surface id
                 StatusID = 1 //default unconfirmed
             };
             await _context.Match.AddAsync(match);
             await _context.SaveChangesAsync();
 
-            foreach(var teamID in m.TeamIDs)
+            foreach (var teamID in m.TeamIDs)
             {
                 await CreateMatchTeamMappingAsync(teamID, match.ID);
             }
@@ -331,13 +332,13 @@ namespace Gordon360.Services.RecIM
             return match;
         }
 
-        private async Task CreateMatchTeamMappingAsync(int teamID, int matchID)
+        public async Task CreateMatchTeamMappingAsync(int teamID, int matchID)
         {
             var matchTeam = new MatchTeam
             {
                 TeamID = teamID,
                 MatchID = matchID,
-                StatusID = 1, //default unconfirmed
+                StatusID = 2, //default confirmed
                 Score = 0,
                 Sportsmanship = 5 //default max
             };

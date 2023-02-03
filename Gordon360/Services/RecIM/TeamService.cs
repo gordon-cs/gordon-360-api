@@ -4,6 +4,7 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 using Gordon360.Authorization;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Internal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Net;
 using System.Net.Mail;
 using System.Globalization;
@@ -273,7 +275,6 @@ namespace Gordon360.Services.RecIM
         
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            
             var team = new Team
             {
                 Name = t.Name,

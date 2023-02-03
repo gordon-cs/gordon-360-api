@@ -811,7 +811,7 @@
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(System.Int32,Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
             <summary>
-            
+            Updates Series Information
             </summary>
             <param name="seriesID"></param>
             <param name="updatedSeries"></param>
@@ -824,6 +824,47 @@
             <param name="newSeries">CreateSeriesViewModel</param>
             <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
             <returns>created series</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeriesSchedule(Gordon360.Models.ViewModels.RecIM.SeriesScheduleUploadViewModel)">
+            <summary>
+            Creates schedule or finds existing schedule
+            </summary>
+            <param name="seriesSchedule">created schedule for series</param>
+            <returns>created series schedule</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32)">
+            <summary>
+            Automatically creates Matches based on given Series
+            </summary>
+            <param name="seriesID"></param>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
+            <summary>
+            Fetches all Sports in the RecIM database
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSportByID(System.Int32)">
+            <summary>
+            Gets specific sport by ID
+            </summary>
+            <param name="sportID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.UpdateSport(System.Int32,Gordon360.Models.ViewModels.RecIM.SportPatchViewModel)">
+            <summary>
+            Update Sport in the database by ID
+            </summary>
+            <param name="sportID"></param>
+            <param name="updatedSport"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.CreateSport(Gordon360.Models.ViewModels.RecIM.SportUploadViewModel)">
+            <summary>
+            Creates new Sport for RecIM
+            </summary>
+            <param name="newSport"></param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeams(System.Boolean)">
             <summary>
@@ -2143,11 +2184,6 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleSingleElimination(System.Int32)">
-            difference between single and double elimination is that single elim only
-            needs log(n) rounds with double elim needing to schedule twice that but 
-            handle the logic of losers bracket
         </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
             <summary>

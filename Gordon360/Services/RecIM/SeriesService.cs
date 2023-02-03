@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -80,7 +80,8 @@ namespace Gordon360.Services.RecIM
                                             .Count() - st.Win - st.Loss
                                 }).OrderByDescending(st => st.Win).AsEnumerable()
                             });
-            if (active) {
+            if (active)
+            {
                 series = series.Where(s => s.StartDate < DateTime.Now
                                         && s.EndDate > DateTime.Now);
             }
@@ -135,7 +136,7 @@ namespace Gordon360.Services.RecIM
                 ActivityID = newSeries.ActivityID,
                 TypeID = newSeries.TypeID,
                 StatusID = 1, //default unconfirmed series
-                ScheduleID = 2 //temporary while autoscheduling is not completed
+                ScheduleID = 0 //updated when admin is ready to set up the schedule
             };
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
@@ -159,9 +160,62 @@ namespace Gordon360.Services.RecIM
             {
                 teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
             }
-           
+            
             await CreateSeriesTeamMappingAsync(teams, series.ID);
             return series;
+        }
+
+        public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
+        {
+            var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss => 
+                ss.StartTime.Hour == seriesSchedule.DailyStartTime.Hour &&
+                ss.StartTime.Minute == seriesSchedule.DailyStartTime.Minute &&
+                ss.EndTime.Hour == seriesSchedule.DailyEndTime.Hour &&
+                ss.EndTime.Minute == seriesSchedule.DailyEndTime.Minute &&
+                ss.EstMatchTime == seriesSchedule.EstMatchTime &&
+                ss.Sun == seriesSchedule.AvailableDays.Sun &&
+                ss.Mon == seriesSchedule.AvailableDays.Mon &&
+                ss.Tue == seriesSchedule.AvailableDays.Tue &&
+                ss.Wed == seriesSchedule.AvailableDays.Wed &&
+                ss.Thu == seriesSchedule.AvailableDays.Thu &&  
+                ss.Fri == seriesSchedule.AvailableDays.Fri &&
+                ss.Sat == seriesSchedule.AvailableDays.Sat 
+            );
+            if (existingSchedule is not null)
+            {
+                if (seriesSchedule.SeriesID is not null)
+                {
+                    var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                    series.ScheduleID = existingSchedule.ID;
+                    await _context.SaveChangesAsync();
+                }
+                return existingSchedule;
+            }
+
+            var schedule = new SeriesSchedule
+            {
+                Sun = seriesSchedule.AvailableDays.Sun,
+                Mon = seriesSchedule.AvailableDays.Mon,
+                Tue = seriesSchedule.AvailableDays.Tue,
+                Wed = seriesSchedule.AvailableDays.Wed,
+                Thu = seriesSchedule.AvailableDays.Thu,
+                Fri = seriesSchedule.AvailableDays.Fri,
+                Sat = seriesSchedule.AvailableDays.Sat,
+                EstMatchTime = seriesSchedule.EstMatchTime,
+                StartTime = seriesSchedule.DailyStartTime,
+                EndTime = seriesSchedule.DailyEndTime
+            };
+            await _context.SeriesSchedule.AddAsync(schedule);
+            await _context.SaveChangesAsync();
+
+            if (seriesSchedule.SeriesID is not null)
+            {
+                var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                series.ScheduleID = schedule.ID;
+            }
+            await _context.SaveChangesAsync();
+            return schedule;
+
         }
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
@@ -173,6 +227,14 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
             return s;
+        }
+        public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
+        {
+            var st = await _context.SeriesTeam.FindAsync(update.ID);
+            st.Win = update.Win ?? st.Win;
+            st.Loss = update.Loss ?? st.Loss;
+
+            await _context.SaveChangesAsync();
         }
 
         private async Task CreateSeriesTeamMappingAsync(IEnumerable<int> teams, int seriesID)
@@ -191,78 +253,146 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        public async Task ScheduleMatchesAsync(int seriesID)
+        // Scheduler does not currently handle overlaps
+        // eventually:
+        // - ensure that matches that occur within 1 hour do not share the same surface
+        //    unless they're in the same series
+        public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID)
         {
+            var series = _context.Series
+                    .FirstOrDefault(s => s.ID == seriesID);
             var typeCode = _context.SeriesType
                 .FirstOrDefault(st =>
-                    st.ID == _context.Series
-                    .FirstOrDefault(s => s.ID == seriesID)
-                    .TypeID
+                    st.ID == series.TypeID
                 ).TypeCode;
-            if (typeCode == "rr")
-            {
-                await ScheduleRoundRobin(seriesID);
-            }
-            if (typeCode == "se")
-            {
-                await ScheduleSingleElimination(seriesID);
-            }
-            if (typeCode == "de")
-            {
-                await ScheduleDoubleElimination(seriesID);
-            }
-            if (typeCode == "l")
-            {
-                await ScheduleLadderAsync(seriesID);
-            }
-        }
-        private Task ScheduleRoundRobin(int seriesID)
-        {
-            var teams = _context.SeriesTeam
-                .Where(st => st.ID == seriesID)
-                .AsEnumerable();
 
-            //matrix can be used for all permutations, if check for self match
-          
-            throw new NotImplementedException();
+            if (typeCode == "RR")
+            {
+                return await ScheduleRoundRobin(seriesID);
+            }
+            if (typeCode == "SE")
+            {
+                return await ScheduleSingleElimination(seriesID);
+            }
+            if (typeCode == "DE")
+            {
+                return  await ScheduleDoubleElimination(seriesID);
+            }
+            if (typeCode == "L")
+            {
+                return  await ScheduleLadderAsync(seriesID);
+            }
+            return null;
         }
-        /**
-         * difference between single and double elimination is that single elim only
-         * needs log(n) rounds with double elim needing to schedule twice that but 
-         * handle the logic of losers bracket
-         */
-        private Task ScheduleSingleElimination(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
         {
+            var createdMatches = new List<MatchViewModel>();
+            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
-                .Where(st => st.ID == seriesID)
-                .AsEnumerable();
-            throw new NotImplementedException();
+                .Where(st => st.SeriesID == seriesID)
+                .Select(st => st.TeamID)
+                .ToList();
+
+            //algorithm requires odd number of teams
+            teams.Add(0);//0 is not a valid true team ID thus will act as dummy team
+
+            SeriesScheduleViewModel schedule = _context.SeriesSchedule
+                            .FirstOrDefault(ss => ss.ID ==
+                                _context.Series
+                                    .FirstOrDefault(s => s.ID == seriesID)
+                                    .ScheduleID);
+            var availableSurfaces = _context.SeriesSurface
+                                        .Where(ss => ss.SeriesID == seriesID)
+                                        .ToArray();
+
+            //day = starting datetime accurate to minute and seconds based on scheduler
+            var day = series.StartDate;
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+            string dayOfWeek = day.DayOfWeek.ToString();
+
+            int surfaceIndex = 0;
+            for (int cycles = 0; cycles < teams.Count; cycles++)
+            {
+                int i = 0;
+                int j = teams.Count - 1;
+                while (i < j) //middlepoint algorithm to match opposite teams
+                {
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
+                    }
+
+                    //ensure matchtime is in an available day will be a "bug" if the match goes beyond 12AM
+                    //minor bug as it just means that some games will be scheduled on the next possible day
+                    //even if they are "hypothetically" able to play on the original day
+                    while (!schedule.AvailableDays[dayOfWeek] ||
+                        day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
+                        )
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                        dayOfWeek = day.DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
+         
+                    var teamIDs = new List<int>() { teams[i], teams[j] };
+                    if (!teamIDs.Contains(0))
+                    {
+                        var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                        {
+                            StartTime = day,
+                            SeriesID = seriesID,
+                            SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
+                            TeamIDs = teamIDs
+                        });
+                        createdMatches.Add(createdMatch);
+                        surfaceIndex++;
+                    }
+                    i++;
+                    j--;
+                }
+                var temp = teams[0];
+                teams.Add(temp);
+                teams.RemoveAt(0);  
+            }
+            return createdMatches;
         }
-        private Task ScheduleDoubleElimination(int seriesID)
+
+        //rudamentary implementation (only allows all teams into 1 match)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID)
         {
-            var teams = _context.SeriesTeam
-                .Where(st => st.ID == seriesID)
-                .AsEnumerable();
-            throw new NotImplementedException();
-        }
-        private async Task ScheduleLadderAsync(int seriesID)
-        {
+            var createdMatches = new List<MatchViewModel>();
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
                 .Select(st => st.ID);
             var series = _context.Series
                 .FirstOrDefault(s => s.ID == seriesID);
+            var availableSurfaces = _context.SeriesSurface
+                                        .Where(ss => ss.SeriesID == seriesID)?
+                                        .ToArray();
+            var surfaceIndex = 0;
             var match = new MatchUploadViewModel
             {
                 StartTime = series.StartDate,
                 SeriesID = seriesID,
-                //to be replaced by proper match surface scheduler
-                SurfaceID = 1,
+                SurfaceID = availableSurfaces is null ? 1 : availableSurfaces[surfaceIndex].SurfaceID,
                 TeamIDs = teams
             };
-            await _matchService.PostMatchAsync(match); 
-        }
-    }
+            //surfaceIndex++; //surfaceIndex can be incremented if we plan to rework ladder match logic (to make more than 1 match)
 
+           var res = await _matchService.PostMatchAsync(match);
+            createdMatches.Add(res);
+            return createdMatches;
+        }
+        private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
+        {
+            throw new NotImplementedException();
+        }
+        private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
+        {
+            throw new NotImplementedException();
+            }
+        }
 }
 
