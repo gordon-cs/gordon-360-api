@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,9 @@ using System.Threading.Tasks;
 using Gordon360.Authorization;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.Net;
+using System.Net.Mail;
+using System.Globalization;
 
 namespace Gordon360.Services.RecIM
 {
@@ -20,11 +24,12 @@ namespace Gordon360.Services.RecIM
         private readonly IMatchService _matchService;
         private readonly IParticipantService _participantService;
         private readonly IAccountService _accountService;
+        private readonly IConfiguration _config;
 
-
-        public TeamService(CCTContext context, IMatchService matchService, IParticipantService participantService, IAccountService accountService)
+        public TeamService(CCTContext context, IConfiguration config, IMatchService matchService, IParticipantService participantService, IAccountService accountService)
         {
             _context = context;
+            _config = config;
             _matchService = matchService;
             _participantService = participantService;
             _accountService = accountService;
@@ -284,7 +289,7 @@ namespace Gordon360.Services.RecIM
                 Username = username,
                 RoleTypeID = 5
             };
-            await AddUserToTeamAsync(team.ID, captain);
+            await AddParticipantToTeamAsync(team.ID, captain);
 
             var existingSeries = _context.Series.Where(s => s.ActivityID == t.ActivityID).OrderBy(s => s.StartDate)?.FirstOrDefault();
             if (existingSeries is not null) {
@@ -344,8 +349,47 @@ namespace Gordon360.Services.RecIM
 
             return t;
         }
+
+        private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
+        {
+            var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == team.ActivityID);
+            var invitee = _accountService.GetAccountByUsername(inviteeUsername);
+            var inviter = _accountService.GetAccountByUsername(inviterUsername);
+
+            string from_email = _config["Emails:RecIM:Username"];
+            string to_email = invitee.Email;
+            string messageBody =
+                 $"Hey {invitee.FirstName}!<br><br>" +
+                $"{inviter.FirstName} {inviter.LastName} has invited you join <b>{team.Name}</b> for <b>{activity.Name}</b> <br>" +
+                $"Registration closes on <i>{activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
+                //$"check it out <a href='https://360.gordon.edu/recim'>here</a>! <br><br>" + //for production
+                $"check it out <a href='https://360recim.gordon.edu/recim'>here</a>! <br><br>" +//for development
+                $"Gordon Rec-IM";
+
+            using var smtpClient = new SmtpClient()
+            {
+                Credentials = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = _config["Emails:RecIM:Password"]
+                },
+                Host = _config["SmtpHost"],
+                EnableSsl = true,
+                Port = 587,
+            };
+
+            var message = new MailMessage(from_email, to_email)
+            {
+                Subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!",
+                Body = messageBody,
+            };
+            message.IsBodyHtml = true;
+
+            smtpClient.Send(message);
+        }
         
-        public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
+        public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
         {
             var participantTeam = new ParticipantTeam
             {
@@ -356,7 +400,11 @@ namespace Gordon360.Services.RecIM
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();
-
+            
+            if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
+            {
+                await SendInviteEmail(teamID, participant.Username, inviterUsername);
+            }
             return participantTeam;
         }
 
@@ -393,6 +441,7 @@ namespace Gordon360.Services.RecIM
                         && t.Name == teamName
             );
         }
+
         public bool IsTeamCaptain(string username, int teamID)
         {
             return _context.ParticipantTeam.Any(t =>
