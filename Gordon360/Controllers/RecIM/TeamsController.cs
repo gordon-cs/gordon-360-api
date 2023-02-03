@@ -151,7 +151,7 @@ namespace Gordon360.Controllers.RecIM
         {
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
             return CreatedAtAction("UpdateTeamInfo", updatedTeam);
-;       }
+        }
 
         /// <summary>
         /// Get all team invites of the user
@@ -163,14 +163,6 @@ namespace Gordon360.Controllers.RecIM
         {
             var username = AuthUtils.GetUsername(User);
             return Ok(_teamService.GetTeamInvites(username));
-        }
-
-        [HttpGet]
-        [Route("test-route")]
-        public ActionResult<TeamExtendedViewModel> TestRoute(int teamID)
-        {
-            var team = _teamService.GetTeamByID(teamID);
-            return Ok(team);
         }
     }
 }
