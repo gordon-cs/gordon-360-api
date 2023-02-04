@@ -212,9 +212,33 @@ namespace Gordon360.Controllers
             var photoModel = await _profileService.GetPhotoPathAsync(username);
             JObject result = new JObject();
 
-            var defaultImgPath = _config["DEFAULT_IMAGE_PATH"] + photoModel.Img_Name;
-            result.Add("def", await GetProfileImageOrDefault(defaultImgPath));
-            return Ok(result);
+            if (photoModel == null) //There is no preferred or ID image
+            {
+                var unapprovedFileName = username + "_" + _accountService.GetAccountByUsername(username).account_id;
+                var unapprovedFilePath = _config["DEFAULT_ID_SUBMISSION_PATH"];
+                string extension = "";
+                foreach (var file in Directory.GetFiles(unapprovedFilePath, unapprovedFileName + ".*"))
+                {
+                    extension = Path.GetExtension(file);
+                }
+                string unapproved_img = await GetProfileImageOrDefault(unapprovedFilePath + unapprovedFileName + extension);
+                result.Add("def", unapproved_img);
+                return Ok(result);
+            }
+
+            string prefImgPath = _config["PREFERRED_IMAGE_PATH"] + photoModel.Pref_Img_Name;
+
+            if (string.IsNullOrEmpty(photoModel.Pref_Img_Name) || !System.IO.File.Exists(prefImgPath)) //check file existence for prefferred image.
+            {
+                var defaultImgPath = _config["DEFAULT_IMAGE_PATH"] + photoModel.Img_Name;
+                result.Add("def", await GetProfileImageOrDefault(defaultImgPath));
+                return Ok(result);
+            }
+            else
+            {
+                result.Add("pref", await GetProfileImageOrDefault(prefImgPath));
+                return Ok(result);
+            }
         }
 
         /// <summary>Get the profile image of the given user</summary>
