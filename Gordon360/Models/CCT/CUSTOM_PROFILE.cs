@@ -15,6 +15,8 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string username { get; set; }
         [Unicode(false)]
+        public string calendar { get; set; }
+        [Unicode(false)]
         public string facebook { get; set; }
         [Unicode(false)]
         public string twitter { get; set; }

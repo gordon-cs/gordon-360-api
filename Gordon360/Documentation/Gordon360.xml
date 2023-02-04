@@ -534,7 +534,7 @@
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
         </member>
-        <member name="M:Gordon360.Controllers.NewsController.Post(System.String,System.Int32,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.NewsController.Post(Gordon360.Models.ViewModels.StudentNewsUploadViewModel)">
             Create a new news item to be added to the database
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
