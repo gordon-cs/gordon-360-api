@@ -15,5 +15,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Status { get; set; }
         public IEnumerable<MatchExtendedViewModel> Match { get; set; }
         public IEnumerable<TeamRecordViewModel> TeamStanding { get; set; }
+        public SeriesScheduleViewModel? Schedule { get; set; }
     }
 }
