@@ -2185,6 +2185,16 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRound(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam})">
+            <summary>
+            Goal of this function is to be able to either create and initialize the elimination bracket
+            if none exists already, and will overload with a matches enumerable to update existing matches
+            to produce a next round
+            
+            These functions may need to be modified later as there may be more efficient ways to handle scheduling
+            with the context that surfaces need to be booked ahead of time on 25Live
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
             <summary>
             Fetch all upcoming ride items

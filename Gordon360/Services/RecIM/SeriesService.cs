@@ -48,7 +48,7 @@ namespace Gordon360.Services.RecIM
             }
             return null;
         }
-            public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
+        public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
                             .Select(s => new SeriesExtendedViewModel
@@ -88,7 +88,7 @@ namespace Gordon360.Services.RecIM
             return series;
         }
         public IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID)
-        { 
+        {
             var series = _context.Series
                 .Where(s => s.ActivityID == activityID)
                 .Select(s => new SeriesExtendedViewModel
@@ -161,14 +161,14 @@ namespace Gordon360.Services.RecIM
             {
                 teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
             }
-            
+
             await CreateSeriesTeamMappingAsync(teams, series.ID);
             return series;
         }
 
         public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
         {
-            var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss => 
+            var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss =>
                 ss.StartTime.Hour == seriesSchedule.DailyStartTime.Hour &&
                 ss.StartTime.Minute == seriesSchedule.DailyStartTime.Minute &&
                 ss.EndTime.Hour == seriesSchedule.DailyEndTime.Hour &&
@@ -178,9 +178,9 @@ namespace Gordon360.Services.RecIM
                 ss.Mon == seriesSchedule.AvailableDays.Mon &&
                 ss.Tue == seriesSchedule.AvailableDays.Tue &&
                 ss.Wed == seriesSchedule.AvailableDays.Wed &&
-                ss.Thu == seriesSchedule.AvailableDays.Thu &&  
+                ss.Thu == seriesSchedule.AvailableDays.Thu &&
                 ss.Fri == seriesSchedule.AvailableDays.Fri &&
-                ss.Sat == seriesSchedule.AvailableDays.Sat 
+                ss.Sat == seriesSchedule.AvailableDays.Sat
             );
             if (existingSchedule is not null)
             {
@@ -277,11 +277,11 @@ namespace Gordon360.Services.RecIM
             }
             if (typeCode == "DE")
             {
-                return  await ScheduleDoubleElimination(seriesID);
+                return await ScheduleDoubleElimination(seriesID);
             }
             if (typeCode == "L")
             {
-                return  await ScheduleLadderAsync(seriesID);
+                return await ScheduleLadderAsync(seriesID);
             }
             return null;
         }
@@ -336,7 +336,7 @@ namespace Gordon360.Services.RecIM
                         dayOfWeek = day.DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
-         
+
                     var teamIDs = new List<int>() { teams[i], teams[j] };
                     if (!teamIDs.Contains(0))
                     {
@@ -355,7 +355,7 @@ namespace Gordon360.Services.RecIM
                 }
                 var temp = teams[0];
                 teams.Add(temp);
-                teams.RemoveAt(0);  
+                teams.RemoveAt(0);
             }
             return createdMatches;
         }
@@ -382,7 +382,7 @@ namespace Gordon360.Services.RecIM
             };
             //surfaceIndex++; //surfaceIndex can be incremented if we plan to rework ladder match logic (to make more than 1 match)
 
-           var res = await _matchService.PostMatchAsync(match);
+            var res = await _matchService.PostMatchAsync(match);
             createdMatches.Add(res);
             return createdMatches;
         }
@@ -445,6 +445,9 @@ namespace Gordon360.Services.RecIM
                 }
                 teamsInWinners /= 2;
             }
+
+            //silence error
+            return new List<MatchViewModel>();
         }
         private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
@@ -525,6 +528,8 @@ namespace Gordon360.Services.RecIM
                 dayOfWeek = day.DayOfWeek.ToString();
                 surfaceIndex = 0;
             }
+            //silence error
+            return new List<MatchViewModel>();
         }
 
         /// <summary>
@@ -600,4 +605,5 @@ namespace Gordon360.Services.RecIM
             return res.AsEnumerable();
         }
     }
+}
 
