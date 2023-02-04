@@ -12,5 +12,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int ActivityID { get; set; }
         public int TypeID { get; set; }
         public int? NumberOfTeamsAdmitted { get; set; }
+        public int? ScheduleID { get; set; }
     }
 }

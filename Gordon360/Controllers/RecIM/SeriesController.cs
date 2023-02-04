@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Gordon360.Controllers.RecIM
 {
@@ -102,7 +103,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("schedule")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<SeriesViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
+        public async Task<ActionResult<SeriesScheduleViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
         {
             var schedule = await _seriesService.PutSeriesScheduleAsync(seriesSchedule);
             return CreatedAtAction("CreateSeriesSchedule", schedule);
@@ -114,10 +115,14 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="seriesID"></param>
         [HttpPost]
         [Route("schedule/{seriesID}")]
-        public async Task<ActionResult> ScheduleMatches(int seriesID)
+        public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatches(int seriesID)
         {
-            await _seriesService.ScheduleMatchesAsync(seriesID);
-            return Ok();
+            var createdMatches = await _seriesService.ScheduleMatchesAsync(seriesID);
+            if (createdMatches is null)
+            {
+                return BadRequest();
+            }
+            return CreatedAtAction("ScheduleMatches", createdMatches);
         }
     }
 }

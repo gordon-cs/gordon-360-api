@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+
 
 namespace Gordon360.Authorization
 {
@@ -44,6 +46,8 @@ namespace Gordon360.Authorization
 
         private AccountService _accountService;
 
+        private IConfiguration _config;
+
         //RecIM services
         private ParticipantService _participantService;
         private Gordon360.Services.RecIM.ActivityService _activityService;
@@ -69,7 +73,7 @@ namespace Gordon360.Authorization
             // set RecIM services
             _participantService = new ParticipantService(_CCTContext, _accountService);
             _matchService = new MatchService(_CCTContext, _accountService);
-            _teamService = new TeamService(_CCTContext, _matchService, _participantService, _accountService);
+            _teamService = new TeamService(_CCTContext, _config, _matchService, _participantService, _accountService);
             _seriesService = new SeriesService(_CCTContext, _matchService);
             _activityService = new Services.RecIM.ActivityService(_CCTContext, _seriesService);
 

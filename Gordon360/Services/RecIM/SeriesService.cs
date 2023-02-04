@@ -104,6 +104,7 @@ namespace Gordon360.Services.RecIM
                                 .FirstOrDefault(ss => ss.ID == s.StatusID)
                                 .Description,
                     ActivityID = s.ActivityID,
+                    Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID),
                     Match = _matchService.GetMatchBySeriesID(s.ID),
                     TeamStanding = _context.SeriesTeam
                     .Where(st => st.SeriesID == s.ID)
@@ -136,7 +137,7 @@ namespace Gordon360.Services.RecIM
                 ActivityID = newSeries.ActivityID,
                 TypeID = newSeries.TypeID,
                 StatusID = 1, //default unconfirmed series
-                ScheduleID = 2 //temporary while autoscheduling is not completed
+                ScheduleID = newSeries.ScheduleID ?? 0 //updated when admin is ready to set up the schedule
             };
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
@@ -162,23 +163,60 @@ namespace Gordon360.Services.RecIM
             }
             
             await CreateSeriesTeamMappingAsync(teams, series.ID);
-            //TEMPORARY
-            //TEMPORARY
-            var seriessurface = new SeriesSurface
-            {
-                SeriesID = series.ID,
-                SurfaceID = 1
-            };
-            await _context.SeriesSurface.AddAsync(seriessurface);
-            //TEMPORARY
-            //TEMPORARY
-
             return series;
         }
 
         public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
         {
-            throw new NotImplementedException();
+            var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss => 
+                ss.StartTime.Hour == seriesSchedule.DailyStartTime.Hour &&
+                ss.StartTime.Minute == seriesSchedule.DailyStartTime.Minute &&
+                ss.EndTime.Hour == seriesSchedule.DailyEndTime.Hour &&
+                ss.EndTime.Minute == seriesSchedule.DailyEndTime.Minute &&
+                ss.EstMatchTime == seriesSchedule.EstMatchTime &&
+                ss.Sun == seriesSchedule.AvailableDays.Sun &&
+                ss.Mon == seriesSchedule.AvailableDays.Mon &&
+                ss.Tue == seriesSchedule.AvailableDays.Tue &&
+                ss.Wed == seriesSchedule.AvailableDays.Wed &&
+                ss.Thu == seriesSchedule.AvailableDays.Thu &&  
+                ss.Fri == seriesSchedule.AvailableDays.Fri &&
+                ss.Sat == seriesSchedule.AvailableDays.Sat 
+            );
+            if (existingSchedule is not null)
+            {
+                if (seriesSchedule.SeriesID is not null)
+                {
+                    var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                    series.ScheduleID = existingSchedule.ID;
+                    await _context.SaveChangesAsync();
+                }
+                return existingSchedule;
+            }
+
+            var schedule = new SeriesSchedule
+            {
+                Sun = seriesSchedule.AvailableDays.Sun,
+                Mon = seriesSchedule.AvailableDays.Mon,
+                Tue = seriesSchedule.AvailableDays.Tue,
+                Wed = seriesSchedule.AvailableDays.Wed,
+                Thu = seriesSchedule.AvailableDays.Thu,
+                Fri = seriesSchedule.AvailableDays.Fri,
+                Sat = seriesSchedule.AvailableDays.Sat,
+                EstMatchTime = seriesSchedule.EstMatchTime,
+                StartTime = seriesSchedule.DailyStartTime,
+                EndTime = seriesSchedule.DailyEndTime
+            };
+            await _context.SeriesSchedule.AddAsync(schedule);
+            await _context.SaveChangesAsync();
+
+            if (seriesSchedule.SeriesID is not null)
+            {
+                var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                series.ScheduleID = schedule.ID;
+            }
+            await _context.SaveChangesAsync();
+            return schedule;
+
         }
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
@@ -220,7 +258,7 @@ namespace Gordon360.Services.RecIM
         // eventually:
         // - ensure that matches that occur within 1 hour do not share the same surface
         //    unless they're in the same series
-        public async Task ScheduleMatchesAsync(int seriesID)
+        public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID)
         {
             var series = _context.Series
                     .FirstOrDefault(s => s.ID == seriesID);
@@ -231,25 +269,25 @@ namespace Gordon360.Services.RecIM
 
             if (typeCode == "RR")
             {
-                await ScheduleRoundRobin(seriesID);
+                return await ScheduleRoundRobin(seriesID);
             }
             if (typeCode == "SE")
             {
-                await ScheduleSingleElimination(seriesID);
+                return await ScheduleSingleElimination(seriesID);
             }
             if (typeCode == "DE")
             {
-                await ScheduleDoubleElimination(seriesID);
+                return  await ScheduleDoubleElimination(seriesID);
             }
             if (typeCode == "L")
             {
-                await ScheduleLadderAsync(seriesID);
+                return  await ScheduleLadderAsync(seriesID);
             }
-
-            
+            return null;
         }
-        private async Task ScheduleRoundRobin(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
         {
+            var createdMatches = new List<MatchViewModel>();
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.SeriesID == seriesID)
@@ -309,6 +347,7 @@ namespace Gordon360.Services.RecIM
                             SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                             TeamIDs = teamIDs
                         });
+                        createdMatches.Add(createdMatch);
                         surfaceIndex++;
                     }
                     i++;
@@ -317,29 +356,37 @@ namespace Gordon360.Services.RecIM
                 var temp = teams[0];
                 teams.Add(temp);
                 teams.RemoveAt(0);  
-            }   
+            }
+            return createdMatches;
         }
 
         //rudamentary implementation (only allows all teams into 1 match)
-        private async Task ScheduleLadderAsync(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID)
         {
+            var createdMatches = new List<MatchViewModel>();
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
                 .Select(st => st.ID);
             var series = _context.Series
                 .FirstOrDefault(s => s.ID == seriesID);
+            var availableSurfaces = _context.SeriesSurface
+                                        .Where(ss => ss.SeriesID == seriesID)?
+                                        .ToArray();
+            var surfaceIndex = 0;
             var match = new MatchUploadViewModel
             {
                 StartTime = series.StartDate,
                 SeriesID = seriesID,
-                //to be replaced by proper match surface scheduler
-                SurfaceID = 1,
+                SurfaceID = availableSurfaces is null ? 1 : availableSurfaces[surfaceIndex].SurfaceID,
                 TeamIDs = teams
             };
+            //surfaceIndex++; //surfaceIndex can be incremented if we plan to rework ladder match logic (to make more than 1 match)
 
-            await _matchService.PostMatchAsync(match);
+           var res = await _matchService.PostMatchAsync(match);
+            createdMatches.Add(res);
+            return createdMatches;
         }
-        private async Task ScheduleDoubleElimination(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             //Teams are defaulted to be ordered by Wins if there was a reference series
@@ -399,7 +446,7 @@ namespace Gordon360.Services.RecIM
                 teamsInWinners /= 2;
             }
         }
-        private async Task ScheduleSingleElimination(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
