@@ -103,7 +103,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("schedule")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<SeriesViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
+        public async Task<ActionResult<SeriesScheduleViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
         {
             var schedule = await _seriesService.PutSeriesScheduleAsync(seriesSchedule);
             return CreatedAtAction("CreateSeriesSchedule", schedule);
