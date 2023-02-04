@@ -104,6 +104,7 @@ namespace Gordon360.Services.RecIM
                                 .FirstOrDefault(ss => ss.ID == s.StatusID)
                                 .Description,
                     ActivityID = s.ActivityID,
+                    Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID),
                     Match = _matchService.GetMatchBySeriesID(s.ID),
                     TeamStanding = _context.SeriesTeam
                     .Where(st => st.SeriesID == s.ID)
@@ -136,7 +137,7 @@ namespace Gordon360.Services.RecIM
                 ActivityID = newSeries.ActivityID,
                 TypeID = newSeries.TypeID,
                 StatusID = 1, //default unconfirmed series
-                ScheduleID = 0 //updated when admin is ready to set up the schedule
+                ScheduleID = newSeries.ScheduleID ?? 0 //updated when admin is ready to set up the schedule
             };
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
