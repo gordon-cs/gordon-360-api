@@ -600,8 +600,8 @@ namespace Gordon360.Authorization
                             if (newsItem.Accepted != false)
                                 return false;
 
-                            // can update if user is admin
-                            if (user_groups.Contains(AuthGroup.SiteAdmin))
+                            // can update if user is admin or SNAdmin
+                            if (user_groups.Contains(AuthGroup.SiteAdmin) || user_groups.Contains(AuthGroup.NewsAdmin))
                                 return true;
 
                             // can update if user is news item author
@@ -707,8 +707,8 @@ namespace Gordon360.Authorization
                                 return false;
                             }
 
-                            // can update if user is admin
-                            if (user_groups.Contains(AuthGroup.SiteAdmin))
+                            // can update if user is admin or SNAdmin
+                            if (user_groups.Contains(AuthGroup.SiteAdmin) || user_groups.Contains(AuthGroup.NewsAdmin))
                                 return true;
 
                             // can update if user is news item author

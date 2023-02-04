@@ -272,6 +272,23 @@ namespace Gordon360.Services
             return newsItem;
         }
 
+        public StudentNewsViewModel ApprovePosting(int newsID)
+        {
+            var newsItem = Get(newsID);
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not SuperAdmins
+            //    to be able to delete expired news, this should be fixed eventually by removing some of
+            //    the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+            VerifyUnapproved(newsItem);
+
+            newsItem.Accepted = true;
+
+            _context.SaveChanges();
+
+            return newsItem;
+        }
+
         private string GetImagePath(string filename)
         {
             return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "news", filename);

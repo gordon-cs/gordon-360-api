@@ -22,6 +22,7 @@ namespace Gordon360.Controllers
     public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;
+        private IEnumerable<AuthGroup> user_groups { get; set; }
 
         public NewsController(INewsService newsService)
         {
@@ -197,6 +198,27 @@ namespace Gordon360.Controllers
             // StateYourBusiness verifies that user is authenticated
             var result = _newsService.EditPosting(newsID, studentNewsEdit);
             return Ok(result);
+        }
+
+        /// <summary>
+        ///  Approve a news posting in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to approve</param>
+        /// <returns>The approved news item</returns>
+        /// <remarks>The news item must not be expired and must be unapproved</remarks>
+        [HttpPut]
+        [Route("approvalStatus")]
+        // only SNAdmin is authorized to use this route
+        // Can't use SYB UPDATE operation, because the author is not authorized to approve the post
+        public ActionResult<StudentNewsViewModel> ApprovePosting([FromBody] int newsID)
+        {
+            if (user_groups.Contains(AuthGroup.SiteAdmin) || user_groups.Contains(AuthGroup.NewsAdmin))
+            {
+                var result = _newsService.ApprovePosting(newsID);
+                return Ok(result);
+            }
+            else
+                return Unauthorized("Only Admin and News Admin can approve posting.");
         }
     }
 }
