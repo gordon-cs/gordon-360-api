@@ -14,6 +14,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Status { get; set; }
         public int MatchStatusID { get; set; }
         public DateTime Time { get; set; }
+        public int? Sportsmanship { get; set; }
         
     }
 }
