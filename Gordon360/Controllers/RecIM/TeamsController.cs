@@ -186,5 +186,32 @@ namespace Gordon360.Controllers.RecIM
             var username = AuthUtils.GetUsername(User);
             return Ok(_teamService.GetTeamInvites(username));
         }
+
+        [HttpPatch]
+        [Route("{teamID}/accepted")]
+        public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
+        {
+            var username = AuthUtils.GetUsername(User);
+            if (acceptedInvite.Username != username)
+            {
+                return Forbid($"You are not permitted to accept invitations for {acceptedInvite.Username}.");
+            }
+
+            // set the role type ID of the accepted team invite to 3 => member
+            acceptedInvite.RoleTypeID = 3;
+            var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, acceptedInvite);
+
+            // true delete other team invites from the same activity
+            IEnumerable<TeamInviteViewModel> teamInvites = _teamService.GetTeamInvites(username);
+            foreach(TeamInviteViewModel teamInvite in teamInvites)
+            {
+                if (teamInvite.TeamID != teamID)
+                {
+                    await _teamService.DeleteTeamParticipantAsync(teamInvite.TeamID, username);
+                }
+            }
+
+            return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
+        }
     }
 }
