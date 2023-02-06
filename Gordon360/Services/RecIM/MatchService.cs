@@ -68,11 +68,13 @@ namespace Gordon360.Services.RecIM
                     return null;
             }
         }
+
         //this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
         //within other queries. The only solution is to return each individual instance and have the original
         //query handle the enumeration.
         public IEnumerable<MatchExtendedViewModel> GetMatchesForTeamID(int teamID)
         {
+            // This query returns the activityID and activity name of the team by teamID
             var activity = (from a in _context.Activity
                            where a.ID == (from t in _context.Team
                                           where t.ID == teamID
@@ -87,6 +89,7 @@ namespace Gordon360.Services.RecIM
                            })
                            .FirstOrDefault();
 
+            // This query returns a list of matches the team is involved by teamID
             var match = from t in _context.Team
                             join mt in _context.MatchTeam
                             on t.ID equals mt.TeamID
