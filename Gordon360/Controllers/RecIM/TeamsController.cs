@@ -188,24 +188,26 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpPatch]
-        [Route("{teamID}/accepted")]
+        [Route("invites/{teamID}/status")]
         public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
         {
             var username = AuthUtils.GetUsername(User);
-            if (acceptedInvite.Username != username)
-            {
-                return Forbid($"You are not permitted to accept invitations for {acceptedInvite.Username}.");
-            }
+            var invite = _teamService.GetTeamInvite(teamID, username);
+            if (invite is null)
+                return Conflict("You were not invited by this team.");
+            if (username != invite.ParticipantUsername)
+                return Forbid($"You are not permitted to accept invitations for {invite.ParticipantUsername}.");
 
             // set the role type ID of the accepted team invite to 3 => member
             acceptedInvite.RoleTypeID = 3;
-            var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, acceptedInvite);
+            var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, acceptedInvite);
 
             // true delete other team invites from the same activity
             IEnumerable<TeamInviteViewModel> teamInvites = _teamService.GetTeamInvites(username);
+            int activityID = _teamService.GetTeamByID(invite.TeamID).Activity.ID;
             foreach(TeamInviteViewModel teamInvite in teamInvites)
             {
-                if (teamInvite.TeamID != teamID)
+                if (teamInvite.ActivityID == activityID && teamInvite.TeamID != invite.TeamID)
                 {
                     await _teamService.DeleteTeamParticipantAsync(teamInvite.TeamID, username);
                 }

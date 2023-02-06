@@ -17,6 +17,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Net;
 using System.Net.Mail;
 using System.Globalization;
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -241,7 +242,6 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        // return type is wrong
         public IEnumerable<TeamInviteViewModel> GetTeamInvites(string username)
         {
             var teamRequestToJoin = _context.ParticipantTeam
@@ -273,9 +273,26 @@ namespace Gordon360.Services.RecIM
             return teamRequestToJoin;
         }
         
+        public ParticipantTeamViewModel GetTeamInvite(int teamID, string username)
+        {
+            var participantTeam = _context.ParticipantTeam
+                                    .Where(pt => pt.TeamID == teamID && pt.ParticipantUsername == username)
+                                    .Select(pt => new ParticipantTeamViewModel
+                                    {
+                                        ID = pt.ID,
+                                        TeamID = pt.TeamID,
+                                        ParticipantUsername = pt.ParticipantUsername,
+                                        SignDate = pt.SignDate,
+                                        RoleTypeID = pt.RoleTypeID,
+                                    })
+                                    .FirstOrDefault();
+
+            return participantTeam;
+        }
+
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            var team = new Team
+            var team = new Gordon360.Models.CCT.Team
             {
                 Name = t.Name,
                 StatusID = 1,
