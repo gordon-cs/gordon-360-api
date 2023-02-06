@@ -13,6 +13,7 @@ using Match = Gordon360.Models.CCT.Match;
 using Azure.Identity;
 using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -26,6 +27,12 @@ namespace Gordon360.Services.RecIM
         {
             _context = context;
             _accountService = accountService;
+        }
+
+        public MatchViewModel GetSimpleMatchViewByID(int matchID)
+        {
+            var res = _context.Match.FirstOrDefault(m => m.ID == matchID);
+            return res;
         }
 
         public IEnumerable<LookupViewModel> GetMatchLookup(string type)
@@ -138,7 +145,11 @@ namespace Gordon360.Services.RecIM
                                         .Select(mt => new TeamMatchHistoryViewModel
                                         {
                                             TeamID = mt.TeamID,
-                                            TeamScore = mt.Score
+                                            TeamScore = mt.Score,
+                                            Status = _context.MatchTeamStatus
+                                                .FirstOrDefault(ms => ms.ID == m.StatusID)
+                                                .Description,
+                                            Sportsmanship = mt.Sportsmanship
                                         }).AsEnumerable(),
                             Time = m.Time,
                             Surface = _context.Surface
@@ -172,12 +183,13 @@ namespace Gordon360.Services.RecIM
                                 Name = _context.Team
                                    .FirstOrDefault(t => t.ID == mt.TeamID)
                                    .Name,
+                                Status = mt.Status.Description,
                                 Participant = mt.Team.ParticipantTeam
                                     .Select(pt => new ParticipantExtendedViewModel
-                                            {
-                                                Username = pt.ParticipantUsername,
-                                                Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                                                Role = _context.RoleType
+                                    {
+                                        Username = pt.ParticipantUsername,
+                                        Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
+                                        Role = _context.RoleType
                                                 .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
                                                 .Description
                                     }),

@@ -708,10 +708,13 @@ namespace Gordon360.Authorization
 
                 case Resource.RECIM_MATCH:
                     {
-                        var matchID = (int)context.ActionArguments["matchID"];
-                        var match = _matchService.GetMatchByID(matchID);
+                        if (context.ActionArguments["matchID"] is int matchID)
+                        {
+                        var match = _matchService.GetSimpleMatchViewByID(matchID);
                         var series = _seriesService.GetSeriesByID(match.SeriesID);
                         return _activityService.IsReferee(user_name, series.ActivityID) || _participantService.IsAdmin(user_name);
+                        }
+                        return _participantService.IsAdmin(user_name);
                     }
                 default: return false;
             }

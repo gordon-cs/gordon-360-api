@@ -84,10 +84,10 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
             if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
-                return Conflict($"{newTeam.Name} has already been taken by another team in this activity");
+                return UnprocessableEntity($"{newTeam.Name} has already been taken by another team in this activity");
            //redudant check for API as countermeasure against postman navigation around UI check
             if (_teamService.HasUserJoined(newTeam.ActivityID, username))
-                return Conflict($"{username} already is a part of a team in this activity");
+                return UnprocessableEntity($"{username} already is a part of a team in this activity");
          
 
             var team = await _teamService.PostTeamAsync(newTeam, username);
@@ -135,7 +135,7 @@ namespace Gordon360.Controllers.RecIM
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
             }
             else
-                return Conflict($"{participant.Username} already is a part of a team in this activity");
+                return UnprocessableEntity($"{participant.Username} already is a part of a team in this activity");
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
                 if (_teamService.HasTeamNameTaken(activityID, team.Name))
-                    return Conflict($"{team.Name} has already been taken by another team in this activity");
+                    return UnprocessableEntity($"{team.Name} has already been taken by another team in this activity");
 
             }
 
