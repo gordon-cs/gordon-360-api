@@ -331,7 +331,7 @@ namespace Gordon360.Services
         /// Helper method to verify that a given news item has already been approved
         /// </summary>
         /// <param name="newsItem">The news item to verify</param>
-        /// <returns>true ig approved, otherwise throws some kind of meaningful exception</returns>
+        /// <returns>true if approved, otherwise throws some kind of meaningful exception</returns>
         private static bool VerfiyApproved(StudentNews newsItem)
         {
             // Note: These checks have been duplicated from StateYourBusiness because we do not want
