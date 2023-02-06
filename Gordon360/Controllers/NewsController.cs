@@ -22,7 +22,6 @@ namespace Gordon360.Controllers
     public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;
-        private IEnumerable<AuthGroup> user_groups { get; set; }
 
         public NewsController(INewsService newsService)
         {
@@ -201,25 +200,19 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        ///  Approve a news posting in the database
+        ///  Approve or deny a news posting in the database
         /// </summary>
         /// <param name="newsID">The id of the news item to approve</param>
         /// <param name="newsStatusAccepted">The accept status that will apply to the news item</param>
-        /// <returns>The approved news item</returns>
-        /// <remarks>The news item must not be expired and must be unapproved</remarks>
+        /// <returns>The approved or denied news item</returns>
+        /// <remarks>The news item must not be expired</remarks>
         [HttpPut]
         [Route("{newsID}/accepted")]
-        // only SNAdmin is authorized to use this route
-        // Can't use SYB UPDATE operation, because the author is not authorized to approve the post
-        public ActionResult<StudentNewsViewModel> ApprovePosting(int newsID, [FromBody] bool newsStatusAccepted)
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS_APPROVAL)]
+        public ActionResult<StudentNewsViewModel> UpdateAcceptedStatus(int newsID, [FromBody] bool newsStatusAccepted)
         {
-            if (user_groups.Contains(AuthGroup.SiteAdmin) || user_groups.Contains(AuthGroup.NewsAdmin))
-            {
-                var result = _newsService.AlterPostAcceptStatus(newsID, newsStatusAccepted);
-                return Ok(result);
-            }
-            else
-                return Forbid("Only Admin and News Admin can alter post's accepting status.");
+            var result = _newsService.AlterPostAcceptStatus(newsID, newsStatusAccepted);
+            return Ok(result);
         }
     }
 }

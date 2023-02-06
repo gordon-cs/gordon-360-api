@@ -272,7 +272,7 @@ namespace Gordon360.Services
             return newsItem;
         }
 
-        public StudentNewsViewModel AlterPostAcceptStatus(int newsID, bool isAccepted)
+        public StudentNewsViewModel AlterPostAcceptStatus(int newsID, bool accepted)
         {
             var newsItem = Get(newsID);
 
@@ -281,12 +281,12 @@ namespace Gordon360.Services
             //    removing some of the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
 
-            if (isAccepted)
+            if (accepted)
                 VerifyUnapproved(newsItem);
             else
                 VerfiyApproved(newsItem);
 
-            newsItem.Accepted = isAccepted;
+            newsItem.Accepted = accepted;
 
             _context.SaveChanges();
 
@@ -318,7 +318,7 @@ namespace Gordon360.Services
             //    removing some of the SuperAdmin permissions that are not explicitly given
             if (newsItem.Accepted == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
+                throw new Exception();
             }
             if (newsItem.Accepted == true)
             {
@@ -337,11 +337,7 @@ namespace Gordon360.Services
             // Note: These checks have been duplicated from StateYourBusiness because we do not want
             //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
             //    removing some of the SuperAdmin permissions that are not explicitly given
-            if (newsItem.Accepted == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
-            }
-            if (newsItem.Accepted == false)
+            if (newsItem.Accepted != true)
             {
                 throw new BadInputException() { ExceptionMessage = "The news item has not been approved." };
             }

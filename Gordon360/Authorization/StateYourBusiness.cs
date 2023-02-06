@@ -600,8 +600,8 @@ namespace Gordon360.Authorization
                             if (newsItem.Accepted != false)
                                 return false;
 
-                            // can update if user is admin or SNAdmin
-                            if (user_groups.Contains(AuthGroup.SiteAdmin) || user_groups.Contains(AuthGroup.NewsAdmin))
+                            // can update if user is a Student News Admin
+                            if (user_groups.Contains(AuthGroup.NewsAdmin))
                                 return true;
 
                             // can update if user is news item author
@@ -610,6 +610,16 @@ namespace Gordon360.Authorization
                         
                         return false;
                     }
+
+                case Resource.NEWS_APPROVAL:
+                    {
+                        // can approve or deny if user is a Student News Admin
+                        if (user_groups.Contains(AuthGroup.NewsAdmin))
+                            return true;
+
+                        return false;
+                    }
+
                 default: return false;
             }
         }
@@ -707,8 +717,8 @@ namespace Gordon360.Authorization
                                 return false;
                             }
 
-                            // can update if user is admin or SNAdmin
-                            if (user_groups.Contains(AuthGroup.SiteAdmin) || user_groups.Contains(AuthGroup.NewsAdmin))
+                            // can update if user is a Student News Admin
+                            if (user_groups.Contains(AuthGroup.NewsAdmin))
                                 return true;
 
                             // can update if user is news item author
