@@ -188,7 +188,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpPatch]
-        [Route("invites/{teamID}/status")]
+        [Route("{teamID}/invite")]
         public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
         {
             var username = AuthUtils.GetUsername(User);
