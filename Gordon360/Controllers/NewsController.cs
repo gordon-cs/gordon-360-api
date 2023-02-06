@@ -198,5 +198,21 @@ namespace Gordon360.Controllers
             var result = _newsService.EditPosting(newsID, studentNewsEdit);
             return Ok(result);
         }
+
+        /// <summary>
+        ///  Approve or deny a news posting in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to approve</param>
+        /// <param name="newsStatusAccepted">The accept status that will apply to the news item</param>
+        /// <returns>The approved or denied news item</returns>
+        /// <remarks>The news item must not be expired</remarks>
+        [HttpPut]
+        [Route("{newsID}/accepted")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS_APPROVAL)]
+        public ActionResult<StudentNewsViewModel> UpdateAcceptedStatus(int newsID, [FromBody] bool newsStatusAccepted)
+        {
+            var result = _newsService.AlterPostAcceptStatus(newsID, newsStatusAccepted);
+            return Ok(result);
+        }
     }
 }
