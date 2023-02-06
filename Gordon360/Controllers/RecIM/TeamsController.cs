@@ -187,6 +187,12 @@ namespace Gordon360.Controllers.RecIM
             return Ok(_teamService.GetTeamInvites(username));
         }
 
+        /// <summary>
+        /// Accept one specified team invite and true delete others from the same activity if there's any
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="acceptedInvite"></param>
+        /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
         [Route("{teamID}/invite")]
         public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
@@ -194,7 +200,7 @@ namespace Gordon360.Controllers.RecIM
             var username = AuthUtils.GetUsername(User);
             var invite = _teamService.GetTeamInvite(teamID, username);
             if (invite is null)
-                return Conflict("You were not invited by this team.");
+                return NotFound("You were not invited by this team.");
             if (username != invite.ParticipantUsername)
                 return Forbid($"You are not permitted to accept invitations for {invite.ParticipantUsername}.");
 
