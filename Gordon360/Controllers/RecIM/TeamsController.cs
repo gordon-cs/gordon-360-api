@@ -84,10 +84,10 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
             if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
-                return UnprocessableEntity($"{newTeam.Name} has already been taken by another team in this activity");
+                return UnprocessableEntity($"Team name {newTeam.Name} has already been taken by another team in this activity");
            //redudant check for API as countermeasure against postman navigation around UI check
             if (_teamService.HasUserJoined(newTeam.ActivityID, username))
-                return UnprocessableEntity($"{username} already is a part of a team in this activity");
+                return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
          
 
             var team = await _teamService.PostTeamAsync(newTeam, username);
@@ -95,9 +95,9 @@ namespace Gordon360.Controllers.RecIM
             // (cannot implement at the moment as we only have 4 developer accs)
             if (team is null)
             {
-                return BadRequest($"{username} already is a part of a team in this activity");
+                return BadRequest($"Participant {username} already is a part of a team in this activity");
             }
-            return CreatedAtAction("CreateTeam",team);
+            return CreatedAtAction("CreateTeam", team);
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Gordon360.Controllers.RecIM
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
             }
             else
-                return UnprocessableEntity($"{participant.Username} already is a part of a team in this activity");
+                return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
                 if (_teamService.HasTeamNameTaken(activityID, team.Name))
-                    return UnprocessableEntity($"{team.Name} has already been taken by another team in this activity");
+                    return UnprocessableEntity($"Team name {team.Name} has already been taken by another team in this activity");
 
             }
 
@@ -202,7 +202,7 @@ namespace Gordon360.Controllers.RecIM
             if (invite is null)
                 return NotFound("You were not invited by this team.");
             if (username != invite.ParticipantUsername)
-                return Forbid($"You are not permitted to accept invitations for {invite.ParticipantUsername}.");
+                return Forbid($"You are not permitted to accept invitations for another participant.");
 
             // set the role type ID of the accepted team invite to 3 => member
             acceptedInvite.RoleTypeID = 3;
