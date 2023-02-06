@@ -10,7 +10,7 @@ jobs:
   deploy:
     runs-on: windows-latest
     environment:
-      name: Train
+      name: Production
       url: https://360Api.gordon.edu
 
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
