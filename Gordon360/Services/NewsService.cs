@@ -189,9 +189,9 @@ namespace Gordon360.Services
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
 
-            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
 
             if (newsItem.Image != null)
@@ -217,9 +217,9 @@ namespace Gordon360.Services
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
 
-            // Note: These checks have been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
             VerifyUnapproved(newsItem);
 
@@ -272,17 +272,21 @@ namespace Gordon360.Services
             return newsItem;
         }
 
-        public StudentNewsViewModel ApprovePosting(int newsID)
+        public StudentNewsViewModel AlterPostAcceptStatus(int newsID, bool isAccepted)
         {
             var newsItem = Get(newsID);
 
-            // Note: These checks have been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
-            VerifyUnapproved(newsItem);
 
-            newsItem.Accepted = true;
+            if (isAccepted)
+                VerifyUnapproved(newsItem);
+            else
+                VerfiyApproved(newsItem);
+
+            newsItem.Accepted = isAccepted;
 
             _context.SaveChanges();
 
@@ -309,9 +313,9 @@ namespace Gordon360.Services
         /// <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
         private static bool VerifyUnapproved(StudentNews newsItem)
         {
-            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             if (newsItem.Accepted == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
@@ -319,6 +323,27 @@ namespace Gordon360.Services
             if (newsItem.Accepted == true)
             {
                 throw new BadInputException() { ExceptionMessage = "The news item has already been approved." };
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Helper method to verify that a given news item has already been approved
+        /// </summary>
+        /// <param name="newsItem">The news item to verify</param>
+        /// <returns>true ig approved, otherwise throws some kind of meaningful exception</returns>
+        private static bool VerfiyApproved(StudentNews newsItem)
+        {
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
+            if (newsItem.Accepted == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
+            }
+            if (newsItem.Accepted == false)
+            {
+                throw new BadInputException() { ExceptionMessage = "The news item has not been approved." };
             }
             return true;
         }
