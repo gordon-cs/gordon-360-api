@@ -94,6 +94,11 @@ namespace Gordon360.Controllers
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                 alumni = null;  //student can't see alumini
             }
+            
+            if (_student != null && !viewerGroups.Contains(AuthGroup.AcademicInfoView))
+            {
+                student = _student with { AdvisorIDs = "" };
+            }
 
             if (student is null && alumni is null && faculty is null)
             {
