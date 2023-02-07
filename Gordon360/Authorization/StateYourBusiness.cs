@@ -833,6 +833,11 @@ namespace Gordon360.Authorization
                             return true;
                         return false;
                     }
+                case Resource.RECIM_TEAM:
+                    {
+                        var teamID = (int)context.ActionArguments["teamID"];
+                        return _teamService.IsTeamCaptain(user_name, teamID) || _participantService.IsAdmin(user_name);
+                    }
                 default: return false;
             }
         }

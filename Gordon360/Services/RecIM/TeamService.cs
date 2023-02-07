@@ -18,6 +18,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Globalization;
 using Microsoft.Graph;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace Gordon360.Services.RecIM
 {
@@ -273,7 +274,7 @@ namespace Gordon360.Services.RecIM
             return teamRequestToJoin;
         }
         
-        public ParticipantTeamViewModel GetTeamInvite(int teamID, string username)
+        public ParticipantTeamViewModel GetParticipantTeam(int teamID, string username)
         {
             var participantTeam = _context.ParticipantTeam
                                     .Where(pt => pt.TeamID == teamID && pt.ParticipantUsername == username)
@@ -349,7 +350,7 @@ namespace Gordon360.Services.RecIM
 
             return participantTeam;
         }
-        public async Task DeleteTeamParticipantAsync(int teamID, string username)
+        public async Task DeleteParticipantTeamAsync(int teamID, string username)
         {
             var teamParticipant = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == username);
             _context.ParticipantTeam.Remove(teamParticipant);
@@ -470,6 +471,19 @@ namespace Gordon360.Services.RecIM
                             || t.RoleTypeID == 4    // RoleType: 4 => co-captain
                         )
             );
+        }
+
+        public bool IsActivityFull(int activityID)
+        {   
+            // find the activity by activityID
+            var activity = _context.Activity.Where(a => a.ID == activityID).FirstOrDefault();
+            if (activity is null)
+                throw new ResourceNotFoundException() { ExceptionMessage = "The activity can not be found." };
+
+            // find the number of teams in an activity by activityID
+            var teamSum = _context.Team.Where(t => t.ActivityID == activityID).Count();
+
+            return teamSum >= activity.MaxCapacity;
         }
     }
 }

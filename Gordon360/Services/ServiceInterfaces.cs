@@ -339,15 +339,16 @@ namespace Gordon360.Services
             IEnumerable<TeamExtendedViewModel> GetTeams(bool active);
             TeamExtendedViewModel GetTeamByID(int teamID);
             IEnumerable<TeamInviteViewModel> GetTeamInvites(string username);
-            ParticipantTeamViewModel GetTeamInvite(int teamID, string username);
+            ParticipantTeamViewModel GetParticipantTeam(int teamID, string username);
             Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
             Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null);
             Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
-            Task DeleteTeamParticipantAsync(int teamID, string username);
+            Task DeleteParticipantTeamAsync(int teamID, string username);
             Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant);
             bool HasUserJoined(int activityID, string username);
             bool HasTeamNameTaken(int activityID, string teamName);
             bool IsTeamCaptain(string username, int teamID);
+            bool IsActivityFull(int activityID);
         }
 
         public interface IParticipantService
