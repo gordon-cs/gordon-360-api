@@ -10,6 +10,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.RecIM
@@ -155,12 +156,14 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpDelete]
         [Route("{teamID}/participants")]
-        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult> DeleteTeamParticipant(int teamID, string username)
         {
+            var user_name = AuthUtils.GetUsername(User);
             var participantTeam = _teamService.GetParticipantTeam(teamID, username);
             if (participantTeam is null)
                 return NotFound("The user is not part of the team.");
+            if (user_name != participantTeam.ParticipantUsername)
+                return Forbid($"You are not permitted to reject invitations for another participant.");
 
             await _teamService.DeleteParticipantTeamAsync(teamID, username);
             return NoContent();
