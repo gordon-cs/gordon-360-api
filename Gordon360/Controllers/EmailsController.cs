@@ -1,4 +1,5 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Enums;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
@@ -25,16 +26,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
         public async Task<ActionResult<IEnumerable<EmailViewModel>>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, string? participationType)
         {
-            var participation = participationType switch
-            {
-                "advisor" => ParticipationType.Advisor,
-                "leader" => ParticipationType.Leader,
-                "group-admin" => ParticipationType.GroupAdmin,
-                "member" => ParticipationType.Member,
-                "guest" => ParticipationType.Guest,
-                _ => null
-            };
-
+            var participation = participationType.Parse(); 
             var result = await _emailService.GetEmailsForActivityAsync(activityCode, sessionCode, participation);
 
             if (result == null)

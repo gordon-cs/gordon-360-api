@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Enums;
 
 namespace Gordon360.Services
 {
@@ -186,7 +187,7 @@ namespace Gordon360.Services
         public int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode = null)
         {
             sessionCode ??= Helpers.GetCurrentSession(_context);
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == ParticipationType.Guest.Value && m.SessionCode == sessionCode).Count();
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == Participation.Guest.GetDescription() && m.SessionCode == sessionCode).Count();
         }
 
         /// <summary>
@@ -198,7 +199,7 @@ namespace Gordon360.Services
         public int GetActivityMembersCountForSession(string activityCode, string? sessionCode = null)
         {
             sessionCode ??= Helpers.GetCurrentSession(_context);
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation != ParticipationType.Guest.Value && m.SessionCode == sessionCode).Count();
+            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation != Participation.Guest.GetDescription() && m.SessionCode == sessionCode).Count();
         }
 
         /// <summary>
@@ -219,7 +220,7 @@ namespace Gordon360.Services
             original.COMMENT_TXT = membership.CommentText;
             original.PART_CDE = membership.Participation;
 
-            if (membership.Participation == ParticipationType.Guest.Value)
+            if (membership.Participation == Participation.Guest.GetDescription())
             {
                 await SetGroupAdminAsync(membershipID, false);
             }
@@ -334,19 +335,19 @@ namespace Gordon360.Services
             return _context.MembershipView.Any(membership => membership.Username == username && membership.GroupAdmin == true);
         }
 
-        public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null)
+        public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, Participation? participationCode = null)
         {
             var memberships = _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.SessionCode == sessionCode);
 
-            if (participationCode != null)
+            if (participationCode is Participation participation)
             {
-                if (participationCode == ParticipationType.GroupAdmin)
+                if (participationCode == Participation.GroupAdmin)
                 {
                     memberships = memberships.Where(m => m.GroupAdmin == true);
                 }
                 else
                 {
-                    memberships = memberships.Where(m => m.Participation == participationCode.Value);
+                    memberships = memberships.Where(m => m.Participation == participation.GetDescription());
                 }
             }
 
@@ -361,22 +362,6 @@ namespace Gordon360.Services
                     Description = m.Description
                 };
             });
-        }
-
-        public class ParticipationType
-        {
-            private ParticipationType(string value) { Value = value; }
-
-            public string Value { get; private set; }
-
-            public static ParticipationType Leader { get { return new ParticipationType("LEAD"); } }
-            public static ParticipationType Guest { get { return new ParticipationType("GUEST"); } }
-            public static ParticipationType Member { get { return new ParticipationType("MEMBR"); } }
-            public static ParticipationType Advisor { get { return new ParticipationType("ADV"); } }
-
-            // NOTE: Group admin is not strictly a participation type, it's a separate role that Advisors and Leaders can have, with a separate flag in the database
-            // BUT, it's convenient to treat it as a participation type in several places throughout the API
-            public static ParticipationType GroupAdmin { get { return new ParticipationType("GRP_ADMIN"); } }
         }
 
         /// <summary>	

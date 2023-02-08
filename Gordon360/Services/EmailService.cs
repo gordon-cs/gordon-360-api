@@ -1,4 +1,5 @@
-﻿using Gordon360.Exceptions;
+﻿using Gordon360.Enums;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
@@ -32,7 +33,7 @@ namespace Gordon360.Services
         /// <param name="sessionCode">Optionally, the session to get emails for. Defaults to the current session</param>
         /// <param name="participationType">The participation type to get emails of. If unspecified, gets emails of all participation types.</param>
         /// <returns>A list of emails (along with first and last name) associated with that activity</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, ParticipationType? participationType = null)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, Participation? participationType = null)
         {
             sessionCode ??= Helpers.GetCurrentSession(_context);
 

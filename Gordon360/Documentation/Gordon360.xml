@@ -534,7 +534,7 @@
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
         </member>
-        <member name="M:Gordon360.Controllers.NewsController.Post(System.String,System.Int32,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.NewsController.Post(Gordon360.Models.ViewModels.StudentNewsUploadViewModel)">
             Create a new news item to be added to the database
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
@@ -545,14 +545,23 @@
             <returns>The deleted news item</returns>
             <remarks>The news item must be authored by the user and must not be expired</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.NewsController.EditPosting(System.Int32,Gordon360.Models.MyGordon.StudentNews)">
+        <member name="M:Gordon360.Controllers.NewsController.EditPosting(System.Int32,Gordon360.Models.ViewModels.StudentNewsUploadViewModel)">
             <summary>
             (Controller) Edits a news item in the database
             </summary>
             <param name="newsID">The id of the news item to edit</param>
-            <param name="newData">The news object that contains updated values</param>
+            <param name="studentNewsEdit">The news object that contains updated values</param>
             <returns>The updated news item</returns>
             <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.NewsController.UpdateAcceptedStatus(System.Int32,System.Boolean)">
+            <summary>
+             Approve or deny a news posting in the database
+            </summary>
+            <param name="newsID">The id of the news item to approve</param>
+            <param name="newsStatusAccepted">The accept status that will apply to the news item</param>
+            <returns>The approved or denied news item</returns>
+            <remarks>The news item must not be expired</remarks>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
@@ -673,12 +682,14 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.GetMembershipsByUser(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetMembershipsByUser(System.String,System.String,System.String)">
             <summary>
             Fetch memberships that a specific student has been a part of
             @TODO: Move security checks to state your business? Or consider changing implementation here
             </summary>
             <param name="username">The Student Username</param>
+            <param name="sessionCode">Optional session code or "current". If passed, only memberships from that session will be included. </param>
+            <param name="participation">Optional participation type. If passed, only memberships of that participation type will be inlcuded</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.Get">
@@ -896,6 +907,13 @@
             <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
             <returns>The status that was stored in the database</returns>
         </member>
+        <member name="F:Gordon360.Enums.Participation.GroupAdmin">
+            <summary>
+            NOTE: Group admin is not strictly a participation type. 
+            It's a separate role that Advisors and Leaders can have, with a separate flag in the database 
+            BUT, it's convenient to treat it as a participation type in several places throughout the API
+            </summary>
+        </member>
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>
             Whether the user wants their strengths to be private (not shown to other users)
@@ -1079,7 +1097,7 @@
             <param name="building">The building search param</param>
             <returns>The accounts from the provided list that match the given search params</returns>
         </member>
-        <member name="M:Gordon360.Services.AccountService.GetAccountsToSearch(System.Collections.Generic.List{System.String},System.Collections.Generic.IEnumerable{Gordon360.Authorization.AuthGroup},System.String)">
+        <member name="M:Gordon360.Services.AccountService.GetAccountsToSearch(System.Collections.Generic.List{System.String},System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},System.String)">
             <summary>
             Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
             </summary>
@@ -1312,7 +1330,7 @@
             Service class to facilitate getting emails for members of an activity.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAsync(System.String,System.String,Gordon360.Services.MembershipService.ParticipationType)">
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAsync(System.String,System.String,System.Nullable{Gordon360.Enums.Participation})">
             <summary>
             Get a list of the emails for all members in the activity during the current session.
             </summary>
@@ -1791,7 +1809,7 @@
             <returns>The deleted news item</returns>
             <remarks>The news item must be authored by the user and must not be expired</remarks>
         </member>
-        <member name="M:Gordon360.Services.NewsService.EditPosting(System.Int32,Gordon360.Models.MyGordon.StudentNews)">
+        <member name="M:Gordon360.Services.NewsService.EditPosting(System.Int32,Gordon360.Models.ViewModels.StudentNewsUploadViewModel)">
             <summary>
             (Service) Edits a news item in the database
             </summary>
@@ -1806,6 +1824,13 @@
             </summary>
             <param name="newsItem">The news item to verify</param>
             <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
+        </member>
+        <member name="M:Gordon360.Services.NewsService.VerfiyApproved(Gordon360.Models.MyGordon.StudentNews)">
+            <summary>
+            Helper method to verify that a given news item has already been approved
+            </summary>
+            <param name="newsItem">The news item to verify</param>
+            <returns>true if approved, otherwise throws some kind of meaningful exception</returns>
         </member>
         <member name="M:Gordon360.Services.NewsService.VerifyUnexpired(Gordon360.Models.MyGordon.StudentNews)">
             <summary>

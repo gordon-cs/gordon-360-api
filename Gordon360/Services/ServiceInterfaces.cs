@@ -1,4 +1,4 @@
-﻿using Gordon360.Authorization;
+﻿using Gordon360.Enums;
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
@@ -145,7 +145,7 @@ namespace Gordon360.Services
 
     public interface IEmailService
     {
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, ParticipationType? participationType);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, Participation? participationType);
         void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
         Task SendEmailToActivityAsync(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
@@ -185,7 +185,7 @@ namespace Gordon360.Services
         Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate);
         MembershipView Delete(int membershipID);
         bool IsGroupAdmin(string username);
-        IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null);
+        IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, Participation? participationCode = null);
         MembershipView GetMembershipViewById(int membershipId);
         bool ValidateMembership(MembershipUploadViewModel membership);
         bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);

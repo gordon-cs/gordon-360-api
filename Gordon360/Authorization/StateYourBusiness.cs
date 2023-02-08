@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Gordon360.Models.ViewModels;
 using Gordon360.Extensions.System;
 using static Gordon360.Services.MembershipService;
+using Gordon360.Enums;
 
 namespace Gordon360.Authorization
 {
@@ -196,7 +197,7 @@ namespace Gordon360.Authorization
                         if (context.ActionArguments["activityCode"] is string activityCode)
                         {
                                 var activityMembers = _membershipService.GetMembershipsForActivity(activityCode);
-                                var is_personAMember = activityMembers.Any(x => x.Username.EqualsIgnoreCase(user_name) && x.Participation != ParticipationType.Guest.Value);
+                                var is_personAMember = activityMembers.Any(x => x.Username.EqualsIgnoreCase(user_name) && x.Participation != Participation.Guest.GetDescription());
                             return is_personAMember;
                         }
                         return false;
@@ -227,7 +228,8 @@ namespace Gordon360.Authorization
                 case Resource.EMAILS_BY_ACTIVITY:
                     {
                         // Anyone can view group-admin and advisor emails
-                        if (context.ActionArguments["participationType"] is string participationType && participationType.In("group-admin", "advisor", "leader"))
+                        if (context.ActionArguments["participationType"] is string participationType
+                            && (participationType.Parse()?.In(Participation.GroupAdmin, Participation.Advisor, Participation.Leader) ?? false))
                         {
                             return true;
                         }
@@ -239,10 +241,10 @@ namespace Gordon360.Authorization
                                     .Any(a => 
                                             a.Username.EqualsIgnoreCase(user_name) 
                                             && (a.GroupAdmin == true 
-                                                || a.Participation.In(
-                                                    ParticipationType.Leader.Value, 
-                                                    ParticipationType.Advisor.Value
-                                                    )
+                                                || (a.Participation.Parse()?.In(
+                                                    Participation.Leader, 
+                                                    Participation.Advisor
+                                                    ) ?? false)
                                                )
                                          );
                         }
@@ -452,12 +454,12 @@ namespace Gordon360.Authorization
 
 
                             var isGroupAdmin = _membershipService.GetGroupAdminMembershipsForActivity(activityCode, sessionCode).Any(x => x.Username.EqualsIgnoreCase(user_name));
-                            if (membershipToConsider.Participation == ParticipationType.Advisor.Value)
+                            if (membershipToConsider.Participation == Participation.Advisor.GetDescription())
                             {
                                 var currentUserMembership = _membershipService.GetGroupAdminMembershipsForActivity(activityCode, sessionCode).FirstOrDefault(x => x.Username == user_name);
-                                return currentUserMembership?.Participation == ParticipationType.Advisor.Value;
+                                return currentUserMembership?.Participation == Participation.Advisor.GetDescription();
                             }
-                            else if (isGroupAdmin && membershipToConsider.Participation != ParticipationType.Advisor.Value)
+                            else if (isGroupAdmin && membershipToConsider.Participation != Participation.Advisor.GetDescription())
                             {
                                 // Activity Advisors can update memberships of people in their activity.
                                 return true;

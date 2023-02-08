@@ -1,4 +1,4 @@
-﻿namespace Gordon360.Authorization
+﻿namespace Gordon360.Enums
 {
     public enum AuthGroup
     {
@@ -14,7 +14,7 @@
         Student
     }
 
-    public static class AuthGroupEnum
+    public static class AuthGroupExtensions
     {
         public static AuthGroup? FromString(string groupName) => groupName switch
         {

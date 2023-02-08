@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Gordon360.Enums;
+using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Security.Claims;
@@ -23,7 +24,7 @@ namespace Gordon360.Authorization
         {
             return User.Claims
                 .Where(x => x.Type == "groups")
-                .Select(g => AuthGroupEnum.FromString(g.Value))
+                .Select(g => g.Value.Parse())
                 .OfType<AuthGroup>();
         }
 
@@ -44,7 +45,7 @@ namespace Gordon360.Authorization
 
             return user.GetAuthorizationGroups()
                                .Where(g => g is GroupPrincipal)
-                               .Select(g => AuthGroupEnum.FromString(g.SamAccountName))
+                               .Select(g => g.SamAccountName.Parse())
                                .OfType<AuthGroup>();
         }
     }
