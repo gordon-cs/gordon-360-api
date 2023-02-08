@@ -235,32 +235,47 @@ public class StateYourBusiness : ActionFilterAttribute
                 }
             case Resource.EMAILS_BY_ACTIVITY:
                 {
+                    var publicParticipantTypes = new List<string>
+                                {
+                                    Participation.GroupAdmin.GetDescription(),
+                                    Participation.Advisor.GetDescription()
+                                };
+
                     // Anyone can view group-admin and advisor emails
-                    if (context.ActionArguments["participationType"] is string participationType
-                        && (participationType
-                            .Parse()?
-                            .In(
-                                Participation.GroupAdmin,
-                                Participation.Advisor,
-                                Participation.Leader
-                            ) == true))
+                    // TODO: Remove once Obsolete EmailsController routes are gone
+                    if (context.ActionArguments.TryGetValue("participationType", out var participationType)
+                        && participationType is string participation
+                        && participation.In(publicParticipantTypes.ToArray())
+                        )
                     {
                         return true;
                     }
 
-                    // Only leaders, advisors, and group admins
-                    if (context.ActionArguments["activityCode"] is string activityCode)
+                    // Anyone can view group-admin and advisor emails
+                    if (context.ActionArguments.TryGetValue("participationTypes", out var p)
+                        && p is List<string> participationTypes
+                        && participationTypes.All(pt => pt.In(publicParticipantTypes.ToArray()))
+                        )
                     {
-                        return _membershipService
-                            .GetMembershipsForActivity(
-                                activityCode,
-                                sessionCode: context.ActionArguments["sessionCode"] as string ?? null,
-                                participationTypes: new List<string>
+                        return true;
+                    }
+
+                    var leaderTypes = new List<string>
                                 {
                                     Participation.GroupAdmin.GetDescription(),
                                     Participation.Leader.GetDescription(),
                                     Participation.Advisor.GetDescription()
-                                })
+                                };
+
+                    // Only leaders, advisors, and group admins
+                    if (context.ActionArguments["activityCode"] is string activityCode)
+                    {
+                        string? sessionCode = context.ActionArguments.TryGetValue("sessionCode", out var sessionCodeObject) ? sessionCodeObject as string : null;
+                        return _membershipService
+                            .GetMembershipsForActivity(
+                                activityCode,
+                                sessionCode,
+                                participationTypes: leaderTypes )
                             .Any(a => a.Username.EqualsIgnoreCase(user_name));
                     }
 

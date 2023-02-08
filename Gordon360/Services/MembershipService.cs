@@ -297,31 +297,6 @@ namespace Gordon360.Services
             return _context.MembershipView.Any(membership => membership.Username == username && membership.GroupAdmin == true);
         }
 
-        public IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, Participation? participationCode = null)
-        {
-            var memberships = _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.SessionCode == sessionCode);
-
-            if (participationCode is Participation participation)
-            {
-                if (participationCode == Participation.GroupAdmin)
-                {
-                    memberships = memberships.Where(m => m.GroupAdmin == true);
-                }
-                else
-                {
-                    memberships = memberships.Where(m => m.Participation == participation.GetDescription());
-                }
-            }
-
-            return memberships.Join(_context.ACCOUNT, m => m.Username, a => a.AD_Username, (m, a) => new EmailViewModel
-            {
-                Email = a.email,
-                FirstName = a.firstname,
-                LastName = a.lastname,
-                Description = m.Description
-            });
-        }
-
         /// <summary>	
         /// Finds the matching MembershipView object from an existing MEMBERSHIP object
         /// </summary>

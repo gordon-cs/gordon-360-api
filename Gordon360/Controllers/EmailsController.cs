@@ -1,13 +1,11 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Enums;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Gordon360.Services.MembershipService;
 
 namespace Gordon360.Controllers
 {
@@ -16,25 +14,30 @@ namespace Gordon360.Controllers
     {
         private readonly IEmailService _emailService;
 
-        public EmailsController(CCTContext context, IEmailService emailService)
+        public EmailsController(IEmailService emailService)
         {
             _emailService = emailService;
         }
 
         [HttpGet]
+        [Route("involvement/{activityCode}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
+        public async Task<ActionResult<IEnumerable<EmailViewModel>>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
+        {
+            var result = await _emailService.GetEmailsForActivityAsync(activityCode, sessionCode, participationTypes);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("activity/{activityCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public async Task<ActionResult<IEnumerable<EmailViewModel>>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, string? participationType)
+        [Obsolete("Use the new route that accepts a list of participation types instead")]
+        public async Task<ActionResult<IEnumerable<EmailViewModel>>> DEPRECATED_GetEmailsForActivityAsync(string activityCode, string? sessionCode, string? participationType)
         {
-            var participation = participationType.Parse(); 
-            var result = await _emailService.GetEmailsForActivityAsync(activityCode, sessionCode, participation);
+            var result = await _emailService.GetEmailsForActivityAsync(activityCode, sessionCode, new List<string> { participationType ?? "" });
 
-            if (result == null)
-            {
-                NotFound();
-            }
             return Ok(result);
-
         }
 
         [HttpPut]

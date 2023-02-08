@@ -31,20 +31,21 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The code of the activity to get emails for.</param>
         /// <param name="sessionCode">Optionally, the session to get emails for. Defaults to the current session</param>
-        /// <param name="participationType">The participation type to get emails of. If unspecified, gets emails of all participation types.</param>
+        /// <param name="participationTypes">The participation types to get emails of. If unspecified, gets emails of all participation types.</param>
         /// <returns>A list of emails (along with first and last name) associated with that activity</returns>
-        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, Participation? participationType = null)
+        public async Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, List<string>? participationTypes = null)
         {
             sessionCode ??= Helpers.GetCurrentSession(_context);
 
-            var result = _membershipService.MembershipEmails(activityCode, sessionCode, participationType);
+            var memberships = _membershipService.GetMembershipsForActivity(activityCode, sessionCode, participationTypes);
 
-            if (result == null)
+            return memberships.Join(_context.ACCOUNT, m => m.Username, a => a.AD_Username, (m, a) => new EmailViewModel
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-            }
-
-            return result;
+                Email = a.email,
+                FirstName = a.firstname,
+                LastName = a.lastname,
+                Description = m.Description
+            });
         }
 
         /// <summary>

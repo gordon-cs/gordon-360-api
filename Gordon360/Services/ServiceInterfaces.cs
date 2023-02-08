@@ -145,7 +145,7 @@ namespace Gordon360.Services
 
     public interface IEmailService
     {
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, Participation? participationType);
+        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, List<string>? participationTypes = null);
         void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
         Task SendEmailToActivityAsync(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
@@ -181,7 +181,6 @@ namespace Gordon360.Services
         Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate);
         MembershipView Delete(int membershipID);
         bool IsGroupAdmin(string username);
-        IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, Participation? participationCode = null);
         MembershipView GetMembershipViewById(int membershipId);
         bool ValidateMembership(MembershipUploadViewModel membership);
         bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);

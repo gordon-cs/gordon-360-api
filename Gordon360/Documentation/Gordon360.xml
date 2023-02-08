@@ -390,7 +390,16 @@
             <returns></returns>
             <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivity(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivity(System.String,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Get all the memberships associated with a given activity
+            </summary>
+            <param name="activityCode">The activity ID</param>
+            <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to all sessions.</param>
+            <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
+            <returns>An IEnumerable of the matching MembershipViews</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivityAndSession(System.String,System.String)">
             <summary>
             Get all the memberships associated with a given activity
             </summary>
@@ -405,20 +414,6 @@
             <param name="activityCode">The activity ID.</param>
             <param name="sessionCode">The session code of the activity.</param>
             <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetLeadersForActivity(System.String)">
-            <summary>
-            Gets the leader-type memberships associated with a given activity.
-            </summary>
-            <param name="activityCode">The activity ID.</param>
-            <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetAdvisorsForActivityAsync(System.String)">
-            <summary>
-            Gets the advisor-type memberships associated with a given activity.
-            </summary>
-            <param name="activityCode">The activity ID.</param>
-            <returns>An IEnumerable of all advisor-type memberships for the specified activity.</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetActivitySubscribersCountForSession(System.String,System.String)">
             <summary>
@@ -1330,13 +1325,13 @@
             Service class to facilitate getting emails for members of an activity.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAsync(System.String,System.String,System.Nullable{Gordon360.Enums.Participation})">
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAsync(System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get a list of the emails for all members in the activity during the current session.
             </summary>
             <param name="activityCode">The code of the activity to get emails for.</param>
             <param name="sessionCode">Optionally, the session to get emails for. Defaults to the current session</param>
-            <param name="participationType">The participation type to get emails of. If unspecified, gets emails of all participation types.</param>
+            <param name="participationTypes">The participation types to get emails of. If unspecified, gets emails of all participation types.</param>
             <returns>A list of emails (along with first and last name) associated with that activity</returns>
         </member>
         <member name="M:Gordon360.Services.EmailService.SendEmails(System.String[],System.String,System.String,System.String,System.String)">
