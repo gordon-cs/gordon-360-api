@@ -16,16 +16,6 @@
 
     public static class ParticipationExtensions
     {
-        public static Participation? Parse(this string? participationType) => participationType switch
-        {
-            "LEAD" => Participation.Leader,
-            "GUEST" => Participation.Guest,
-            "MEMBR" => Participation.Member,
-            "ADV" => Participation.Advisor,
-            "GRP_ADMIN" => Participation.GroupAdmin,
-            _ => null
-        };
-
         public static string GetDescription(this Participation participation) => participation switch
         {
             Participation.Leader => "LEAD",

@@ -14,7 +14,7 @@
         Student
     }
 
-    public static class AuthGroupExtensions
+    public static class AuthGroupEnum
     {
         public static AuthGroup? FromString(string groupName) => groupName switch
         {

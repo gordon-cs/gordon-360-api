@@ -24,7 +24,7 @@ namespace Gordon360.Authorization
         {
             return User.Claims
                 .Where(x => x.Type == "groups")
-                .Select(g => g.Value.Parse())
+                .Select(g => AuthGroupEnum.FromString(g.Value))
                 .OfType<AuthGroup>();
         }
 
@@ -45,7 +45,7 @@ namespace Gordon360.Authorization
 
             return user.GetAuthorizationGroups()
                                .Where(g => g is GroupPrincipal)
-                               .Select(g => g.SamAccountName.Parse())
+                               .Select(g => AuthGroupEnum.FromString(g.SamAccountName))
                                .OfType<AuthGroup>();
         }
     }
