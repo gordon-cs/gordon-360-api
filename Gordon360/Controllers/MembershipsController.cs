@@ -1,12 +1,13 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Enums;
 using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
@@ -15,14 +16,27 @@ namespace Gordon360.Controllers
     public class MembershipsController : GordonControllerBase
     {
         private readonly IMembershipService _membershipService;
-        private readonly IAccountService _accountService;
-        private readonly IActivityService _activityService;
 
-        public MembershipsController(IActivityService activityService, IAccountService accountService, IMembershipService membershipService)
+        public MembershipsController(IMembershipService membershipService)
         {
-            _activityService = activityService;
-            _accountService = accountService;
             _membershipService = membershipService;
+        }
+
+        /// <summary>
+        /// Get all the memberships associated with a given activity
+        /// </summary>
+        /// <param name="activityCode">The activity ID</param>
+        /// <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to all sessions.</param>
+        /// <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
+        /// <returns>An IEnumerable of the matching MembershipViews</returns>
+        [HttpGet]
+        [Route("activities/{activityCode}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
+        public ActionResult<IEnumerable<MembershipView>> GetMembershipsForActivity(string activityCode, string? sessionCode, [FromQuery] List<string>? participationTypes)
+        {
+            var result = _membershipService.GetMembershipsForActivity(activityCode, sessionCode, participationTypes);
+
+            return Ok(result);
         }
 
         /// <summary>
@@ -34,7 +48,8 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("activities/{activityCode}/sessions/{sessionCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
-        public ActionResult<IEnumerable<MembershipView>> GetMembershipsForActivity(string activityCode, string? sessionCode)
+        [Obsolete("Use the new route at activities/{activityCode} instead")]
+        public ActionResult<IEnumerable<MembershipView>> GetMembershipsForActivityAndSession(string activityCode, string sessionCode)
         {
             var result = _membershipService.GetMembershipsForActivity(activityCode, sessionCode);
 
@@ -49,37 +64,10 @@ namespace Gordon360.Controllers
         /// <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
         [Route("activities/{activityCode}/sessions/{sessionCode}/admins")]
+        [Obsolete("Use the new route at activities/{activityCode} instead")]
         public ActionResult<IEnumerable<MembershipView>> GetGroupAdminsForActivity(string activityCode, string sessionCode)
         {
-            var result = _membershipService.GetGroupAdminMembershipsForActivity(activityCode, sessionCode);
-
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Gets the leader-type memberships associated with a given activity.
-        /// </summary>
-        /// <param name="activityCode">The activity ID.</param>
-        /// <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
-        [HttpGet]
-        [Route("activity/{activityCode}/leaders")]
-        public ActionResult<IEnumerable<MembershipView>> GetLeadersForActivity(string activityCode)
-        {
-            var result = _membershipService.GetLeaderMembershipsForActivity(activityCode);
-
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Gets the advisor-type memberships associated with a given activity.
-        /// </summary>
-        /// <param name="activityCode">The activity ID.</param>
-        /// <returns>An IEnumerable of all advisor-type memberships for the specified activity.</returns>
-        [HttpGet]
-        [Route("activity/{activityCode}/advisors")]
-        public ActionResult<IEnumerable<MembershipView>> GetAdvisorsForActivityAsync(string activityCode)
-        {
-            var result = _membershipService.GetAdvisorMembershipsForActivity(activityCode);
+            var result = _membershipService.GetMembershipsForActivity(activityCode, sessionCode, new List<string> { Participation.GroupAdmin.GetDescription() });
 
             return Ok(result);
         }
@@ -125,8 +113,6 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
         public async Task<ActionResult<MembershipView>> PostAsync([FromBody] MembershipUploadViewModel membershipUpload)
         {
-            var idNum = _accountService.GetAccountByUsername(membershipUpload.Username).GordonID;
-
             var result = await _membershipService.AddAsync(membershipUpload);
 
             if (result == null)

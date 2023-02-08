@@ -528,7 +528,7 @@ namespace Gordon360.Controllers
                         return true;
                     } else {
                         // If the current authenticated user is an admin of this group, then include the membership
-                        var admins = _membershipService.GetGroupAdminMembershipsForActivity(m.ActivityCode, m.SessionCode);
+                        var admins = _membershipService.GetMembershipsForActivity(m.ActivityCode, m.SessionCode, new List<string> { Participation.GroupAdmin.GetDescription() });
 
                         return admins.Any(a => a.Username == authenticatedUserUsername);
                     }

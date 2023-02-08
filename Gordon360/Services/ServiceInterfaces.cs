@@ -166,14 +166,10 @@ namespace Gordon360.Services
 
     public interface IMembershipService
     {
-        IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode);
-        IEnumerable<MembershipView> GetAdvisorMembershipsForActivity(string activityCode);
-        IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode, string? sessionCode = null);
         IEnumerable<MembershipView> GetMembershipsForActivity(
             string activityCode,
             string? sessionCode = null,
-            bool? groupAdmin = null,
-            string[]? participationTypes = null
+            List<string>? participationTypes = null
         );
         IEnumerable<MembershipView> GetMembershipsByUser(string username);
         int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode);

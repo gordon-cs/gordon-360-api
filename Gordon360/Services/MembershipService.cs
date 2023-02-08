@@ -51,13 +51,12 @@ namespace Gordon360.Services
             if (payload?.Entity == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership." };
-            } else
+            }
+            else
             {
                 await _context.SaveChangesAsync();
                 return GetMembershipViewById(payload.Entity.MEMBERSHIP_ID);
             }
-
-
         }
 
         /// <summary>
@@ -68,6 +67,7 @@ namespace Gordon360.Services
         public MembershipView Delete(int membershipID)
         {
             var result = _context.MEMBERSHIP.Find(membershipID);
+
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
@@ -88,7 +88,8 @@ namespace Gordon360.Services
         /// <returns>The found membership as a MembershipView</returns>	
         public MembershipView GetSpecificMembership(int membershipID)
         {
-            MembershipView result = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
+            var result = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
+
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
@@ -102,68 +103,31 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="activityCode">The activity code</param>
         /// <param name="sessionCode">Optional code of session to get memberships for</param>
-        /// <param name="groupAdmin">Optional filter for group admins</param>
         /// <param name="participationTypes">Optional filter for involvement participation type (MEMBR, ADV, LEAD, GUEST)</param>
         /// <returns>An IEnumerable of the matching MembershipView objects</returns>
         public IEnumerable<MembershipView> GetMembershipsForActivity(
             string activityCode,
             string? sessionCode = null,
-            bool? groupAdmin = null,
-            string[]? participationTypes = null
-
-        ) {
-
+            List<string>? participationTypes = null
+        )
+        {
             sessionCode ??= Helpers.GetCurrentSession(_context);
 
             IEnumerable<MembershipView> memberships = _context.MembershipView
                 .Where(m =>
                     m.SessionCode.Trim() == sessionCode
                     && m.ActivityCode == activityCode);
-            if (groupAdmin is not null)
+
+            if (participationTypes?.Count > 0)
             {
-                memberships = memberships.Where(m => m.GroupAdmin == groupAdmin);
-            }
-            if (participationTypes?.Length > 0)
-            {
-                memberships = memberships.Where(m => participationTypes.Contains(m.Participation));
+                var groupAdmin = Participation.GroupAdmin.GetDescription();
+                var includesGroupAdmin = participationTypes.Contains(groupAdmin) == true;
+                if (includesGroupAdmin) participationTypes.Remove(groupAdmin);
+
+                memberships = memberships.Where(m => participationTypes.Contains(m.Participation) || (includesGroupAdmin && m.GroupAdmin == true));
             }
 
             return memberships.OrderByDescending(m => m.StartDate);
-        }
-
-        /// <summary>
-        /// Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
-        /// </summary>
-        /// <param name="activityCode">The activity code</param>
-        /// <param name="sessionCode">The session code</param>
-        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
-        public IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode, string? sessionCode = null)
-        {
-            sessionCode ??= Helpers.GetCurrentSession(_context);
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.SessionCode == sessionCode && m.GroupAdmin == true);
-        }
-
-        /// <summary>
-        /// Fetches the leaders of the activity whose activity code is specified by the parameter.
-        /// </summary>
-        /// <param name="activityCode">The activity code</param>
-        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
-        public IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode)
-        {
-            var leaderRole = Helpers.GetLeaderRoleCodes();
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == leaderRole);
-        }
-
-        /// <summary>
-        /// Fetches the advisors of the activity whose activity code is specified by the parameter.
-        /// </summary>
-        /// <param name="activityCode">The activity code</param>
-        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
-        public IEnumerable<MembershipView> GetAdvisorMembershipsForActivity(string activityCode)
-        {
-
-            var advisorRole = Helpers.GetAdvisorRoleCodes();
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == advisorRole);
         }
 
         /// <summary>
@@ -173,9 +137,7 @@ namespace Gordon360.Services
         /// <returns>An IEnumerable of the matching MembershipView objects</returns>
         public IEnumerable<MembershipView> GetMembershipsByUser(string username)
         {
-            var account = _accountService.GetAccountByUsername(username);
-
-            return _context.MembershipView.Where(m => m.Username == account.ADUserName).OrderByDescending(x => x.StartDate);
+            return _context.MembershipView.Where(m => m.Username == username);
         }
 
         /// <summary>
@@ -351,16 +313,12 @@ namespace Gordon360.Services
                 }
             }
 
-            return memberships.AsEnumerable().Select(m =>
+            return memberships.Join(_context.ACCOUNT, m => m.Username, a => a.AD_Username, (m, a) => new EmailViewModel
             {
-                var account = _accountService.GetAccountByUsername(m.Username);
-                return new EmailViewModel
-                {
-                    Email = account.Email,
-                    FirstName = account.FirstName,
-                    LastName = account.LastName,
-                    Description = m.Description
-                };
+                Email = a.email,
+                FirstName = a.firstname,
+                LastName = a.lastname,
+                Description = m.Description
             });
         }
 

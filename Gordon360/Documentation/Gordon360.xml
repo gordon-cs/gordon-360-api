@@ -1634,36 +1634,13 @@
             <param name="membershipID">The membership id</param>	
             <returns>The found membership as a MembershipView</returns>	
         </member>
-        <member name="M:Gordon360.Services.MembershipService.GetMembershipsForActivity(System.String,System.String,System.Nullable{System.Boolean},System.String[])">
+        <member name="M:Gordon360.Services.MembershipService.GetMembershipsForActivity(System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Fetches the memberships associated with the activity whose code is specified by the parameter.
             </summary>
             <param name="activityCode">The activity code</param>
             <param name="sessionCode">Optional code of session to get memberships for</param>
-            <param name="groupAdmin">Optional filter for group admins</param>
             <param name="participationTypes">Optional filter for involvement participation type (MEMBR, ADV, LEAD, GUEST)</param>
-            <returns>An IEnumerable of the matching MembershipView objects</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetGroupAdminMembershipsForActivity(System.String,System.String)">
-            <summary>
-            Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
-            </summary>
-            <param name="activityCode">The activity code</param>
-            <param name="sessionCode">The session code</param>
-            <returns>An IEnumerable of the matching MembershipView objects</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetLeaderMembershipsForActivity(System.String)">
-            <summary>
-            Fetches the leaders of the activity whose activity code is specified by the parameter.
-            </summary>
-            <param name="activityCode">The activity code</param>
-            <returns>An IEnumerable of the matching MembershipView objects</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetAdvisorMembershipsForActivity(System.String)">
-            <summary>
-            Fetches the advisors of the activity whose activity code is specified by the parameter.
-            </summary>
-            <param name="activityCode">The activity code</param>
             <returns>An IEnumerable of the matching MembershipView objects</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.GetMembershipsByUser(System.String)">
