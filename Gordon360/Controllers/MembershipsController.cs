@@ -80,7 +80,7 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Gets the number of memberships matching the specified filters
         /// </summary>
-        /// <param name="activityCode">Optional involvementCode filter</param>
+        /// <param name="activityCode">Optional activityCode filter</param>
         /// <param name="username">Optional username filter</param>
         /// <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
         /// <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
@@ -109,7 +109,7 @@ namespace Gordon360.Controllers
         /// <param name="sessionCode">Optional code of session to get for</param>
         /// <returns>An IEnumerable of the matching MembershipViews</returns>
         [HttpGet]
-        [Route("activities/{involvementCode}/sessions/{sessionCode}")]
+        [Route("activities/{activityCode}/sessions/{sessionCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP_BY_ACTIVITY)]
         [Obsolete("Use the new route at /api/memberships instead")]
         public ActionResult<IEnumerable<MembershipView>> GetMembershipsForActivityAndSession(string activityCode, string sessionCode)
@@ -126,7 +126,7 @@ namespace Gordon360.Controllers
         /// <param name="sessionCode">The session code of the activity.</param>
         /// <returns>An IEnumerable of all leader-type memberships for the specified activity.</returns>
         [HttpGet]
-        [Route("activities/{involvementCode}/sessions/{sessionCode}/admins")]
+        [Route("activities/{activityCode}/sessions/{sessionCode}/admins")]
         [Obsolete("Use the new route at /api/memberships instead")]
         public ActionResult<IEnumerable<MembershipView>> GetGroupAdminsForActivity(string activityCode, string sessionCode)
         {
@@ -145,7 +145,7 @@ namespace Gordon360.Controllers
         /// <param name="sessionCode">The session code</param>
         /// <returns>The number of followers of the activity</returns>
         [HttpGet]
-        [Route("activities/{involvementCode}/sessions/{sessionCode}/subscriber-count")]
+        [Route("activities/{activityCode}/sessions/{sessionCode}/subscriber-count")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         [Obsolete("Use the new route at /api/memberships/count instead")]
         public ActionResult<int> GetActivitySubscribersCountForSession(string activityCode, string sessionCode)
@@ -168,7 +168,7 @@ namespace Gordon360.Controllers
         /// <param name="sessionCode">The session code</param>
         /// <returns>The number of members of the activity</returns>
         [HttpGet]
-        [Route("activities/{involvementCode}/sessions/{sessionCode}/member-count")]
+        [Route("activities/{activityCode}/sessions/{sessionCode}/member-count")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
         [Obsolete("Use the new route at /api/memberships/count instead")]
         public ActionResult<int> GetActivityMembersCountForSession(string activityCode, string sessionCode)

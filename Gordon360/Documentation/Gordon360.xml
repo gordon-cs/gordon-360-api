@@ -404,7 +404,7 @@
             <summary>
             Gets the number of memberships matching the specified filters
             </summary>
-            <param name="activityCode">Optional involvementCode filter</param>
+            <param name="activityCode">Optional activityCode filter</param>
             <param name="username">Optional username filter</param>
             <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
             <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
