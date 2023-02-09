@@ -53,24 +53,7 @@ namespace Gordon360.Controllers
                     || viewerGroups.Contains(AuthGroup.Police)
                     ))
                 {
-                    memberships = memberships.Where(m =>
-                    {
-                        var act = _activityService.Get(m.ActivityCode);
-                        var isPublic = !(act.Privacy == true || m.Privacy == true);
-                        if (isPublic)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            // If the current authenticated user is an admin of this group, then include the membership
-                            return _membershipService.GetMemberships(
-                                activityCode: m.ActivityCode,
-                                username: authenticatedUserUsername,
-                                sessionCode: m.SessionCode)
-                            .Any(m => m.Participation != Participation.Guest.GetDescription());
-                        }
-                    });
+                    memberships = WithoutPrivateMemberships(memberships, authenticatedUserUsername);
                 }
             }
 
@@ -260,5 +243,26 @@ namespace Gordon360.Controllers
 
             return Ok(result);
         }
+
+        private IEnumerable<MembershipView> WithoutPrivateMemberships(IEnumerable<MembershipView> memberships, string viewerUsername)
+            => memberships.Where(m =>
+                {
+                    var act = _activityService.Get(m.ActivityCode);
+                    var isPublic = !(act.Privacy == true || m.Privacy == true);
+                    if (isPublic)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        // If the current authenticated user is an admin of this group, then include the membership
+                        return _membershipService.GetMemberships(
+                            activityCode: m.ActivityCode,
+                            username: viewerUsername,
+                            sessionCode: m.SessionCode)
+                        .Any(m => m.Participation != Participation.Guest.GetDescription());
+                    }
+                });
+
     }
 }
