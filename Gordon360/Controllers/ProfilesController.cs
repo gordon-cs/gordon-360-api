@@ -5,6 +5,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -494,7 +495,6 @@ namespace Gordon360.Controllers
             }
         }
 
-
         /// <summary>
         /// Fetch memberships that a specific student has been a part of
         /// @TODO: Move security checks to state your business? Or consider changing implementation here
@@ -525,28 +525,39 @@ namespace Gordon360.Controllers
                 return Ok(memberships);
             }
 
-            var visibleMemberships = memberships.Where(m =>
-            {
-                var act = _activityService.Get(m.ActivityCode);
-                var isPublic = !(act.Privacy == true || m.Privacy == true);
-                if (isPublic)
-                {
-                    return true;
-                }
-                else
-                {
-                    // If the current authenticated user is an admin of this group, then include the membership
-                    return _membershipService.GetMemberships(
-                        activityCode: m.ActivityCode,
-                        username: authenticatedUserUsername,
-                        sessionCode: m.SessionCode,
-                        participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
-                    .Any();
-
-                }
-            });
+            var visibleMemberships = _membershipService.WithoutPrivateMemberships(memberships, authenticatedUserUsername);
 
             return Ok(visibleMemberships);
+        }
+
+        /// <summary>
+        /// Fetch the history of a user's memberships
+        /// </summary>
+        /// <param name="username">The Student Username</param>
+        /// <returns>The history of that user's membership in involvements</returns>
+        [Route("{username}/memberships-history")]
+        [HttpGet]
+        public ActionResult<IEnumerable<MembershipHistoryViewModel>> GetMembershipHistory(string username)
+        {
+            var memberships = _membershipService
+                .GetMemberships(username: username, sessionCode: "*")
+                .Where(m => m.Participation != Participation.Guest.GetDescription());
+
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
+
+            // User can see all their own memberships. SiteAdmin and Police can see all of anyone's memberships
+            if (!(username == authenticatedUserUsername
+                || viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)
+                ))
+            {
+                memberships = _membershipService.WithoutPrivateMemberships(memberships, authenticatedUserUsername);
+            }
+
+            var membershipHistories = memberships.GroupBy(m => m.ActivityCode).Select(group => MembershipHistoryViewModel.FromMembershipGroup(group));
+
+            return Ok(membershipHistories);
         }
     }
 }

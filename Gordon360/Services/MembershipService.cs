@@ -22,11 +22,13 @@ namespace Gordon360.Services
     {
         private readonly CCTContext _context;
         private readonly IAccountService _accountService;
+        private readonly IActivityService _activityService;
 
-        public MembershipService(CCTContext context, IAccountService accountService)
+        public MembershipService(CCTContext context, IAccountService accountService, IActivityService activityService)
         {
             _context = context;
             _accountService = accountService;
+            _activityService = activityService;
         }
 
         /// <summary>
@@ -287,5 +289,31 @@ namespace Gordon360.Services
 
             return foundMembership;
         }
+
+        /// <summary>
+        /// Filters out memberships that are private with respect to the given viewer
+        /// </summary>
+        /// <param name="memberships">Enumerable of memberships to filter</param>
+        /// <param name="viewerUsername">username of viewer to whom memberships are/are not private</param>
+        /// <returns>The membership enumerable with private memberships removed</returns>
+        public IEnumerable<MembershipView> WithoutPrivateMemberships(IEnumerable<MembershipView> memberships, string viewerUsername)
+            => memberships.Where(m =>
+                {
+                    var act = _activityService.Get(m.ActivityCode);
+                    var isPublic = !(act.Privacy == true || m.Privacy == true);
+                    if (isPublic)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        // If the current authenticated user is an admin of this group, then include the membership
+                        return GetMemberships(
+                            activityCode: m.ActivityCode,
+                            username: viewerUsername,
+                            sessionCode: m.SessionCode)
+                        .Any(m => m.Participation != Participation.Guest.GetDescription());
+                    }
+                });
     }
 }
