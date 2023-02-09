@@ -42,7 +42,6 @@ public class StateYourBusiness : ActionFilterAttribute
 
     private ActionExecutingContext context;
     private CCTContext _CCTContext;
-    private MyGordonContext _MyGordonContext;
     private IAccountService _accountService;
     private IMembershipService _membershipService;
     private IMembershipRequestService _membershipRequestService;
@@ -58,8 +57,6 @@ public class StateYourBusiness : ActionFilterAttribute
         context = actionContext;
         // Step 1: Who is to be authorized
         var authenticatedUser = actionContext.HttpContext.User;
-
-
 
         _accountService = context.HttpContext.RequestServices.GetRequiredService<IAccountService>();
         _membershipService = context.HttpContext.RequestServices.GetRequiredService<IMembershipService>();
@@ -133,11 +130,12 @@ public class StateYourBusiness : ActionFilterAttribute
                             return true;
 
                         var isGroupAdmin = _membershipService
-                            .GetMembershipsForActivity(
-                                mrToConsider.ActivityCode,
-                                mrToConsider.SessionCode,
-                                new List<string> { Participation.GroupAdmin.GetDescription() })
-                            .Any(x => x.Username.EqualsIgnoreCase(user_name));
+                            .GetMemberships(
+                                activityCode: mrToConsider.ActivityCode,
+                                username: user_name,
+                                sessionCode: mrToConsider.SessionCode,
+                                participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                            .Any();
                         if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                             return true;
                     }
@@ -201,10 +199,30 @@ public class StateYourBusiness : ActionFilterAttribute
                     // Only people that are part of the activity should be able to see members
                     if (context.ActionArguments["activityCode"] is string activityCode)
                     {
-                        var activityMembers = _membershipService.GetMembershipsForActivity(activityCode);
-                        var is_personAMember = activityMembers.Any(x => x.Username.EqualsIgnoreCase(user_name) && x.Participation != Participation.Guest.GetDescription());
+                        var activityMembers = _membershipService.GetMemberships(activityCode: activityCode, username: user_name);
+                        var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetDescription());
                         return is_personAMember;
                     }
+                    return false;
+                }
+
+            case Resource.MEMBERSHIP:
+                {
+                    // Everyone can read a specific user's memberships
+                    // TODO: restrict if user is private?
+                    if (context.ActionArguments.TryGetValue("username", out object? username_object) && username_object is string username)
+                    {
+                        return true;
+                    }
+
+                    // Only members can read a specific activity's memberships
+                    if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object) && involvementCode_object is string involvementCode)
+                    {
+                        var activityMembers = _membershipService.GetMemberships(activityCode: involvementCode, username: user_name);
+                        var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetDescription());
+                        return is_personAMember;
+                    }
+
                     return false;
                 }
 
@@ -225,10 +243,11 @@ public class StateYourBusiness : ActionFilterAttribute
                     if (context.ActionArguments["activityCode"] is string activityCode)
                     {
                         var isGroupAdmin = _membershipService
-                            .GetMembershipsForActivity(
-                                activityCode,
+                            .GetMemberships(
+                                activityCode: activityCode,
+                                username: user_name,
                                 participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
-                            .Any(x => x.Username.EqualsIgnoreCase(user_name));
+                            .Any();
                         return isGroupAdmin; // If user is a group admin of the activity that the request is sent to
                     }
                     return false;
@@ -272,11 +291,12 @@ public class StateYourBusiness : ActionFilterAttribute
                     {
                         string? sessionCode = context.ActionArguments.TryGetValue("sessionCode", out var sessionCodeObject) ? sessionCodeObject as string : null;
                         return _membershipService
-                            .GetMembershipsForActivity(
-                                activityCode,
-                                sessionCode,
-                                participationTypes: leaderTypes )
-                            .Any(a => a.Username.EqualsIgnoreCase(user_name));
+                            .GetMemberships(
+                                activityCode: activityCode,
+                                username: user_name,
+                                sessionCode: sessionCode,
+                                participationTypes: leaderTypes)
+                            .Any();
                     }
 
                     return false;
@@ -401,11 +421,12 @@ public class StateYourBusiness : ActionFilterAttribute
                         var activityCode = membershipToConsider.Activity;
                         var sessionCode = membershipToConsider.Session;
                         var isGroupAdmin = _membershipService
-                            .GetMembershipsForActivity(
-                                activityCode,
-                                sessionCode,
+                            .GetMemberships(
+                                activityCode: activityCode,
+                                username: user_name,
+                                sessionCode: sessionCode,
                                 participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
-                            .Any(x => x.Username.EqualsIgnoreCase(user_name));
+                            .Any();
                         // If user is the advisor of the activity to which the request is sent.
                         if (isGroupAdmin)
                             return true;
@@ -487,8 +508,8 @@ public class StateYourBusiness : ActionFilterAttribute
 
 
                         var userMembership = _membershipService
-                            .GetMembershipsForActivity(activityCode, sessionCode)
-                            .FirstOrDefault(x => x.Username.EqualsIgnoreCase(user_name));
+                            .GetMemberships(activityCode: activityCode, username: user_name, sessionCode: sessionCode)
+                            .FirstOrDefault();
                         if (membershipToConsider.Participation == Participation.Advisor.GetDescription())
                         {
                             return userMembership?.Participation == Participation.Advisor.GetDescription();
@@ -526,13 +547,15 @@ public class StateYourBusiness : ActionFilterAttribute
 
                         // If user is a leader or advisor of the activity the request is for
                         return _membershipService
-                                .GetMembershipsForActivity(activityCode: activityCode,
-                                                           participationTypes: new List<string>
-                                                           {
-                                                               Participation.Leader.GetDescription(),
-                                                               Participation.Advisor.GetDescription()
-                                                           })
-                                .Any(x => x.Username.EqualsIgnoreCase(user_name));
+                                .GetMemberships(
+                                    activityCode: activityCode,
+                                    username: user_name,
+                                    participationTypes: new List<string>
+                                       {
+                                           Participation.Leader.GetDescription(),
+                                           Participation.Advisor.GetDescription()
+                                       })
+                                .Any();
                     }
                     return false;
                 }
@@ -594,10 +617,11 @@ public class StateYourBusiness : ActionFilterAttribute
                     if (context.ActionArguments["id"] is string activityCode)
                     {
                         var isGroupAdmin = _membershipService
-                            .GetMembershipsForActivity(
-                                activityCode,
+                            .GetMemberships(
+                                activityCode: activityCode,
+                                username: user_name,
                                 participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
-                            .Any(x => x.Username.EqualsIgnoreCase(user_name));
+                            .Any();
                         return isGroupAdmin;
                     }
                     return false;
@@ -613,10 +637,11 @@ public class StateYourBusiness : ActionFilterAttribute
                     if (context.ActionArguments["id"] is string activityCode)
                     {
                         var isGroupAdmin = _membershipService
-                            .GetMembershipsForActivity(
-                                activityCode,
+                            .GetMemberships(
+                                activityCode: activityCode,
+                                username: user_name,
                                 participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
-                            .Any(x => x.Username.EqualsIgnoreCase(user_name));
+                            .Any();
                         if (isGroupAdmin && context.ActionArguments["sess_cde"] is string sessionCode)
                         {
                             var activityService = context.HttpContext.RequestServices.GetRequiredService<IActivityService>();
@@ -686,10 +711,11 @@ public class StateYourBusiness : ActionFilterAttribute
                             return true;
 
                         var isGroupAdmin = _membershipService
-                            .GetMembershipsForActivity(
-                                membershipToConsider.ActivityCode,
+                            .GetMemberships(
+                                activityCode: membershipToConsider.ActivityCode,
+                                username: user_name,
                                 participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
-                            .Any(x => x.Username.EqualsIgnoreCase(user_name));
+                            .Any();
                         return isGroupAdmin;
                     }
 
@@ -711,10 +737,11 @@ public class StateYourBusiness : ActionFilterAttribute
                         var activityCode = mrToConsider.ActivityCode;
 
                         var isGroupAdmin = _membershipService
-                            .GetMembershipsForActivity(
-                                activityCode,
+                            .GetMemberships(
+                                activityCode: activityCode,
+                                username: user_name,
                                 participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
-                            .Any(x => x.Username.EqualsIgnoreCase(user_name));
+                            .Any();
                         if (isGroupAdmin)
                             return true;
                     }

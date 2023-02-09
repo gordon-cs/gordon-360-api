@@ -11,6 +11,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Enums;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services
 {
@@ -20,12 +21,68 @@ namespace Gordon360.Services
     public class MembershipService : IMembershipService
     {
         private readonly CCTContext _context;
-        private IAccountService _accountService;
+        private readonly IAccountService _accountService;
 
         public MembershipService(CCTContext context, IAccountService accountService)
         {
             _context = context;
             _accountService = accountService;
+        }
+
+        /// <summary>
+        /// Fetches the memberships associated with the activity whose code is specified by the parameter.
+        /// </summary>
+        /// <param name="activityCode">Optional activity code filter</param>
+        /// <param name="username">Optional username filter</param>
+        /// <param name="sessionCode">Optional session code, defaults to current session. Use "*" for all sessions</param>
+        /// <param name="participationTypes">Optional filter for involvement participation types (MEMBR, ADV, LEAD, GUEST, GRP_ADMIN)</param>
+        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
+        public IEnumerable<MembershipView> GetMemberships(
+            string? activityCode = null,
+            string? username = null,
+            string? sessionCode = null,
+            List<string>? participationTypes = null
+        )
+        {
+            IQueryable<MembershipView> memberships = _context.MembershipView;
+            if (username is not null) memberships = memberships.Where(m => EF.Functions.Like(m.Username, username));
+            if (activityCode is not null) memberships = memberships.Where(m => m.ActivityCode == activityCode);
+
+            // Null sessionCode defaults to current session
+            sessionCode ??= Helpers.GetCurrentSession(_context);
+            // session code "*" means all sessions
+            if (sessionCode != "*")
+            {
+                memberships = memberships.Where(m => m.SessionCode.Trim() == sessionCode);
+            }
+
+            if (participationTypes?.Count > 0)
+            {
+                var groupAdmin = Participation.GroupAdmin.GetDescription();
+                var includesGroupAdmin = participationTypes.Contains(groupAdmin) == true;
+                if (includesGroupAdmin) participationTypes.Remove(groupAdmin);
+
+                memberships = memberships.Where(m => participationTypes.Contains(m.Participation) || (includesGroupAdmin && m.GroupAdmin == true));
+            }
+
+            return memberships.OrderByDescending(m => m.StartDate);
+        }
+
+        /// <summary>	
+        /// Fetch the membership whose id is specified by the parameter	
+        /// </summary>	
+        /// <param name="membershipID">The membership id</param>	
+        /// <returns>The found membership as a MembershipView</returns>	
+        public MembershipView GetSpecificMembership(int membershipID)
+        {
+            var result = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -79,89 +136,6 @@ namespace Gordon360.Services
             _context.SaveChanges();
 
             return toReturn;
-        }
-
-        /// <summary>	
-        /// Fetch the membership whose id is specified by the parameter	
-        /// </summary>	
-        /// <param name="membershipID">The membership id</param>	
-        /// <returns>The found membership as a MembershipView</returns>	
-        public MembershipView GetSpecificMembership(int membershipID)
-        {
-            var result = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
-
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Fetches the memberships associated with the activity whose code is specified by the parameter.
-        /// </summary>
-        /// <param name="activityCode">The activity code</param>
-        /// <param name="sessionCode">Optional code of session to get memberships for</param>
-        /// <param name="participationTypes">Optional filter for involvement participation type (MEMBR, ADV, LEAD, GUEST)</param>
-        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
-        public IEnumerable<MembershipView> GetMembershipsForActivity(
-            string activityCode,
-            string? sessionCode = null,
-            List<string>? participationTypes = null
-        )
-        {
-            sessionCode ??= Helpers.GetCurrentSession(_context);
-
-            IEnumerable<MembershipView> memberships = _context.MembershipView
-                .Where(m =>
-                    m.SessionCode.Trim() == sessionCode
-                    && m.ActivityCode == activityCode);
-
-            if (participationTypes?.Count > 0)
-            {
-                var groupAdmin = Participation.GroupAdmin.GetDescription();
-                var includesGroupAdmin = participationTypes.Contains(groupAdmin) == true;
-                if (includesGroupAdmin) participationTypes.Remove(groupAdmin);
-
-                memberships = memberships.Where(m => participationTypes.Contains(m.Participation) || (includesGroupAdmin && m.GroupAdmin == true));
-            }
-
-            return memberships.OrderByDescending(m => m.StartDate);
-        }
-
-        /// <summary>
-        /// Fetches all the membership information linked to the student whose id appears as a parameter.
-        /// </summary>
-        /// <param name="username">The student's AD Username</param>
-        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
-        public IEnumerable<MembershipView> GetMembershipsByUser(string username)
-        {
-            return _context.MembershipView.Where(m => m.Username == username);
-        }
-
-        /// <summary>
-        /// Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
-        /// </summary>
-        /// <param name="activityCode">The activity code</param>
-        /// <param name="sessionCode">The session code</param>
-        /// <returns>The count of current guests (aka subscribers) for the activity</returns>
-        public int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode = null)
-        {
-            sessionCode ??= Helpers.GetCurrentSession(_context);
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation == Participation.Guest.GetDescription() && m.SessionCode == sessionCode).Count();
-        }
-
-        /// <summary>
-        /// Fetches the number of memberships associated with the activity and session whose codes are specified by the parameter.
-        /// </summary>
-        /// <param name="activityCode">The activity code.</param>
-        /// <param name="sessionCode">The session code</param>
-        /// <returns>The count of current members for the activity</returns>
-        public int GetActivityMembersCountForSession(string activityCode, string? sessionCode = null)
-        {
-            sessionCode ??= Helpers.GetCurrentSession(_context);
-            return _context.MembershipView.Where(m => m.ActivityCode == activityCode && m.Participation != Participation.Guest.GetDescription() && m.SessionCode == sessionCode).Count();
         }
 
         /// <summary>

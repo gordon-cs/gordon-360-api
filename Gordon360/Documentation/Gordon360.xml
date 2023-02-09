@@ -390,14 +390,25 @@
             <returns></returns>
             <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivity(System.String,System.String,System.Collections.Generic.List{System.String})">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
             </summary>
-            <param name="activityCode">The activity ID</param>
-            <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to all sessions.</param>
+            <param name="involvementCode">Optional involvementCode filter</param>
+            <param name="username">Optional username filter</param>
+            <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
             <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
             <returns>An IEnumerable of the matching MembershipViews</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipCount(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Gets the number of memberships matching the specified filters
+            </summary>
+            <param name="activityCode">Optional involvementCode filter</param>
+            <param name="username">Optional username filter</param>
+            <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
+            <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
+            <returns>The number of followers of the activity</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivityAndSession(System.String,System.String)">
             <summary>
@@ -677,14 +688,14 @@
             <param name="imagePath">Path to the profile image to load</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.GetMembershipsByUser(System.String,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetMembershipsByUser(System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Fetch memberships that a specific student has been a part of
             @TODO: Move security checks to state your business? Or consider changing implementation here
             </summary>
             <param name="username">The Student Username</param>
             <param name="sessionCode">Optional session code or "current". If passed, only memberships from that session will be included. </param>
-            <param name="participation">Optional participation type. If passed, only memberships of that participation type will be inlcuded</param>
+            <param name="participationTypes">Optional participation type. If passed, only memberships of those participation types will be inlcuded</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.Get">
@@ -1325,7 +1336,7 @@
             Service class to facilitate getting emails for members of an activity.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivityAsync(System.String,System.String,System.Collections.Generic.List{System.String})">
+        <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get a list of the emails for all members in the activity during the current session.
             </summary>
@@ -1345,7 +1356,7 @@
             <param name="password">Password of the email sender</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.EmailService.SendEmailToActivityAsync(System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Services.EmailService.SendEmailToActivity(System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Send a email to members of an activity
             </summary>
@@ -1607,6 +1618,23 @@
             Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.MembershipService.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            Fetches the memberships associated with the activity whose code is specified by the parameter.
+            </summary>
+            <param name="activityCode">Optional activity code filter</param>
+            <param name="username">Optional username filter</param>
+            <param name="sessionCode">Optional session code, defaults to current session. Use "*" for all sessions</param>
+            <param name="participationTypes">Optional filter for involvement participation types (MEMBR, ADV, LEAD, GUEST, GRP_ADMIN)</param>
+            <returns>An IEnumerable of the matching MembershipView objects</returns>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.GetSpecificMembership(System.Int32)">
+            <summary>	
+            Fetch the membership whose id is specified by the parameter	
+            </summary>	
+            <param name="membershipID">The membership id</param>	
+            <returns>The found membership as a MembershipView</returns>	
+        </member>
         <member name="M:Gordon360.Services.MembershipService.AddAsync(Gordon360.Models.ViewModels.MembershipUploadViewModel)">
             <summary>
             Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
@@ -1621,45 +1649,6 @@
             </summary>
             <param name="membershipID">The membership id</param>
             <returns>The membership that was just deleted as a MembershipView</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetSpecificMembership(System.Int32)">
-            <summary>	
-            Fetch the membership whose id is specified by the parameter	
-            </summary>	
-            <param name="membershipID">The membership id</param>	
-            <returns>The found membership as a MembershipView</returns>	
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetMembershipsForActivity(System.String,System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Fetches the memberships associated with the activity whose code is specified by the parameter.
-            </summary>
-            <param name="activityCode">The activity code</param>
-            <param name="sessionCode">Optional code of session to get memberships for</param>
-            <param name="participationTypes">Optional filter for involvement participation type (MEMBR, ADV, LEAD, GUEST)</param>
-            <returns>An IEnumerable of the matching MembershipView objects</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetMembershipsByUser(System.String)">
-            <summary>
-            Fetches all the membership information linked to the student whose id appears as a parameter.
-            </summary>
-            <param name="username">The student's AD Username</param>
-            <returns>An IEnumerable of the matching MembershipView objects</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetActivitySubscribersCountForSession(System.String,System.String)">
-            <summary>
-            Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
-            </summary>
-            <param name="activityCode">The activity code</param>
-            <param name="sessionCode">The session code</param>
-            <returns>The count of current guests (aka subscribers) for the activity</returns>
-        </member>
-        <member name="M:Gordon360.Services.MembershipService.GetActivityMembersCountForSession(System.String,System.String)">
-            <summary>
-            Fetches the number of memberships associated with the activity and session whose codes are specified by the parameter.
-            </summary>
-            <param name="activityCode">The activity code.</param>
-            <param name="sessionCode">The session code</param>
-            <returns>The count of current members for the activity</returns>
         </member>
         <member name="M:Gordon360.Services.MembershipService.UpdateAsync(System.Int32,Gordon360.Models.ViewModels.MembershipUploadViewModel)">
             <summary>

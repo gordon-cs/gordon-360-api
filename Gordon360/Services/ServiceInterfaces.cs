@@ -145,9 +145,9 @@ namespace Gordon360.Services
 
     public interface IEmailService
     {
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode = null, List<string>? participationTypes = null);
+        IEnumerable<EmailViewModel> GetEmailsForActivity(string activityCode, string? sessionCode = null, List<string>? participationTypes = null);
         void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
-        Task SendEmailToActivityAsync(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
+        void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
 
     public interface IErrorLogService
@@ -166,14 +166,12 @@ namespace Gordon360.Services
 
     public interface IMembershipService
     {
-        IEnumerable<MembershipView> GetMembershipsForActivity(
-            string activityCode,
+        IEnumerable<MembershipView> GetMemberships(
+            string? activityCode = null,
+            string? username = null,
             string? sessionCode = null,
             List<string>? participationTypes = null
         );
-        IEnumerable<MembershipView> GetMembershipsByUser(string username);
-        int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode);
-        int GetActivityMembersCountForSession(string activityCode, string? sessionCode);
         MembershipView GetSpecificMembership(int membershipID);
         Task<MembershipView> AddAsync(MembershipUploadViewModel membership);
         Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership);
