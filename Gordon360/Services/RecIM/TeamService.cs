@@ -290,7 +290,10 @@ namespace Gordon360.Services.RecIM
 
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            var team = new Gordon360.Models.CCT.Team
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended")
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
+            var team = new Team
             {
                 Name = t.Name,
                 StatusID = 1,

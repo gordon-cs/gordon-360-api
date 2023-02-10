@@ -96,15 +96,22 @@ namespace Gordon360.Controllers.RecIM
             if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
                 return UnprocessableEntity("Activity capacity has been reached. Try again later.");
          
-
-            var team = await _teamService.PostTeamAsync(newTeam, username);
-            // future error handling
-            // (cannot implement at the moment as we only have 4 developer accs)
-            if (team is null)
+            try
             {
-                return BadRequest($"Participant {username} already is a part of a team in this activity");
+                var team = await _teamService.PostTeamAsync(newTeam, username);
+                // future error handling
+                // (cannot implement at the moment as we only have 4 developer accs)
+                if (team is null)
+                {
+                    return BadRequest($"Participant {username} already is a part of a team in this activity");
+                }
+                return CreatedAtAction("CreateTeam", team);
             }
-            return CreatedAtAction("CreateTeam", team);
+            catch (Exception)
+            {
+                throw;
+            }
+            
         }
 
         /// <summary>
