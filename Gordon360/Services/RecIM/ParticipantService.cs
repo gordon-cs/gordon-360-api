@@ -155,7 +155,7 @@ namespace Gordon360.Services.RecIM
             return participants;
         }
 
-        public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username)
+        public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4)
         {
             await _context.Participant.AddAsync(new Participant
             {
@@ -164,7 +164,7 @@ namespace Gordon360.Services.RecIM
             await _context.ParticipantStatusHistory.AddAsync(new ParticipantStatusHistory
             {
                 ParticipantUsername = username,
-                StatusID = 4, //default to cleared
+                StatusID = statusID ?? 4, //default to cleared
                 StartDate = DateTime.Now,
                 //No defined end date for creation
             });

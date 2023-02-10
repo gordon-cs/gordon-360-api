@@ -319,6 +319,7 @@ namespace Gordon360.Services
             Task<Models.ViewModels.RecIM.ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
             Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
             bool IsReferee(string username, int activityID);
+            bool ActivityTeamCapacityReached(int activityID);
         }
         public interface ISeriesService
         {
@@ -338,7 +339,7 @@ namespace Gordon360.Services
             double GetTeamSportsmanshipScore(int teamID);
             IEnumerable<TeamExtendedViewModel> GetTeams(bool active);
             TeamExtendedViewModel GetTeamByID(int teamID);
-            IEnumerable<TeamInviteViewModel> GetTeamInvites(string username);
+            IEnumerable<TeamInviteViewModel> GetTeamInvitesByParticipantUsername(string username);
             ParticipantTeamViewModel GetTeamInvite(int teamID, string username);
             Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
             Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null);
@@ -348,6 +349,7 @@ namespace Gordon360.Services
             bool HasUserJoined(int activityID, string username);
             bool HasTeamNameTaken(int activityID, string teamName);
             bool IsTeamCaptain(string username, int teamID);
+ 
         }
 
         public interface IParticipantService
@@ -358,7 +360,7 @@ namespace Gordon360.Services
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
             ParticipantExtendedViewModel GetParticipantByUsername(string username);
             IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
-            Task<ParticipantExtendedViewModel> PostParticipantAsync(string username);
+            Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4);
             Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool isAdmin);
             Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM);
             Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant);

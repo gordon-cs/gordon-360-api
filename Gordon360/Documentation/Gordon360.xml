@@ -933,6 +933,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AcceptTeamInvite(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
+            <summary>
+            Accept one specified team invite and true delete others from the same activity if there's any
+            </summary>
+            <param name="teamID"></param>
+            <param name="acceptedInvite"></param>
+            <returns>The accepted TeamInviteViewModel</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
             <summary>
             Gets all Membership Request Objects

@@ -1,19 +1,11 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 using Match = Gordon360.Models.CCT.Match;
-using Azure.Identity;
-using Microsoft.AspNetCore.Server.IIS;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {

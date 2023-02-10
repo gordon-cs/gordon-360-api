@@ -25,5 +25,7 @@ namespace Gordon360.Models.CCT
         public string linkedin { get; set; }
         [Unicode(false)]
         public string handshake { get; set; }
+        [Unicode(false)]
+        public string calendar { get; set; }
     }
 }
