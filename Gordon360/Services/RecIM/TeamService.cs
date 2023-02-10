@@ -17,15 +17,17 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly IMatchService _matchService;
+        private readonly IParticipantService _participantService;
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
 
-        public TeamService(CCTContext context, IConfiguration config, IMatchService matchService, IAccountService accountService)
+        public TeamService(CCTContext context, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountService)
         {
             _context = context;
             _config = config;
             _matchService = matchService;
             _accountService = accountService;
+            _participantService = participantSerivce;
         }
         public IEnumerable<LookupViewModel> GetTeamLookup(string type)
         {
@@ -399,12 +401,19 @@ namespace Gordon360.Services.RecIM
         
         public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
         {
+            //new check for enabling non-recim participants to be invited
+            if(!_context.Participant.Any(p => p.Username == participant.Username))
+            {
+                await _participantService.PostParticipantAsync(participant.Username, 1); //pending user
+            }
+
+
             var participantTeam = new ParticipantTeam
             {
                 TeamID = teamID,
                 ParticipantUsername = participant.Username,
                 SignDate = DateTime.Now,
-                RoleTypeID = participant.RoleTypeID ?? 3, //default: 3 -> member
+                RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();

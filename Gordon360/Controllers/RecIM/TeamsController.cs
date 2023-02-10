@@ -90,6 +90,9 @@ namespace Gordon360.Controllers.RecIM
            //redudant check for API as countermeasure against postman navigation around UI check
             if (_teamService.HasUserJoined(newTeam.ActivityID, username))
                 return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
+
+            if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
+                return UnprocessableEntity("Activity capacity has been reached. Try again later.");
          
 
             var team = await _teamService.PostTeamAsync(newTeam, username);
@@ -209,17 +212,6 @@ namespace Gordon360.Controllers.RecIM
             // set the role type ID of the accepted team invite to 3 => member
             acceptedInvite.RoleTypeID = 3;
             var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, acceptedInvite);
-
-            // true delete other team invites from the same activity
-            IEnumerable<TeamInviteViewModel> teamInvites = _teamService.GetTeamInvites(username);
-            int activityID = _teamService.GetTeamByID(invite.TeamID).Activity.ID;
-            foreach(TeamInviteViewModel teamInvite in teamInvites)
-            {
-                if (teamInvite.ActivityID == activityID && teamInvite.TeamID != invite.TeamID)
-                {
-                    await _teamService.DeleteTeamParticipantAsync(teamInvite.TeamID, username);
-                }
-            }
 
             return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
         }
