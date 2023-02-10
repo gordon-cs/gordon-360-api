@@ -19,10 +19,12 @@ namespace Gordon360.Controllers.RecIM
     public class TeamsController : GordonControllerBase
     {
         private readonly ITeamService _teamService;
+        private readonly IActivityService _activityService;
 
-        public TeamsController(ITeamService teamService)
+        public TeamsController(ITeamService teamService, IActivityService activityService)
         {
             _teamService = teamService;
+            _activityService = activityService;
         }
 
         ///<summary>

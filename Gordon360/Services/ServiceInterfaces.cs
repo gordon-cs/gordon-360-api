@@ -319,6 +319,7 @@ namespace Gordon360.Services
             Task<Models.ViewModels.RecIM.ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
             Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
             bool IsReferee(string username, int activityID);
+            bool ActivityTeamCapacityReached(int activityID);
         }
         public interface ISeriesService
         {
@@ -348,7 +349,7 @@ namespace Gordon360.Services
             bool HasUserJoined(int activityID, string username);
             bool HasTeamNameTaken(int activityID, string teamName);
             bool IsTeamCaptain(string username, int teamID);
-  
+ 
         }
 
         public interface IParticipantService

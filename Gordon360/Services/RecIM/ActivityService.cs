@@ -203,6 +203,13 @@ namespace Gordon360.Services.RecIM
                 && pa.ActivityID == activityID 
                 && pa.PrivTypeID == 2); // PrivType: 2 => Referee
         }
+
+        public bool ActivityTeamCapacityReached(int activityID)
+        {
+            int capacity = _context.Activity.FirstOrDefault(a => a.ID == activityID)?.MaxCapacity ?? Int32.MaxValue;
+            int numTeams = _context.Team.Where(t => t.ActivityID == activityID).Count();
+            return numTeams >= capacity;
+        }
     }
 }
 
