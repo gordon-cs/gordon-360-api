@@ -73,7 +73,7 @@ namespace Gordon360.Authorization
             // set RecIM services
             _participantService = new ParticipantService(_CCTContext, _accountService);
             _matchService = new MatchService(_CCTContext, _accountService);
-            _teamService = new TeamService(_CCTContext, _config, _matchService, _participantService, _accountService);
+            _teamService = new TeamService(_CCTContext, _config, _matchService, _accountService);
             _seriesService = new SeriesService(_CCTContext, _matchService);
             _activityService = new Services.RecIM.ActivityService(_CCTContext, _seriesService);
 

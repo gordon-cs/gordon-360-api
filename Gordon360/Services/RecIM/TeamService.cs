@@ -1,23 +1,15 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
-using Gordon360.Utilities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Gordon360.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Authorization;
-using Gordon360.Models.ViewModels;
-using Microsoft.EntityFrameworkCore.Internal;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Net;
 using System.Net.Mail;
 using System.Globalization;
-using Microsoft.Graph;
+
 
 namespace Gordon360.Services.RecIM
 {
@@ -25,16 +17,14 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly IMatchService _matchService;
-        private readonly IParticipantService _participantService;
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
 
-        public TeamService(CCTContext context, IConfiguration config, IMatchService matchService, IParticipantService participantService, IAccountService accountService)
+        public TeamService(CCTContext context, IConfiguration config, IMatchService matchService, IAccountService accountService)
         {
             _context = context;
             _config = config;
             _matchService = matchService;
-            _participantService = participantService;
             _accountService = accountService;
         }
         public IEnumerable<LookupViewModel> GetTeamLookup(string type)
