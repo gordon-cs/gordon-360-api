@@ -20,11 +20,13 @@ namespace Gordon360.Controllers.RecIM
     {
         private readonly ITeamService _teamService;
         private readonly IActivityService _activityService;
+        private readonly IParticipantService _participantService;
 
-        public TeamsController(ITeamService teamService, IActivityService activityService)
+        public TeamsController(ITeamService teamService, IActivityService activityService, IParticipantService participantService)
         {
             _teamService = teamService;
             _activityService = activityService;
+            _participantService = participantService;
         }
 
         ///<summary>
@@ -189,7 +191,15 @@ namespace Gordon360.Controllers.RecIM
         public ActionResult<IEnumerable<TeamInviteViewModel>> GetTeamInvites()
         {
             var username = AuthUtils.GetUsername(User);
-            return Ok(_teamService.GetTeamInvites(username));
+            try
+            {
+                var teamInvites = _teamService.GetTeamInvitesByParticipantUsername(username);
+                return Ok(teamInvites);
+            }
+            catch(Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -203,17 +213,24 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
         {
             var username = AuthUtils.GetUsername(User);
-            var invite = _teamService.GetTeamInvite(teamID, username);
-            if (invite is null)
-                return NotFound("You were not invited by this team.");
-            if (username != invite.ParticipantUsername)
-                return Forbid($"You are not permitted to accept invitations for another participant.");
+            try
+            {
+                var invite = _teamService.GetTeamInvite(teamID, username);
+                if (invite is null)
+                    return NotFound("You were not invited by this team.");
+                if (username != invite.ParticipantUsername)
+                    return Forbid($"You are not permitted to accept invitations for another participant.");
 
-            // set the role type ID of the accepted team invite to 3 => member
-            acceptedInvite.RoleTypeID = 3;
-            var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, acceptedInvite);
+                // set the role type ID of the accepted team invite to 3 => member
+                acceptedInvite.RoleTypeID = 3;
+                var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, acceptedInvite);
 
-            return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
+                return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

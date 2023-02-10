@@ -234,8 +234,11 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public IEnumerable<TeamInviteViewModel> GetTeamInvites(string username)
+        public IEnumerable<TeamInviteViewModel> GetTeamInvitesByParticipantUsername(string username)
         {
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended") 
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
             var teamRequestToJoin = _context.ParticipantTeam
                     .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2)
                     .Join(_context.Team
@@ -267,6 +270,9 @@ namespace Gordon360.Services.RecIM
         
         public ParticipantTeamViewModel GetTeamInvite(int teamID, string username)
         {
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended")
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
             var participantTeam = _context.ParticipantTeam
                                     .Where(pt => pt.TeamID == teamID && pt.ParticipantUsername == username)
                                     .Select(pt => new ParticipantTeamViewModel
