@@ -27,9 +27,9 @@ namespace Gordon360.Models.CCT
         [StringLength(128)]
         [Unicode(false)]
         public string Logo { get; set; }
-        [Column(TypeName = "date")]
+        [Column(TypeName = "datetime")]
         public DateTime RegistrationStart { get; set; }
-        [Column(TypeName = "date")]
+        [Column(TypeName = "datetime")]
         public DateTime RegistrationEnd { get; set; }
         public int SportID { get; set; }
         public int StatusID { get; set; }
@@ -38,6 +38,10 @@ namespace Gordon360.Models.CCT
         public bool SoloRegistration { get; set; }
         public bool Completed { get; set; }
         public int TypeID { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? StartDate { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? EndDate { get; set; }
 
         [ForeignKey("SportID")]
         [InverseProperty("Activity")]

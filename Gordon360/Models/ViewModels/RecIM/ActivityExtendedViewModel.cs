@@ -19,12 +19,19 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Logo { get; set; }
         public bool Completed { get; set; }
         public int TypeID { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public IEnumerable<SeriesExtendedViewModel> Series { get; set; }
         public IEnumerable<TeamExtendedViewModel> Team { get; set; }
 
         public static implicit operator ActivityExtendedViewModel(Activity a)
         {
+            //redundant check in case admins forget to mark activity completed
+            //or if we are looking for an end date automatically via Series.EndDate
+            bool completed = !a.Completed
+                ? DateTime.Now > (a.EndDate ?? DateTime.MaxValue) 
+                : a.Completed;
             return new ActivityExtendedViewModel
             {
                 ID = a.ID,
@@ -36,8 +43,10 @@ namespace Gordon360.Models.ViewModels.RecIM
                 MaxCapacity = a.MaxCapacity,
                 SoloRegistration = a.SoloRegistration,
                 Logo = a.Logo,
-                Completed = a.Completed,
+                Completed = completed,
                 TypeID = a.TypeID,
+                StartDate = a.StartDate,
+                EndDate = a.EndDate
             };
         }
     }
