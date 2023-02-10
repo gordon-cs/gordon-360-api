@@ -14,6 +14,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public bool SoloRegistration { get; set; }
         public string? Logo { get; set; }
         public int TypeID { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
     }
 }

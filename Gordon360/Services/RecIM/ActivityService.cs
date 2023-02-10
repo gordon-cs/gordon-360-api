@@ -80,6 +80,8 @@ namespace Gordon360.Services.RecIM
                                                     .Description
                                         }).ToList(),
                                 TypeID = a.TypeID,
+                                StartDate = a.StartDate,
+                                EndDate= a.EndDate,
                             });
             return activities;
         }
@@ -115,6 +117,8 @@ namespace Gordon360.Services.RecIM
                                 Logo = a.Logo,
                                 Completed = a.Completed,
                                 TypeID = a.TypeID,
+                                StartDate = a.StartDate,
+                                EndDate = a.EndDate,
                                 Series = _seriesService.GetSeriesByActivityID(a.ID),
                                 Team = a.Team.Select(t => new TeamExtendedViewModel
                                 {
@@ -149,6 +153,8 @@ namespace Gordon360.Services.RecIM
             activity.SoloRegistration = updatedActivity.SoloRegistration ?? activity.SoloRegistration;
             activity.Completed = updatedActivity.Completed ?? activity.Completed;
             activity.TypeID = updatedActivity.TypeID ?? activity.TypeID;
+            activity.StartDate = updatedActivity.StartDate ?? activity.StartDate;
+            activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
 
             await _context.SaveChangesAsync();
             return activity;
@@ -168,6 +174,8 @@ namespace Gordon360.Services.RecIM
                 SoloRegistration = a.SoloRegistration,
                 Completed = false, //default not completed
                 TypeID = a.TypeID,
+                StartDate = a.StartDate,
+                EndDate = a.EndDate
             };
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
