@@ -16,7 +16,7 @@
 
     public static class ParticipationExtensions
     {
-        public static string GetDescription(this Participation participation) => participation switch
+        public static string GetCode(this Participation participation) => participation switch
         {
             Participation.Leader => "LEAD",
             Participation.Guest => "GUEST",

@@ -134,7 +134,7 @@ namespace Gordon360.Authorization
                                     activityCode: mrToConsider.ActivityCode,
                                     username: user_name,
                                     sessionCode: mrToConsider.SessionCode,
-                                    participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                                    participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                                 .Any();
                             if (isGroupAdmin) // If user is a group admin of the activity that the request is sent to
                                 return true;
@@ -200,7 +200,7 @@ namespace Gordon360.Authorization
                         if (context.ActionArguments["activityCode"] is string activityCode)
                         {
                             var activityMembers = _membershipService.GetMemberships(activityCode: activityCode, username: user_name);
-                            var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetDescription());
+                            var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetCode());
                             return is_personAMember;
                         }
                         return false;
@@ -219,7 +219,7 @@ namespace Gordon360.Authorization
                         if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object) && involvementCode_object is string involvementCode)
                         {
                             var activityMembers = _membershipService.GetMemberships(activityCode: involvementCode, username: user_name);
-                            var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetDescription());
+                            var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetCode());
                             return is_personAMember;
                         }
 
@@ -246,7 +246,7 @@ namespace Gordon360.Authorization
                                 .GetMemberships(
                                     activityCode: activityCode,
                                     username: user_name,
-                                    participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                                    participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                                 .Any();
                             return isGroupAdmin; // If user is a group admin of the activity that the request is sent to
                         }
@@ -256,8 +256,8 @@ namespace Gordon360.Authorization
                     {
                         var publicParticipantTypes = new List<string>
                                 {
-                                    Participation.GroupAdmin.GetDescription(),
-                                    Participation.Advisor.GetDescription()
+                                    Participation.GroupAdmin.GetCode(),
+                                    Participation.Advisor.GetCode()
                                 };
 
                         // Anyone can view group-admin and advisor emails
@@ -281,9 +281,9 @@ namespace Gordon360.Authorization
 
                         var leaderTypes = new List<string>
                                 {
-                                    Participation.GroupAdmin.GetDescription(),
-                                    Participation.Leader.GetDescription(),
-                                    Participation.Advisor.GetDescription()
+                                    Participation.GroupAdmin.GetCode(),
+                                    Participation.Leader.GetCode(),
+                                    Participation.Advisor.GetCode()
                                 };
 
                         // Only leaders, advisors, and group admins
@@ -425,7 +425,7 @@ namespace Gordon360.Authorization
                                     activityCode: activityCode,
                                     username: user_name,
                                     sessionCode: sessionCode,
-                                    participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                                    participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                                 .Any();
                             // If user is the advisor of the activity to which the request is sent.
                             if (isGroupAdmin)
@@ -510,11 +510,11 @@ namespace Gordon360.Authorization
                             var userMembership = _membershipService
                                 .GetMemberships(activityCode: activityCode, username: user_name, sessionCode: sessionCode)
                                 .FirstOrDefault();
-                            if (membershipToConsider.Participation == Participation.Advisor.GetDescription())
+                            if (membershipToConsider.Participation == Participation.Advisor.GetCode())
                             {
-                                return userMembership?.Participation == Participation.Advisor.GetDescription();
+                                return userMembership?.Participation == Participation.Advisor.GetCode();
                             }
-                            else if (userMembership?.GroupAdmin == true && membershipToConsider.Participation != Participation.Advisor.GetDescription())
+                            else if (userMembership?.GroupAdmin == true && membershipToConsider.Participation != Participation.Advisor.GetCode())
                             {
                                 // Activity Advisors can update memberships of people in their activity.
                                 return true;
@@ -552,8 +552,8 @@ namespace Gordon360.Authorization
                                         username: user_name,
                                         participationTypes: new List<string>
                                            {
-                                           Participation.Leader.GetDescription(),
-                                           Participation.Advisor.GetDescription()
+                                           Participation.Leader.GetCode(),
+                                           Participation.Advisor.GetCode()
                                            })
                                     .Any();
                         }
@@ -620,7 +620,7 @@ namespace Gordon360.Authorization
                                 .GetMemberships(
                                     activityCode: activityCode,
                                     username: user_name,
-                                    participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                                    participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                                 .Any();
                             return isGroupAdmin;
                         }
@@ -640,7 +640,7 @@ namespace Gordon360.Authorization
                                 .GetMemberships(
                                     activityCode: activityCode,
                                     username: user_name,
-                                    participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                                    participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                                 .Any();
                             if (isGroupAdmin && context.ActionArguments["sess_cde"] is string sessionCode)
                             {
@@ -714,7 +714,7 @@ namespace Gordon360.Authorization
                                 .GetMemberships(
                                     activityCode: membershipToConsider.ActivityCode,
                                     username: user_name,
-                                    participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                                    participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                                 .Any();
                             return isGroupAdmin;
                         }
@@ -740,7 +740,7 @@ namespace Gordon360.Authorization
                                 .GetMemberships(
                                     activityCode: activityCode,
                                     username: user_name,
-                                    participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                                    participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                                 .Any();
                             if (isGroupAdmin)
                                 return true;

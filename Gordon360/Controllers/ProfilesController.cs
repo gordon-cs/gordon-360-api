@@ -540,7 +540,7 @@ namespace Gordon360.Controllers
                         activityCode: m.ActivityCode,
                         username: authenticatedUserUsername,
                         sessionCode: m.SessionCode,
-                        participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() })
+                        participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                     .Any();
 
                 }
