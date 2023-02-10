@@ -1,4 +1,6 @@
-﻿namespace Gordon360.Static.Names
+﻿using System;
+
+namespace Gordon360.Static.Names
 {
     public static class Resource
     {
@@ -31,6 +33,7 @@
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
         public const string MEMBERSHIP_REQUEST_BY_STUDENT = "Membership Request Resources associated with a student";
+        [Obsolete("Unused once obsolete routes are removed")]
         public const string MEMBERSHIP_BY_ACTIVITY = "Membership Resources associated with an activity";
         public const string MEMBERSHIP_BY_ACCOUNT = "Membership Resources associated with a student";
         public const string EMAILS_BY_ACTIVITY = "Emails for activity members";
