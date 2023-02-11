@@ -110,6 +110,20 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
+        /// Cascade deletes all DBobjects related to given Series ID
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{seriesID}")]
+        public async Task<ActionResult> DeleteSeriesCascade(int seriesID)
+        {
+            await _seriesService.DeleteSeriesCascadeAsync(seriesID);
+            return Ok();
+        }
+
+
+        /// <summary>
         /// Automatically creates Matches based on given Series
         /// </summary>
         /// <param name="seriesID"></param>
