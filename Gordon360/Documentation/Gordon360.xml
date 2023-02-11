@@ -795,6 +795,13 @@
             <param name="matchID"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteMatchCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given Match ID
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
             <summary>
             Queries all Series with an optional active tag
@@ -831,6 +838,13 @@
             </summary>
             <param name="seriesSchedule">created schedule for series</param>
             <returns>created series schedule</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.DeleteSeriesCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given Series ID
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32)">
             <summary>

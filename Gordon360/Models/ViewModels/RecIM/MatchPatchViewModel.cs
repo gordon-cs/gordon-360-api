@@ -9,5 +9,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime? Time { get; set; }
         public int? SurfaceID { get; set; }
         public int? StatusID { get; set; }
+        public IEnumerable<int>? TeamIDs { get; set; }
     }
 }

@@ -254,6 +254,27 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteSeriesCascadeAsync(int seriesID)
+        {
+            //delete series teams
+            var seriesTeam = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
+            _context.SeriesTeam.RemoveRange(seriesTeam);
+            //delete series surfaces
+            var seriesSurface = _context.SeriesSurface.Where(ss => ss.SeriesID == seriesID);
+            _context.SeriesSurface.RemoveRange(seriesSurface);
+            //delete matches
+            var matchIDs = _context.Match.Where(m => m.SeriesID == seriesID).Select(m => m.ID).ToList();
+            foreach (var matchID in matchIDs)
+            {
+                await _matchService.DeleteMatchCascadeAsync(matchID);
+            }
+            //delete series
+            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            _context.Series.Remove(series);
+
+            await _context.SaveChangesAsync();
+        }
+
         // Scheduler does not currently handle overlaps
         // eventually:
         // - ensure that matches that occur within 1 hour do not share the same surface
