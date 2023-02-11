@@ -393,6 +393,21 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return match;
         }
+
+        public async Task DeleteMatchCascadeAsync(int matchID)
+        {
+            //delete matchteam
+            var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == matchID);
+            _context.MatchTeam.RemoveRange(matchteam);
+            //delete matchparticipant
+            var matchparticipant = _context.MatchParticipant.Where(mp => mp.MatchID == matchID);
+            _context.MatchParticipant.RemoveRange(matchparticipant);
+            //deletematch
+            var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
+            _context.Match.Remove(match);
+
+            await _context.SaveChangesAsync();
+        }
     }
 
 }
