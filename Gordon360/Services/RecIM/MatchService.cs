@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Match = Gordon360.Models.CCT.Match;
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -375,6 +376,20 @@ namespace Gordon360.Services.RecIM
             match.Time = vm.Time ?? match.Time;
             match.StatusID = vm.StatusID ?? match.StatusID;
             match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
+
+            if (vm.TeamIDs is not null)
+            {
+                List<int> updatedTeams = vm.TeamIDs.ToList();
+                var removedTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && !updatedTeams.Any(t_id => mt.TeamID == t_id));
+                _context.MatchTeam.RemoveRange(removedTeams);
+
+                var teamsToAdd = removedTeams.Select(t => t.TeamID);
+                foreach (int id in teamsToAdd)
+                {
+                    await CreateMatchTeamMappingAsync(id, matchID);
+                }
+            }
+
             await _context.SaveChangesAsync();
             return match;
         }
