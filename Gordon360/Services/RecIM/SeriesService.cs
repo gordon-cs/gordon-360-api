@@ -411,6 +411,7 @@ namespace Gordon360.Services.RecIM
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
+            throw new NotImplementedException();
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             //Teams are defaulted to be ordered by Wins if there was a reference series
             var teams = _context.SeriesTeam
@@ -474,6 +475,7 @@ namespace Gordon360.Services.RecIM
         }
         private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
+            var createdMatches = new List<MatchViewModel>();
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                .Where(st => st.SeriesID == seriesID)
@@ -495,12 +497,13 @@ namespace Gordon360.Services.RecIM
             //schedule first round
             var elimScheduler = await ScheduleElimRoundAsync(teams);
             int teamsInNextRound = elimScheduler.TeamsInNextRound;
-            foreach (var matchID in elimScheduler.MatchID)
+            var matchIDs = elimScheduler.Match.Select(es => es.ID);
+            foreach (var matchID in matchIDs)
             {
                 if (surfaceIndex == availableSurfaces.Length)
                 {
                     surfaceIndex = 0;
-                    day.AddMinutes(schedule.EstMatchTime + 15);
+                    day = day.AddMinutes(schedule.EstMatchTime + 15);
                 }
                 while (!schedule.AvailableDays[dayOfWeek] ||
                     day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
@@ -511,23 +514,29 @@ namespace Gordon360.Services.RecIM
                     dayOfWeek = day.DayOfWeek.ToString();
                     surfaceIndex = 0;
                 }
-                await _matchService.UpdateMatchAsync(matchID,
+                var createdMatch = await _matchService.UpdateMatchAsync(matchID,
                     new MatchPatchViewModel
                     {
                         Time = day,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
+                createdMatches.Add(createdMatch);
                 surfaceIndex++;
             }
             //create matches for remaining rounds (possible implementation of including round number optional field)
             while (teamsInNextRound > 1)
             {
+                //reset between rounds + prime the pump from first round
+                day = day.AddDays(1);
+                day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                dayOfWeek = day.DayOfWeek.ToString();
+                surfaceIndex = 0;
                 for (int i = 0; i < teamsInNextRound / 2; i++)
                 {
                     if (surfaceIndex == availableSurfaces.Length)
                     {
                         surfaceIndex = 0;
-                        day.AddMinutes(schedule.EstMatchTime + 15);
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);
                     }
                     while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay)
                     {
@@ -536,33 +545,29 @@ namespace Gordon360.Services.RecIM
                         dayOfWeek = day.DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
-                    await _matchService.PostMatchAsync(new MatchUploadViewModel
+                    var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
                         StartTime = day,
                         SeriesID = series.ID,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
                         TeamIDs = new List<int>().AsEnumerable() //no teams
                     });
+                    createdMatches.Add(createdMatch);
                 }
                 teamsInNextRound /= 2;
-                //reset between rounds
-                day = day.AddDays(1);
-                day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
-                dayOfWeek = day.DayOfWeek.ToString();
-                surfaceIndex = 0;
             }
-            //silence error
-            return new List<MatchViewModel>();
+            return createdMatches;
         }
 
         /// <summary>
-        /// Goal of this function is to be able to either create and initialize the elimination bracket
-        /// if none exists already, and will overload with a matches enumerable to update existing matches
-        /// to produce a next round
+        /// Goal of this function is to generate a single elimination round.
+        /// On the first possible round, this would imply handling teams with buys to ensure
+        /// that the second round will be in a power of 2 (so that no further rounds need buys). 
         /// 
         /// These functions may need to be modified later as there may be more efficient ways to handle scheduling
         /// with the context that surfaces need to be booked ahead of time on 25Live
         /// </summary>
+        /// <returns>Matches created as well as number of teams in the next round</returns>
         public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<SeriesTeam> involvedTeams)
         {
             int numTeams = involvedTeams.Count();
@@ -584,7 +589,7 @@ namespace Gordon360.Services.RecIM
             }
 
             var teamPairings = EliminationRoundTeamPairsAsync(teams);
-            var matchIDs = new List<int>();
+            var matches = new List<MatchViewModel>();
 
             foreach (var teamPair in teamPairings)
             {
@@ -595,12 +600,12 @@ namespace Gordon360.Services.RecIM
                     SurfaceID = 1, //temporary before 25live integration
                     TeamIDs = teamPair
                 });
-                matchIDs.Add(createdMatch.ID);
+                matches.Add(createdMatch);
             }
             return new EliminationRound
             {
                 TeamsInNextRound = teamPairings.Count() + numBuys,
-                MatchID = matchIDs
+                Match = matches
             };
         }
         public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)
