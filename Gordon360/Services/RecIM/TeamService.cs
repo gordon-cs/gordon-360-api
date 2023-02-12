@@ -437,27 +437,13 @@ namespace Gordon360.Services.RecIM
         public bool HasUserJoined(int activityID, string username)
         {
             // get all the partipantTeam from the teams with the activityID
-            var participantTeams = _context.Activity
-                        .Where(a => a.ID == activityID)
-                        .Join(_context.Team
-                            .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
-                                t => t.ID,
-                                pt => pt.TeamID,
-                                (t, pt) => new {
-                                    ActivityID = activityID,
-                                    TeamName = t.Name,
-                                    Participant = pt.ParticipantUsername,
+            var participantTeam = _context.Team.Where(t => t.ActivityID == activityID)
+                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
+                t => t.ID,
+                pt => pt.TeamID,
+                (t, pt) => pt).AsEnumerable();
 
-                                }),
-                            a => a.ID,
-                            t => t.ActivityID,
-                            (a, t) => new {
-                                teamName = t.TeamName,
-                                Participant = t.Participant,
-                            }
-                        ).AsEnumerable();
-
-            return participantTeams.Any(pt => pt.Participant == username);
+            return participantTeam.Any(pt => pt.ParticipantUsername == username);
         }
 
         public bool HasTeamNameTaken(int activityID, string teamName)
