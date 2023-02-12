@@ -1,4 +1,5 @@
 using Gordon360.Authorization;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
@@ -84,15 +85,11 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
-            try
-            {
-                if (_teamService.IsActivityFull(newTeam.ActivityID))
-                    return UnprocessableEntity($"The activity has reached the maximum team capacity");
-            }
-            catch(Exception e)
-            {
-                return NotFound(e.Message);
-            }
+            var activity = _teamService.GetTeamByID(newTeam.ActivityID);
+            if (activity is null)
+                return UnprocessableEntity($"This activity does not exist");
+            if (_teamService.IsActivityFull(newTeam.ActivityID))
+                return UnprocessableEntity($"The activity has reached the maximum team capacity");
             if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
                 return UnprocessableEntity($"Team name {newTeam.Name} has already been taken by another team in this activity");
            //redudant check for API as countermeasure against postman navigation around UI check

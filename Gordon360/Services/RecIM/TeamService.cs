@@ -476,9 +476,7 @@ namespace Gordon360.Services.RecIM
         public bool IsActivityFull(int activityID)
         {   
             // find the activity by activityID
-            var activity = _context.Activity.Where(a => a.ID == activityID).FirstOrDefault();
-            if (activity is null)
-                throw new ResourceNotFoundException() { ExceptionMessage = "The activity can not be found." };
+            var activity = _context.Activity.Where(a => a.ID == activityID).First();
 
             // find the number of teams in an activity by activityID
             var teamSum = _context.Team.Where(t => t.ActivityID == activityID).Count();
