@@ -1,8 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -80,6 +78,8 @@ namespace Gordon360.Services.RecIM
                                                     .Description
                                         }).ToList(),
                                 TypeID = a.TypeID,
+                                StartDate = a.StartDate,
+                                EndDate= a.EndDate,
                             });
             return activities;
         }
@@ -115,6 +115,8 @@ namespace Gordon360.Services.RecIM
                                 Logo = a.Logo,
                                 Completed = a.Completed,
                                 TypeID = a.TypeID,
+                                StartDate = a.StartDate,
+                                EndDate = a.EndDate,
                                 Series = _seriesService.GetSeriesByActivityID(a.ID),
                                 Team = a.Team.Select(t => new TeamExtendedViewModel
                                 {
@@ -149,6 +151,8 @@ namespace Gordon360.Services.RecIM
             activity.SoloRegistration = updatedActivity.SoloRegistration ?? activity.SoloRegistration;
             activity.Completed = updatedActivity.Completed ?? activity.Completed;
             activity.TypeID = updatedActivity.TypeID ?? activity.TypeID;
+            activity.StartDate = updatedActivity.StartDate ?? activity.StartDate;
+            activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
 
             await _context.SaveChangesAsync();
             return activity;
@@ -168,6 +172,8 @@ namespace Gordon360.Services.RecIM
                 SoloRegistration = a.SoloRegistration,
                 Completed = false, //default not completed
                 TypeID = a.TypeID,
+                StartDate = a.StartDate,
+                EndDate = a.EndDate
             };
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
@@ -196,6 +202,13 @@ namespace Gordon360.Services.RecIM
                 pa.ParticipantUsername == username 
                 && pa.ActivityID == activityID 
                 && pa.PrivTypeID == 2); // PrivType: 2 => Referee
+        }
+
+        public bool ActivityTeamCapacityReached(int activityID)
+        {
+            int capacity = _context.Activity.FirstOrDefault(a => a.ID == activityID)?.MaxCapacity ?? Int32.MaxValue;
+            int numTeams = _context.Team.Where(t => t.ActivityID == activityID).Count();
+            return numTeams >= capacity;
         }
     }
 }

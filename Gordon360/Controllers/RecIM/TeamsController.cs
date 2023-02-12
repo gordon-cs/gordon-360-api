@@ -21,10 +21,14 @@ namespace Gordon360.Controllers.RecIM
     public class TeamsController : GordonControllerBase
     {
         private readonly ITeamService _teamService;
+        private readonly IActivityService _activityService;
+        private readonly IParticipantService _participantService;
 
-        public TeamsController(ITeamService teamService)
+        public TeamsController(ITeamService teamService, IActivityService activityService, IParticipantService participantService)
         {
             _teamService = teamService;
+            _activityService = activityService;
+            _participantService = participantService;
         }
 
         ///<summary>
@@ -95,16 +99,26 @@ namespace Gordon360.Controllers.RecIM
            //redudant check for API as countermeasure against postman navigation around UI check
             if (_teamService.HasUserJoined(newTeam.ActivityID, username))
                 return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
-         
 
-            var team = await _teamService.PostTeamAsync(newTeam, username);
-            // future error handling
-            // (cannot implement at the moment as we only have 4 developer accs)
-            if (team is null)
+            if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
+                return UnprocessableEntity("Activity capacity has been reached. Try again later.");
+         
+            try
             {
-                return BadRequest($"Participant {username} already is a part of a team in this activity");
+                var team = await _teamService.PostTeamAsync(newTeam, username);
+                // future error handling
+                // (cannot implement at the moment as we only have 4 developer accs)
+                if (team is null)
+                {
+                    return BadRequest($"Participant {username} already is a part of a team in this activity");
+                }
+                return CreatedAtAction("CreateTeam", team);
             }
-            return CreatedAtAction("CreateTeam", team);
+            catch (Exception)
+            {
+                throw;
+            }
+            
         }
 
         /// <summary>
@@ -198,7 +212,15 @@ namespace Gordon360.Controllers.RecIM
         public ActionResult<IEnumerable<TeamInviteViewModel>> GetTeamInvites()
         {
             var username = AuthUtils.GetUsername(User);
-            return Ok(_teamService.GetTeamInvites(username));
+            try
+            {
+                var teamInvites = _teamService.GetTeamInvitesByParticipantUsername(username);
+                return Ok(teamInvites);
+            }
+            catch(Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -232,7 +254,6 @@ namespace Gordon360.Controllers.RecIM
                     await _teamService.DeleteParticipantTeamAsync(teamInvite.TeamID, username);
                 }
             }
-
             return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
         }
     }

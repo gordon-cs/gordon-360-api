@@ -795,6 +795,13 @@
             <param name="matchID"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteMatchCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given Match ID
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
             <summary>
             Queries all Series with an optional active tag
@@ -831,6 +838,13 @@
             </summary>
             <param name="seriesSchedule">created schedule for series</param>
             <returns>created series schedule</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.DeleteSeriesCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given Series ID
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32)">
             <summary>
@@ -932,6 +946,14 @@
             Get all team invites of the user
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AcceptTeamInvite(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
+            <summary>
+            Accept one specified team invite and true delete others from the same activity if there's any
+            </summary>
+            <param name="teamID"></param>
+            <param name="acceptedInvite"></param>
+            <returns>The accepted TeamInviteViewModel</returns>
         </member>
         <member name="M:Gordon360.Controllers.RequestsController.GetAsync">
             <summary>

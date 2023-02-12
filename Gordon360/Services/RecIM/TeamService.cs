@@ -1,19 +1,11 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
-using Gordon360.Utilities;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Gordon360.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Authorization;
-using Gordon360.Models.ViewModels;
-using Microsoft.EntityFrameworkCore.Internal;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Net;
 using System.Net.Mail;
 using System.Globalization;
@@ -30,13 +22,13 @@ namespace Gordon360.Services.RecIM
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
 
-        public TeamService(CCTContext context, IConfiguration config, IMatchService matchService, IParticipantService participantService, IAccountService accountService)
+        public TeamService(CCTContext context, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountService)
         {
             _context = context;
             _config = config;
             _matchService = matchService;
-            _participantService = participantService;
             _accountService = accountService;
+            _participantService = participantSerivce;
         }
         public IEnumerable<LookupViewModel> GetTeamLookup(string type)
         {
@@ -243,8 +235,11 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public IEnumerable<TeamInviteViewModel> GetTeamInvites(string username)
+        public IEnumerable<TeamInviteViewModel> GetTeamInvitesByParticipantUsername(string username)
         {
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended") 
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
             var teamRequestToJoin = _context.ParticipantTeam
                     .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2)
                     .Join(_context.Team
@@ -276,6 +271,9 @@ namespace Gordon360.Services.RecIM
         
         public ParticipantTeamViewModel GetParticipantTeam(int teamID, string username)
         {
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended")
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
             var participantTeam = _context.ParticipantTeam
                                     .Where(pt => pt.TeamID == teamID && pt.ParticipantUsername == username)
                                     .Select(pt => new ParticipantTeamViewModel
@@ -293,7 +291,10 @@ namespace Gordon360.Services.RecIM
 
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            var team = new Gordon360.Models.CCT.Team
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended")
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
+            var team = new Team
             {
                 Name = t.Name,
                 StatusID = 1,
@@ -410,12 +411,19 @@ namespace Gordon360.Services.RecIM
         
         public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
         {
+            //new check for enabling non-recim participants to be invited
+            if(!_context.Participant.Any(p => p.Username == participant.Username))
+            {
+                await _participantService.PostParticipantAsync(participant.Username, 1); //pending user
+            }
+
+
             var participantTeam = new ParticipantTeam
             {
                 TeamID = teamID,
                 ParticipantUsername = participant.Username,
                 SignDate = DateTime.Now,
-                RoleTypeID = participant.RoleTypeID ?? 3, //default: 3 -> member
+                RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();

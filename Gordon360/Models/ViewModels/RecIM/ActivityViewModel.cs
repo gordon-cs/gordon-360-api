@@ -18,6 +18,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string? Logo { get; set; }
         public bool Completed { get; set; }
         public int TypeID { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public static implicit operator ActivityViewModel(Activity a)
         {
@@ -35,6 +37,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 Logo = a.Logo,
                 Completed = a.Completed,
                 TypeID = a.TypeID,
+                StartDate = a.StartDate,
+                EndDate = a.EndDate
             };
         }
     }
