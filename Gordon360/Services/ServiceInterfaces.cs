@@ -350,7 +350,6 @@ namespace Gordon360.Services
             bool HasUserJoined(int activityID, string username);
             bool HasTeamNameTaken(int activityID, string teamName);
             bool IsTeamCaptain(string username, int teamID);
-            bool IsActivityFull(int activityID);
         }
 
         public interface IParticipantService

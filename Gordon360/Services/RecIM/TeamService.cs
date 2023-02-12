@@ -481,17 +481,6 @@ namespace Gordon360.Services.RecIM
                         )
             );
         }
-
-        public bool IsActivityFull(int activityID)
-        {   
-            // find the activity by activityID
-            var activity = _context.Activity.Where(a => a.ID == activityID).First();
-
-            // find the number of teams in an activity by activityID
-            var teamSum = _context.Team.Where(t => t.ActivityID == activityID).Count();
-
-            return teamSum >= activity.MaxCapacity;
-        }
     }
 }
 

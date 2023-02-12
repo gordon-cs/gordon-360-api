@@ -92,7 +92,7 @@ namespace Gordon360.Controllers.RecIM
             var activity = _teamService.GetTeamByID(newTeam.ActivityID);
             if (activity is null)
                 return UnprocessableEntity($"This activity does not exist");
-            if (_teamService.IsActivityFull(newTeam.ActivityID))
+            if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
                 return UnprocessableEntity($"The activity has reached the maximum team capacity");
             if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
                 return UnprocessableEntity($"Team name {newTeam.Name} has already been taken by another team in this activity");
