@@ -128,7 +128,7 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="seriesID"></param>
         [HttpPost]
-        [Route("schedule/{seriesID}")]
+        [Route("{seriesID}/schedule")]
         public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatches(int seriesID)
         {
             var createdMatches = await _seriesService.ScheduleMatchesAsync(seriesID);
