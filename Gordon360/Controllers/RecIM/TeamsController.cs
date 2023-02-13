@@ -226,11 +226,8 @@ namespace Gordon360.Controllers.RecIM
                 var invite = _teamService.GetTeamInvite(teamID, username);
                 if (invite is null)
                     return NotFound("You were not invited by this team.");
-
-                // I don't believe the following snippet is needed in the current context, could not think of
-                // a time where something like this might happen
-                // if (username != invite.ParticipantUsername)
-                //    return Forbid($"You are not permitted to accept invitations for another participant.");
+                if (username != invite.ParticipantUsername)
+                    return Forbid($"You are not permitted to accept invitations for another participant.");
 
                 var inviteResponse = new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 0 };
 
