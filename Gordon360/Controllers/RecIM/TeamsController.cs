@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -213,11 +214,11 @@ namespace Gordon360.Controllers.RecIM
         /// Accept one specified team invite and true delete others from the same activity if there's any
         /// </summary>
         /// <param name="teamID"></param>
-        /// <param name="acceptedInvite"></param>
+        /// <param name="response"></param>
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
         [Route("{teamID}/invite")]
-        public async Task<ActionResult<ParticipantTeamViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
+        public async Task<ActionResult<ParticipantTeamViewModel?>> AcceptTeamInvite(int teamID, TeamInviteResponseViewModel response)
         {
             var username = AuthUtils.GetUsername(User);
             try
@@ -228,11 +229,19 @@ namespace Gordon360.Controllers.RecIM
                 if (username != invite.ParticipantUsername)
                     return Forbid($"You are not permitted to accept invitations for another participant.");
 
-                // set the role type ID of the accepted team invite to 3 => member
-                acceptedInvite.RoleTypeID = 3;
-                var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, acceptedInvite);
-
-                return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
+                switch (response.Response)
+                {
+                    case "accepted":
+                        var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,
+                            new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 }
+                            );
+                        return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
+                    case "rejected":
+                        await _teamService.DeleteTeamParticipantAsync(invite.TeamID, username);
+                        return Ok();
+                    default:
+                        return BadRequest("Request does not specify valid invite action");
+                }
             }
             catch (Exception)
             {
