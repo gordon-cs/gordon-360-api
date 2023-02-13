@@ -246,7 +246,7 @@ namespace Gordon360.Controllers.RecIM
                     joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, inviteResponse);
                 } else
                 {
-                    return BadRequest("Request does not specify invite action");
+                    return BadRequest("Request does not specify valid invite action");
                 }
 
                 return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
