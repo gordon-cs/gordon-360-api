@@ -196,7 +196,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("invites")]
-        public ActionResult<IEnumerable<TeamInviteViewModel>> GetTeamInvites()
+        public ActionResult<IEnumerable<TeamExtendedViewModel>> GetTeamInvites()
         {
             var username = AuthUtils.GetUsername(User);
             try
@@ -244,7 +244,7 @@ namespace Gordon360.Controllers.RecIM
                     inviteResponse.RoleTypeID = 2;
                 } else
                 {
-                    return BadRequest("Request does not specify invite action");
+                    return BadRequest("Request does not specify valid invite action");
                 }
 
                 var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, inviteResponse);
