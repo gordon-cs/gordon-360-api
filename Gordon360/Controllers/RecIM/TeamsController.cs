@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -213,11 +214,11 @@ namespace Gordon360.Controllers.RecIM
         /// Accept one specified team invite and true delete others from the same activity if there's any
         /// </summary>
         /// <param name="teamID"></param>
-        /// <param name="acceptedInvite"></param>
+        /// <param name="response"></param>
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
-        [Route("{teamID}/invite")]
-        public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
+        [Route("{teamID}/invite/{response}")]
+        public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, string response)
         {
             var username = AuthUtils.GetUsername(User);
             try
@@ -225,18 +226,34 @@ namespace Gordon360.Controllers.RecIM
                 var invite = _teamService.GetTeamInvite(teamID, username);
                 if (invite is null)
                     return NotFound("You were not invited by this team.");
-                if (username != invite.ParticipantUsername)
-                    return Forbid($"You are not permitted to accept invitations for another participant.");
 
-                // set the role type ID of the accepted team invite to 3 => member
-                acceptedInvite.RoleTypeID = 3;
-                var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, acceptedInvite);
+                // I don't believe the following snippet is needed in the current context, could not think of
+                // a time where something like this might happen
+                // if (username != invite.ParticipantUsername)
+                //    return Forbid($"You are not permitted to accept invitations for another participant.");
+
+                ParticipantTeamViewModel joinedParticipantTeam;
+
+                if (response == "accepted")
+                {
+                    var inviteResponse = new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 };
+                    joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, inviteResponse);
+                } else if (response == "rejected")
+                {
+                    // Temporary solution, in reality we should remove all other instances of invites but I do not know
+                    // if there is a route for that yet, so for now, they will remain inactive
+                    var inviteResponse = new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 2 };
+                    joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, inviteResponse);
+                } else
+                {
+                    return BadRequest("Request does not specify invite action");
+                }
 
                 return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
             }
             catch (Exception)
             {
-                throw;
+                throw; // y is this here????
             }
         }
     }
