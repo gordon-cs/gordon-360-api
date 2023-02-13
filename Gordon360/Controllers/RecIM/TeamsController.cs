@@ -218,7 +218,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
         [Route("{teamID}/invite")]
-        public async Task<ActionResult<TeamExtendedViewModel>> AcceptTeamInvite(int teamID, TeamInviteResponseViewModel response)
+        public async Task<ActionResult<ParticipantTeamViewModel?>> AcceptTeamInvite(int teamID, TeamInviteResponseViewModel response)
         {
             var username = AuthUtils.GetUsername(User);
             try
@@ -229,24 +229,19 @@ namespace Gordon360.Controllers.RecIM
                 if (username != invite.ParticipantUsername)
                     return Forbid($"You are not permitted to accept invitations for another participant.");
 
-                var inviteResponse = new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 0 };
-
-                if (response.Response == "accepted")
+                switch (response.Response)
                 {
-                    inviteResponse.RoleTypeID = 3;
-                } else if (response.Response == "rejected")
-                {
-                    // Temporary solution, in reality we should true delete
-                    // Amos will handle this
-                    inviteResponse.RoleTypeID = 1;
-                } else
-                {
-                    return BadRequest("Request does not specify valid invite action");
+                    case "accepted":
+                        var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,
+                            new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 }
+                            );
+                        return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
+                    case "rejected":
+                        await _teamService.DeleteTeamParticipantAsync(invite.TeamID, username);
+                        return Ok();
+                    default:
+                        return BadRequest("Request does not specify valid invite action");
                 }
-
-                var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, inviteResponse);
-
-                return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
             }
             catch (Exception)
             {
