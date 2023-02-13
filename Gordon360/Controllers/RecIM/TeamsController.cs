@@ -209,7 +209,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("invites")]
-        public ActionResult<IEnumerable<TeamInviteViewModel>> GetTeamInvites()
+        public ActionResult<IEnumerable<TeamExtendedViewModel>> GetTeamInvites()
         {
             var username = AuthUtils.GetUsername(User);
             try
@@ -231,7 +231,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
         [Route("{teamID}/invite")]
-        public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
+        public async Task<ActionResult<ParticipantTeamViewModel>> AcceptTeamInvite(int teamID, [FromBody] ParticipantTeamUploadViewModel acceptedInvite)
         {
             var username = AuthUtils.GetUsername(User);
             try

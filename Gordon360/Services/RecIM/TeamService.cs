@@ -236,38 +236,34 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        public IEnumerable<TeamInviteViewModel> GetTeamInvitesByParticipantUsername(string username)
+        public IEnumerable<TeamExtendedViewModel> GetTeamInvitesByParticipantUsername(string username)
         {
             var participantStatus = _participantService.GetParticipantByUsername(username).Status;
             if (participantStatus == "Banned" || participantStatus == "Suspended") 
                 throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
-            var teamRequestToJoin = _context.ParticipantTeam
+            
+            var teamInvites = _context.ParticipantTeam
                     .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2)
                     .Join(_context.Team
                         .Join(_context.Activity,
                             t => t.ActivityID,
                             a => a.ID,
-                            (t, a) => new
+                            (t, a) => new TeamExtendedViewModel
                             {
-                                ActivityID = t.ActivityID,
-                                ActivityName = a.Name,
-                                TeamID = t.ID,
-                                TeamName = t.Name,
+                                ID = t.ID,
+                                Activity = a,
+                                Name = t.Name,
+                                Logo = t.Logo,
                             }
                         ),
                         pt => pt.TeamID,
-                        t => t.TeamID,
-                        (pt, t) => new TeamInviteViewModel
-                        {
-                            ActivityID = t.ActivityID,
-                            ActivityName = t.ActivityName,
-                            TeamID = t.TeamID,
-                            TeamName = t.TeamName,
-                        }
+                        t => t.ID,
+                        (pt, t) => t
                     )
                     .AsEnumerable();
 
-            return teamRequestToJoin;
+            return teamInvites;
+;
         }
         
         public ParticipantTeamViewModel GetParticipantTeam(int teamID, string username)
@@ -428,38 +424,26 @@ namespace Gordon360.Services.RecIM
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();
-            
+            /* DOES NOT WORK IN PRODUCTION? COMMENTING TEMPORARILY WHILE FIX IN PROGRESS (Config related issue)
             if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
                 await SendInviteEmail(teamID, participant.Username, inviterUsername);
             }
+            */
             return participantTeam;
         }
 
         public bool HasUserJoined(int activityID, string username)
         {
             // get all the partipantTeam from the teams with the activityID
-            var participantTeams = _context.Activity
-                        .Where(a => a.ID == activityID)
-                        .Join(_context.Team
-                            .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
-                                t => t.ID,
-                                pt => pt.TeamID,
-                                (t, pt) => new {
-                                    ActivityID = activityID,
-                                    TeamName = t.Name,
-                                    Participant = pt.ParticipantUsername,
+            var participantTeams = _context.Team.Where(t => t.ActivityID == activityID)
+                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
+                t => t.ID,
+                pt => pt.TeamID,
+                (t, pt) => pt)
+                .AsEnumerable();
 
-                                }),
-                            a => a.ID,
-                            t => t.ActivityID,
-                            (a, t) => new {
-                                teamName = t.TeamName,
-                                Participant = t.Participant,
-                            }
-                        ).AsEnumerable();
-
-            return participantTeams.Any(pt => pt.Participant == username);
+            return participantTeams.Any(pt => pt.ParticipantUsername == username);
         }
 
         public bool HasTeamNameTaken(int activityID, string teamName)
