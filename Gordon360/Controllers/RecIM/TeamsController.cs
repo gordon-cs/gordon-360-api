@@ -251,7 +251,7 @@ namespace Gordon360.Controllers.RecIM
                             );
                         return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
                     case "rejected":
-                        await _teamService.DeleteTeamParticipantAsync(invite.TeamID, username);
+                        await _teamService.DeleteParticipantTeamAsync(invite.TeamID, username);
                         return Ok();
                     default:
                         return BadRequest("Request does not specify valid invite action");
