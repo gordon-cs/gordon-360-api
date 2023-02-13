@@ -196,7 +196,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("invites")]
-        public ActionResult<IEnumerable<TeamInviteViewModel>> GetTeamInvites()
+        public ActionResult<IEnumerable<TeamExtendedViewModel>> GetTeamInvites()
         {
             var username = AuthUtils.GetUsername(User);
             try
