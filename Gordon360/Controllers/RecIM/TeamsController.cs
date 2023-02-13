@@ -220,7 +220,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}/invite")]
         public async Task<ActionResult<TeamExtendedViewModel>> AcceptTeamInvite(int teamID, TeamInviteResponseViewModel response)
         {
-            var username = "silas.white"; //AuthUtils.GetUsername(User);
+            var username = AuthUtils.GetUsername(User);
             try
             {
                 var invite = _teamService.GetTeamInvite(teamID, username);
