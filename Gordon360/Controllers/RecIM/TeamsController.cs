@@ -217,10 +217,10 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="response"></param>
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
-        [Route("{teamID}/invite/{response}")]
-        public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, string response)
+        [Route("{teamID}/invite")]
+        public async Task<ActionResult<TeamInviteViewModel>> AcceptTeamInvite(int teamID, TeamInviteResponseViewModel response)
         {
-            var username = AuthUtils.GetUsername(User);
+            var username = "silas.white"; //AuthUtils.GetUsername(User);
             try
             {
                 var invite = _teamService.GetTeamInvite(teamID, username);
@@ -232,28 +232,28 @@ namespace Gordon360.Controllers.RecIM
                 // if (username != invite.ParticipantUsername)
                 //    return Forbid($"You are not permitted to accept invitations for another participant.");
 
-                ParticipantTeamViewModel joinedParticipantTeam;
+                var inviteResponse = new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 0 };
 
-                if (response == "accepted")
+                if (response.Response == "accepted")
                 {
-                    var inviteResponse = new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 };
-                    joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, inviteResponse);
-                } else if (response == "rejected")
+                    inviteResponse.RoleTypeID = 3;
+                } else if (response.Response == "rejected")
                 {
                     // Temporary solution, in reality we should remove all other instances of invites but I do not know
                     // if there is a route for that yet, so for now, they will remain inactive
-                    var inviteResponse = new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 2 };
-                    joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, inviteResponse);
+                    inviteResponse.RoleTypeID = 2;
                 } else
                 {
                     return BadRequest("Request does not specify invite action");
                 }
 
+                var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID, inviteResponse);
+
                 return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
             }
             catch (Exception)
             {
-                throw; // y is this here????
+                throw;
             }
         }
     }
