@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
+using Team = Gordon360.Models.CCT.Team;
 using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -9,7 +10,8 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 using System.Globalization;
-
+using Microsoft.Graph;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace Gordon360.Services.RecIM
 {
@@ -264,7 +266,7 @@ namespace Gordon360.Services.RecIM
 ;
         }
         
-        public ParticipantTeamViewModel GetTeamInvite(int teamID, string username)
+        public ParticipantTeamViewModel GetParticipantTeam(int teamID, string username)
         {
             var participantStatus = _participantService.GetParticipantByUsername(username).Status;
             if (participantStatus == "Banned" || participantStatus == "Suspended")
@@ -346,7 +348,7 @@ namespace Gordon360.Services.RecIM
 
             return participantTeam;
         }
-        public async Task DeleteTeamParticipantAsync(int teamID, string username)
+        public async Task DeleteParticipantTeamAsync(int teamID, string username)
         {
             var teamParticipant = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == username);
             _context.ParticipantTeam.Remove(teamParticipant);

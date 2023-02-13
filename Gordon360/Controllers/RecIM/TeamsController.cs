@@ -1,4 +1,5 @@
 using Gordon360.Authorization;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.RecIM
@@ -88,6 +90,11 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
+            var activity = _teamService.GetTeamByID(newTeam.ActivityID);
+            if (activity is null)
+                return UnprocessableEntity($"This activity does not exist");
+            if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
+                return UnprocessableEntity($"The activity has reached the maximum team capacity");
             if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
                 return UnprocessableEntity($"Team name {newTeam.Name} has already been taken by another team in this activity");
            //redudant check for API as countermeasure against postman navigation around UI check
@@ -140,7 +147,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{teamID}/participants")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
-        public async Task<ActionResult<ParticipantTeamViewModel>> UpdateTeamParticipant(int teamID, ParticipantTeamUploadViewModel participant)
+        public async Task<ActionResult<ParticipantTeamViewModel>> UpdateParticipantTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
             var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
             if (!_teamService.HasUserJoined(activityID, participant.Username))
@@ -163,7 +170,14 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}/participants")]
         public async Task<ActionResult> DeleteTeamParticipant(int teamID, string username)
         {
-            await _teamService.DeleteTeamParticipantAsync(teamID, username);
+            var user_name = AuthUtils.GetUsername(User);
+            var participantTeam = _teamService.GetParticipantTeam(teamID, username);
+            if (participantTeam is null)
+                return NotFound("The user is not part of the team.");
+            if (user_name != participantTeam.ParticipantUsername)
+                return Forbid($"You are not permitted to reject invitations for another participant.");
+
+            await _teamService.DeleteParticipantTeamAsync(teamID, username);
             return NoContent();
         }
 
@@ -223,7 +237,7 @@ namespace Gordon360.Controllers.RecIM
             var username = AuthUtils.GetUsername(User);
             try
             {
-                var invite = _teamService.GetTeamInvite(teamID, username);
+                var invite = _teamService.GetParticipantTeam(teamID, username);
                 if (invite is null)
                     return NotFound("You were not invited by this team.");
                 if (username != invite.ParticipantUsername)
