@@ -122,5 +122,18 @@ namespace Gordon360.Controllers.RecIM
             var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
             return CreatedAtAction("AddAttendance", attendance);
         }
+        
+        /// <summary>
+        /// Cascade deletes all DBobjects related to given Match ID
+        /// </summary>
+        /// <param name="matchID"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{matchID}")]
+        public async Task<ActionResult> DeleteMatchCascade(int matchID)
+        {
+            await _matchService.DeleteMatchCascadeAsync(matchID);
+            return Ok();
+        }
     }
 }

@@ -17,5 +17,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string? Logo { get; set; }
         public bool? Completed { get; set; }
         public int? TypeID { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }

@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+
 
 namespace Gordon360.Authorization
 {
@@ -44,6 +46,8 @@ namespace Gordon360.Authorization
 
         private AccountService _accountService;
 
+        private IConfiguration _config;
+
         //RecIM services
         private ParticipantService _participantService;
         private Gordon360.Services.RecIM.ActivityService _activityService;
@@ -69,7 +73,7 @@ namespace Gordon360.Authorization
             // set RecIM services
             _participantService = new ParticipantService(_CCTContext, _accountService);
             _matchService = new MatchService(_CCTContext, _accountService);
-            _teamService = new TeamService(_CCTContext, _matchService, _participantService, _accountService);
+            _teamService = new TeamService(_CCTContext, _config, _participantService, _matchService, _accountService);
             _seriesService = new SeriesService(_CCTContext, _matchService);
             _activityService = new Services.RecIM.ActivityService(_CCTContext, _seriesService);
 
@@ -704,10 +708,13 @@ namespace Gordon360.Authorization
 
                 case Resource.RECIM_MATCH:
                     {
-                        var matchID = (int)context.ActionArguments["matchID"];
-                        var match = _matchService.GetMatchByID(matchID);
+                        if (context.ActionArguments["matchID"] is int matchID)
+                        {
+                        var match = _matchService.GetSimpleMatchViewByID(matchID);
                         var series = _seriesService.GetSeriesByID(match.SeriesID);
                         return _activityService.IsReferee(user_name, series.ActivityID) || _participantService.IsAdmin(user_name);
+                        }
+                        return _participantService.IsAdmin(user_name);
                     }
                 default: return false;
             }

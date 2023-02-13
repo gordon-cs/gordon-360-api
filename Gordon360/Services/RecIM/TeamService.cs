@@ -1,16 +1,17 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
+using Team = Gordon360.Models.CCT.Team;
 using Gordon360.Models.CCT.Context;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Authorization;
-using Gordon360.Models.ViewModels;
-using Microsoft.EntityFrameworkCore.Internal;
+using System.Net;
+using System.Net.Mail;
+using System.Globalization;
+using Microsoft.Graph;
+using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace Gordon360.Services.RecIM
 {
@@ -20,14 +21,15 @@ namespace Gordon360.Services.RecIM
         private readonly IMatchService _matchService;
         private readonly IParticipantService _participantService;
         private readonly IAccountService _accountService;
+        private readonly IConfiguration _config;
 
-
-        public TeamService(CCTContext context, IMatchService matchService, IParticipantService participantService, IAccountService accountService)
+        public TeamService(CCTContext context, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountService)
         {
             _context = context;
+            _config = config;
             _matchService = matchService;
-            _participantService = participantService;
             _accountService = accountService;
+            _participantService = participantSerivce;
         }
         public IEnumerable<LookupViewModel> GetTeamLookup(string type)
         {
@@ -233,41 +235,61 @@ namespace Gordon360.Services.RecIM
             return team;
         }
 
-        // return type is wrong
-        public IEnumerable<TeamInviteViewModel> GetTeamInvites(string username)
+        public IEnumerable<TeamExtendedViewModel> GetTeamInvitesByParticipantUsername(string username)
         {
-            var teamRequestToJoin = _context.ParticipantTeam
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended") 
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
+            
+            var teamInvites = _context.ParticipantTeam
                     .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2)
                     .Join(_context.Team
                         .Join(_context.Activity,
                             t => t.ActivityID,
                             a => a.ID,
-                            (t, a) => new
+                            (t, a) => new TeamExtendedViewModel
                             {
-                                ActivityID = t.ActivityID,
-                                ActivityName = a.Name,
-                                TeamID = t.ID,
-                                TeamName = t.Name,
+                                ID = t.ID,
+                                Activity = a,
+                                Name = t.Name,
+                                Logo = t.Logo,
                             }
                         ),
                         pt => pt.TeamID,
-                        t => t.TeamID,
-                        (pt, t) => new TeamInviteViewModel
-                        {
-                            ActivityID = t.ActivityID,
-                            ActivityName = t.ActivityName,
-                            TeamID = t.TeamID,
-                            TeamName = t.TeamName,
-                        }
+                        t => t.ID,
+                        (pt, t) => t
                     )
                     .AsEnumerable();
 
-            return teamRequestToJoin;
+            return teamInvites;
+;
         }
         
+        public ParticipantTeamViewModel GetParticipantTeam(int teamID, string username)
+        {
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended")
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
+            var participantTeam = _context.ParticipantTeam
+                                    .Where(pt => pt.TeamID == teamID && pt.ParticipantUsername == username)
+                                    .Select(pt => new ParticipantTeamViewModel
+                                    {
+                                        ID = pt.ID,
+                                        TeamID = pt.TeamID,
+                                        ParticipantUsername = pt.ParticipantUsername,
+                                        SignDate = pt.SignDate,
+                                        RoleTypeID = pt.RoleTypeID,
+                                    })
+                                    .FirstOrDefault();
+
+            return participantTeam;
+        }
+
         public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
         {
-            
+            var participantStatus = _participantService.GetParticipantByUsername(username).Status;
+            if (participantStatus == "Banned" || participantStatus == "Suspended")
+                throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
             var team = new Team
             {
                 Name = t.Name,
@@ -283,7 +305,7 @@ namespace Gordon360.Services.RecIM
                 Username = username,
                 RoleTypeID = 5
             };
-            await AddUserToTeamAsync(team.ID, captain);
+            await AddParticipantToTeamAsync(team.ID, captain);
 
             var existingSeries = _context.Series.Where(s => s.ActivityID == t.ActivityID).OrderBy(s => s.StartDate)?.FirstOrDefault();
             if (existingSeries is not null) {
@@ -325,7 +347,7 @@ namespace Gordon360.Services.RecIM
 
             return participantTeam;
         }
-        public async Task DeleteTeamParticipantAsync(int teamID, string username)
+        public async Task DeleteParticipantTeamAsync(int teamID, string username)
         {
             var teamParticipant = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == username);
             _context.ParticipantTeam.Remove(teamParticipant);
@@ -343,47 +365,94 @@ namespace Gordon360.Services.RecIM
 
             return t;
         }
-        
-        public async Task<ParticipantTeamViewModel> AddUserToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
+
+        private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
         {
+            var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == team.ActivityID);
+            var invitee = _accountService.GetAccountByUsername(inviteeUsername);
+            var inviter = _accountService.GetAccountByUsername(inviterUsername);
+
+            string from_email = _config["Emails:RecIM:Username"];
+            string to_email = invitee.Email;
+            string messageBody =
+                 $"Hey {invitee.FirstName}!<br><br>" +
+                $"{inviter.FirstName} {inviter.LastName} has invited you join <b>{team.Name}</b> for <b>{activity.Name}</b> <br>" +
+                $"Registration closes on <i>{activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
+                //$"check it out <a href='https://360.gordon.edu/recim'>here</a>! <br><br>" + //for production
+                $"check it out <a href='https://360recim.gordon.edu/recim'>here</a>! <br><br>" +//for development
+                $"Gordon Rec-IM";
+
+            using var smtpClient = new SmtpClient()
+            {
+                Credentials = new NetworkCredential
+                {
+                    UserName = from_email,
+                    Password = _config["Emails:RecIM:Password"]
+                },
+                Host = _config["SmtpHost"],
+                EnableSsl = true,
+                Port = 587,
+            };
+
+            var message = new MailMessage(from_email, to_email)
+            {
+                Subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!",
+                Body = messageBody,
+            };
+            message.IsBodyHtml = true;
+
+            smtpClient.Send(message);
+        }
+        
+        public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
+        {
+            //new check for enabling non-recim participants to be invited
+            if(!_context.Participant.Any(p => p.Username == participant.Username))
+            {
+                await _participantService.PostParticipantAsync(participant.Username, 1); //pending user
+            }
+
+
             var participantTeam = new ParticipantTeam
             {
                 TeamID = teamID,
                 ParticipantUsername = participant.Username,
                 SignDate = DateTime.Now,
-                RoleTypeID = participant.RoleTypeID ?? 3, //default: 3 -> member
+                RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();
-
+            /* DOES NOT WORK IN PRODUCTION? COMMENTING TEMPORARILY WHILE FIX IN PROGRESS (Config related issue)
+            if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
+            {
+                await SendInviteEmail(teamID, participant.Username, inviterUsername);
+            }
+            */
             return participantTeam;
         }
 
         public bool HasUserJoined(int activityID, string username)
         {
             // get all the partipantTeam from the teams with the activityID
-            var participantTeams = _context.Activity
-                        .Where(a => a.ID == activityID)
-                        .Join(_context.Team
-                            .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
-                                t => t.ID,
-                                pt => pt.TeamID,
-                                (t, pt) => new {
-                                    ActivityID = activityID,
-                                    TeamName = t.Name,
-                                    Participant = pt.ParticipantUsername,
+            var participantTeams = _context.Team.Where(t => t.ActivityID == activityID)
+                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
+                t => t.ID,
+                pt => pt.TeamID,
+                (t, pt) => pt)
+                .AsEnumerable();
 
-                                }),
-                            a => a.ID,
-                            t => t.ActivityID,
-                            (a, t) => new {
-                                teamName = t.TeamName,
-                                Participant = t.Participant,
-                            }
-                        ).AsEnumerable();
-
-            return participantTeams.Any(pt => pt.Participant == username);
+            return participantTeams.Any(pt => pt.ParticipantUsername == username);
         }
+
+        public bool HasTeamNameTaken(int activityID, string teamName)
+        {
+            return _context.Team.Any(t =>
+                        t.ActivityID == activityID
+                        && t.Name == teamName
+            );
+        }
+
         public bool IsTeamCaptain(string username, int teamID)
         {
             return _context.ParticipantTeam.Any(t =>
