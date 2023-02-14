@@ -135,9 +135,9 @@ namespace Gordon360.Services
                          where sn.Accepted ?? true
                          && (sn.ADUN == username)
                          && ((sn.ManualExpirationDate == null
-                               && DateOnly.FromDateTime(sn.Entered ?? DateTime.Today).AddDays(14) >= DateOnly.FromDateTime(DateTime.Today))
+                               && (sn.Entered ?? DateTime.Today).AddDays(14).Date >= (DateTime.Today).Date)
                            || (sn.ManualExpirationDate != null
-                           && DateOnly.FromDateTime(sn.ManualExpirationDate ?? DateTime.Today) >= DateOnly.FromDateTime(DateTime.Today)))
+                           && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
                         orderby sn.SNID descending
                          select new StudentNewsViewModel
                          {
