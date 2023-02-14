@@ -51,23 +51,34 @@ namespace Gordon360.Services
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpiredAsync()
         {
-            var news = await _contextCCT.Procedures.NEWS_NOT_EXPIREDAsync();
-            return news.Select(n => new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                Image = n.Image,
-                Accepted = true,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            });
+
+            var news = (from sn in _context.StudentNews
+                        join snc in _context.StudentNewsCategory
+                        on sn.categoryID equals snc.categoryID
+                        where sn.Accepted ?? false
+                        && ((sn.ManualExpirationDate == null
+                               && DateOnly.FromDateTime(sn.Entered ?? DateTime.Today).AddDays(14) >= DateOnly.FromDateTime(DateTime.Today))
+                           || (sn.ManualExpirationDate != null
+                           && DateOnly.FromDateTime(sn.ManualExpirationDate ?? DateTime.Today) >= DateOnly.FromDateTime(DateTime.Today)))
+                        orderby sn.Entered descending
+                        select new StudentNewsViewModel
+                        {
+                            SNID = sn.SNID,
+                            ADUN = sn.ADUN,
+                            categoryID = sn.categoryID,
+                            Subject = sn.Subject,
+                            Body = sn.Body,
+                            Image = sn.Image,
+                            Accepted = true,
+                            Sent = sn.Sent,
+                            thisPastMailing = sn.thisPastMailing,
+                            Entered = sn.Entered,
+                            categoryName = snc.categoryName,
+                            SortOrder = snc.SortOrder,
+                            ManualExpirationDate = sn.ManualExpirationDate,
+                        }).ToList();
+
+            return news;
         }
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
