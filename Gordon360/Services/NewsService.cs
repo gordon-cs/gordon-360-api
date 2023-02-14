@@ -87,8 +87,8 @@ namespace Gordon360.Services
                          join snc in _context.StudentNewsCategory
                          on sn.categoryID equals snc.categoryID
                          where sn.Accepted ?? false
-                         && (DateOnly.FromDateTime(DateTime.Today).AddDays(-1) < DateOnly.FromDateTime((DateTime)sn.Entered))
-                         && (sn.ManualExpirationDate == null || DateOnly.FromDateTime(DateTime.Today) < DateOnly.FromDateTime((DateTime)sn.Entered))
+                         && ((DateTime.Today).AddDays(-1).Date < ((DateTime)sn.Entered).Date)
+                         && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
                          orderby snc.SortOrder
                          select new StudentNewsViewModel
                          {
