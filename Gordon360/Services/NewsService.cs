@@ -83,23 +83,31 @@ namespace Gordon360.Services
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
         {
-            var news = await _contextCCT.Procedures.NEWS_NEWAsync();
-            return news.Select(n => new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                Image = n.Image,
-                Accepted = true,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            });
+            var news = ((from sn in _context.StudentNews
+                         join snc in _context.StudentNewsCategory
+                         on sn.categoryID equals snc.categoryID
+                         where sn.Accepted ?? false
+                         && (DateOnly.FromDateTime(DateTime.Today).AddDays(-1) < DateOnly.FromDateTime((DateTime)sn.Entered))
+                         && (sn.ManualExpirationDate == null || DateOnly.FromDateTime(DateTime.Today) < DateOnly.FromDateTime((DateTime)sn.Entered))
+                         orderby snc.SortOrder
+                         select new StudentNewsViewModel
+                         {
+                             SNID = sn.SNID,
+                             ADUN = sn.ADUN,
+                             categoryID = sn.categoryID,
+                             Subject = sn.Subject,
+                             Body = sn.Body,
+                             Image = sn.Image,
+                             Accepted = true,
+                             Sent = sn.Sent,
+                             thisPastMailing = sn.thisPastMailing,
+                             Entered = sn.Entered,
+                             categoryName = snc.categoryName,
+                             SortOrder = snc.SortOrder,
+                             ManualExpirationDate = sn.ManualExpirationDate,
+                         })).ToList();
+                         
+            return news;
         }
 
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
