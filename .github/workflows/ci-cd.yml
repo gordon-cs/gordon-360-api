@@ -25,8 +25,8 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' }}
     needs: build
     environment:
-      name: fromJSON('["Production", "Train"]')[github.ref == 'refs/heads/master']
-      url: format('https://360Api{0}.gordon.edu', fromJSON('["", "Train"]')[github.ref == 'refs/heads/master'])
+      name: fromJSON('{"false":"Train", "true":"Production"}')[github.ref == 'refs/heads/master']
+      url: format('https://360Api{0}.gordon.edu', fromJSON('{"false":"Train", "true":""}')[github.ref == 'refs/heads/master'])
 
     steps:
       - uses: actions/checkout@v2
