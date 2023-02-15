@@ -26,6 +26,8 @@ jobs:
     env:
       EnvironmentName: 'Production'
       EnvironmentUrl: 'https://360Api.gordon.edu'
+    steps:
+      - uses: actions/checkout@v2
       
   set-env-for-train:
     runs-on: windows-latest
@@ -33,6 +35,8 @@ jobs:
     env:
       EnvironmentName: 'Train'
       EnvironmentUrl: 'https://360ApiTrain.gordon.edu'
+    steps:
+      - uses: actions/checkout@v2
     
   deploy:
     runs-on: windows-latest
