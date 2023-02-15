@@ -19,32 +19,14 @@ jobs:
 
       - name: Build
         run: dotnet build
-        
-  set-env-for-production:
-    runs-on: windows-latest
-    if: ${{ github.ref == 'refs/heads/master' }}
-    env:
-      EnvironmentName: 'Production'
-      EnvironmentUrl: 'https://360Api.gordon.edu'
-    steps:
-      - uses: actions/checkout@v2
-      
-  set-env-for-train:
-    runs-on: windows-latest
-    if: ${{ github.ref == 'refs/heads/develop' }}
-    env:
-      EnvironmentName: 'Train'
-      EnvironmentUrl: 'https://360ApiTrain.gordon.edu'
-    steps:
-      - uses: actions/checkout@v2
     
   deploy:
     runs-on: windows-latest
     if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' }}
     needs: build
     environment:
-      name: ${{ env.EnvironmentName }}
-      url: ${{ env.EnvironemntUrl }}
+      name: fromJSON('["Production", "Train"]')[github.ref == 'refs/heads/master']
+      url: format('https://360Api{0}.gordon.edu', fromJSON('["", "Train"]')[github.ref == 'refs/heads/master'])
 
     steps:
       - uses: actions/checkout@v2
