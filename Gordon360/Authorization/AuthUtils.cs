@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Gordon360.Enums;
+using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Security.Claims;

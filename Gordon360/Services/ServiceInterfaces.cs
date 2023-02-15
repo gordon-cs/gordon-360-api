@@ -1,4 +1,4 @@
-﻿using Gordon360.Authorization;
+﻿using Gordon360.Enums;
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
@@ -145,9 +145,9 @@ namespace Gordon360.Services
 
     public interface IEmailService
     {
-        Task<IEnumerable<EmailViewModel>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, ParticipationType? participationType);
+        IEnumerable<EmailViewModel> GetEmailsForActivity(string activityCode, string? sessionCode = null, List<string>? participationTypes = null);
         void SendEmails(string[] to_emails, string to_email, string subject, string email_content, string password);
-        Task SendEmailToActivityAsync(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
+        void SendEmailToActivity(string activityCode, string sessionCode, string from_email, string subject, string email_content, string password);
     }
 
     public interface IErrorLogService
@@ -166,18 +166,12 @@ namespace Gordon360.Services
 
     public interface IMembershipService
     {
-        IEnumerable<MembershipView> GetLeaderMembershipsForActivity(string activityCode);
-        IEnumerable<MembershipView> GetAdvisorMembershipsForActivity(string activityCode);
-        IEnumerable<MembershipView> GetGroupAdminMembershipsForActivity(string activityCode, string? sessionCode = null);
-        IEnumerable<MembershipView> GetMembershipsForActivity(
-            string activityCode,
+        IEnumerable<MembershipView> GetMemberships(
+            string? activityCode = null,
+            string? username = null,
             string? sessionCode = null,
-            bool? groupAdmin = null,
-            string[]? participationTypes = null
+            List<string>? participationTypes = null
         );
-        IEnumerable<MembershipView> GetMembershipsByUser(string username);
-        int GetActivitySubscribersCountForSession(string activityCode, string? sessionCode);
-        int GetActivityMembersCountForSession(string activityCode, string? sessionCode);
         MembershipView GetSpecificMembership(int membershipID);
         Task<MembershipView> AddAsync(MembershipUploadViewModel membership);
         Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership);
@@ -185,7 +179,6 @@ namespace Gordon360.Services
         Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate);
         MembershipView Delete(int membershipID);
         bool IsGroupAdmin(string username);
-        IEnumerable<EmailViewModel> MembershipEmails(string activityCode, string sessionCode, ParticipationType? participationCode = null);
         MembershipView GetMembershipViewById(int membershipId);
         bool ValidateMembership(MembershipUploadViewModel membership);
         bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);
@@ -275,7 +268,8 @@ namespace Gordon360.Services
         Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapprovedAsync(string username);
         StudentNews SubmitNews(StudentNews newsItem, string username);
         StudentNews DeleteNews(int newsID);
-        StudentNewsViewModel EditPosting(int newsID, StudentNews newsItem);
+        StudentNewsViewModel EditPosting(int newsID, StudentNewsUploadViewModel newsItem);
+        StudentNewsViewModel AlterPostAcceptStatus(int newsID, bool isAccepted);
     }
 
     public interface IHousingService

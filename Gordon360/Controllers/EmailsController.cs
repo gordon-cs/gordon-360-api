@@ -1,12 +1,10 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using static Gordon360.Services.MembershipService;
 
 namespace Gordon360.Controllers
 {
@@ -15,34 +13,30 @@ namespace Gordon360.Controllers
     {
         private readonly IEmailService _emailService;
 
-        public EmailsController(CCTContext context, IEmailService emailService)
+        public EmailsController(IEmailService emailService)
         {
             _emailService = emailService;
         }
 
         [HttpGet]
+        [Route("involvement/{activityCode}")]
+        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
+        public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForActivity(string activityCode, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
+        {
+            var result = _emailService.GetEmailsForActivity(activityCode, sessionCode, participationTypes);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("activity/{activityCode}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public async Task<ActionResult<IEnumerable<EmailViewModel>>> GetEmailsForActivityAsync(string activityCode, string? sessionCode, string? participationType)
+        [Obsolete("Use the new route that accepts a list of participation types instead")]
+        public ActionResult<IEnumerable<EmailViewModel>> DEPRECATED_GetEmailsForActivity(string activityCode, string? sessionCode, string? participationType)
         {
-            var participation = participationType switch
-            {
-                "advisor" => ParticipationType.Advisor,
-                "leader" => ParticipationType.Leader,
-                "group-admin" => ParticipationType.GroupAdmin,
-                "member" => ParticipationType.Member,
-                "guest" => ParticipationType.Guest,
-                _ => null
-            };
+            var result = _emailService.GetEmailsForActivity(activityCode, sessionCode, new List<string> { participationType ?? "" });
 
-            var result = await _emailService.GetEmailsForActivityAsync(activityCode, sessionCode, participation);
-
-            if (result == null)
-            {
-                NotFound();
-            }
             return Ok(result);
-
         }
 
         [HttpPut]
@@ -57,12 +51,11 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("activity/{id}/session/{session}")]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-        public async Task<ActionResult> SendEmailToActivityAsync(string id, string session, [FromBody] EmailContentViewModel email)
+        public ActionResult SendEmailToActivity(string id, string session, [FromBody] EmailContentViewModel email)
         {
-            await _emailService.SendEmailToActivityAsync(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
+            _emailService.SendEmailToActivity(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
 
             return Ok();
-
         }
     }
 }
