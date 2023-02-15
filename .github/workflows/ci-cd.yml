@@ -1,0 +1,66 @@
+name: Continuous Integration & Deployment
+
+on: push
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK 6
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build
+        
+  set-deployment-environment:
+    runs-on: windows-latest
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' }}
+    steps:
+      - name: Setup Production Environment
+        if: ${{ github.ref == 'refs/heads/master' }}
+        env:
+          EnvironmentName: 'Production'
+          EnvironmentUrl: 'https://360Api.gordon.edu'
+          
+      - name: Setup Train Environment
+        if: ${{ github.ref == 'refs/heads/develop' }}
+        env:
+          EnvironmentName: 'Train'
+          EnvironmentUrl: 'https://360ApiTrain.gordon.edu'
+    
+  deploy:
+    runs-on: windows-latest
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' }}
+    needs: [build, set-deployment-environment]
+    environment:
+      name: ${{ env.EnvironmentName }}
+      url: ${{ env.EnvironemntUrl }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK 6
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Publish
+        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -o ${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: build-${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
+          if-no-files-found: error
