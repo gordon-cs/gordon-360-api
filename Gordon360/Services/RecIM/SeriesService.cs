@@ -143,7 +143,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
 
             IEnumerable<int> teams = new List<int>();
-            if (referenceSeriesID is not null)
+            if (referenceSeriesID is null)
             {
                 teams = _context.Team
                         .Where(t => t.ActivityID == series.ActivityID)
