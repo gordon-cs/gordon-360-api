@@ -90,7 +90,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
-            var activity = _teamService.GetTeamByID(newTeam.ActivityID);
+            var activity = _activityService.GetActivityByID(newTeam.ActivityID);
             if (activity is null)
                 return UnprocessableEntity($"This activity does not exist");
             if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
