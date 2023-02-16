@@ -424,12 +424,10 @@ namespace Gordon360.Services.RecIM
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();
-            /* DOES NOT WORK IN PRODUCTION? COMMENTING TEMPORARILY WHILE FIX IN PROGRESS (Config related issue)
             if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
                 await SendInviteEmail(teamID, participant.Username, inviterUsername);
             }
-            */
             return participantTeam;
         }
 
