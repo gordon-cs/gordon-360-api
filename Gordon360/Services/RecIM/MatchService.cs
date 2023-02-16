@@ -389,7 +389,8 @@ namespace Gordon360.Services.RecIM
                 var removedTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && !updatedTeams.Any(t_id => mt.TeamID == t_id));
                 _context.MatchTeam.RemoveRange(removedTeams);
 
-                var teamsToAdd = removedTeams.Select(t => t.TeamID);
+                var existingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && updatedTeams.Any(t_id => mt.TeamID == t_id));
+                var teamsToAdd = updatedTeams.Where(id => !existingTeams.Any(t => t.TeamID == id));
                 foreach (int id in teamsToAdd)
                 {
                     await CreateMatchTeamMappingAsync(id, matchID);
