@@ -167,6 +167,12 @@ namespace Gordon360.Services.RecIM
                                         {
                                             ID = a.ID,
                                             Name = a.Name
+                                            Team = a.Team.Select(t => new TeamExtendedViewModel
+                                            {
+                                                ID = t.ID,
+                                                Name = t.Name,
+                                                Logo = t.Logo
+                                            })
                                         })
                                         .FirstOrDefault(),
                             // Team will eventually be handled by TeamService 
