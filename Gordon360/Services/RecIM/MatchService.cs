@@ -159,14 +159,14 @@ namespace Gordon360.Services.RecIM
                                         }).AsEnumerable(),
                             Activity = _context.Activity
                                         .Where(a => a.ID == _context.Series
-                                                        .FirstOrDefault(s => s.ID == _context.Match
-                                                                                    .FirstOrDefault(m => m.ID == matchID)
-                                                        .SeriesID)
+                                            .FirstOrDefault(s => s.ID == _context.Match
+                                                .FirstOrDefault(m => m.ID == matchID)
+                                            .SeriesID)
                                         .ActivityID)
                                         .Select(a => new ActivityExtendedViewModel
                                         {
                                             ID = a.ID,
-                                            Name = a.Name
+                                            Name = a.Name,
                                             Team = a.Team.Select(t => new TeamExtendedViewModel
                                             {
                                                 ID = t.ID,
