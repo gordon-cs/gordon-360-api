@@ -302,7 +302,7 @@ namespace Gordon360.Services
         {
             var serverAddress = _serverUtils.GetAddress();
             if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
-            var url = $"{serverAddress}/browseable/uploads/news/{filename}";
+            var url = $"{serverAddress}browseable/uploads/news/{filename}";
             return url;
         }
 
