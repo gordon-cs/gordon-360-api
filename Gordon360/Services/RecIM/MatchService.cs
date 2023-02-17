@@ -140,7 +140,7 @@ namespace Gordon360.Services.RecIM
                                             TeamID = mt.TeamID,
                                             TeamScore = mt.Score,
                                             Status = _context.MatchTeamStatus
-                                                .FirstOrDefault(ms => ms.ID == m.StatusID)
+                                                .FirstOrDefault(ms => ms.ID == mt.StatusID)
                                                 .Description,
                                             Sportsmanship = mt.Sportsmanship
                                         }).AsEnumerable(),
@@ -175,6 +175,7 @@ namespace Gordon360.Services.RecIM
                                             })
                                         })
                                         .FirstOrDefault(),
+                            SeriesID = m.SeriesID,
                             // Team will eventually be handled by TeamService 
                             Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
                             {
