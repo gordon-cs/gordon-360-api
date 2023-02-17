@@ -127,8 +127,9 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
         public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
         {
+            var authenticatedUserName = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+            var strengths = _profileService.GetCliftonStrengths(int.Parse(id), authenticatedUserName);
 
             return Ok(strengths?.Themes ?? Array.Empty<string>());
         }
@@ -142,8 +143,9 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
         public ActionResult<CliftonStrengthsViewModel?> GetCliftonStrengths(string username)
         {
+            var authenticatedUserName = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+            var strengths = _profileService.GetCliftonStrengths(int.Parse(id), authenticatedUserName);
 
             return Ok(strengths);
         }
