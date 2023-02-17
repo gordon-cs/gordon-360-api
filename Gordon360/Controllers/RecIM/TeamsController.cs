@@ -98,7 +98,7 @@ namespace Gordon360.Controllers.RecIM
             if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
                 return UnprocessableEntity($"Team name {newTeam.Name} has already been taken by another team in this activity");
            //redudant check for API as countermeasure against postman navigation around UI check, admins can make any number of teams
-            if (_teamService.HasUserJoined(newTeam.ActivityID, username) && _participantService.IsAdmin(username))
+            if (_teamService.HasUserJoined(newTeam.ActivityID, username) && !_participantService.IsAdmin(username))
                 return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
 
             if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
@@ -231,8 +231,8 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="response"></param>
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
-        [Route("{teamID}/invite")]
-        public async Task<ActionResult<ParticipantTeamViewModel?>> AcceptTeamInvite(int teamID, TeamInviteResponseViewModel response)
+        [Route("{teamID}/invite/status")]
+        public async Task<ActionResult<ParticipantTeamViewModel?>> AcceptTeamInvite(int teamID, [FromBody]string response)
         {
             var username = AuthUtils.GetUsername(User);
             try
@@ -243,7 +243,7 @@ namespace Gordon360.Controllers.RecIM
                 if (username != invite.ParticipantUsername)
                     return Forbid($"You are not permitted to accept invitations for another participant.");
 
-                switch (response.Response)
+                switch (response)
                 {
                     case "accepted":
                         var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,
