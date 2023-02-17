@@ -17,7 +17,7 @@ namespace Gordon360.Authorization
         /// <returns>Username of the authenticated user</returns>
         public static string GetUsername(ClaimsPrincipal User)
         {
-            return User.FindFirstValue(ClaimTypes.Upn).Split("@")[0];
+            return User.FindFirstValue(ClaimTypes.Upn)?.Split("@")[0] ?? "";
         }
 
         public static IEnumerable<AuthGroup> GetGroups(ClaimsPrincipal User)
