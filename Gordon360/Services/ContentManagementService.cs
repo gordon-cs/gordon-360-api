@@ -24,6 +24,16 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Fetches the dashboard slider content from the database.
+        /// </summary>
+        /// <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
+        /// If not returns an empty IEnumerable.</returns>
+        public IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent()
+        {
+            return _context.Slider_Images.Select<Slider_Images, SliderViewModel>(x => x);
+        }
+
+        /// <summary>
         /// Retrieve all banner slides from the database
         /// </summary>
         /// <returns>An IEnumerable of the slides in the database</returns>

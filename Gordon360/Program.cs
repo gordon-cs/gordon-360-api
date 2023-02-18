@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.StudentTimesheets.Context;
+using RecIM = Gordon360.Services.RecIM;
 using Gordon360.Services;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Identity.Web;
 using System.IO;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,18 @@ builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<ServerUtils, ServerUtils>();
 builder.Services.AddHostedService<EventCacheRefreshService>();
+builder.Services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
+builder.Services.AddScoped<RecIM.ISeriesService, RecIM.SeriesService>();
+builder.Services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
+builder.Services.AddScoped<RecIM.ITeamService, RecIM.TeamService>();
+builder.Services.AddScoped<RecIM.IParticipantService, RecIM.ParticipantService>();
+builder.Services.AddScoped<RecIM.ISportService, RecIM.SportService>();
+
+//Used to handle returning models created by HTTP Post methods containing FK constraints
+builder.Services.AddMvc().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling
+        = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 builder.Services.AddMemoryCache();
 

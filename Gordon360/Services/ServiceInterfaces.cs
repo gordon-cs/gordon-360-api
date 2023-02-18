@@ -2,9 +2,12 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using static Gordon360.Controllers.WellnessController;
 using static Gordon360.Services.MembershipService;
@@ -13,6 +16,7 @@ using static Gordon360.Services.MembershipService;
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work fine on their own.
 // However, building the interfaces first does give a general sense of structure to their implementations. A certain cohesiveness :p.
 // </summary>
+
 namespace Gordon360.Services
 {
     public interface IProfileService
@@ -40,7 +44,7 @@ namespace Gordon360.Services
     public interface IAddressesService
     {
         IEnumerable<States> GetAllStates();
-        IEnumerable<CountryViewModel> GetAllCountries();
+        IEnumerable<Countries> GetAllCountries();
     }
 
     public interface IEventService
@@ -62,20 +66,18 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
-        IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
-        IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
-            IEnumerable<AdvancedSearchViewModel> accounts,
-            string? firstname,
-            string? lastname,
-            string? major,
-            string? minor,
-            string? hall,
-            string? classType,
-            string? homeCity,
-            string? state,
-            string? country,
-            string? department,
-            string? building);
+        IEnumerable<AdvancedSearchViewModel> AdvancedSearch(List<string> accountTypes,
+                                                            string firstname,
+                                                            string lastname,
+                                                            string major,
+                                                            string minor,
+                                                            string hall,
+                                                            string classType,
+                                                            string homeCity,
+                                                            string state,
+                                                            string country,
+                                                            string department,
+                                                            string building);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
     }
@@ -254,6 +256,7 @@ namespace Gordon360.Services
 
     public interface IContentManagementService
     {
+        IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent();
         IEnumerable<Slider_Images> GetBannerSlides();
         Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL, string contentRootPath);
         Slider_Images DeleteBannerSlide(int slideID);
@@ -295,6 +298,93 @@ namespace Gordon360.Services
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
         Task<bool> GetStatusAsync(string id);
+    }
+
+    namespace RecIM
+    {
+        public interface IActivityService
+        {
+            IEnumerable<LookupViewModel> GetActivityLookup(string type);
+            IEnumerable<Models.ViewModels.RecIM.ActivityExtendedViewModel> GetActivities();
+            Models.ViewModels.RecIM.ActivityExtendedViewModel? GetActivityByID(int activityID);
+            IEnumerable<Models.ViewModels.RecIM.ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time);
+            Task<Models.ViewModels.RecIM.ActivityViewModel> UpdateActivityAsync(int activytID, ActivityPatchViewModel updatedActivity);
+            Task<Models.ViewModels.RecIM.ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
+            Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
+            bool IsReferee(string username, int activityID);
+            bool ActivityTeamCapacityReached(int activityID);
+        }
+        public interface ISeriesService
+        {
+            IEnumerable<LookupViewModel> GetSeriesLookup(string type);
+            IEnumerable<SeriesExtendedViewModel> GetSeries(bool active);
+            IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID);
+            SeriesExtendedViewModel GetSeriesByID(int seriesID);
+            Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID);
+            Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel series);
+            Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule);
+            Task DeleteSeriesCascadeAsync(int seriesID);
+            Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID);
+        }
+
+        public interface ITeamService
+        {
+            IEnumerable<LookupViewModel> GetTeamLookup(string type);
+            double GetTeamSportsmanshipScore(int teamID);
+            IEnumerable<TeamExtendedViewModel> GetTeams(bool active);
+            TeamExtendedViewModel GetTeamByID(int teamID);
+            IEnumerable<TeamExtendedViewModel> GetTeamInvitesByParticipantUsername(string username);
+            ParticipantTeamViewModel GetParticipantTeam(int teamID, string username);
+            Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
+            Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null);
+            Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam);
+            Task DeleteParticipantTeamAsync(int teamID, string username);
+            Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant);
+            bool HasUserJoined(int activityID, string username);
+            bool HasTeamNameTaken(int activityID, string teamName);
+            bool IsTeamCaptain(string username, int teamID);
+        }
+
+        public interface IParticipantService
+        {
+            IEnumerable<LookupViewModel> GetParticipantLookup(string type);
+            ACCOUNT GetAccountByParticipantID(int ID);
+            IEnumerable<ParticipantExtendedViewModel> GetParticipants();
+            IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
+            ParticipantExtendedViewModel GetParticipantByUsername(string username);
+            IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
+            Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4);
+            Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool isAdmin);
+            Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM);
+            Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant);
+            Task<ParticipantStatusViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus);
+            bool IsParticipant(string username);
+            bool IsAdmin(string username);
+        }
+
+        public interface ISportService
+        {
+            IEnumerable<SportViewModel> GetSports();
+            SportViewModel GetSportByID(int sportID);
+            Task<SportViewModel> PostSportAsync(SportUploadViewModel newSport);
+            Task<SportViewModel> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport);
+        }
+
+        public interface IMatchService
+        {
+            MatchViewModel GetSimpleMatchViewByID(int matchID);
+            IEnumerable<LookupViewModel> GetMatchLookup(string type);
+            MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID);
+            MatchExtendedViewModel GetMatchByID(int matchID);
+            IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID);
+            Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel match);
+            Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel match);
+            Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel match);
+            Task CreateMatchTeamMappingAsync(int teamID, int matchID);
+            Task<MatchParticipantViewModel> AddParticipantAttendanceAsync(string username, int matchID);
+            IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
+            Task DeleteMatchCascadeAsync(int matchID);
+        }
     }
 
 }
