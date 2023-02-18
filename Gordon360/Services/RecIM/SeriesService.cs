@@ -411,7 +411,66 @@ namespace Gordon360.Services.RecIM
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
-            throw new NotImplementedException();
+            // var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            // //Teams are defaulted to be ordered by Wins if there was a reference series
+            // var teams = _context.SeriesTeam
+            //    .Where(st => st.ID == seriesID);
+
+            // //schedule first round
+            // var elimScheduler = await ScheduleElimRoundAsync(teams);
+            // int teamsInWinners = elimScheduler.TeamsInNextRound;
+            // int teamsInLosers = teams.Count() - teamsInWinners;
+
+            // //create matches for losers bracket
+            // int numBuys = 0;
+            // int teamCount = (int)teamsInLosers; //casting to avoid reference value
+            // while (!(((teamsInLosers + numBuys) != 0) && (((teamsInLosers + numBuys) & ((teamsInLosers + numBuys) - 1)) == 0))) //while not power of 2
+            // {
+            //     await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //     {
+            //         StartTime = series.StartDate, //temporary before autoscheduling
+            //         SeriesID = series.ID,
+            //         SurfaceID = 1, //temporary before 25live integration
+            //         TeamIDs = new List<int>().AsEnumerable() //no teams
+            //     });
+            //     teamCount--;
+            //     numBuys++;
+            // }
+            // //teams in losers has weird logic where each team actually represents a match that needs to be made
+            // //since each team will be paired with a team from the upper bracket
+            // teamsInLosers = teamCount + numBuys;
+            // while (teamsInLosers > 1)
+            // {
+            //     for (int i = 0; i < teamsInLosers; i++)
+            //     {
+            //         await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //         {
+            //             StartTime = series.StartDate, //temporary before autoscheduling
+            //             SeriesID = series.ID,
+            //             SurfaceID = 1, //temporary before 25live integration
+            //             TeamIDs = new List<int>().AsEnumerable() //no teams
+            //         });
+            //     }
+            //     teamsInLosers /= 2;
+            // }
+            // //create matches for winners bracket
+            // while (teamsInWinners > 0)
+            // {
+            //     for (int i = 0; i < teamsInWinners / 2; i++)
+            //     {
+            //         await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //         {
+            //             StartTime = series.StartDate, //temporary before autoscheduling
+            //             SeriesID = series.ID,
+            //             SurfaceID = 1, //temporary before 25live integration
+            //             TeamIDs = new List<int>().AsEnumerable() //no teams
+            //         });
+            //     }
+            //     teamsInWinners /= 2;
+            // }
+
+            // //silence error
+            return new List<MatchViewModel>();
         }
         private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
