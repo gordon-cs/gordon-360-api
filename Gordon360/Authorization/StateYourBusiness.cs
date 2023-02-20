@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Gordon360.Models.ViewModels;
 using Gordon360.Extensions.System;
 using static Gordon360.Services.MembershipService;
+using System.Linq.Expressions;
 
 namespace Gordon360.Authorization
 {
@@ -294,7 +295,10 @@ namespace Gordon360.Authorization
                                       // our API.
                 case Resource.ADVISOR:
                     // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin))
+                    if (user_groups.Contains(AuthGroup.AcademicInfoView))
+                        return true;
+                    // User looks its own profile
+                    else if (context.ActionArguments["username"] is string username && username.EqualsIgnoreCase(user_name))
                         return true;
                     else
                         return false;

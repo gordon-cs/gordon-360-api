@@ -94,11 +94,6 @@ namespace Gordon360.Controllers
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                 alumni = null;  //student can't see alumini
             }
-            
-            if (_student != null && !viewerGroups.Contains(AuthGroup.AcademicInfoView))
-            {
-                student = _student with { AdvisorIDs = "" };
-            }
 
             if (student is null && alumni is null && faculty is null)
             {
@@ -117,6 +112,7 @@ namespace Gordon360.Controllers
         /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADVISOR)]
         public async Task<ActionResult<IEnumerable<AdvisorViewModel>>> GetAdvisorsAsync(string username)
         {
             var advisors = await _profileService.GetAdvisorsAsync(username);
