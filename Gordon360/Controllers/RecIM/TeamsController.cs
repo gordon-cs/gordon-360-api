@@ -240,7 +240,6 @@ namespace Gordon360.Controllers.RecIM
             try
             {
                 var invite = _teamService.GetParticipantTeam(teamID, username);
-
                 if (invite is null)
                     return NotFound("You were not invited by this team.");
                 if (username != invite.ParticipantUsername)
