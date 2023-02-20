@@ -133,10 +133,11 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
+            var inviterUsername = AuthUtils.GetUsername(User);
             var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
-            if (!_teamService.HasUserJoined(activityID, participant.Username))
+            var isAdmin = _participantService.IsAdmin(inviterUsername);
+            if (!_teamService.HasUserJoined(activityID, participant.Username) || isAdmin)
             {
-                var inviterUsername = AuthUtils.GetUsername(User);
                 var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
             }
