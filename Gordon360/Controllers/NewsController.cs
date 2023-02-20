@@ -15,10 +15,12 @@ using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;
@@ -107,6 +109,27 @@ namespace Gordon360.Controllers
             {
                 return NotFound();
             }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("unapproved")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS_APPROVAL)]
+        public ActionResult<IEnumerable<StudentNewsViewModel>> GetNewsUnapproved()
+        {
+            var result = _newsService.GetNewsUnapproved();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("test-route")]
+        public ActionResult<IEnumerable<StudentNewsUploadViewModel>> TestRoute()
+        {
+            var result = _newsService.GetNewsUnapproved();
             return Ok(result);
         }
 
