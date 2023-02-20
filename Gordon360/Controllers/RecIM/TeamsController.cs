@@ -133,9 +133,15 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var inviterUsername = AuthUtils.GetUsername(User);
-            var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
-            return CreatedAtAction("AddParticipantToTeam", participantTeam);
+            var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
+            if (!_teamService.HasUserJoined(activityID, participant.Username))
+            {
+                var inviterUsername = AuthUtils.GetUsername(User);
+                var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
+                return CreatedAtAction("AddParticipantToTeam", participantTeam);
+            }
+            else
+                return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
         }
         
         /// <summary>
@@ -149,15 +155,11 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateParticipantTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
-            if (!_teamService.HasUserJoined(activityID, participant.Username))
-            {
+            
                 participant.RoleTypeID = participant.RoleTypeID ?? 3;
                 var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant);
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
-            }
-            else
-                return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
+            
         }
 
         /// <summary>
