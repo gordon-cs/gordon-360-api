@@ -100,10 +100,11 @@ namespace Gordon360.Controllers.RecIM
            //redudant check for API as countermeasure against postman navigation around UI check, admins can make any number of teams
             if (_teamService.HasUserJoined(newTeam.ActivityID, username) && !_participantService.IsAdmin(username))
                 return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
-
+            if(_activityService.ActivityRegistrationClosed(newTeam.ActivityID) && !_participantService.IsAdmin(username))
+                return UnprocessableEntity("Activity Registration has closed.");
             if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
                 return UnprocessableEntity("Activity capacity has been reached. Try again later.");
-         
+
             try
             {
                 var team = await _teamService.PostTeamAsync(newTeam, username);
