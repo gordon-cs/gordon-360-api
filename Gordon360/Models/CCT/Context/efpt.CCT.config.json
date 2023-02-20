@@ -1,817 +1,817 @@
 ﻿{
-   "CodeGenerationMode": 2,
-   "ContextClassName": "CCTContext",
-   "ContextNamespace": null,
-   "DefaultDacpacSchema": null,
-   "FilterSchemas": false,
-   "IncludeConnectionString": false,
-   "ModelNamespace": null,
-   "OutputContextPath": "Models\/CCT\/Context",
-   "OutputPath": "Models\/CCT",
-   "PreserveCasingWithRegex": true,
-   "ProjectRootNamespace": "Gordon360",
-   "Schemas": null,
-   "SelectedHandlebarsLanguage": 0,
-   "SelectedToBeGenerated": 0,
-   "Tables": [
-      {
-         "Name": "[dbo].[ACT_INFO]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ADMIN]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Clifton_Strengths]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Config]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[CUSTOM_PROFILE]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ERROR_LOG]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Health_Question]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Health_Status]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Health_Status_CTRL]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Housing_Applicants]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Housing_Applications]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Housing_HallChoices]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Housing_Halls]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Information_Change_Request]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[JNZB_ACTIVITIES]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[MEMBERSHIP]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Message_Rooms]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Messages]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[MYSCHEDULE]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[REQUEST]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Rooms]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Save_Bookings]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Save_Rides]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Schedule_Control]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Slider_Images]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[StudentNewsExpiration]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Timesheets_Clock_In_Out]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[User_Connection_Ids]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[User_Rooms]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Users]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[Activity]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[ActivityStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[ActivityType]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[Match]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[MatchParticipant]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[MatchStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[MatchTeam]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[MatchTeamStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[Participant]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[ParticipantActivity]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[ParticipantNotification]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[ParticipantStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[ParticipantStatusHistory]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[ParticipantTeam]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[PrivType]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[RoleType]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[Series]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[SeriesSchedule]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[SeriesStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[SeriesSurface]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[SeriesTeam]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[SeriesType]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[Sport]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[Statistic]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[Surface]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[Team]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[RecIM].[TeamStatus]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[ACCOUNT]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[AccountPhotoURL]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Alumni]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Birthdays]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Buildings]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[ChapelEvent]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[CM_SESSION_MSTR]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Countries]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Meal_Choice_Desc]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Meal_Plan_Change_History]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Meal_Plan_Id_Mapping]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Mealplans]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Student_Meal_Choice]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[DiningInfo]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[EmergencyContact]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[FacStaff]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Graduation]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Internships_as_Involvements]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[InvolvementOffering]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[JENZ_ACT_CLUB_DEF]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Mailboxes]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Majors]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[MembershipView]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Minors]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[PART_DEF]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Police]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[RoomAssign]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[States]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Student]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[ACTIVE_CLUBS_PER_SESS_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[ADVISOR_EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[ADVISOR_SEPARATE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[ALL_BASIC_INFO_NOT_ALUMNI]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[ALL_BASIC_INFO]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[ALL_MEMBERSHIPS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[ALL_REQUESTS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CANCEL_RIDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CHECK_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[COURSES_FOR_PROFESSOR]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_BOOKING]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_MESSAGE_ROOM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_MYSCHEDULE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_RIDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_SOCIAL_LINKS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CURRENT_SESSION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_AA_APARTMENT_CHOICE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_AA_APPLICANT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_AA_APPLICATION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_BOOKING]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_BOOKINGS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_CLOCK_IN]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_MYSCHEDULE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_NEWS_ITEM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_RIDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_USER_CONNECTION_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_USER_ROOM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DINING_INFO_BY_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DISTINCT_ACT_TYPE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[FINALIZATION_GET_FINALIZATION_STATUS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[FINALIZATION_GETDEMOGRAPHIC]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[FINALIZATION_GETHOLDSBYID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[FINALIZATION_MARK_AS_CURRENTLY_COMPLETED]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[FINALIZATION_UPDATECELLPHONE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[FINALIZATION_UPDATEDEMOGRAPHIC]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APARTMENT_CHOICES_BY_APP_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APARTMENT_HALLS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPID_BY_NAME_AND_DATE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPID_BY_STU_ID_AND_SESS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPLICANTS_BY_APPID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPLICANTS_DETAILS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPLICATIONS_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPLICATIONS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_CURRENT_APP_IDS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_CURRENT_APPLICATIONS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_EDITOR_BY_APPID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_CONNECTION_IDS_BY_ID_LIST]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_CONNECTION_IDS_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_MESSAGES_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_ROOMS_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_USERS_BY_ROOM_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_BIRTH_DATE_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_HEALTH_CHECK_QUESTION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_LATEST_ROOM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ROOM_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_SINGLE_MESSAGE_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_TIMESHEETS_CLOCK_IN_OUT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GRP_ADMIN_EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_AA_APARTMENT_CHOICE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_AA_APPLICANT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_AA_APPLICATION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_HEALTH_QUESTION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_MESSAGE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_NEWS_ITEM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_TIMESHEETS_CLOCK_IN_OUT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_USER_CONNECTION_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_USER_ROOMS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_USER]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[LEADER_EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[LEADER_MEMBERSHIPS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[MEMBERSHIPS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[MEMBERSHIPS_PER_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[MYSCHEDULE_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[NEWS_CATEGORIES]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[NEWS_NEW]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[NEWS_NOT_EXPIRED]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[NEWS_PERSONAL_UNAPPROVED]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[PHOTO_INFO_PER_USER_NAME]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[REQUEST_PER_REQUEST_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[REQUESTS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[REQUESTS_PER_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[RIDERS_BY_RIDE_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[STUDENT_JOBS_PER_ID_NUM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[TRUNCATE_AA_ALL_APPLICATION_TABLES]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPCOMING_RIDES_BY_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPCOMING_RIDES]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APARTMENT_CHOICES]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APPLICANT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APPLICATION_DATEMODIFIED]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APPLICATION_DATESUBMITTED]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APPLICATION_EDITOR]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_ACT_INFO]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_CELL_PHONE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_DESCRIPTION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_EMRGCONTACT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[Update_Health_Status_Upon_Form_Completion]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_MYSCHEDULE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_NEWS_ITEM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_PHONE_PRIVACY]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_PHOTO_PATH]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_ROOM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_SCHEDULE_PRIVACY]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_SHOW_PIC]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_TIMESTAMP]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[VALID_DRIVES_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[VICTORY_PROMISE_BY_STUDENT_ID]",
-         "ObjectType": 1
-      }
-   ],
-   "UiHint": "SQLTrain1.CCT",
-   "UseBoolPropertiesWithoutDefaultSql": false,
-   "UseDatabaseNames": true,
-   "UseDbContextSplitting": false,
-   "UseFluentApiOnly": false,
-   "UseHandleBars": false,
-   "UseHierarchyId": false,
-   "UseInflector": false,
-   "UseLegacyPluralizer": false,
-   "UseManyToManyEntity": false,
-   "UseNoConstructor": false,
-   "UseNoDefaultConstructor": false,
-   "UseNoNavigations": false,
-   "UseNoObjectFilter": false,
-   "UseNodaTime": false,
-   "UseNullableReferences": false,
-   "UseSchemaFolders": false,
-   "UseSpatial": false,
-   "UseT4": false
+  "CodeGenerationMode": 2,
+  "ContextClassName": "CCTContext",
+  "ContextNamespace": null,
+  "DefaultDacpacSchema": null,
+  "FilterSchemas": false,
+  "IncludeConnectionString": false,
+  "ModelNamespace": null,
+  "OutputContextPath": "Models/CCT/Context",
+  "OutputPath": "Models/CCT",
+  "PreserveCasingWithRegex": true,
+  "ProjectRootNamespace": "Gordon360",
+  "Schemas": null,
+  "SelectedHandlebarsLanguage": 0,
+  "SelectedToBeGenerated": 0,
+  "Tables": [
+    {
+      "Name": "[dbo].[ACT_INFO]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[ADMIN]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Clifton_Strengths]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Config]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[CUSTOM_PROFILE]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[ERROR_LOG]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Health_Question]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Health_Status]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Health_Status_CTRL]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Housing_Applicants]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Housing_Applications]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Housing_HallChoices]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Housing_Halls]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Information_Change_Request]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[JNZB_ACTIVITIES]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[MEMBERSHIP]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Message_Rooms]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Messages]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[MYSCHEDULE]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[REQUEST]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Rooms]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Save_Bookings]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Save_Rides]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Schedule_Control]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Slider_Images]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[StudentNewsExpiration]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Timesheets_Clock_In_Out]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[User_Connection_Ids]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[User_Rooms]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[Users]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[Activity]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[ActivityStatus]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[ActivityType]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[Match]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[MatchParticipant]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[MatchStatus]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[MatchTeam]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[MatchTeamStatus]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[Participant]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[ParticipantActivity]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[ParticipantNotification]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[ParticipantStatus]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[ParticipantStatusHistory]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[ParticipantTeam]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[PrivType]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[RoleType]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[Series]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[SeriesSchedule]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[SeriesStatus]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[SeriesSurface]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[SeriesTeam]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[SeriesType]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[Sport]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[Statistic]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[Surface]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[Team]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[RecIM].[TeamStatus]",
+      "ObjectType": 0
+    },
+    {
+      "Name": "[dbo].[ACCOUNT]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[AccountPhotoURL]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Alumni]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Birthdays]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Buildings]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[ChapelEvent]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[CM_SESSION_MSTR]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Countries]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Dining_Meal_Choice_Desc]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Dining_Meal_Plan_Change_History]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Dining_Meal_Plan_Id_Mapping]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Dining_Mealplans]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Dining_Student_Meal_Choice]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[DiningInfo]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[EmergencyContact]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[FacStaff]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Graduation]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Internships_as_Involvements]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[InvolvementOffering]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[JENZ_ACT_CLUB_DEF]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Mailboxes]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Majors]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[MembershipView]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[PART_DEF]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Police]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[RequestView]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[RoomAssign]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[States]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[Student]",
+      "ObjectType": 3
+    },
+    {
+      "Name": "[dbo].[ACTIVE_CLUBS_PER_SESS_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[ADVISOR_EMAILS_PER_ACT_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[ADVISOR_SEPARATE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[ALL_BASIC_INFO_NOT_ALUMNI]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[ALL_BASIC_INFO]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[ALL_MEMBERSHIPS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[ALL_REQUESTS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[CANCEL_RIDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[CHECK_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[COURSES_FOR_PROFESSOR]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[CREATE_BOOKING]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[CREATE_MESSAGE_ROOM]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[CREATE_MYSCHEDULE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[CREATE_RIDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[CREATE_SOCIAL_LINKS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[CURRENT_SESSION]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_AA_APARTMENT_CHOICE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_AA_APPLICANT]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_AA_APPLICATION]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_BOOKING]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_BOOKINGS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_CLOCK_IN]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_MYSCHEDULE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_NEWS_ITEM]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_RIDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_USER_CONNECTION_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DELETE_USER_ROOM]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DINING_INFO_BY_STUDENT_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[DISTINCT_ACT_TYPE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[EMAILS_PER_ACT_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[FINALIZATION_GET_FINALIZATION_STATUS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[FINALIZATION_GETDEMOGRAPHIC]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[FINALIZATION_GETHOLDSBYID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[FINALIZATION_MARK_AS_CURRENTLY_COMPLETED]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[FINALIZATION_UPDATECELLPHONE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[FINALIZATION_UPDATEDEMOGRAPHIC]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_APARTMENT_CHOICES_BY_APP_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_APARTMENT_HALLS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_APPID_BY_NAME_AND_DATE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_APPID_BY_STU_ID_AND_SESS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_APPLICANTS_BY_APPID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_APPLICANTS_DETAILS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_APPLICATIONS_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_APPLICATIONS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_CURRENT_APP_IDS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_CURRENT_APPLICATIONS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_AA_EDITOR_BY_APPID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_ALL_CONNECTION_IDS_BY_ID_LIST]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_ALL_CONNECTION_IDS_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_ALL_MESSAGES_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_ALL_ROOMS_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_ALL_USERS_BY_ROOM_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_BIRTH_DATE_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_HEALTH_CHECK_QUESTION]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_LATEST_ROOM]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_ROOM_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_SINGLE_MESSAGE_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GET_TIMESHEETS_CLOCK_IN_OUT]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[GRP_ADMIN_EMAILS_PER_ACT_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_AA_APARTMENT_CHOICE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_AA_APPLICANT]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_AA_APPLICATION]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_HEALTH_QUESTION]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_MESSAGE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_NEWS_ITEM]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_TIMESHEETS_CLOCK_IN_OUT]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_USER_CONNECTION_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_USER_ROOMS]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSERT_USER]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[LEADER_EMAILS_PER_ACT_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[LEADER_MEMBERSHIPS_PER_ACT_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[MEMBERSHIPS_PER_ACT_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[MEMBERSHIPS_PER_STUDENT_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[MYSCHEDULE_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[NEWS_CATEGORIES]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[NEWS_NEW]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[NEWS_NOT_EXPIRED]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[NEWS_PERSONAL_UNAPPROVED]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[PHOTO_INFO_PER_USER_NAME]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[REQUEST_PER_REQUEST_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[REQUESTS_PER_ACT_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[REQUESTS_PER_STUDENT_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[RIDERS_BY_RIDE_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[STUDENT_JOBS_PER_ID_NUM]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[TRUNCATE_AA_ALL_APPLICATION_TABLES]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPCOMING_RIDES_BY_STUDENT_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPCOMING_RIDES]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_AA_APARTMENT_CHOICES]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_AA_APPLICANT]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_AA_APPLICATION_DATEMODIFIED]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_AA_APPLICATION_DATESUBMITTED]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_AA_APPLICATION_EDITOR]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_ACT_INFO]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_CELL_PHONE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_DESCRIPTION]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_EMRGCONTACT]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[Update_Health_Status_Upon_Form_Completion]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_MYSCHEDULE]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_NEWS_ITEM]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_PHONE_PRIVACY]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_PHOTO_PATH]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_ROOM]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_SCHEDULE_PRIVACY]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_SHOW_PIC]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[UPDATE_TIMESTAMP]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[VALID_DRIVES_BY_ID]",
+      "ObjectType": 1
+    },
+    {
+      "Name": "[dbo].[VICTORY_PROMISE_BY_STUDENT_ID]",
+      "ObjectType": 1
+    }
+  ],
+  "UiHint": "SQLTrain1.CCT",
+  "UseBoolPropertiesWithoutDefaultSql": false,
+  "UseDatabaseNames": true,
+  "UseDbContextSplitting": false,
+  "UseFluentApiOnly": false,
+  "UseHandleBars": false,
+  "UseHierarchyId": false,
+  "UseInflector": false,
+  "UseLegacyPluralizer": false,
+  "UseManyToManyEntity": false,
+  "UseNoConstructor": false,
+  "UseNoDefaultConstructor": false,
+  "UseNoNavigations": false,
+  "UseNoObjectFilter": false,
+  "UseNodaTime": false,
+  "UseNullableReferences": false,
+  "UseSchemaFolders": false,
+  "UseSpatial": false,
+  "UseT4": false
 }

@@ -147,7 +147,6 @@ namespace Gordon360.Services.RecIM
             activity.StatusID = updatedActivity.StatusID ?? activity.StatusID;
             activity.MinCapacity = updatedActivity.MinCapacity ?? activity.MinCapacity;
             activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
-            activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
             activity.SoloRegistration = updatedActivity.SoloRegistration ?? activity.SoloRegistration;
             activity.Completed = updatedActivity.Completed ?? activity.Completed;
             activity.TypeID = updatedActivity.TypeID ?? activity.TypeID;
