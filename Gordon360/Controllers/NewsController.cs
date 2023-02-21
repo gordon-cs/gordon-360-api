@@ -113,14 +113,10 @@ namespace Gordon360.Controllers
 
         [HttpGet]
         [Route("unapproved")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS_APPROVAL)]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.NEWS)]
         public ActionResult<IEnumerable<StudentNewsViewModel>> GetNewsUnapproved()
         {
             var result = _newsService.GetNewsUnapproved();
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
 
