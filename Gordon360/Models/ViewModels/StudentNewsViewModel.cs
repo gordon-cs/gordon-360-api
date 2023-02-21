@@ -49,5 +49,33 @@ namespace Gordon360.Models.ViewModels
 
             return vm;
         }
+
+        /// <summary>
+        /// Returns StudentNewsViewModel from StudentNews and StudentNewsCategory
+        /// </summary>
+        /// <param name="sn">The StudentNews table</param>
+        /// <param name="snc">The StudentNewsCategory table</param>
+        /// <returns> StudentNewsViewModel </returns>
+        public static StudentNewsViewModel From(StudentNews sn, StudentNewsCategory snc)
+        {
+            StudentNewsViewModel vm = new StudentNewsViewModel
+            {
+                SNID = sn.SNID,
+                ADUN = sn.ADUN,
+                categoryID = sn.categoryID,
+                Subject = sn.Subject,
+                Body = sn.Body,
+                Image = sn.Image,
+                Accepted = true,
+                Sent = sn.Sent,
+                thisPastMailing = sn.thisPastMailing,
+                Entered = sn.Entered,
+                categoryName = snc.categoryName,
+                SortOrder = snc.SortOrder,
+                ManualExpirationDate = sn.ManualExpirationDate,
+            };
+
+            return vm;
+        }
     }
 }

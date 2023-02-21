@@ -51,44 +51,33 @@ namespace Gordon360.Services
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpiredAsync()
         {
-            var news = await _contextCCT.Procedures.NEWS_NOT_EXPIREDAsync();
-            return news.Select(n => new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                Image = n.Image,
-                Accepted = true,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            });
+
+            var news = (from sn in _context.StudentNews
+                        join snc in _context.StudentNewsCategory
+                        on sn.categoryID equals snc.categoryID
+                        where sn.Accepted == true
+                        && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && EF.Functions.DateDiffDay(sn.ManualExpirationDate ?? DateTime.Today, DateTime.Today) < 1))
+                        orderby sn.Entered descending
+                        select StudentNewsViewModel.From(sn, snc));
+
+            return news;
         }
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
         {
-            var news = await _contextCCT.Procedures.NEWS_NEWAsync();
-            return news.Select(n => new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                Image = n.Image,
-                Accepted = true,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            });
+            var news = (from sn in _context.StudentNews
+                         join snc in _context.StudentNewsCategory
+                         on sn.categoryID equals snc.categoryID
+                         where sn.Accepted == true
+                         && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
+                         && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
+                         orderby snc.SortOrder
+                         select StudentNewsViewModel.From(sn, snc));
+                         
+            return news;
         }
 
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
@@ -110,23 +99,18 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var news = await _contextCCT.Procedures.NEWS_PERSONAL_UNAPPROVEDAsync(username);
-            return news.Select(n => new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                Image = n.Image,
-                Accepted = true,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            });
+            var news = (from sn in _context.StudentNews
+                         join snc in _context.StudentNewsCategory
+                         on sn.categoryID equals snc.categoryID
+                         where sn.Accepted != true
+                         && (sn.ADUN == username)
+                         && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
+                        orderby sn.SNID descending
+                         select StudentNewsViewModel.From(sn, snc)); 
+            return news;
         }
 
         /// <summary>
