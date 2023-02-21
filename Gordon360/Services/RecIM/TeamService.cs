@@ -471,7 +471,20 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ParticipantAttendanceViewModel> AddParticipantAttendance(int teamID, ParticipantAttendanceViewModel attendance)
         {
-
+            var res = new List<Individual>();
+            foreach (Individual attendee in attendance.Attendance)
+            {
+                var created = new MatchParticipant
+                {
+                    MatchID = attendee.MatchID,
+                    ParticipantUsername = attendee.Username,
+                    TeamID = teamID
+                };
+                await _context.MatchParticipant.AddAsync(created);
+                res.Add(created);
+            }
+            await _context.SaveChangesAsync();
+            return (new ParticipantAttendanceViewModel { Attendance = res });
         }
     }
 }
