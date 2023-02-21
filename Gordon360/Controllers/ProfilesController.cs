@@ -3,6 +3,7 @@ using Gordon360.Enums;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -135,16 +136,8 @@ namespace Gordon360.Controllers
             }
             
             var authenticatedUserName = AuthUtils.GetUsername(User);
-            if (string.IsNullOrEmpty(authenticatedUserName))
-            {
-                return strengths.Private is false 
-                    ? Ok(strengths.Themes) 
-                    : Ok(Array.Empty<string>());
-            }
-
-            var authenticatedAccount = _accountService.GetAccountByUsername(authenticatedUserName);
-            return authenticatedAccount.GordonID == id 
-                ? Ok(strengths.Themes) 
+            return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
+                ? Ok(strengths.Themes)
                 : Ok(Array.Empty<string>());
         }
 
@@ -161,21 +154,13 @@ namespace Gordon360.Controllers
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
             if (strengths is null)
             {
-                return Ok();
+                return Ok(null);
             }
             
             var authenticatedUserName = AuthUtils.GetUsername(User);
-            if (string.IsNullOrEmpty(authenticatedUserName))
-            {
-                return strengths.Private is false 
-                    ? Ok(strengths) 
-                    : Ok();
-            }
-
-            var authenticatedAccount = _accountService.GetAccountByUsername(authenticatedUserName);
-            return authenticatedAccount.GordonID == id 
-                ? Ok(strengths) 
-                : Ok();
+            return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
+                ? Ok(strengths)
+                : Ok(null);
         }
 
         /// <summary>Toggle privacy of the current user's Clifton Strengths</summary>
