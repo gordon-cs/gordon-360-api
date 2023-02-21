@@ -55,7 +55,7 @@ namespace Gordon360.Services
             var news = (from sn in _context.StudentNews
                         join snc in _context.StudentNewsCategory
                         on sn.categoryID equals snc.categoryID
-                        where sn.Accepted ?? false
+                        where sn.Accepted == true
                         && ((sn.ManualExpirationDate == null
                                && (sn.Entered ?? DateTime.Today).AddDays(14).Date >= (DateTime.Today).Date)
                            || (sn.ManualExpirationDate != null
