@@ -534,7 +534,7 @@
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
         </member>
-        <member name="M:Gordon360.Controllers.NewsController.Post(System.String,System.Int32,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.NewsController.Post(Gordon360.Models.ViewModels.StudentNewsUploadViewModel)">
             Create a new news item to be added to the database
             @TODO: Remove redundant username/id from this and service
             @TODO: fix documentation comments
@@ -545,12 +545,12 @@
             <returns>The deleted news item</returns>
             <remarks>The news item must be authored by the user and must not be expired</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.NewsController.EditPosting(System.Int32,Gordon360.Models.MyGordon.StudentNews)">
+        <member name="M:Gordon360.Controllers.NewsController.EditPosting(System.Int32,Gordon360.Models.ViewModels.StudentNewsUploadViewModel)">
             <summary>
             (Controller) Edits a news item in the database
             </summary>
             <param name="newsID">The id of the news item to edit</param>
-            <param name="newData">The news object that contains updated values</param>
+            <param name="studentNewsEdit">The news object that contains updated values</param>
             <returns>The updated news item</returns>
             <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         </member>
@@ -1791,7 +1791,7 @@
             <returns>The deleted news item</returns>
             <remarks>The news item must be authored by the user and must not be expired</remarks>
         </member>
-        <member name="M:Gordon360.Services.NewsService.EditPosting(System.Int32,Gordon360.Models.MyGordon.StudentNews)">
+        <member name="M:Gordon360.Services.NewsService.EditPosting(System.Int32,Gordon360.Models.ViewModels.StudentNewsUploadViewModel)">
             <summary>
             (Service) Edits a news item in the database
             </summary>

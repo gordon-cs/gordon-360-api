@@ -55,11 +55,11 @@ namespace Gordon360.Services
             var news = (from sn in _context.StudentNews
                         join snc in _context.StudentNewsCategory
                         on sn.categoryID equals snc.categoryID
-                        where sn.Accepted ?? false
+                        where sn.Accepted == true
                         && ((sn.ManualExpirationDate == null
-                               && (sn.Entered ?? DateTime.Today).AddDays(14).Date >= (DateTime.Today).Date)
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
                            || (sn.ManualExpirationDate != null
-                           && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
+                           && EF.Functions.DateDiffDay(sn.ManualExpirationDate ?? DateTime.Today, DateTime.Today) < 1))
                         orderby sn.Entered descending
                         select new StudentNewsViewModel
                         {
@@ -87,7 +87,7 @@ namespace Gordon360.Services
                          join snc in _context.StudentNewsCategory
                          on sn.categoryID equals snc.categoryID
                          where sn.Accepted ?? false
-                         && ((DateTime.Today).AddDays(-1).Date < ((DateTime)sn.Entered).Date)
+                         && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
                          && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
                          orderby snc.SortOrder
                          select new StudentNewsViewModel
@@ -135,7 +135,7 @@ namespace Gordon360.Services
                          where sn.Accepted ?? true
                          && (sn.ADUN == username)
                          && ((sn.ManualExpirationDate == null
-                               && (sn.Entered ?? DateTime.Today).AddDays(14).Date >= (DateTime.Today).Date)
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
                            || (sn.ManualExpirationDate != null
                            && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
                         orderby sn.SNID descending
