@@ -76,14 +76,14 @@ namespace Gordon360.Services
                             categoryName = snc.categoryName,
                             SortOrder = snc.SortOrder,
                             ManualExpirationDate = sn.ManualExpirationDate,
-                        }).ToList();
+                        });
 
             return news;
         }
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
         {
-            var news = ((from sn in _context.StudentNews
+            var news = (from sn in _context.StudentNews
                          join snc in _context.StudentNewsCategory
                          on sn.categoryID equals snc.categoryID
                          where sn.Accepted ?? false
@@ -105,7 +105,7 @@ namespace Gordon360.Services
                              categoryName = snc.categoryName,
                              SortOrder = snc.SortOrder,
                              ManualExpirationDate = sn.ManualExpirationDate,
-                         })).ToList();
+                         });
                          
             return news;
         }
@@ -129,7 +129,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var news = ((from sn in _context.StudentNews
+            var news = (from sn in _context.StudentNews
                          join snc in _context.StudentNewsCategory
                          on sn.categoryID equals snc.categoryID
                          where sn.Accepted ?? true
@@ -154,7 +154,7 @@ namespace Gordon360.Services
                              categoryName = snc.categoryName,
                              SortOrder = snc.SortOrder,
                              ManualExpirationDate = sn.ManualExpirationDate,
-                         })).ToList(); 
+                         }); 
             return news;
         }
 
