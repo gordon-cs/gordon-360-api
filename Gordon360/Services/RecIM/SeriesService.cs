@@ -129,6 +129,13 @@ namespace Gordon360.Services.RecIM
         }
         public async Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
+            //if activity has no start date
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == newSeries.ActivityID);
+            if (activity.StartDate is null) activity.StartDate = newSeries.StartDate;
+
+            // activity will inherit new end date if series ends after activity ends, OR if activity end date is null
+            if (activity.EndDate is null || activity.EndDate < newSeries.EndDate) activity.EndDate = newSeries.EndDate;
+
             var series = new Series
             {
                 Name = newSeries.Name,
