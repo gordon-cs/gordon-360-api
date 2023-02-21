@@ -227,6 +227,19 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
+        /// Gets number of games a participant has participated in for a team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="username"></param>
+        /// <returns>The accepted TeamInviteViewModel</returns>
+        [HttpGet]
+        [Route("{teamID}/attendance")]
+        public async Task<ActionResult<int>> NumberOfGamesParticipatedByParticipant(int teamID, [FromBody] string username)
+        {
+            var res = _teamService.NumberOfGamesParticipatedByParticipant(teamID, username);
+            return Ok(res);
+        }
+        /// <summary>
         /// Accept one specified team invite and true delete others from the same activity if there's any
         /// </summary>
         /// <param name="teamID"></param>

@@ -347,6 +347,7 @@ namespace Gordon360.Services
             bool IsTeamCaptain(string username, int teamID);
             int GetTeamActivityID(int teamID);
             Task<IEnumerable<Individual>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance);
+            public int NumberOfGamesParticipatedByParticipant(int teamID, string username);
         }
 
         public interface IParticipantService
