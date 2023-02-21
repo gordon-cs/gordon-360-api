@@ -13,6 +13,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string? Logo { get; set; }
         public virtual IEnumerable<MatchExtendedViewModel>? Match { get; set; }
         public virtual IEnumerable<ParticipantExtendedViewModel>? Participant { get; set; }
+        public virtual ParticipantAttendanceViewModel? TeamAttendance { get; set; }
         public virtual IEnumerable<TeamMatchHistoryViewModel>? MatchHistory { get; set; }
         public virtual IEnumerable<TeamRecordViewModel>? TeamRecord { get; set; }
         public double Sportsmanship { get; set; }

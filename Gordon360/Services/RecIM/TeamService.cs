@@ -463,6 +463,16 @@ namespace Gordon360.Services.RecIM
                         )
             );
         }
+
+        public int getTeamActivityID(int teamID)
+        {
+            return _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
+        }
+
+        public async Task<ParticipantAttendanceViewModel> AddParticipantAttendance(int teamID, ParticipantAttendanceViewModel attendance)
+        {
+
+        }
     }
 }
 

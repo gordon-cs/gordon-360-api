@@ -133,7 +133,7 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
+            var activityID = _teamService.GetTeamActivityID(teamID);
             if (!_teamService.HasUserJoined(activityID, participant.Username))
             {
                 var inviterUsername = AuthUtils.GetUsername(User);
@@ -143,7 +143,21 @@ namespace Gordon360.Controllers.RecIM
             else
                 return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
         }
-        
+
+        /// <summary>
+        /// Update team attendance
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="participant">Default Role Value value 3 (Member)</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{teamID}/participants")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
+        public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantAttendance(int teamID, ParticipantAttendanceViewModel attendanceList)
+        {
+            
+        }
+
         /// <summary>
         /// Updates Participant role in a team
         /// </summary>
