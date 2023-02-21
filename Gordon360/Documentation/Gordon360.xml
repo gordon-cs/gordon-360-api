@@ -768,19 +768,20 @@
             <param name="newMatch"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.AddAttendance(System.Int32,System.String)">
-            <summary>
-            Creates Match Attendee
-            </summary>
-            <param name="username"></param>
-            <param name="matchID"></param>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteMatchCascade(System.Int32)">
             <summary>
             Cascade deletes all DBobjects related to given Match ID
             </summary>
             <param name="matchID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.AddParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantAttendanceViewModel)">
+            <summary>
+            creates match attendance
+            </summary>
+            <param name="matchID"></param>
+            <param name="teamID"></param>
+            <param name="teamAttendanceList">List of attendees for a team</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">

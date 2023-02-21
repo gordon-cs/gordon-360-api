@@ -145,20 +145,6 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
-        /// Update team attendance
-        /// </summary>
-        /// <param name="teamID"></param>
-        /// <param name="participant">Default Role Value value 3 (Member)</param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("{teamID}/participants")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
-        public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantAttendance(int teamID, ParticipantAttendanceViewModel attendanceList)
-        {
-            
-        }
-
-        /// <summary>
         /// Updates Participant role in a team
         /// </summary>
         /// <param name="teamID"></param>

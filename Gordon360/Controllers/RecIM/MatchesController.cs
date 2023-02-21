@@ -19,10 +19,12 @@ namespace Gordon360.Controllers.RecIM
     public class MatchesController : GordonControllerBase
     {
         private readonly IMatchService _matchService;
+        private readonly ITeamService _teamService;
 
-        public MatchesController(IMatchService matchService)
+        public MatchesController(IMatchService matchService, ITeamService teamService)
         {
             _matchService = matchService;
+            _teamService = teamService;
         }
 
         /// <summary>
@@ -109,21 +111,6 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
-        /// Creates Match Attendee
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="matchID"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("{matchID}/attendance")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<MatchParticipantViewModel>> AddAttendance(int matchID, [FromBody] string username)
-        {
-            var attendance = await _matchService.AddParticipantAttendanceAsync(username, matchID);
-            return CreatedAtAction("AddAttendance", attendance);
-        }
-
-        /// <summary>
         /// Cascade deletes all DBobjects related to given Match ID
         /// </summary>
         /// <param name="matchID"></param>
@@ -136,5 +123,21 @@ namespace Gordon360.Controllers.RecIM
             return Ok();
         }
 
+
+        /// <summary>
+        /// creates match attendance
+        /// </summary>
+        /// <param name="matchID"></param>
+        /// <param name="teamID"></param>
+        /// <param name="teamAttendanceList">List of attendees for a team</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("{matchID}/attendance")]
+       // [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
+        public async Task<ActionResult<ParticipantAttendanceViewModel>> AddParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
+        {
+            var attendance = _teamService.AddParticipantAttendanceAsync(matchID, teamAttendanceList);
+            return CreatedAtAction("AddParticipantAttendance", attendance);
+        }
     }
 }

@@ -469,22 +469,22 @@ namespace Gordon360.Services.RecIM
             return _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
         }
 
-        public async Task<ParticipantAttendanceViewModel> AddParticipantAttendance(int teamID, ParticipantAttendanceViewModel attendance)
+        public async Task<IEnumerable<Individual>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance)
         {
             var res = new List<Individual>();
             foreach (Individual attendee in attendance.Attendance)
             {
                 var created = new MatchParticipant
                 {
-                    MatchID = attendee.MatchID,
+                    MatchID = matchID,
                     ParticipantUsername = attendee.Username,
-                    TeamID = teamID
+                    TeamID = attendance.TeamID
                 };
                 await _context.MatchParticipant.AddAsync(created);
                 res.Add(created);
             }
             await _context.SaveChangesAsync();
-            return (new ParticipantAttendanceViewModel { Attendance = res });
+            return (res);
         }
     }
 }
