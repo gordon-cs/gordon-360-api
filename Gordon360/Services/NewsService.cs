@@ -61,22 +61,7 @@ namespace Gordon360.Services
                            || (sn.ManualExpirationDate != null
                            && EF.Functions.DateDiffDay(sn.ManualExpirationDate ?? DateTime.Today, DateTime.Today) < 1))
                         orderby sn.Entered descending
-                        select new StudentNewsViewModel
-                        {
-                            SNID = sn.SNID,
-                            ADUN = sn.ADUN,
-                            categoryID = sn.categoryID,
-                            Subject = sn.Subject,
-                            Body = sn.Body,
-                            Image = sn.Image,
-                            Accepted = true,
-                            Sent = sn.Sent,
-                            thisPastMailing = sn.thisPastMailing,
-                            Entered = sn.Entered,
-                            categoryName = snc.categoryName,
-                            SortOrder = snc.SortOrder,
-                            ManualExpirationDate = sn.ManualExpirationDate,
-                        });
+                        select StudentNewsViewModel.From(sn, snc));
 
             return news;
         }
@@ -86,26 +71,11 @@ namespace Gordon360.Services
             var news = (from sn in _context.StudentNews
                          join snc in _context.StudentNewsCategory
                          on sn.categoryID equals snc.categoryID
-                         where sn.Accepted ?? false
+                         where sn.Accepted == true
                          && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
                          && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
                          orderby snc.SortOrder
-                         select new StudentNewsViewModel
-                         {
-                             SNID = sn.SNID,
-                             ADUN = sn.ADUN,
-                             categoryID = sn.categoryID,
-                             Subject = sn.Subject,
-                             Body = sn.Body,
-                             Image = sn.Image,
-                             Accepted = true,
-                             Sent = sn.Sent,
-                             thisPastMailing = sn.thisPastMailing,
-                             Entered = sn.Entered,
-                             categoryName = snc.categoryName,
-                             SortOrder = snc.SortOrder,
-                             ManualExpirationDate = sn.ManualExpirationDate,
-                         });
+                         select StudentNewsViewModel.From(sn, snc));
                          
             return news;
         }
@@ -132,29 +102,14 @@ namespace Gordon360.Services
             var news = (from sn in _context.StudentNews
                          join snc in _context.StudentNewsCategory
                          on sn.categoryID equals snc.categoryID
-                         where sn.Accepted ?? true
+                         where sn.Accepted != true
                          && (sn.ADUN == username)
                          && ((sn.ManualExpirationDate == null
                                && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
                            || (sn.ManualExpirationDate != null
                            && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
                         orderby sn.SNID descending
-                         select new StudentNewsViewModel
-                         {
-                             SNID = sn.SNID,
-                             ADUN = sn.ADUN,
-                             categoryID = sn.categoryID,
-                             Subject = sn.Subject,
-                             Body = sn.Body,
-                             Image = sn.Image,
-                             Accepted = true,
-                             Sent = sn.Sent,
-                             thisPastMailing = sn.thisPastMailing,
-                             Entered = sn.Entered,
-                             categoryName = snc.categoryName,
-                             SortOrder = snc.SortOrder,
-                             ManualExpirationDate = sn.ManualExpirationDate,
-                         }); 
+                         select StudentNewsViewModel.From(sn, snc)); 
             return news;
         }
 
