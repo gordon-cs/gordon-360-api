@@ -20,7 +20,6 @@ using System.Runtime.CompilerServices;
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
-    [AllowAnonymous]
     public class NewsController : GordonControllerBase
     {
         private readonly INewsService _newsService;
@@ -122,14 +121,6 @@ namespace Gordon360.Controllers
             {
                 return NotFound();
             }
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("test-route")]
-        public ActionResult<IEnumerable<StudentNewsUploadViewModel>> TestRoute()
-        {
-            var result = _newsService.GetNewsUnapproved();
             return Ok(result);
         }
 

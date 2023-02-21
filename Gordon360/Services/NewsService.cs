@@ -123,7 +123,7 @@ namespace Gordon360.Services
                             categoryName = snc.categoryName,
                             SortOrder = snc.SortOrder,
                             ManualExpirationDate = sn.ManualExpirationDate,
-                        }).ToList();
+                        });
             return news;
         }
 
