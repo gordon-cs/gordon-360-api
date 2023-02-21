@@ -21,8 +21,6 @@ namespace Gordon360.Services
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ServerUtils _serverUtils;
 
-        private string NewsUploadsPath => Path.Combine(_webHostEnvironment.ContentRootPath, "browseable/uploads/news");
-
         public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _context = context;
@@ -166,17 +164,14 @@ namespace Gordon360.Services
                 
                 // Use a unique alphanumeric GUID string as the file name
                 var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", filename);
+                var imagePath = GetImagePath(filename);
+                var url = GetImageURL(filename);
 
-                var serverAddress = _serverUtils.GetAddress();
-                if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
-
-                var url = $"{serverAddress}/browseable/uploads/{filename}";
-
-                ImageUtils.UploadImage(imagePath, itemToSubmit.Image);
+                ImageUtils.UploadImage(imagePath, data, format);
 
                 itemToSubmit.Image = url;
             }
+
 
             _context.SaveChanges();
 
@@ -194,15 +189,15 @@ namespace Gordon360.Services
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
 
-            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
 
             if (newsItem.Image != null)
             {
-                string fileName = newsItem.SNID + ".jpg";
-                string imagePath = NewsUploadsPath + fileName;
+                var imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
+
                 ImageUtils.DeleteImage(imagePath);
             }
             _context.StudentNews.Remove(newsItem);
@@ -217,14 +212,14 @@ namespace Gordon360.Services
         /// <param name="newData">The news object that contains updated values</param>
         /// <returns>The updated news item's view model</returns>
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
-        public StudentNewsViewModel EditPosting(int newsID, StudentNews newData)
+        public StudentNewsViewModel EditPosting(int newsID, StudentNewsUploadViewModel newData)
         {
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
 
-            // Note: These checks have been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
             VerifyUnapproved(newsItem);
 
@@ -240,25 +235,75 @@ namespace Gordon360.Services
 
             if (newData.Image != null)
             {
-                string fileName = newsItem.SNID + ".jpg";
-                string imagePath = NewsUploadsPath + fileName;
-                ImageUtils.UploadImage(imagePath, newData.Image);
-                newsItem.Image = imagePath;
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(newData.Image);
+
+                string? imagePath = null;
+                // If old image exists, overwrite it with new image at same path
+                if (newsItem.Image != null)
+                {
+                    imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
+                }
+                // Otherwise, upload new image and save url to db
+                else
+                {
+                    // Use a unique alphanumeric GUID string as the file name
+                    var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                    imagePath = GetImagePath(filename);
+                    var url = GetImageURL(filename);
+                    newsItem.Image = url;
+                }
+
+                ImageUtils.UploadImage(imagePath, data, format);
             }
 
             //If the image property is null, it means that either the user
             //chose to remove the previous image or that there was no previous
             //image (DeleteImage is designed to handle this).
-            else
+            else if (newsItem.Image != null)
             {
-                string fileName = newsItem.SNID + ".jpg";
-                string imagePath = NewsUploadsPath + fileName;
+                var imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
+
                 ImageUtils.DeleteImage(imagePath);
-                newsItem.Image = newData.Image;//null
+                newsItem.Image = newData.Image; //null
             }
             _context.SaveChanges();
 
             return newsItem;
+        }
+
+        public StudentNewsViewModel AlterPostAcceptStatus(int newsID, bool accepted)
+        {
+            var newsItem = Get(newsID);
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+
+            if (accepted)
+                VerifyUnapproved(newsItem);
+            else
+                VerfiyApproved(newsItem);
+
+            newsItem.Accepted = accepted;
+
+            _context.SaveChanges();
+
+            return newsItem;
+        }
+
+        private string GetImagePath(string filename)
+        {
+            return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "news", filename);
+        }
+
+        private string GetImageURL(string filename)
+        {
+            var serverAddress = _serverUtils.GetAddress();
+            if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
+            var url = $"{serverAddress}browseable/uploads/news/{filename}";
+            return url;
         }
 
         /// <summary>
@@ -268,16 +313,33 @@ namespace Gordon360.Services
         /// <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
         private static bool VerifyUnapproved(StudentNews newsItem)
         {
-            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             if (newsItem.Accepted == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
+                throw new Exception();
             }
             if (newsItem.Accepted == true)
             {
                 throw new BadInputException() { ExceptionMessage = "The news item has already been approved." };
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Helper method to verify that a given news item has already been approved
+        /// </summary>
+        /// <param name="newsItem">The news item to verify</param>
+        /// <returns>true if approved, otherwise throws some kind of meaningful exception</returns>
+        private static bool VerfiyApproved(StudentNews newsItem)
+        {
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
+            if (newsItem.Accepted != true)
+            {
+                throw new BadInputException() { ExceptionMessage = "The news item has not been approved." };
             }
             return true;
         }

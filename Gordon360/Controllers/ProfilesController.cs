@@ -1,6 +1,6 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Enums;
 using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
@@ -453,6 +453,7 @@ namespace Gordon360.Controllers
 
             return Ok();
         }
+
         /// <summary>
         /// Posts fields into CCT.dbo.Information_Change_Request 
         /// Sends Alumni Profile Update Email to "devrequest@gordon.edu"
@@ -467,8 +468,6 @@ namespace Gordon360.Controllers
             await _profileService.InformationChangeRequest(authenticatedUserUsername, updatedFields);
             return Ok();
         }
-
-
 
         /// <summary>
         /// Gets the profile image at the given path or, if that file does not exist, the 360 default profile image
@@ -502,40 +501,53 @@ namespace Gordon360.Controllers
         /// @TODO: Move security checks to state your business? Or consider changing implementation here
         /// </summary>
         /// <param name="username">The Student Username</param>
+        /// <param name="sessionCode">Optional session code or "current". If passed, only memberships from that session will be included. </param>
+        /// <param name="participationTypes">Optional participation type. If passed, only memberships of those participation types will be inlcuded</param>
         /// <returns>The membership information that the student is a part of</returns>
         [Route("{username}/memberships")]
         [HttpGet]
-        public ActionResult<List<MembershipView>> GetMembershipsByUser(string username)
+        [Obsolete("Use /api/memberships with username query param instead")]
+        public ActionResult<List<MembershipView>> GetMembershipsByUser(string username, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
         {
-            var result = _membershipService.GetMembershipsByUser(username);
+            var memberships = _membershipService.GetMemberships(
+                username: username,
+                sessionCode: sessionCode,
+                participationTypes: participationTypes);
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-            // privacy control of membership view model
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var viewerGroups = AuthUtils.GetGroups(User);
 
-            if (username == authenticatedUserUsername || viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))              //super admin and gordon police reads all
-                return Ok(result);
-            else
+            // User can see all their own memberships. SiteAdmin and Police can see all of anyone's memberships
+            if (username == authenticatedUserUsername
+                || viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)
+                )
             {
-                var visibleMemberships = result.Where(m => {
-                    var act = _activityService.Get(m.ActivityCode);
-                    var isPublic = !(act.Privacy == true || m.Privacy == true);
-                    if (isPublic)
-                    {
-                        return true;
-                    } else {
-                        // If the current authenticated user is an admin of this group, then include the membership
-                        var admins = _membershipService.GetGroupAdminMembershipsForActivity(m.ActivityCode, m.SessionCode);
-
-                        return admins.Any(a => a.Username == authenticatedUserUsername);
-                    }
-                });
-                return Ok(visibleMemberships);
+                return Ok(memberships);
             }
+
+            var visibleMemberships = memberships.Where(m =>
+            {
+                var act = _activityService.Get(m.ActivityCode);
+                var isPublic = !(act.Privacy == true || m.Privacy == true);
+                if (isPublic)
+                {
+                    return true;
+                }
+                else
+                {
+                    // If the current authenticated user is an admin of this group, then include the membership
+                    return _membershipService.GetMemberships(
+                        activityCode: m.ActivityCode,
+                        username: authenticatedUserUsername,
+                        sessionCode: m.SessionCode,
+                        participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
+                    .Any();
+
+                }
+            });
+
+            return Ok(visibleMemberships);
         }
     }
 }

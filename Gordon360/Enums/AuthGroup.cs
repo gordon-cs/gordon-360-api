@@ -1,4 +1,4 @@
-﻿namespace Gordon360.Authorization
+﻿namespace Gordon360.Enums
 {
     public enum AuthGroup
     {
