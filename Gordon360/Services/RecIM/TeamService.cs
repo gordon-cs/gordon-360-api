@@ -472,16 +472,31 @@ namespace Gordon360.Services.RecIM
         public async Task<IEnumerable<Individual>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance)
         {
             var res = new List<Individual>();
+            int teamID = attendance.TeamID;
+            var attendees = new List<String>();
             foreach (Individual attendee in attendance.Attendance)
+                attendees.Add(attendee.Username);
+
+
+            var attendanceToRemove = _context.MatchParticipant.Where(mp => mp.MatchID == matchID && mp.TeamID == teamID
+                && !attendees.Any(name => mp.ParticipantUsername == name));
+            _context.MatchParticipant.RemoveRange(attendanceToRemove);
+
+            var existingAttendance = _context.MatchParticipant.Where(mp => mp.MatchID == matchID && mp.TeamID == teamID 
+                && attendees.Any(name => mp.ParticipantUsername == name));
+
+            var attendanceToAdd = attendees.Where(name => !existingAttendance.Any(ea => ea.ParticipantUsername == name));
+            foreach (string username in attendanceToAdd)
             {
                 var created = new MatchParticipant
                 {
                     MatchID = matchID,
-                    ParticipantUsername = attendee.Username,
-                    TeamID = attendance.TeamID
+                    ParticipantUsername = username,
+                    TeamID = teamID
                 };
                 await _context.MatchParticipant.AddAsync(created);
                 res.Add(created);
+       
             }
             await _context.SaveChangesAsync();
             return (res);
