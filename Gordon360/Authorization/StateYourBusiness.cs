@@ -294,10 +294,10 @@ namespace Gordon360.Authorization
                         return false; // See reasons for this in CanReadOne(). No one (except for super admin) should be able to access student records through
                                       // our API.
                 case Resource.ADVISOR:
-                    // User is admin
+                    // User is authorized to view academic info
                     if (user_groups.Contains(AuthGroup.AcademicInfoView))
                         return true;
-                    // User looks its own profile
+                    // User looks his or her own profile
                     else if (context.ActionArguments["username"] is string username && username.EqualsIgnoreCase(user_name))
                         return true;
                     else
