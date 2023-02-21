@@ -35,7 +35,7 @@ namespace Gordon360.Services.RecIM
         {
             if (type == "status")
             {
-                var res = _context.TeamStatus
+                var res = _context.TeamStatus.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
@@ -46,7 +46,7 @@ namespace Gordon360.Services.RecIM
             }
             if (type == "role")
             {
-                var res = _context.RoleType
+                var res = _context.RoleType.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,

@@ -26,7 +26,7 @@ namespace Gordon360.Services.RecIM
         {
             if (type == "status")
             {
-                var res = _context.ParticipantStatus
+                var res = _context.ParticipantStatus.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,
@@ -37,7 +37,7 @@ namespace Gordon360.Services.RecIM
             }
             if (type == "activitypriv")
             {
-                var res = _context.PrivType
+                var res = _context.PrivType.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,

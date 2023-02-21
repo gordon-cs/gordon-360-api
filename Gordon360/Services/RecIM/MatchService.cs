@@ -34,7 +34,7 @@ namespace Gordon360.Services.RecIM
             {
                 case "status":
                 {
-                    var res = _context.MatchStatus
+                    var res = _context.MatchStatus.Where(query => query.ID != 0)
                         .Select(s => new LookupViewModel
                         {
                             ID = s.ID,
@@ -45,7 +45,7 @@ namespace Gordon360.Services.RecIM
                 }
                 case "teamstatus":
                 {
-                    var res = _context.MatchTeamStatus
+                    var res = _context.MatchTeamStatus.Where(query => query.ID != 0)
                         .Select(s => new LookupViewModel
                         {
                             ID = s.ID,
@@ -56,7 +56,7 @@ namespace Gordon360.Services.RecIM
                 }
                 case "surface":
                 {
-                    var res = _context.Surface
+                    var res = _context.Surface.Where(query => query.ID != 0)
                         .Select(s => new LookupViewModel
                         {
                             ID = s.ID,

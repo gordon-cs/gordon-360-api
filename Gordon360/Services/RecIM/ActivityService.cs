@@ -26,7 +26,7 @@ namespace Gordon360.Services.RecIM
             switch (type)
             {
                 case "status":
-                    return _context.ActivityStatus
+                    return _context.ActivityStatus.Where(query => query.ID != 0)
                                 .Select(s => new LookupViewModel
                                 {
                                     ID = s.ID,
@@ -34,7 +34,7 @@ namespace Gordon360.Services.RecIM
                                 })
                                 .AsEnumerable();
                 case "activity":
-                    return _context.ActivityType
+                    return _context.ActivityType.Where(query => query.ID != 0)
                                 .Select(a => new LookupViewModel
                                 {
                                     ID = a.ID,
