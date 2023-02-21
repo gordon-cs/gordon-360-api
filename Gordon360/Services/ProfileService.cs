@@ -136,19 +136,10 @@ namespace Gordon360.Services
 
         /// <summary> Gets the clifton strengths of a particular user </summary>
         /// <param name="id"> The id of the user for which to retrieve info </param>
-        /// <param name="authenticatedUserName"> The username of the authenticated account </param>
         /// <returns> Clifton strengths of the given user. </returns>
-        public CliftonStrengthsViewModel? GetCliftonStrengths(int id, string authenticatedUserName = "")
+        public CliftonStrengthsViewModel? GetCliftonStrengths(int id)
         {
-            if (!string.IsNullOrEmpty(authenticatedUserName))
-            {
-                var authenticatedAccount = _accountService.GetAccountByUsername(authenticatedUserName);
-                if (authenticatedAccount.GordonID == id.ToString())
-                    return _context.Clifton_Strengths.FirstOrDefault(c => c.ID_NUM == id);
-            }
-            
-            return _context.Clifton_Strengths
-                .FirstOrDefault(c => c.ID_NUM == id && c.Private == false);
+            return _context.Clifton_Strengths.FirstOrDefault(c => c.ID_NUM == id);
         }
 
         /// <summary>

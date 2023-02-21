@@ -127,11 +127,25 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
         public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
         {
-            var authenticatedUserName = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var strengths = _profileService.GetCliftonStrengths(int.Parse(id), authenticatedUserName);
+            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+            if (strengths is null)
+            {
+                return Ok(Array.Empty<string>());
+            }
+            
+            var authenticatedUserName = AuthUtils.GetUsername(User);
+            if (string.IsNullOrEmpty(authenticatedUserName))
+            {
+                return strengths.Private is false 
+                    ? Ok(strengths.Themes) 
+                    : Ok(Array.Empty<string>());
+            }
 
-            return Ok(strengths?.Themes ?? Array.Empty<string>());
+            var authenticatedAccount = _accountService.GetAccountByUsername(authenticatedUserName);
+            return authenticatedAccount.GordonID == id 
+                ? Ok(strengths.Themes) 
+                : Ok(Array.Empty<string>());
         }
 
 
@@ -143,11 +157,25 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
         public ActionResult<CliftonStrengthsViewModel?> GetCliftonStrengths(string username)
         {
-            var authenticatedUserName = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var strengths = _profileService.GetCliftonStrengths(int.Parse(id), authenticatedUserName);
+            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+            if (strengths is null)
+            {
+                return Ok();
+            }
+            
+            var authenticatedUserName = AuthUtils.GetUsername(User);
+            if (string.IsNullOrEmpty(authenticatedUserName))
+            {
+                return strengths.Private is false 
+                    ? Ok(strengths) 
+                    : Ok();
+            }
 
-            return Ok(strengths);
+            var authenticatedAccount = _accountService.GetAccountByUsername(authenticatedUserName);
+            return authenticatedAccount.GordonID == id 
+                ? Ok(strengths) 
+                : Ok();
         }
 
         /// <summary>Toggle privacy of the current user's Clifton Strengths</summary>
