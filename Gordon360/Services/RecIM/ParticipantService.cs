@@ -118,7 +118,7 @@ namespace Gordon360.Services.RecIM
             //to be handled by teamservice
             var teams = _context.ParticipantTeam
                             .Where(pt => pt.ParticipantUsername == username)
-                                .Join(_context.Team,
+                                .Join(_context.Team.Where(t => t.StatusID != 0),
                                     pt => pt.TeamID,
                                     t => t.ID,
                                     (pt, t) => new TeamExtendedViewModel

@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 using System.Globalization;
-using Microsoft.Graph;
-using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace Gordon360.Services.RecIM
 {
@@ -76,7 +74,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
         {
             var teamQuery = active 
-                ? _context.Team.Where(t => !t.Activity.Completed == active)
+                ? _context.Team.Where(t => !t.Activity.Completed == active && t.StatusID != 0)
                 : _context.Team;    
 
             var teams = teamQuery
@@ -351,7 +349,18 @@ namespace Gordon360.Services.RecIM
         public async Task DeleteParticipantTeamAsync(int teamID, string username)
         {
             var teamParticipant = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == username);
-            _context.ParticipantTeam.Remove(teamParticipant);
+            teamParticipant.RoleTypeID = 0;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteTeam(int teamID)
+        {
+            var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
+            team.StatusID = 0;
+            foreach (var participantTeam in _context.ParticipantTeam.Where(pt => pt.TeamID == teamID))
+            {
+                await DeleteParticipantTeamAsync(teamID, participantTeam.ParticipantUsername);
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -434,8 +443,8 @@ namespace Gordon360.Services.RecIM
         public bool HasUserJoined(int activityID, string username)
         {
             // get all the partipantTeam from the teams with the activityID
-            var participantTeams = _context.Team.Where(t => t.ActivityID == activityID)
-                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
+            var participantTeams = _context.Team.Where(t => t.ActivityID == activityID && t.StatusID != 0)
+                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2 && pt.RoleTypeID != 0),
                 t => t.ID,
                 pt => pt.TeamID,
                 (t, pt) => pt)
@@ -446,7 +455,7 @@ namespace Gordon360.Services.RecIM
 
         public bool HasTeamNameTaken(int activityID, string teamName)
         {
-            return _context.Team.Any(t =>
+            return _context.Team.Where(t => t.StatusID != 0).Any(t =>
                         t.ActivityID == activityID
                         && t.Name == teamName
             );
