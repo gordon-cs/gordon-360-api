@@ -161,6 +161,25 @@ namespace Gordon360.Controllers.RecIM
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
             
         }
+        /// <summary>
+        /// Removes team and all participants in the team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{teamID}")]
+        public async Task<ActionResult> DeleteTeam(int teamID)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var participantTeam = _teamService.GetParticipantTeam(teamID, username);
+            if (participantTeam is null)
+                return NotFound("The user is not part of the team.");
+            if (participantTeam.RoleTypeID != 5 || !_participantService.IsAdmin(username))
+                return Forbid($"You are not permitted to delete this team");
+
+            await _teamService.DeleteTeam(teamID);
+            return NoContent();
+        }
 
         /// <summary>
         /// Removes specified user from a team
