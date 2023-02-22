@@ -371,7 +371,7 @@ namespace Gordon360.Authorization
                         return false;
                     }
                 case Resource.NEWS:
-                    return true;
+                    return user_groups.Contains(AuthGroup.NewsAdmin);
                 default: return false;
             }
         }

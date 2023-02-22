@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services
 {
@@ -83,6 +84,36 @@ namespace Gordon360.Services
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
         {
             return _context.StudentNewsCategory.OrderBy(c => c.SortOrder).Select<StudentNewsCategory, StudentNewsCategoryViewModel>(c => c);
+        }
+
+        public IEnumerable<StudentNewsViewModel> GetNewsUnapproved()
+        {
+            var news = (from sn in _context.StudentNews
+                        join snc in _context.StudentNewsCategory
+                        on sn.categoryID equals snc.categoryID
+                        where sn.Accepted == false
+                        && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && EF.Functions.DateDiffDay(sn.ManualExpirationDate ?? DateTime.Today, DateTime.Today) < 1))
+                        orderby sn.SNID descending
+                        select new StudentNewsViewModel
+                        {
+                            SNID = sn.SNID,
+                            ADUN = sn.ADUN,
+                            categoryID = sn.categoryID,
+                            Subject = sn.Subject,
+                            Body = sn.Body,
+                            Image = sn.Image,
+                            Accepted = false,
+                            Sent = sn.Sent,
+                            thisPastMailing = sn.thisPastMailing,
+                            Entered = sn.Entered,
+                            categoryName = snc.categoryName,
+                            SortOrder = snc.SortOrder,
+                            ManualExpirationDate = sn.ManualExpirationDate,
+                        });
+            return news;
         }
 
         /// <summary>
