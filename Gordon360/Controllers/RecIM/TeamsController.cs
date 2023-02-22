@@ -234,7 +234,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
         [Route("{teamID}/invite/status")]
-        public async Task<ActionResult<ParticipantTeamViewModel?>> AcceptTeamInvite(int teamID, [FromBody]string response)
+        public async Task<ActionResult<ParticipantTeamViewModel?>> HandleTeamInvite(int teamID, [FromBody]string response)
         {
             var username = AuthUtils.GetUsername(User);
             try
@@ -242,6 +242,8 @@ namespace Gordon360.Controllers.RecIM
                 var invite = _teamService.GetParticipantTeam(teamID, username);
                 if (invite is null)
                     return NotFound("You were not invited by this team.");
+                if (invite.RoleTypeID == 0)
+                    return UnprocessableEntity("Team has been deleted");
                 if (username != invite.ParticipantUsername)
                     return Forbid($"You are not permitted to accept invitations for another participant.");
 
@@ -251,7 +253,7 @@ namespace Gordon360.Controllers.RecIM
                         var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,
                             new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 }
                             );
-                        return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
+                        return CreatedAtAction("HandleTeamInvite", joinedParticipantTeam);
                     case "rejected":
                         await _teamService.DeleteParticipantTeamAsync(invite.TeamID, username);
                         return Ok();
