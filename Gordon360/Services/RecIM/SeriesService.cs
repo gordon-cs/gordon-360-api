@@ -278,7 +278,7 @@ namespace Gordon360.Services.RecIM
         // eventually:
         // - ensure that matches that occur within 1 hour do not share the same surface
         //    unless they're in the same series
-        public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID)
+        public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request)
         {
             var series = _context.Series
                     .FirstOrDefault(s => s.ID == seriesID);
