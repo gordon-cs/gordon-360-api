@@ -1,4 +1,5 @@
 using Gordon360.Authorization;
+using Gordon360.Enums;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
@@ -123,27 +124,23 @@ namespace Gordon360.Controllers
             string? department,
             string? building)
         {
-            var viewerGroups = AuthUtils.GetGroups(User);
+            IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
-            // Only students and FacStaff can search students
-            if (accountTypes.Contains("student") && !(viewerGroups.Contains(AuthGroup.Student) || viewerGroups.Contains(AuthGroup.FacStaff)))
-            {
-                accountTypes.Remove("student");
-            }
+            var accounts = _accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
 
-            var searchResults = _accountService.AdvancedSearch(accountTypes,
-                                                               firstname?.ToLower() ?? "",
-                                                               lastname?.ToLower() ?? "",
-                                                               major ?? "",
-                                                               minor ?? "",
-                                                               hall ?? "",
-                                                               classType ?? "",
-                                                               homeCity?.ToLower() ?? "",
-                                                               state ?? "",
-                                                               country ?? "",
-                                                               department ?? "",
-                                                               building ?? "");
-
+            var searchResults = _accountService.AdvancedSearch(
+                accounts,
+                firstname,
+                lastname,
+                major,
+                minor,
+                hall,
+                classType,
+                homeCity,
+                state,
+                country,
+                department,
+                building);
 
             // Return all of the profile views
             return Ok(searchResults);

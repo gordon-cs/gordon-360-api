@@ -1,6 +1,7 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,9 @@ namespace Gordon360.Controllers
     {
         private readonly IAdministratorService _adminService;
 
-        public AdminsController(CCTContext context)
+        public AdminsController(IAdministratorService adminService)
         {
-            _adminService = new AdministratorService(context);
+            _adminService = adminService;
         }
 
         /// <summary>
@@ -31,28 +32,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADMIN)]
-        public ActionResult<IEnumerable<ADMIN>> GetAll()
+        public ActionResult<IEnumerable<AdminViewModel?>> GetAll()
         {
             var result = _adminService.GetAll();
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Get a specific admin
-        /// </summary>
-        /// <returns>
-        /// The specific admin
-        /// </returns>
-        /// <remarks>
-        /// Server makes call to the database and returns the specific admin
-        /// </remarks>
-        // GET api/<controller>/5
-        [HttpGet]
-        [Route("{id}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ADMIN)]
-        public ActionResult<ADMIN> GetByGordonId(string id)
-        {
-            var result = _adminService.Get(id);
             return Ok(result);
         }
 
@@ -64,7 +46,7 @@ namespace Gordon360.Controllers
         [HttpPost]
         [Route("", Name = "Admins")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.ADMIN)]
-        public ActionResult<ADMIN> Post([FromBody] ADMIN admin)
+        public ActionResult<AdminViewModel> Post([FromBody] AdminViewModel admin)
         {
             var result = _adminService.Add(admin);
 
@@ -77,15 +59,15 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>Delete an existing admin</summary>
-        /// <param name="id">The identifier for the admin to be deleted</param>
+        /// <param name="username">The username of the user to demote</param>
         /// <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
         // DELETE api/<controller>/5
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{username}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.ADMIN)]
-        public ActionResult<ADMIN> Delete(int id)
+        public ActionResult<AdminViewModel> Delete(string username)
         {
-            var result = _adminService.Delete(id);
+            var result = _adminService.Delete(username);
 
             if (result == null)
             {

@@ -80,6 +80,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Police> Police { get; set; }
         public virtual DbSet<PrivType> PrivType { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
+        public virtual DbSet<RequestView> RequestView { get; set; }
         public virtual DbSet<RoleType> RoleType { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
@@ -202,7 +203,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Countries>(entity =>
             {
-                entity.ToView("Countries", "dbo");
+                entity.ToView("Countries");
 
                 entity.Property(e => e.CTY).IsFixedLength();
             });
@@ -344,7 +345,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<InvolvementOffering>(entity =>
             {
-                entity.ToView("InvolvementOffering", "dbo");
+                entity.ToView("InvolvementOffering");
 
                 entity.Property(e => e.ActivityCode).IsFixedLength();
 
@@ -484,6 +485,21 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.ActivityDescription).IsFixedLength();
             });
 
+            modelBuilder.Entity<MembershipView>(entity =>
+            {
+                entity.ToView("MembershipView");
+
+                entity.Property(e => e.ActivityCode).IsFixedLength();
+
+                entity.Property(e => e.ActivityDescription).IsFixedLength();
+
+                entity.Property(e => e.Participation).IsFixedLength();
+
+                entity.Property(e => e.ParticipationDescription).IsFixedLength();
+
+                entity.Property(e => e.SessionCode).IsFixedLength();
+            });
+
             modelBuilder.Entity<Message_Rooms>(entity =>
             {
                 entity.HasKey(e => e.room_id)
@@ -593,6 +609,21 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
+            });
+
+            modelBuilder.Entity<RequestView>(entity =>
+            {
+                entity.ToView("RequestView");
+
+                entity.Property(e => e.ActivityCode).IsFixedLength();
+
+                entity.Property(e => e.ActivityDescription).IsFixedLength();
+
+                entity.Property(e => e.Participation).IsFixedLength();
+
+                entity.Property(e => e.ParticipationDescription).IsFixedLength();
+
+                entity.Property(e => e.SessionCode).IsFixedLength();
             });
 
             modelBuilder.Entity<RoomAssign>(entity =>
