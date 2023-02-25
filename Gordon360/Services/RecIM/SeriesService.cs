@@ -289,7 +289,7 @@ namespace Gordon360.Services.RecIM
 
             if (typeCode == "RR")
             {
-                return await ScheduleRoundRobin(seriesID);
+                return await ScheduleRoundRobin(seriesID, request);
             }
             if (typeCode == "SE")
             {
@@ -301,11 +301,11 @@ namespace Gordon360.Services.RecIM
             }
             if (typeCode == "L")
             {
-                return await ScheduleLadderAsync(seriesID);
+                return await ScheduleLadderAsync(seriesID, request);
             }
             return null;
         }
-        private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID, UploadScheduleRequest request)
         {
             var createdMatches = new List<MatchViewModel>();
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
@@ -313,7 +313,7 @@ namespace Gordon360.Services.RecIM
                 .Where(st => st.SeriesID == seriesID)
                 .Select(st => st.TeamID)
                 .ToList();
-
+            int numCycles = request.RoundRobinMatchCapacity ?? teams.Count;
             //algorithm requires odd number of teams
             teams.Add(0);//0 is not a valid true team ID thus will act as dummy team
 
@@ -332,7 +332,7 @@ namespace Gordon360.Services.RecIM
             string dayOfWeek = day.DayOfWeek.ToString();
 
             int surfaceIndex = 0;
-            for (int cycles = 0; cycles < teams.Count; cycles++)
+            for (int cycles = 0; cycles < numCycles; cycles++)
             {
                 int i = 0;
                 int j = teams.Count - 1;
@@ -381,7 +381,7 @@ namespace Gordon360.Services.RecIM
         }
 
         //rudamentary implementation (only allows all teams into 1 match)
-        private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID, UploadScheduleRequest request)
         {
             var createdMatches = new List<MatchViewModel>();
             var teams = _context.SeriesTeam
