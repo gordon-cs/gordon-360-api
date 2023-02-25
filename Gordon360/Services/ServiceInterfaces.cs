@@ -315,6 +315,7 @@ namespace Gordon360.Services
             Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
             bool IsReferee(string username, int activityID);
             bool ActivityTeamCapacityReached(int activityID);
+            bool ActivityRegistrationClosed(int activityID);
         }
         public interface ISeriesService
         {
