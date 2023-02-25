@@ -135,9 +135,8 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
             var inviterUsername = AuthUtils.GetUsername(User);
-            var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
-            var isAdmin = _participantService.IsAdmin(inviterUsername);
-            if (!_teamService.HasUserJoined(activityID, participant.Username) || isAdmin)
+            var activityID = _teamService.GetTeamActivityID(teamID);
+            if (!_teamService.HasUserJoined(activityID, participant.Username) || _participantService.IsAdmin(inviterUsername))
             {
                 var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
@@ -145,7 +144,7 @@ namespace Gordon360.Controllers.RecIM
             else
                 return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
         }
-        
+
         /// <summary>
         /// Updates Participant role in a team
         /// </summary>
@@ -228,6 +227,19 @@ namespace Gordon360.Controllers.RecIM
             }
         }
 
+        /// <summary>
+        /// Gets number of games a participant has participated in for a team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="username"></param>
+        /// <returns>number of games a participant has attended for a team</returns>
+        [HttpGet]
+        [Route("{teamID}/attendance")]
+        public async Task<ActionResult<int>> NumberOfGamesParticipatedByParticipant(int teamID, [FromBody] string username)
+        {
+            var res = _teamService.NumberOfGamesParticipatedByParticipant(teamID, username);
+            return Ok(res);
+        }
         /// <summary>
         /// Accept one specified team invite and true delete others from the same activity if there's any
         /// </summary>

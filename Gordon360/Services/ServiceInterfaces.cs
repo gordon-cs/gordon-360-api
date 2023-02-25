@@ -346,6 +346,9 @@ namespace Gordon360.Services
             bool HasUserJoined(int activityID, string username);
             bool HasTeamNameTaken(int activityID, string teamName);
             bool IsTeamCaptain(string username, int teamID);
+            int GetTeamActivityID(int teamID);
+            Task<IEnumerable<Individual>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance);
+            public int NumberOfGamesParticipatedByParticipant(int teamID, string username);
         }
 
         public interface IParticipantService
@@ -384,7 +387,6 @@ namespace Gordon360.Services
             Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel match);
             Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel match);
             Task CreateMatchTeamMappingAsync(int teamID, int matchID);
-            Task<MatchParticipantViewModel> AddParticipantAttendanceAsync(string username, int matchID);
             IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
             Task DeleteMatchCascadeAsync(int matchID);
         }
