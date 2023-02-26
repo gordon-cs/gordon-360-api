@@ -87,7 +87,7 @@ namespace Gordon360.Services.RecIM
                                             .FirstOrDefault(ts => ts.ID == t.StatusID)
                                             .Description,
                     Logo = t.Logo,
-                    Participant = t.ParticipantTeam
+                    Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
                         .Select(pt => new ParticipantExtendedViewModel
                         {
                             Username = pt.ParticipantUsername,
@@ -142,7 +142,7 @@ namespace Gordon360.Services.RecIM
         public TeamExtendedViewModel GetTeamByID(int teamID)
         {
             var team = _context.Team
-                            .Where(t => t.ID == teamID)
+                            .Where(t => t.ID == teamID && t.StatusID != 0)
                             .Select(t => new TeamExtendedViewModel
                             {
                                 ID = teamID,
@@ -154,7 +154,7 @@ namespace Gordon360.Services.RecIM
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
                                             .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)),
-                                Participant = t.ParticipantTeam
+                                Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
                                                 .Select(pt => new ParticipantExtendedViewModel
                                                 {
                                                     Username = pt.ParticipantUsername,
@@ -163,7 +163,7 @@ namespace Gordon360.Services.RecIM
                                                                         .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
                                                                         .Description,
                                                 }),
-                                MatchHistory = _context.Match
+                                MatchHistory = _context.Match.Where(m => m.StatusID != 0)
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
 

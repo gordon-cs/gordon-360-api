@@ -67,7 +67,7 @@ namespace Gordon360.Services.RecIM
                         ActivityID = s.ActivityID,
                         Match = _matchService.GetMatchBySeriesID(s.ID),
                         TeamStanding = _context.SeriesTeam
-                        .Where(st => st.SeriesID == s.ID)
+                        .Where(st => st.SeriesID == s.ID && st.Team.StatusID != 0)
                         .Select(st => new TeamRecordViewModel
                         {
                             ID = st.ID,
@@ -113,7 +113,7 @@ namespace Gordon360.Services.RecIM
                     {
                         ID = st.ID,
                         Name = _context.Team
-                                .FirstOrDefault(t => t.ID == st.TeamID)
+                                .FirstOrDefault(t => t.ID == st.TeamID && t.StatusID != 0)
                                 .Name,
                         Win = st.Win,
                         Loss = st.Loss,
