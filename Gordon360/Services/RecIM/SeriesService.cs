@@ -51,35 +51,36 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
-                            .Select(s => new SeriesExtendedViewModel
-                            {
-                                ID = s.ID,
-                                Name = s.Name,
-                                StartDate = s.StartDate,
-                                EndDate = s.EndDate,
-                                Type = _context.SeriesType
-                                            .FirstOrDefault(st => st.ID == s.TypeID)
-                                            .Description,
-                                Status = _context.SeriesStatus
-                                            .FirstOrDefault(ss => ss.ID == s.StatusID)
-                                            .Description,
-                                ActivityID = s.ActivityID,
-                                Match = _matchService.GetMatchBySeriesID(s.ID),
-                                TeamStanding = _context.SeriesTeam
-                                .Where(st => st.SeriesID == s.ID)
-                                .Select(st => new TeamRecordViewModel
-                                {
-                                    ID = st.ID,
-                                    Name = _context.Team
-                                            .FirstOrDefault(t => t.ID == st.TeamID)
-                                            .Name,
-                                    Win = st.Win,
-                                    Loss = st.Loss,
-                                    Tie = _context.SeriesTeam
-                                            .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
-                                            .Count() - st.Win - st.Loss
-                                }).OrderByDescending(st => st.Win).AsEnumerable()
-                            });
+                .Where(s => s.StatusID != 0)
+                    .Select(s => new SeriesExtendedViewModel
+                    {
+                        ID = s.ID,
+                        Name = s.Name,
+                        StartDate = s.StartDate,
+                        EndDate = s.EndDate,
+                        Type = _context.SeriesType
+                                    .FirstOrDefault(st => st.ID == s.TypeID)
+                                    .Description,
+                        Status = _context.SeriesStatus
+                                    .FirstOrDefault(ss => ss.ID == s.StatusID)
+                                    .Description,
+                        ActivityID = s.ActivityID,
+                        Match = _matchService.GetMatchBySeriesID(s.ID),
+                        TeamStanding = _context.SeriesTeam
+                        .Where(st => st.SeriesID == s.ID)
+                        .Select(st => new TeamRecordViewModel
+                        {
+                            ID = st.ID,
+                            Name = _context.Team
+                                    .FirstOrDefault(t => t.ID == st.TeamID)
+                                    .Name,
+                            Win = st.Win,
+                            Loss = st.Loss,
+                            Tie = _context.SeriesTeam
+                                    .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
+                                    .Count() - st.Win - st.Loss
+                        }).OrderByDescending(st => st.Win).AsEnumerable()
+                    });
             if (active)
             {
                 series = series.Where(s => s.StartDate < DateTime.Now
@@ -90,7 +91,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID)
         {
             var series = _context.Series
-                .Where(s => s.ActivityID == activityID)
+                .Where(s => s.ActivityID == activityID  && s.StatusID != 0)
                 .Select(s => new SeriesExtendedViewModel
                 {
                     ID = s.ID,
@@ -175,6 +176,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
         {
+            //check for exact schedule existing
             var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss =>
                 ss.StartTime.Hour == seriesSchedule.DailyStartTime.Hour &&
                 ss.StartTime.Minute == seriesSchedule.DailyStartTime.Minute &&
@@ -193,13 +195,14 @@ namespace Gordon360.Services.RecIM
             {
                 if (seriesSchedule.SeriesID is not null)
                 {
-                    var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                    var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID && s.StatusID != 0);
+                    if (series != null) return existingSchedule;
                     series.ScheduleID = existingSchedule.ID;
                     await _context.SaveChangesAsync();
                 }
                 return existingSchedule;
             }
-
+            // if schedule does not exist
             var schedule = new SeriesSchedule
             {
                 Sun = seriesSchedule.AvailableDays.Sun,
@@ -227,7 +230,8 @@ namespace Gordon360.Services.RecIM
         }
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
-            var s = await _context.Series.FindAsync(seriesID);
+            var s = _context.Series.FirstOrDefault(s => s.ID == seriesID && s.StatusID != 0);
+            if (s is null) return null;
             s.Name = update.Name ?? s.Name;
             s.StartDate = update.StartDate ?? s.StartDate;
             s.EndDate = update.EndDate ?? s.EndDate;
@@ -290,11 +294,11 @@ namespace Gordon360.Services.RecIM
         public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID)
         {
             var series = _context.Series
-                    .FirstOrDefault(s => s.ID == seriesID);
+                    .FirstOrDefault(s => s.ID == seriesID && s.StatusID != 0);
             var typeCode = _context.SeriesType
                 .FirstOrDefault(st =>
                     st.ID == series.TypeID
-                ).TypeCode;
+                )?.TypeCode;
 
             if (typeCode == "RR")
             {
