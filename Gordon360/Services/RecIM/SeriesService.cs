@@ -263,12 +263,14 @@ namespace Gordon360.Services.RecIM
 
         public async Task DeleteSeriesCascadeAsync(int seriesID)
         {
-            //delete series teams
+            //delete series teams (series team does not need to be fully deleted, a wipe is sufficient)
             var seriesTeam = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
-            _context.SeriesTeam.RemoveRange(seriesTeam);
-            //delete series surfaces
-            var seriesSurface = _context.SeriesSurface.Where(ss => ss.SeriesID == seriesID);
-            _context.SeriesSurface.RemoveRange(seriesSurface);
+            foreach (var st in seriesTeam)
+            {
+                st.Win = 0;
+                st.Loss = 0;
+            }
+            //delete series surfaces (series surface is no longer required to be deleted)
             //delete matches
             var matchIDs = _context.Match.Where(m => m.SeriesID == seriesID).Select(m => m.ID).ToList();
             foreach (var matchID in matchIDs)
@@ -277,7 +279,7 @@ namespace Gordon360.Services.RecIM
             }
             //delete series
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
-            _context.Series.Remove(series);
+            series.StatusID = 0;
             await _context.SaveChangesAsync();
         }
 

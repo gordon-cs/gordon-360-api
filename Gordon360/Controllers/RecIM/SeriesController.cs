@@ -119,7 +119,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> DeleteSeriesCascade(int seriesID)
         {
             await _seriesService.DeleteSeriesCascadeAsync(seriesID);
-            return Ok();
+            return NoContent();
         }
 
 
