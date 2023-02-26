@@ -733,7 +733,7 @@
             <summary>
             Cascade deletes all DBobjects related to given ActivityID
             </summary>
-            <param name="matchID"></param>
+            <param name="activityID"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches(System.Nullable{System.DateTime},System.Boolean)">
