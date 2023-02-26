@@ -276,10 +276,16 @@ namespace Gordon360.Services.RecIM
             }
             //delete series surfaces (series surface is no longer required to be deleted)
             //delete matches
-            var matchIDs = _context.Match.Where(m => m.SeriesID == seriesID).Select(m => m.ID).ToList();
-            foreach (var matchID in matchIDs)
+            var matches = _context.Match.Where(m => m.SeriesID == seriesID).ToList();
+            foreach (var match in matches)
             {
-                await _matchService.DeleteMatchCascadeAsync(matchID);
+                //delete matchteam
+                var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == match.ID);
+                foreach (var mt in matchteam)
+                    mt.StatusID = 0;
+                //deletematch
+                match.StatusID = 0;
+
             }
             //delete series
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);

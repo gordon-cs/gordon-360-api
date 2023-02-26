@@ -357,10 +357,6 @@ namespace Gordon360.Services.RecIM
         {
             var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
             team.StatusID = 0;
-            foreach (var participantTeam in _context.ParticipantTeam.Where(pt => pt.TeamID == teamID))
-            {
-                await DeleteParticipantTeamAsync(teamID, participantTeam.ParticipantUsername);
-            }
             await _context.SaveChangesAsync();
         }
 

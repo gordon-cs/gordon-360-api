@@ -358,9 +358,6 @@ namespace Gordon360.Services.RecIM
             var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == matchID);
             foreach (var mt in matchteam)
                 mt.StatusID = 0;
-            //delete matchparticipant
-            var matchparticipant = _context.MatchParticipant.Where(mp => mp.MatchID == matchID);
-            _context.MatchParticipant.RemoveRange(matchparticipant);
             //deletematch
             var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
             match.StatusID = 0;

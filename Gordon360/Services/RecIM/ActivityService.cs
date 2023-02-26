@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -223,19 +224,43 @@ namespace Gordon360.Services.RecIM
         public async Task DeleteActivityCascade(int activityID)
         {
             //delete participant involvement
-            var participantActivity = _context.ParticipantActivity.Where(pa => pa.ActivityID == activityID);
+            var participantActivity = _context.ParticipantActivity.Where(pa => pa.ActivityID == activityID).ToList();
             foreach (var pa in participantActivity)
                 pa.PrivTypeID = 0;
+            await _context.SaveChangesAsync();
+
 
             // delete teams
-            var activityTeams = _context.Team.Where(t => t.ActivityID == activityID).Select(t => t.ID);
-            foreach (var id in activityTeams)
-                await _teamService.DeleteTeamCascadeAsync(id);
-
+            var activityTeams = _context.Team.Where(t => t.ActivityID == activityID);
+            foreach (var team in activityTeams)
+            {
+                team.StatusID = 0;
+                var participantTeams = _context.ParticipantTeam.Where(pt => pt.TeamID == team.ID).ToList();
+                foreach (var participantTeam in participantTeams)
+                {
+                    participantTeam.RoleTypeID = 0;
+                }
+            }
+            
             // delete series
-            var seriesIDs = _context.Series.Where(s => s.ActivityID == activityID).Select(s => s.ID);
-            foreach (var id in seriesIDs)
-                await _seriesService.DeleteSeriesCascadeAsync(id);
+            var activitySeries = _context.Series.Where(s => s.ActivityID == activityID);
+            foreach (var series in activitySeries)
+            {
+                //delete matches
+                var matches = _context.Match.Where(m => m.SeriesID == series.ID).ToList();
+                foreach (var match in matches)
+                {
+                    //delete matchteam
+                    var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == match.ID);
+                    foreach (var mt in matchteam)
+                        mt.StatusID = 0;
+                    //deletematch
+                    match.StatusID = 0;
+
+                }
+                //delete series
+                series.StatusID = 0;
+            }
 
             //delete activity
             var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
