@@ -18,6 +18,7 @@ namespace Gordon360.Models.CCT
         [StringLength(50)]
         [Unicode(false)]
         public string ParticipantUsername { get; set; }
+        public int TeamID { get; set; }
 
         [ForeignKey("MatchID")]
         [InverseProperty("MatchParticipant")]
@@ -25,5 +26,8 @@ namespace Gordon360.Models.CCT
         [ForeignKey("ParticipantUsername")]
         [InverseProperty("MatchParticipant")]
         public virtual Participant ParticipantUsernameNavigation { get; set; }
+        [ForeignKey("TeamID")]
+        [InverseProperty("MatchParticipant")]
+        public virtual Team Team { get; set; }
     }
 }
