@@ -356,17 +356,6 @@ namespace Gordon360.Services.RecIM
             };
             await _context.MatchTeam.AddAsync(matchTeam);
         }
-        public async Task<MatchParticipantViewModel> AddParticipantAttendanceAsync(string username, int matchID)
-        {
-            var matchParticipant = new MatchParticipant
-            {
-                ParticipantUsername = username,
-                MatchID = matchID
-            };
-            await _context.MatchParticipant.AddAsync(matchParticipant);
-            await _context.SaveChangesAsync();
-            return matchParticipant;
-        }
         public async Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel vm)
         {
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);

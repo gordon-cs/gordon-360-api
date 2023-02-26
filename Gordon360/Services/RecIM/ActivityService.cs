@@ -209,6 +209,12 @@ namespace Gordon360.Services.RecIM
             int numTeams = _context.Team.Where(t => t.ActivityID == activityID).Count();
             return numTeams >= capacity;
         }
+
+        public bool ActivityRegistrationClosed(int activityID)
+        {
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
+            return (activity.RegistrationStart < DateTime.Now) && (activity.RegistrationEnd > DateTime.Now);
+        }
     }
 }
 
