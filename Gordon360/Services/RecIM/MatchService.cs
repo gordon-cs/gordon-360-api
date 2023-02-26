@@ -193,46 +193,7 @@ namespace Gordon360.Services.RecIM
                                                 .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
                                                 .Description
                                     }),
-                                MatchHistory = _context.Match
-                                    .Where(mh => mh.StatusID == 6)
-                                        .Join(_context.MatchTeam
-                                            .Where(matchteam => matchteam.TeamID == mt.TeamID)
-                                            .Join(
-                                                _context.MatchTeam.Where(matchteam => matchteam.TeamID != mt.TeamID),
-                                                mt0 => mt0.MatchID,
-                                                mt1 => mt1.MatchID,
-                                                (mt0, mt1) => new
-                                                {
-                                                    TeamID = mt0.TeamID,
-                                                    MatchID = mt0.MatchID,
-                                                    Score = mt0.Score,
-                                                    OpposingID = mt1.TeamID,
-                                                    OpposingTeamScore = mt1.Score,
-                                                    Status = mt0.Score > mt1.Score
-                                                            ? "Win"
-                                                            : mt0.Score < mt1.Score
-                                                                ? "Lose"
-                                                                : "Tie"
-                                                }),
-                                        match => match.ID,
-                                        matchTeamJoin => matchTeamJoin.MatchID,
-                                        (match, matchTeamJoin) => new TeamMatchHistoryViewModel
-                                        {
-                                            TeamID = matchTeamJoin.TeamID,
-                                            MatchID = match.ID,
-                                            Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
-                                                .Select(o => new TeamExtendedViewModel
-                                                {
-                                                    ID = o.ID,
-                                                    Name = o.Name,
-                                                    Logo = o.Logo
-                                                }).FirstOrDefault(),
-                                            TeamScore = matchTeamJoin.Score,
-                                            OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
-                                            Status = matchTeamJoin.Status,
-                                            MatchStatusID = match.StatusID,
-                                            Time = match.Time
-                                        })
+                                MatchHistory = GetMatchHistoryByTeamID(mt.TeamID)
                                     .OrderByDescending(mh => mh.Time)
                                     .Take(5),
                                 TeamRecord = _context.SeriesTeam
@@ -290,7 +251,7 @@ namespace Gordon360.Services.RecIM
                                     Status = matchTeamJoin.Status,
                                     MatchStatusID = match.StatusID,
                                     Time = match.Time
-                                }).AsEnumerable();
+                                }).ToList();
             return vm;
         }
         public IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID)
@@ -395,13 +356,14 @@ namespace Gordon360.Services.RecIM
         {
             //delete matchteam
             var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == matchID);
-            _context.MatchTeam.RemoveRange(matchteam);
+            foreach (var mt in matchteam)
+                mt.StatusID = 0;
             //delete matchparticipant
             var matchparticipant = _context.MatchParticipant.Where(mp => mp.MatchID == matchID);
             _context.MatchParticipant.RemoveRange(matchparticipant);
             //deletematch
             var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
-            _context.Match.Remove(match);
+            match.StatusID = 0;
 
             await _context.SaveChangesAsync();
         }

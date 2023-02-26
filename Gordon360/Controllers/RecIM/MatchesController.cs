@@ -120,7 +120,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> DeleteMatchCascade(int matchID)
         {
             await _matchService.DeleteMatchCascadeAsync(matchID);
-            return Ok();
+            return NoContent();
         }
 
 

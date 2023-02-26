@@ -907,6 +907,13 @@
             <param name="participant">Default Role Value value 3 (Member)</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeam(System.Int32)">
+            <summary>
+            Removes team and all participants in the team
+            </summary>
+            <param name="teamID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeamParticipant(System.Int32,System.String)">
             <summary>
             Removes specified user from a team
@@ -935,9 +942,9 @@
             </summary>
             <param name="teamID"></param>
             <param name="username"></param>
-            <returns>The accepted TeamInviteViewModel</returns>
+            <returns>number of games a participant has attended for a team</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AcceptTeamInvite(System.Int32,System.String)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.HandleTeamInvite(System.Int32,System.String)">
             <summary>
             Accept one specified team invite and true delete others from the same activity if there's any
             </summary>
