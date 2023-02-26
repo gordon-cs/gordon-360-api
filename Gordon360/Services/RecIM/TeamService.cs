@@ -353,7 +353,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteTeam(int teamID)
+        public async Task DeleteTeamCascadeAsync(int teamID)
         {
             var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
             team.StatusID = 0;

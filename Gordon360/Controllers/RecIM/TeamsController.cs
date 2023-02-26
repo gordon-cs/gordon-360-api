@@ -178,7 +178,7 @@ namespace Gordon360.Controllers.RecIM
             if (participantTeam.RoleTypeID != 5 || !_participantService.IsAdmin(username))
                 return Forbid($"You are not permitted to delete this team");
 
-            await _teamService.DeleteTeam(teamID);
+            await _teamService.DeleteTeamCascadeAsync(teamID);
             return NoContent();
         }
 

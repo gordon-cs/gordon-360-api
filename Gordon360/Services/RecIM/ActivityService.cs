@@ -14,11 +14,13 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly ISeriesService _seriesService;
+        private readonly ITeamService _teamService;
 
-        public ActivityService(CCTContext context, ISeriesService seriesService)
+        public ActivityService(CCTContext context, ISeriesService seriesService, ITeamService teamService)
         {
             _context = context;
             _seriesService = seriesService;
+            _teamService = teamService;
         }
 
         public IEnumerable<LookupViewModel> GetActivityLookup(string type)
@@ -218,7 +220,24 @@ namespace Gordon360.Services.RecIM
 
         public async Task DeleteActivityCascade(int activityID)
         {
+            //delete participant involvement
+            var participantActivity = _context.ParticipantActivity.Where(pa => pa.ActivityID == activityID);
+            foreach (var pa in participantActivity)
+                pa.PrivTypeID = 0;
 
+            // delete teams
+            var activityTeams = _context.Team.Where(t => t.ActivityID == activityID).Select(t => t.ID);
+            foreach (var id in activityTeams)
+                await _teamService.DeleteTeamCascadeAsync(id);
+
+            // delete series
+            var seriesIDs = _context.Series.Where(s => s.ActivityID == activityID).Select(s => s.ID);
+            foreach (var id in seriesIDs)
+                await _seriesService.DeleteSeriesCascadeAsync(id);
+
+            //delete activity
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
+            activity.StatusID = 0;
             await _context.SaveChangesAsync();
         }
     }

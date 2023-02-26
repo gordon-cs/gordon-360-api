@@ -83,7 +83,7 @@ namespace Gordon360.Authorization
             _matchService = new MatchService(_CCTContext, _accountService);
             _teamService = new TeamService(_CCTContext, _config, _participantService, _matchService, _accountService);
             _seriesService = new SeriesService(_CCTContext, _matchService);
-            _activityService = new Services.RecIM.ActivityService(_CCTContext, _seriesService);
+            _activityService = new Services.RecIM.ActivityService(_CCTContext, _seriesService, _teamService);
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
