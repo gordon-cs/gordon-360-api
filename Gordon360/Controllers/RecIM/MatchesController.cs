@@ -20,11 +20,13 @@ namespace Gordon360.Controllers.RecIM
     {
         private readonly IMatchService _matchService;
         private readonly ITeamService _teamService;
+        private readonly IRecIMService _recIMService;
 
-        public MatchesController(IMatchService matchService, ITeamService teamService)
+        public MatchesController(IMatchService matchService, ITeamService teamService, IRecIMService recIMService)
         {
             _matchService = matchService;
             _teamService = teamService;
+            _recIMService = recIMService;
         }
 
         /// <summary>
@@ -119,7 +121,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{matchID}")]
         public async Task<ActionResult> DeleteMatchCascade(int matchID)
         {
-            await _matchService.DeleteMatchCascadeAsync(matchID);
+            await _recIMService.DeleteMatchCascadeAsync(matchID);
             return NoContent();
         }
 

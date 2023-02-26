@@ -19,10 +19,11 @@ namespace Gordon360.Controllers.RecIM
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
-
-        public ActivitiesController(IActivityService activityService)
+        private readonly IRecIMService _recIMService;
+        public ActivitiesController(IActivityService activityService, IRecIMService recIMService)
         {
             _activityService = activityService;
+            _recIMService = recIMService;
         }
 
         ///<summary>Gets a list of all Activities by parameter </summary>
@@ -108,7 +109,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{activityID}")]
         public async Task<ActionResult> DeleteActivityCascade(int activityID)
         {
-            await _activityService.DeleteActivityCascade(activityID);
+            await _recIMService.DeleteActivityCascade(activityID);
             return NoContent();
         }
     }

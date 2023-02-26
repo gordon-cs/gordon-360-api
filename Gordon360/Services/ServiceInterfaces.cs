@@ -304,6 +304,13 @@ namespace Gordon360.Services
 
     namespace RecIM
     {
+        public interface IRecIMService
+        {
+            Task DeleteActivityCascade(int activityID);
+            Task DeleteSeriesCascadeAsync(int seriesID);
+            Task DeleteMatchCascadeAsync(int matchID);
+            Task DeleteTeamCascadeAsync(int teamID);
+        }
         public interface IActivityService
         {
             IEnumerable<LookupViewModel> GetActivityLookup(string type);

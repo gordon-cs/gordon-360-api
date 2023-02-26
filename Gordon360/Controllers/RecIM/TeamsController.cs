@@ -24,12 +24,14 @@ namespace Gordon360.Controllers.RecIM
         private readonly ITeamService _teamService;
         private readonly IActivityService _activityService;
         private readonly IParticipantService _participantService;
+        private readonly IRecIMService _recIMService;
 
-        public TeamsController(ITeamService teamService, IActivityService activityService, IParticipantService participantService)
+        public TeamsController(ITeamService teamService, IActivityService activityService, IParticipantService participantService, IRecIMService recIMService)
         {
             _teamService = teamService;
             _activityService = activityService;
             _participantService = participantService;
+            _recIMService = recIMService;
         }
 
         ///<summary>
@@ -178,7 +180,7 @@ namespace Gordon360.Controllers.RecIM
             if (participantTeam.RoleTypeID != 5 || !_participantService.IsAdmin(username))
                 return Forbid($"You are not permitted to delete this team");
 
-            await _teamService.DeleteTeamCascadeAsync(teamID);
+            await _recIMService.DeleteTeamCascadeAsync(teamID);
             return NoContent();
         }
 

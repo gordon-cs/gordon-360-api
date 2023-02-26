@@ -20,10 +20,12 @@ namespace Gordon360.Controllers.RecIM
     public class SeriesController : GordonControllerBase
     {
         private readonly ISeriesService _seriesService;
+        private readonly IRecIMService _recIMService;
 
-        public SeriesController(ISeriesService seriesService)
+        public SeriesController(ISeriesService seriesService, IRecIMService recIMService)
         {
             _seriesService = seriesService;
+            _recIMService = recIMService;
         }
 
         /// <summary>
@@ -118,7 +120,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{seriesID}")]
         public async Task<ActionResult> DeleteSeriesCascade(int seriesID)
         {
-            await _seriesService.DeleteSeriesCascadeAsync(seriesID);
+            await _recIMService.DeleteSeriesCascadeAsync(seriesID);
             return NoContent();
         }
 
