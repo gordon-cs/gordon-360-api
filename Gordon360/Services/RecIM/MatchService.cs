@@ -24,7 +24,7 @@ namespace Gordon360.Services.RecIM
 
         public MatchViewModel GetSimpleMatchViewByID(int matchID)
         {
-            var res = _context.Match.FirstOrDefault(m => m.ID == matchID);
+            var res = _context.Match.FirstOrDefault(m => m.ID == matchID && m.StatusID != 0);
             return res;
         }
 
@@ -88,7 +88,7 @@ namespace Gordon360.Services.RecIM
                 .FirstOrDefault();
 
             var match = _context.MatchTeam
-                .Where(mt => mt.MatchID == matchID)
+                .Where(mt => mt.MatchID == matchID && mt.StatusID != 0)
                 .Select(mt => new MatchExtendedViewModel
                 {
                     ID = mt.MatchID,
@@ -129,7 +129,7 @@ namespace Gordon360.Services.RecIM
         public MatchExtendedViewModel GetMatchByID(int matchID)
         {
             var match = _context.Match
-                        .Where(m => m.ID == matchID)
+                        .Where(m => m.ID == matchID && m.StatusID != 0)
                         .Select(m => new MatchExtendedViewModel
                         {
                             ID = matchID,
@@ -212,7 +212,7 @@ namespace Gordon360.Services.RecIM
         {
             var vm = _context.Match
                             .Join(_context.MatchTeam
-                                .Where(mt => mt.TeamID == teamID)
+                                .Where(mt => mt.TeamID == teamID && mt.StatusID != 0)
 
                                     .Join(
                                         _context.MatchTeam.Where(mt => mt.TeamID != teamID),
@@ -257,7 +257,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID)
         {
             var match = _context.Match
-                        .Where(m => m.SeriesID == seriesID)
+                        .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
                         .Select(m => new MatchExtendedViewModel
                         {
                             ID = m.ID,
