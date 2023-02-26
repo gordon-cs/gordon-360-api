@@ -15,13 +15,11 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly ISeriesService _seriesService;
-        private readonly ITeamService _teamService;
 
-        public ActivityService(CCTContext context, ISeriesService seriesService, ITeamService teamService)
+        public ActivityService(CCTContext context, ISeriesService seriesService)
         {
             _context = context;
             _seriesService = seriesService;
-            _teamService = teamService;
         }
 
         public IEnumerable<LookupViewModel> GetActivityLookup(string type)
