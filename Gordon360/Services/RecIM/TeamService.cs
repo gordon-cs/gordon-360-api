@@ -423,12 +423,10 @@ namespace Gordon360.Services.RecIM
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);
             await _context.SaveChangesAsync();
-            /* DOES NOT WORK IN PRODUCTION? COMMENTING TEMPORARILY WHILE FIX IN PROGRESS (Config related issue)
             if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
                 await SendInviteEmail(teamID, participant.Username, inviterUsername);
             }
-            */
             return participantTeam;
         }
 
@@ -463,6 +461,49 @@ namespace Gordon360.Services.RecIM
                             || t.RoleTypeID == 4    // RoleType: 4 => co-captain
                         )
             );
+        }
+
+        public int GetTeamActivityID(int teamID)
+        {
+            return _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
+        }
+
+        public int NumberOfGamesParticipatedByParticipant(int teamID, string username)
+        {
+            return _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == username);
+        }
+
+        public async Task<IEnumerable<Individual>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance)
+        {
+            var res = new List<Individual>();
+            int teamID = attendance.TeamID;
+            var attendees = new List<String>();
+            foreach (Individual attendee in attendance.Attendance)
+                attendees.Add(attendee.Username);
+
+
+            var attendanceToRemove = _context.MatchParticipant.Where(mp => mp.MatchID == matchID && mp.TeamID == teamID
+                && !attendees.Any(name => mp.ParticipantUsername == name));
+            _context.MatchParticipant.RemoveRange(attendanceToRemove);
+
+            var existingAttendance = _context.MatchParticipant.Where(mp => mp.MatchID == matchID && mp.TeamID == teamID 
+                && attendees.Any(name => mp.ParticipantUsername == name));
+
+            var attendanceToAdd = attendees.Where(name => !existingAttendance.Any(ea => ea.ParticipantUsername == name));
+            foreach (string username in attendanceToAdd)
+            {
+                var created = new MatchParticipant
+                {
+                    MatchID = matchID,
+                    ParticipantUsername = username,
+                    TeamID = teamID
+                };
+                await _context.MatchParticipant.AddAsync(created);
+                res.Add(created);
+       
+            }
+            await _context.SaveChangesAsync();
+            return (res);
         }
     }
 }

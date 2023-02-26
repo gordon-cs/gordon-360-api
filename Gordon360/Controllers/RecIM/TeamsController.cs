@@ -90,20 +90,21 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
         {
-            var activity = _teamService.GetTeamByID(newTeam.ActivityID);
+            var activity = _activityService.GetActivityByID(newTeam.ActivityID);
             if (activity is null)
                 return UnprocessableEntity($"This activity does not exist");
             if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
                 return UnprocessableEntity($"The activity has reached the maximum team capacity");
             if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
                 return UnprocessableEntity($"Team name {newTeam.Name} has already been taken by another team in this activity");
-           //redudant check for API as countermeasure against postman navigation around UI check
-            if (_teamService.HasUserJoined(newTeam.ActivityID, username))
+           //redudant check for API as countermeasure against postman navigation around UI check, admins can make any number of teams
+            if (_teamService.HasUserJoined(newTeam.ActivityID, username) && !_participantService.IsAdmin(username))
                 return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
-
+            if(_activityService.ActivityRegistrationClosed(newTeam.ActivityID) && !_participantService.IsAdmin(username))
+                return UnprocessableEntity("Activity Registration has closed.");
             if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
                 return UnprocessableEntity("Activity capacity has been reached. Try again later.");
-         
+
             try
             {
                 var team = await _teamService.PostTeamAsync(newTeam, username);
@@ -134,10 +135,16 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
             var inviterUsername = AuthUtils.GetUsername(User);
-            var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
-            return CreatedAtAction("AddParticipantToTeam", participantTeam);
+            var activityID = _teamService.GetTeamActivityID(teamID);
+            if (!_teamService.HasUserJoined(activityID, participant.Username) || _participantService.IsAdmin(inviterUsername))
+            {
+                var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
+                return CreatedAtAction("AddParticipantToTeam", participantTeam);
+            }
+            else
+                return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
         }
-        
+
         /// <summary>
         /// Updates Participant role in a team
         /// </summary>
@@ -149,15 +156,11 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateParticipantTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
-            if (!_teamService.HasUserJoined(activityID, participant.Username))
-            {
+            
                 participant.RoleTypeID = participant.RoleTypeID ?? 3;
                 var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant);
                 return CreatedAtAction("AddParticipantToTeam", participantTeam);
-            }
-            else
-                return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
+            
         }
 
         /// <summary>
@@ -225,14 +228,27 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
+        /// Gets number of games a participant has participated in for a team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <param name="username"></param>
+        /// <returns>number of games a participant has attended for a team</returns>
+        [HttpGet]
+        [Route("{teamID}/attendance")]
+        public async Task<ActionResult<int>> NumberOfGamesParticipatedByParticipant(int teamID, [FromBody] string username)
+        {
+            var res = _teamService.NumberOfGamesParticipatedByParticipant(teamID, username);
+            return Ok(res);
+        }
+        /// <summary>
         /// Accept one specified team invite and true delete others from the same activity if there's any
         /// </summary>
         /// <param name="teamID"></param>
         /// <param name="response"></param>
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
-        [Route("{teamID}/invite")]
-        public async Task<ActionResult<ParticipantTeamViewModel?>> AcceptTeamInvite(int teamID, TeamInviteResponseViewModel response)
+        [Route("{teamID}/invite/status")]
+        public async Task<ActionResult<ParticipantTeamViewModel?>> AcceptTeamInvite(int teamID, [FromBody]string response)
         {
             var username = AuthUtils.GetUsername(User);
             try
@@ -243,7 +259,7 @@ namespace Gordon360.Controllers.RecIM
                 if (username != invite.ParticipantUsername)
                     return Forbid($"You are not permitted to accept invitations for another participant.");
 
-                switch (response.Response)
+                switch (response)
                 {
                     case "accepted":
                         var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,

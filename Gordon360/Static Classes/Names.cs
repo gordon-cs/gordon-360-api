@@ -1,4 +1,6 @@
-﻿namespace Gordon360.Static.Names
+﻿using System;
+
+namespace Gordon360.Static.Names
 {
     public static class Resource
     {
@@ -23,6 +25,7 @@
         public const string Save_Rides = "A ride resource";
         public const string SCHEDULE = "A course schedule resource";
         public const string NEWS = "A student news resource";
+        public const string NEWS_APPROVAL = "The approval of a student news resource";
         public const string CHECKIN = "Info relating to a student's Academic Check-In";
         public const string SHIFT = "A shift that a student has worked";
         public const string CLIFTON_STRENGTHS = "A student's uploaded clifton strengthsfinder results";
@@ -35,8 +38,9 @@
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
         public const string MEMBERSHIP_REQUEST_BY_STUDENT = "Membership Request Resources associated with a student";
+        [Obsolete("Unused once obsolete routes are removed")]
         public const string MEMBERSHIP_BY_ACTIVITY = "Membership Resources associated with an activity";
-        public const string MEMBERSHIP_BY_STUDENT = "Membership Resources associated with a student";
+        public const string MEMBERSHIP_BY_ACCOUNT = "Membership Resources associated with a student";
         public const string EMAILS_BY_ACTIVITY = "Emails for activity members";
         public const string EMAILS_BY_LEADERS = "Emails for activity leaders";
         public const string EMAILS_BY_GROUP_ADMIN = "Emails for group admin";
@@ -59,10 +63,6 @@
         public const string ADD = "Creating a resource";
         public const string UPDATE = "Updating a resource";
         public const string DELETE = "Deleting a resource";
-
-        // Should only be used for a resource of type Membership Request
-        public const string DENY_ALLOW = "Denying or allowing a request";
-
     }
 
 

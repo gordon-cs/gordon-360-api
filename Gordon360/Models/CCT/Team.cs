@@ -13,6 +13,7 @@ namespace Gordon360.Models.CCT
     {
         public Team()
         {
+            MatchParticipant = new HashSet<MatchParticipant>();
             MatchTeam = new HashSet<MatchTeam>();
             ParticipantTeam = new HashSet<ParticipantTeam>();
             SeriesTeam = new HashSet<SeriesTeam>();
@@ -36,6 +37,8 @@ namespace Gordon360.Models.CCT
         [ForeignKey("StatusID")]
         [InverseProperty("Team")]
         public virtual TeamStatus Status { get; set; }
+        [InverseProperty("Team")]
+        public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }
         [InverseProperty("Team")]
         public virtual ICollection<MatchTeam> MatchTeam { get; set; }
         [InverseProperty("Team")]

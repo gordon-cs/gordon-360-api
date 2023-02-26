@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Gordon360.Models.CCT;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
@@ -34,13 +35,8 @@ namespace Gordon360.Services
          * state parameter fetches only confirmed events
          */
         private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
-        private IEnumerable<EventViewModel> Events => _cache.GetOrCreate(CacheKeys.Events, (entry) =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-            var task = Task.Run(FetchEventsAsync);
-
-            return task.GetAwaiter().GetResult();
-        });
+        
+        private IEnumerable<EventViewModel> Events => _cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events);
 
         public EventService(CCTContext context, IMemoryCache cache, IAccountService accountService)
         {
@@ -87,24 +83,25 @@ namespace Gordon360.Services
         {
             var account = _accountService.GetAccountByUsername(username);
 
-            var result = _context.ChapelEvent.Where(c => c.CHBarcode == account.Barcode && c.CHTermCD == term);
+            var result = _context.ChapelEvent
+                                 .Where(c => c.CHBarcode == account.Barcode && c.CHTermCD == term)
+                                 .Select<ChapelEvent, ChapelEventViewModel>(c => c);
 
             if (result is not IEnumerable<ChapelEventViewModel> chapelEvents)
             {
                 return Enumerable.Empty<AttendedEventViewModel>();
             }
 
-            return chapelEvents
-                .Join(
-                    Events,
-                    c => c.LiveID,
-                    e => e.Event_ID,
-                    (c, e) => new AttendedEventViewModel(e, c)
-                );
+            // Left join to 25Live Events for extra event data when matching 25Live event is found
+            var attendedEvents = from chapelEvent in chapelEvents
+                           join event25Live in Events on chapelEvent.LiveID equals event25Live.Event_ID?.Split('_')?.FirstOrDefault() into liveEvents
+                           from liveEvent in liveEvents.DefaultIfEmpty()
+                           select new AttendedEventViewModel(liveEvent, chapelEvent);
+
+            return attendedEvents;
         }
 
-
-        private static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
+        public static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
@@ -133,7 +130,7 @@ namespace Gordon360.Services
         ///  Helper function to determine the current academic year
         /// </summary>
         /// <returns></returns>
-        public static string GetFirstEventDate()
+        private static string GetFirstEventDate()
         {
             //Beginning date of fall semester (MM/DD)
             var fallDate = "0815";

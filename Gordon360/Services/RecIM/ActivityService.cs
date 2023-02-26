@@ -147,7 +147,6 @@ namespace Gordon360.Services.RecIM
             activity.StatusID = updatedActivity.StatusID ?? activity.StatusID;
             activity.MinCapacity = updatedActivity.MinCapacity ?? activity.MinCapacity;
             activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
-            activity.MaxCapacity = updatedActivity.MaxCapacity ?? activity.MaxCapacity;
             activity.SoloRegistration = updatedActivity.SoloRegistration ?? activity.SoloRegistration;
             activity.Completed = updatedActivity.Completed ?? activity.Completed;
             activity.TypeID = updatedActivity.TypeID ?? activity.TypeID;
@@ -209,6 +208,12 @@ namespace Gordon360.Services.RecIM
             int capacity = _context.Activity.FirstOrDefault(a => a.ID == activityID)?.MaxCapacity ?? Int32.MaxValue;
             int numTeams = _context.Team.Where(t => t.ActivityID == activityID).Count();
             return numTeams >= capacity;
+        }
+
+        public bool ActivityRegistrationClosed(int activityID)
+        {
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
+            return (activity.RegistrationStart < DateTime.Now) && (activity.RegistrationEnd > DateTime.Now);
         }
     }
 }
