@@ -729,6 +729,13 @@
             <param name="updatedActivity"> Updated Activity Object </param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.DeleteActivityCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given ActivityID
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches(System.Nullable{System.DateTime},System.Boolean)">
             <summary>
             Not implemented (yet) might be removed

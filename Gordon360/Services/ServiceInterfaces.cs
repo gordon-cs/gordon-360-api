@@ -316,6 +316,7 @@ namespace Gordon360.Services
             bool IsReferee(string username, int activityID);
             bool ActivityTeamCapacityReached(int activityID);
             bool ActivityRegistrationClosed(int activityID);
+            Task DeleteActivityCascade(int activityID);
         }
         public interface ISeriesService
         {

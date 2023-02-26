@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services.RecIM
 {
@@ -214,6 +214,12 @@ namespace Gordon360.Services.RecIM
         {
             var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
             return (activity.RegistrationStart < DateTime.Now) && (activity.RegistrationEnd > DateTime.Now);
+        }
+
+        public async Task DeleteActivityCascade(int activityID)
+        {
+
+            await _context.SaveChangesAsync();
         }
     }
 }
