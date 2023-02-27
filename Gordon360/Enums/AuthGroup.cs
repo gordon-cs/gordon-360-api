@@ -2,6 +2,7 @@
 {
     public enum AuthGroup
     {
+        AcademicInfoView,
         Advisors,
         Alumni,
         FacStaff,
@@ -18,6 +19,7 @@
     {
         public static AuthGroup? FromString(string groupName) => groupName switch
         {
+            "360-AcademicInfoView-SG" => AuthGroup.AcademicInfoView,
             "360-Advisors-SG" => AuthGroup.Advisors,
             "360-Alumni-SG" => AuthGroup.Alumni,
             "360-FacStaff-SG" => AuthGroup.FacStaff,

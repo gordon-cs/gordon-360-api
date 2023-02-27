@@ -112,6 +112,7 @@ namespace Gordon360.Controllers
         /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADVISOR)]
         public async Task<ActionResult<IEnumerable<AdvisorViewModel>>> GetAdvisorsAsync(string username)
         {
             var advisors = await _profileService.GetAdvisorsAsync(username);
