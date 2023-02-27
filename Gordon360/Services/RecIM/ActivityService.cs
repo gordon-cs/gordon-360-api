@@ -225,7 +225,6 @@ namespace Gordon360.Services.RecIM
             var participantActivity = _context.ParticipantActivity.Where(pa => pa.ActivityID == activityID).ToList();
             foreach (var pa in participantActivity)
                 pa.PrivTypeID = 0;
-            await _context.SaveChangesAsync();
 
 
             // delete teams
