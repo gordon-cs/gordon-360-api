@@ -52,6 +52,12 @@ namespace Gordon360.Controllers.RecIM
             return Ok(result);
         }
 
+
+        /// <summary>
+        /// Returns all types/statuses of a series available for selection
+        /// </summary>
+        /// <param name="type">specific series type</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetSeriesTypes(string type)
@@ -63,6 +69,20 @@ namespace Gordon360.Controllers.RecIM
             }
             return BadRequest();
         }
+
+        /// <summary>
+        /// Returns 
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpGet]
+        [Route("{seriesID}/schedule")]
+        public ActionResult<IEnumerable<SeriesScheduleViewModel>> GetSeriesSchedule(int seriesID)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// Updates Series Information
