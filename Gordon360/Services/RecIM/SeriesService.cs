@@ -136,6 +136,8 @@ namespace Gordon360.Services.RecIM
             // activity will inherit new end date if series ends after activity ends, OR if activity end date is null
             if (activity.EndDate is null || activity.EndDate < newSeries.EndDate) activity.EndDate = newSeries.EndDate;
 
+            // inherit activity series schedule id if own scheduleID is null
+            var activityInheritiedSeriesScheduleID = activity.SeriesScheduleID ?? 0;
             var series = new Series
             {
                 Name = newSeries.Name,
@@ -144,7 +146,7 @@ namespace Gordon360.Services.RecIM
                 ActivityID = newSeries.ActivityID,
                 TypeID = newSeries.TypeID,
                 StatusID = 1, //default unconfirmed series
-                ScheduleID = newSeries.ScheduleID ?? 0 //updated when admin is ready to set up the schedule
+                ScheduleID = newSeries.ScheduleID ?? activityInheritiedSeriesScheduleID //updated when admin is ready to set up the schedule
             };
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();

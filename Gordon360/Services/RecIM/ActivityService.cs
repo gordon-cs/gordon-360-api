@@ -152,6 +152,7 @@ namespace Gordon360.Services.RecIM
             activity.TypeID = updatedActivity.TypeID ?? activity.TypeID;
             activity.StartDate = updatedActivity.StartDate ?? activity.StartDate;
             activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
+            activity.SeriesScheduleID = updatedActivity.SeriesScheduleID ?? activity.SeriesScheduleID;
 
             await _context.SaveChangesAsync();
             return activity;
@@ -172,7 +173,8 @@ namespace Gordon360.Services.RecIM
                 Completed = false, //default not completed
                 TypeID = a.TypeID,
                 StartDate = a.StartDate,
-                EndDate = a.EndDate
+                EndDate = a.EndDate,
+                SeriesScheduleID = a.SeriesScheduleID
             };
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();

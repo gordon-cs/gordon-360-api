@@ -13,6 +13,7 @@ namespace Gordon360.Models.CCT
     {
         public SeriesSchedule()
         {
+            Activity = new HashSet<Activity>();
             Series = new HashSet<Series>();
         }
 
@@ -31,6 +32,8 @@ namespace Gordon360.Models.CCT
         public DateTime EndTime { get; set; }
         public int? EstMatchTime { get; set; }
 
+        [InverseProperty("SeriesSchedule")]
+        public virtual ICollection<Activity> Activity { get; set; }
         [InverseProperty("Schedule")]
         public virtual ICollection<Series> Series { get; set; }
     }
