@@ -1,6 +1,8 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +79,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult<ParticipantExtendedViewModel>> UpdateParticipant(string username, [FromBody] bool isAdmin)
         {
             var participant = await _participantService.UpdateParticipantAsync(username,isAdmin);
@@ -95,6 +98,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/activities")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
         {
 

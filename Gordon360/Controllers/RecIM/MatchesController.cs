@@ -116,6 +116,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpDelete]
         [Route("{matchID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult> DeleteMatchCascade(int matchID)
         {
             await _matchService.DeleteMatchCascadeAsync(matchID);

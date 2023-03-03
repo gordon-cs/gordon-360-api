@@ -115,6 +115,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpDelete]
         [Route("{seriesID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult> DeleteSeriesCascade(int seriesID)
         {
             await _seriesService.DeleteSeriesCascadeAsync(seriesID);
