@@ -16,7 +16,6 @@ using System.Linq;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class SeriesController : GordonControllerBase
     {
         private readonly ISeriesService _seriesService;
