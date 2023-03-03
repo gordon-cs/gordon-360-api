@@ -709,7 +709,7 @@
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivityByID(System.Int32)">
             <summary>Gets a Activity object by ID number</summary>
-             <param name="activityID">League ID Number</param>
+             <param name="activityID">Activity ID Number</param>
              <returns>
              Activity object
              </returns>
@@ -935,7 +935,7 @@
             </summary>
             <param name="teamID"></param>
             <param name="username"></param>
-            <returns>The accepted TeamInviteViewModel</returns>
+            <returns>number of games a participant has attended for a team</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.AcceptTeamInvite(System.Int32,System.String)">
             <summary>
