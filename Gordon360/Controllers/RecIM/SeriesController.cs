@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.RecIM
 {
@@ -75,12 +76,13 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="seriesID"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         [HttpGet]
         [Route("{seriesID}/schedule")]
-        public ActionResult<IEnumerable<SeriesScheduleViewModel>> GetSeriesSchedule(int seriesID)
+        public ActionResult<SeriesScheduleViewModel> GetSeriesSchedule(int seriesID)
         {
-            throw new NotImplementedException();
+            var res = _seriesService.GetSeriesScheduleByID(seriesID);
+            if (res is null) return BadRequest();
+            return Ok(res);
         }
 
 

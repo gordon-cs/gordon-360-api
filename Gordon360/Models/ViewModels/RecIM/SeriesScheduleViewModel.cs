@@ -21,15 +21,15 @@ namespace Gordon360.Models.ViewModels.RecIM
             return new SeriesScheduleViewModel
             {
                 ID = s.ID,
-                AvailableDays = new Dictionary<string, bool>()
+                AvailableDays = new Dictionary<string, bool>
                     {
-                        { "Sunday",s.Sun },
-                        { "Monday",s.Mon },
-                        { "Tuesday",s.Tue },
-                        { "Wednesday",s.Wed },
-                        { "Thursday",s.Thu },
-                        { "Friday",s.Fri },
-                        { "Saturday",s.Sat },
+                        { "Sun",s.Sun },
+                        { "Mon",s.Mon },
+                        { "Tue",s.Tue },
+                        { "Wed",s.Wed },
+                        { "Thu",s.Thu },
+                        { "Fri",s.Fri },
+                        { "Sat",s.Sat },
                     },
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,

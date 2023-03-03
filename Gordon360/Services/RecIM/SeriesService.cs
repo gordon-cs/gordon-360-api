@@ -173,6 +173,12 @@ namespace Gordon360.Services.RecIM
             return series;
         }
 
+        public SeriesScheduleViewModel GetSeriesScheduleByID(int seriesID)
+        {
+            int scheduleID = _context.Series.FirstOrDefault(s => s.ID == seriesID)?.ScheduleID ?? 0;
+            return _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == scheduleID);
+        }
+
         public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
         {
             var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss =>
