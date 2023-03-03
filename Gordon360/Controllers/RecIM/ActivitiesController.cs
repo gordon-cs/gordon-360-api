@@ -46,7 +46,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         ///<summary>Gets a Activity object by ID number</summary>
-        /// <param name="activityID">League ID Number</param>
+        /// <param name="activityID">Activity ID Number</param>
         /// <returns>
         /// Activity object
         /// </returns>

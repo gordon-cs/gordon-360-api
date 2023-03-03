@@ -120,7 +120,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult> DeleteMatchCascade(int matchID)
         {
             await _matchService.DeleteMatchCascadeAsync(matchID);
-            return Ok();
+            return NoContent();
         }
 
 
@@ -133,7 +133,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPut]
         [Route("{matchID}/attendance")]
-       // [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<IEnumerable<Individual>>> AddParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
         {
             var attendance = await _teamService.AddParticipantAttendanceAsync(matchID, teamAttendanceList);
