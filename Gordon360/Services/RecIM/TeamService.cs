@@ -469,7 +469,7 @@ namespace Gordon360.Services.RecIM
             return _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
         }
 
-        public int NumberOfGamesParticipatedByParticipant(int teamID, string username)
+        public int ParticipantAttendanceCount(int teamID, string username)
         {
             return _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == username);
         }
