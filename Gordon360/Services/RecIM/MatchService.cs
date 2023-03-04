@@ -26,7 +26,7 @@ namespace Gordon360.Services.RecIM
             var res = _context.Match.Find(matchID);
             return res;
         }
-
+        // ID 0 is default deleted, we don't want to return the deleted status on lookup
         public IEnumerable<LookupViewModel> GetMatchLookup(string type)
         {
             switch (type)
@@ -99,15 +99,8 @@ namespace Gordon360.Services.RecIM
                             TeamScore = mt.Score
                         }).AsEnumerable(),
                     Time = mt.Match.Time,
-                    Status = _context.MatchStatus
-                        .FirstOrDefault(ms => ms.ID == _context.Match
-                            .FirstOrDefault(m => m.ID == mt.MatchID)
-                            .StatusID)
-                        .Description,
-                    Surface = _context.Surface
-                        .Find( _context.Match
-                            .Find(mt.MatchID).SurfaceID)
-                                        .Description,
+                    Status = mt.Match.Status.Description,
+                    Surface = mt.Match.Surface.Description,
                     Team = _context.MatchTeam
                         .Where(_mt => _mt.MatchID == mt.MatchID)
                         .Select(_mt => new TeamExtendedViewModel
@@ -200,7 +193,7 @@ namespace Gordon360.Services.RecIM
         {
             var vm = _context.Match
                             .Join(_context.MatchTeam
-                                .Where(mt => mt.TeamID == teamID && mt.StatusID != 0)
+                                .Where(mt => mt.TeamID == teamID && mt.StatusID != 0) // 0 = deleted
 
                                     .Join(
                                         _context.MatchTeam.Where(mt => mt.TeamID != teamID),
@@ -339,10 +332,10 @@ namespace Gordon360.Services.RecIM
             //delete matchteam
             var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == matchID);
             foreach (var mt in matchteam)
-                mt.StatusID = 0;
+                mt.StatusID = 0; //deleted status
             //deletematch
             var match = _context.Match.Find(matchID);
-            match.StatusID = 0;
+            match.StatusID = 0; //deleted status
 
             await _context.SaveChangesAsync();
         }
