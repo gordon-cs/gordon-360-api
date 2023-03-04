@@ -743,11 +743,14 @@ namespace Gordon360.Authorization
                     {
                         if (context.ActionArguments.TryGetValue("matchID", out object? matchID_Object) && matchID_Object is int matchID)
                         {
-                            var match = _matchService.GetSimpleMatchViewByID(matchID);
-                            var series = _seriesService.GetSeriesByID(match.SeriesID);
-                            return _activityService.IsReferee(user_name, series.ActivityID) || _participantService.IsAdmin(user_name);
+                            // if admin
+                            if (_participantService.IsAdmin(user_name)) return true;
+
+                            //if ref
+                            var activityID = _CCTContext.Match.Find(matchID).Series.ActivityID;
+                            return _activityService.IsReferee(user_name, activityID);
                         }
-                        return _participantService.IsAdmin(user_name);
+                        return false;
                     }
                 default: return false;
             }
