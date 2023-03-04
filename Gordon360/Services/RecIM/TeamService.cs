@@ -316,7 +316,7 @@ namespace Gordon360.Services.RecIM
             //if user is currently requested to join and have just accepted to join the team, user should have other instances of themselves removed from other teams
             if (participantTeam.RoleTypeID == 2 && roleID == 3)
             {
-                var activityID = _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
+                var activityID = _context.Team.Find(teamID).ActivityID;
                 var otherInstances = _context.ParticipantTeam
                     .Where(pt => pt.ID != participantTeam.ID && pt.ParticipantUsername == participantTeam.ParticipantUsername)
                     .Join(_context.Team.Where(t => t.ActivityID == activityID),
@@ -341,7 +341,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task DeleteTeamCascadeAsync(int teamID)
         {
-            var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
+            var team = _context.Team.Find(teamID);
             team.StatusID = 0;
             await _context.SaveChangesAsync();
         }
@@ -364,8 +364,7 @@ namespace Gordon360.Services.RecIM
 
         private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
         {
-            var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
-            var activity = _context.Activity.FirstOrDefault(a => a.ID == team.ActivityID);
+            var team = _context.Team.Find(teamID);
             var invitee = _accountService.GetAccountByUsername(inviteeUsername);
             var inviter = _accountService.GetAccountByUsername(inviterUsername);
 
@@ -373,8 +372,8 @@ namespace Gordon360.Services.RecIM
             string to_email = invitee.Email;
             string messageBody =
                  $"Hey {invitee.FirstName}!<br><br>" +
-                $"{inviter.FirstName} {inviter.LastName} has invited you join <b>{team.Name}</b> for <b>{activity.Name}</b> <br>" +
-                $"Registration closes on <i>{activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
+                $"{inviter.FirstName} {inviter.LastName} has invited you join <b>{team.Name}</b> for <b>{team.Activity.Name}</b> <br>" +
+                $"Registration closes on <i>{team.Activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
                 //$"check it out <a href='https://360.gordon.edu/recim'>here</a>! <br><br>" + //for production
                 $"check it out <a href='https://360recim.gordon.edu/recim'>here</a>! <br><br>" +//for development
                 $"Gordon Rec-IM";
@@ -431,7 +430,7 @@ namespace Gordon360.Services.RecIM
         {
             // get all the partipantTeam from the teams with the activityID
             var participantTeams = _context.Team.Where(t => t.ActivityID == activityID && t.StatusID != 0)
-                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2 && pt.RoleTypeID != 0),
+                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2 && pt.RoleTypeID != 0), // 3,4,5 are member,co-captain,captain respectively
                 t => t.ID,
                 pt => pt.TeamID,
                 (t, pt) => pt)
@@ -462,7 +461,7 @@ namespace Gordon360.Services.RecIM
 
         public int GetTeamActivityID(int teamID)
         {
-            return _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
+            return _context.Team.Find(teamID).ActivityID;
         }
 
         public int ParticipantAttendanceCount(int teamID, string username)
