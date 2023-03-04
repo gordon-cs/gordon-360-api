@@ -113,7 +113,7 @@ namespace Gordon360.Services.RecIM
                                                     .Score)
                                                     .Count(),
                                                 Tie = t.MatchTeam
-                                                    .Where(mt => mt.Match.StatusID == 6
+                                                    .Where(mt => mt.Match.StatusID == 6 //completed status
                                                     && mt.Score == _context.MatchTeam
                                                     .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
                                                     && opmt.TeamID != t.ID)
