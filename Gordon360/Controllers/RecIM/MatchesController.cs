@@ -134,7 +134,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("{matchID}/attendance")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<IEnumerable<Individual>>> AddParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
+        public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
         {
             var attendance = await _teamService.AddParticipantAttendanceAsync(matchID, teamAttendanceList);
             return CreatedAtAction("AddParticipantAttendance", attendance);

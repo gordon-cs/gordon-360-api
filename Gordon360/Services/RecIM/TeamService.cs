@@ -463,12 +463,12 @@ namespace Gordon360.Services.RecIM
             return _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == username);
         }
 
-        public async Task<IEnumerable<Individual>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance)
+        public async Task<IEnumerable<MatchAttendance>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance)
         {
-            var res = new List<Individual>();
+            var res = new List<MatchAttendance>();
             int teamID = attendance.TeamID;
             var attendees = new List<String>();
-            foreach (Individual attendee in attendance.Attendance)
+            foreach (MatchAttendance attendee in attendance.Attendance)
                 attendees.Add(attendee.Username);
 
 
