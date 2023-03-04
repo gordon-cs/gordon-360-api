@@ -54,11 +54,11 @@ namespace Gordon360.Authorization
         private IConfiguration _config;
 
         //RecIM services
-        private ParticipantService _participantService;
-        private Gordon360.Services.RecIM.ActivityService _activityService;
-        private SeriesService _seriesService;
-        private TeamService _teamService;
-        private MatchService _matchService;
+        private IParticipantService _participantService;
+        private Services.RecIM.IActivityService _activityService;
+        private ISeriesService _seriesService;
+        private ITeamService _teamService;
+        private IMatchService _matchService;
 
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
@@ -79,11 +79,11 @@ namespace Gordon360.Authorization
             _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
 
             // set RecIM services
-            _participantService = new ParticipantService(_CCTContext, _accountService);
-            _matchService = new MatchService(_CCTContext, _accountService);
-            _teamService = new TeamService(_CCTContext, _config, _participantService, _matchService, _accountService);
-            _seriesService = new SeriesService(_CCTContext, _matchService);
-            _activityService = new Services.RecIM.ActivityService(_CCTContext, _seriesService);
+            _participantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
+            _matchService = context.HttpContext.RequestServices.GetRequiredService<IMatchService>();
+            _teamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
+            _seriesService = context.HttpContext.RequestServices.GetRequiredService<ISeriesService>();
+            _activityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
