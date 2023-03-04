@@ -60,7 +60,7 @@ namespace Gordon360.Services.RecIM
         public double GetTeamSportsmanshipScore(int teamID)
         {
             var sportsmanshipScores = _context.Match
-                                    .Where(m => m.StatusID == 6)
+                                    .Where(m => m.StatusID == 6) // 6 is completed status
                                         .Join(_context.MatchTeam
                                             .Where(mt => mt.TeamID == teamID),
                                             m => m.ID,
