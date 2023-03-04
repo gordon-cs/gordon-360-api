@@ -805,6 +805,20 @@
             <param name="seriesID"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesTypes(System.String)">
+            <summary>
+            Returns all types/statuses of a series available for selection
+            </summary>
+            <param name="type">specific series type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesSchedule(System.Int32)">
+            <summary>
+            Returns 
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(System.Int32,Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
             <summary>
             Updates Series Information

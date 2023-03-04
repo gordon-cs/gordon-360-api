@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.RecIM
 {
@@ -51,6 +52,12 @@ namespace Gordon360.Controllers.RecIM
             return Ok(result);
         }
 
+
+        /// <summary>
+        /// Returns all types/statuses of a series available for selection
+        /// </summary>
+        /// <param name="type">specific series type</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetSeriesTypes(string type)
@@ -62,6 +69,21 @@ namespace Gordon360.Controllers.RecIM
             }
             return NotFound();
         }
+
+        /// <summary>
+        /// Returns 
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{seriesID}/schedule")]
+        public ActionResult<SeriesScheduleViewModel> GetSeriesSchedule(int seriesID)
+        {
+            var res = _seriesService.GetSeriesScheduleByID(seriesID);
+            if (res is null) return BadRequest();
+            return Ok(res);
+        }
+
 
         /// <summary>
         /// Updates Series Information
