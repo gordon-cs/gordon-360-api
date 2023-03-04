@@ -11,8 +11,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Email { get; set; }
         public string? Role { get; set; }
         public string Status { get; set; }
-        public IEnumerable<ParticipantNotificationExtendedViewModel> Notification { get; set; } 
-            = new List<ParticipantNotificationExtendedViewModel>();
+        public IEnumerable<ParticipantNotificationViewModel> Notification { get; set; } 
+            = new List<ParticipantNotificationViewModel>();
 
         public bool IsAdmin { get; set; }
 

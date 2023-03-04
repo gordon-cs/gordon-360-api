@@ -74,7 +74,7 @@ namespace Gordon360.Services.RecIM
                                     Notification = _context.ParticipantNotification
                                                     .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.Now)
                                                     .OrderByDescending(pn => pn.DispatchDate)
-                                                    .Select(pn => (ParticipantNotificationExtendedViewModel)pn)
+                                                    .Select(pn => (ParticipantNotificationViewModel)pn)
                                                     .AsEnumerable(),
                                     IsAdmin = p.IsAdmin
                                 })
