@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 using System.Globalization;
-using Microsoft.Graph;
-using Microsoft.AspNetCore.Server.IIS.Core;
 
 namespace Gordon360.Services.RecIM
 {
@@ -35,7 +33,7 @@ namespace Gordon360.Services.RecIM
         {
             if (type == "status")
             {
-                var res = _context.TeamStatus
+                var res = _context.TeamStatus.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
@@ -46,7 +44,7 @@ namespace Gordon360.Services.RecIM
             }
             if (type == "role")
             {
-                var res = _context.RoleType
+                var res = _context.RoleType.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
@@ -76,7 +74,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
         {
             var teamQuery = active 
-                ? _context.Team.Where(t => !t.Activity.Completed == active)
+                ? _context.Team.Where(t => !t.Activity.Completed == active && t.StatusID != 0)
                 : _context.Team;    
 
             var teams = teamQuery
@@ -89,7 +87,7 @@ namespace Gordon360.Services.RecIM
                                             .FirstOrDefault(ts => ts.ID == t.StatusID)
                                             .Description,
                     Logo = t.Logo,
-                    Participant = t.ParticipantTeam
+                    Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
                         .Select(pt => new ParticipantExtendedViewModel
                         {
                             Username = pt.ParticipantUsername,
@@ -144,7 +142,7 @@ namespace Gordon360.Services.RecIM
         public TeamExtendedViewModel GetTeamByID(int teamID)
         {
             var team = _context.Team
-                            .Where(t => t.ID == teamID)
+                            .Where(t => t.ID == teamID && t.StatusID != 0)
                             .Select(t => new TeamExtendedViewModel
                             {
                                 ID = teamID,
@@ -156,7 +154,7 @@ namespace Gordon360.Services.RecIM
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
                                             .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)),
-                                Participant = t.ParticipantTeam
+                                Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
                                                 .Select(pt => new ParticipantExtendedViewModel
                                                 {
                                                     Username = pt.ParticipantUsername,
@@ -165,7 +163,7 @@ namespace Gordon360.Services.RecIM
                                                                         .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
                                                                         .Description,
                                                 }),
-                                MatchHistory = _context.Match
+                                MatchHistory = _context.Match.Where(m => m.StatusID != 0)
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
 
@@ -351,7 +349,14 @@ namespace Gordon360.Services.RecIM
         public async Task DeleteParticipantTeamAsync(int teamID, string username)
         {
             var teamParticipant = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == username);
-            _context.ParticipantTeam.Remove(teamParticipant);
+            teamParticipant.RoleTypeID = 0;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteTeamCascadeAsync(int teamID)
+        {
+            var team = _context.Team.FirstOrDefault(t => t.ID == teamID);
+            team.StatusID = 0;
             await _context.SaveChangesAsync();
         }
 
@@ -434,8 +439,8 @@ namespace Gordon360.Services.RecIM
         public bool HasUserJoined(int activityID, string username)
         {
             // get all the partipantTeam from the teams with the activityID
-            var participantTeams = _context.Team.Where(t => t.ActivityID == activityID)
-                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2),
+            var participantTeams = _context.Team.Where(t => t.ActivityID == activityID && t.StatusID != 0)
+                .Join(_context.ParticipantTeam.Where(pt => pt.RoleTypeID % 6 > 2 && pt.RoleTypeID != 0),
                 t => t.ID,
                 pt => pt.TeamID,
                 (t, pt) => pt)
@@ -446,7 +451,7 @@ namespace Gordon360.Services.RecIM
 
         public bool HasTeamNameTaken(int activityID, string teamName)
         {
-            return _context.Team.Any(t =>
+            return _context.Team.Where(t => t.StatusID != 0).Any(t =>
                         t.ActivityID == activityID
                         && t.Name == teamName
             );

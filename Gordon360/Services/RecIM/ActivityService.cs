@@ -6,7 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -26,7 +27,7 @@ namespace Gordon360.Services.RecIM
             switch (type)
             {
                 case "status":
-                    return _context.ActivityStatus
+                    return _context.ActivityStatus.Where(query => query.ID != 0)
                                 .Select(s => new LookupViewModel
                                 {
                                     ID = s.ID,
@@ -34,7 +35,7 @@ namespace Gordon360.Services.RecIM
                                 })
                                 .AsEnumerable();
                 case "activity":
-                    return _context.ActivityType
+                    return _context.ActivityType.Where(query => query.ID != 0)
                                 .Select(a => new LookupViewModel
                                 {
                                     ID = a.ID,
@@ -48,7 +49,7 @@ namespace Gordon360.Services.RecIM
         }
         public IEnumerable<ActivityExtendedViewModel> GetActivities()
         {
-            var activities = _context.Activity
+            var activities = _context.Activity.Where(a => a.StatusID != 0)
                             .Select(a => new ActivityExtendedViewModel
                             {
                                 ID = a.ID,
@@ -66,7 +67,7 @@ namespace Gordon360.Services.RecIM
                                 SoloRegistration = a.SoloRegistration,
                                 Logo = a.Logo,
                                 Completed = a.Completed,
-                                Series = a.Series
+                                Series = a.Series.Where(s => s.StatusID !=0)
                                         .Select(s => new SeriesExtendedViewModel
                                         {
                                             ID = s.ID,
@@ -96,7 +97,7 @@ namespace Gordon360.Services.RecIM
         }
         public ActivityExtendedViewModel? GetActivityByID(int activityID)
         {
-            var activity = _context.Activity.Where(a => a.ID == activityID)
+            var activity = _context.Activity.Where(a => a.ID == activityID && a.StatusID != 0)
                             .Select(a => new ActivityExtendedViewModel
                             {
                                 ID = a.ID,
@@ -118,7 +119,7 @@ namespace Gordon360.Services.RecIM
                                 StartDate = a.StartDate,
                                 EndDate = a.EndDate,
                                 Series = _seriesService.GetSeriesByActivityID(a.ID),
-                                Team = a.Team.Select(t => new TeamExtendedViewModel
+                                Team = a.Team.Where(t => t.StatusID != 0).Select(t => new TeamExtendedViewModel
                                 {
                                     ID = t.ID,
                                     Name = t.Name,
@@ -138,7 +139,8 @@ namespace Gordon360.Services.RecIM
         }
         public async Task<ActivityViewModel> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var activity = await _context.Activity.FindAsync(activityID);
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID && a.StatusID != 0);
+            if (activity == null) return null;
             activity.Name = updatedActivity.Name ?? activity.Name;
             activity.Logo = updatedActivity.Logo ?? activity.Logo;
             activity.RegistrationStart = updatedActivity.RegistrationStart ?? activity.RegistrationStart;
@@ -197,7 +199,7 @@ namespace Gordon360.Services.RecIM
 
         public bool IsReferee(string username, int activityID)
         {
-            return _context.ParticipantActivity.Any(pa =>
+            return _context.ParticipantActivity.Where(pa => pa.PrivTypeID != 0).Any(pa =>
                 pa.ParticipantUsername == username 
                 && pa.ActivityID == activityID 
                 && pa.PrivTypeID == 2); // PrivType: 2 => Referee
@@ -205,6 +207,7 @@ namespace Gordon360.Services.RecIM
 
         public bool ActivityTeamCapacityReached(int activityID)
         {
+            if (_context.Activity.FirstOrDefault(a => a.ID == activityID).StatusID == 0) return true;
             int capacity = _context.Activity.FirstOrDefault(a => a.ID == activityID)?.MaxCapacity ?? Int32.MaxValue;
             int numTeams = _context.Team.Where(t => t.ActivityID == activityID).Count();
             return numTeams >= capacity;
@@ -214,6 +217,52 @@ namespace Gordon360.Services.RecIM
         {
             var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
             return (activity.RegistrationStart < DateTime.Now) && (activity.RegistrationEnd > DateTime.Now);
+        }
+
+        public async Task DeleteActivityCascade(int activityID)
+        {
+            //delete participant involvement
+            var participantActivity = _context.ParticipantActivity.Where(pa => pa.ActivityID == activityID).ToList();
+            foreach (var pa in participantActivity)
+                pa.PrivTypeID = 0;
+
+
+            // delete teams
+            var activityTeams = _context.Team.Where(t => t.ActivityID == activityID);
+            foreach (var team in activityTeams)
+            {
+                team.StatusID = 0;
+                var participantTeams = _context.ParticipantTeam.Where(pt => pt.TeamID == team.ID).ToList();
+                foreach (var participantTeam in participantTeams)
+                {
+                    participantTeam.RoleTypeID = 0;
+                }
+            }
+            
+            // delete series
+            var activitySeries = _context.Series.Where(s => s.ActivityID == activityID);
+            foreach (var series in activitySeries)
+            {
+                //delete matches
+                var matches = _context.Match.Where(m => m.SeriesID == series.ID).ToList();
+                foreach (var match in matches)
+                {
+                    //delete matchteam
+                    var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == match.ID);
+                    foreach (var mt in matchteam)
+                        mt.StatusID = 0;
+                    //deletematch
+                    match.StatusID = 0;
+
+                }
+                //delete series
+                series.StatusID = 0;
+            }
+
+            //delete activity
+            var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
+            activity.StatusID = 0;
+            await _context.SaveChangesAsync();
         }
     }
 }

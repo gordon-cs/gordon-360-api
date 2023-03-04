@@ -26,7 +26,7 @@ namespace Gordon360.Services.RecIM
         {
             if (type == "status")
             {
-                var res = _context.ParticipantStatus
+                var res = _context.ParticipantStatus.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,
@@ -37,7 +37,7 @@ namespace Gordon360.Services.RecIM
             }
             if (type == "activitypriv")
             {
-                var res = _context.PrivType
+                var res = _context.PrivType.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,
@@ -118,7 +118,7 @@ namespace Gordon360.Services.RecIM
             //to be handled by teamservice
             var teams = _context.ParticipantTeam
                             .Where(pt => pt.ParticipantUsername == username)
-                                .Join(_context.Team,
+                                .Join(_context.Team.Where(t => t.StatusID != 0),
                                     pt => pt.TeamID,
                                     t => t.ID,
                                     (pt, t) => new TeamExtendedViewModel

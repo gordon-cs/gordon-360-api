@@ -97,5 +97,18 @@ namespace Gordon360.Controllers.RecIM
             var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
             return CreatedAtAction("UpdateActivity", activity);
         }
+
+        /// <summary>
+        /// Cascade deletes all DBobjects related to given ActivityID
+        /// </summary>
+        /// <param name="activityID"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{activityID}")]
+        public async Task<ActionResult> DeleteActivityCascade(int activityID)
+        {
+            await _activityService.DeleteActivityCascade(activityID);
+            return NoContent();
+        }
     }
 }
