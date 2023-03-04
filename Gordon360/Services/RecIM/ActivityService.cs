@@ -174,7 +174,7 @@ namespace Gordon360.Services.RecIM
             return activity;
         }
 
-        public async Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent)
+        public async Task<ParticipantActivityViewModel> AddParticipantActivityInvolvementAsync(string username, int activityID, int privTypeID, bool isFreeAgent)
         {
             var participantActivity = new ParticipantActivity
             {
@@ -204,7 +204,8 @@ namespace Gordon360.Services.RecIM
             //if the activity is deleted, throw exception
             if (activity.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Activity has been deleted" };
 
-            int capacity = activity.MaxCapacity == 0 ? Int32.MaxValue : activity.MaxCapacity;
+            int? capacity = activity?.MaxCapacity;
+            if (capacity is null) return false;
             int numTeams = activity.Team.Count();
             return numTeams >= capacity;
         }

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Gordon360.Controllers.RecIM
 {
@@ -80,7 +81,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ActivityViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
         {
             var activity = await _activityService.PostActivityAsync(newActivity);
-            return CreatedAtAction("CreateActivity", activity);
+            return CreatedAtAction(nameof(GetActivityByID), new { activityID = activity.ID }, activity);
         }
 
         /// <summary>
