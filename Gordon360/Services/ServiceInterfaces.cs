@@ -357,7 +357,6 @@ namespace Gordon360.Services
         public interface IParticipantService
         {
             IEnumerable<LookupViewModel> GetParticipantLookup(string type);
-            ACCOUNT GetAccountByParticipantID(int ID);
             IEnumerable<ParticipantExtendedViewModel> GetParticipants();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
             ParticipantExtendedViewModel GetParticipantByUsername(string username);

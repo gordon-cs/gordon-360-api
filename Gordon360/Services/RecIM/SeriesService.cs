@@ -298,10 +298,16 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        // Scheduler does not currently handle overlaps
-        // eventually:
-        // - ensure that matches that occur within 1 hour do not share the same surface
-        //    unless they're in the same series
+
+
+        /// <summary>
+        /// Scheduler does not currently handle overlaps
+        /// eventually:
+        /// - ensure that matches that occur within 1 hour do not share the same surface
+        ///    unless they're in the same series
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <returns>Created Match objects</returns>
         public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID)
         {
             var series = _context.Series
@@ -311,23 +317,18 @@ namespace Gordon360.Services.RecIM
                     st.ID == series.TypeID
                 )?.TypeCode;
 
-            if (typeCode == "RR")
-            {
-                return await ScheduleRoundRobin(seriesID);
+            switch (typeCode){
+                case "RR":
+                    return await ScheduleRoundRobin(seriesID);
+                case "SE":
+                    return await ScheduleSingleElimination(seriesID);
+                case "DE":
+                    return await ScheduleDoubleElimination(seriesID);
+                case "L":
+                    return await ScheduleLadderAsync(seriesID);
+                default:
+                    return null;
             }
-            if (typeCode == "SE")
-            {
-                return await ScheduleSingleElimination(seriesID);
-            }
-            if (typeCode == "DE")
-            {
-                return await ScheduleDoubleElimination(seriesID);
-            }
-            if (typeCode == "L")
-            {
-                return await ScheduleLadderAsync(seriesID);
-            }
-            return null;
         }
         private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
         {

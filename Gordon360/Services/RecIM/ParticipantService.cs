@@ -48,11 +48,6 @@ namespace Gordon360.Services.RecIM
             }
             return null;
         }
-        public ACCOUNT GetAccountByParticipantID(int ID)
-        {
-            return _context.ACCOUNT
-                        .FirstOrDefault(a => a.gordon_id == $"{ID}");
-        }
         public ParticipantExtendedViewModel GetParticipantByUsername(string username)
         {
             var account = _accountService.GetAccountByUsername(username);
@@ -141,21 +136,13 @@ namespace Gordon360.Services.RecIM
             {
                 Username = p.Username,
                 Email = _accountService.GetAccountByUsername(p.Username).Email,
-                Status = _context.ParticipantStatusHistory
-                                                .Where(psh => psh.ParticipantUsername == p.Username)
-                                                .OrderByDescending(psh => psh.ID)
-                                                .Take(1)
-                                                    .Join(_context.ParticipantStatus,
-                                                        psh => psh.StatusID,
-                                                        ps => ps.ID,
-                                                        (psh, ps) => ps.Description)
-                                                .FirstOrDefault(),
+                Status = p.ParticipantStatusHistory.OrderByDescending(psh => psh.ID).FirstOrDefault().Status.Description,
                 IsAdmin = p.IsAdmin
             });
             return participants;
         }
 
-        public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4)
+        public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
         {
             await _context.Participant.AddAsync(new Participant
             {
@@ -175,10 +162,14 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool isAdmin)
         {
-            var participant = GetParticipantByUsername(username);
+            var participant = _context.Participant.Find(username);
             participant.IsAdmin = isAdmin;
             await _context.SaveChangesAsync();
-            return participant;
+            return new ParticipantExtendedViewModel
+            {
+                Username = participant.Username,
+                IsAdmin = participant.IsAdmin,
+            };
         }
         
         public async Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant)
