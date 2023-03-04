@@ -18,13 +18,12 @@ namespace Gordon360.Models.ViewModels.RecIM
 
         public static implicit operator ParticipantExtendedViewModel(ACCOUNT a)
         {
-            ParticipantExtendedViewModel vm = new ParticipantExtendedViewModel
+            return new ParticipantExtendedViewModel
             {
                 Username = a.AD_Username.Trim() ?? "",
                 Email = a.email ?? "", 
             };
 
-            return vm;
         }
 
     }

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Gordon360.Controllers.WellnessController;
 using static Gordon360.Services.MembershipService;
+using RecIMActivityViewModel = Gordon360.Models.ViewModels.RecIM.ActivityViewModel;
 
 // <summary>
 // Namespace with all the Service Interfaces that are to be implemented. I don't think making this interface is required, the services can work fine on their own.
@@ -307,11 +308,11 @@ namespace Gordon360.Services
         public interface IActivityService
         {
             IEnumerable<LookupViewModel>? GetActivityLookup(string type);
-            IEnumerable<Models.ViewModels.RecIM.ActivityExtendedViewModel> GetActivities();
-            Models.ViewModels.RecIM.ActivityExtendedViewModel? GetActivityByID(int activityID);
-            IEnumerable<Models.ViewModels.RecIM.ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time);
-            Task<Models.ViewModels.RecIM.ActivityViewModel> UpdateActivityAsync(int activytID, ActivityPatchViewModel updatedActivity);
-            Task<Models.ViewModels.RecIM.ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
+            IEnumerable<ActivityExtendedViewModel> GetActivities();
+            ActivityExtendedViewModel? GetActivityByID(int activityID);
+            IEnumerable<ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time);
+            Task<RecIMActivityViewModel> UpdateActivityAsync(int activytID, ActivityPatchViewModel updatedActivity);
+            Task<RecIMActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
             Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
             bool IsReferee(string username, int activityID);
             bool ActivityTeamCapacityReached(int activityID);

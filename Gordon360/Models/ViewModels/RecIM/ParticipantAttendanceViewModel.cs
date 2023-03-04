@@ -20,15 +20,13 @@ namespace Gordon360.Models.ViewModels.RecIM
 
         public static implicit operator Individual(MatchParticipant mp)
         {
-            Individual vm = new Individual
+            return new Individual
             {
                 ID = mp.ID,
                 MatchID = mp.MatchID,
                 Username = mp.ParticipantUsername,
                 TeamID = mp.TeamID,
             };
-
-            return vm;
         }
 
     }
