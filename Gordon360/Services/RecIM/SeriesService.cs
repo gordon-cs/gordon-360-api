@@ -224,7 +224,7 @@ namespace Gordon360.Services.RecIM
 
             if (seriesSchedule.SeriesID is not null)
             {
-                var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                var series = _context.Series.Find(seriesSchedule.SeriesID);
                 series.ScheduleID = schedule.ID;
             }
             await _context.SaveChangesAsync();
@@ -327,7 +327,7 @@ namespace Gordon360.Services.RecIM
         private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
         {
             var createdMatches = new List<MatchViewModel>();
-            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            var series = _context.Series.Find(seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.SeriesID == seriesID)
                 .Select(st => st.TeamID)
@@ -406,8 +406,7 @@ namespace Gordon360.Services.RecIM
             var teams = _context.SeriesTeam
                 .Where(st => st.ID == seriesID)
                 .Select(st => st.ID);
-            var series = _context.Series
-                .FirstOrDefault(s => s.ID == seriesID);
+            var series = _context.Series.Find(seriesID);
             var availableSurfaces = _context.SeriesSurface
                                         .Where(ss => ss.SeriesID == seriesID)?
                                         .ToArray();
@@ -440,9 +439,9 @@ namespace Gordon360.Services.RecIM
 
             SeriesScheduleViewModel schedule = _context.SeriesSchedule
                             .FirstOrDefault(ss => ss.ID ==
-                                _context.Series
-                                    .FirstOrDefault(s => s.ID == seriesID)
+                                _context.Series.Find(seriesID)
                                     .ScheduleID);
+
             var availableSurfaces = _context.SeriesSurface
                                         .Where(ss => ss.SeriesID == seriesID)
                                         .ToArray();
@@ -530,7 +529,7 @@ namespace Gordon360.Services.RecIM
             int numTeams = involvedTeams.Count();
             int remainingTeamCount = involvedTeams.Count();
             int numBuys = 0;
-            var series = _context.Series.FirstOrDefault(s => s.ID == involvedTeams.First().SeriesID);
+            var series = _context.Series.Find(involvedTeams.First().SeriesID);
 
             var teams = involvedTeams.Reverse();
 
