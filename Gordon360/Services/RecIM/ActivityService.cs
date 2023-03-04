@@ -216,7 +216,7 @@ namespace Gordon360.Services.RecIM
             return (activity.RegistrationStart < DateTime.Now) && (activity.RegistrationEnd > DateTime.Now);
         }
 
-        public async Task DeleteActivityCascade(int activityID)
+        public async Task<ActivityViewModel> DeleteActivityCascade(int activityID)
         {
             var activity = _context.Activity.Find(activityID);
             var participantActivity = activity.ParticipantActivity;
@@ -262,6 +262,7 @@ namespace Gordon360.Services.RecIM
             }
 
             await _context.SaveChangesAsync();
+            return activity;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Gordon360.Models.CCT
         public int SportID { get; set; }
         public int StatusID { get; set; }
         public int MinCapacity { get; set; }
-        public int MaxCapacity { get; set; }
+        public int? MaxCapacity { get; set; }
         public bool SoloRegistration { get; set; }
         public bool Completed { get; set; }
         public int TypeID { get; set; }

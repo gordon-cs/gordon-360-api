@@ -81,7 +81,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ActivityViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
         {
             var activity = await _activityService.PostActivityAsync(newActivity);
-            return CreatedAtAction(nameof(GetActivityByID), new { activityID = activity.ID }, activity);
+            return CreatedAtAction(nameof(CreateActivity), new { activityID = activity.ID }, activity);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ActivityViewModel>> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
-            return CreatedAtAction("UpdateActivity", activity);
+            return CreatedAtAction(nameof(UpdateActivity), new { activityID = activity.ID }, activity);
         }
 
         /// <summary>
@@ -109,8 +109,8 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_ACTIVITY)]
         public async Task<ActionResult> DeleteActivityCascade(int activityID)
         {
-            await _activityService.DeleteActivityCascade(activityID);
-            return NoContent();
+            var res = await _activityService.DeleteActivityCascade(activityID);
+            return Ok(res);
         }
     }
 }

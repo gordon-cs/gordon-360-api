@@ -151,6 +151,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="seriesID"></param>
         [HttpPost]
         [Route("{seriesID}/autoschedule")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatches(int seriesID)
         {
             var createdMatches = await _seriesService.ScheduleMatchesAsync(seriesID);
