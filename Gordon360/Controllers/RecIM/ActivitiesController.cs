@@ -105,6 +105,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpDelete]
         [Route("{activityID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_ACTIVITY)]
         public async Task<ActionResult> DeleteActivityCascade(int activityID)
         {
             await _activityService.DeleteActivityCascade(activityID);

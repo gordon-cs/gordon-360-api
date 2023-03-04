@@ -18,7 +18,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public bool SoloRegistration { get; set; }
         public string Logo { get; set; }
         public bool Completed { get; set; }
-        public int TypeID { get; set; }
+        public string Type { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? SeriesScheduleID { get; set; }
@@ -45,7 +45,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 SoloRegistration = a.SoloRegistration,
                 Logo = a.Logo,
                 Completed = completed,
-                TypeID = a.TypeID,
+                Type = a.Type.Description,
                 StartDate = a.StartDate,
                 EndDate = a.EndDate,
                 SeriesScheduleID = a.SeriesScheduleID,

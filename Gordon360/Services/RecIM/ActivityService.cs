@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -55,28 +56,16 @@ namespace Gordon360.Services.RecIM
                                 RegistrationStart = a.RegistrationStart,
                                 RegistrationEnd = a.RegistrationEnd,
                                 RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
-                                Sport = _context.Sport
-                                        .FirstOrDefault(s => s.ID == a.SportID),
-                                Status = _context.ActivityStatus
-                                        .FirstOrDefault(s => s.ID == a.StatusID)
-                                        .Description,
+                                Sport = a.Sport,
+                                Status = a.Status.Description,
                                 MinCapacity = a.MinCapacity,
                                 MaxCapacity = a.MaxCapacity,
                                 SoloRegistration = a.SoloRegistration,
                                 Logo = a.Logo,
                                 Completed = a.Completed,
-                                Series = a.Series.Where(s => s.StatusID !=0)
-                                        .Select(s => new SeriesExtendedViewModel
-                                        {
-                                            ID = s.ID,
-                                            Name = s.Name,
-                                            StartDate = s.StartDate,
-                                            EndDate = s.EndDate,
-                                            Type = _context.SeriesType
-                                                    .FirstOrDefault(st => st.ID == s.TypeID)
-                                                    .Description
-                                        }).ToList(),
-                                TypeID = a.TypeID,
+                                Series = a.Series.Where(s => s.StatusID != 0)
+                                        .Select(s => (SeriesExtendedViewModel)s),
+                                Type = a.Type.Description,
                                 StartDate = a.StartDate,
                                 EndDate= a.EndDate,
                             });
@@ -114,23 +103,22 @@ namespace Gordon360.Services.RecIM
                                 SoloRegistration = a.SoloRegistration,
                                 Logo = a.Logo,
                                 Completed = a.Completed,
-                                TypeID = a.TypeID,
+                                Type = a.Type.Description,
                                 StartDate = a.StartDate,
                                 EndDate = a.EndDate,
                                 Series = _seriesService.GetSeriesByActivityID(a.ID),
-                                Team = a.Team.Where(t => t.StatusID != 0).Select(t => new TeamExtendedViewModel
-                                {
-                                    ID = t.ID,
-                                    Name = t.Name,
-                                    Status = _context.TeamStatus
-                                                .FirstOrDefault(ts => ts.ID == t.StatusID)
-                                                .Description,
-                                    Activity = new ActivityExtendedViewModel {
-                                        ID = t.ActivityID, 
-                                        Name = a.Name
-                                    },
-                                    Logo = t.Logo
-                                })
+                                Team = a.Team.Where(t => t.StatusID != 0)
+                                    .Select(t => new TeamExtendedViewModel
+                                    {
+                                        ID = t.ID,
+                                        Name = t.Name,
+                                        Status = t.Status.Description,
+                                        Activity = new ActivityExtendedViewModel {
+                                            ID = t.ActivityID, 
+                                            Name = a.Name
+                                        },
+                                        Logo = t.Logo
+                                    })
 
                             })
                             .FirstOrDefault();
@@ -139,8 +127,9 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ActivityViewModel> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
         {
-            var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID && a.StatusID != 0);
-            if (activity == null) return null;
+            var activity = _context.Activity.Find(activityID);
+            if (activity.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Activity has been deleted" };
+
             activity.Name = updatedActivity.Name ?? activity.Name;
             activity.Logo = updatedActivity.Logo ?? activity.Logo;
             activity.RegistrationStart = updatedActivity.RegistrationStart ?? activity.RegistrationStart;
@@ -210,28 +199,40 @@ namespace Gordon360.Services.RecIM
 
         public bool ActivityTeamCapacityReached(int activityID)
         {
-            if (_context.Activity.FirstOrDefault(a => a.ID == activityID).StatusID == 0) return true;
-            int capacity = _context.Activity.FirstOrDefault(a => a.ID == activityID)?.MaxCapacity ?? Int32.MaxValue;
-            int numTeams = _context.Team.Where(t => t.ActivityID == activityID).Count();
+            var activity = _context.Activity.Find(activityID);
+
+            //if the activity is deleted, throw exception
+            if (activity.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Activity has been deleted" };
+
+            int capacity = activity.MaxCapacity == 0 ? Int32.MaxValue : activity.MaxCapacity;
+            int numTeams = activity.Team.Count();
             return numTeams >= capacity;
         }
 
         public bool ActivityRegistrationClosed(int activityID)
         {
-            var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
+            var activity = _context.Activity.Find(activityID);
             return (activity.RegistrationStart < DateTime.Now) && (activity.RegistrationEnd > DateTime.Now);
         }
 
         public async Task DeleteActivityCascade(int activityID)
         {
+            var activity = _context.Activity.Find(activityID);
+            var participantActivity = activity.ParticipantActivity;
+            var activityTeams = activity.Team;
+            var activitySeries = activity.Series;
+
+            //delete activity
+            activity.StatusID = 0;
+
             //delete participant involvement
-            var participantActivity = _context.ParticipantActivity.Where(pa => pa.ActivityID == activityID).ToList();
+
             foreach (var pa in participantActivity)
                 pa.PrivTypeID = 0;
 
 
             // delete teams
-            var activityTeams = _context.Team.Where(t => t.ActivityID == activityID);
+            
             foreach (var team in activityTeams)
             {
                 team.StatusID = 0;
@@ -243,16 +244,13 @@ namespace Gordon360.Services.RecIM
             }
             
             // delete series
-            var activitySeries = _context.Series.Where(s => s.ActivityID == activityID);
             foreach (var series in activitySeries)
             {
                 //delete matches
-                var matches = _context.Match.Where(m => m.SeriesID == series.ID).ToList();
-                foreach (var match in matches)
+                foreach (var match in series.Match)
                 {
                     //delete matchteam
-                    var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == match.ID);
-                    foreach (var mt in matchteam)
+                    foreach (var mt in match.MatchTeam)
                         mt.StatusID = 0;
                     //deletematch
                     match.StatusID = 0;
@@ -262,9 +260,6 @@ namespace Gordon360.Services.RecIM
                 series.StatusID = 0;
             }
 
-            //delete activity
-            var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID);
-            activity.StatusID = 0;
             await _context.SaveChangesAsync();
         }
     }
