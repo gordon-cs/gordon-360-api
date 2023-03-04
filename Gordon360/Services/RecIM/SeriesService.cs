@@ -183,10 +183,8 @@ namespace Gordon360.Services.RecIM
         {
             //check for exact schedule existing
             var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss =>
-                ss.StartTime.Hour == seriesSchedule.DailyStartTime.Hour &&
-                ss.StartTime.Minute == seriesSchedule.DailyStartTime.Minute &&
-                ss.EndTime.Hour == seriesSchedule.DailyEndTime.Hour &&
-                ss.EndTime.Minute == seriesSchedule.DailyEndTime.Minute &&
+                ss.StartTime.TimeOfDay == seriesSchedule.DailyStartTime.TimeOfDay &&
+                ss.EndTime.TimeOfDay == seriesSchedule.DailyEndTime.TimeOfDay &&
                 ss.EstMatchTime == seriesSchedule.EstMatchTime &&
                 ss.Sun == seriesSchedule.AvailableDays.Sun &&
                 ss.Mon == seriesSchedule.AvailableDays.Mon &&

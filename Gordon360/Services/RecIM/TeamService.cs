@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 using System.Globalization;
+using Microsoft.Graph;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services.RecIM
 {
@@ -347,6 +349,10 @@ namespace Gordon360.Services.RecIM
         public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
             var t = await _context.Team.FindAsync(teamID);
+            if (update.Name is not null)
+            {
+                if (t.Activity.Team.Any(team => team.Name == update.Name)) throw new Exception();
+            }
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
             t.Logo = update.Logo ?? t.Logo;
@@ -399,10 +405,11 @@ namespace Gordon360.Services.RecIM
         {
             //new check for enabling non-recim participants to be invited
             if(!_context.Participant.Any(p => p.Username == participant.Username))
-            {
                 await _participantService.PostParticipantAsync(participant.Username, 1); //pending user
-            }
 
+            //check for participant is on the team
+            if (_context.Team.Find(teamID).ParticipantTeam.Any(pt => pt.ParticipantUsername == participant.Username))
+                throw new Exception();
 
             var participantTeam = new ParticipantTeam
             {
