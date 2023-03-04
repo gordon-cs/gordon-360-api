@@ -23,31 +23,26 @@ namespace Gordon360.Services.RecIM
             _context = context;
         }
 
-        public IEnumerable<LookupViewModel> GetParticipantLookup(string type)
+        public IEnumerable<LookupViewModel>? GetParticipantLookup(string type)
         {
-            if (type == "status")
+            return type switch
             {
-                var res = _context.ParticipantStatus.Where(query => query.ID != 0)
+                "status" => _context.ParticipantStatus.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,
                                 Description = s.Description
                             })
-                            .AsEnumerable();
-                return res;
-            }
-            if (type == "activitypriv")
-            {
-                var res = _context.PrivType.Where(query => query.ID != 0)
+                            .AsEnumerable(),
+                "activitypriv" => _context.ParticipantStatus.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,
                                 Description = s.Description
                             })
-                            .AsEnumerable();
-                return res;
-            }
-            return null;
+                            .AsEnumerable(),
+                _ => null
+            };
         }
 
         public ParticipantExtendedViewModel GetParticipantByUsername(string username)

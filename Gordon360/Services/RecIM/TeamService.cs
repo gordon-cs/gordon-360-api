@@ -31,32 +31,26 @@ namespace Gordon360.Services.RecIM
         }
 
         // status ID of 0 implies deleted
-        public IEnumerable<LookupViewModel> GetTeamLookup(string type)
+        public IEnumerable<LookupViewModel>? GetTeamLookup(string type)
         {
-            switch (type)
+            return type switch
             {
-                case "status":
-                    var status = _context.TeamStatus.Where(query => query.ID != 0)
+                "status" => _context.TeamStatus.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
                         Description = s.Description
                     })
-                    .AsEnumerable();
-                    return status;
-                case "role":
-                    var roles = _context.RoleType.Where(query => query.ID != 0)
+                    .AsEnumerable(),
+                "role" => _context.RoleType.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
                         Description = s.Description
                     })
-                    .AsEnumerable();
-                    return roles;
-                default:
-                    return null;
-
-            }
+                    .AsEnumerable(),
+                _ => null
+            };
         }
 
         public double GetTeamSportsmanshipScore(int teamID)

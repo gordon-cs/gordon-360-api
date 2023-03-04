@@ -23,31 +23,26 @@ namespace Gordon360.Services.RecIM
             _matchService = matchService;
         }
 
-        public IEnumerable<LookupViewModel> GetSeriesLookup(string type)
+        public IEnumerable<LookupViewModel>? GetSeriesLookup(string type)
         {
-            if (type == "status")
+            return type switch
             {
-                var res = _context.SeriesStatus.Where(query => query.ID != 0)
+                "status" => _context.SeriesStatus.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
                         Description = s.Description
                     })
-                    .AsEnumerable();
-                return res;
-            }
-            if (type == "series")
-            {
-                var res = _context.SeriesType.Where(query => query.ID != 0)
+                    .AsEnumerable(),
+                "series" => _context.SeriesType.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
                         Description = s.Description
                     })
-                    .AsEnumerable();
-                return res;
-            }
-            return null;
+                    .AsEnumerable(),
+                _ => null
+            };
         }
 
         public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
@@ -67,7 +62,7 @@ namespace Gordon360.Services.RecIM
                                     .FirstOrDefault(ss => ss.ID == s.StatusID)
                                     .Description,
                         ActivityID = s.ActivityID,
-                        Match = _matchService.GetMatchBySeriesID(s.ID),
+                        Match = _matchService.GetMatchesBySeriesID(s.ID),
                         TeamStanding = _context.SeriesTeam
                         .Where(st => st.SeriesID == s.ID && st.Team.StatusID != 0)
                         .Select(st => new TeamRecordViewModel
@@ -109,7 +104,7 @@ namespace Gordon360.Services.RecIM
                                 .Description,
                     ActivityID = s.ActivityID,
                     Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID),
-                    Match = _matchService.GetMatchBySeriesID(s.ID),
+                    Match = _matchService.GetMatchesBySeriesID(s.ID),
                     TeamStanding = _context.SeriesTeam
                     .Where(st => st.SeriesID == s.ID)
                     .Select(st => new TeamRecordViewModel
@@ -321,19 +316,16 @@ namespace Gordon360.Services.RecIM
                     st.ID == series.TypeID
                 )?.TypeCode;
 
-            switch (typeCode){
-                case "RR":
-                    return await ScheduleRoundRobin(seriesID);
-                case "SE":
-                    return await ScheduleSingleElimination(seriesID);
-                case "DE":
-                    return await ScheduleDoubleElimination(seriesID);
-                case "L":
-                    return await ScheduleLadderAsync(seriesID);
-                default:
-                    return null;
-            }
+            return typeCode switch
+            {
+                "RR" => await ScheduleRoundRobin(seriesID),
+                "SE" => await ScheduleSingleElimination(seriesID),
+                "DE" => await ScheduleDoubleElimination(seriesID),
+                "L" => await ScheduleLadderAsync(seriesID),
+            _ => null
+            };
         }
+
         private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
         {
             var createdMatches = new List<MatchViewModel>();

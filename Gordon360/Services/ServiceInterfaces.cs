@@ -306,7 +306,7 @@ namespace Gordon360.Services
     {
         public interface IActivityService
         {
-            IEnumerable<LookupViewModel> GetActivityLookup(string type);
+            IEnumerable<LookupViewModel>? GetActivityLookup(string type);
             IEnumerable<Models.ViewModels.RecIM.ActivityExtendedViewModel> GetActivities();
             Models.ViewModels.RecIM.ActivityExtendedViewModel? GetActivityByID(int activityID);
             IEnumerable<Models.ViewModels.RecIM.ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time);
@@ -320,7 +320,7 @@ namespace Gordon360.Services
         }
         public interface ISeriesService
         {
-            IEnumerable<LookupViewModel> GetSeriesLookup(string type);
+            IEnumerable<LookupViewModel>? GetSeriesLookup(string type);
             IEnumerable<SeriesExtendedViewModel> GetSeries(bool active);
             IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID);
             SeriesExtendedViewModel GetSeriesByID(int seriesID);
@@ -334,7 +334,7 @@ namespace Gordon360.Services
 
         public interface ITeamService
         {
-            IEnumerable<LookupViewModel> GetTeamLookup(string type);
+            IEnumerable<LookupViewModel>? GetTeamLookup(string type);
             double GetTeamSportsmanshipScore(int teamID);
             IEnumerable<TeamExtendedViewModel> GetTeams(bool active);
             TeamExtendedViewModel GetTeamByID(int teamID);
@@ -356,7 +356,7 @@ namespace Gordon360.Services
 
         public interface IParticipantService
         {
-            IEnumerable<LookupViewModel> GetParticipantLookup(string type);
+            IEnumerable<LookupViewModel>? GetParticipantLookup(string type);
             IEnumerable<ParticipantExtendedViewModel> GetParticipants();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
             ParticipantExtendedViewModel GetParticipantByUsername(string username);
@@ -381,10 +381,10 @@ namespace Gordon360.Services
         public interface IMatchService
         {
             MatchViewModel GetSimpleMatchViewByID(int matchID);
-            IEnumerable<LookupViewModel> GetMatchLookup(string type);
+            IEnumerable<LookupViewModel>? GetMatchLookup(string type);
             MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID);
             MatchExtendedViewModel GetMatchByID(int matchID);
-            IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID);
+            IEnumerable<MatchExtendedViewModel> GetMatchesBySeriesID(int seriesID);
             Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel match);
             Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel match);
             Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel match);

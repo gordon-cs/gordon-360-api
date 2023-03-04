@@ -22,30 +22,27 @@ namespace Gordon360.Services.RecIM
             _seriesService = seriesService;
         }
 
-        public IEnumerable<LookupViewModel> GetActivityLookup(string type)
+        public IEnumerable<LookupViewModel>? GetActivityLookup(string type)
         {
-            switch (type)
+            return type switch
             {
-                case "status":
-                    return _context.ActivityStatus.Where(query => query.ID != 0)
+                "status" => _context.ActivityStatus.Where(query => query.ID != 0)
                                 .Select(s => new LookupViewModel
                                 {
                                     ID = s.ID,
                                     Description = s.Description
                                 })
-                                .AsEnumerable();
-                case "activity":
-                    return _context.ActivityType.Where(query => query.ID != 0)
+                                .AsEnumerable(),
+                "activity" => _context.ActivityType.Where(query => query.ID != 0)
                                 .Select(a => new LookupViewModel
                                 {
                                     ID = a.ID,
                                     Description = a.Description
                                 })
-                                .AsEnumerable();
-                default:
-                    return null;
+                                .AsEnumerable(),
+                _ => null
 
-            }
+            };
         }
 
         public IEnumerable<ActivityExtendedViewModel> GetActivities()

@@ -2208,6 +2208,16 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32)">
+            <summary>
+            Scheduler does not currently handle overlaps
+            eventually:
+            - ensure that matches that occur within 1 hour do not share the same surface
+               unless they're in the same series
+            </summary>
+            <param name="seriesID"></param>
+            <returns>Created Match objects</returns>
+        </member>
         <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam})">
             <summary>
             Goal of this function is to generate a single elimination round.

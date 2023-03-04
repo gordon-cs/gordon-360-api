@@ -28,46 +28,34 @@ namespace Gordon360.Services.RecIM
         }
 
         // ID 0 is default deleted, we don't want to return the deleted status on lookup
-        public IEnumerable<LookupViewModel> GetMatchLookup(string type)
+        public IEnumerable<LookupViewModel>? GetMatchLookup(string type)
         {
-            switch (type)
+            return type switch
             {
-                case "status":
-                {
-                    var res = _context.MatchStatus.Where(query => query.ID != 0)
+                "status" => _context.MatchStatus.Where(query => query.ID != 0)
                         .Select(s => new LookupViewModel
                         {
                             ID = s.ID,
                             Description = s.Description
                         })
-                        .AsEnumerable();
-                    return res;
-                }
-                case "teamstatus":
-                {
-                    var res = _context.MatchTeamStatus.Where(query => query.ID != 0)
+                        .AsEnumerable(),
+                "teamstatus" => _context.MatchTeamStatus.Where(query => query.ID != 0)
                         .Select(s => new LookupViewModel
                         {
                             ID = s.ID,
                             Description = s.Description
                         })
-                        .AsEnumerable();
-                    return res;
-                }
-                case "surface":
-                {
-                    var res = _context.Surface.Where(query => query.ID != 0)
+                        .AsEnumerable(),
+                "surface" => _context.Surface.Where(query => query.ID != 0)
                         .Select(s => new LookupViewModel
                         {
                             ID = s.ID,
                             Description = s.Description
                         })
-                        .AsEnumerable();
-                    return res;
-                }
-                default:
-                    return null;
-            }
+                        .AsEnumerable(),
+
+                _ => null
+            };
         }
 
         //this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
@@ -108,9 +96,7 @@ namespace Gordon360.Services.RecIM
                         .Select(_mt => new TeamExtendedViewModel
                         {
                             ID = mt.TeamID,
-                            Name = _context.Team
-                                       .FirstOrDefault(t => t.ID == _mt.TeamID)
-                                       .Name,
+                            Name = mt.Team.Name,
                         })
                         .AsEnumerable(),
                     Activity = activity,
@@ -127,8 +113,7 @@ namespace Gordon360.Services.RecIM
                         .Select(m => new MatchExtendedViewModel
                         {
                             ID = matchID,
-                            Scores = _context.MatchTeam
-                                        .Where(mt => mt.MatchID == matchID)
+                            Scores = m.MatchTeam
                                         .Select(mt => new TeamMatchHistoryViewModel
                                         {
                                             TeamID = mt.TeamID,
@@ -163,18 +148,14 @@ namespace Gordon360.Services.RecIM
                             Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
                             {
                                 ID = mt.TeamID,
-                                Name = _context.Team
-                                   .FirstOrDefault(t => t.ID == mt.TeamID)
-                                   .Name,
+                                Name = mt.Team.Name,
                                 Status = mt.Status.Description,
                                 Participant = mt.Team.ParticipantTeam
                                     .Select(pt => new ParticipantExtendedViewModel
                                     {
                                         Username = pt.ParticipantUsername,
                                         Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                                        Role = _context.RoleType
-                                                .FirstOrDefault(rt => rt.ID == pt.RoleTypeID)
-                                                .Description
+                                        Role = pt.RoleType.Description
                                     }),
                                 MatchHistory = GetMatchHistoryByTeamID(mt.TeamID)
                                     .OrderByDescending(mh => mh.MatchStartTime)
@@ -238,9 +219,9 @@ namespace Gordon360.Services.RecIM
             return vm;
         }
 
-        public IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID)
+        public IEnumerable<MatchExtendedViewModel> GetMatchesBySeriesID(int seriesID)
         {
-            var match = _context.Match
+            var matches = _context.Match
                         .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
                         .Select(m => new MatchExtendedViewModel
                         {
@@ -261,7 +242,7 @@ namespace Gordon360.Services.RecIM
                                     })
                             })
                         });
-            return match;
+            return matches;
         }
 
         public async Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel m)
@@ -274,7 +255,6 @@ namespace Gordon360.Services.RecIM
                 StatusID = 1 //default unconfirmed
             };
             await _context.Match.AddAsync(match);
-            await _context.SaveChangesAsync();
 
             foreach (var teamID in m.TeamIDs)
             {
