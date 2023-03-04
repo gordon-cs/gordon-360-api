@@ -116,9 +116,6 @@ namespace Gordon360.Services.RecIM
                                 .Name,
                         Win = st.Win,
                         Loss = st.Loss,
-                        //Tie = _context.SeriesTeam
-                        //        .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
-                        //        .Count() - st.Win - (st.Loss ?? 0)
                     }).OrderByDescending(st => st.Win).AsEnumerable()
                 });
             return series;
@@ -168,7 +165,7 @@ namespace Gordon360.Services.RecIM
             }
             if (newSeries.NumberOfTeamsAdmitted is not null)
             {
-                teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
+                teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null after the if check but 0 is to silence error
             }
 
             await CreateSeriesTeamMappingAsync(teams, series.ID);

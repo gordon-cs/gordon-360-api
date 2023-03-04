@@ -17,7 +17,6 @@ using Gordon360.Models.ViewModels;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class SeriesController : GordonControllerBase
     {
         private readonly ISeriesService _seriesService;
@@ -68,7 +67,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return Ok(res);
             }
-            return BadRequest();
+            return NotFound();
         }
 
         /// <summary>
@@ -138,6 +137,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpDelete]
         [Route("{seriesID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult> DeleteSeriesCascade(int seriesID)
         {
             await _seriesService.DeleteSeriesCascadeAsync(seriesID);

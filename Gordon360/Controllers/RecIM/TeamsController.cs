@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class TeamsController : GordonControllerBase
     {
         private readonly ITeamService _teamService;
@@ -77,7 +76,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return Ok(res);
             }
-            return BadRequest();
+            return NotFound();
         }
 
         /// <summary>
@@ -237,7 +236,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}/attendance")]
         public async Task<ActionResult<int>> NumberOfGamesParticipatedByParticipant(int teamID, [FromBody] string username)
         {
-            var res = _teamService.NumberOfGamesParticipatedByParticipant(teamID, username);
+            var res = _teamService.ParticipantAttendanceCount(teamID, username);
             return Ok(res);
         }
         /// <summary>

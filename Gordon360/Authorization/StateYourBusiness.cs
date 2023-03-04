@@ -715,7 +715,9 @@ namespace Gordon360.Authorization
 
                         return false;
                     }
-                    
+
+                case Resource.RECIM_PARTICIPANT:
+                    //fallthrough 
                 case Resource.RECIM_ACTIVITY:
                 case Resource.RECIM_SERIES:
                 case Resource.RECIM_SPORT:

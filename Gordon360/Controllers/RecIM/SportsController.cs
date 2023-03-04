@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class SportsController : GordonControllerBase
     {
         private readonly ISportService _sportService;

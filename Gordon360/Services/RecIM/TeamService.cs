@@ -60,7 +60,7 @@ namespace Gordon360.Services.RecIM
         public double GetTeamSportsmanshipScore(int teamID)
         {
             var sportsmanshipScores = _context.Match
-                                    .Where(m => m.StatusID == 6)
+                                    .Where(m => m.StatusID == 6) // 6 is completed status
                                         .Join(_context.MatchTeam
                                             .Where(mt => mt.TeamID == teamID),
                                             m => m.ID,
@@ -113,7 +113,7 @@ namespace Gordon360.Services.RecIM
                                                     .Score)
                                                     .Count(),
                                                 Tie = t.MatchTeam
-                                                    .Where(mt => mt.Match.StatusID == 6
+                                                    .Where(mt => mt.Match.StatusID == 6 //completed status
                                                     && mt.Score == _context.MatchTeam
                                                     .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
                                                     && opmt.TeamID != t.ID)
@@ -203,7 +203,7 @@ namespace Gordon360.Services.RecIM
                                                                 OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                                                 Status = matchTeamJoin.Status,
                                                                 MatchStatusID = match.StatusID,
-                                                                Time = match.Time
+                                                                MatchStartTime = match.Time
                                                             }
                                                 ).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam
@@ -469,7 +469,7 @@ namespace Gordon360.Services.RecIM
             return _context.Team.FirstOrDefault(t => t.ID == teamID).ActivityID;
         }
 
-        public int NumberOfGamesParticipatedByParticipant(int teamID, string username)
+        public int ParticipantAttendanceCount(int teamID, string username)
         {
             return _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == username);
         }
