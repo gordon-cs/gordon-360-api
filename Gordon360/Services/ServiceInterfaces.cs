@@ -313,7 +313,7 @@ namespace Gordon360.Services
             IEnumerable<ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time);
             Task<RecIMActivityViewModel> UpdateActivityAsync(int activytID, ActivityPatchViewModel updatedActivity);
             Task<RecIMActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
-            Task<ParticipantActivityViewModel> PostParticipantActivityAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
+            Task<ParticipantActivityViewModel> AddParticipantActivityInvolvementAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
             bool IsReferee(string username, int activityID);
             bool ActivityTeamCapacityReached(int activityID);
             bool ActivityRegistrationClosed(int activityID);
