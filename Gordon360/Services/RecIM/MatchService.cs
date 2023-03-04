@@ -1,12 +1,11 @@
 ﻿using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Match = Gordon360.Models.CCT.Match;
-using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -24,7 +23,7 @@ namespace Gordon360.Services.RecIM
 
         public MatchViewModel GetSimpleMatchViewByID(int matchID)
         {
-            var res = _context.Match.FirstOrDefault(m => m.ID == matchID && m.StatusID != 0);
+            var res = _context.Match.Find(matchID);
             return res;
         }
 
@@ -76,8 +75,8 @@ namespace Gordon360.Services.RecIM
         {
             var activity = _context.Activity
                 .Where(a => a.ID == _context.Series
-                    .FirstOrDefault(s => s.ID == _context.Match
-                        .FirstOrDefault(m => m.ID == matchID)
+                    .Find(_context.Match
+                        .Find(matchID)
                     .SeriesID)
                 .ActivityID)
                 .Select(a => new ActivityExtendedViewModel
@@ -99,15 +98,15 @@ namespace Gordon360.Services.RecIM
                             TeamID = mt.TeamID,
                             TeamScore = mt.Score
                         }).AsEnumerable(),
-                    Time = _context.Match.FirstOrDefault(m => m.ID == mt.MatchID).Time,
+                    Time = mt.Match.Time,
                     Status = _context.MatchStatus
                         .FirstOrDefault(ms => ms.ID == _context.Match
                             .FirstOrDefault(m => m.ID == mt.MatchID)
                             .StatusID)
                         .Description,
                     Surface = _context.Surface
-                                        .FirstOrDefault(s => s.ID == _context.Match
-                            .FirstOrDefault(m => m.ID == mt.MatchID).SurfaceID)
+                        .Find( _context.Match
+                            .Find(mt.MatchID).SurfaceID)
                                         .Description,
                     Team = _context.MatchTeam
                         .Where(_mt => _mt.MatchID == mt.MatchID)
@@ -139,30 +138,19 @@ namespace Gordon360.Services.RecIM
                                         {
                                             TeamID = mt.TeamID,
                                             TeamScore = mt.Score,
-                                            Status = _context.MatchTeamStatus
-                                                .FirstOrDefault(ms => ms.ID == mt.StatusID)
-                                                .Description,
-                                            Sportsmanship = mt.Sportsmanship
+                                            Status = mt.Status.Description,
+                                            SportsmanshipRating = mt.Sportsmanship
                                         }).AsEnumerable(),
                             Time = m.Time,
-                            Surface = _context.Surface
-                                        .FirstOrDefault(s => s.ID == m.SurfaceID)
-                                        .Description,
-                            Status = _context.MatchStatus
-                                        .FirstOrDefault(ms => ms.ID == m.StatusID)
-                                        .Description,
-                            Attendance = _context.MatchParticipant
-                                        .Where(mp => mp.MatchID == matchID)
+                            Surface = m.Surface.Description,
+                            Status = m.Status.Description,
+                            Attendance = m.MatchParticipant
                                         .Select(mp => new ParticipantExtendedViewModel
                                         {
                                             Username = mp.ParticipantUsername
                                         }).AsEnumerable(),
                             Activity = _context.Activity
-                                        .Where(a => a.ID == _context.Series
-                                            .FirstOrDefault(s => s.ID == _context.Match
-                                                .FirstOrDefault(m => m.ID == matchID)
-                                            .SeriesID)
-                                        .ActivityID)
+                                        .Where(a => a.ID == m.Series.ActivityID)
                                         .Select(a => new ActivityExtendedViewModel
                                         {
                                             ID = a.ID,
@@ -194,7 +182,7 @@ namespace Gordon360.Services.RecIM
                                                 .Description
                                     }),
                                 MatchHistory = GetMatchHistoryByTeamID(mt.TeamID)
-                                    .OrderByDescending(mh => mh.Time)
+                                    .OrderByDescending(mh => mh.MatchStartTime)
                                     .Take(5),
                                 TeamRecord = _context.SeriesTeam
                                            .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
@@ -250,8 +238,8 @@ namespace Gordon360.Services.RecIM
                                     OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                     Status = matchTeamJoin.Status,
                                     MatchStatusID = match.StatusID,
-                                    Time = match.Time
-                                }).ToList();
+                                    MatchStartTime = match.Time
+                                }).AsEnumerable();
             return vm;
         }
         public IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID)
@@ -262,25 +250,19 @@ namespace Gordon360.Services.RecIM
                         {
                             ID = m.ID,
                             Time = m.Time,
-                            Surface = _context.Surface
-                                        .FirstOrDefault(s => s.ID == m.SurfaceID)
-                                        .Description,
-                            Status = _context.MatchStatus
-                                        .FirstOrDefault(ms => ms.ID == m.StatusID)
-                                        .Description,
+                            Surface = m.Surface.Description,
+                            Status = m.Status.Description,
                             Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
                             {
                                 ID = mt.TeamID,
-                                Name = _context.Team
-                                   .FirstOrDefault(t => t.ID == mt.TeamID)
-                                   .Name,
+                                Name = mt.Team.Name,
                                 TeamRecord = _context.SeriesTeam
-                                           .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
-                                           .Select(st => new TeamRecordViewModel
-                                           {
-                                               Win = st.Win,
-                                               Loss = st.Loss,
-                                           })
+                                    .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
+                                    .Select(st => new TeamRecordViewModel
+                                    {
+                                        Win = st.Win,
+                                        Loss = st.Loss,
+                                    })
                             })
                         });
             return match;
@@ -329,7 +311,7 @@ namespace Gordon360.Services.RecIM
         }
         public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
-            var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
+            var match = _context.Match.Find(matchID);
             match.Time = vm.Time ?? match.Time;
             match.StatusID = vm.StatusID ?? match.StatusID;
             match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
@@ -359,7 +341,7 @@ namespace Gordon360.Services.RecIM
             foreach (var mt in matchteam)
                 mt.StatusID = 0;
             //deletematch
-            var match = _context.Match.FirstOrDefault(m => m.ID == matchID);
+            var match = _context.Match.Find(matchID);
             match.StatusID = 0;
 
             await _context.SaveChangesAsync();

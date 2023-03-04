@@ -13,7 +13,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         bool Thu,
         bool Fri,
         bool Sat
-        );
+     );
     public class SeriesScheduleUploadViewModel
     {
         public int? SeriesID { get; set; }

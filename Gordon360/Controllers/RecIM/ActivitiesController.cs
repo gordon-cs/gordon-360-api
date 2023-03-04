@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
@@ -46,7 +45,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         ///<summary>Gets a Activity object by ID number</summary>
-        /// <param name="activityID">League ID Number</param>
+        /// <param name="activityID">Activity ID Number</param>
         /// <returns>
         /// Activity object
         /// </returns>
@@ -67,7 +66,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return Ok(res);
             }
-            return BadRequest();
+            return NotFound();
         }
 
         /// <summary>

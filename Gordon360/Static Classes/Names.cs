@@ -34,6 +34,7 @@ namespace Gordon360.Static.Names
         public const string RECIM_MATCH = "A RecIM match resource";
         public const string RECIM_TEAM = "A RecIM team resource";
         public const string RECIM_SPORT = "A RecIM sport resource";
+        public const string RECIM_PARTICIPANT = "RecIM Participating User (FacStaff or Student)";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL
         public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
