@@ -87,8 +87,9 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
+        public async Task<ActionResult<TeamViewModel>> CreateTeam(TeamUploadViewModel newTeam)
         {
+            var username = AuthUtils.GetUsername(User);
             var activity = _activityService.GetActivityByID(newTeam.ActivityID);
             if (activity is null)
                 return NotFound($"This activity does not exist");

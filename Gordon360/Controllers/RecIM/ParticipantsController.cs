@@ -34,7 +34,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpGet]
-        [Route("{username}/StatusHistory")]
+        [Route("{username}/statushistory")]
         public ActionResult<IEnumerable<ParticipantStatusExtendedViewModel>> GetParticipantStatushistory(string username)
         {
             var res = _participantService.GetParticipantStatusHistory(username);

@@ -732,17 +732,20 @@ namespace Gordon360.Authorization
 
                 case Resource.RECIM_TEAM:
                     {
-                        var teamID = (int)context.ActionArguments["teamID"];
-                        return _teamService.IsTeamCaptain(user_name, teamID) || _participantService.IsAdmin(user_name);
+                        if(context.ActionArguments.TryGetValue("teamID",out object? teamID_object) && teamID_object is int teamID)
+                        {
+                            return _teamService.IsTeamCaptain(user_name, teamID) || _participantService.IsAdmin(user_name);
+                        }
+                        return false;
                     }
 
                 case Resource.RECIM_MATCH:
                     {
-                        if (context.ActionArguments["matchID"] is int matchID)
+                        if (context.ActionArguments.TryGetValue("matchID", out object? matchID_Object) && matchID_Object is int matchID)
                         {
-                        var match = _matchService.GetSimpleMatchViewByID(matchID);
-                        var series = _seriesService.GetSeriesByID(match.SeriesID);
-                        return _activityService.IsReferee(user_name, series.ActivityID) || _participantService.IsAdmin(user_name);
+                            var match = _matchService.GetSimpleMatchViewByID(matchID);
+                            var series = _seriesService.GetSeriesByID(match.SeriesID);
+                            return _activityService.IsReferee(user_name, series.ActivityID) || _participantService.IsAdmin(user_name);
                         }
                         return _participantService.IsAdmin(user_name);
                     }
