@@ -203,7 +203,7 @@ namespace Gordon360.Services.RecIM
                                                                 OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                                                 Status = matchTeamJoin.Status,
                                                                 MatchStatusID = match.StatusID,
-                                                                Time = match.Time
+                                                                MatchStartTime = match.Time
                                                             }
                                                 ).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam

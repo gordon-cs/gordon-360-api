@@ -142,7 +142,7 @@ namespace Gordon360.Services.RecIM
                                             Status = _context.MatchTeamStatus
                                                 .FirstOrDefault(ms => ms.ID == mt.StatusID)
                                                 .Description,
-                                            Sportsmanship = mt.Sportsmanship
+                                            SportsmanshipRating = mt.Sportsmanship
                                         }).AsEnumerable(),
                             Time = m.Time,
                             Surface = _context.Surface
@@ -231,9 +231,9 @@ namespace Gordon360.Services.RecIM
                                             OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                             Status = matchTeamJoin.Status,
                                             MatchStatusID = match.StatusID,
-                                            Time = match.Time
+                                            MatchStartTime = match.Time
                                         })
-                                    .OrderByDescending(mh => mh.Time)
+                                    .OrderByDescending(mh => mh.MatchStartTime)
                                     .Take(5),
                                 TeamRecord = _context.SeriesTeam
                                            .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
@@ -289,7 +289,7 @@ namespace Gordon360.Services.RecIM
                                     OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                     Status = matchTeamJoin.Status,
                                     MatchStatusID = match.StatusID,
-                                    Time = match.Time
+                                    MatchStartTime = match.Time
                                 }).AsEnumerable();
             return vm;
         }
