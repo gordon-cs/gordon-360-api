@@ -25,14 +25,16 @@ namespace Gordon360.Services.RecIM
         private readonly IParticipantService _participantService;
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
+        private readonly IEmailService _emailService;
 
-        public TeamService(CCTContext context, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountService)
+        public TeamService(CCTContext context, IEmailService emailService, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountService)
         {
             _context = context;
             _config = config;
             _matchService = matchService;
             _accountService = accountService;
             _participantService = participantSerivce;
+            _emailService = emailService;
         }
 
         // status ID of 0 implies deleted
@@ -377,7 +379,7 @@ namespace Gordon360.Services.RecIM
             var team = _context.Team.Find(teamID);
             var invitee = _accountService.GetAccountByUsername(inviteeUsername);
             var inviter = _accountService.GetAccountByUsername(inviterUsername);
-
+            var password = _config["Emails:RecIM:Password"];
             string from_email = _config["Emails:RecIM:Username"];
             string to_email = invitee.Email;
             string messageBody =
@@ -387,27 +389,9 @@ namespace Gordon360.Services.RecIM
                 //$"check it out <a href='https://360.gordon.edu/recim'>here</a>! <br><br>" + //for production
                 $"check it out <a href='https://360recim.gordon.edu/recim'>here</a>! <br><br>" +//for development
                 $"Gordon Rec-IM";
+            string subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!";
 
-            using var smtpClient = new SmtpClient()
-            {
-                Credentials = new NetworkCredential
-                {
-                    UserName = from_email,
-                    Password = _config["Emails:RecIM:Password"]
-                },
-                Host = _config["SmtpHost"],
-                EnableSsl = true,
-                Port = 587,
-            };
-
-            var message = new MailMessage(from_email, to_email)
-            {
-                Subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!",
-                Body = messageBody,
-            };
-            message.IsBodyHtml = true;
-
-            smtpClient.Send(message);
+            _emailService.SendEmails(new string[] {to_email},from_email,subject,messageBody,password);
         }
         
         public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
