@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
+using Gordon360.Exceptions;
 using Team = Gordon360.Models.CCT.Team;
 using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,8 @@ using System.Net.Mail;
 using System.Globalization;
 using Microsoft.Graph;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.TermStore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Gordon360.Services.RecIM
 {
@@ -275,6 +278,11 @@ namespace Gordon360.Services.RecIM
             var participantStatus = _participantService.GetParticipantByUsername(username).Status;
             if (participantStatus == "Banned" || participantStatus == "Suspended")
                 throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
+            
+            if(_context.Activity.Find(t.ActivityID).Team.Any(team => team.Name == t.Name))
+                throw new UnprocessibleEntity
+                { ExceptionMessage = $"Team name {t.Name} has already been taken by another team in this activity" };
+
             var team = new Team
             {
                 Name = t.Name,
@@ -351,7 +359,9 @@ namespace Gordon360.Services.RecIM
             var t = await _context.Team.FindAsync(teamID);
             if (update.Name is not null)
             {
-                if (t.Activity.Team.Any(team => team.Name == update.Name)) throw new Exception();
+                if (t.Activity.Team.Any(team => team.Name == update.Name)) 
+                    throw new UnprocessibleEntity 
+                        { ExceptionMessage = $"Team name {update.Name} has already been taken by another team in this activity" };
             }
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
@@ -408,7 +418,7 @@ namespace Gordon360.Services.RecIM
 
             //check for participant is on the team
             if (_context.Team.Find(teamID).ParticipantTeam.Any(pt => pt.ParticipantUsername == participant.Username))
-                throw new Exception();
+                throw new UnprocessibleEntity { ExceptionMessage = $"Participant {participant.Username} is already in this team" };
 
             var participantTeam = new ParticipantTeam
             {

@@ -92,9 +92,6 @@ namespace Gordon360.Controllers.RecIM
             var activity = _activityService.GetActivityByID(newTeam.ActivityID);
             if (activity is null)
                 return NotFound($"This activity does not exist");
-
-            if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
-                return UnprocessableEntity($"Team name {newTeam.Name} has already been taken by another team in this activity");
            
             //redudant check for API as countermeasure against postman navigation around UI check, admins can make any number of teams
             if (_teamService.HasUserJoined(newTeam.ActivityID, username) && !_participantService.IsAdmin(username))
@@ -129,18 +126,14 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            try
+            var inviterUsername = AuthUtils.GetUsername(User);
+            var activityID = _teamService.GetTeamActivityID(teamID);
+            if (!_teamService.HasUserJoined(activityID, participant.Username) || _participantService.IsAdmin(inviterUsername))
             {
-                var inviterUsername = AuthUtils.GetUsername(User);
-                var activityID = _teamService.GetTeamActivityID(teamID);
-                if (!_teamService.HasUserJoined(activityID, participant.Username) || _participantService.IsAdmin(inviterUsername))
-                {
-                    var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
-                    return CreatedAtAction("AddParticipantToTeam", participantTeam);
-                }
-            } catch {
-                return UnprocessableEntity($"Participant {participant.Username} is already in this team");
+                var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
+                return CreatedAtAction("AddParticipantToTeam", participantTeam);
             }
+
             return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
         }
 

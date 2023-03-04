@@ -63,18 +63,7 @@ namespace Gordon360.Services.RecIM
         //query handle the enumeration.
         public MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID)
         {
-            var activity = _context.Activity
-                .Where(a => a.ID == _context.Series
-                    .Find(_context.Match
-                        .Find(matchID)
-                    .SeriesID)
-                .ActivityID)
-                .Select(a => new ActivityExtendedViewModel
-                {
-                    ID = a.ID,
-                    Name = a.Name
-                })
-                .FirstOrDefault();
+            var activity = _context.Match.Find(matchID).Series.Activity;
 
             var match = _context.MatchTeam
                 .Where(mt => mt.MatchID == matchID && mt.StatusID != 0)

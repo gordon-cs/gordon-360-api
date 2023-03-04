@@ -925,7 +925,7 @@
             Updates Participant role in a team
             </summary>
             <param name="teamID"></param>
-            <param name="participant">Default Role Value value 3 (Member)</param>
+            <param name="participant"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeam(System.Int32)">
