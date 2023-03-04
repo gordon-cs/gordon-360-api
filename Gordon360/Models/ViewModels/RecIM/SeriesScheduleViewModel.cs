@@ -22,15 +22,15 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 ID = s.ID,
                 AvailableDays = new Dictionary<string, bool>()
-                    {
-                        { "Sunday",s.Sun },
-                        { "Monday",s.Mon },
-                        { "Tuesday",s.Tue },
-                        { "Wednesday",s.Wed },
-                        { "Thursday",s.Thu },
-                        { "Friday",s.Fri },
-                        { "Saturday",s.Sat },
-                    },
+                {
+                    { "Sunday",s.Sun },
+                    { "Monday",s.Mon },
+                    { "Tuesday",s.Tue },
+                    { "Wednesday",s.Wed },
+                    { "Thursday",s.Thu },
+                    { "Friday",s.Fri },
+                    { "Saturday",s.Sat },
+                },
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
                 EstMatchTime = s.EstMatchTime ?? 30 //customer suggestion default 30 minutes
