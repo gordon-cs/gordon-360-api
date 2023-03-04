@@ -26,6 +26,7 @@ namespace Gordon360.Services.RecIM
             var res = _context.Match.Find(matchID);
             return res;
         }
+
         // ID 0 is default deleted, we don't want to return the deleted status on lookup
         public IEnumerable<LookupViewModel> GetMatchLookup(string type)
         {
@@ -68,6 +69,7 @@ namespace Gordon360.Services.RecIM
                     return null;
             }
         }
+
         //this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
         //within other queries. The only solution is to return each individual instance and have the original
         //query handle the enumeration.
@@ -235,6 +237,7 @@ namespace Gordon360.Services.RecIM
                                 }).AsEnumerable();
             return vm;
         }
+
         public IEnumerable<MatchExtendedViewModel> GetMatchBySeriesID(int seriesID)
         {
             var match = _context.Match
@@ -260,6 +263,7 @@ namespace Gordon360.Services.RecIM
                         });
             return match;
         }
+
         public async Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel m)
         {
             var match = new Match
@@ -292,6 +296,7 @@ namespace Gordon360.Services.RecIM
             };
             await _context.MatchTeam.AddAsync(matchTeam);
         }
+
         public async Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel vm)
         {
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
@@ -302,6 +307,7 @@ namespace Gordon360.Services.RecIM
             return teamstats;
 
         }
+
         public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.Find(matchID);

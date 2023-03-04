@@ -47,6 +47,7 @@ namespace Gordon360.Services.RecIM
 
             }
         }
+
         public IEnumerable<ActivityExtendedViewModel> GetActivities()
         {
             var activities = _context.Activity.Where(a => a.StatusID != 0)
@@ -95,6 +96,7 @@ namespace Gordon360.Services.RecIM
                 return GetActivities().Where(a => a.RegistrationEnd > time);
             }
         }
+
         public ActivityExtendedViewModel? GetActivityByID(int activityID)
         {
             var activity = _context.Activity.Where(a => a.ID == activityID && a.StatusID != 0)
@@ -137,6 +139,7 @@ namespace Gordon360.Services.RecIM
                             .FirstOrDefault();
             return activity;
         }
+
         public async Task<ActivityViewModel> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = _context.Activity.FirstOrDefault(a => a.ID == activityID && a.StatusID != 0);
@@ -159,6 +162,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return activity;
         }
+
         public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel a)
         {
             var activity = new Activity

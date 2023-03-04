@@ -22,6 +22,7 @@ namespace Gordon360.Services.RecIM
             _context = context;
             _matchService = matchService;
         }
+
         public IEnumerable<LookupViewModel> GetSeriesLookup(string type)
         {
             if (type == "status")
@@ -48,6 +49,7 @@ namespace Gordon360.Services.RecIM
             }
             return null;
         }
+
         public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
@@ -88,6 +90,7 @@ namespace Gordon360.Services.RecIM
             }
             return series;
         }
+
         public IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID)
         {
             var series = _context.Series
@@ -121,10 +124,12 @@ namespace Gordon360.Services.RecIM
                 });
             return series;
         }
+
         public SeriesExtendedViewModel GetSeriesByID(int seriesID)
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
+
         public async Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             //if activity has no start date
@@ -231,8 +236,8 @@ namespace Gordon360.Services.RecIM
             }
             await _context.SaveChangesAsync();
             return schedule;
-
         }
+
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
             var s = _context.Series.FirstOrDefault(s => s.ID == seriesID && s.StatusID != 0);
@@ -245,6 +250,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return s;
         }
+
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
         {
             var st = await _context.SeriesTeam.FindAsync(update.ID);
@@ -297,8 +303,6 @@ namespace Gordon360.Services.RecIM
             series.StatusID = 0;
             await _context.SaveChangesAsync();
         }
-
-
 
         /// <summary>
         /// Scheduler does not currently handle overlaps
@@ -431,8 +435,6 @@ namespace Gordon360.Services.RecIM
             createdMatches.Add(res);
             return createdMatches;
         }
-
-        //2nd Part of Autoscheduling
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {

@@ -58,6 +58,7 @@ namespace Gordon360.Services.RecIM
 
             }
         }
+
         public double GetTeamSportsmanshipScore(int teamID)
         {
             var sportsmanshipScores = _context.MatchTeam
@@ -68,6 +69,7 @@ namespace Gordon360.Services.RecIM
 
             return sportsmanshipScores.Average();
         }
+
         public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
         {
             var teamQuery = active 

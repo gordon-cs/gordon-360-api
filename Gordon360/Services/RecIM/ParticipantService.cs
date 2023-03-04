@@ -22,6 +22,7 @@ namespace Gordon360.Services.RecIM
             _accountService = accountService;
             _context = context;
         }
+
         public IEnumerable<LookupViewModel> GetParticipantLookup(string type)
         {
             if (type == "status")
@@ -48,6 +49,7 @@ namespace Gordon360.Services.RecIM
             }
             return null;
         }
+
         public ParticipantExtendedViewModel GetParticipantByUsername(string username)
         {
             var account = _accountService.GetAccountByUsername(username);
@@ -90,6 +92,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return newNotification;
         }
+
         public IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username)
         {
             var status = _context.ParticipantStatusHistory
@@ -107,6 +110,7 @@ namespace Gordon360.Services.RecIM
                                     }).AsEnumerable();
             return status;
         }
+
         public IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username)
         {
        
