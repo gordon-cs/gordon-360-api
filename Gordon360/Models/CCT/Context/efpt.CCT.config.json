@@ -335,6 +335,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[Minors]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[PART_DEF]",
          "ObjectType": 3
       },
