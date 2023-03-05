@@ -70,13 +70,8 @@ namespace Gordon360.Services.RecIM
                 .Select(mt => new MatchExtendedViewModel
                 {
                     ID = mt.MatchID,
-                    Scores = _context.MatchTeam
-                        .Where(s => s.MatchID == mt.MatchID)
-                        .Select(mt => new TeamMatchHistoryViewModel
-                        {
-                            TeamID = mt.TeamID,
-                            TeamScore = mt.Score
-                        }).AsEnumerable(),
+                    Scores = mt.Match.MatchTeam
+                        .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
                     Time = mt.Match.Time,
                     Status = mt.Match.Status.Description,
                     Surface = mt.Match.Surface.Description,
@@ -103,13 +98,8 @@ namespace Gordon360.Services.RecIM
                         {
                             ID = matchID,
                             Scores = m.MatchTeam
-                                        .Select(mt => new TeamMatchHistoryViewModel
-                                        {
-                                            TeamID = mt.TeamID,
-                                            TeamScore = mt.Score,
-                                            Status = mt.Status.Description,
-                                            SportsmanshipRating = mt.Sportsmanship
-                                        }).AsEnumerable(),
+                                        .Select(mt => (TeamMatchHistoryViewModel)mt)
+                                        .AsEnumerable(),
                             Time = m.Time,
                             Surface = m.Surface.Description,
                             Status = m.Status.Description,
@@ -118,20 +108,7 @@ namespace Gordon360.Services.RecIM
                                         {
                                             Username = mp.ParticipantUsername
                                         }).AsEnumerable(),
-                            Activity = _context.Activity
-                                        .Where(a => a.ID == m.Series.ActivityID)
-                                        .Select(a => new ActivityExtendedViewModel
-                                        {
-                                            ID = a.ID,
-                                            Name = a.Name,
-                                            Team = a.Team.Select(t => new TeamExtendedViewModel
-                                            {
-                                                ID = t.ID,
-                                                Name = t.Name,
-                                                Logo = t.Logo
-                                            })
-                                        })
-                                        .FirstOrDefault(),
+                            Activity = m.Series.Activity,
                             SeriesID = m.SeriesID,
                             // Team will eventually be handled by TeamService 
                             Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
@@ -149,13 +126,7 @@ namespace Gordon360.Services.RecIM
                                 MatchHistory = GetMatchHistoryByTeamID(mt.TeamID)
                                     .OrderByDescending(mh => mh.MatchStartTime)
                                     .Take(5),
-                                TeamRecord = _context.SeriesTeam
-                                           .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
-                                           .Select(st => new TeamRecordViewModel
-                                           {
-                                               Win = st.Win,
-                                               Loss = st.Loss,
-                                           }),
+                                TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
                             })
                         }).FirstOrDefault();
             return match;
@@ -184,8 +155,6 @@ namespace Gordon360.Services.RecIM
                                                         ? "Lose"
                                                         : "Tie"
                                         }),
-
-
                                 match => match.ID,
                                 matchTeamJoin => matchTeamJoin.MatchID,
                                 (match, matchTeamJoin) => new TeamMatchHistoryViewModel
@@ -302,17 +271,18 @@ namespace Gordon360.Services.RecIM
             return match;
         }
 
-        public async Task DeleteMatchCascadeAsync(int matchID)
+        public async Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID)
         {
-            //delete matchteam
-            var matchteam = _context.MatchTeam.Where(mt => mt.MatchID == matchID);
-            foreach (var mt in matchteam)
-                mt.StatusID = 0; //deleted status
             //deletematch
             var match = _context.Match.Find(matchID);
             match.StatusID = 0; //deleted status
 
+            //delete matchteam
+            foreach (var mt in match.MatchTeam)
+                mt.StatusID = 0; //deleted status
+            
             await _context.SaveChangesAsync();
+            return match;
         }
     }
 

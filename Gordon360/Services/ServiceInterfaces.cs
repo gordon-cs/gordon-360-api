@@ -391,7 +391,7 @@ namespace Gordon360.Services
             Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel match);
             Task CreateMatchTeamMappingAsync(int teamID, int matchID);
             IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
-            Task DeleteMatchCascadeAsync(int matchID);
+            Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID);
         }
     }
 

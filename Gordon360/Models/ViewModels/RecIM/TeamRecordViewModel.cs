@@ -9,5 +9,15 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int Win { get; set; }  
         public int Loss { get; set; }
         public int Tie { get; set; }
+        public static implicit operator TeamRecordViewModel(SeriesTeam st)
+        {
+            return new TeamRecordViewModel
+            {
+                ID = st.ID,
+                Name = st.Team.Name,
+                Win = st.Win,
+                Loss = st.Loss,
+            };
+        }
     }
 }

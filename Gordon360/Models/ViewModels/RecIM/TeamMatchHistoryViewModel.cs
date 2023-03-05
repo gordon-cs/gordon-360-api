@@ -15,6 +15,18 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int MatchStatusID { get; set; }
         public DateTime MatchStartTime { get; set; }
         public int? SportsmanshipRating { get; set; }
-        
+        public static implicit operator TeamMatchHistoryViewModel(MatchTeam mt)
+        {
+            return new TeamMatchHistoryViewModel
+            {
+                TeamID = mt.TeamID,
+                MatchID = mt.MatchID,
+                TeamScore = mt.Score,
+                Status = mt.Status.Description,
+                MatchStatusID = mt.Match.StatusID,
+                MatchStartTime = mt.Match.Time,
+                SportsmanshipRating = mt.Sportsmanship
+            };
+        }
     }
 }

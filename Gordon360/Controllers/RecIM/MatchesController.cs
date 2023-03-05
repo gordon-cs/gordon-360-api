@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Gordon360.Controllers.RecIM
 {
@@ -77,7 +79,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchTeamViewModel>> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
             var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
-            return CreatedAtAction("UpdateStats", stats);
+            return CreatedAtAction(nameof(UpdateStats), new { matchTeamID = stats.ID }, stats);
         }
 
         /// <summary>
@@ -92,7 +94,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
             var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
-            return CreatedAtAction("UpdateMatch", match);
+            return CreatedAtAction(nameof(UpdateMatch), new { matchID = match.ID }, match);
         }
 
         /// <summary>
@@ -106,7 +108,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchViewModel>> CreateMatch(MatchUploadViewModel newMatch)
         {
             var match = await _matchService.PostMatchAsync(newMatch);
-            return CreatedAtAction("CreateMatch", match);
+            return CreatedAtAction(nameof(CreateMatch), new { matchID = match.ID }, match);
         }
 
         /// <summary>
@@ -119,8 +121,8 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult> DeleteMatchCascade(int matchID)
         {
-            await _matchService.DeleteMatchCascadeAsync(matchID);
-            return NoContent();
+            var res = await _matchService.DeleteMatchCascadeAsync(matchID);
+            return Ok(res);
         }
 
 
@@ -137,7 +139,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
         {
             var attendance = await _teamService.AddParticipantAttendanceAsync(matchID, teamAttendanceList);
-            return CreatedAtAction("AddParticipantAttendance", attendance);
+            return CreatedAtAction(nameof(AddParticipantAttendance), attendance);
         }
     }
 }
