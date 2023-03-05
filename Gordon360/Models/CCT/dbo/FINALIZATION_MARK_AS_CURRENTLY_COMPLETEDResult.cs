@@ -5,9 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gordon360.Models.CCT
 {
-    public partial class UPDATE_CELL_PHONEResult
+    public partial class FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult
     {
-        public bool? Success { get; set; }
-        public string Message { get; set; }
     }
 }

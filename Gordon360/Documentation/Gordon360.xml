@@ -200,16 +200,20 @@
             </summary>
             <returns> All minors</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetStates">
-            <summary>
-            Return a list states.
-            </summary>
-            <returns> All states</returns>
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPRECATED_GetStates">
+             <summary>
+             Return a list states.
+             </summary>
+            
+             <remarks>DEPRECATED: Use AddressController instead</remarks>
+             <returns> All states</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetCountries">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPREACTED_GetCountries">
             <summary>
             Return a list countries.
             </summary>
+            
+            <remarks>DEPRECATED: Use AddressController instead</remarks>
             <returns> All countries</returns>
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetDepartments">
@@ -223,11 +227,6 @@
             Return a list buildings.
             </summary>
             <returns> All buildings</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ContentManagementController.GetSliderContent">
-            <summary>Get all the slider content for the dashboard slider</summary>
-            <returns>A list of all the slides for the slider</returns>
-            <remarks>Queries the database for all entries in slider table</remarks>
         </member>
         <member name="M:Gordon360.Controllers.ContentManagementController.GetBannerSlides">
             <summary>Get all the banner slides for the dashboard banner</summary>
@@ -1560,13 +1559,6 @@
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
-        </member>
-        <member name="M:Gordon360.Services.ContentManagementService.DEPRECATED_GetSliderContent">
-            <summary>
-            Fetches the dashboard slider content from the database.
-            </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-            If not returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.ContentManagementService.GetBannerSlides">
             <summary>

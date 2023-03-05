@@ -39,7 +39,6 @@ namespace Gordon360.Models.CCT
         [StringLength(5)]
         [Unicode(false)]
         public string Participation { get; set; }
-        [Required]
         [StringLength(45)]
         [Unicode(false)]
         public string ParticipationDescription { get; set; }

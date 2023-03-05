@@ -811,7 +811,7 @@
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
-   "UseSchemaFolders": false,
+   "UseSchemaFolders": true,
    "UseSpatial": false,
    "UseT4": false
 }
