@@ -68,12 +68,12 @@ namespace Gordon360.Services.RecIM
                             Name = _context.Team
                                     .FirstOrDefault(t => t.ID == st.TeamID)
                                     .Name,
-                            Win = st.Win,
-                            Loss = st.Loss,
-                            Tie = _context.SeriesTeam
-                                    .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
+                            WinCount = st.Win,
+                            LossCount = st.Loss,
+                            TieCount = _context.SeriesTeam
+                                    .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
                                     .Count() - st.Win - st.Loss
-                        }).OrderByDescending(st => st.Win).AsEnumerable()
+                        }).OrderByDescending(st => st.WinCount).AsEnumerable()
                     });
             if (active)
             {
@@ -220,8 +220,8 @@ namespace Gordon360.Services.RecIM
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
         {
             var st = _context.SeriesTeam.Find(update.ID);
-            st.Win = update.Win ?? st.Win;
-            st.Loss = update.Loss ?? st.Loss;
+            st.Win = update.WinCount ?? st.Win;
+            st.Loss = update.LossCount ?? st.Loss;
 
             await _context.SaveChangesAsync();
         }
@@ -503,7 +503,7 @@ namespace Gordon360.Services.RecIM
                 await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
                 {
                     ID = teams.Last().ID,
-                    Win = 1 //Buy round
+                    WinCount = 1 //Buy round
                 });
                 teams = teams.Take(--remainingTeamCount);
                 numBuys++;

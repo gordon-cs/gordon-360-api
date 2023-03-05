@@ -195,8 +195,8 @@ namespace Gordon360.Services.RecIM
                                     .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
                                     .Select(st => new TeamRecordViewModel
                                     {
-                                        Win = st.Win,
-                                        Loss = st.Loss,
+                                        WinCount = st.Win,
+                                        LossCount = st.Loss,
                                     })
                             })
                         });

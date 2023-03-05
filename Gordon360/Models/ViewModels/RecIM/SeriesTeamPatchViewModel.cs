@@ -7,9 +7,9 @@ namespace Gordon360.Models.ViewModels.RecIM
     public class SeriesTeamPatchViewModel
     {
         public int ID { get; set; }
-        public int? Win { get; set; }
-        public int? Loss { get; set; }
-        public int? Tie { get; set; }
+        public int? WinCount { get; set; }
+        public int? LossCount { get; set; }
+        public int? TieCount { get; set; }
 
     }
 }

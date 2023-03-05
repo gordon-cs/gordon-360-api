@@ -3,7 +3,7 @@ using System;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class ParticipantStatusViewModel
+    public class ParticipantStatusHistoryViewModel
     {
         public int ID { get; set; }
         public string ParticipantUsername { get; set; }
@@ -11,9 +11,9 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
-        public static implicit operator ParticipantStatusViewModel(ParticipantStatusHistory s)
+        public static implicit operator ParticipantStatusHistoryViewModel(ParticipantStatusHistory s)
         {
-            return new ParticipantStatusViewModel
+            return new ParticipantStatusHistoryViewModel
             {
                 ID = s.ID,
                 ParticipantUsername = s.ParticipantUsername,

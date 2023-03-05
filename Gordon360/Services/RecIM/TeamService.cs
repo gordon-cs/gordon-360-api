@@ -97,16 +97,16 @@ namespace Gordon360.Services.RecIM
                                             {
                                                 ID = st.ID,
                                                 Name = t.Name,
-                                                Win = st.Win,
+                                                WinCount = st.Win,
                                                 // for now Loss is calculated with query, just for no dummy data added to database
-                                                Loss = t.MatchTeam
+                                                LossCount = t.MatchTeam
                                                     .Where(mt => mt.Match.StatusID == 6
                                                     && mt.Score < _context.MatchTeam
                                                     .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
                                                     && opmt.TeamID != t.ID)
                                                     .Score)
                                                     .Count(),
-                                                Tie = t.MatchTeam
+                                                TieCount = t.MatchTeam
                                                     .Where(mt => mt.Match.StatusID == 6 //completed status
                                                     && mt.Score == _context.MatchTeam
                                                     .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
@@ -114,7 +114,7 @@ namespace Gordon360.Services.RecIM
                                                     .Score)
                                                     .Count(),
                                             }).AsEnumerable(),
-                    Sportsmanship = _context.Match
+                    SportsmanshipRating = _context.Match
                                     .Where(m => m.StatusID == 6)
                                         .Join(_context.MatchTeam
                                             .Where(mt => mt.TeamID == t.ID),
@@ -201,15 +201,15 @@ namespace Gordon360.Services.RecIM
                                             {
                                                 ID = st.ID,
                                                 Name = t.Name,
-                                                Win = st.Win,
-                                                Loss = t.MatchTeam
+                                                WinCount = st.Win,
+                                                LossCount = t.MatchTeam
                                                     .Where(mt => mt.Match.StatusID == 6 // completed
                                                     && mt.Score < _context.MatchTeam
                                                     .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
                                                     && opmt.TeamID != teamID)
                                                     .Score)
                                                     .Count(),
-                                                Tie = t.MatchTeam //completed
+                                                TieCount = t.MatchTeam //completed
                                                     .Where(mt => mt.Match.StatusID == 6
                                                     && mt.Score == _context.MatchTeam
                                                     .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
@@ -217,7 +217,7 @@ namespace Gordon360.Services.RecIM
                                                     .Score)
                                                     .Count(),
                                             }).AsEnumerable(),
-                                Sportsmanship = GetTeamSportsmanshipScore(teamID)
+                                SportsmanshipRating = GetTeamSportsmanshipScore(teamID)
 
 
 
