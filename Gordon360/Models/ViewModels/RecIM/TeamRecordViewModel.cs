@@ -4,7 +4,7 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class TeamRecordViewModel
     {
-        public int ID { get; set; }
+        public int SeriesID { get; set; }
         public string Name { get; set; }
         public int WinCount { get; set; }  
         public int LossCount { get; set; }
@@ -13,7 +13,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         {
             return new TeamRecordViewModel
             {
-                ID = st.ID,
+                SeriesID = st.SeriesID,
                 Name = st.Team.Name,
                 WinCount = st.Win,
                 LossCount = st.Loss,

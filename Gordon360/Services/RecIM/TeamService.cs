@@ -93,44 +93,23 @@ namespace Gordon360.Services.RecIM
                             Role = pt.RoleType.Description,
                         }),
                     TeamRecord = t.SeriesTeam
-                                            .Select(st => new TeamRecordViewModel
-                                            {
-                                                ID = st.ID,
-                                                Name = t.Name,
-                                                WinCount = st.Win,
-                                                // for now Loss is calculated with query, just for no dummy data added to database
-                                                LossCount = t.MatchTeam
-                                                    .Where(mt => mt.Match.StatusID == 6
-                                                    && mt.Score < _context.MatchTeam
-                                                    .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
-                                                    && opmt.TeamID != t.ID)
-                                                    .Score)
-                                                    .Count(),
-                                                TieCount = t.MatchTeam
-                                                    .Where(mt => mt.Match.StatusID == 6 //completed status
-                                                    && mt.Score == _context.MatchTeam
-                                                    .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
-                                                    && opmt.TeamID != t.ID)
-                                                    .Score)
-                                                    .Count(),
-                                            }).AsEnumerable(),
+                        .Select(st => (TeamRecordViewModel)st)
+                        .AsEnumerable(),
                     SportsmanshipRating = _context.Match
-                                    .Where(m => m.StatusID == 6)
-                                        .Join(_context.MatchTeam
-                                            .Where(mt => mt.TeamID == t.ID),
-                                            m => m.ID,
-                                            mt => mt.MatchID,
-                                            (m, mt) => new { score = mt.Sportsmanship }
-                                        ).Count() == 0 
-                                        ? 5
-                                        : _context.Match
-                                    .Where(m => m.StatusID == 6)
-                                        .Join(_context.MatchTeam
-                                            .Where(mt => mt.TeamID == t.ID),
-                                            m => m.ID,
-                                            mt => mt.MatchID,
-                                            (m, mt) => new { score = mt.Sportsmanship }
-                                        ).Average(ss => ss.score) 
+                        .Where(m => m.StatusID == 6) //completed
+                            .Join(t.MatchTeam,
+                                m => m.ID,
+                                mt => mt.MatchID,
+                                (m, mt) => m
+                            ).Count() == 0 // if there are no completed matches, default sportsmanshipRating to 5
+                            ? 5
+                            : _context.Match
+                        .Where(m => m.StatusID == 6) //completed
+                            .Join(t.MatchTeam,
+                                m => m.ID,
+                                mt => mt.MatchID,
+                                (m, mt) => mt.Sportsmanship
+                            ).Average() 
                 })
                 .AsEnumerable();
             return teams;
@@ -197,26 +176,8 @@ namespace Gordon360.Services.RecIM
                                                             }
                                                 ).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam
-                                            .Select(st => new TeamRecordViewModel
-                                            {
-                                                ID = st.ID,
-                                                Name = t.Name,
-                                                WinCount = st.Win,
-                                                LossCount = t.MatchTeam
-                                                    .Where(mt => mt.Match.StatusID == 6 // completed
-                                                    && mt.Score < _context.MatchTeam
-                                                    .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
-                                                    && opmt.TeamID != teamID)
-                                                    .Score)
-                                                    .Count(),
-                                                TieCount = t.MatchTeam //completed
-                                                    .Where(mt => mt.Match.StatusID == 6
-                                                    && mt.Score == _context.MatchTeam
-                                                    .FirstOrDefault(opmt => opmt.MatchID == mt.MatchID
-                                                    && opmt.TeamID != teamID)
-                                                    .Score)
-                                                    .Count(),
-                                            }).AsEnumerable(),
+                                            .Select(st =>  (TeamRecordViewModel)st)
+                                            .AsEnumerable(),
                                 SportsmanshipRating = GetTeamSportsmanshipScore(teamID)
 
 
@@ -232,7 +193,7 @@ namespace Gordon360.Services.RecIM
                 throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
             
             var teamInvites = _context.ParticipantTeam
-                    .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2)
+                    .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2) //pending status
                     .Join(_context.Team
                         .Join(_context.Activity,
                             t => t.ActivityID,
@@ -288,7 +249,7 @@ namespace Gordon360.Services.RecIM
             var team = new Team
             {
                 Name = t.Name,
-                StatusID = 1,
+                StatusID = 1, //unconfirmed 
                 ActivityID = t.ActivityID,
                 Logo = t.Logo,
             };
@@ -298,7 +259,7 @@ namespace Gordon360.Services.RecIM
             var captain = new ParticipantTeamUploadViewModel
             {
                 Username = username,
-                RoleTypeID = 5
+                RoleTypeID = 5 //captain
             };
             await AddParticipantToTeamAsync(team.ID, captain);
 
@@ -342,18 +303,22 @@ namespace Gordon360.Services.RecIM
 
             return participantTeam;
         }
-        public async Task DeleteParticipantTeamAsync(int teamID, string username)
+        public async Task<ParticipantTeamViewModel> DeleteParticipantTeamAsync(int teamID, string username)
         {
-            var teamParticipant = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == username);
-            teamParticipant.RoleTypeID = 0;
+            var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == username);
+            participantTeam.RoleTypeID = 0;
             await _context.SaveChangesAsync();
+
+            return participantTeam;
         }
 
-        public async Task DeleteTeamCascadeAsync(int teamID)
+        public async Task<TeamViewModel> DeleteTeamCascadeAsync(int teamID)
         {
             var team = _context.Team.Find(teamID);
             team.StatusID = 0;
             await _context.SaveChangesAsync();
+
+            return team;
         }
 
         public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)

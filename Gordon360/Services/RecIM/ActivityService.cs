@@ -7,8 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph;
+
 
 namespace Gordon360.Services.RecIM
 {
@@ -149,24 +148,24 @@ namespace Gordon360.Services.RecIM
             return activity;
         }
 
-        public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel a)
+        public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity)
         {
             var activity = new Activity
             {
-                Name = a.Name,
-                Logo = a.Logo,
-                RegistrationStart = a.RegistrationStart,
-                RegistrationEnd = a.RegistrationEnd,
-                SportID = a.SportID,
+                Name = newActivity.Name,
+                Logo = newActivity.Logo,
+                RegistrationStart = newActivity.RegistrationStart,
+                RegistrationEnd = newActivity.RegistrationEnd,
+                SportID = newActivity.SportID,
                 StatusID = 1, //default set to pending status
-                MinCapacity = a.MinCapacity ?? 0,
-                MaxCapacity = a.MaxCapacity,
-                SoloRegistration = a.SoloRegistration,
+                MinCapacity = newActivity.MinCapacity ?? 0,
+                MaxCapacity = newActivity.MaxCapacity,
+                SoloRegistration = newActivity.SoloRegistration,
                 Completed = false, //default not completed
-                TypeID = a.TypeID,
-                StartDate = a.StartDate,
-                EndDate = a.EndDate,
-                SeriesScheduleID = a.SeriesScheduleID
+                TypeID = newActivity.TypeID,
+                StartDate = newActivity.StartDate,
+                EndDate = newActivity.EndDate,
+                SeriesScheduleID = newActivity.SeriesScheduleID
             };
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();

@@ -64,7 +64,7 @@ namespace Gordon360.Services.RecIM
                         .Where(st => st.SeriesID == s.ID && st.Team.StatusID != 0)
                         .Select(st => new TeamRecordViewModel
                         {
-                            ID = st.ID,
+                            SeriesID = st.ID,
                             Name = _context.Team
                                     .FirstOrDefault(t => t.ID == st.TeamID)
                                     .Name,
