@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +16,8 @@ namespace Gordon360.Services
             _context = context;
         }
 
-        public IEnumerable<States> GetAllStates()
-        {
+        public IEnumerable<States> GetAllStates() => _context.States.AsEnumerable();
 
-            return _context.States.AsEnumerable();
-        }
-
-        public IEnumerable<Countries> GetAllCountries()
-        {
-            return _context.Countries.AsEnumerable();
-        }
+        public IEnumerable<CountryViewModel> GetAllCountries() => _context.Countries.Select<Countries, CountryViewModel>(c => c);
     }
 }
