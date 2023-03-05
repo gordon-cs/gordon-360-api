@@ -108,7 +108,8 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/status")]
-        public async Task<ActionResult<ParticipantStatusViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
+        public async Task<ActionResult<ParticipantStatusHistoryViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
             var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
             return CreatedAtAction("UpdateParticipantStatus",status);

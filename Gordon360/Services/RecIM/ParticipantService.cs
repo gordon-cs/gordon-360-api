@@ -54,15 +54,11 @@ namespace Gordon360.Services.RecIM
                                 {
                                     Username = username,
                                     Email = account.Email,
-                                    Status = _context.ParticipantStatusHistory
-                                                .Where(psh => psh.ParticipantUsername == username)
+                                    Status = p.ParticipantStatusHistory
                                                 .OrderByDescending(psh => psh.ID)
-                                                .Take(1)
-                                                    .Join(_context.ParticipantStatus,
-                                                        psh => psh.StatusID,
-                                                        ps => ps.ID,
-                                                        (psh, ps) => ps.Description)
-                                                .FirstOrDefault(),
+                                                .FirstOrDefault()
+                                                .Status
+                                                .Description,
                                     Notification = _context.ParticipantNotification
                                                     .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.Now)
                                                     .OrderByDescending(pn => pn.DispatchDate)
@@ -185,7 +181,7 @@ namespace Gordon360.Services.RecIM
             return participantActivity;
         }
 
-        public async Task<ParticipantStatusViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus)
+        public async Task<ParticipantStatusHistoryViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus)
         {
             // End previous status
             var prevStatus = _context.ParticipantStatusHistory
