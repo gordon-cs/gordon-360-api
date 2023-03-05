@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     public class MatchViewModel
     {
         public int ID { get; set; }
-        public DateTime Time { get; set; }
+        public DateTime StartTime { get; set; }
         public int SurfaceID { get; set; }
         public int StatusID { get; set; }
         public int SeriesID { get; set; }
@@ -16,7 +16,7 @@ namespace Gordon360.Models.ViewModels.RecIM
             return new MatchViewModel
             {
                 ID = m.ID,
-                Time = m.Time,
+                StartTime = m.Time,
                 SurfaceID = m.SurfaceID,
                 StatusID = m.StatusID,
                 SeriesID = m.SeriesID

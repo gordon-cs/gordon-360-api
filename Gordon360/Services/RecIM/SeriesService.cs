@@ -438,7 +438,7 @@ namespace Gordon360.Services.RecIM
                 var createdMatch = await _matchService.UpdateMatchAsync(matchID,
                     new MatchPatchViewModel
                     {
-                        Time = day,
+                        StartTime = day,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
                 createdMatches.Add(createdMatch);

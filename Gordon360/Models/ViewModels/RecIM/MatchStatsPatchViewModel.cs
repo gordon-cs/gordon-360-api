@@ -8,6 +8,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int TeamID { get; set; }
         public int? StatusID { get; set; }
         public int? Score { get; set; }
-        public int? Sportsmanship { get; set; }
+        public int? SportsmanshipScore { get; set; }
     }
 }

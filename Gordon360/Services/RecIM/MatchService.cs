@@ -72,7 +72,7 @@ namespace Gordon360.Services.RecIM
                     ID = mt.MatchID,
                     Scores = mt.Match.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
-                    Time = mt.Match.Time,
+                    StartTime = mt.Match.Time,
                     Status = mt.Match.Status.Description,
                     Surface = mt.Match.Surface.Description,
                     Team = _context.MatchTeam
@@ -100,7 +100,7 @@ namespace Gordon360.Services.RecIM
                             Scores = m.MatchTeam
                                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                                         .AsEnumerable(),
-                            Time = m.Time,
+                            StartTime = m.Time,
                             Surface = m.Surface.Description,
                             Status = m.Status.Description,
                             Attendance = m.MatchParticipant
@@ -184,7 +184,7 @@ namespace Gordon360.Services.RecIM
                         .Select(m => new MatchExtendedViewModel
                         {
                             ID = m.ID,
-                            Time = m.Time,
+                            StartTime = m.Time,
                             Surface = m.Surface.Description,
                             Status = m.Status.Description,
                             Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
@@ -239,7 +239,7 @@ namespace Gordon360.Services.RecIM
         {
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;
-            teamstats.Sportsmanship = vm.Sportsmanship ?? teamstats.Sportsmanship;
+            teamstats.Sportsmanship = vm.SportsmanshipScore ?? teamstats.Sportsmanship;
             teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
             await _context.SaveChangesAsync();
             return teamstats;
@@ -249,7 +249,7 @@ namespace Gordon360.Services.RecIM
         public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.Find(matchID);
-            match.Time = vm.Time ?? match.Time;
+            match.Time = vm.StartTime ?? match.Time;
             match.StatusID = vm.StatusID ?? match.StatusID;
             match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
 
