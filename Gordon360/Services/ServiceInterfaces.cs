@@ -259,7 +259,6 @@ namespace Gordon360.Services
 
     public interface IContentManagementService
     {
-        IEnumerable<SliderViewModel> DEPRECATED_GetSliderContent();
         IEnumerable<Slider_Images> GetBannerSlides();
         Slider_Images AddBannerSlide(BannerSlidePostViewModel slide, string serverURL, string contentRootPath);
         Slider_Images DeleteBannerSlide(int slideID);
