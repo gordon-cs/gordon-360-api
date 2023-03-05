@@ -97,7 +97,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SeriesViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
             var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
-            return CreatedAtAction("UpdateSeries", series);
+            return CreatedAtAction(nameof(UpdateSeries), new { seriesID = series.ID }, series);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SeriesViewModel>> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
             var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
-            return CreatedAtAction("CreateSeries", series);
+            return CreatedAtAction(nameof(CreateSeries), new { seriesID = series.ID }, series);
         }
 
 
@@ -127,7 +127,8 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SeriesScheduleViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
         {
             var schedule = await _seriesService.PutSeriesScheduleAsync(seriesSchedule);
-            return CreatedAtAction("CreateSeriesSchedule", schedule);
+            return CreatedAtAction(nameof(CreateSeriesSchedule), new { scheduleID = schedule.ID }, schedule);
+
         }
 
         /// <summary>
@@ -140,8 +141,8 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult> DeleteSeriesCascade(int seriesID)
         {
-            await _seriesService.DeleteSeriesCascadeAsync(seriesID);
-            return NoContent();
+            var res = await _seriesService.DeleteSeriesCascadeAsync(seriesID);
+            return Ok(res);
         }
 
 
@@ -159,7 +160,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return BadRequest();
             }
-            return CreatedAtAction("ScheduleMatches", createdMatches);
+            return CreatedAtAction(nameof(ScheduleMatches), createdMatches);
         }
     }
 }
