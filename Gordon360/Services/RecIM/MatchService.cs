@@ -57,6 +57,7 @@ namespace Gordon360.Services.RecIM
                 _ => null
             };
         }
+
         /// <summary>
         /// this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
         /// within other queries. The only solution is to return each individual instance and have the original
