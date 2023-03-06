@@ -57,10 +57,11 @@ namespace Gordon360.Services.RecIM
                 _ => null
             };
         }
-
-        //this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
-        //within other queries. The only solution is to return each individual instance and have the original
-        //query handle the enumeration.
+        /// <summary>
+        /// this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
+        /// within other queries. The only solution is to return each individual instance and have the original
+        /// query handle the enumeration.
+        /// </summary>
         public MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID)
         {
             var activity = _context.Match.Find(matchID).Series.Activity;

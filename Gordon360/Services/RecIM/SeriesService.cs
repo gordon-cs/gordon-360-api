@@ -482,8 +482,8 @@ namespace Gordon360.Services.RecIM
 
         /// <summary>
         /// Goal of this function is to generate a single elimination round.
-        /// On the first possible round, this would imply handling teams with buys to ensure
-        /// that the second round will be in a power of 2 (so that no further rounds need buys). 
+        /// On the first possible round, this would imply handling teams with byes to ensure
+        /// that the second round will be in a power of 2 (so that no further rounds need byes). 
         /// 
         /// These functions may need to be modified later as there may be more efficient ways to handle scheduling
         /// with the context that surfaces need to be booked ahead of time on 25Live
@@ -493,20 +493,20 @@ namespace Gordon360.Services.RecIM
         {
             int numTeams = involvedTeams.Count();
             int remainingTeamCount = involvedTeams.Count();
-            int numBuys = 0;
+            int numByes = 0;
             var series = _context.Series.Find(involvedTeams.First().SeriesID);
 
             var teams = involvedTeams.Reverse();
 
-            while (!(((numTeams + numBuys) != 0) && (((numTeams + numBuys) & ((numTeams + numBuys) - 1)) == 0))) //while not power of 2
+            while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0))) //while not power of 2
             {
                 await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
                 {
                     ID = teams.Last().ID,
-                    WinCount = 1 //Buy round
+                    WinCount = 1 //Bye round
                 });
                 teams = teams.Take(--remainingTeamCount);
-                numBuys++;
+                numByes++;
             }
 
             var teamPairings = EliminationRoundTeamPairsAsync(teams);
@@ -525,7 +525,7 @@ namespace Gordon360.Services.RecIM
             }
             return new EliminationRound
             {
-                TeamsInNextRound = teamPairings.Count() + numBuys,
+                TeamsInNextRound = teamPairings.Count() + numByes,
                 Match = matches
             };
         }
