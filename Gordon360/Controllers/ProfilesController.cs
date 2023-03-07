@@ -3,6 +3,7 @@ using Gordon360.Enums;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -130,8 +131,15 @@ namespace Gordon360.Controllers
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
-
-            return Ok(strengths?.Themes ?? Array.Empty<string>());
+            if (strengths is null)
+            {
+                return Ok(Array.Empty<string>());
+            }
+            
+            var authenticatedUserName = AuthUtils.GetUsername(User);
+            return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
+                ? Ok(strengths.Themes)
+                : Ok(Array.Empty<string>());
         }
 
 
@@ -145,8 +153,15 @@ namespace Gordon360.Controllers
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
-
-            return Ok(strengths);
+            if (strengths is null)
+            {
+                return Ok(null);
+            }
+            
+            var authenticatedUserName = AuthUtils.GetUsername(User);
+            return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
+                ? Ok(strengths)
+                : Ok(null);
         }
 
         /// <summary>Toggle privacy of the current user's Clifton Strengths</summary>
