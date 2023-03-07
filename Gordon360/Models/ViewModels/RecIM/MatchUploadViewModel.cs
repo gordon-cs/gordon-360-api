@@ -10,5 +10,15 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int SeriesID { get; set; }
         public int? SurfaceID { get; set; }
         public IEnumerable<int> TeamIDs { get; set; }
+        public Match ToMatch()
+        {
+            return new Match
+            {
+                SeriesID = this.SeriesID,
+                Time = this.StartTime,
+                SurfaceID = this.SurfaceID ?? 1, //unknown surface id
+                StatusID = 1 //default unconfirmed
+            };
+        }
     }
 }

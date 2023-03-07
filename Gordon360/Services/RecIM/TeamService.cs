@@ -191,25 +191,16 @@ namespace Gordon360.Services.RecIM
             var participantStatus = _participantService.GetParticipantByUsername(username).Status;
             if (participantStatus == "Banned" || participantStatus == "Suspended") 
                 throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
-            
+
             var teamInvites = _context.ParticipantTeam
                     .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID == 2) //pending status
-                    .Join(_context.Team
-                        .Join(_context.Activity,
-                            t => t.ActivityID,
-                            a => a.ID,
-                            (t, a) => new TeamExtendedViewModel
-                            {
-                                ID = t.ID,
-                                Activity = a,
-                                Name = t.Name,
-                                Logo = t.Logo,
-                            }
-                        ),
-                        pt => pt.TeamID,
-                        t => t.ID,
-                        (pt, t) => t
-                    )
+                    .Select(pt => new TeamExtendedViewModel
+                    {
+                        ID = pt.Team.ID,
+                        Activity = pt.Team.Activity,
+                        Name = pt.Team.Name,
+                        Logo = pt.Team.Logo
+                    })
                     .AsEnumerable();
 
             return teamInvites;
@@ -236,23 +227,17 @@ namespace Gordon360.Services.RecIM
             return participantTeam;
         }
 
-        public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel t, string username)
+        public async Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username)
         {
             var participantStatus = _participantService.GetParticipantByUsername(username).Status;
             if (participantStatus == "Banned" || participantStatus == "Suspended")
                 throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
             
-            if(_context.Activity.Find(t.ActivityID).Team.Any(team => team.Name == t.Name))
+            if(_context.Activity.Find(newTeam.ActivityID).Team.Any(team => team.Name == newTeam.Name))
                 throw new UnprocessibleEntity
-                { ExceptionMessage = $"Team name {t.Name} has already been taken by another team in this activity" };
+                { ExceptionMessage = $"Team name {newTeam.Name} has already been taken by another team in this activity" };
 
-            var team = new Team
-            {
-                Name = t.Name,
-                StatusID = 1, //unconfirmed 
-                ActivityID = t.ActivityID,
-                Logo = t.Logo,
-            };
+            var team = newTeam.ToTeam();
             await _context.Team.AddAsync(team);
             await _context.SaveChangesAsync();
 
@@ -263,7 +248,7 @@ namespace Gordon360.Services.RecIM
             };
             await AddParticipantToTeamAsync(team.ID, captain);
 
-            var existingSeries = _context.Series.Where(s => s.ActivityID == t.ActivityID).OrderBy(s => s.StartDate)?.FirstOrDefault();
+            var existingSeries = _context.Series.Where(s => s.ActivityID == newTeam.ActivityID).OrderBy(s => s.StartDate)?.FirstOrDefault();
             if (existingSeries is not null) {
                 var seriesTeam = new SeriesTeam
                 {

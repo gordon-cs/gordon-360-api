@@ -104,16 +104,8 @@ namespace Gordon360.Services.RecIM
 
             // inherit activity series schedule id if own scheduleID is null
             var activityInheritiedSeriesScheduleID = activity.SeriesScheduleID ?? 0;
-            var series = new Series
-            {
-                Name = newSeries.Name,
-                StartDate = newSeries.StartDate,
-                EndDate = newSeries.EndDate,
-                ActivityID = newSeries.ActivityID,
-                TypeID = newSeries.TypeID,
-                StatusID = 1, //default unconfirmed series
-                ScheduleID = newSeries.ScheduleID ?? activityInheritiedSeriesScheduleID //updated when admin is ready to set up the schedule
-            };
+            var series = newSeries.ToSeries(activityInheritiedSeriesScheduleID);
+
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
 
@@ -143,8 +135,8 @@ namespace Gordon360.Services.RecIM
 
         public SeriesScheduleViewModel GetSeriesScheduleByID(int seriesID)
         {
-            int scheduleID = _context.Series.FirstOrDefault(s => s.ID == seriesID)?.ScheduleID ?? 0;
-            return _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == scheduleID);
+            int scheduleID = _context.Series.Find(seriesID)?.ScheduleID ?? 0;
+            return _context.SeriesSchedule.Find(scheduleID);
         }
 
         public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)

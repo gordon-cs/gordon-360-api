@@ -150,23 +150,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity)
         {
-            var activity = new Activity
-            {
-                Name = newActivity.Name,
-                Logo = newActivity.Logo,
-                RegistrationStart = newActivity.RegistrationStart,
-                RegistrationEnd = newActivity.RegistrationEnd,
-                SportID = newActivity.SportID,
-                StatusID = 1, //default set to pending status
-                MinCapacity = newActivity.MinCapacity ?? 0,
-                MaxCapacity = newActivity.MaxCapacity,
-                SoloRegistration = newActivity.SoloRegistration,
-                Completed = false, //default not completed
-                TypeID = newActivity.TypeID,
-                StartDate = newActivity.StartDate,
-                EndDate = newActivity.EndDate,
-                SeriesScheduleID = newActivity.SeriesScheduleID
-            };
+            var activity = newActivity.ToActivity();
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
 

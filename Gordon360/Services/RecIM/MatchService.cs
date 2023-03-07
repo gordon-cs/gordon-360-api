@@ -207,13 +207,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel newMatch)
         {
-            var match = new Match
-            {
-                SeriesID = newMatch.SeriesID,
-                Time = newMatch.StartTime,
-                SurfaceID = newMatch.SurfaceID ?? 1, //unknown surface id
-                StatusID = 1 //default unconfirmed
-            };
+            var match = newMatch.ToMatch();
             await _context.Match.AddAsync(match);
 
             foreach (var teamID in newMatch.TeamIDs)
