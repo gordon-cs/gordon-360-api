@@ -194,7 +194,8 @@ namespace Gordon360.Services.RecIM
         public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity)
         {
             var activity = newActivity.ToActivity();
-
+            
+            // UNTESTED FEATURE
             if (activity.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
