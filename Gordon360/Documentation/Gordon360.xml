@@ -744,6 +744,13 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchAttendance(System.Int32)">
+            <summary>
+            Get's current match attendance for a specified match
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchByID(System.Int32)">
             <summary>
             Fetches Match by MatchID
@@ -2200,6 +2207,13 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
+            <summary>
+            this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
+            within other queries. The only solution is to return each individual instance and have the original
+            query handle the enumeration.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32)">
             <summary>
             Scheduler does not currently handle overlaps
@@ -2213,8 +2227,8 @@
         <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam})">
             <summary>
             Goal of this function is to generate a single elimination round.
-            On the first possible round, this would imply handling teams with buys to ensure
-            that the second round will be in a power of 2 (so that no further rounds need buys). 
+            On the first possible round, this would imply handling teams with byes to ensure
+            that the second round will be in a power of 2 (so that no further rounds need byes). 
             
             These functions may need to be modified later as there may be more efficient ways to handle scheduling
             with the context that surfaces need to be booked ahead of time on 25Live

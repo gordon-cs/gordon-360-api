@@ -267,6 +267,28 @@ namespace Gordon360.Services.RecIM
             return match;
         }
 
+        public IEnumerable<ParticipantAttendanceViewModel> GetMatchAttendance(int matchID)
+        {
+            var match = _context.Match.Find(matchID);
+            var res = new List<ParticipantAttendanceViewModel>();
+            if (match is null) return res;
+
+            foreach(MatchTeam mt in match.MatchTeam)
+            {
+                var attendance = _context.MatchParticipant
+                    .Where(mp => mp.TeamID == mt.TeamID && mp.MatchID == mt.MatchID)
+                    .Select(a => (MatchAttendance)a);
+
+                res.Add(new ParticipantAttendanceViewModel
+                {
+                    TeamID = mt.TeamID,
+                    Attendance = attendance,
+                });
+
+            }
+            return res;
+        }
+
         public async Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID)
         {
             //deletematch
