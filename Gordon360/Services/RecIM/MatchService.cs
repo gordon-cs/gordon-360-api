@@ -100,7 +100,16 @@ namespace Gordon360.Services.RecIM
                         {
                             ID = matchID,
                             Scores = m.MatchTeam
-                                        .Select(mt => (TeamMatchHistoryViewModel)mt)
+                                        .Select(mt => new TeamMatchHistoryViewModel
+                                        {
+                                            TeamID = mt.TeamID,
+                                            MatchID = mt.MatchID,
+                                            TeamScore = mt.Score,
+                                            Status = mt.Status.Description,
+                                            MatchStatusID = mt.Match.StatusID,
+                                            MatchStartTime = mt.Match.Time,
+                                            SportsmanshipRating = mt.Sportsmanship
+                                        })
                                         .AsEnumerable(),
                             StartTime = m.Time,
                             Surface = m.Surface.Description,
@@ -125,13 +134,53 @@ namespace Gordon360.Services.RecIM
                                         Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                         Role = pt.RoleType.Description
                                     }),
+                                MatchHistory = _context.MatchTeam.Where(_mt => _mt.ID == mt.ID)
+                                    .Join(
+                                        _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
+                                        own_mt => own_mt.MatchID,
+                                        other_mt => other_mt.MatchID,
+                                        (own_mt, other_mt) => new TeamMatchHistoryViewModel
+                                        {
+                                            TeamID = own_mt.TeamID,
+                                            MatchID = own_mt.MatchID,
+                                            Opponent = other_mt.Team,
+                                            TeamScore = own_mt.Score,
+                                            OpposingTeamScore = other_mt.Score,
+                                            MatchStatusID = own_mt.Match.StatusID,
+                                            MatchStartTime = own_mt.Match.Time,
+                                        }
+                                    ),
+                                /*
                                 MatchHistory = GetMatchHistoryByTeamID(mt.TeamID)
                                     .OrderByDescending(mh => mh.MatchStartTime)
                                     .Take(5),
+                                */
                                 TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
                             })
                         }).FirstOrDefault();
             return match;
+        }
+        
+        private TeamMatchHistoryViewModel GetMatchHistoryByID(int matchTeamID)
+        {
+            var originalMatchTeam = _context.MatchTeam.Find(matchTeamID);
+            var matchHistory = _context.MatchTeam.Where(_mt => _mt.ID == matchTeamID)
+                .Join(
+                    _context.MatchTeam.Where(o_mt => o_mt.TeamID != originalMatchTeam.TeamID),
+                    own_mt => own_mt.MatchID,
+                    other_mt => other_mt.MatchID,
+                    (own_mt, other_mt) => new TeamMatchHistoryViewModel
+                    {
+                        TeamID = own_mt.TeamID,
+                        MatchID = own_mt.MatchID,
+                        Opponent = other_mt.Team,
+                        TeamScore = own_mt.Score,
+                        OpposingTeamScore = other_mt.Score,
+                        MatchStatusID = own_mt.Match.StatusID,
+                        MatchStartTime = own_mt.Match.Time,
+                    }
+                ).FirstOrDefault();
+            return matchHistory;
         }
 
         public IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID)
