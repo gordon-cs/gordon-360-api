@@ -49,7 +49,8 @@ namespace Gordon360.Services.RecIM
                 Rules = newSport.Rules,
                 Logo = newSport.Logo
             };
-
+            
+            // UNTESTED FEATURE
             if (sport.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
@@ -76,7 +77,8 @@ namespace Gordon360.Services.RecIM
             sport.Name = updatedSport.Name ?? sport.Name;
             sport.Description = updatedSport.Description ?? sport.Description;
             sport.Rules = updatedSport.Rules ?? sport.Rules;
-
+            
+            // UNTESTED FEATURE
             if (updatedSport.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
