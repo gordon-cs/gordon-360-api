@@ -6,7 +6,11 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace Gordon360.Services.RecIM
@@ -15,11 +19,15 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly ISeriesService _seriesService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ServerUtils _serverUtils;
 
-        public ActivityService(CCTContext context, ISeriesService seriesService)
+        public ActivityService(CCTContext context, ISeriesService seriesService, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _context = context;
             _seriesService = seriesService;
+            _webHostEnvironment = webHostEnvironment;
+            _serverUtils = serverUtils;
         }
 
         public IEnumerable<LookupViewModel>? GetActivityLookup(string type)
@@ -130,7 +138,6 @@ namespace Gordon360.Services.RecIM
             if (activity.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Activity has been deleted" };
 
             activity.Name = updatedActivity.Name ?? activity.Name;
-            activity.Logo = updatedActivity.Logo ?? activity.Logo;
             activity.RegistrationStart = updatedActivity.RegistrationStart ?? activity.RegistrationStart;
             activity.RegistrationEnd = updatedActivity.RegistrationEnd ?? activity.RegistrationEnd;
             activity.SportID = updatedActivity.SportID ?? activity.SportID;
@@ -144,6 +151,41 @@ namespace Gordon360.Services.RecIM
             activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
             activity.SeriesScheduleID = updatedActivity.SeriesScheduleID ?? activity.SeriesScheduleID;
 
+            if (updatedActivity.Logo != null)
+            {
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(updatedActivity.Logo);
+
+                string? imagePath = null;
+                // If old image exists, overwrite it with new image at same path
+                if (activity.Logo != null)
+                {
+                    imagePath = GetImagePath(Path.GetFileName(activity.Logo));
+                }
+                // Otherwise, upload new image and save url to db
+                else
+                {
+                    // Use a unique alphanumeric GUID string as the file name
+                    var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                    imagePath = GetImagePath(filename);
+                    var url = GetImageURL(filename);
+                    activity.Logo = url;
+                }
+
+                ImageUtils.UploadImage(imagePath, data, format);
+            }
+
+            //If the image property is null, it means that either the user
+            //chose to remove the previous image or that there was no previous
+            //image (DeleteImage is designed to handle this).
+            else if (activity.Logo != null)
+            {
+                var imagePath = GetImagePath(Path.GetFileName(activity.Logo));
+
+                ImageUtils.DeleteImage(imagePath);
+                activity.Logo = updatedActivity.Logo; //null
+            }
+
             await _context.SaveChangesAsync();
             return activity;
         }
@@ -151,6 +193,22 @@ namespace Gordon360.Services.RecIM
         public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity)
         {
             var activity = newActivity.ToActivity();
+
+            if (activity.Logo != null)
+            {
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(activity.Logo);
+
+                // Use a unique alphanumeric GUID string as the file name
+                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                var imagePath = GetImagePath(filename);
+                var url = GetImageURL(filename);
+
+                ImageUtils.UploadImage(imagePath, data, format);
+
+                activity.Logo = url;
+            }
+
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();
 
@@ -246,6 +304,18 @@ namespace Gordon360.Services.RecIM
 
             await _context.SaveChangesAsync();
             return activity;
+        }
+        private string GetImagePath(string filename)
+        {
+            return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "recim", "activity", filename);
+        }
+
+        private string GetImageURL(string filename)
+        {
+            var serverAddress = _serverUtils.GetAddress();
+            if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
+            var url = $"{serverAddress}browseable/uploads/recim/activity/{filename}";
+            return url;
         }
     }
 }
