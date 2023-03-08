@@ -276,7 +276,7 @@ namespace Gordon360.Services.RecIM
             foreach(MatchTeam mt in match.MatchTeam)
             {
                 var attendance = _context.MatchParticipant
-                    .Where(mp => mp.TeamID == mt.TeamID && mp.MatchID == mt.TeamID)
+                    .Where(mp => mp.TeamID == mt.TeamID && mp.MatchID == mt.MatchID)
                     .Select(a => (MatchAttendance)a);
 
                 res.Add(new ParticipantAttendanceViewModel
