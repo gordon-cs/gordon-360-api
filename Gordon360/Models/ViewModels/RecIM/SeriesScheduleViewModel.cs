@@ -16,7 +16,6 @@ namespace Gordon360.Models.ViewModels.RecIM
 
         public static implicit operator SeriesScheduleViewModel(SeriesSchedule s)
         {
-            //trial implementation
             return new SeriesScheduleViewModel
             {
                 ID = s.ID,

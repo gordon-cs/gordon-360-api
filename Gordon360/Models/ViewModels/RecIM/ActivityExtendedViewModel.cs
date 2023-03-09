@@ -26,6 +26,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public IEnumerable<SeriesExtendedViewModel> Series { get; set; }
         public IEnumerable<TeamExtendedViewModel> Team { get; set; }
 
+
         public static implicit operator ActivityExtendedViewModel(Activity a)
         {
             //redundant check in case admins forget to mark activity completed
@@ -44,8 +45,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 MaxCapacity = a.MaxCapacity,
                 SoloRegistration = a.SoloRegistration,
                 Logo = a.Logo,
+                Type = a.Type?.Description,
                 Completed = completed,
-                Type = a.Type.Description,
                 StartDate = a.StartDate,
                 EndDate = a.EndDate,
                 SeriesScheduleID = a.SeriesScheduleID,

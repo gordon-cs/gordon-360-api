@@ -61,19 +61,20 @@ namespace Gordon360.Services.RecIM
                         ActivityID = s.ActivityID,
                         Match = _matchService.GetMatchesBySeriesID(s.ID),
                         TeamStanding = _context.SeriesTeam
-                        .Where(st => st.SeriesID == s.ID && st.Team.StatusID != 0)
-                        .Select(st => new TeamRecordViewModel
-                        {
-                            SeriesID = st.ID,
-                            Name = _context.Team
-                                    .FirstOrDefault(t => t.ID == st.TeamID)
-                                    .Name,
-                            WinCount = st.Win,
-                            LossCount = st.Loss,
-                            TieCount = _context.SeriesTeam
-                                    .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
-                                    .Count() - st.Win - st.Loss
-                        }).OrderByDescending(st => st.WinCount).AsEnumerable()
+                            .Where(st => st.SeriesID == s.ID && st.Team.StatusID != 0)
+                            .Select(st => new TeamRecordViewModel
+                            {
+                                SeriesID = st.ID,
+                                Name = _context.Team
+                                        .FirstOrDefault(t => t.ID == st.TeamID)
+                                        .Name,
+                                WinCount = st.Win,
+                                LossCount = st.Loss,
+                                TieCount = _context.SeriesTeam
+                                        .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
+                                        .Count() - st.Win - st.Loss
+                            }).OrderByDescending(st => st.WinCount).AsEnumerable(),
+                        Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID)
                     });
             if (active)
             {

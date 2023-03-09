@@ -390,7 +390,6 @@ namespace Gordon360.Services
             Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel match);
             Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel match);
             Task CreateMatchTeamMappingAsync(int teamID, int matchID);
-            IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID);
             Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID);
         }
     }
