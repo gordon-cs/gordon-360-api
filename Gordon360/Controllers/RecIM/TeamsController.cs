@@ -100,10 +100,11 @@ namespace Gordon360.Controllers.RecIM
             
             if(_activityService.ActivityRegistrationClosed(newTeam.ActivityID) && !_participantService.IsAdmin(username))
                 return UnprocessableEntity("Activity Registration has closed.");
-            
+
+            /* temporarily deprecated
             if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
                 return UnprocessableEntity("Activity capacity has been reached. Try again later.");
-
+            */
 
             var team = await _teamService.PostTeamAsync(newTeam, username);
             // future error handling
