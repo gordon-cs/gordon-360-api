@@ -15,6 +15,7 @@ using Microsoft.Graph;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph.TermStore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services.RecIM
 {
@@ -78,6 +79,9 @@ namespace Gordon360.Services.RecIM
                 : _context.Team;    
 
             var teams = teamQuery
+                .Include(t => t.SeriesTeam)
+                    .ThenInclude(t => t.Team)
+
                 .Select(t => new TeamExtendedViewModel
                 {
                     ID = t.ID,
@@ -118,6 +122,10 @@ namespace Gordon360.Services.RecIM
         {
             var team = _context.Team
                             .Where(t => t.ID == teamID && t.StatusID != 0)
+                            .Include(t => t.Activity)
+                                .ThenInclude(t => t.Type)
+                            .Include(t => t.SeriesTeam)
+                                .ThenInclude(t => t.Team)
                             .Select(t => new TeamExtendedViewModel
                             {
                                 ID = teamID,
@@ -126,7 +134,7 @@ namespace Gordon360.Services.RecIM
                                 Status = t.Status.Description,
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
-                                            .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)),
+                                    .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)).AsEnumerable(),
                                 Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
                                                 .Select(pt => new ParticipantExtendedViewModel
                                                 {
@@ -179,9 +187,6 @@ namespace Gordon360.Services.RecIM
                                             .Select(st =>  (TeamRecordViewModel)st)
                                             .AsEnumerable(),
                                 SportsmanshipRating = GetTeamSportsmanshipScore(teamID)
-
-
-
                             }).FirstOrDefault();
             return team;
         }

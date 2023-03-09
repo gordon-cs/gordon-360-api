@@ -66,10 +66,18 @@ namespace Gordon360.Services.RecIM
         /// </summary>
         public MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID)
         {
-            var activity = _context.Match.Find(matchID).Series.Activity;
-
             var match = _context.MatchTeam
                 .Where(mt => mt.MatchID == matchID && mt.StatusID != 0)
+                .Include(mt => mt.Status)
+                .Include(mt => mt.Match)
+                    .ThenInclude(mt => mt.Series)
+                        .ThenInclude(mt => mt.Activity)
+                .Include(mt => mt.Match)
+                    .ThenInclude(mt => mt.MatchTeam)
+                        .ThenInclude(mt => mt.Status)
+                .Include(mt => mt.Match)
+                    .ThenInclude(mt => mt.MatchTeam)
+                        .ThenInclude(mt => mt.Match)
                 .Select(mt => new MatchExtendedViewModel
                 {
                     ID = mt.MatchID,
@@ -86,7 +94,7 @@ namespace Gordon360.Services.RecIM
                             Name = mt.Team.Name,
                         })
                         .AsEnumerable(),
-                    Activity = activity,
+                    Activity = mt.Match.Series.Activity,
 
                 })
                 .FirstOrDefault();
