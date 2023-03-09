@@ -311,7 +311,9 @@ namespace Gordon360.Services.RecIM
         public async Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID)
         {
             //deletematch
-            var match = _context.Match.Find(matchID);
+            var match = _context.Match
+                .Include(m => m.MatchTeam)
+                .FirstOrDefault(m => m.ID == matchID);
             match.StatusID = 0; //deleted status
 
             //delete matchteam

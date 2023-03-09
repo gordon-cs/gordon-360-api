@@ -205,7 +205,13 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ActivityViewModel> DeleteActivityCascade(int activityID)
         {
-            var activity = _context.Activity.Find(activityID);
+            var activity = _context.Activity
+                .Include(a => a.ParticipantActivity)
+                .Include(a => a.Team)
+                .Include(a => a.Series)
+                    .ThenInclude(a => a.Match)
+                        .ThenInclude(a => a.MatchTeam)
+                .FirstOrDefault(a => a.ID == activityID);
             var participantActivity = activity.ParticipantActivity;
             var activityTeams = activity.Team;
             var activitySeries = activity.Series;

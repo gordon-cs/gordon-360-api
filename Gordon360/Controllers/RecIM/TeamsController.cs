@@ -233,7 +233,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>number of games a participant has attended for a team</returns>
         [HttpGet]
         [Route("{teamID}/attendance")]
-        public async Task<ActionResult<int>> NumberOfGamesParticipatedByParticipant(int teamID, [FromBody] string username)
+        public async Task<ActionResult<int>> NumberOfGamesParticipatedByParticipant(int teamID, string username)
         {
             var res = _teamService.ParticipantAttendanceCount(teamID, username);
             return Ok(res);

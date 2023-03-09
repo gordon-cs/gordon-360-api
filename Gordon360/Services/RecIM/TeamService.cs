@@ -313,7 +313,10 @@ namespace Gordon360.Services.RecIM
 
         public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
-            var t = await _context.Team.FindAsync(teamID);
+            var t =  _context.Team
+                .Include(t => t.Activity)
+                    .ThenInclude(t => t.Team)
+                .FirstOrDefault(t => t.ID == teamID);
             if (update.Name is not null)
             {
                 if (t.Activity.Team.Any(team => team.Name == update.Name)) 
@@ -331,7 +334,9 @@ namespace Gordon360.Services.RecIM
 
         private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
         {
-            var team = _context.Team.Find(teamID);
+            var team = _context.Team
+                .Include(t => t.Activity)
+                .FirstOrDefault(t => t.ID == teamID);
             var invitee = _accountService.GetAccountByUsername(inviteeUsername);
             var inviter = _accountService.GetAccountByUsername(inviterUsername);
             var password = _config["Emails:RecIM:Password"];

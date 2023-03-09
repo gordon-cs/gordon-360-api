@@ -240,7 +240,11 @@ namespace Gordon360.Services.RecIM
         public async Task<SeriesViewModel> DeleteSeriesCascadeAsync(int seriesID)
         {
             //delete series
-            var series = _context.Series.Find(seriesID);
+            var series = _context.Series
+                .Include(s => s.SeriesTeam)
+                .Include(s => s.Match)
+                    .ThenInclude(s => s.MatchTeam)
+                .FirstOrDefault(s => s.ID == seriesID);
             series.StatusID = 0;
 
             var seriesTeam = series.SeriesTeam;
