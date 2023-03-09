@@ -205,6 +205,7 @@ namespace Gordon360.Services.RecIM
             s.StartDate = update.StartDate ?? s.StartDate;
             s.EndDate = update.EndDate ?? s.EndDate;
             s.StatusID = update.StatusID ?? s.StatusID;
+            s.ScheduleID = update.ScheduleID ?? s.ScheduleID;
 
             await _context.SaveChangesAsync();
             return s;
