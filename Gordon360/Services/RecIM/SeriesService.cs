@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Core;
 
 
 namespace Gordon360.Services.RecIM
@@ -275,7 +276,9 @@ namespace Gordon360.Services.RecIM
         /// <returns>Created Match objects</returns>
         public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID)
         {
-            var series = _context.Series.Find(seriesID);
+            var series = _context.Series
+                .Include(s => s.Type)
+                .FirstOrDefault(s => s.ID == seriesID);
             //if the series is deleted, throw exception
             if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
 
@@ -294,12 +297,11 @@ namespace Gordon360.Services.RecIM
         private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
         {
             var createdMatches = new List<MatchViewModel>();
-            var series = _context.Series.Find(seriesID);
+            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.SeriesID == seriesID)
                 .Select(st => st.TeamID)
                 .ToList();
-
             //algorithm requires odd number of teams
             teams.Add(0);//0 is not a valid true team ID thus will act as dummy team
 
@@ -396,8 +398,12 @@ namespace Gordon360.Services.RecIM
         private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
             var createdMatches = new List<MatchViewModel>();
-            var series = _context.Series.Find(seriesID);
-            var teams = series.SeriesTeam.OrderByDescending(st => st.Win);
+            var series = _context.Series
+                .Include(s => s.Schedule)
+                .FirstOrDefault(s => s.ID == seriesID);
+            var teams = _context.SeriesTeam
+               .Where(st => st.SeriesID == seriesID)
+               .OrderByDescending(st => st.Win);
 
             SeriesScheduleViewModel schedule = series.Schedule;
 
