@@ -23,8 +23,7 @@ namespace Gordon360.Services.RecIM
 
         public SportViewModel GetSportByID(int sportID)
         {
-            return _context.Sport
-                    .FirstOrDefault(s => s.ID == sportID);
+            return _context.Sport.Find(sportID);
         }
 
         public IEnumerable<SportViewModel> GetSports()
@@ -48,7 +47,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task<SportViewModel> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport)
         {
-            var sport = _context.Sport.FirstOrDefault(s => s.ID == sportID);
+            var sport = _context.Sport.Find(sportID);
             sport.Name = updatedSport.Name ?? sport.Name;
             sport.Description = updatedSport.Description ?? sport.Description;
             sport.Rules = updatedSport.Rules ?? sport.Rules;
