@@ -18,6 +18,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Gordon360.Utilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services.RecIM
 {
@@ -85,6 +86,9 @@ namespace Gordon360.Services.RecIM
                 : _context.Team;    
 
             var teams = teamQuery
+                .Include(t => t.SeriesTeam)
+                    .ThenInclude(t => t.Team)
+
                 .Select(t => new TeamExtendedViewModel
                 {
                     ID = t.ID,
@@ -125,6 +129,10 @@ namespace Gordon360.Services.RecIM
         {
             var team = _context.Team
                             .Where(t => t.ID == teamID && t.StatusID != 0)
+                            .Include(t => t.Activity)
+                                .ThenInclude(t => t.Type)
+                            .Include(t => t.SeriesTeam)
+                                .ThenInclude(t => t.Team)
                             .Select(t => new TeamExtendedViewModel
                             {
                                 ID = teamID,
@@ -133,7 +141,7 @@ namespace Gordon360.Services.RecIM
                                 Status = t.Status.Description,
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
-                                            .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)),
+                                    .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)).AsEnumerable(),
                                 Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
                                                 .Select(pt => new ParticipantExtendedViewModel
                                                 {
@@ -186,9 +194,6 @@ namespace Gordon360.Services.RecIM
                                             .Select(st =>  (TeamRecordViewModel)st)
                                             .AsEnumerable(),
                                 SportsmanshipRating = GetTeamSportsmanshipScore(teamID)
-
-
-
                             }).FirstOrDefault();
             return team;
         }
@@ -290,7 +295,7 @@ namespace Gordon360.Services.RecIM
         public async Task<ParticipantTeamViewModel> UpdateParticipantRoleAsync(int teamID, ParticipantTeamUploadViewModel participant)
         {
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantUsername == participant.Username && pt.TeamID == teamID);
-            var roleID = participant.RoleTypeID ?? 3;
+            var roleID = participant.RoleTypeID ?? 3; //update or default to member
 
             //if user is currently requested to join and have just accepted to join the team, user should have other instances of themselves removed from other teams
             if (participantTeam.RoleTypeID == 2 && roleID == 3)
@@ -331,7 +336,10 @@ namespace Gordon360.Services.RecIM
 
         public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
         {
-            var t = await _context.Team.FindAsync(teamID);
+            var t =  _context.Team
+                .Include(t => t.Activity)
+                    .ThenInclude(t => t.Team)
+                .FirstOrDefault(t => t.ID == teamID);
             if (update.Name is not null)
             {
                 if (t.Activity.Team.Any(team => team.Name == update.Name)) 
@@ -384,7 +392,9 @@ namespace Gordon360.Services.RecIM
 
         private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
         {
-            var team = _context.Team.Find(teamID);
+            var team = _context.Team
+                .Include(t => t.Activity)
+                .FirstOrDefault(t => t.ID == teamID);
             var invitee = _accountService.GetAccountByUsername(inviteeUsername);
             var inviter = _accountService.GetAccountByUsername(inviterUsername);
             var password = _config["Emails:RecIM:Password"];

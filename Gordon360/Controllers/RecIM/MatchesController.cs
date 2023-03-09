@@ -42,6 +42,19 @@ namespace Gordon360.Controllers.RecIM
             throw new NotImplementedException();
         }
 
+       /// <summary>
+       /// Get's current match attendance for a specified match
+       /// </summary>
+       /// <param name="matchID"></param>
+       /// <returns></returns>
+        [HttpGet]
+        [Route("{matchID}/attendance")]
+        public ActionResult<IEnumerable<ParticipantAttendanceViewModel>> GetMatchAttendance(int matchID)
+        {
+            var res = _matchService.GetMatchAttendance(matchID);
+            return Ok(res);
+        }
+
         /// <summary>
         /// Fetches Match by MatchID
         /// </summary>

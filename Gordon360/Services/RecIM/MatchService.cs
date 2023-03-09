@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,10 +66,18 @@ namespace Gordon360.Services.RecIM
         /// </summary>
         public MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID)
         {
-            var activity = _context.Match.Find(matchID).Series.Activity;
-
             var match = _context.MatchTeam
                 .Where(mt => mt.MatchID == matchID && mt.StatusID != 0)
+                .Include(mt => mt.Status)
+                .Include(mt => mt.Match)
+                    .ThenInclude(mt => mt.Series)
+                        .ThenInclude(mt => mt.Activity)
+                .Include(mt => mt.Match)
+                    .ThenInclude(mt => mt.MatchTeam)
+                        .ThenInclude(mt => mt.Status)
+                .Include(mt => mt.Match)
+                    .ThenInclude(mt => mt.MatchTeam)
+                        .ThenInclude(mt => mt.Match)
                 .Select(mt => new MatchExtendedViewModel
                 {
                     ID = mt.MatchID,
@@ -77,15 +86,14 @@ namespace Gordon360.Services.RecIM
                     StartTime = mt.Match.Time,
                     Status = mt.Match.Status.Description,
                     Surface = mt.Match.Surface.Description,
-                    Team = _context.MatchTeam
-                        .Where(_mt => _mt.MatchID == mt.MatchID)
+                    Team = mt.Match.MatchTeam
                         .Select(_mt => new TeamExtendedViewModel
                         {
-                            ID = mt.TeamID,
-                            Name = mt.Team.Name,
+                            ID = _mt.TeamID,
+                            Name = _mt.Team.Name,
                         })
                         .AsEnumerable(),
-                    Activity = activity,
+                    Activity = mt.Match.Series.Activity,
 
                 })
                 .FirstOrDefault();
@@ -95,121 +103,132 @@ namespace Gordon360.Services.RecIM
         public MatchExtendedViewModel GetMatchByID(int matchID)
         {
             var match = _context.Match
-                        .Where(m => m.ID == matchID && m.StatusID != 0)
-                        .Select(m => new MatchExtendedViewModel
+                .Include(m => m.Series)
+                    .ThenInclude(m => m.Activity)
+                        .ThenInclude(m => m.Team)
+                            .ThenInclude(m => m.Activity)
+                .Include(m => m.MatchTeam)
+                    .ThenInclude(m => m.Match)
+                .Include(m => m.MatchTeam)
+                    .ThenInclude(m => m.Status)
+                .Include(m => m.MatchTeam)
+                    .ThenInclude(m => m.Team) 
+                        .ThenInclude(m => m.Status)
+                .Include(m => m.MatchTeam)
+                    .ThenInclude(m => m.Team)
+                        .ThenInclude(m => m.SeriesTeam)
+                .Where(m => m.ID == matchID && m.StatusID != 0)
+                .Select(m => new MatchExtendedViewModel
+                {
+                    ID = matchID,
+                    Scores = m.MatchTeam
+                        .Select(mt => (TeamMatchHistoryViewModel)mt)
+                        .AsEnumerable(),
+                    StartTime = m.Time,
+                    Surface = m.Surface.Description,
+                    Status = m.Status.Description,
+                    Attendance = m.MatchParticipant
+                        .Select(mp => new ParticipantExtendedViewModel
                         {
-                            ID = matchID,
-                            Scores = m.MatchTeam
-                                        .Select(mt => (TeamMatchHistoryViewModel)mt)
-                                        .AsEnumerable(),
-                            StartTime = m.Time,
-                            Surface = m.Surface.Description,
-                            Status = m.Status.Description,
-                            Attendance = m.MatchParticipant
-                                        .Select(mp => new ParticipantExtendedViewModel
-                                        {
-                                            Username = mp.ParticipantUsername
-                                        }).AsEnumerable(),
-                            Activity = m.Series.Activity,
-                            SeriesID = m.SeriesID,
-                            // Team will eventually be handled by TeamService 
-                            Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
+                            Username = mp.ParticipantUsername
+                        }).AsEnumerable(),
+                    
+                    SeriesID = m.SeriesID,
+                    // Team will eventually be handled by TeamService 
+                    Activity = _context.Activity
+                        .Where(a => a.ID == m.Series.ActivityID)
+                        .Select(a => new ActivityExtendedViewModel
+                        {
+                            ID = a.ID,
+                            Name = a.Name,
+                            Team = a.Team.Select(t => new TeamExtendedViewModel
                             {
-                                ID = mt.TeamID,
-                                Name = mt.Team.Name,
-                                Status = mt.Status.Description,
-                                Participant = mt.Team.ParticipantTeam
-                                    .Select(pt => new ParticipantExtendedViewModel
-                                    {
-                                        Username = pt.ParticipantUsername,
-                                        Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                                        Role = pt.RoleType.Description
-                                    }),
-                                MatchHistory = GetMatchHistoryByTeamID(mt.TeamID)
-                                    .OrderByDescending(mh => mh.MatchStartTime)
-                                    .Take(5),
-                                TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
+                                ID = t.ID,
+                                Activity = a,
+                                Name = t.Name,
+                                Logo = t.Logo
                             })
-                        }).FirstOrDefault();
+                        })
+                        .FirstOrDefault(),
+                    Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
+                    {
+                        ID = mt.TeamID,
+                        Name = mt.Team.Name,
+                        Status = mt.Status.Description,
+                        Participant = mt.Team.ParticipantTeam
+                            .Select(pt => new ParticipantExtendedViewModel
+                            {
+                                Username = pt.ParticipantUsername,
+                                Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
+                                Role = pt.RoleType.Description
+                            }),
+                        MatchHistory = _context.MatchTeam.Where(_mt => _mt.ID == mt.ID)
+                            .Join(
+                                _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
+                                own_mt => own_mt.MatchID,
+                                other_mt => other_mt.MatchID,
+                                (own_mt, other_mt) => new TeamMatchHistoryViewModel
+                                {
+                                    TeamID = own_mt.TeamID,
+                                    MatchID = own_mt.MatchID,
+                                    Opponent = other_mt.Team,
+                                    TeamScore = own_mt.Score,
+                                    OpposingTeamScore = other_mt.Score,
+                                    MatchStatusID = own_mt.Match.StatusID,
+                                    MatchStartTime = own_mt.Match.Time,
+                                }
+                            ),
+                        TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
+                    })
+                }).FirstOrDefault();
             return match;
         }
 
-        public IEnumerable<TeamMatchHistoryViewModel> GetMatchHistoryByTeamID(int teamID)
-        {
-            var vm = _context.Match
-                            .Join(_context.MatchTeam
-                                .Where(mt => mt.TeamID == teamID && mt.StatusID != 0) // 0 = deleted
-
-                                    .Join(
-                                        _context.MatchTeam.Where(mt => mt.TeamID != teamID),
-                                        mt0 => mt0.MatchID,
-                                        mt1 => mt1.MatchID,
-                                        (mt0, mt1) => new
-                                        {
-                                            TeamID = mt0.TeamID,
-                                            MatchID = mt0.MatchID,
-                                            Score = mt0.Score,
-                                            OpposingID = mt1.TeamID,
-                                            OpposingTeamScore = mt1.Score,
-                                            Status = mt0.Score > mt1.Score
-                                                    ? "Win"
-                                                    : mt0.Score < mt1.Score
-                                                        ? "Lose"
-                                                        : "Tie"
-                                        }),
-                                match => match.ID,
-                                matchTeamJoin => matchTeamJoin.MatchID,
-                                (match, matchTeamJoin) => new TeamMatchHistoryViewModel
-                                {
-                                    TeamID = matchTeamJoin.TeamID,
-                                    MatchID = match.ID,
-                                    Opponent = _context.Team.Where(t => t.ID == matchTeamJoin.OpposingID)
-                                        .Select(o => new TeamExtendedViewModel
-                                        {
-                                            ID = o.ID,
-                                            Name = o.Name,
-                                            Logo = o.Logo
-                                        }).FirstOrDefault(),
-                                    TeamScore = matchTeamJoin.Score,
-                                    OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
-                                    Status = matchTeamJoin.Status,
-                                    MatchStatusID = match.StatusID,
-                                    MatchStartTime = match.Time
-                                }).AsEnumerable();
-            return vm;
-        }
 
         public IEnumerable<MatchExtendedViewModel> GetMatchesBySeriesID(int seriesID)
         {
             var matches = _context.Match
-                        .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
-                        .Select(m => new MatchExtendedViewModel
-                        {
-                            ID = m.ID,
-                            StartTime = m.Time,
-                            Surface = m.Surface.Description,
-                            Status = m.Status.Description,
-                            Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
+                .Include(m => m.MatchTeam)
+                    .ThenInclude(m => m.Match)
+                .Include(m => m.MatchTeam)
+                    .ThenInclude(m => m.Status)
+                .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
+                .Select(m => new MatchExtendedViewModel
+                {
+                    ID = m.ID,
+                    Scores = m.MatchTeam
+                        .Select(mt => (TeamMatchHistoryViewModel)mt)
+                        .AsEnumerable(),
+                    StartTime = m.Time,
+                    Surface = m.Surface.Description,
+                    Status = m.Status.Description,
+                    Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
+                    {
+                        ID = mt.TeamID,
+                        Name = mt.Team.Name,
+                        TeamRecord = _context.SeriesTeam
+                            .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
+                            .Select(st => new TeamRecordViewModel
                             {
-                                ID = mt.TeamID,
-                                Name = mt.Team.Name,
-                                TeamRecord = _context.SeriesTeam
-                                    .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
-                                    .Select(st => new TeamRecordViewModel
-                                    {
-                                        WinCount = st.Win,
-                                        LossCount = st.Loss,
-                                    })
+                                WinCount = st.Win,
+                                LossCount = st.Loss,
                             })
-                        });
+                    })
+                });
             return matches;
         }
 
         public async Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel newMatch)
         {
-            var match = newMatch.ToMatch();
+            var match = new Match
+            {
+                SeriesID = newMatch.SeriesID,
+                Time = newMatch.StartTime,
+                SurfaceID = newMatch.SurfaceID ?? 1, //unknown surface id
+                StatusID = 1 //default unconfirmed
+            }; ;
             await _context.Match.AddAsync(match);
-
+            await _context.SaveChangesAsync();
             foreach (var teamID in newMatch.TeamIDs)
             {
                 await CreateMatchTeamMappingAsync(teamID, match.ID);
@@ -267,10 +286,34 @@ namespace Gordon360.Services.RecIM
             return match;
         }
 
+        public IEnumerable<ParticipantAttendanceViewModel> GetMatchAttendance(int matchID)
+        {
+            var match = _context.Match.Find(matchID);
+            var res = new List<ParticipantAttendanceViewModel>();
+            if (match is null) return res;
+
+            foreach(MatchTeam mt in match.MatchTeam)
+            {
+                var attendance = _context.MatchParticipant
+                    .Where(mp => mp.TeamID == mt.TeamID && mp.MatchID == mt.MatchID)
+                    .Select(a => (MatchAttendance)a);
+
+                res.Add(new ParticipantAttendanceViewModel
+                {
+                    TeamID = mt.TeamID,
+                    Attendance = attendance,
+                });
+
+            }
+            return res;
+        }
+
         public async Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID)
         {
             //deletematch
-            var match = _context.Match.Find(matchID);
+            var match = _context.Match
+                .Include(m => m.MatchTeam)
+                .FirstOrDefault(m => m.ID == matchID);
             match.StatusID = 0; //deleted status
 
             //delete matchteam

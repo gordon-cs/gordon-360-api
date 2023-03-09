@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services.RecIM
 {
@@ -56,26 +56,33 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<ActivityExtendedViewModel> GetActivities()
         {
             var activities = _context.Activity.Where(a => a.StatusID != 0)
-                            .Select(a => new ActivityExtendedViewModel
-                            {
-                                ID = a.ID,
-                                Name = a.Name,
-                                RegistrationStart = a.RegistrationStart,
-                                RegistrationEnd = a.RegistrationEnd,
-                                RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
-                                Sport = a.Sport,
-                                Status = a.Status.Description,
-                                MinCapacity = a.MinCapacity,
-                                MaxCapacity = a.MaxCapacity,
-                                SoloRegistration = a.SoloRegistration,
-                                Logo = a.Logo,
-                                Completed = a.Completed,
-                                Series = a.Series.Where(s => s.StatusID != 0)
-                                        .Select(s => (SeriesExtendedViewModel)s),
-                                Type = a.Type.Description,
-                                StartDate = a.StartDate,
-                                EndDate= a.EndDate,
-                            });
+                .Include(a => a.Series)
+                    .ThenInclude(a => a.Type)
+                .Include(a => a.Series)
+                    .ThenInclude(a => a.Status)
+                .Include(a => a.Series)
+                    .ThenInclude(a => a.Schedule)
+                .Select(a => new ActivityExtendedViewModel
+                {
+                    ID = a.ID,
+                    Name = a.Name,
+                    RegistrationStart = a.RegistrationStart,
+                    RegistrationEnd = a.RegistrationEnd,
+                    RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
+                    Sport = a.Sport,
+                    Status = a.Status.Description,
+                    MinCapacity = a.MinCapacity,
+                    MaxCapacity = a.MaxCapacity,
+                    SoloRegistration = a.SoloRegistration,
+                    Logo = a.Logo,
+                    Completed = a.Completed,
+                    Series = a.Series.Where(s => s.StatusID != 0)
+                            .Select(s => (SeriesExtendedViewModel)s),
+                    Type = a.Type.Description,
+                    StartDate = a.StartDate,
+                    EndDate= a.EndDate,
+                    SeriesScheduleID = a.SeriesScheduleID,
+                });
             return activities;
         }
         public IEnumerable<ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time)
@@ -100,11 +107,8 @@ namespace Gordon360.Services.RecIM
                                 RegistrationStart = a.RegistrationStart,
                                 RegistrationEnd = a.RegistrationEnd,
                                 RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
-                                Sport = _context.Sport
-                                        .FirstOrDefault(s => s.ID == a.SportID),
-                                Status = _context.ActivityStatus
-                                        .FirstOrDefault(s => s.ID == a.StatusID)
-                                        .Description,
+                                Sport = a.Sport,
+                                Status = a.Status.Description,
                                 MinCapacity = a.MinCapacity,
                                 MaxCapacity = a.MaxCapacity,
                                 SoloRegistration = a.SoloRegistration,
@@ -113,7 +117,7 @@ namespace Gordon360.Services.RecIM
                                 Type = a.Type.Description,
                                 StartDate = a.StartDate,
                                 EndDate = a.EndDate,
-                                Series = _seriesService.GetSeriesByActivityID(a.ID),
+                                Series = _seriesService.GetSeriesByActivityID(a.ID), // more expensive route with more data compared to implicit cast of GetActivities()
                                 Team = a.Team.Where(t => t.StatusID != 0)
                                     .Select(t => new TeamExtendedViewModel
                                     {
@@ -125,8 +129,8 @@ namespace Gordon360.Services.RecIM
                                             Name = a.Name
                                         },
                                         Logo = t.Logo
-                                    })
-
+                                    }),
+                                SeriesScheduleID = a.SeriesScheduleID,
                             })
                             .FirstOrDefault();
             return activity;
@@ -261,7 +265,13 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ActivityViewModel> DeleteActivityCascade(int activityID)
         {
-            var activity = _context.Activity.Find(activityID);
+            var activity = _context.Activity
+                .Include(a => a.ParticipantActivity)
+                .Include(a => a.Team)
+                .Include(a => a.Series)
+                    .ThenInclude(a => a.Match)
+                        .ThenInclude(a => a.MatchTeam)
+                .FirstOrDefault(a => a.ID == activityID);
             var participantActivity = activity.ParticipantActivity;
             var activityTeams = activity.Team;
             var activitySeries = activity.Series;

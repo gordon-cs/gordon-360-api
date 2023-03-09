@@ -17,6 +17,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int? SportsmanshipRating { get; set; }
         public static implicit operator TeamMatchHistoryViewModel(MatchTeam mt)
         {
+            var m = mt;
             return new TeamMatchHistoryViewModel
             {
                 TeamID = mt.TeamID,
