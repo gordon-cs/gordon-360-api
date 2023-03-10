@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Static.Methods;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +18,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int? SportsmanshipScore { get; set; }
         public static implicit operator TeamMatchHistoryViewModel(MatchTeam mt)
         {
-            var m = mt;
             return new TeamMatchHistoryViewModel
             {
                 TeamID = mt.TeamID,
@@ -25,7 +25,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 TeamScore = mt.Score,
                 Status = mt.Status.Description,
                 MatchStatusID = mt.Match.StatusID,
-                MatchStartTime = mt.Match.StartTime,
+                MatchStartTime = Helpers.FormatDateTimeToUtc(mt.Match.StartTime),
                 SportsmanshipScore = mt.SportsmanshipScore
             };
         }
