@@ -30,6 +30,7 @@ namespace Gordon360.Models.ViewModels.RecIM
 
         public static implicit operator ActivityExtendedViewModel(Activity a)
         {
+            if (a is null) return null;
             //redundant check in case admins forget to mark activity completed
             //or if we are looking for an end date automatically via Series.EndDate
             bool completed = !a.Completed

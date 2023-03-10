@@ -146,7 +146,6 @@ namespace Gordon360.Services.RecIM
                             Team = a.Team.Select(t => new TeamExtendedViewModel
                             {
                                 ID = t.ID,
-                                Activity = a,
                                 Name = t.Name,
                                 Logo = t.Logo
                             })
