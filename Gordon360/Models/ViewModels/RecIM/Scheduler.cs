@@ -10,4 +10,10 @@ namespace Gordon360.Models.ViewModels.RecIM
         public IEnumerable<MatchViewModel> Match { get; set; }
 
     }
+
+    public class UploadScheduleRequest
+    {
+        public int? RoundRobinMatchCapacity { get; set; }
+        public int? NumberOfLadderMatches { get; set; }
+    }
 }

@@ -855,11 +855,12 @@
             <param name="seriesID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Automatically creates Matches based on given Series
             </summary>
             <param name="seriesID"></param>
+            <param name="request"></param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
             <summary>
@@ -2214,7 +2215,7 @@
             query handle the enumeration.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32)">
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Scheduler does not currently handle overlaps
             eventually:

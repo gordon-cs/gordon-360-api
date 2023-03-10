@@ -150,12 +150,14 @@ namespace Gordon360.Controllers.RecIM
         /// Automatically creates Matches based on given Series
         /// </summary>
         /// <param name="seriesID"></param>
+        /// <param name="request">optional request data, used for additional options on autoscheduling</param>
         [HttpPost]
         [Route("{seriesID}/autoschedule")]
-        //[StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatches(int seriesID)
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatches(int seriesID, UploadScheduleRequest? request)
         {
-            var createdMatches = await _seriesService.ScheduleMatchesAsync(seriesID);
+            var req = request ?? new UploadScheduleRequest();
+            var createdMatches = await _seriesService.ScheduleMatchesAsync(seriesID, req);
             if (createdMatches is null)
             {
                 return BadRequest();
