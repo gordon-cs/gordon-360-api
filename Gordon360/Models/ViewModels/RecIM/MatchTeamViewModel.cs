@@ -21,7 +21,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 MatchID = m.MatchID,
                 StatusID = m.StatusID,
                 Score = m.Score,
-                SportsmanshipScore = m.Sportsmanship
+                SportsmanshipScore = m.SportsmanshipScore
             };
         }
 

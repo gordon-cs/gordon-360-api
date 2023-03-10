@@ -83,7 +83,7 @@ namespace Gordon360.Services.RecIM
                     ID = mt.MatchID,
                     Scores = mt.Match.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
-                    StartTime = mt.Match.Time,
+                    StartTime = mt.Match.StartTime,
                     Status = mt.Match.Status.Description,
                     Surface = mt.Match.Surface.Description,
                     Team = mt.Match.MatchTeam
@@ -124,7 +124,7 @@ namespace Gordon360.Services.RecIM
                     Scores = m.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
-                    StartTime = m.Time,
+                    StartTime = m.StartTime,
                     Surface = m.Surface.Description,
                     Status = m.Status.Description,
                     Attendance = m.MatchParticipant
@@ -175,7 +175,7 @@ namespace Gordon360.Services.RecIM
                                     TeamScore = own_mt.Score,
                                     OpposingTeamScore = other_mt.Score,
                                     MatchStatusID = own_mt.Match.StatusID,
-                                    MatchStartTime = own_mt.Match.Time,
+                                    MatchStartTime = own_mt.Match.StartTime,
                                 }
                             ),
                         TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
@@ -199,7 +199,7 @@ namespace Gordon360.Services.RecIM
                     Scores = m.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
-                    StartTime = m.Time,
+                    StartTime = m.StartTime,
                     Surface = m.Surface.Description,
                     Status = m.Status.Description,
                     Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
@@ -210,8 +210,8 @@ namespace Gordon360.Services.RecIM
                             .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
                             .Select(st => new TeamRecordViewModel
                             {
-                                WinCount = st.Win,
-                                LossCount = st.Loss,
+                                WinCount = st.WinCount,
+                                LossCount = st.LossCount,
                             })
                     })
                 });
@@ -223,7 +223,7 @@ namespace Gordon360.Services.RecIM
             var match = new Match
             {
                 SeriesID = newMatch.SeriesID,
-                Time = newMatch.StartTime,
+                StartTime = newMatch.StartTime,
                 SurfaceID = newMatch.SurfaceID ?? 1, //unknown surface id
                 StatusID = 1 //default unconfirmed
             }; ;
@@ -245,7 +245,7 @@ namespace Gordon360.Services.RecIM
                 MatchID = matchID,
                 StatusID = 2, //default confirmed
                 Score = 0,
-                Sportsmanship = 5 //default max
+                SportsmanshipScore = 5 //default max
             };
             await _context.MatchTeam.AddAsync(matchTeam);
         }
@@ -254,7 +254,7 @@ namespace Gordon360.Services.RecIM
         {
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;
-            teamstats.Sportsmanship = vm.SportsmanshipScore ?? teamstats.Sportsmanship;
+            teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
             teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
             await _context.SaveChangesAsync();
             return teamstats;
@@ -264,7 +264,7 @@ namespace Gordon360.Services.RecIM
         public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.Find(matchID);
-            match.Time = vm.StartTime ?? match.Time;
+            match.StartTime = vm.StartTime ?? match.StartTime;
             match.StatusID = vm.StatusID ?? match.StatusID;
             match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
 

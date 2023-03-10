@@ -16,7 +16,7 @@ namespace Gordon360.Models.ViewModels.RecIM
             return new MatchViewModel
             {
                 ID = m.ID,
-                StartTime = m.Time,
+                StartTime = m.StartTime,
                 SurfaceID = m.SurfaceID,
                 StatusID = m.StatusID,
                 SeriesID = m.SeriesID

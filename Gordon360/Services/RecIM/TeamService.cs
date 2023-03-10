@@ -65,7 +65,7 @@ namespace Gordon360.Services.RecIM
         {
             var sportsmanshipScores = _context.MatchTeam
                                     .Where(mt => mt.Match.StatusID == 6 && mt.TeamID == teamID) //6 is completed
-                                        .Select(mt => mt.Sportsmanship);
+                                        .Select(mt => mt.SportsmanshipScore);
             if (sportsmanshipScores.Count() == 0)
                 return 5;
 
@@ -112,7 +112,7 @@ namespace Gordon360.Services.RecIM
                             .Join(t.MatchTeam,
                                 m => m.ID,
                                 mt => mt.MatchID,
-                                (m, mt) => mt.Sportsmanship
+                                (m, mt) => mt.SportsmanshipScore
                             ).Average() 
                 })
                 .AsEnumerable();
@@ -180,7 +180,7 @@ namespace Gordon360.Services.RecIM
                                                                 OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                                                 Status = matchTeamJoin.Status,
                                                                 MatchStatusID = match.StatusID,
-                                                                MatchStartTime = match.Time
+                                                                MatchStartTime = match.StartTime
                                                             }
                                                 ).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam
@@ -259,8 +259,8 @@ namespace Gordon360.Services.RecIM
                 {
                     TeamID = team.ID,
                     SeriesID = existingSeries.ID,
-                    Win = 0,
-                    Loss = 0,
+                    WinCount = 0,
+                    LossCount = 0,
                 };
                 await _context.SeriesTeam.AddAsync(seriesTeam);
                 await _context.SaveChangesAsync();
