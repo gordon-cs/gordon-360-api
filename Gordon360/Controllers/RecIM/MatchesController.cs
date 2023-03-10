@@ -90,7 +90,7 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("surface")]
+        [Route("surfaces")]
         public ActionResult<IEnumerable<SurfaceViewModel>> GetSurfaces()
         {
             return Ok(_matchService.GetSurfaces());
@@ -102,7 +102,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="newSurface"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("surface")]
+        [Route("surfaces")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<SurfaceViewModel>> PostSurface(SurfaceUploadViewModel newSurface)
         {
@@ -118,7 +118,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="updatedSurface"></param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("surface/{surfaceID}")]
+        [Route("surfaces/{surfaceID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<SurfaceViewModel>> UpdateSurface(int surfaceID, SurfaceUploadViewModel updatedSurface)
         {
@@ -134,7 +134,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="surfaceID"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("surface/{surfaceID}")]
+        [Route("surfaces/{surfaceID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
         public ActionResult DeleteSurface(int surfaceID)
         {
