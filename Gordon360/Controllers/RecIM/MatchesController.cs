@@ -103,7 +103,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("surfaces")]
-        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SURFACE)]
         public async Task<ActionResult<SurfaceViewModel>> PostSurface(SurfaceUploadViewModel newSurface)
         {
             if (newSurface.Name is null && newSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
@@ -119,7 +119,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPatch]
         [Route("surfaces/{surfaceID}")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SURFACE)]
         public async Task<ActionResult<SurfaceViewModel>> UpdateSurface(int surfaceID, SurfaceUploadViewModel updatedSurface)
         {
             if (updatedSurface.Name is null && updatedSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
@@ -135,7 +135,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpDelete]
         [Route("surfaces/{surfaceID}")]
-        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SURFACE)]
         public async Task<ActionResult> DeleteSurface(int surfaceID)
         {
             await _matchService.DeleteSurfaceAsync(surfaceID);
