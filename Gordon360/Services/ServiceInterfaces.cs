@@ -383,6 +383,8 @@ namespace Gordon360.Services
             MatchViewModel GetSimpleMatchViewByID(int matchID);
             IEnumerable<ParticipantAttendanceViewModel> GetMatchAttendance(int matchID);
             IEnumerable<LookupViewModel>? GetMatchLookup(string type);
+            Task<SurfaceViewModel> PostSurfaceAsync(SurfaceUploadViewModel newSurface);
+            Task<SurfaceViewModel> UpdateSurfaceAsync(int surfaceID, SurfaceUploadViewModel updatedSurface);
             MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID);
             MatchExtendedViewModel GetMatchByID(int matchID);
             IEnumerable<MatchExtendedViewModel> GetMatchesBySeriesID(int seriesID);
