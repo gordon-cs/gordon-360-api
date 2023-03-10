@@ -860,7 +860,7 @@
             Automatically creates Matches based on given Series
             </summary>
             <param name="seriesID"></param>
-            <param name="request"></param>
+            <param name="request">optional request data, used for additional options on autoscheduling</param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
             <summary>
