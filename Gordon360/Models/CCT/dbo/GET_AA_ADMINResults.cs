@@ -5,9 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gordon360.Models.CCT
 {
-    public partial class FINALIZATION_UPDATECELLPHONEResult
+    public partial class GET_AA_ADMINResult
     {
-        public bool? Success { get; set; }
-        public string Message { get; set; }
+        public string AdminID { get; set; }
     }
 }

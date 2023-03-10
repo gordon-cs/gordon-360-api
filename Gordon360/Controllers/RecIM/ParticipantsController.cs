@@ -1,6 +1,8 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +16,6 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class ParticipantsController : GordonControllerBase
     {
         private readonly IParticipantService _participantService;
@@ -33,7 +34,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpGet]
-        [Route("{username}/StatusHistory")]
+        [Route("{username}/statushistory")]
         public ActionResult<IEnumerable<ParticipantStatusExtendedViewModel>> GetParticipantStatushistory(string username)
         {
             var res = _participantService.GetParticipantStatusHistory(username);
@@ -65,7 +66,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return Ok(res);
             }
-            return BadRequest();
+            return NotFound();
         }
 
         [HttpPut]
@@ -78,6 +79,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult<ParticipantExtendedViewModel>> UpdateParticipant(string username, [FromBody] bool isAdmin)
         {
             var participant = await _participantService.UpdateParticipantAsync(username,isAdmin);
@@ -96,6 +98,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/activities")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
         {
 
@@ -105,7 +108,8 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/status")]
-        public async Task<ActionResult<ParticipantStatusViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
+        public async Task<ActionResult<ParticipantStatusHistoryViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
             var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
             return CreatedAtAction("UpdateParticipantStatus",status);

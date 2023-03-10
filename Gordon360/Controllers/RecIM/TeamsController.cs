@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class TeamsController : GordonControllerBase
     {
         private readonly ITeamService _teamService;
@@ -77,7 +76,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return Ok(res);
             }
-            return BadRequest();
+            return NotFound();
         }
 
         /// <summary>
@@ -88,39 +87,35 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<TeamViewModel>> CreateTeam([FromQuery] string username, TeamUploadViewModel newTeam)
+        public async Task<ActionResult<TeamViewModel>> CreateTeam(TeamUploadViewModel newTeam)
         {
+            var username = AuthUtils.GetUsername(User);
             var activity = _activityService.GetActivityByID(newTeam.ActivityID);
             if (activity is null)
-                return UnprocessableEntity($"This activity does not exist");
-            if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
-                return UnprocessableEntity($"The activity has reached the maximum team capacity");
-            if (_teamService.HasTeamNameTaken(newTeam.ActivityID, newTeam.Name))
-                return UnprocessableEntity($"Team name {newTeam.Name} has already been taken by another team in this activity");
-           //redudant check for API as countermeasure against postman navigation around UI check, admins can make any number of teams
+                return NotFound($"This activity does not exist");
+           
+            //redudant check for API as countermeasure against postman navigation around UI check, admins can make any number of teams
             if (_teamService.HasUserJoined(newTeam.ActivityID, username) && !_participantService.IsAdmin(username))
                 return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
+            
             if(_activityService.ActivityRegistrationClosed(newTeam.ActivityID) && !_participantService.IsAdmin(username))
                 return UnprocessableEntity("Activity Registration has closed.");
+
+            /* temporarily deprecated
             if (_activityService.ActivityTeamCapacityReached(newTeam.ActivityID))
                 return UnprocessableEntity("Activity capacity has been reached. Try again later.");
+            */
 
-            try
+            var team = await _teamService.PostTeamAsync(newTeam, username);
+            // future error handling
+            // (cannot implement at the moment as we only have 4 developer accs)
+            if (team is null)
             {
-                var team = await _teamService.PostTeamAsync(newTeam, username);
-                // future error handling
-                // (cannot implement at the moment as we only have 4 developer accs)
-                if (team is null)
-                {
-                    return BadRequest($"Participant {username} already is a part of a team in this activity");
-                }
-                return CreatedAtAction("CreateTeam", team);
+                return BadRequest($"Participant {username} already is a part of a team in this activity");
             }
-            catch (Exception)
-            {
-                throw;
-            }
-            
+            return CreatedAtAction(nameof(CreateTeam), new { teamID = team.ID }, team);
+
+
         }
 
         /// <summary>
@@ -139,28 +134,46 @@ namespace Gordon360.Controllers.RecIM
             if (!_teamService.HasUserJoined(activityID, participant.Username) || _participantService.IsAdmin(inviterUsername))
             {
                 var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
-                return CreatedAtAction("AddParticipantToTeam", participantTeam);
+                return CreatedAtAction(nameof(AddParticipantToTeam), new { participantTeamID = participantTeam.ID }, participantTeam);
             }
-            else
-                return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
+
+            return UnprocessableEntity($"Participant {participant.Username} already is a part of a team in this activity");
         }
 
         /// <summary>
         /// Updates Participant role in a team
         /// </summary>
         /// <param name="teamID"></param>
-        /// <param name="participant">Default Role Value value 3 (Member)</param>
+        /// <param name="participant"></param>
         /// <returns></returns>
         [HttpPatch]
         [Route("{teamID}/participants")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateParticipantTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            
-                participant.RoleTypeID = participant.RoleTypeID ?? 3;
-                var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant);
-                return CreatedAtAction("AddParticipantToTeam", participantTeam);
-            
+            participant.RoleTypeID = participant.RoleTypeID ?? 3;
+            var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant);
+            return CreatedAtAction(nameof(UpdateParticipantTeam), new { participantTeamID = participantTeam.ID }, participantTeam);
+        }
+
+        /// <summary>
+        /// Removes team and all participants in the team
+        /// </summary>
+        /// <param name="teamID"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{teamID}")]
+        public async Task<ActionResult> DeleteTeam(int teamID)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var participantTeam = _teamService.GetParticipantTeam(teamID, username);
+            if (participantTeam is null)
+                return NotFound("The user is not part of the team.");
+            if (participantTeam.RoleTypeID != 5 || !_participantService.IsAdmin(username))
+                return Forbid($"You are not permitted to delete this team");
+
+            var res = await _teamService.DeleteTeamCascadeAsync(teamID);
+            return Ok(res);
         }
 
         /// <summary>
@@ -180,8 +193,8 @@ namespace Gordon360.Controllers.RecIM
             if (user_name != participantTeam.ParticipantUsername)
                 return Forbid($"You are not permitted to reject invitations for another participant.");
 
-            await _teamService.DeleteParticipantTeamAsync(teamID, username);
-            return NoContent();
+            var res = await _teamService.DeleteParticipantTeamAsync(teamID, username);
+            return Ok(res);
         }
 
         /// <summary>
@@ -195,16 +208,8 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<TeamViewModel>> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
-            if (team.Name is not null)
-            {
-                var activityID = _teamService.GetTeamByID(teamID).Activity.ID;
-                if (_teamService.HasTeamNameTaken(activityID, team.Name))
-                    return UnprocessableEntity($"Team name {team.Name} has already been taken by another team in this activity");
-
-            }
-
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
-            return CreatedAtAction("UpdateTeamInfo", updatedTeam);
+            return CreatedAtAction(nameof(UpdateTeamInfo), new { teamID = updatedTeam.ID }, updatedTeam);
 ;       }
 
         /// <summary>
@@ -216,15 +221,9 @@ namespace Gordon360.Controllers.RecIM
         public ActionResult<IEnumerable<TeamExtendedViewModel>> GetTeamInvites()
         {
             var username = AuthUtils.GetUsername(User);
-            try
-            {
-                var teamInvites = _teamService.GetTeamInvitesByParticipantUsername(username);
-                return Ok(teamInvites);
-            }
-            catch(Exception)
-            {
-                throw;
-            }
+  
+            var teamInvites = _teamService.GetTeamInvitesByParticipantUsername(username);
+            return Ok(teamInvites);
         }
 
         /// <summary>
@@ -235,9 +234,9 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>number of games a participant has attended for a team</returns>
         [HttpGet]
         [Route("{teamID}/attendance")]
-        public async Task<ActionResult<int>> NumberOfGamesParticipatedByParticipant(int teamID, [FromBody] string username)
+        public async Task<ActionResult<int>> NumberOfGamesParticipatedByParticipant(int teamID, string username)
         {
-            var res = _teamService.NumberOfGamesParticipatedByParticipant(teamID, username);
+            var res = _teamService.ParticipantAttendanceCount(teamID, username);
             return Ok(res);
         }
         /// <summary>
@@ -248,34 +247,30 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>The accepted TeamInviteViewModel</returns>
         [HttpPatch]
         [Route("{teamID}/invite/status")]
-        public async Task<ActionResult<ParticipantTeamViewModel?>> AcceptTeamInvite(int teamID, [FromBody]string response)
+        public async Task<ActionResult<ParticipantTeamViewModel?>> HandleTeamInvite(int teamID, [FromBody]string response)
         {
             var username = AuthUtils.GetUsername(User);
-            try
-            {
-                var invite = _teamService.GetParticipantTeam(teamID, username);
-                if (invite is null)
-                    return NotFound("You were not invited by this team.");
-                if (username != invite.ParticipantUsername)
-                    return Forbid($"You are not permitted to accept invitations for another participant.");
+            var invite = _teamService.GetParticipantTeam(teamID, username);
 
-                switch (response)
-                {
-                    case "accepted":
-                        var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,
-                            new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 }
-                            );
-                        return CreatedAtAction("AcceptTeamInvite", joinedParticipantTeam);
-                    case "rejected":
-                        await _teamService.DeleteParticipantTeamAsync(invite.TeamID, username);
-                        return Ok();
-                    default:
-                        return BadRequest("Request does not specify valid invite action");
-                }
-            }
-            catch (Exception)
+            if (invite is null)
+                return NotFound("You were not invited by this team.");
+            if (invite.RoleTypeID == 0)
+                return UnprocessableEntity("Team has been deleted");
+            if (username != invite.ParticipantUsername)
+                return Forbid($"You are not permitted to accept invitations for another participant.");
+
+            switch (response)
             {
-                throw;
+                case "accepted":
+                    var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,
+                        new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 }
+                        );
+                    return CreatedAtAction(nameof(HandleTeamInvite), new { teamParticipantID = joinedParticipantTeam.ID }, joinedParticipantTeam);
+                case "rejected":
+                    var res = await _teamService.DeleteParticipantTeamAsync(invite.TeamID, username);
+                    return Ok(res);
+                default:
+                    return BadRequest("Request does not specify valid invite action");
             }
         }
     }

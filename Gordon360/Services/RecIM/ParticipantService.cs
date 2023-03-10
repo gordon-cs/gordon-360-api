@@ -22,37 +22,29 @@ namespace Gordon360.Services.RecIM
             _accountService = accountService;
             _context = context;
         }
-        public IEnumerable<LookupViewModel> GetParticipantLookup(string type)
+
+        public IEnumerable<LookupViewModel>? GetParticipantLookup(string type)
         {
-            if (type == "status")
+            return type switch
             {
-                var res = _context.ParticipantStatus
+                "status" => _context.ParticipantStatus.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,
                                 Description = s.Description
                             })
-                            .AsEnumerable();
-                return res;
-            }
-            if (type == "activitypriv")
-            {
-                var res = _context.PrivType
+                            .AsEnumerable(),
+                "activitypriv" => _context.ParticipantStatus.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,
                                 Description = s.Description
                             })
-                            .AsEnumerable();
-                return res;
-            }
-            return null;
+                            .AsEnumerable(),
+                _ => null
+            };
         }
-        public ACCOUNT GetAccountByParticipantID(int ID)
-        {
-            return _context.ACCOUNT
-                        .FirstOrDefault(a => a.gordon_id == $"{ID}");
-        }
+
         public ParticipantExtendedViewModel GetParticipantByUsername(string username)
         {
             var account = _accountService.GetAccountByUsername(username);
@@ -62,19 +54,15 @@ namespace Gordon360.Services.RecIM
                                 {
                                     Username = username,
                                     Email = account.Email,
-                                    Status = _context.ParticipantStatusHistory
-                                                .Where(psh => psh.ParticipantUsername == username)
+                                    Status = p.ParticipantStatusHistory
                                                 .OrderByDescending(psh => psh.ID)
-                                                .Take(1)
-                                                    .Join(_context.ParticipantStatus,
-                                                        psh => psh.StatusID,
-                                                        ps => ps.ID,
-                                                        (psh, ps) => ps.Description)
-                                                .FirstOrDefault(),
+                                                .FirstOrDefault()
+                                                .Status
+                                                .Description,
                                     Notification = _context.ParticipantNotification
                                                     .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.Now)
                                                     .OrderByDescending(pn => pn.DispatchDate)
-                                                    .Select(pn => (ParticipantNotificationExtendedViewModel)pn)
+                                                    .Select(pn => (ParticipantNotificationViewModel)pn)
                                                     .AsEnumerable(),
                                     IsAdmin = p.IsAdmin
                                 })
@@ -95,6 +83,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return newNotification;
         }
+
         public IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username)
         {
             var status = _context.ParticipantStatusHistory
@@ -112,13 +101,14 @@ namespace Gordon360.Services.RecIM
                                     }).AsEnumerable();
             return status;
         }
+
         public IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username)
         {
        
             //to be handled by teamservice
             var teams = _context.ParticipantTeam
                             .Where(pt => pt.ParticipantUsername == username)
-                                .Join(_context.Team,
+                                .Join(_context.Team.Where(t => t.StatusID != 0),
                                     pt => pt.TeamID,
                                     t => t.ID,
                                     (pt, t) => new TeamExtendedViewModel
@@ -141,21 +131,13 @@ namespace Gordon360.Services.RecIM
             {
                 Username = p.Username,
                 Email = _accountService.GetAccountByUsername(p.Username).Email,
-                Status = _context.ParticipantStatusHistory
-                                                .Where(psh => psh.ParticipantUsername == p.Username)
-                                                .OrderByDescending(psh => psh.ID)
-                                                .Take(1)
-                                                    .Join(_context.ParticipantStatus,
-                                                        psh => psh.StatusID,
-                                                        ps => ps.ID,
-                                                        (psh, ps) => ps.Description)
-                                                .FirstOrDefault(),
+                Status = p.ParticipantStatusHistory.OrderByDescending(psh => psh.ID).FirstOrDefault().Status.Description,
                 IsAdmin = p.IsAdmin
             });
             return participants;
         }
 
-        public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4)
+        public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
         {
             await _context.Participant.AddAsync(new Participant
             {
@@ -175,10 +157,14 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool isAdmin)
         {
-            var participant = GetParticipantByUsername(username);
+            var participant = _context.Participant.Find(username);
             participant.IsAdmin = isAdmin;
             await _context.SaveChangesAsync();
-            return participant;
+            return new ParticipantExtendedViewModel
+            {
+                Username = participant.Username,
+                IsAdmin = participant.IsAdmin,
+            };
         }
         
         public async Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant)
@@ -195,7 +181,7 @@ namespace Gordon360.Services.RecIM
             return participantActivity;
         }
 
-        public async Task<ParticipantStatusViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus)
+        public async Task<ParticipantStatusHistoryViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus)
         {
             // End previous status
             var prevStatus = _context.ParticipantStatusHistory

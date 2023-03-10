@@ -10,20 +10,19 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int MatchID { get; set; }
         public int StatusID { get; set; }
         public int Score { get; set; }
-        public int? Sportsmanship { get; set; }
+        public int? SportsmanshipScore { get; set; }
 
         public static implicit operator MatchTeamViewModel(MatchTeam m)
         {
-            var vm = new MatchTeamViewModel
+            return new MatchTeamViewModel
             {
                 ID = m.ID,
                 TeamID = m.TeamID,
                 MatchID = m.MatchID,
                 StatusID = m.StatusID,
                 Score = m.Score,
-                Sportsmanship = m.Sportsmanship
+                SportsmanshipScore = m.Sportsmanship
             };
-            return vm;
         }
 
     }

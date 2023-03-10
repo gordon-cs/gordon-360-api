@@ -200,16 +200,20 @@
             </summary>
             <returns> All minors</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetStates">
-            <summary>
-            Return a list states.
-            </summary>
-            <returns> All states</returns>
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPRECATED_GetStates">
+             <summary>
+             Return a list states.
+             </summary>
+            
+             <remarks>DEPRECATED: Use AddressController instead</remarks>
+             <returns> All states</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetCountries">
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPREACTED_GetCountries">
             <summary>
             Return a list countries.
             </summary>
+            
+            <remarks>DEPRECATED: Use AddressController instead</remarks>
             <returns> All countries</returns>
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetDepartments">
@@ -223,11 +227,6 @@
             Return a list buildings.
             </summary>
             <returns> All buildings</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ContentManagementController.GetSliderContent">
-            <summary>Get all the slider content for the dashboard slider</summary>
-            <returns>A list of all the slides for the slider</returns>
-            <remarks>Queries the database for all entries in slider table</remarks>
         </member>
         <member name="M:Gordon360.Controllers.ContentManagementController.GetBannerSlides">
             <summary>Get all the banner slides for the dashboard banner</summary>
@@ -709,7 +708,7 @@
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivityByID(System.Int32)">
             <summary>Gets a Activity object by ID number</summary>
-             <param name="activityID">League ID Number</param>
+             <param name="activityID">Activity ID Number</param>
              <returns>
              Activity object
              </returns>
@@ -729,6 +728,13 @@
             <param name="updatedActivity"> Updated Activity Object </param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.DeleteActivityCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given ActivityID
+            </summary>
+            <param name="activityID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches(System.Nullable{System.DateTime},System.Boolean)">
             <summary>
             Not implemented (yet) might be removed
@@ -737,6 +743,13 @@
             <param name="active"></param>
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchAttendance(System.Int32)">
+            <summary>
+            Get's current match attendance for a specified match
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchByID(System.Int32)">
             <summary>
@@ -794,6 +807,20 @@
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesByID(System.Int32)">
             <summary>
             Gets specific Series
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesTypes(System.String)">
+            <summary>
+            Returns all types/statuses of a series available for selection
+            </summary>
+            <param name="type">specific series type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesSchedule(System.Int32)">
+            <summary>
+            Returns 
             </summary>
             <param name="seriesID"></param>
             <returns></returns>
@@ -883,7 +910,7 @@
             <param name="type">specified team type</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.CreateTeam(System.String,Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.CreateTeam(Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
             <summary>
             Create a new team with the requesting user set to team captain
             </summary>
@@ -904,7 +931,14 @@
             Updates Participant role in a team
             </summary>
             <param name="teamID"></param>
-            <param name="participant">Default Role Value value 3 (Member)</param>
+            <param name="participant"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeam(System.Int32)">
+            <summary>
+            Removes team and all participants in the team
+            </summary>
+            <param name="teamID"></param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeamParticipant(System.Int32,System.String)">
@@ -935,9 +969,9 @@
             </summary>
             <param name="teamID"></param>
             <param name="username"></param>
-            <returns>The accepted TeamInviteViewModel</returns>
+            <returns>number of games a participant has attended for a team</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AcceptTeamInvite(System.Int32,System.String)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.HandleTeamInvite(System.Int32,System.String)">
             <summary>
             Accept one specified team invite and true delete others from the same activity if there's any
             </summary>
@@ -1532,13 +1566,6 @@
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
-        </member>
-        <member name="M:Gordon360.Services.ContentManagementService.DEPRECATED_GetSliderContent">
-            <summary>
-            Fetches the dashboard slider content from the database.
-            </summary>
-            <returns>If found, returns a set of SliderViewModel's, based on each slide entry in the db. 
-            If not returns an empty IEnumerable.</returns>
         </member>
         <member name="M:Gordon360.Services.ContentManagementService.GetBannerSlides">
             <summary>
@@ -2180,11 +2207,28 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
+            <summary>
+            this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
+            within other queries. The only solution is to return each individual instance and have the original
+            query handle the enumeration.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32)">
+            <summary>
+            Scheduler does not currently handle overlaps
+            eventually:
+            - ensure that matches that occur within 1 hour do not share the same surface
+               unless they're in the same series
+            </summary>
+            <param name="seriesID"></param>
+            <returns>Created Match objects</returns>
+        </member>
         <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam})">
             <summary>
             Goal of this function is to generate a single elimination round.
-            On the first possible round, this would imply handling teams with buys to ensure
-            that the second round will be in a power of 2 (so that no further rounds need buys). 
+            On the first possible round, this would imply handling teams with byes to ensure
+            that the second round will be in a power of 2 (so that no further rounds need byes). 
             
             These functions may need to be modified later as there may be more efficient ways to handle scheduling
             with the context that surfaces need to be booked ahead of time on 25Live

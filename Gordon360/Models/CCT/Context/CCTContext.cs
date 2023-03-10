@@ -141,6 +141,11 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Activity>(entity =>
             {
+                entity.HasOne(d => d.SeriesSchedule)
+                    .WithMany(p => p.Activity)
+                    .HasForeignKey(d => d.SeriesScheduleID)
+                    .HasConstraintName("FK_Activity_SeriesSchedule");
+
                 entity.HasOne(d => d.Sport)
                     .WithMany(p => p.Activity)
                     .HasForeignKey(d => d.SportID)
@@ -203,7 +208,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Countries>(entity =>
             {
-                entity.ToView("Countries");
+                entity.ToView("Countries", "dbo");
 
                 entity.Property(e => e.CTY).IsFixedLength();
             });
@@ -345,7 +350,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<InvolvementOffering>(entity =>
             {
-                entity.ToView("InvolvementOffering");
+                entity.ToView("InvolvementOffering", "dbo");
 
                 entity.Property(e => e.ActivityCode).IsFixedLength();
 
@@ -423,10 +428,11 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Match>(entity =>
             {
+                entity.Property(e => e.SurfaceID).HasDefaultValueSql("((1))");
+
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.Match)
                     .HasForeignKey(d => d.SeriesID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Match_Series");
 
                 entity.HasOne(d => d.Status)
@@ -455,6 +461,12 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MatchParticipant_Participant");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany(p => p.MatchParticipant)
+                    .HasForeignKey(d => d.TeamID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_MatchParticipant_Team");
             });
 
             modelBuilder.Entity<MatchTeam>(entity =>
@@ -462,7 +474,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Match)
                     .WithMany(p => p.MatchTeam)
                     .HasForeignKey(d => d.MatchID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MatchTeam_Match");
 
                 entity.HasOne(d => d.Status)
@@ -474,7 +485,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.MatchTeam)
                     .HasForeignKey(d => d.TeamID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MatchTeam_Team");
             });
 
@@ -483,21 +493,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("MembershipView", "dbo");
 
                 entity.Property(e => e.ActivityDescription).IsFixedLength();
-            });
-
-            modelBuilder.Entity<MembershipView>(entity =>
-            {
-                entity.ToView("MembershipView");
-
-                entity.Property(e => e.ActivityCode).IsFixedLength();
-
-                entity.Property(e => e.ActivityDescription).IsFixedLength();
-
-                entity.Property(e => e.Participation).IsFixedLength();
-
-                entity.Property(e => e.ParticipationDescription).IsFixedLength();
-
-                entity.Property(e => e.SessionCode).IsFixedLength();
             });
 
             modelBuilder.Entity<Message_Rooms>(entity =>
@@ -533,13 +528,11 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.ParticipantActivity)
                     .HasForeignKey(d => d.ActivityID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantActivity_Activity");
 
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantActivity)
                     .HasForeignKey(d => d.ParticipantUsername)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantActivity_Participant");
 
                 entity.HasOne(d => d.PrivType)
@@ -578,7 +571,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantTeam)
                     .HasForeignKey(d => d.ParticipantUsername)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantTeam_Participant");
 
                 entity.HasOne(d => d.RoleType)
@@ -590,7 +582,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.ParticipantTeam)
                     .HasForeignKey(d => d.TeamID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantTeam_Team");
             });
 
@@ -613,17 +604,11 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<RequestView>(entity =>
             {
-                entity.ToView("RequestView");
-
-                entity.Property(e => e.ActivityCode).IsFixedLength();
+                entity.ToView("RequestView", "dbo");
 
                 entity.Property(e => e.ActivityDescription).IsFixedLength();
 
-                entity.Property(e => e.Participation).IsFixedLength();
-
                 entity.Property(e => e.ParticipationDescription).IsFixedLength();
-
-                entity.Property(e => e.SessionCode).IsFixedLength();
             });
 
             modelBuilder.Entity<RoomAssign>(entity =>
@@ -690,13 +675,11 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.SeriesSurface)
                     .HasForeignKey(d => d.SeriesID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SeriesSurface_Series");
 
                 entity.HasOne(d => d.Surface)
                     .WithMany(p => p.SeriesSurface)
                     .HasForeignKey(d => d.SurfaceID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SeriesSurface_Surface");
             });
 
@@ -705,13 +688,11 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Series)
                     .WithMany(p => p.SeriesTeam)
                     .HasForeignKey(d => d.SeriesID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SeriesTeam_Series");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.SeriesTeam)
                     .HasForeignKey(d => d.TeamID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_SeriesTeam_Team");
             });
 
@@ -749,7 +730,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.Activity)
                     .WithMany(p => p.Team)
                     .HasForeignKey(d => d.ActivityID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Team_Activity");
 
                 entity.HasOne(d => d.Status)

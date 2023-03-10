@@ -4,10 +4,20 @@ namespace Gordon360.Models.ViewModels.RecIM
 {
     public class TeamRecordViewModel
     {
-        public int ID { get; set; }
+        public int SeriesID { get; set; }
         public string Name { get; set; }
-        public int Win { get; set; }  
-        public int Loss { get; set; }
-        public int Tie { get; set; }
+        public int WinCount { get; set; }  
+        public int LossCount { get; set; }
+        public int TieCount { get; set; }
+        public static implicit operator TeamRecordViewModel(SeriesTeam st)
+        {
+            return new TeamRecordViewModel
+            {
+                SeriesID = st.SeriesID,
+                Name = st.Team.Name,
+                WinCount = st.Win,
+                LossCount = st.Loss,
+            };
+        }
     }
 }

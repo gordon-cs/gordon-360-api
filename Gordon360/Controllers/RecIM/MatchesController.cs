@@ -11,11 +11,12 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class MatchesController : GordonControllerBase
     {
         private readonly IMatchService _matchService;
@@ -41,6 +42,19 @@ namespace Gordon360.Controllers.RecIM
             throw new NotImplementedException();
         }
 
+       /// <summary>
+       /// Get's current match attendance for a specified match
+       /// </summary>
+       /// <param name="matchID"></param>
+       /// <returns></returns>
+        [HttpGet]
+        [Route("{matchID}/attendance")]
+        public ActionResult<IEnumerable<ParticipantAttendanceViewModel>> GetMatchAttendance(int matchID)
+        {
+            var res = _matchService.GetMatchAttendance(matchID);
+            return Ok(res);
+        }
+
         /// <summary>
         /// Fetches Match by MatchID
         /// </summary>
@@ -63,7 +77,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return Ok(res);
             }
-            return BadRequest();
+            return NotFound();
         }
 
         /// <summary>
@@ -78,7 +92,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchTeamViewModel>> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
             var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
-            return CreatedAtAction("UpdateStats", stats);
+            return CreatedAtAction(nameof(UpdateStats), new { matchTeamID = stats.ID }, stats);
         }
 
         /// <summary>
@@ -93,7 +107,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
             var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
-            return CreatedAtAction("UpdateMatch", match);
+            return CreatedAtAction(nameof(UpdateMatch), new { matchID = match.ID }, match);
         }
 
         /// <summary>
@@ -107,7 +121,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchViewModel>> CreateMatch(MatchUploadViewModel newMatch)
         {
             var match = await _matchService.PostMatchAsync(newMatch);
-            return CreatedAtAction("CreateMatch", match);
+            return CreatedAtAction(nameof(CreateMatch), new { matchID = match.ID }, match);
         }
 
         /// <summary>
@@ -117,10 +131,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpDelete]
         [Route("{matchID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult> DeleteMatchCascade(int matchID)
         {
-            await _matchService.DeleteMatchCascadeAsync(matchID);
-            return Ok();
+            var res = await _matchService.DeleteMatchCascadeAsync(matchID);
+            return Ok(res);
         }
 
 
@@ -133,11 +148,11 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPut]
         [Route("{matchID}/attendance")]
-       // [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<IEnumerable<Individual>>> AddParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
+        public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
         {
             var attendance = await _teamService.AddParticipantAttendanceAsync(matchID, teamAttendanceList);
-            return CreatedAtAction("AddParticipantAttendance", attendance);
+            return CreatedAtAction(nameof(AddParticipantAttendance), attendance);
         }
     }
 }

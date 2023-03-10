@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
 
@@ -16,5 +17,20 @@ namespace Gordon360.Models.ViewModels.RecIM
         public IEnumerable<MatchExtendedViewModel> Match { get; set; }
         public IEnumerable<TeamRecordViewModel> TeamStanding { get; set; }
         public SeriesScheduleViewModel? Schedule { get; set; }
+
+        public static implicit operator SeriesExtendedViewModel(Series s)
+        {
+            return new SeriesExtendedViewModel
+            {
+                ID = s.ID,
+                Name = s.Name,
+                StartDate = s.StartDate,
+                EndDate = s.EndDate,
+                ActivityID = s.ActivityID,
+                Type = s.Type.Description,
+                Status = s.Status.Description,
+                Schedule = s.Schedule,
+            };
+        }
     }
 }

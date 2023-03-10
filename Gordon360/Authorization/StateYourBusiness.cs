@@ -54,11 +54,11 @@ namespace Gordon360.Authorization
         private IConfiguration _config;
 
         //RecIM services
-        private ParticipantService _participantService;
-        private Gordon360.Services.RecIM.ActivityService _activityService;
-        private SeriesService _seriesService;
-        private TeamService _teamService;
-        private MatchService _matchService;
+        private IParticipantService _participantService;
+        private Services.RecIM.IActivityService _activityService;
+        private ISeriesService _seriesService;
+        private ITeamService _teamService;
+        private IMatchService _matchService;
 
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
@@ -79,11 +79,11 @@ namespace Gordon360.Authorization
             _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
 
             // set RecIM services
-            _participantService = new ParticipantService(_CCTContext, _accountService);
-            _matchService = new MatchService(_CCTContext, _accountService);
-            _teamService = new TeamService(_CCTContext, _config, _participantService, _matchService, _accountService);
-            _seriesService = new SeriesService(_CCTContext, _matchService);
-            _activityService = new Services.RecIM.ActivityService(_CCTContext, _seriesService);
+            _participantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
+            _matchService = context.HttpContext.RequestServices.GetRequiredService<IMatchService>();
+            _teamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
+            _seriesService = context.HttpContext.RequestServices.GetRequiredService<ISeriesService>();
+            _activityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
@@ -505,8 +505,11 @@ namespace Gordon360.Authorization
                 case Resource.NEWS:
                     return true;
                 case Resource.RECIM_ACTIVITY:
+                    //fallthrough
                 case Resource.RECIM_SERIES:
+                    //fallthrough
                 case Resource.RECIM_MATCH:
+                    //fallthrough
                 case Resource.RECIM_SPORT:
                     {
                         return _participantService.IsAdmin(user_name);
@@ -715,9 +718,13 @@ namespace Gordon360.Authorization
 
                         return false;
                     }
-                    
+
+                case Resource.RECIM_PARTICIPANT:
+                    //fallthrough 
                 case Resource.RECIM_ACTIVITY:
+                    //fallthrough
                 case Resource.RECIM_SERIES:
+                    //fallthrough
                 case Resource.RECIM_SPORT:
                     {
                         return _participantService.IsAdmin(user_name);
@@ -725,19 +732,25 @@ namespace Gordon360.Authorization
 
                 case Resource.RECIM_TEAM:
                     {
-                        var teamID = (int)context.ActionArguments["teamID"];
-                        return _teamService.IsTeamCaptain(user_name, teamID) || _participantService.IsAdmin(user_name);
+                        if(context.ActionArguments.TryGetValue("teamID",out object? teamID_object) && teamID_object is int teamID)
+                        {
+                            return _teamService.IsTeamCaptain(user_name, teamID) || _participantService.IsAdmin(user_name);
+                        }
+                        return false;
                     }
 
                 case Resource.RECIM_MATCH:
                     {
-                        if (context.ActionArguments["matchID"] is int matchID)
+                        if (context.ActionArguments.TryGetValue("matchID", out object? matchID_Object) && matchID_Object is int matchID)
                         {
-                        var match = _matchService.GetSimpleMatchViewByID(matchID);
-                        var series = _seriesService.GetSeriesByID(match.SeriesID);
-                        return _activityService.IsReferee(user_name, series.ActivityID) || _participantService.IsAdmin(user_name);
+                            // if admin
+                            if (_participantService.IsAdmin(user_name)) return true;
+
+                            //if ref
+                            var activityID = _CCTContext.Match.Find(matchID).Series.ActivityID;
+                            return _activityService.IsReferee(user_name, activityID);
                         }
-                        return _participantService.IsAdmin(user_name);
+                        return false;
                     }
                 default: return false;
             }
@@ -860,6 +873,16 @@ namespace Gordon360.Authorization
                             return true;
                         return false;
                     }
+                case Resource.RECIM_ACTIVITY:
+                    //fallthrough
+                case Resource.RECIM_SERIES:
+                    //fallthrough
+                case Resource.RECIM_SPORT:
+                    //fallthrough
+                case Resource.RECIM_TEAM:
+                    //fallthrough
+                case Resource.RECIM_MATCH:
+                    return _participantService.IsAdmin(user_name);
                 default: return false;
             }
         }

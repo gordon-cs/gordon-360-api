@@ -18,12 +18,14 @@ namespace Gordon360.Models.ViewModels.RecIM
         public bool SoloRegistration { get; set; }
         public string Logo { get; set; }
         public bool Completed { get; set; }
-        public int TypeID { get; set; }
+        public string Type { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public int? SeriesScheduleID { get; set; }
 
         public IEnumerable<SeriesExtendedViewModel> Series { get; set; }
         public IEnumerable<TeamExtendedViewModel> Team { get; set; }
+
 
         public static implicit operator ActivityExtendedViewModel(Activity a)
         {
@@ -43,10 +45,11 @@ namespace Gordon360.Models.ViewModels.RecIM
                 MaxCapacity = a.MaxCapacity,
                 SoloRegistration = a.SoloRegistration,
                 Logo = a.Logo,
+                Type = a.Type?.Description,
                 Completed = completed,
-                TypeID = a.TypeID,
                 StartDate = a.StartDate,
-                EndDate = a.EndDate
+                EndDate = a.EndDate,
+                SeriesScheduleID = a.SeriesScheduleID,
             };
         }
     }

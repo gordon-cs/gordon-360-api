@@ -28,6 +28,10 @@ namespace Gordon360.Exceptions
                     statusCode = HttpStatusCode.BadRequest;
                     break;
 
+                case UnprocessibleEntity:
+                    statusCode = HttpStatusCode.UnprocessableEntity;
+                    break;
+
                 // Not a custom exception
                 case UnauthorizedAccessException:
                     statusCode = HttpStatusCode.Unauthorized;

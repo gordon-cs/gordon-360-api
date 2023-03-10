@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Graph;
+using Azure.Core;
+
 
 namespace Gordon360.Services.RecIM
 {
@@ -22,64 +24,59 @@ namespace Gordon360.Services.RecIM
             _context = context;
             _matchService = matchService;
         }
-        public IEnumerable<LookupViewModel> GetSeriesLookup(string type)
+
+        public IEnumerable<LookupViewModel>? GetSeriesLookup(string type)
         {
-            if (type == "status")
+            return type switch
             {
-                var res = _context.SeriesStatus
+                "status" => _context.SeriesStatus.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
                         Description = s.Description
                     })
-                    .AsEnumerable();
-                return res;
-            }
-            if (type == "series")
-            {
-                var res = _context.SeriesType
+                    .AsEnumerable(),
+                "series" => _context.SeriesType.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
                         Description = s.Description
                     })
-                    .AsEnumerable();
-                return res;
-            }
-            return null;
+                    .AsEnumerable(),
+                _ => null
+            };
         }
+
         public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
-                            .Select(s => new SeriesExtendedViewModel
+                .Where(s => s.StatusID != 0)
+                    .Select(s => new SeriesExtendedViewModel
+                    {
+                        ID = s.ID,
+                        Name = s.Name,
+                        StartDate = s.StartDate,
+                        EndDate = s.EndDate,
+                        Type = s.Type.Description,
+                        Status = s.Status.Description,
+                        ActivityID = s.ActivityID,
+                        Match = _matchService.GetMatchesBySeriesID(s.ID),
+                        TeamStanding = _context.SeriesTeam
+                            .Where(st => st.SeriesID == s.ID && st.Team.StatusID != 0)
+                            .Select(st => new TeamRecordViewModel
                             {
-                                ID = s.ID,
-                                Name = s.Name,
-                                StartDate = s.StartDate,
-                                EndDate = s.EndDate,
-                                Type = _context.SeriesType
-                                            .FirstOrDefault(st => st.ID == s.TypeID)
-                                            .Description,
-                                Status = _context.SeriesStatus
-                                            .FirstOrDefault(ss => ss.ID == s.StatusID)
-                                            .Description,
-                                ActivityID = s.ActivityID,
-                                Match = _matchService.GetMatchBySeriesID(s.ID),
-                                TeamStanding = _context.SeriesTeam
-                                .Where(st => st.SeriesID == s.ID)
-                                .Select(st => new TeamRecordViewModel
-                                {
-                                    ID = st.ID,
-                                    Name = _context.Team
-                                            .FirstOrDefault(t => t.ID == st.TeamID)
-                                            .Name,
-                                    Win = st.Win,
-                                    Loss = st.Loss,
-                                    Tie = _context.SeriesTeam
-                                            .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
-                                            .Count() - st.Win - st.Loss
-                                }).OrderByDescending(st => st.Win).AsEnumerable()
-                            });
+                                SeriesID = st.ID,
+                                Name = _context.Team
+                                        .FirstOrDefault(t => t.ID == st.TeamID)
+                                        .Name,
+                                WinCount = st.Win,
+                                LossCount = st.Loss,
+                                TieCount = _context.SeriesTeam
+                                        .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
+                                        .Count() - st.Win - st.Loss
+                            }).OrderByDescending(st => st.WinCount).AsEnumerable(),
+                        Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID)
+                    });
             if (active)
             {
                 series = series.Where(s => s.StartDate < DateTime.Now
@@ -87,46 +84,17 @@ namespace Gordon360.Services.RecIM
             }
             return series;
         }
+
         public IEnumerable<SeriesExtendedViewModel> GetSeriesByActivityID(int activityID)
         {
-            var series = _context.Series
-                .Where(s => s.ActivityID == activityID)
-                .Select(s => new SeriesExtendedViewModel
-                {
-                    ID = s.ID,
-                    Name = s.Name,
-                    StartDate = s.StartDate,
-                    EndDate = s.EndDate,
-                    Type = _context.SeriesType
-                                .FirstOrDefault(st => st.ID == s.TypeID)
-                                .Description,
-                    Status = _context.SeriesStatus
-                                .FirstOrDefault(ss => ss.ID == s.StatusID)
-                                .Description,
-                    ActivityID = s.ActivityID,
-                    Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID),
-                    Match = _matchService.GetMatchBySeriesID(s.ID),
-                    TeamStanding = _context.SeriesTeam
-                    .Where(st => st.SeriesID == s.ID)
-                    .Select(st => new TeamRecordViewModel
-                    {
-                        ID = st.ID,
-                        Name = _context.Team
-                                .FirstOrDefault(t => t.ID == st.TeamID)
-                                .Name,
-                        Win = st.Win,
-                        Loss = st.Loss,
-                        //Tie = _context.SeriesTeam
-                        //        .Where(total => total.TeamID == st.TeamID && total.SeriesID == s.ID)
-                        //        .Count() - st.Win - (st.Loss ?? 0)
-                    }).OrderByDescending(st => st.Win).AsEnumerable()
-                });
-            return series;
+            return GetSeries().Where(s => s.ActivityID == activityID).ToList();
         }
+
         public SeriesExtendedViewModel GetSeriesByID(int seriesID)
         {
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
+
         public async Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID)
         {
             //if activity has no start date
@@ -136,16 +104,10 @@ namespace Gordon360.Services.RecIM
             // activity will inherit new end date if series ends after activity ends, OR if activity end date is null
             if (activity.EndDate is null || activity.EndDate < newSeries.EndDate) activity.EndDate = newSeries.EndDate;
 
-            var series = new Series
-            {
-                Name = newSeries.Name,
-                StartDate = newSeries.StartDate,
-                EndDate = newSeries.EndDate,
-                ActivityID = newSeries.ActivityID,
-                TypeID = newSeries.TypeID,
-                StatusID = 1, //default unconfirmed series
-                ScheduleID = newSeries.ScheduleID ?? 0 //updated when admin is ready to set up the schedule
-            };
+            // inherit activity series schedule id if own scheduleID is null
+            var activityInheritiedSeriesScheduleID = activity.SeriesScheduleID ?? 0;
+            var series = newSeries.ToSeries(activityInheritiedSeriesScheduleID);
+
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
 
@@ -166,20 +128,25 @@ namespace Gordon360.Services.RecIM
             }
             if (newSeries.NumberOfTeamsAdmitted is not null)
             {
-                teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null but 0 is to silence error
+                teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null after the if check but 0 is to silence error
             }
 
             await CreateSeriesTeamMappingAsync(teams, series.ID);
             return series;
         }
 
+        public SeriesScheduleViewModel GetSeriesScheduleByID(int seriesID)
+        {
+            int scheduleID = _context.Series.Find(seriesID)?.ScheduleID ?? 0;
+            return _context.SeriesSchedule.Find(scheduleID);
+        }
+
         public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
         {
+            //check for exact schedule existing
             var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss =>
-                ss.StartTime.Hour == seriesSchedule.DailyStartTime.Hour &&
-                ss.StartTime.Minute == seriesSchedule.DailyStartTime.Minute &&
-                ss.EndTime.Hour == seriesSchedule.DailyEndTime.Hour &&
-                ss.EndTime.Minute == seriesSchedule.DailyEndTime.Minute &&
+                ss.StartTime.TimeOfDay == seriesSchedule.DailyStartTime.TimeOfDay &&
+                ss.EndTime.TimeOfDay == seriesSchedule.DailyEndTime.TimeOfDay &&
                 ss.EstMatchTime == seriesSchedule.EstMatchTime &&
                 ss.Sun == seriesSchedule.AvailableDays.Sun &&
                 ss.Mon == seriesSchedule.AvailableDays.Mon &&
@@ -193,13 +160,17 @@ namespace Gordon360.Services.RecIM
             {
                 if (seriesSchedule.SeriesID is not null)
                 {
-                    var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                    var series = _context.Series.Find(seriesSchedule.SeriesID);
+                    //if the series is deleted, throw exception
+                    if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
+
+                    if (series != null) return existingSchedule;
                     series.ScheduleID = existingSchedule.ID;
                     await _context.SaveChangesAsync();
                 }
                 return existingSchedule;
             }
-
+            // if schedule does not exist
             var schedule = new SeriesSchedule
             {
                 Sun = seriesSchedule.AvailableDays.Sun,
@@ -218,29 +189,34 @@ namespace Gordon360.Services.RecIM
 
             if (seriesSchedule.SeriesID is not null)
             {
-                var series = _context.Series.FirstOrDefault(s => s.ID == seriesSchedule.SeriesID);
+                var series = _context.Series.Find(seriesSchedule.SeriesID);
                 series.ScheduleID = schedule.ID;
             }
             await _context.SaveChangesAsync();
             return schedule;
-
         }
+
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
-            var s = await _context.Series.FindAsync(seriesID);
+            var s = _context.Series.Find(seriesID);
+            //if the series is deleted, throw exception
+            if (s.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
+
             s.Name = update.Name ?? s.Name;
             s.StartDate = update.StartDate ?? s.StartDate;
             s.EndDate = update.EndDate ?? s.EndDate;
             s.StatusID = update.StatusID ?? s.StatusID;
+            s.ScheduleID = update.ScheduleID ?? s.ScheduleID;
 
             await _context.SaveChangesAsync();
             return s;
         }
+
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
         {
-            var st = await _context.SeriesTeam.FindAsync(update.ID);
-            st.Win = update.Win ?? st.Win;
-            st.Loss = update.Loss ?? st.Loss;
+            var st = _context.SeriesTeam.Find(update.ID);
+            st.Win = update.WinCount ?? st.Win;
+            st.Loss = update.LossCount ?? st.Loss;
 
             await _context.SaveChangesAsync();
         }
@@ -261,58 +237,68 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteSeriesCascadeAsync(int seriesID)
+        public async Task<SeriesViewModel> DeleteSeriesCascadeAsync(int seriesID)
         {
-            //delete series teams
-            var seriesTeam = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
-            _context.SeriesTeam.RemoveRange(seriesTeam);
-            //delete series surfaces
-            var seriesSurface = _context.SeriesSurface.Where(ss => ss.SeriesID == seriesID);
-            _context.SeriesSurface.RemoveRange(seriesSurface);
-            //delete matches
-            var matchIDs = _context.Match.Where(m => m.SeriesID == seriesID).Select(m => m.ID).ToList();
-            foreach (var matchID in matchIDs)
-            {
-                await _matchService.DeleteMatchCascadeAsync(matchID);
-            }
             //delete series
-            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
-            _context.Series.Remove(series);
+            var series = _context.Series
+                .Include(s => s.SeriesTeam)
+                .Include(s => s.Match)
+                    .ThenInclude(s => s.MatchTeam)
+                .FirstOrDefault(s => s.ID == seriesID);
+            series.StatusID = 0;
+
+            var seriesTeam = series.SeriesTeam;
+            var matches = series.Match;
+
+            //delete series teams (series team does not need to be fully deleted, a wipe is sufficient)
+            foreach (var st in seriesTeam)
+            {
+                st.Win = 0;
+                st.Loss = 0;
+            }
+            //delete matches
+            foreach (var match in matches)
+            {
+                //delete matchteam
+                foreach (var mt in match.MatchTeam)
+                    mt.StatusID = 0;
+                //deletematch
+                match.StatusID = 0;
+            }
+            
             await _context.SaveChangesAsync();
+            return series;
         }
 
-        // Scheduler does not currently handle overlaps
-        // eventually:
-        // - ensure that matches that occur within 1 hour do not share the same surface
-        //    unless they're in the same series
+        /// <summary>
+        /// Scheduler does not currently handle overlaps
+        /// eventually:
+        /// - ensure that matches that occur within 1 hour do not share the same surface
+        ///    unless they're in the same series
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <returns>Created Match objects</returns>
         public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request)
         {
             var series = _context.Series
-                    .FirstOrDefault(s => s.ID == seriesID);
-            var typeCode = _context.SeriesType
-                .FirstOrDefault(st =>
-                    st.ID == series.TypeID
-                ).TypeCode;
+                .Include(s => s.Type)
+                .FirstOrDefault(s => s.ID == seriesID);
+            //if the series is deleted, throw exception
+            if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
 
-            if (typeCode == "RR")
+            var typeCode = series.Type.TypeCode;
+
+            return typeCode switch
             {
-                return await ScheduleRoundRobin(seriesID, request);
-            }
-            if (typeCode == "SE")
-            {
-                return await ScheduleSingleElimination(seriesID);
-            }
-            if (typeCode == "DE")
-            {
-                return await ScheduleDoubleElimination(seriesID);
-            }
-            if (typeCode == "L")
-            {
-                return await ScheduleLadderAsync(seriesID, request);
-            }
-            return null;
+                "RR" => await ScheduleRoundRobin(seriesID, request),
+                "SE" => await ScheduleSingleElimination(seriesID),
+                "DE" => await ScheduleDoubleElimination(seriesID),
+                "L" => await ScheduleLadderAsync(seriesID, request),
+            _ => null
+            };
         }
-        private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID, UploadScheduleRequest request)
+
+         private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID, UploadScheduleRequest request)
         {
             var createdMatches = new List<MatchViewModel>();
             var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
@@ -391,14 +377,10 @@ namespace Gordon360.Services.RecIM
         private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID, UploadScheduleRequest request)
         {
             var createdMatches = new List<MatchViewModel>();
-            var teams = _context.SeriesTeam
-                .Where(st => st.ID == seriesID)
-                .Select(st => st.ID);
-            var series = _context.Series
-                .FirstOrDefault(s => s.ID == seriesID);
-            var availableSurfaces = _context.SeriesSurface
-                                        .Where(ss => ss.SeriesID == seriesID)?
-                                        .ToArray();
+            var series = _context.Series.Find(seriesID);
+            var teams = series.SeriesTeam
+                .Select(st => st.TeamID);
+            var availableSurfaces = series.SeriesSurface.ToArray();
             var surfaceIndex = 0;
             var match = new MatchUploadViewModel
             {
@@ -413,8 +395,6 @@ namespace Gordon360.Services.RecIM
             createdMatches.Add(res);
             return createdMatches;
         }
-
-        //2nd Part of Autoscheduling
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
@@ -482,16 +462,15 @@ namespace Gordon360.Services.RecIM
         private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
             var createdMatches = new List<MatchViewModel>();
-            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            var series = _context.Series
+                .Include(s => s.Schedule)
+                .FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                .Where(st => st.SeriesID == seriesID)
                .OrderByDescending(st => st.Win);
 
-            SeriesScheduleViewModel schedule = _context.SeriesSchedule
-                            .FirstOrDefault(ss => ss.ID ==
-                                _context.Series
-                                    .FirstOrDefault(s => s.ID == seriesID)
-                                    .ScheduleID);
+            SeriesScheduleViewModel schedule = series.Schedule;
+
             var availableSurfaces = _context.SeriesSurface
                                         .Where(ss => ss.SeriesID == seriesID)
                                         .ToArray();
@@ -523,7 +502,7 @@ namespace Gordon360.Services.RecIM
                 var createdMatch = await _matchService.UpdateMatchAsync(matchID,
                     new MatchPatchViewModel
                     {
-                        Time = day,
+                        StartTime = day,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
                 createdMatches.Add(createdMatch);
@@ -567,8 +546,8 @@ namespace Gordon360.Services.RecIM
 
         /// <summary>
         /// Goal of this function is to generate a single elimination round.
-        /// On the first possible round, this would imply handling teams with buys to ensure
-        /// that the second round will be in a power of 2 (so that no further rounds need buys). 
+        /// On the first possible round, this would imply handling teams with byes to ensure
+        /// that the second round will be in a power of 2 (so that no further rounds need byes). 
         /// 
         /// These functions may need to be modified later as there may be more efficient ways to handle scheduling
         /// with the context that surfaces need to be booked ahead of time on 25Live
@@ -578,20 +557,20 @@ namespace Gordon360.Services.RecIM
         {
             int numTeams = involvedTeams.Count();
             int remainingTeamCount = involvedTeams.Count();
-            int numBuys = 0;
-            var series = _context.Series.FirstOrDefault(s => s.ID == involvedTeams.First().SeriesID);
+            int numByes = 0;
+            var series = _context.Series.Find(involvedTeams.First().SeriesID);
 
             var teams = involvedTeams.Reverse();
 
-            while (!(((numTeams + numBuys) != 0) && (((numTeams + numBuys) & ((numTeams + numBuys) - 1)) == 0))) //while not power of 2
+            while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0))) //while not power of 2
             {
                 await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
                 {
                     ID = teams.Last().ID,
-                    Win = 1 //Buy round
+                    WinCount = 1 //Bye round
                 });
                 teams = teams.Take(--remainingTeamCount);
-                numBuys++;
+                numByes++;
             }
 
             var teamPairings = EliminationRoundTeamPairsAsync(teams);
@@ -610,7 +589,7 @@ namespace Gordon360.Services.RecIM
             }
             return new EliminationRound
             {
-                TeamsInNextRound = teamPairings.Count() + numBuys,
+                TeamsInNextRound = teamPairings.Count() + numByes,
                 Match = matches
             };
         }
