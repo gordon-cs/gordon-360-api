@@ -136,8 +136,9 @@ namespace Gordon360.Controllers.RecIM
         [HttpDelete]
         [Route("surfaces/{surfaceID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
-        public ActionResult DeleteSurface(int surfaceID)
+        public async Task<ActionResult> DeleteSurface(int surfaceID)
         {
+            await _matchService.DeleteSurfaceAsync(surfaceID);
             return NoContent();
         }
 

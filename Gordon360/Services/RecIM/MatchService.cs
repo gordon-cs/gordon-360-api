@@ -237,7 +237,7 @@ namespace Gordon360.Services.RecIM
             return _context.Surface.Where(s => s.ID != 0).Select(s => (SurfaceViewModel)s);
         }
 
-        public async Task DeleteSurface(int surfaceID)
+        public async Task DeleteSurfaceAsync(int surfaceID)
         {
             var surface = _context.Surface
                 .Include(s => s.Match)
