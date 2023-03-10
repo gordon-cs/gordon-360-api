@@ -385,6 +385,8 @@ namespace Gordon360.Services
             IEnumerable<LookupViewModel>? GetMatchLookup(string type);
             Task<SurfaceViewModel> PostSurfaceAsync(SurfaceUploadViewModel newSurface);
             Task<SurfaceViewModel> UpdateSurfaceAsync(int surfaceID, SurfaceUploadViewModel updatedSurface);
+            IEnumerable<SurfaceViewModel> GetSurfaces();
+            Task DeleteSurface(int surfaceID);
             MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID);
             MatchExtendedViewModel GetMatchByID(int matchID);
             IEnumerable<MatchExtendedViewModel> GetMatchesBySeriesID(int seriesID);
