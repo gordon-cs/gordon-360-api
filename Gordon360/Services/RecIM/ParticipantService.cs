@@ -60,7 +60,7 @@ namespace Gordon360.Services.RecIM
                                                 .Status
                                                 .Description,
                                     Notification = _context.ParticipantNotification
-                                                    .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.Now)
+                                                    .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.UtcNow)
                                                     .OrderByDescending(pn => pn.DispatchDate)
                                                     .Select(pn => (ParticipantNotificationViewModel)pn)
                                                     .AsEnumerable(),
@@ -77,7 +77,7 @@ namespace Gordon360.Services.RecIM
                 ParticipantUsername = username,
                 Message = notificationVM.Message,
                 EndDate = notificationVM.EndDate,
-                DispatchDate = DateTime.Now
+                DispatchDate = DateTime.UtcNow
             };
             await _context.ParticipantNotification.AddAsync(newNotification);
             await _context.SaveChangesAsync();
@@ -147,7 +147,7 @@ namespace Gordon360.Services.RecIM
             {
                 ParticipantUsername = username,
                 StatusID = statusID ?? 4, //default to cleared
-                StartDate = DateTime.Now,
+                StartDate = DateTime.UtcNow,
                 //No defined end date for creation
             });
             await _context.SaveChangesAsync();
@@ -188,13 +188,13 @@ namespace Gordon360.Services.RecIM
                                .Where(psh => psh.ParticipantUsername == username)
                                .OrderByDescending(psh => psh.ID)
                                .FirstOrDefault();
-            prevStatus.EndDate = DateTime.Now;
+            prevStatus.EndDate = DateTime.UtcNow;
 
             var status = new ParticipantStatusHistory
             {
                 ParticipantUsername = username,
                 StatusID = participantStatus.StatusID,
-                StartDate = DateTime.Now,
+                StartDate = DateTime.UtcNow,
                 EndDate = participantStatus.EndDate
             };
             await _context.ParticipantStatusHistory.AddAsync(status);
