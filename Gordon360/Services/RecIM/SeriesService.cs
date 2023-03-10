@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Core;
-
+using Gordon360.Static.Methods;
 
 namespace Gordon360.Services.RecIM
 {
@@ -55,8 +55,8 @@ namespace Gordon360.Services.RecIM
                     {
                         ID = s.ID,
                         Name = s.Name,
-                        StartDate = s.StartDate,
-                        EndDate = s.EndDate,
+                        StartDate = Helpers.FormatDateTimeToUtc(s.StartDate),
+                        EndDate = Helpers.FormatDateTimeToUtc(s.EndDate),
                         Type = s.Type.Description,
                         Status = s.Status.Description,
                         ActivityID = s.ActivityID,
@@ -79,8 +79,8 @@ namespace Gordon360.Services.RecIM
                     });
             if (active)
             {
-                series = series.Where(s => s.StartDate < DateTime.Now
-                                        && s.EndDate > DateTime.Now);
+                series = series.Where(s => s.StartDate < DateTime.UtcNow
+                                        && s.EndDate > DateTime.UtcNow);
             }
             return series;
         }

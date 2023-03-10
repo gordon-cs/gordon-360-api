@@ -225,7 +225,7 @@ namespace Gordon360.Services.RecIM
                                         ID = pt.ID,
                                         TeamID = pt.TeamID,
                                         ParticipantUsername = pt.ParticipantUsername,
-                                        SignDate = pt.SignDate,
+                                        SignDate = Helpers.FormatDateTimeToUtc(pt.SignDate),
                                         RoleTypeID = pt.RoleTypeID,
                                     })
                                     .FirstOrDefault();

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using Gordon360.Static.Methods;
 
 namespace Gordon360.Services.RecIM
 {
@@ -96,8 +97,8 @@ namespace Gordon360.Services.RecIM
                                     {
                                         Username = username,
                                         Status = ps.Description,
-                                        StartDate = psh.StartDate,
-                                        EndDate = psh.EndDate
+                                        StartDate = Helpers.FormatDateTimeToUtc(psh.StartDate),
+                                        EndDate = Helpers.FormatDateTimeToUtc(psh.EndDate)
                                     }).AsEnumerable();
             return status;
         }
