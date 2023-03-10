@@ -25,7 +25,7 @@ namespace Gordon360.Static.Methods
         /// <returns>dateTime with type UTC, if dateTime is null, will return DateTime min value</returns>
         public static DateTime FormatDateTimeToUtc(DateTime? dateTime)
         {
-            if (dateTime is null) return new DateTime(0);
+            if (dateTime is null) return DateTime.MinValue;
             return DateTime.SpecifyKind((DateTime)dateTime, DateTimeKind.Utc);
         }
     }

@@ -2,6 +2,7 @@
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
+using Gordon360.Static.Methods;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -58,9 +59,9 @@ namespace Gordon360.Services.RecIM
                 {
                     ID = a.ID,
                     Name = a.Name,
-                    RegistrationStart = a.RegistrationStart,
-                    RegistrationEnd = a.RegistrationEnd,
-                    RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
+                    RegistrationStart = Helpers.FormatDateTimeToUtc(a.RegistrationStart),
+                    RegistrationEnd = Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
+                    RegistrationOpen = DateTime.UtcNow > a.RegistrationStart && DateTime.UtcNow < a.RegistrationEnd,
                     Sport = a.Sport,
                     Status = a.Status.Description,
                     MinCapacity = a.MinCapacity,
@@ -71,8 +72,8 @@ namespace Gordon360.Services.RecIM
                     Series = a.Series.Where(s => s.StatusID != 0)
                             .Select(s => (SeriesExtendedViewModel)s),
                     Type = a.Type.Description,
-                    StartDate = a.StartDate,
-                    EndDate= a.EndDate,
+                    StartDate = Helpers.FormatDateTimeToUtc(a.StartDate),
+                    EndDate= Helpers.FormatDateTimeToUtc(a.EndDate),
                     SeriesScheduleID = a.SeriesScheduleID,
                 });
             return activities;
@@ -85,7 +86,7 @@ namespace Gordon360.Services.RecIM
             }
             else
             {
-                return GetActivities().Where(a => a.RegistrationEnd > time);
+                return GetActivities().Where(a => Helpers.FormatDateTimeToUtc(a.RegistrationEnd) > time);
             }
         }
 
@@ -96,9 +97,9 @@ namespace Gordon360.Services.RecIM
                             {
                                 ID = a.ID,
                                 Name = a.Name,
-                                RegistrationStart = a.RegistrationStart,
-                                RegistrationEnd = a.RegistrationEnd,
-                                RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
+                                RegistrationStart = Helpers.FormatDateTimeToUtc(a.RegistrationStart),
+                                RegistrationEnd = Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
+                                RegistrationOpen = DateTime.UtcNow > a.RegistrationStart && DateTime.UtcNow < a.RegistrationEnd,
                                 Sport = a.Sport,
                                 Status = a.Status.Description,
                                 MinCapacity = a.MinCapacity,
@@ -107,8 +108,8 @@ namespace Gordon360.Services.RecIM
                                 Logo = a.Logo,
                                 Completed = a.Completed,
                                 Type = a.Type.Description,
-                                StartDate = a.StartDate,
-                                EndDate = a.EndDate,
+                                StartDate = Helpers.FormatDateTimeToUtc(a.StartDate),
+                                EndDate = Helpers.FormatDateTimeToUtc(a.EndDate),
                                 Series = _seriesService.GetSeriesByActivityID(a.ID), // more expensive route with more data compared to implicit cast of GetActivities()
                                 Team = a.Team.Where(t => t.StatusID != 0)
                                     .Select(t => new TeamExtendedViewModel
@@ -199,8 +200,8 @@ namespace Gordon360.Services.RecIM
 
         public bool ActivityRegistrationClosed(int activityID)
         {
-            var activity = _context.Activity.Find(activityID);
-            return (activity.RegistrationStart < DateTime.Now) && (activity.RegistrationEnd > DateTime.Now);
+            var a = _context.Activity.Find(activityID);
+            return (DateTime.UtcNow > a.RegistrationStart && DateTime.UtcNow < a.RegistrationEnd);
         }
 
         public async Task<ActivityViewModel> DeleteActivityCascade(int activityID)

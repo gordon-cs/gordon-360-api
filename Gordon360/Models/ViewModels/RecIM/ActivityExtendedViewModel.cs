@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Static.Methods;
 using System;
 using System.Collections.Generic;
 
@@ -32,23 +33,23 @@ namespace Gordon360.Models.ViewModels.RecIM
             //redundant check in case admins forget to mark activity completed
             //or if we are looking for an end date automatically via Series.EndDate
             bool completed = !a.Completed
-                ? DateTime.Now > (a.EndDate ?? DateTime.MaxValue) 
+                ? DateTime.UtcNow > (a.EndDate ?? DateTime.MaxValue) 
                 : a.Completed;
             return new ActivityExtendedViewModel
             {
                 ID = a.ID,
                 Name = a.Name,
-                RegistrationStart = a.RegistrationStart,
-                RegistrationEnd = a.RegistrationEnd,
-                RegistrationOpen = DateTime.Now > a.RegistrationStart && DateTime.Now < a.RegistrationEnd,
+                RegistrationStart = Helpers.FormatDateTimeToUtc(a.RegistrationStart),
+                RegistrationEnd = Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
+                RegistrationOpen = DateTime.UtcNow > a.RegistrationStart && DateTime.UtcNow < a.RegistrationEnd,
                 MinCapacity = a.MinCapacity,
                 MaxCapacity = a.MaxCapacity,
                 SoloRegistration = a.SoloRegistration,
                 Logo = a.Logo,
                 Type = a.Type?.Description,
                 Completed = completed,
-                StartDate = a.StartDate,
-                EndDate = a.EndDate,
+                StartDate = Helpers.FormatDateTimeToUtc(a.StartDate),
+                EndDate = Helpers.FormatDateTimeToUtc(a.EndDate),
                 SeriesScheduleID = a.SeriesScheduleID,
             };
         }
