@@ -3,6 +3,7 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -83,7 +84,7 @@ namespace Gordon360.Services.RecIM
                     ID = mt.MatchID,
                     Scores = mt.Match.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
-                    StartTime = mt.Match.StartTime,
+                    StartTime = DateTime.SpecifyKind(mt.Match.StartTime,DateTimeKind.Utc),
                     Status = mt.Match.Status.Description,
                     Surface = mt.Match.Surface.Description,
                     Team = mt.Match.MatchTeam
@@ -124,7 +125,7 @@ namespace Gordon360.Services.RecIM
                     Scores = m.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
-                    StartTime = m.StartTime,
+                    StartTime = DateTime.SpecifyKind(m.StartTime, DateTimeKind.Utc),
                     Surface = m.Surface.Description,
                     Status = m.Status.Description,
                     Attendance = m.MatchParticipant
@@ -175,7 +176,7 @@ namespace Gordon360.Services.RecIM
                                     TeamScore = own_mt.Score,
                                     OpposingTeamScore = other_mt.Score,
                                     MatchStatusID = own_mt.Match.StatusID,
-                                    MatchStartTime = own_mt.Match.StartTime,
+                                    MatchStartTime = DateTime.SpecifyKind(own_mt.Match.StartTime, DateTimeKind.Utc),  
                                 }
                             ),
                         TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
@@ -199,7 +200,7 @@ namespace Gordon360.Services.RecIM
                     Scores = m.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
-                    StartTime = m.StartTime,
+                    StartTime = DateTime.SpecifyKind(m.StartTime, DateTimeKind.Utc),
                     Surface = m.Surface.Description,
                     Status = m.Status.Description,
                     Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel

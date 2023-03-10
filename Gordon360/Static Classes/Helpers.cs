@@ -17,5 +17,16 @@ namespace Gordon360.Static.Methods
         {
             return context.CM_SESSION_MSTR.Where(s => DateTime.Now > s.SESS_BEGN_DTE).OrderByDescending(s => s.SESS_BEGN_DTE).Select(s => s.SESS_CDE).First();
         }
+
+        /// <summary>
+        /// Helper method that casts given date time to type UTC without changing the time
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns>dateTime with type UTC, if dateTime is null, will return DateTime min value</returns>
+        public static DateTime FormatDateTimeToUtc(DateTime? dateTime)
+        {
+            if (dateTime is null) return new DateTime(0);
+            return DateTime.SpecifyKind((DateTime)dateTime, DateTimeKind.Utc);
+        }
     }
 }
