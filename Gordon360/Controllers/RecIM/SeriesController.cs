@@ -153,7 +153,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="request">optional request data, used for additional options on autoscheduling</param>
         [HttpPost]
         [Route("{seriesID}/autoschedule")]
-        //[StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatches(int seriesID, UploadScheduleRequest? request)
         {
             var req = request ?? new UploadScheduleRequest();
