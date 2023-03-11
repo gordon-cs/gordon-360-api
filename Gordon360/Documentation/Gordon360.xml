@@ -758,6 +758,42 @@
             <param name="matchID"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchTypes(System.String)">
+            <summary>
+            Match lookup
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetSurfaces">
+            <summary>
+            Gets all surfaces
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.PostSurface(Gordon360.Models.ViewModels.RecIM.SurfaceUploadViewModel)">
+            <summary>
+            Creates a new match/series surface
+            </summary>
+            <param name="newSurface"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateSurface(System.Int32,Gordon360.Models.ViewModels.RecIM.SurfaceUploadViewModel)">
+            <summary>
+            Updates a given surface
+            </summary>
+            <param name="surfaceID"></param>
+            <param name="updatedSurface"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteSurface(System.Int32)">
+            <summary>
+            Deletes surface, points all foreign keys to an unknown surface
+            to prevent corrupted data
+            </summary>
+            <param name="surfaceID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchStatsPatchViewModel)">
             <summary>
             Updates Match Scores, Sportsmanship Ratings, and Team Status
@@ -855,11 +891,12 @@
             <param name="seriesID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Automatically creates Matches based on given Series
             </summary>
             <param name="seriesID"></param>
+            <param name="request">optional request data, used for additional options on autoscheduling</param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
             <summary>
@@ -1200,6 +1237,20 @@
             It's a separate role that Advisors and Leaders can have, with a separate flag in the database 
             BUT, it's convenient to treat it as a participation type in several places throughout the API
             </summary>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.DateTime)">
+            <summary>
+            Specify the given DateTime as UTC, without changing the time value.
+            </summary>
+            <param name="dateTime"></param>
+            <returns>dateTime with type UTC</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.Nullable{System.DateTime})">
+            <summary>
+            Specify the given DateTime? as UTC, without changing the time value.
+            </summary>
+            <param name="nullableDateTime"></param>
+            <returns>dateTime with type UTC, or null</returns>
         </member>
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>
@@ -2214,7 +2265,7 @@
             query handle the enumeration.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32)">
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Scheduler does not currently handle overlaps
             eventually:

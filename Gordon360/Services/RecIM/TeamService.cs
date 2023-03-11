@@ -1,15 +1,12 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Exceptions;
-using Team = Gordon360.Models.CCT.Team;
 using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Net;
-using System.Net.Mail;
 using System.Globalization;
 using Microsoft.Graph;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Gordon360.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM
 {
@@ -72,7 +70,7 @@ namespace Gordon360.Services.RecIM
         {
             var sportsmanshipScores = _context.MatchTeam
                                     .Where(mt => mt.Match.StatusID == 6 && mt.TeamID == teamID) //6 is completed
-                                        .Select(mt => mt.Sportsmanship);
+                                        .Select(mt => mt.SportsmanshipScore);
             if (sportsmanshipScores.Count() == 0)
                 return 5;
 
@@ -119,7 +117,7 @@ namespace Gordon360.Services.RecIM
                             .Join(t.MatchTeam,
                                 m => m.ID,
                                 mt => mt.MatchID,
-                                (m, mt) => mt.Sportsmanship
+                                (m, mt) => mt.SportsmanshipScore
                             ).Average() 
                 })
                 .AsEnumerable();
@@ -187,7 +185,7 @@ namespace Gordon360.Services.RecIM
                                                                 OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                                                 Status = matchTeamJoin.Status,
                                                                 MatchStatusID = match.StatusID,
-                                                                MatchStartTime = match.Time
+                                                                MatchStartTime = match.StartTime.SpecifyUtc()
                                                             }
                                                 ).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam
@@ -231,7 +229,7 @@ namespace Gordon360.Services.RecIM
                                         ID = pt.ID,
                                         TeamID = pt.TeamID,
                                         ParticipantUsername = pt.ParticipantUsername,
-                                        SignDate = pt.SignDate,
+                                        SignDate = pt.SignDate.SpecifyUtc(),
                                         RoleTypeID = pt.RoleTypeID,
                                     })
                                     .FirstOrDefault();
@@ -282,8 +280,8 @@ namespace Gordon360.Services.RecIM
                 {
                     TeamID = team.ID,
                     SeriesID = existingSeries.ID,
-                    Win = 0,
-                    Loss = 0,
+                    WinCount = 0,
+                    LossCount = 0,
                 };
                 await _context.SeriesTeam.AddAsync(seriesTeam);
                 await _context.SaveChangesAsync();
@@ -426,7 +424,7 @@ namespace Gordon360.Services.RecIM
             {
                 TeamID = teamID,
                 ParticipantUsername = participant.Username,
-                SignDate = DateTime.Now,
+                SignDate = DateTime.UtcNow,
                 RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);

@@ -328,7 +328,7 @@ namespace Gordon360.Services
             Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel series);
             Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule);
             Task<SeriesViewModel> DeleteSeriesCascadeAsync(int seriesID);
-            Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID);
+            Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request);
             SeriesScheduleViewModel GetSeriesScheduleByID(int seriesID);
         }
 
@@ -383,6 +383,10 @@ namespace Gordon360.Services
             MatchViewModel GetSimpleMatchViewByID(int matchID);
             IEnumerable<ParticipantAttendanceViewModel> GetMatchAttendance(int matchID);
             IEnumerable<LookupViewModel>? GetMatchLookup(string type);
+            Task<SurfaceViewModel> PostSurfaceAsync(SurfaceUploadViewModel newSurface);
+            Task<SurfaceViewModel> UpdateSurfaceAsync(int surfaceID, SurfaceUploadViewModel updatedSurface);
+            IEnumerable<SurfaceViewModel> GetSurfaces();
+            Task DeleteSurfaceAsync(int surfaceID);
             MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID);
             MatchExtendedViewModel GetMatchByID(int matchID);
             IEnumerable<MatchExtendedViewModel> GetMatchesBySeriesID(int seriesID);

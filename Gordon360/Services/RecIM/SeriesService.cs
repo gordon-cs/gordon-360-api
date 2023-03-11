@@ -2,15 +2,13 @@
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Core;
-
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM
 {
@@ -55,8 +53,8 @@ namespace Gordon360.Services.RecIM
                     {
                         ID = s.ID,
                         Name = s.Name,
-                        StartDate = s.StartDate,
-                        EndDate = s.EndDate,
+                        StartDate = s.StartDate.SpecifyUtc(),
+                        EndDate = s.EndDate.SpecifyUtc(),
                         Type = s.Type.Description,
                         Status = s.Status.Description,
                         ActivityID = s.ActivityID,
@@ -69,18 +67,18 @@ namespace Gordon360.Services.RecIM
                                 Name = _context.Team
                                         .FirstOrDefault(t => t.ID == st.TeamID)
                                         .Name,
-                                WinCount = st.Win,
-                                LossCount = st.Loss,
+                                WinCount = st.WinCount,
+                                LossCount = st.LossCount,
                                 TieCount = _context.SeriesTeam
                                         .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
-                                        .Count() - st.Win - st.Loss
+                                        .Count() - st.WinCount - st.LossCount
                             }).OrderByDescending(st => st.WinCount).AsEnumerable(),
                         Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID)
                     });
             if (active)
             {
-                series = series.Where(s => s.StartDate < DateTime.Now
-                                        && s.EndDate > DateTime.Now);
+                series = series.Where(s => s.StartDate < DateTime.UtcNow
+                                        && s.EndDate > DateTime.UtcNow);
             }
             return series;
         }
@@ -123,7 +121,7 @@ namespace Gordon360.Services.RecIM
             {
                 teams = _context.SeriesTeam
                                 .Where(st => st.SeriesID == referenceSeriesID)
-                                .OrderByDescending(st => st.Win)
+                                .OrderByDescending(st => st.WinCount)
                                 .Select(st => st.TeamID);
             }
             if (newSeries.NumberOfTeamsAdmitted is not null)
@@ -215,8 +213,8 @@ namespace Gordon360.Services.RecIM
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
         {
             var st = _context.SeriesTeam.Find(update.ID);
-            st.Win = update.WinCount ?? st.Win;
-            st.Loss = update.LossCount ?? st.Loss;
+            st.WinCount = update.WinCount ?? st.WinCount;
+            st.LossCount = update.LossCount ?? st.LossCount;
 
             await _context.SaveChangesAsync();
         }
@@ -229,8 +227,8 @@ namespace Gordon360.Services.RecIM
                 {
                     TeamID = teamID,
                     SeriesID = seriesID,
-                    Win = 0,
-                    Loss = 0
+                    WinCount = 0,
+                    LossCount = 0
                 };
                 await _context.SeriesTeam.AddAsync(seriesTeam);
             }
@@ -253,8 +251,8 @@ namespace Gordon360.Services.RecIM
             //delete series teams (series team does not need to be fully deleted, a wipe is sufficient)
             foreach (var st in seriesTeam)
             {
-                st.Win = 0;
-                st.Loss = 0;
+                st.WinCount = 0;
+                st.LossCount = 0;
             }
             //delete matches
             foreach (var match in matches)
@@ -278,7 +276,7 @@ namespace Gordon360.Services.RecIM
         /// </summary>
         /// <param name="seriesID"></param>
         /// <returns>Created Match objects</returns>
-        public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID)
+        public async Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request)
         {
             var series = _context.Series
                 .Include(s => s.Type)
@@ -290,33 +288,29 @@ namespace Gordon360.Services.RecIM
 
             return typeCode switch
             {
-                "RR" => await ScheduleRoundRobin(seriesID),
+                "RR" => await ScheduleRoundRobin(seriesID, request),
                 "SE" => await ScheduleSingleElimination(seriesID),
                 "DE" => await ScheduleDoubleElimination(seriesID),
-                "L" => await ScheduleLadderAsync(seriesID),
+                "L" => await ScheduleLadderAsync(seriesID, request),
             _ => null
             };
         }
 
-        private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID, UploadScheduleRequest request)
         {
             var createdMatches = new List<MatchViewModel>();
-            var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            var series = _context.Series.Include(s => s.SeriesSurface).FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.SeriesID == seriesID)
                 .Select(st => st.TeamID)
                 .ToList();
+            int numCycles = request.RoundRobinMatchCapacity ?? teams.Count;
             //algorithm requires odd number of teams
             teams.Add(0);//0 is not a valid true team ID thus will act as dummy team
 
             SeriesScheduleViewModel schedule = _context.SeriesSchedule
-                            .FirstOrDefault(ss => ss.ID ==
-                                _context.Series
-                                    .FirstOrDefault(s => s.ID == seriesID)
-                                    .ScheduleID);
-            var availableSurfaces = _context.SeriesSurface
-                                        .Where(ss => ss.SeriesID == seriesID)
-                                        .ToArray();
+                            .FirstOrDefault(ss => ss.ID == series.ScheduleID);
+            var availableSurfaces = series.SeriesSurface.ToArray();
 
             //day = starting datetime accurate to minute and seconds based on scheduler
             var day = series.StartDate;
@@ -324,7 +318,7 @@ namespace Gordon360.Services.RecIM
             string dayOfWeek = day.DayOfWeek.ToString();
 
             int surfaceIndex = 0;
-            for (int cycles = 0; cycles < teams.Count; cycles++)
+            for (int cycles = 0; cycles < numCycles; cycles++)
             {
                 int i = 0;
                 int j = teams.Count - 1;
@@ -373,25 +367,74 @@ namespace Gordon360.Services.RecIM
         }
 
         //rudamentary implementation (only allows all teams into 1 match)
-        private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID)
+        private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID, UploadScheduleRequest request)
         {
+            //created return
             var createdMatches = new List<MatchViewModel>();
-            var series = _context.Series.Find(seriesID);
-            var teams = series.SeriesTeam
-                .Select(st => st.TeamID);
-            var availableSurfaces = series.SeriesSurface.ToArray();
-            var surfaceIndex = 0;
-            var match = new MatchUploadViewModel
-            {
-                StartTime = series.StartDate,
-                SeriesID = seriesID,
-                SurfaceID = availableSurfaces is null ? 1 : availableSurfaces[surfaceIndex].SurfaceID,
-                TeamIDs = teams
-            };
-            //surfaceIndex++; //surfaceIndex can be incremented if we plan to rework ladder match logic (to make more than 1 match)
 
-            var res = await _matchService.PostMatchAsync(match);
-            createdMatches.Add(res);
+            //queries
+            var series = _context.Series
+                .Include(s => s.SeriesTeam)
+                .Include(s => s.SeriesSurface)
+                .FirstOrDefault(s => s.ID == seriesID);
+            var teams = series.SeriesTeam
+                .Select(st => st.TeamID)
+                .ToList();
+
+            //scheduler based variables
+            var availableSurfaces = series.SeriesSurface.ToArray();
+            SeriesScheduleViewModel schedule = _context.SeriesSchedule
+                            .FirstOrDefault(ss => ss.ID == series.ScheduleID);
+            var day = series.StartDate;
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+            string dayOfWeek = day.DayOfWeek.ToString();
+
+            //local variables
+            var numMatchesRemaining = request.NumberOfLadderMatches ?? 1;
+            var numTeamsRemaining = teams.Count;
+            var surfaceIndex = 0;
+            var teamIndex = 0;
+            // numMatchesRemaining used for other calculation, unusuable as condition
+            for (int i = 0; i < (request.NumberOfLadderMatches ?? 1); i++)
+            {
+                if (surfaceIndex == availableSurfaces.Length)
+                {
+                    surfaceIndex = 0;
+                    day = day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
+                }
+
+                while (!schedule.AvailableDays[dayOfWeek] ||
+                    day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay)
+                {
+                    day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                    dayOfWeek = day.DayOfWeek.ToString();
+                    surfaceIndex = 0;
+                }
+
+                var teamIDs = new List<int>();
+                int numTeamsInMatch = numTeamsRemaining / numMatchesRemaining;
+                while (numTeamsInMatch > 0)
+                {
+                    teamIDs.Add(teams[teamIndex]);
+                    teamIndex++;
+                    numTeamsInMatch--;
+                }
+
+                var match = new MatchUploadViewModel
+                {
+                    StartTime = day,
+                    SeriesID = seriesID,
+                    SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
+                    TeamIDs = teamIDs
+                };
+                var res = await _matchService.PostMatchAsync(match);
+                createdMatches.Add(res);
+
+                surfaceIndex++;
+                numMatchesRemaining--;
+                numTeamsRemaining -= numTeamsInMatch;
+            }
             return createdMatches;
         }
 
@@ -407,7 +450,7 @@ namespace Gordon360.Services.RecIM
                 .FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                .Where(st => st.SeriesID == seriesID)
-               .OrderByDescending(st => st.Win);
+               .OrderByDescending(st => st.WinCount);
 
             SeriesScheduleViewModel schedule = series.Schedule;
 

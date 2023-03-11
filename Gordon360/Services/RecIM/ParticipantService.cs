@@ -1,14 +1,12 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Data.SqlClient;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM
 {
@@ -60,7 +58,7 @@ namespace Gordon360.Services.RecIM
                                                 .Status
                                                 .Description,
                                     Notification = _context.ParticipantNotification
-                                                    .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.Now)
+                                                    .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.UtcNow)
                                                     .OrderByDescending(pn => pn.DispatchDate)
                                                     .Select(pn => (ParticipantNotificationViewModel)pn)
                                                     .AsEnumerable(),
@@ -77,7 +75,7 @@ namespace Gordon360.Services.RecIM
                 ParticipantUsername = username,
                 Message = notificationVM.Message,
                 EndDate = notificationVM.EndDate,
-                DispatchDate = DateTime.Now
+                DispatchDate = DateTime.UtcNow
             };
             await _context.ParticipantNotification.AddAsync(newNotification);
             await _context.SaveChangesAsync();
@@ -96,8 +94,8 @@ namespace Gordon360.Services.RecIM
                                     {
                                         Username = username,
                                         Status = ps.Description,
-                                        StartDate = psh.StartDate,
-                                        EndDate = psh.EndDate
+                                        StartDate = psh.StartDate.SpecifyUtc(),
+                                        EndDate = psh.EndDate.SpecifyUtc()
                                     }).AsEnumerable();
             return status;
         }
@@ -147,7 +145,7 @@ namespace Gordon360.Services.RecIM
             {
                 ParticipantUsername = username,
                 StatusID = statusID ?? 4, //default to cleared
-                StartDate = DateTime.Now,
+                StartDate = DateTime.UtcNow,
                 //No defined end date for creation
             });
             await _context.SaveChangesAsync();
@@ -188,13 +186,13 @@ namespace Gordon360.Services.RecIM
                                .Where(psh => psh.ParticipantUsername == username)
                                .OrderByDescending(psh => psh.ID)
                                .FirstOrDefault();
-            prevStatus.EndDate = DateTime.Now;
+            prevStatus.EndDate = DateTime.UtcNow;
 
             var status = new ParticipantStatusHistory
             {
                 ParticipantUsername = username,
                 StatusID = participantStatus.StatusID,
-                StartDate = DateTime.Now,
+                StartDate = DateTime.UtcNow,
                 EndDate = participantStatus.EndDate
             };
             await _context.ParticipantStatusHistory.AddAsync(status);

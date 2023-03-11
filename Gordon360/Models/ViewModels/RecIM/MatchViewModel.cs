@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using System;
-using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
@@ -16,7 +16,7 @@ namespace Gordon360.Models.ViewModels.RecIM
             return new MatchViewModel
             {
                 ID = m.ID,
-                StartTime = m.Time,
+                StartTime = m.StartTime.SpecifyUtc(),
                 SurfaceID = m.SurfaceID,
                 StatusID = m.StatusID,
                 SeriesID = m.SeriesID
