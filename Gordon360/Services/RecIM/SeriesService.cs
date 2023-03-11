@@ -75,7 +75,7 @@ namespace Gordon360.Services.RecIM
                                         .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
                                         .Count() - st.WinCount - st.LossCount
                             }).OrderByDescending(st => st.WinCount).AsEnumerable(),
-                        Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID)
+                        Schedule = _context.SeriesSchedule.Find(s.ScheduleID)
                     });
             if (active)
             {
@@ -198,18 +198,43 @@ namespace Gordon360.Services.RecIM
 
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
-            var s = _context.Series.Find(seriesID);
-            //if the series is deleted, throw exception
-            if (s.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
+            var series = _context.Series
+                .Include(s => s.SeriesTeam)
+                .FirstOrDefault(s => s.ID == seriesID);
 
-            s.Name = update.Name ?? s.Name;
-            s.StartDate = update.StartDate ?? s.StartDate;
-            s.EndDate = update.EndDate ?? s.EndDate;
-            s.StatusID = update.StatusID ?? s.StatusID;
-            s.ScheduleID = update.ScheduleID ?? s.ScheduleID;
+            var seriesTeams = series.SeriesTeam;
+            var updatedSeriesTeams = update.TeamIDs.ToList();
+            
+            //if the series is deleted, throw exception
+            if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
+
+            series.Name = update.Name ?? series.Name;
+            series.StartDate = update.StartDate ?? series.StartDate;
+            series.EndDate = update.EndDate ?? series.EndDate;
+            series.StatusID = update.StatusID ?? series.StatusID;
+            series.ScheduleID = update.ScheduleID ?? series.ScheduleID;
+            
+            //update teams
+            foreach (var team in seriesTeams)
+            {
+                if (!update.TeamIDs.Any(id => id == team.TeamID))
+                    _context.SeriesTeam.Remove(team);
+                else
+                    updatedSeriesTeams.Remove(team.TeamID);
+            }
+
+            foreach (var teamID in updatedSeriesTeams)
+                await _context.SeriesTeam.AddAsync(
+                    new SeriesTeam
+                    {
+                        TeamID = teamID,
+                        SeriesID = seriesID,
+                        WinCount = 0,
+                        LossCount = 0
+                    });
 
             await _context.SaveChangesAsync();
-            return s;
+            return series;
         }
 
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
@@ -368,7 +393,6 @@ namespace Gordon360.Services.RecIM
             return createdMatches;
         }
 
-        //rudamentary implementation (only allows all teams into 1 match)
         private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID, UploadScheduleRequest request)
         {
             //created return
