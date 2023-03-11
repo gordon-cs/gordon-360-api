@@ -69,6 +69,11 @@ namespace Gordon360.Controllers.RecIM
             return Ok(match);
         }
 
+        /// <summary>
+        /// Match lookup
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetMatchTypes(string type)
@@ -79,6 +84,63 @@ namespace Gordon360.Controllers.RecIM
                 return Ok(res);
             }
             return NotFound();
+        }
+
+        /// <summary>
+        /// Gets all surfaces
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("surfaces")]
+        public ActionResult<IEnumerable<SurfaceViewModel>> GetSurfaces()
+        {
+            return Ok(_matchService.GetSurfaces());
+        }
+
+        /// <summary>
+        /// Creates a new match/series surface
+        /// </summary>
+        /// <param name="newSurface"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("surfaces")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SURFACE)]
+        public async Task<ActionResult<SurfaceViewModel>> PostSurface(SurfaceUploadViewModel newSurface)
+        {
+            if (newSurface.Name is null && newSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
+            var res = await _matchService.PostSurfaceAsync(newSurface);
+            return CreatedAtAction(nameof(UpdateSurface), new { surfaceID = res.ID }, res);
+        }
+
+        /// <summary>
+        /// Updates a given surface
+        /// </summary>
+        /// <param name="surfaceID"></param>
+        /// <param name="updatedSurface"></param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("surfaces/{surfaceID}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SURFACE)]
+        public async Task<ActionResult<SurfaceViewModel>> UpdateSurface(int surfaceID, SurfaceUploadViewModel updatedSurface)
+        {
+            if (updatedSurface.Name is null && updatedSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
+            var res = await _matchService.UpdateSurfaceAsync(surfaceID, updatedSurface);
+            return CreatedAtAction(nameof(UpdateSurface), new { surfaceID = res.ID }, res);
+        }
+
+        /// <summary>
+        /// Deletes surface, points all foreign keys to an unknown surface
+        /// to prevent corrupted data
+        /// </summary>
+        /// <param name="surfaceID"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("surfaces/{surfaceID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SURFACE)]
+        public async Task<ActionResult> DeleteSurface(int surfaceID)
+        {
+            await _matchService.DeleteSurfaceAsync(surfaceID);
+            return NoContent();
         }
 
         /// <summary>
