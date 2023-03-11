@@ -58,6 +58,19 @@ namespace Gordon360.Controllers.RecIM
             return Ok(result);
         }
 
+        /// <summary>
+        /// Niche function to check if the activity is still open for registration
+        /// </summary>
+        /// <param name="activityID"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{activityID}/registerable")]
+        public ActionResult<bool> GetActivityRegistrationStatus(int activityID)
+        {
+            var result = !_activityService.ActivityRegistrationClosed(activityID);
+            return Ok(result);
+        }
+
         [HttpGet]
         [Route("lookup")]
         public ActionResult<IEnumerable<LookupViewModel>> GetActivityTypes(string type)
