@@ -510,6 +510,8 @@ namespace Gordon360.Authorization
                     //fallthrough
                 case Resource.RECIM_MATCH:
                     //fallthrough
+                case Resource.RECIM_SURFACE:
+                    //fallthrough
                 case Resource.RECIM_SPORT:
                     {
                         return _participantService.IsAdmin(user_name);
@@ -725,6 +727,8 @@ namespace Gordon360.Authorization
                     //fallthrough
                 case Resource.RECIM_SERIES:
                     //fallthrough
+                case Resource.RECIM_SURFACE:
+                    //fallthrough
                 case Resource.RECIM_SPORT:
                     {
                         return _participantService.IsAdmin(user_name);
@@ -880,6 +884,8 @@ namespace Gordon360.Authorization
                 case Resource.RECIM_SPORT:
                     //fallthrough
                 case Resource.RECIM_TEAM:
+                    //fallthrough
+                case Resource.RECIM_SURFACE:
                     //fallthrough
                 case Resource.RECIM_MATCH:
                     return _participantService.IsAdmin(user_name);
