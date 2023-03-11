@@ -23,9 +23,19 @@ namespace Gordon360.Static.Methods
         /// </summary>
         /// <param name="dateTime"></param>
         /// <returns>dateTime with type UTC, if dateTime is null, will return DateTime min value</returns>
-        public static DateTime FormatDateTimeToUtc(DateTime? dateTime)
+        public static DateTime FormatDateTimeToUtc(DateTime dateTime)
         {
-            if (dateTime is null) return DateTime.MinValue;
+            return DateTime.SpecifyKind((DateTime)dateTime, DateTimeKind.Utc);
+        }
+
+        /// <summary>
+        /// Function overload for nullable datetime
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns>dateTime with type UTC, if dateTime is null, will return null</returns>
+        public static DateTime? FormatDateTimeToUtc(DateTime? dateTime)
+        {
+            if (dateTime is null) return null;
             return DateTime.SpecifyKind((DateTime)dateTime, DateTimeKind.Utc);
         }
     }
