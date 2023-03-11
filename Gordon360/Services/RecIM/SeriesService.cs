@@ -2,15 +2,12 @@
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Core;
-using Gordon360.Static.Methods;
 using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM

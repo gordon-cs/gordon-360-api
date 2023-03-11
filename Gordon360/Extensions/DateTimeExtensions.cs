@@ -9,16 +9,18 @@ static public class DateTimeExtensions
     /// <param name="dateTime"></param>
     /// <returns>dateTime with type UTC</returns>
     static public DateTime SpecifyUtc(this DateTime dateTime) => DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
-    
+
 
     /// <summary>
     /// Function overload for nullable datetime
     /// </summary>
-    /// <param name="dateTime"></param>
-    /// <returns>dateTime with type UTC, if dateTime is null, will return null</returns>
-    static public DateTime? SpecifyUtc(this DateTime? dateTime)
+    /// <param name="nullableDateTime"></param>
+    /// <returns>dateTime with type UTC, or null</returns>
+    static public DateTime? SpecifyUtc(this DateTime? nullableDateTime)
     {
-        if (dateTime is null) return null;
-        return DateTime.SpecifyKind((DateTime)dateTime, DateTimeKind.Utc);
+        if (nullableDateTime is DateTime dateTime)
+            return DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+
+        return null;
     }
 }
