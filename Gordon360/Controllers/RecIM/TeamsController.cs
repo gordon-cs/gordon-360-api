@@ -152,7 +152,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ParticipantTeamViewModel>> UpdateParticipantTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
-            var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant);
+            var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
             return CreatedAtAction(nameof(UpdateParticipantTeam), new { participantTeamID = participantTeam.ID }, participantTeam);
         }
 
