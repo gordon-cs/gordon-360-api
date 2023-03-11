@@ -12,7 +12,7 @@ static public class DateTimeExtensions
 
 
     /// <summary>
-    /// Function overload for nullable datetime
+    /// Specify the given DateTime? as UTC, without changing the time value.
     /// </summary>
     /// <param name="nullableDateTime"></param>
     /// <returns>dateTime with type UTC, or null</returns>
