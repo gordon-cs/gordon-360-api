@@ -1,21 +1,15 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Exceptions;
-using Team = Gordon360.Models.CCT.Team;
 using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Net;
-using System.Net.Mail;
 using System.Globalization;
-using Microsoft.Graph;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.TermStore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM
 {
@@ -180,7 +174,7 @@ namespace Gordon360.Services.RecIM
                                                                 OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                                                 Status = matchTeamJoin.Status,
                                                                 MatchStatusID = match.StatusID,
-                                                                MatchStartTime = match.StartTime
+                                                                MatchStartTime = match.StartTime.SpecifyUtc()
                                                             }
                                                 ).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam
@@ -224,7 +218,7 @@ namespace Gordon360.Services.RecIM
                                         ID = pt.ID,
                                         TeamID = pt.TeamID,
                                         ParticipantUsername = pt.ParticipantUsername,
-                                        SignDate = pt.SignDate,
+                                        SignDate = pt.SignDate.SpecifyUtc(),
                                         RoleTypeID = pt.RoleTypeID,
                                     })
                                     .FirstOrDefault();
@@ -368,7 +362,7 @@ namespace Gordon360.Services.RecIM
             {
                 TeamID = teamID,
                 ParticipantUsername = participant.Username,
-                SignDate = DateTime.Now,
+                SignDate = DateTime.UtcNow,
                 RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
             };
             await _context.ParticipantTeam.AddAsync(participantTeam);

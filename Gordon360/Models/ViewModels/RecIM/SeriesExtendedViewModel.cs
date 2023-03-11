@@ -1,7 +1,8 @@
 ﻿using Gordon360.Models.CCT;
-using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
+using Gordon360.Extensions.System;
+
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
@@ -24,8 +25,8 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 ID = s.ID,
                 Name = s.Name,
-                StartDate = s.StartDate,
-                EndDate = s.EndDate,
+                StartDate = s.StartDate.SpecifyUtc(),
+                EndDate = s.EndDate.SpecifyUtc(),
                 ActivityID = s.ActivityID,
                 Type = s.Type.Description,
                 Status = s.Status.Description,

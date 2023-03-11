@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using System;
-using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
@@ -21,8 +21,8 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 ID = s.ID,
                 Name = s.Name,
-                StartDate = s.StartDate,
-                EndDate = s.EndDate,
+                StartDate = s.StartDate.SpecifyUtc(),
+                EndDate = s.EndDate.SpecifyUtc(),
                 ActivityID = s.ActivityID,
                 TypeID = s.TypeID,
                 StatusID = s.StatusID,
