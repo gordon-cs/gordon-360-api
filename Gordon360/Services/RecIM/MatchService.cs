@@ -1,8 +1,10 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,14 +49,6 @@ namespace Gordon360.Services.RecIM
                             Description = s.Description
                         })
                         .AsEnumerable(),
-                "surface" => _context.Surface.Where(query => query.ID != 0)
-                        .Select(s => new LookupViewModel
-                        {
-                            ID = s.ID,
-                            Description = s.Description
-                        })
-                        .AsEnumerable(),
-
                 _ => null
             };
         }
@@ -216,6 +210,51 @@ namespace Gordon360.Services.RecIM
                     })
                 });
             return matches;
+        }
+
+        public async Task<SurfaceViewModel> PostSurfaceAsync(SurfaceUploadViewModel newSurface)
+        {
+            var surface = newSurface.ToSurface();
+            await _context.Surface.AddAsync(surface);
+            await _context.SaveChangesAsync();
+
+            return surface;
+        }
+
+        public async Task<SurfaceViewModel> UpdateSurfaceAsync(int surfaceID, SurfaceUploadViewModel updatedSurface)
+        {
+            var surface = _context.Surface.Find(surfaceID);
+            //inherit description if possible
+            surface.Name = updatedSurface.Name ?? surface.Name ?? surface.Description ?? updatedSurface.Description;
+            surface.Description = updatedSurface.Description ?? surface.Description ?? surface.Name ?? updatedSurface.Name;
+            await _context.SaveChangesAsync();
+
+            return surface;
+        }
+
+        public IEnumerable<SurfaceViewModel> GetSurfaces()
+        {
+            return _context.Surface.Where(s => s.ID != 0).Select(s => (SurfaceViewModel)s);
+        }
+
+        public async Task DeleteSurfaceAsync(int surfaceID)
+        {
+            var surface = _context.Surface
+                .Include(s => s.Match)
+                .Include(s => s.SeriesSurface)
+                .FirstOrDefault(s => s.ID == surfaceID);
+            var matches = surface.Match;
+            var seriesSurfaces = surface.SeriesSurface;
+
+            //point all matches to unknown surface
+            foreach (var match in matches)
+                match.SurfaceID = 0;
+            //point all seriessurface to unknown surface
+            foreach (var ss in seriesSurfaces)
+                ss.SurfaceID = 0;
+
+            _context.Surface.Remove(surface);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel newMatch)
