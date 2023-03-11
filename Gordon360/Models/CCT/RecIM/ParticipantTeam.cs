@@ -23,7 +23,7 @@ namespace Gordon360.Models.CCT
         [StringLength(50)]
         [Unicode(false)]
         public string ParticipantUsername { get; set; }
-        [Column(TypeName = "date")]
+        [Column(TypeName = "datetime")]
         public DateTime SignDate { get; set; }
         public int RoleTypeID { get; set; }
 

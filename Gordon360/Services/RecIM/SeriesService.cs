@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Core;
-
+using Gordon360.Static.Methods;
 
 namespace Gordon360.Services.RecIM
 {
@@ -55,8 +55,8 @@ namespace Gordon360.Services.RecIM
                     {
                         ID = s.ID,
                         Name = s.Name,
-                        StartDate = s.StartDate,
-                        EndDate = s.EndDate,
+                        StartDate = Helpers.FormatDateTimeToUtc(s.StartDate),
+                        EndDate = Helpers.FormatDateTimeToUtc(s.EndDate),
                         Type = s.Type.Description,
                         Status = s.Status.Description,
                         ActivityID = s.ActivityID,
@@ -69,18 +69,18 @@ namespace Gordon360.Services.RecIM
                                 Name = _context.Team
                                         .FirstOrDefault(t => t.ID == st.TeamID)
                                         .Name,
-                                WinCount = st.Win,
-                                LossCount = st.Loss,
+                                WinCount = st.WinCount,
+                                LossCount = st.LossCount,
                                 TieCount = _context.SeriesTeam
                                         .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
-                                        .Count() - st.Win - st.Loss
+                                        .Count() - st.WinCount - st.LossCount
                             }).OrderByDescending(st => st.WinCount).AsEnumerable(),
                         Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID)
                     });
             if (active)
             {
-                series = series.Where(s => s.StartDate < DateTime.Now
-                                        && s.EndDate > DateTime.Now);
+                series = series.Where(s => s.StartDate < DateTime.UtcNow
+                                        && s.EndDate > DateTime.UtcNow);
             }
             return series;
         }
@@ -123,7 +123,7 @@ namespace Gordon360.Services.RecIM
             {
                 teams = _context.SeriesTeam
                                 .Where(st => st.SeriesID == referenceSeriesID)
-                                .OrderByDescending(st => st.Win)
+                                .OrderByDescending(st => st.WinCount)
                                 .Select(st => st.TeamID);
             }
             if (newSeries.NumberOfTeamsAdmitted is not null)
@@ -215,8 +215,8 @@ namespace Gordon360.Services.RecIM
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
         {
             var st = _context.SeriesTeam.Find(update.ID);
-            st.Win = update.WinCount ?? st.Win;
-            st.Loss = update.LossCount ?? st.Loss;
+            st.WinCount = update.WinCount ?? st.WinCount;
+            st.LossCount = update.LossCount ?? st.LossCount;
 
             await _context.SaveChangesAsync();
         }
@@ -229,8 +229,8 @@ namespace Gordon360.Services.RecIM
                 {
                     TeamID = teamID,
                     SeriesID = seriesID,
-                    Win = 0,
-                    Loss = 0
+                    WinCount = 0,
+                    LossCount = 0
                 };
                 await _context.SeriesTeam.AddAsync(seriesTeam);
             }
@@ -253,8 +253,8 @@ namespace Gordon360.Services.RecIM
             //delete series teams (series team does not need to be fully deleted, a wipe is sufficient)
             foreach (var st in seriesTeam)
             {
-                st.Win = 0;
-                st.Loss = 0;
+                st.WinCount = 0;
+                st.LossCount = 0;
             }
             //delete matches
             foreach (var match in matches)
@@ -511,7 +511,7 @@ namespace Gordon360.Services.RecIM
                 .FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                .Where(st => st.SeriesID == seriesID)
-               .OrderByDescending(st => st.Win);
+               .OrderByDescending(st => st.WinCount);
 
             SeriesScheduleViewModel schedule = series.Schedule;
 

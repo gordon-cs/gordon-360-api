@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Static.Methods;
 using System;
 using System.Collections.Generic;
 
@@ -28,8 +29,8 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 ID = a.ID,
                 Name = a.Name,
-                RegistrationStart = a.RegistrationStart,
-                RegistrationEnd = a.RegistrationEnd,
+                RegistrationStart = Helpers.FormatDateTimeToUtc(a.RegistrationStart),
+                RegistrationEnd = Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
                 SportID = a.SportID,
                 StatusID = a.StatusID,
                 MinCapacity = a.MinCapacity,
@@ -38,8 +39,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 Logo = a.Logo,
                 Completed = a.Completed,
                 TypeID = a.TypeID,
-                StartDate = a.StartDate,
-                EndDate = a.EndDate,
+                StartDate = Helpers.FormatDateTimeToUtc(a.StartDate),
+                EndDate = Helpers.FormatDateTimeToUtc(a.EndDate),
                 SeriesScheduleID = a.SeriesScheduleID
             };
         }

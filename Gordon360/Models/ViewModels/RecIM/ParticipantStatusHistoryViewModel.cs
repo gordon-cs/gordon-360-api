@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Static.Methods;
 using System;
 
 namespace Gordon360.Models.ViewModels.RecIM
@@ -18,8 +19,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 ID = s.ID,
                 ParticipantUsername = s.ParticipantUsername,
                 StatusID = s.StatusID,
-                StartDate = s.StartDate,
-                EndDate = s.EndDate
+                EndDate = Helpers.FormatDateTimeToUtc(s.EndDate),
+                StartDate = Helpers.FormatDateTimeToUtc(s.StartDate)
             };
         }
     }

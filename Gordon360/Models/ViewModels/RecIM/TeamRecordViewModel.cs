@@ -15,8 +15,8 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 SeriesID = st.SeriesID,
                 Name = st.Team.Name,
-                WinCount = st.Win,
-                LossCount = st.Loss,
+                WinCount = st.WinCount,
+                LossCount = st.LossCount,
             };
         }
     }
