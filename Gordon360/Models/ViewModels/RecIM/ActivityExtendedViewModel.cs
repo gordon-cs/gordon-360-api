@@ -42,7 +42,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 Name = a.Name,
                 RegistrationStart = Helpers.FormatDateTimeToUtc(a.RegistrationStart),
                 RegistrationEnd = Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
-                RegistrationOpen = DateTime.UtcNow > a.RegistrationStart && DateTime.UtcNow < a.RegistrationEnd,
+                RegistrationOpen = DateTime.UtcNow > Helpers.FormatDateTimeToUtc(a.RegistrationStart)
+                        && DateTime.UtcNow < Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
                 MinCapacity = a.MinCapacity,
                 MaxCapacity = a.MaxCapacity,
                 SoloRegistration = a.SoloRegistration,

@@ -61,7 +61,8 @@ namespace Gordon360.Services.RecIM
                     Name = a.Name,
                     RegistrationStart = Helpers.FormatDateTimeToUtc(a.RegistrationStart),
                     RegistrationEnd = Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
-                    RegistrationOpen = DateTime.UtcNow > a.RegistrationStart && DateTime.UtcNow < a.RegistrationEnd,
+                    RegistrationOpen = DateTime.UtcNow > Helpers.FormatDateTimeToUtc(a.RegistrationStart) 
+                        && DateTime.UtcNow < Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
                     Sport = a.Sport,
                     Status = a.Status.Description,
                     MinCapacity = a.MinCapacity,
@@ -99,7 +100,8 @@ namespace Gordon360.Services.RecIM
                                 Name = a.Name,
                                 RegistrationStart = Helpers.FormatDateTimeToUtc(a.RegistrationStart),
                                 RegistrationEnd = Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
-                                RegistrationOpen = DateTime.UtcNow > a.RegistrationStart && DateTime.UtcNow < a.RegistrationEnd,
+                                RegistrationOpen = DateTime.UtcNow > Helpers.FormatDateTimeToUtc(a.RegistrationStart)
+                                    && DateTime.UtcNow < Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
                                 Sport = a.Sport,
                                 Status = a.Status.Description,
                                 MinCapacity = a.MinCapacity,
@@ -201,7 +203,8 @@ namespace Gordon360.Services.RecIM
         public bool ActivityRegistrationClosed(int activityID)
         {
             var a = _context.Activity.Find(activityID);
-            return (DateTime.UtcNow > a.RegistrationStart && DateTime.UtcNow < a.RegistrationEnd);
+            return (RegistrationOpen = DateTime.UtcNow > Helpers.FormatDateTimeToUtc(a.RegistrationStart)
+                        && DateTime.UtcNow < Helpers.FormatDateTimeToUtc(a.RegistrationEnd));
         }
 
         public async Task<ActivityViewModel> DeleteActivityCascade(int activityID)
