@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using System;
 
 namespace Gordon360.Models.ViewModels.RecIM
@@ -18,7 +19,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 ID = pt.ID,
                 TeamID = pt.TeamID,
                 ParticipantUsername = pt.ParticipantUsername,
-                SignDate = pt.SignDate,
+                SignDate = pt.SignDate.SpecifyUtc(),
                 RoleTypeID = pt.RoleTypeID,
             };
         }

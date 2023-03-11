@@ -15,7 +15,7 @@ namespace Gordon360.Models.ViewModels.RecIM
             return new Match
             {
                 SeriesID = this.SeriesID,
-                Time = this.StartTime,
+                StartTime = this.StartTime,
                 SurfaceID = this.SurfaceID ?? 1, //unknown surface id
                 StatusID = 1 //default unconfirmed
             };

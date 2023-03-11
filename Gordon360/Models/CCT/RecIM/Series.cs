@@ -24,9 +24,9 @@ namespace Gordon360.Models.CCT
         [StringLength(128)]
         [Unicode(false)]
         public string Name { get; set; }
-        [Column(TypeName = "date")]
+        [Column(TypeName = "datetime")]
         public DateTime StartDate { get; set; }
-        [Column(TypeName = "date")]
+        [Column(TypeName = "datetime")]
         public DateTime EndDate { get; set; }
         public int ActivityID { get; set; }
         public int TypeID { get; set; }

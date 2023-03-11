@@ -21,7 +21,7 @@ namespace Gordon360.Models.CCT
         public int ID { get; set; }
         public int SeriesID { get; set; }
         [Column(TypeName = "datetime")]
-        public DateTime Time { get; set; }
+        public DateTime StartTime { get; set; }
         public int SurfaceID { get; set; }
         public int StatusID { get; set; }
 

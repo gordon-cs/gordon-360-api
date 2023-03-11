@@ -1,8 +1,12 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
+using Gordon360.Static.Methods;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,14 +51,6 @@ namespace Gordon360.Services.RecIM
                             Description = s.Description
                         })
                         .AsEnumerable(),
-                "surface" => _context.Surface.Where(query => query.ID != 0)
-                        .Select(s => new LookupViewModel
-                        {
-                            ID = s.ID,
-                            Description = s.Description
-                        })
-                        .AsEnumerable(),
-
                 _ => null
             };
         }
@@ -83,9 +79,9 @@ namespace Gordon360.Services.RecIM
                     ID = mt.MatchID,
                     Scores = mt.Match.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
-                    StartTime = mt.Match.Time,
+                    StartTime = mt.Match.StartTime.SpecifyUtc(),
                     Status = mt.Match.Status.Description,
-                    Surface = mt.Match.Surface.Description,
+                    Surface = mt.Match.Surface.Name,
                     Team = mt.Match.MatchTeam
                         .Select(_mt => new TeamExtendedViewModel
                         {
@@ -124,8 +120,8 @@ namespace Gordon360.Services.RecIM
                     Scores = m.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
-                    StartTime = m.Time,
-                    Surface = m.Surface.Description,
+                    StartTime = m.StartTime.SpecifyUtc(),
+                    Surface = m.Surface.Name,
                     Status = m.Status.Description,
                     Attendance = m.MatchParticipant
                         .Select(mp => new ParticipantExtendedViewModel
@@ -144,7 +140,6 @@ namespace Gordon360.Services.RecIM
                             Team = a.Team.Select(t => new TeamExtendedViewModel
                             {
                                 ID = t.ID,
-                                Activity = a,
                                 Name = t.Name,
                                 Logo = t.Logo
                             })
@@ -175,7 +170,7 @@ namespace Gordon360.Services.RecIM
                                     TeamScore = own_mt.Score,
                                     OpposingTeamScore = other_mt.Score,
                                     MatchStatusID = own_mt.Match.StatusID,
-                                    MatchStartTime = own_mt.Match.Time,
+                                    MatchStartTime = own_mt.Match.StartTime.SpecifyUtc(),  
                                 }
                             ),
                         TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
@@ -199,8 +194,8 @@ namespace Gordon360.Services.RecIM
                     Scores = m.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
-                    StartTime = m.Time,
-                    Surface = m.Surface.Description,
+                    StartTime = m.StartTime.SpecifyUtc(),
+                    Surface = m.Surface.Name,
                     Status = m.Status.Description,
                     Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
                     {
@@ -210,12 +205,57 @@ namespace Gordon360.Services.RecIM
                             .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
                             .Select(st => new TeamRecordViewModel
                             {
-                                WinCount = st.Win,
-                                LossCount = st.Loss,
+                                WinCount = st.WinCount,
+                                LossCount = st.LossCount,
                             })
                     })
                 });
             return matches;
+        }
+
+        public async Task<SurfaceViewModel> PostSurfaceAsync(SurfaceUploadViewModel newSurface)
+        {
+            var surface = newSurface.ToSurface();
+            await _context.Surface.AddAsync(surface);
+            await _context.SaveChangesAsync();
+
+            return surface;
+        }
+
+        public async Task<SurfaceViewModel> UpdateSurfaceAsync(int surfaceID, SurfaceUploadViewModel updatedSurface)
+        {
+            var surface = _context.Surface.Find(surfaceID);
+            //inherit description if possible
+            surface.Name = updatedSurface.Name ?? surface.Name ?? surface.Description ?? updatedSurface.Description;
+            surface.Description = updatedSurface.Description ?? surface.Description ?? surface.Name ?? updatedSurface.Name;
+            await _context.SaveChangesAsync();
+
+            return surface;
+        }
+
+        public IEnumerable<SurfaceViewModel> GetSurfaces()
+        {
+            return _context.Surface.Where(s => s.ID != 0).Select(s => (SurfaceViewModel)s);
+        }
+
+        public async Task DeleteSurfaceAsync(int surfaceID)
+        {
+            var surface = _context.Surface
+                .Include(s => s.Match)
+                .Include(s => s.SeriesSurface)
+                .FirstOrDefault(s => s.ID == surfaceID);
+            var matches = surface.Match;
+            var seriesSurfaces = surface.SeriesSurface;
+
+            //point all matches to unknown surface
+            foreach (var match in matches)
+                match.SurfaceID = 0;
+            //point all seriessurface to unknown surface
+            foreach (var ss in seriesSurfaces)
+                ss.SurfaceID = 0;
+
+            _context.Surface.Remove(surface);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel newMatch)
@@ -223,7 +263,7 @@ namespace Gordon360.Services.RecIM
             var match = new Match
             {
                 SeriesID = newMatch.SeriesID,
-                Time = newMatch.StartTime,
+                StartTime = newMatch.StartTime,
                 SurfaceID = newMatch.SurfaceID ?? 1, //unknown surface id
                 StatusID = 1 //default unconfirmed
             }; ;
@@ -245,7 +285,7 @@ namespace Gordon360.Services.RecIM
                 MatchID = matchID,
                 StatusID = 2, //default confirmed
                 Score = 0,
-                Sportsmanship = 5 //default max
+                SportsmanshipScore = 5 //default max
             };
             await _context.MatchTeam.AddAsync(matchTeam);
         }
@@ -254,7 +294,7 @@ namespace Gordon360.Services.RecIM
         {
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
             teamstats.Score = vm.Score ?? teamstats.Score;
-            teamstats.Sportsmanship = vm.SportsmanshipScore ?? teamstats.Sportsmanship;
+            teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
             teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
             await _context.SaveChangesAsync();
             return teamstats;
@@ -264,7 +304,7 @@ namespace Gordon360.Services.RecIM
         public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.Find(matchID);
-            match.Time = vm.StartTime ?? match.Time;
+            match.StartTime = vm.StartTime ?? match.StartTime;
             match.StatusID = vm.StatusID ?? match.StatusID;
             match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
 
