@@ -14,6 +14,7 @@ using Microsoft.Graph.TermStore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Gordon360.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Extensions.System;
 
