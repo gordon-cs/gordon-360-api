@@ -713,6 +713,13 @@
              Activity object
              </returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivityRegistrationStatus(System.Int32)">
+            <summary>
+            Niche function to check if the activity is still open for registration
+            </summary>
+            <param name="activityID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.ViewModels.RecIM.ActivityUploadViewModel)">
             <summary>
             Posts Activity into CCT.RecIM.Activity
