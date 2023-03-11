@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
@@ -30,8 +31,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                     { "Friday",s.Fri },
                     { "Saturday",s.Sat },
                 },
-                StartTime = Helpers.FormatDateTimeToUtc(s.StartTime),
-                EndTime = Helpers.FormatDateTimeToUtc(s.EndTime),
+                StartTime = s.StartTime.SpecifyUtc(),
+                EndTime = s.EndTime.SpecifyUtc(),
                 EstMatchTime = s.EstMatchTime ?? 30 //customer suggestion default 30 minutes
             };
         }

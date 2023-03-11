@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Static.Methods;
 using System;
 using System.Collections.Generic;
@@ -40,18 +41,18 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 ID = a.ID,
                 Name = a.Name,
-                RegistrationStart = Helpers.FormatDateTimeToUtc(a.RegistrationStart),
-                RegistrationEnd = Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
-                RegistrationOpen = DateTime.UtcNow > Helpers.FormatDateTimeToUtc(a.RegistrationStart)
-                        && DateTime.UtcNow < Helpers.FormatDateTimeToUtc(a.RegistrationEnd),
+                RegistrationStart = a.RegistrationStart.SpecifyUtc(),
+                RegistrationEnd = a.RegistrationEnd.SpecifyUtc(),
+                RegistrationOpen = DateTime.UtcNow > a.RegistrationStart.SpecifyUtc()
+                        && DateTime.UtcNow < a.RegistrationEnd.SpecifyUtc(),
                 MinCapacity = a.MinCapacity,
                 MaxCapacity = a.MaxCapacity,
                 SoloRegistration = a.SoloRegistration,
                 Logo = a.Logo,
                 Type = a.Type?.Description,
                 Completed = completed,
-                StartDate = Helpers.FormatDateTimeToUtc(a.StartDate),
-                EndDate = Helpers.FormatDateTimeToUtc(a.EndDate),
+                StartDate = a.StartDate.SpecifyUtc(),
+                EndDate = a.EndDate.SpecifyUtc(),
                 SeriesScheduleID = a.SeriesScheduleID,
             };
         }

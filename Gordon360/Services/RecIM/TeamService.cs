@@ -17,6 +17,7 @@ using Microsoft.Graph.TermStore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Static.Methods;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM
 {
@@ -181,7 +182,7 @@ namespace Gordon360.Services.RecIM
                                                                 OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
                                                                 Status = matchTeamJoin.Status,
                                                                 MatchStatusID = match.StatusID,
-                                                                MatchStartTime = Helpers.FormatDateTimeToUtc(match.StartTime)
+                                                                MatchStartTime = match.StartTime.SpecifyUtc()
                                                             }
                                                 ).AsEnumerable(),
                                 TeamRecord = t.SeriesTeam
@@ -225,7 +226,7 @@ namespace Gordon360.Services.RecIM
                                         ID = pt.ID,
                                         TeamID = pt.TeamID,
                                         ParticipantUsername = pt.ParticipantUsername,
-                                        SignDate = Helpers.FormatDateTimeToUtc(pt.SignDate),
+                                        SignDate = pt.SignDate.SpecifyUtc(),
                                         RoleTypeID = pt.RoleTypeID,
                                     })
                                     .FirstOrDefault();

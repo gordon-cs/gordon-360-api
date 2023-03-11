@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Azure.Core;
 using Gordon360.Static.Methods;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM
 {
@@ -55,8 +56,8 @@ namespace Gordon360.Services.RecIM
                     {
                         ID = s.ID,
                         Name = s.Name,
-                        StartDate = Helpers.FormatDateTimeToUtc(s.StartDate),
-                        EndDate = Helpers.FormatDateTimeToUtc(s.EndDate),
+                        StartDate = s.StartDate.SpecifyUtc(),
+                        EndDate = s.EndDate.SpecifyUtc(),
                         Type = s.Type.Description,
                         Status = s.Status.Description,
                         ActivityID = s.ActivityID,
