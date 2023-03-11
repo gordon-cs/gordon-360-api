@@ -896,7 +896,7 @@
             Automatically creates Matches based on given Series
             </summary>
             <param name="seriesID"></param>
-            <param name="request"></param>
+            <param name="request">optional request data, used for additional options on autoscheduling</param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
             <summary>
@@ -1237,6 +1237,20 @@
             It's a separate role that Advisors and Leaders can have, with a separate flag in the database 
             BUT, it's convenient to treat it as a participation type in several places throughout the API
             </summary>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.DateTime)">
+            <summary>
+            Specify the given DateTime as UTC, without changing the time value.
+            </summary>
+            <param name="dateTime"></param>
+            <returns>dateTime with type UTC</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.Nullable{System.DateTime})">
+            <summary>
+            Specify the given DateTime? as UTC, without changing the time value.
+            </summary>
+            <param name="nullableDateTime"></param>
+            <returns>dateTime with type UTC, or null</returns>
         </member>
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>

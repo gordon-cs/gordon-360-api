@@ -2,15 +2,13 @@
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Core;
-
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM
 {
@@ -55,8 +53,8 @@ namespace Gordon360.Services.RecIM
                     {
                         ID = s.ID,
                         Name = s.Name,
-                        StartDate = s.StartDate,
-                        EndDate = s.EndDate,
+                        StartDate = s.StartDate.SpecifyUtc(),
+                        EndDate = s.EndDate.SpecifyUtc(),
                         Type = s.Type.Description,
                         Status = s.Status.Description,
                         ActivityID = s.ActivityID,
@@ -79,8 +77,8 @@ namespace Gordon360.Services.RecIM
                     });
             if (active)
             {
-                series = series.Where(s => s.StartDate < DateTime.Now
-                                        && s.EndDate > DateTime.Now);
+                series = series.Where(s => s.StartDate < DateTime.UtcNow
+                                        && s.EndDate > DateTime.UtcNow);
             }
             return series;
         }

@@ -1,6 +1,8 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
+using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -77,7 +79,7 @@ namespace Gordon360.Services.RecIM
                     ID = mt.MatchID,
                     Scores = mt.Match.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
-                    StartTime = mt.Match.StartTime,
+                    StartTime = mt.Match.StartTime.SpecifyUtc(),
                     Status = mt.Match.Status.Description,
                     Surface = mt.Match.Surface.Name,
                     Team = mt.Match.MatchTeam
@@ -118,7 +120,7 @@ namespace Gordon360.Services.RecIM
                     Scores = m.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
-                    StartTime = m.StartTime,
+                    StartTime = m.StartTime.SpecifyUtc(),
                     Surface = m.Surface.Name,
                     Status = m.Status.Description,
                     Attendance = m.MatchParticipant
@@ -138,7 +140,6 @@ namespace Gordon360.Services.RecIM
                             Team = a.Team.Select(t => new TeamExtendedViewModel
                             {
                                 ID = t.ID,
-                                Activity = a,
                                 Name = t.Name,
                                 Logo = t.Logo
                             })
@@ -169,7 +170,7 @@ namespace Gordon360.Services.RecIM
                                     TeamScore = own_mt.Score,
                                     OpposingTeamScore = other_mt.Score,
                                     MatchStatusID = own_mt.Match.StatusID,
-                                    MatchStartTime = own_mt.Match.StartTime,
+                                    MatchStartTime = own_mt.Match.StartTime.SpecifyUtc(),  
                                 }
                             ),
                         TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
@@ -193,7 +194,7 @@ namespace Gordon360.Services.RecIM
                     Scores = m.MatchTeam
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
-                    StartTime = m.StartTime,
+                    StartTime = m.StartTime.SpecifyUtc(),
                     Surface = m.Surface.Name,
                     Status = m.Status.Description,
                     Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
