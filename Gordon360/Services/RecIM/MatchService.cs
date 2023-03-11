@@ -79,7 +79,7 @@ namespace Gordon360.Services.RecIM
                         .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
                     StartTime = mt.Match.StartTime,
                     Status = mt.Match.Status.Description,
-                    Surface = mt.Match.Surface.Description,
+                    Surface = mt.Match.Surface.Name,
                     Team = mt.Match.MatchTeam
                         .Select(_mt => new TeamExtendedViewModel
                         {
@@ -119,7 +119,7 @@ namespace Gordon360.Services.RecIM
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
                     StartTime = m.StartTime,
-                    Surface = m.Surface.Description,
+                    Surface = m.Surface.Name,
                     Status = m.Status.Description,
                     Attendance = m.MatchParticipant
                         .Select(mp => new ParticipantExtendedViewModel
@@ -194,7 +194,7 @@ namespace Gordon360.Services.RecIM
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
                     StartTime = m.StartTime,
-                    Surface = m.Surface.Description,
+                    Surface = m.Surface.Name,
                     Status = m.Status.Description,
                     Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
                     {
