@@ -1,22 +1,14 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Exceptions;
-using Team = Gordon360.Models.CCT.Team;
 using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Net;
-using System.Net.Mail;
 using System.Globalization;
-using Microsoft.Graph;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.TermStore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
-using Gordon360.Static.Methods;
 using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM

@@ -1240,17 +1240,17 @@
         </member>
         <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.DateTime)">
             <summary>
-            Helper method that casts given date time to type UTC without changing the time
+            Specify the given DateTime as UTC, without changing the time value.
             </summary>
             <param name="dateTime"></param>
             <returns>dateTime with type UTC</returns>
         </member>
         <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.Nullable{System.DateTime})">
             <summary>
-            Function overload for nullable datetime
+            Specify the given DateTime? as UTC, without changing the time value.
             </summary>
-            <param name="dateTime"></param>
-            <returns>dateTime with type UTC, if dateTime is null, will return null</returns>
+            <param name="nullableDateTime"></param>
+            <returns>dateTime with type UTC, or null</returns>
         </member>
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>

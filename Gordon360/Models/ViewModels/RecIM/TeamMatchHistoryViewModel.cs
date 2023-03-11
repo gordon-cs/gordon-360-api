@@ -1,6 +1,5 @@
 ﻿using Gordon360.Extensions.System;
 using Gordon360.Models.CCT;
-using Gordon360.Static.Methods;
 using System;
 using System.Collections.Generic;
 
