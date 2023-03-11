@@ -28,7 +28,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public IEnumerable<TeamExtendedViewModel> Team { get; set; }
 
 
-        public static implicit operator ActivityExtendedViewModel(Activity? a)
+        public static implicit operator ActivityExtendedViewModel?(Activity? a)
         {
             if (a is null) return null;
             //redundant check in case admins forget to mark activity completed
