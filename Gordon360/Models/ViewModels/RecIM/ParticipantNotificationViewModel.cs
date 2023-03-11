@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Static.Methods;
 using Microsoft.Graph;
 using System;
@@ -20,8 +21,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 ID = p.ID,
                 ParticipantUsername = p.ParticipantUsername,
                 Message = p.Message,
-                EndDate = Helpers.FormatDateTimeToUtc(p.EndDate),
-                DispatchDate = Helpers.FormatDateTimeToUtc(p.DispatchDate)
+                EndDate = p.EndDate.SpecifyUtc(),
+                DispatchDate = p.DispatchDate.SpecifyUtc()
             };
         }
     }

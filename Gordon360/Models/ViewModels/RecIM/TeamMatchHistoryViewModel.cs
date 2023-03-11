@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Static.Methods;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 TeamScore = mt.Score,
                 Status = mt.Status.Description,
                 MatchStatusID = mt.Match.StatusID,
-                MatchStartTime = Helpers.FormatDateTimeToUtc(mt.Match.StartTime),
+                MatchStartTime = mt.Match.StartTime.SpecifyUtc(),
                 SportsmanshipScore = mt.SportsmanshipScore
             };
         }

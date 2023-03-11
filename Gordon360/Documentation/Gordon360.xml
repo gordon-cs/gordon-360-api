@@ -1238,6 +1238,20 @@
             BUT, it's convenient to treat it as a participation type in several places throughout the API
             </summary>
         </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.DateTime)">
+            <summary>
+            Helper method that casts given date time to type UTC without changing the time
+            </summary>
+            <param name="dateTime"></param>
+            <returns>dateTime with type UTC</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.Nullable{System.DateTime})">
+            <summary>
+            Function overload for nullable datetime
+            </summary>
+            <param name="dateTime"></param>
+            <returns>dateTime with type UTC, if dateTime is null, will return null</returns>
+        </member>
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>
             Whether the user wants their strengths to be private (not shown to other users)
@@ -2439,13 +2453,6 @@
             Helper method that gets the current session we are in.
             </summary>
             <returns>The session code of the current session</returns>
-        </member>
-        <member name="M:Gordon360.Static.Methods.Helpers.FormatDateTimeToUtc(System.Nullable{System.DateTime})">
-            <summary>
-            Helper method that casts given date time to type UTC without changing the time
-            </summary>
-            <param name="dateTime"></param>
-            <returns>dateTime with type UTC, if dateTime is null, will return DateTime min value</returns>
         </member>
         <member name="M:Gordon360.Utilities.ImageUtils.DeleteImage(System.String)">
             <summary>
