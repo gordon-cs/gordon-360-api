@@ -348,6 +348,42 @@ namespace Gordon360.Services.RecIM
             return res;
         }
 
+        public async Task<MatchAttendance> AddParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
+        {
+            var teamID = attendee.TeamID ?? 
+                _context.MatchParticipant
+                .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.MatchID == matchID).TeamID;
+
+            var attemptFind = _context.MatchParticipant
+                .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
+
+            if (attemptFind is not null) return attemptFind;
+
+            var newAttendee = new MatchParticipant
+            {
+                ParticipantUsername = attendee.Username,
+                MatchID = matchID,
+                TeamID = teamID
+            };
+            await _context.MatchParticipant.AddAsync(newAttendee);
+            await _context.SaveChangesAsync();
+
+            return newAttendee;
+        }
+
+        public async Task DeleteParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
+        {
+            var teamID = attendee.TeamID ??
+                _context.MatchParticipant
+                .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.MatchID == matchID).TeamID;
+            var res = _context.MatchParticipant
+                .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
+
+            _context.MatchParticipant.Remove(res);
+            await _context.SaveChangesAsync();
+        }
+
+
         public async Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID)
         {
             //deletematch
