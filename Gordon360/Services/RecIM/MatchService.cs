@@ -353,6 +353,12 @@ namespace Gordon360.Services.RecIM
             var teamID = attendee.TeamID ?? 
                 _context.MatchParticipant
                 .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.MatchID == matchID).TeamID;
+
+            var attemptFind = _context.MatchParticipant
+                .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
+
+            if (attemptFind is not null) return attemptFind;
+
             var newAttendee = new MatchParticipant
             {
                 ParticipantUsername = attendee.Username,
