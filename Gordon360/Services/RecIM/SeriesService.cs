@@ -48,6 +48,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
+                .Include(s => s.Schedule)
                 .Where(s => s.StatusID != 0)
                     .Select(s => new SeriesExtendedViewModel
                     {
@@ -73,7 +74,7 @@ namespace Gordon360.Services.RecIM
                                         .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
                                         .Count() - st.WinCount - st.LossCount
                             }).OrderByDescending(st => st.WinCount).AsEnumerable(),
-                        Schedule = _context.SeriesSchedule.Find(s.ScheduleID)
+                        Schedule = s.Schedule
                     });
             if (active)
             {
@@ -201,7 +202,6 @@ namespace Gordon360.Services.RecIM
                 .FirstOrDefault(s => s.ID == seriesID);
 
             var seriesTeams = series.SeriesTeam;
-            var updatedSeriesTeams = update.TeamIDs.ToList();
             
             //if the series is deleted, throw exception
             if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
@@ -213,24 +213,28 @@ namespace Gordon360.Services.RecIM
             series.ScheduleID = update.ScheduleID ?? series.ScheduleID;
             
             //update teams
-            foreach (var team in seriesTeams)
+            if (update.TeamIDs is not null)
             {
-                if (!update.TeamIDs.Any(id => id == team.TeamID))
-                    _context.SeriesTeam.Remove(team);
-                else
-                    updatedSeriesTeams.Remove(team.TeamID);
+                var updatedSeriesTeams = update.TeamIDs.ToList();
+                foreach (var team in seriesTeams)
+                {
+                    if (!update.TeamIDs.Any(id => id == team.TeamID))
+                        _context.SeriesTeam.Remove(team);
+                    else
+                        updatedSeriesTeams.Remove(team.TeamID);
+                }
+
+                foreach (var teamID in updatedSeriesTeams)
+                    await _context.SeriesTeam.AddAsync(
+                        new SeriesTeam
+                        {
+                            TeamID = teamID,
+                            SeriesID = seriesID,
+                            WinCount = 0,
+                            LossCount = 0
+                        });
             }
-
-            foreach (var teamID in updatedSeriesTeams)
-                await _context.SeriesTeam.AddAsync(
-                    new SeriesTeam
-                    {
-                        TeamID = teamID,
-                        SeriesID = seriesID,
-                        WinCount = 0,
-                        LossCount = 0
-                    });
-
+            
             await _context.SaveChangesAsync();
             return series;
         }
@@ -535,15 +539,21 @@ namespace Gordon360.Services.RecIM
                .Where(st => st.SeriesID == seriesID)
                .OrderByDescending(st => st.WinCount);
 
+            // seriesschedule casts start and end time to utc
             SeriesScheduleViewModel schedule = series.Schedule;
 
             var availableSurfaces = _context.SeriesSurface
                                         .Where(ss => ss.SeriesID == seriesID)
                                         .ToArray();
+
             var day = series.StartDate;
-            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second).SpecifyUtc();
             string dayOfWeek = day.DayOfWeek.ToString();
             int surfaceIndex = 0;
+            // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
+            DateTime scheduleEndTime = day.AddDays(schedule.EndTime.TimeOfDay < schedule.StartTime.TimeOfDay ? 1 : 0);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second).SpecifyUtc();
+
 
             //schedule first round
             var elimScheduler = await ScheduleElimRoundAsync(teams);
@@ -556,12 +566,16 @@ namespace Gordon360.Services.RecIM
                     surfaceIndex = 0;
                     day = day.AddMinutes(schedule.EstMatchTime + 15);
                 }
-                while (!schedule.AvailableDays[dayOfWeek] ||
-                    day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
-                    )
+                while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+
                 {
-                    day = day.AddDays(1);
-                    day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                    // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
+                    // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
+                    if (!schedule.AvailableDays[dayOfWeek])
+                        day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second).SpecifyUtc();
+                    scheduleEndTime = scheduleEndTime.AddDays(1);
+
                     dayOfWeek = day.DayOfWeek.ToString();
                     surfaceIndex = 0;
                 }
@@ -580,6 +594,8 @@ namespace Gordon360.Services.RecIM
                 //reset between rounds + prime the pump from first round
                 day = day.AddDays(1);
                 day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                scheduleEndTime = scheduleEndTime.AddDays(1);
+
                 dayOfWeek = day.DayOfWeek.ToString();
                 surfaceIndex = 0;
                 for (int i = 0; i < teamsInNextRound / 2; i++)
@@ -589,10 +605,15 @@ namespace Gordon360.Services.RecIM
                         surfaceIndex = 0;
                         day = day.AddMinutes(schedule.EstMatchTime + 15);
                     }
-                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay)
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
                     {
-                        day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                        // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
+                        // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
+                        if (!schedule.AvailableDays[dayOfWeek])
+                            day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second).SpecifyUtc();
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+
                         dayOfWeek = day.DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
@@ -604,6 +625,7 @@ namespace Gordon360.Services.RecIM
                         TeamIDs = new List<int>().AsEnumerable() //no teams
                     });
                     createdMatches.Add(createdMatch);
+                    surfaceIndex++;
                 }
                 teamsInNextRound /= 2;
             }
