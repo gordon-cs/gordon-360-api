@@ -247,7 +247,6 @@ namespace Gordon360.Services.RecIM
                 throw new UnprocessibleEntity
                 { ExceptionMessage = $"Team name {newTeam.Name} has already been taken by another team in this activity" };
             
-            // UNTESTED FEATURE
             if (newTeam.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
@@ -347,7 +346,6 @@ namespace Gordon360.Services.RecIM
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
             
-            // UNTESTED FEATURE
             if (update.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
