@@ -17,7 +17,6 @@ using System.Text.RegularExpressions;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class MatchesController : GordonControllerBase
     {
         private readonly IMatchService _matchService;
@@ -227,7 +226,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("{matchID}/attendance")]
-        //[StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendance(int matchID, MatchAttendance attendee)
         {
             var attendance = await _matchService.AddParticipantAttendanceAsync(matchID, attendee);
@@ -242,7 +241,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpDelete]
         [Route("{matchID}/attendance")]
-        //[StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
         public async Task<ActionResult<IEnumerable<MatchAttendance>>> DeleteParticipantAttendance(int matchID, MatchAttendance attendee)
         {
             await _matchService.DeleteParticipantAttendanceAsync(matchID, attendee);
