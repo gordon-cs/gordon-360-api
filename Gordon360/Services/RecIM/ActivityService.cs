@@ -204,7 +204,7 @@ namespace Gordon360.Services.RecIM
         public bool ActivityRegistrationClosed(int activityID)
         {
             var a = _context.Activity.Find(activityID);
-            return (DateTime.UtcNow > a.RegistrationStart.SpecifyUtc()
+            return !(DateTime.UtcNow > a.RegistrationStart.SpecifyUtc()
                         && DateTime.UtcNow < a.RegistrationEnd.SpecifyUtc());
         }
 

@@ -59,7 +59,7 @@ namespace Gordon360.Controllers.RecIM
         /// Fetches Match by MatchID
         /// </summary>
         /// <param name="matchID"></param>
-        /// <returns></returns>
+        /// <returns>The match with the requested matchID (or null)</returns>
         [HttpGet]
         [Route("{matchID}")]
         public ActionResult<MatchExtendedViewModel> GetMatchByID(int matchID)
@@ -211,10 +211,41 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("{matchID}/attendance")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
+        public async Task<ActionResult<IEnumerable<MatchAttendance>>> PutParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
         {
-            var attendance = await _teamService.AddParticipantAttendanceAsync(matchID, teamAttendanceList);
+            var attendance = await _teamService.PutParticipantAttendanceAsync(matchID, teamAttendanceList);
+            return CreatedAtAction(nameof(PutParticipantAttendance), attendance);
+        }
+
+
+        /// <summary>
+        /// Adds single match participant
+        /// </summary>
+        /// <param name="matchID">match id</param>
+        /// <param name="attendee">object holding required username (optional teamID)</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{matchID}/attendance")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
+        public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendance(int matchID, MatchAttendance attendee)
+        {
+            var attendance = await _matchService.AddParticipantAttendanceAsync(matchID, attendee);
             return CreatedAtAction(nameof(AddParticipantAttendance), attendance);
+        }
+
+        /// <summary>
+        /// Deletes single match participant
+        /// </summary>
+        /// <param name="matchID">match id</param>
+        /// <param name="attendee">object holding required username (optional teamID)</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{matchID}/attendance")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
+        public async Task<ActionResult<IEnumerable<MatchAttendance>>> DeleteParticipantAttendance(int matchID, MatchAttendance attendee)
+        {
+            await _matchService.DeleteParticipantAttendanceAsync(matchID, attendee);
+            return NoContent();
         }
     }
 }

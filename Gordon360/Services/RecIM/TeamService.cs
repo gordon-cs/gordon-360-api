@@ -355,7 +355,8 @@ namespace Gordon360.Services.RecIM
                 await _participantService.PostParticipantAsync(participant.Username, 1); //pending user
 
             //check for participant is on the team
-            if (_context.Team.Find(teamID).ParticipantTeam.Any(pt => pt.ParticipantUsername == participant.Username))
+            if (_context.Team.FirstOrDefault(t => t.ID == teamID).ParticipantTeam.Any(pt => pt.ParticipantUsername == participant.Username 
+                && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)) //doesn't check for deleted or invited
                 throw new UnprocessibleEntity { ExceptionMessage = $"Participant {participant.Username} is already in this team" };
 
             var participantTeam = new ParticipantTeam
@@ -417,7 +418,7 @@ namespace Gordon360.Services.RecIM
             return _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == username);
         }
 
-        public async Task<IEnumerable<MatchAttendance>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance)
+        public async Task<IEnumerable<MatchAttendance>> PutParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance)
         {
             var res = new List<MatchAttendance>();
             int teamID = attendance.TeamID;

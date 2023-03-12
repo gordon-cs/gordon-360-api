@@ -713,6 +713,13 @@
              Activity object
              </returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivityRegistrationStatus(System.Int32)">
+            <summary>
+            Niche function to check if the activity is still open for registration
+            </summary>
+            <param name="activityID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.ViewModels.RecIM.ActivityUploadViewModel)">
             <summary>
             Posts Activity into CCT.RecIM.Activity
@@ -756,7 +763,7 @@
             Fetches Match by MatchID
             </summary>
             <param name="matchID"></param>
-            <returns></returns>
+            <returns>The match with the requested matchID (or null)</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchTypes(System.String)">
             <summary>
@@ -824,13 +831,29 @@
             <param name="matchID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.AddParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantAttendanceViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.PutParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantAttendanceViewModel)">
             <summary>
             creates match attendance
             </summary>
             <param name="matchID"></param>
             <param name="teamID"></param>
             <param name="teamAttendanceList">List of attendees for a team</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.AddParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchAttendance)">
+            <summary>
+            Adds single match participant
+            </summary>
+            <param name="matchID">match id</param>
+            <param name="attendee">object holding required username (optional teamID)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchAttendance)">
+            <summary>
+            Deletes single match participant
+            </summary>
+            <param name="matchID">match id</param>
+            <param name="attendee">object holding required username (optional teamID)</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
