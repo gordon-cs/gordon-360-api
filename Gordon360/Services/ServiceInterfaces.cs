@@ -350,7 +350,7 @@ namespace Gordon360.Services
             bool HasTeamNameTaken(int activityID, string teamName);
             bool IsTeamCaptain(string username, int teamID);
             int GetTeamActivityID(int teamID);
-            Task<IEnumerable<MatchAttendance>> AddParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance);
+            Task<IEnumerable<MatchAttendance>> PutParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel attendance);
             public int ParticipantAttendanceCount(int teamID, string username);
         }
 
@@ -395,6 +395,8 @@ namespace Gordon360.Services
             Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel match);
             Task CreateMatchTeamMappingAsync(int teamID, int matchID);
             Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID);
+            Task DeleteParticipantAttendanceAsync(int matchID, MatchAttendance attendee);
+            Task<MatchAttendance> AddParticipantAttendanceAsync(int matchID, MatchAttendance attendee);
         }
     }
 
