@@ -59,7 +59,7 @@ namespace Gordon360.Controllers.RecIM
         /// Fetches Match by MatchID
         /// </summary>
         /// <param name="matchID"></param>
-        /// <returns></returns>
+        /// <returns>The match with the requested matchID (or null)</returns>
         [HttpGet]
         [Route("{matchID}")]
         public ActionResult<MatchExtendedViewModel> GetMatchByID(int matchID)
