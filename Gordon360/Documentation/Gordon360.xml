@@ -763,7 +763,7 @@
             Fetches Match by MatchID
             </summary>
             <param name="matchID"></param>
-            <returns></returns>
+            <returns>The match with the requested matchID (or null)</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchTypes(System.String)">
             <summary>

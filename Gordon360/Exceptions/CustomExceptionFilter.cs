@@ -28,6 +28,7 @@ namespace Gordon360.Exceptions
                     statusCode = HttpStatusCode.BadRequest;
                     break;
 
+                // Not a custom exception
                 case UnprocessibleEntity:
                     statusCode = HttpStatusCode.UnprocessableEntity;
                     break;
@@ -36,6 +37,12 @@ namespace Gordon360.Exceptions
                 case UnauthorizedAccessException:
                     statusCode = HttpStatusCode.Unauthorized;
                     break;
+
+                // Not a custom exception
+                case NotFound:
+                    statusCode = HttpStatusCode.NotFound;
+                    break;
+
             }
 
             // Create Http Response

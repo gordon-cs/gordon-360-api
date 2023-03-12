@@ -1,4 +1,5 @@
-﻿using Gordon360.Extensions.System;
+﻿using Gordon360.Exceptions;
+using Gordon360.Extensions.System;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
@@ -328,7 +329,7 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<ParticipantAttendanceViewModel> GetMatchAttendance(int matchID)
         {
-            var match = _context.Match.Find(matchID);
+            var match = _context.Match.Include(m => m.MatchTeam).FirstOrDefault(m => m.ID == matchID);
             var res = new List<ParticipantAttendanceViewModel>();
             if (match is null) return res;
 
@@ -350,34 +351,53 @@ namespace Gordon360.Services.RecIM
 
         public async Task<MatchAttendance> AddParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
         {
-            var teamID = attendee.TeamID ?? 
-                _context.MatchParticipant
-                .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.MatchID == matchID).TeamID;
+            var teamID = attendee.TeamID ?? _context.MatchTeam
+                .Where(mt => mt.MatchID == matchID)
+                .Join(
+                    _context.ParticipantTeam.Where(pt => pt.ParticipantUsername == attendee.Username),
+                    mt => mt.TeamID,
+                    pt => pt.TeamID,
+                    (mt, pt) => mt
+                ).FirstOrDefault()?.TeamID;
 
-            var attemptFind = _context.MatchParticipant
-                .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
 
-            if (attemptFind is not null) return attemptFind;
-
-            var newAttendee = new MatchParticipant
+            if (teamID is int t_id)
             {
-                ParticipantUsername = attendee.Username,
-                MatchID = matchID,
-                TeamID = teamID
-            };
-            await _context.MatchParticipant.AddAsync(newAttendee);
-            await _context.SaveChangesAsync();
+                var attemptFind = _context.MatchParticipant
+                    .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
 
-            return newAttendee;
+                if (attemptFind is not null) return attemptFind;
+
+                var newAttendee = new MatchParticipant
+                {
+                    ParticipantUsername = attendee.Username,
+                    MatchID = matchID,
+                    TeamID = t_id
+                };
+                await _context.MatchParticipant.AddAsync(newAttendee);
+                await _context.SaveChangesAsync();
+
+                return newAttendee;
+            }
+
+            throw new NotFound() { ExceptionMessage = "Participant was not found in a team in this match" };
         }
 
         public async Task DeleteParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
         {
-            var teamID = attendee.TeamID ??
-                _context.MatchParticipant
-                .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.MatchID == matchID).TeamID;
+            var teamID = attendee.TeamID ?? _context.MatchTeam
+                .Where(mt => mt.MatchID == matchID)
+                .Join(
+                    _context.ParticipantTeam.Where(pt => pt.ParticipantUsername == attendee.Username),
+                    mt => mt.TeamID,
+                    pt => pt.TeamID,
+                    (mt, pt) => mt
+                ).FirstOrDefault()?.TeamID;
+
             var res = _context.MatchParticipant
                 .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
+
+            if (teamID is null || res is null) throw new NotFound() { ExceptionMessage = "Participant was not found in a team in this match" };
 
             _context.MatchParticipant.Remove(res);
             await _context.SaveChangesAsync();
