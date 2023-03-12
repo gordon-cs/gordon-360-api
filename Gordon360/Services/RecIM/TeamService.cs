@@ -340,7 +340,7 @@ namespace Gordon360.Services.RecIM
                 .FirstOrDefault(t => t.ID == teamID);
             if (update.Name is not null)
             {
-                if (t.Activity.Team.Any(team => team.Name == update.Name)) 
+                if (t.Activity.Team.Any(team => team.Name == update.Name && team.ID != teamID)) 
                     throw new UnprocessibleEntity 
                         { ExceptionMessage = $"Team name {update.Name} has already been taken by another team in this activity" };
             }
@@ -521,7 +521,10 @@ namespace Gordon360.Services.RecIM
         {
             var serverAddress = _serverUtils.GetAddress();
             if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
-            var url = $"{serverAddress}browseable/uploads/recim/team/{filename}";
+
+            if (serverAddress.Contains("localhost"))
+                serverAddress += '/';
+            var url = $"{serverAddress}/browseable/uploads/recim/team/{filename}";
             return url;
         }
     }
