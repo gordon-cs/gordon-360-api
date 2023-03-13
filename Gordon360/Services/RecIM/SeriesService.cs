@@ -503,7 +503,7 @@ namespace Gordon360.Services.RecIM
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
-            return new List<MatchViewModel>();
+            throw new NotImplementedException();
         }
         private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
