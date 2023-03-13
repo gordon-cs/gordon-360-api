@@ -91,6 +91,64 @@ namespace Gordon360.Services.RecIM
 
         public SeriesExtendedViewModel GetSeriesByID(int seriesID)
         {
+            // var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            // //Teams are defaulted to be ordered by Wins if there was a reference series
+            // var teams = _context.SeriesTeam
+            //    .Where(st => st.ID == seriesID);
+
+            // //schedule first round
+            // var elimScheduler = await ScheduleElimRoundAsync(teams);
+            // int teamsInWinners = elimScheduler.TeamsInNextRound;
+            // int teamsInLosers = teams.Count() - teamsInWinners;
+
+            // //create matches for losers bracket
+            // int numBuys = 0;
+            // int teamCount = (int)teamsInLosers; //casting to avoid reference value
+            // while (!(((teamsInLosers + numBuys) != 0) && (((teamsInLosers + numBuys) & ((teamsInLosers + numBuys) - 1)) == 0))) //while not power of 2
+            // {
+            //     await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //     {
+            //         StartTime = series.StartDate, //temporary before autoscheduling
+            //         SeriesID = series.ID,
+            //         SurfaceID = 1, //temporary before 25live integration
+            //         TeamIDs = new List<int>().AsEnumerable() //no teams
+            //     });
+            //     teamCount--;
+            //     numBuys++;
+            // }
+            // //teams in losers has weird logic where each team actually represents a match that needs to be made
+            // //since each team will be paired with a team from the upper bracket
+            // teamsInLosers = teamCount + numBuys;
+            // while (teamsInLosers > 1)
+            // {
+            //     for (int i = 0; i < teamsInLosers; i++)
+            //     {
+            //         await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //         {
+            //             StartTime = series.StartDate, //temporary before autoscheduling
+            //             SeriesID = series.ID,
+            //             SurfaceID = 1, //temporary before 25live integration
+            //             TeamIDs = new List<int>().AsEnumerable() //no teams
+            //         });
+            //     }
+            //     teamsInLosers /= 2;
+            // }
+            // //create matches for winners bracket
+            // while (teamsInWinners > 0)
+            // {
+            //     for (int i = 0; i < teamsInWinners / 2; i++)
+            //     {
+            //         await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //         {
+            //             StartTime = series.StartDate, //temporary before autoscheduling
+            //             SeriesID = series.ID,
+            //             SurfaceID = 1, //temporary before 25live integration
+            //             TeamIDs = new List<int>().AsEnumerable() //no teams
+            //         });
+            //     }
+            //     teamsInWinners /= 2;
+            // }
+            // //silence error
             return GetSeries().FirstOrDefault(s => s.ID == seriesID);
         }
 
@@ -358,9 +416,9 @@ namespace Gordon360.Services.RecIM
                 .ConvertUtcToEst();
             string dayOfWeek = day.DayOfWeek.ToString();
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = new DateTime().Add(schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay);
-            var start = new DateTime().Add(schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay);
-            DateTime scheduleEndTime = day.AddDays(end < start ? 1 : 0);
+            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
             scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
             int surfaceIndex = 0;
@@ -385,9 +443,7 @@ namespace Gordon360.Services.RecIM
                         // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
                         if (!schedule.AvailableDays[dayOfWeek])
                             day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
-                            .SpecifyUtc()
-                            .ConvertUtcToEst();
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                         scheduleEndTime = scheduleEndTime.AddDays(1);
                         dayOfWeek = day.DayOfWeek.ToString();
                         surfaceIndex = 0;
@@ -441,9 +497,9 @@ namespace Gordon360.Services.RecIM
                 .ConvertUtcToEst();
             string dayOfWeek = day.DayOfWeek.ToString();
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = new DateTime().Add(schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay);
-            var start = new DateTime().Add(schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay);
-            DateTime scheduleEndTime = day.AddDays(end < start ? 1 : 0);
+            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
             scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
             //local variables
@@ -466,9 +522,7 @@ namespace Gordon360.Services.RecIM
                     // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
                     if (!schedule.AvailableDays[dayOfWeek])
                         day = day.AddDays(1);
-                    day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
-                        .SpecifyUtc()
-                        .ConvertUtcToEst();
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                     scheduleEndTime = scheduleEndTime.AddDays(1);
 
                     dayOfWeek = day.DayOfWeek.ToString();
@@ -529,9 +583,9 @@ namespace Gordon360.Services.RecIM
             string dayOfWeek = day.DayOfWeek.ToString();
             int surfaceIndex = 0;
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = new DateTime().Add(schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay);
-            var start = new DateTime().Add(schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay);
-            DateTime scheduleEndTime = day.AddDays(end < start ? 1 : 0);
+            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
             scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
 
@@ -553,9 +607,7 @@ namespace Gordon360.Services.RecIM
                     // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
                     if (!schedule.AvailableDays[dayOfWeek])
                         day = day.AddDays(1);
-                    day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
-                        .SpecifyUtc()
-                        .ConvertUtcToEst();
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                     scheduleEndTime = scheduleEndTime.AddDays(1);
 
                     dayOfWeek = day.DayOfWeek.ToString();
@@ -575,9 +627,7 @@ namespace Gordon360.Services.RecIM
             {
                 //reset between rounds + prime the pump from first round
                 day = day.AddDays(1);
-                day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
-                    .SpecifyUtc()
-                    .ConvertUtcToEst();
+                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                 scheduleEndTime = scheduleEndTime.AddDays(1);
 
                 dayOfWeek = day.DayOfWeek.ToString();
@@ -595,9 +645,7 @@ namespace Gordon360.Services.RecIM
                         // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
                         if (!schedule.AvailableDays[dayOfWeek])
                             day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
-                            .SpecifyUtc()
-                            .ConvertUtcToEst();
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                         scheduleEndTime = scheduleEndTime.AddDays(1);
 
                         dayOfWeek = day.DayOfWeek.ToString();
