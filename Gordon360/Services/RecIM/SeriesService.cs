@@ -16,6 +16,7 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly IMatchService _matchService;
+        private static readonly TimeSpan midnight = new DateTime().TimeOfDay;
 
         public SeriesService(CCTContext context, IMatchService matchService)
         {
@@ -169,6 +170,11 @@ namespace Gordon360.Services.RecIM
                 }
                 return existingSchedule;
             }
+            // sanitize start/end time dates
+            var defaultDate = new DateTime(1998,12,23);
+            var start = defaultDate.Add(seriesSchedule.DailyStartTime.TimeOfDay);
+            var end = defaultDate.Add(seriesSchedule.DailyEndTime.TimeOfDay);
+
             // if schedule does not exist
             var schedule = new SeriesSchedule
             {
@@ -180,8 +186,8 @@ namespace Gordon360.Services.RecIM
                 Fri = seriesSchedule.AvailableDays.Fri,
                 Sat = seriesSchedule.AvailableDays.Sat,
                 EstMatchTime = seriesSchedule.EstMatchTime,
-                StartTime = seriesSchedule.DailyStartTime,
-                EndTime = seriesSchedule.DailyEndTime
+                StartTime = start,
+                EndTime = end
             };
             await _context.SeriesSchedule.AddAsync(schedule);
             await _context.SaveChangesAsync();
@@ -498,6 +504,63 @@ namespace Gordon360.Services.RecIM
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
+            // var series = _context.Series.FirstOrDefault(s => s.ID == seriesID);
+            // //Teams are defaulted to be ordered by Wins if there was a reference series
+            // var teams = _context.SeriesTeam
+            //    .Where(st => st.ID == seriesID);
+
+            // //schedule first round
+            // var elimScheduler = await ScheduleElimRoundAsync(teams);
+            // int teamsInWinners = elimScheduler.TeamsInNextRound;
+            // int teamsInLosers = teams.Count() - teamsInWinners;
+
+            // //create matches for losers bracket
+            // int numBuys = 0;
+            // int teamCount = (int)teamsInLosers; //casting to avoid reference value
+            // while (!(((teamsInLosers + numBuys) != 0) && (((teamsInLosers + numBuys) & ((teamsInLosers + numBuys) - 1)) == 0))) //while not power of 2
+            // {
+            //     await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //     {
+            //         StartTime = series.StartDate, //temporary before autoscheduling
+            //         SeriesID = series.ID,
+            //         SurfaceID = 1, //temporary before 25live integration
+            //         TeamIDs = new List<int>().AsEnumerable() //no teams
+            //     });
+            //     teamCount--;
+            //     numBuys++;
+            // }
+            // //teams in losers has weird logic where each team actually represents a match that needs to be made
+            // //since each team will be paired with a team from the upper bracket
+            // teamsInLosers = teamCount + numBuys;
+            // while (teamsInLosers > 1)
+            // {
+            //     for (int i = 0; i < teamsInLosers; i++)
+            //     {
+            //         await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //         {
+            //             StartTime = series.StartDate, //temporary before autoscheduling
+            //             SeriesID = series.ID,
+            //             SurfaceID = 1, //temporary before 25live integration
+            //             TeamIDs = new List<int>().AsEnumerable() //no teams
+            //         });
+            //     }
+            //     teamsInLosers /= 2;
+            // }
+            // //create matches for winners bracket
+            // while (teamsInWinners > 0)
+            // {
+            //     for (int i = 0; i < teamsInWinners / 2; i++)
+            //     {
+            //         await _matchService.PostMatchAsync(new MatchUploadViewModel
+            //         {
+            //             StartTime = series.StartDate, //temporary before autoscheduling
+            //             SeriesID = series.ID,
+            //             SurfaceID = 1, //temporary before 25live integration
+            //             TeamIDs = new List<int>().AsEnumerable() //no teams
+            //         });
+            //     }
+            //     teamsInWinners /= 2;
+            // }
             // //silence error
             return new List<MatchViewModel>();
         }
@@ -525,10 +588,10 @@ namespace Gordon360.Services.RecIM
             string dayOfWeek = day.DayOfWeek.ToString();
             int surfaceIndex = 0;
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            DateTime scheduleEndTime = day.AddDays(schedule.EndTime.TimeOfDay < schedule.StartTime.TimeOfDay ? 1 : 0);
-            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
-                .SpecifyUtc()
-                .ConvertUtcToEst();
+            var end = new DateTime().Add(schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay);
+            var start = new DateTime().Add(schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay);
+            DateTime scheduleEndTime = day.AddDays(end < start ? 1 : 0);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
 
             //schedule first round
