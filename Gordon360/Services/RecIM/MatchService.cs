@@ -152,6 +152,7 @@ namespace Gordon360.Services.RecIM
                         Name = mt.Team.Name,
                         Status = mt.Status.Description,
                         Participant = mt.Team.ParticipantTeam
+                            .Where(pt => new int[] {0,1,6}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
                             .Select(pt => new ParticipantExtendedViewModel
                             {
                                 Username = pt.ParticipantUsername,
@@ -314,28 +315,30 @@ namespace Gordon360.Services.RecIM
                 }
             }
 
-
-            teamstats.Score = vm.Score ?? teamstats.Score;
-            teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
-            teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
-            
-            if (teamstats.StatusID == 4) //statusID = 4 (forfeited) 
+            if (teamstats.StatusID != 4 && vm.StatusID == 4) //statusID = 4 (forfeited) 
             {
                 var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
 
                 if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
                 {
                     var match = _context.Match.Find(matchID);
-                    var seriesID = match.SeriesID;
-                    var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
-                    var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
-                    var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
-                    // complete match
-                    match.StatusID = 6; //completed
-                    opposingRecord.WinCount++;
-                    ownRecord.LossCount++;
+                    if (match.StatusID != 6) //not already set to complete
+                    {
+                        var seriesID = match.SeriesID;
+                        var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
+                        var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
+                        var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
+                        // complete match
+                        match.StatusID = 6; //completed
+                        opposingRecord.WinCount++;
+                        ownRecord.LossCount++;
+                    }
                 }
             }
+
+            teamstats.Score = vm.Score ?? teamstats.Score;
+            teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
+            teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
 
             await _context.SaveChangesAsync();
             return teamstats;
@@ -345,6 +348,43 @@ namespace Gordon360.Services.RecIM
         public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.Find(matchID);
+
+            if (match.StatusID == 6 && vm.StatusID != 6) //completed -> not completed
+            {
+                var teams = _context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
+                    .OrderByDescending(mt => mt.SportsmanshipScore)
+                    .ThenByDescending(mt => mt.Score);
+                var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+
+                //set winner
+                var winner = seriesRecords.FirstOrDefault(st => st.TeamID == teams.First().TeamID);
+                winner.WinCount--;
+                winner.LossCount++; //done so that the foreach below does not need a conditional
+
+                //set everyone 
+                foreach (var team in teams)
+                    seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount--;
+
+            }
+
+            if (match.StatusID != 6 && vm.StatusID == 6) //not completed -> completed
+            {
+                var teams = _context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
+                    .OrderByDescending(mt => mt.SportsmanshipScore)
+                    .ThenByDescending(mt => mt.Score);
+                var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+
+                //set winner
+                var winner = seriesRecords.FirstOrDefault(st => st.TeamID == teams.First().TeamID);
+                winner.WinCount++;
+                winner.LossCount--; //done so that the foreach below does not need a conditional
+
+                //set everyone 
+                foreach (var team in teams)
+                    seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount++;
+
+            }
+
             match.StartTime = vm.StartTime ?? match.StartTime;
             match.StatusID = vm.StatusID ?? match.StatusID;
             match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
