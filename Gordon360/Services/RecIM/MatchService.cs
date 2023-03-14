@@ -187,6 +187,11 @@ namespace Gordon360.Services.RecIM
                                     Opponent = other_mt.Team,
                                     TeamScore = own_mt.Score,
                                     OpposingTeamScore = other_mt.Score,
+                                    Status = own_mt.Score > other_mt.Score
+                                            ? "Win"
+                                            : own_mt.Score < other_mt.Score
+                                                ? "Lose"
+                                                : "Tie",
                                     MatchStatusID = own_mt.Match.StatusID,
                                     MatchStartTime = own_mt.Match.StartTime.SpecifyUtc(),  
                                 }
