@@ -137,7 +137,7 @@ namespace Gordon360.Services.RecIM
                                                     Role = pt.RoleType.Description,
                                                     GamesAttended = _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == pt.ParticipantUsername)
         }),
-                                MatchHistory = _context.Match.Where(m => m.StatusID == 6) // completed status
+                                MatchHistory = _context.Match.Where(m => m.StatusID == 6 || m.StatusID == 4) // completed or forfeited status
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
 

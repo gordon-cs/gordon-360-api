@@ -316,41 +316,46 @@ namespace Gordon360.Services.RecIM
             teamstats.Score = vm.Score ?? teamstats.Score;
             teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
 
-            if (teamstats.StatusID == 4 && vm.StatusID != 4 ) //statusID = 4 (forfeited) 
+            if (teamstats.StatusID == 4 && vm.StatusID != 4 ) //forfeit -> non forfeit
             {
                 var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
-
-                if (match.StatusID == 6) //if not completed, match was manually editted, 
+                var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+                var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
+                if (match.StatusID == 4 || match.StatusID != 6) //if forfeited or not completed 
                 {
-                    var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
-                    teamstats.Score = 0; //remove team score of forfeit
-                    var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
-                    match.StatusID = 2; //confirmed
                     ownRecord.LossCount--;
                     if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
                     {
+                        match.StatusID = 2; // confirmed
                         var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
+                        var opposingStats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID);
+                        opposingStats.Score = 0; // reset scores
                         opposingRecord.WinCount--;
                     }
                 }
             }
 
-            if (teamstats.StatusID != 4 && vm.StatusID == 4) //statusID = 4 (forfeited) 
+            if (teamstats.StatusID != 4 && vm.StatusID == 4) //non forfeit -> forfeit
             {
                 var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
+                // if there is only 1 opponent and they've already forfeited. Throw exception
+                if (opposingTeams.Count == 1 && opposingTeams.First().StatusID == 4) throw new UnprocessibleEntity() { ExceptionMessage = "Both teams cannot forfeit." };
 
-                if (match.StatusID != 6) //not already set to complete
+                if (match.StatusID != 4 && match.StatusID != 6) //not already set to forfeited or completed
                 {
                     var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
                     teamstats.Score = 0; //remove team score of forfeit
                     var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
-                    // complete match
-                    match.StatusID = 6; //completed
+                    
                     ownRecord.LossCount++;
                     if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
                     {
+                        // forfeit match if there is only 1 other team
+                        match.StatusID = 4; //forfeited
                         var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
+                        var opposingStats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID);
                         opposingRecord.WinCount++;
+                        opposingStats.Score = 1;
                     }
                 }
             }
@@ -365,6 +370,8 @@ namespace Gordon360.Services.RecIM
         public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
         {
             var match = _context.Match.Find(matchID);
+
+            if (match.StatusID == 4 || vm.StatusID == 4) throw new UnprocessibleEntity() { ExceptionMessage = "Please resolve the 'Forfeit' status within the Team's own status " };
 
             if (match.StatusID == 6 && vm.StatusID != 6) //completed -> not completed
             {
