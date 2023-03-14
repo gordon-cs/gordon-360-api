@@ -312,6 +312,7 @@ namespace Gordon360.Services.RecIM
         {
 
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
+            var match = _context.Match.Find(matchID);
             teamstats.Score = vm.Score ?? teamstats.Score;
             teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
 
@@ -319,17 +320,18 @@ namespace Gordon360.Services.RecIM
             {
                 var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
 
-                if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (retract win)
+                if (match.StatusID == 6) //if not completed, match was manually editted, 
                 {
-                    var match = _context.Match.Find(matchID);
-                    var seriesID = match.SeriesID;
-                    var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
-                    var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
+                    var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+                    teamstats.Score = 0; //remove team score of forfeit
                     var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
-                    // complete match
                     match.StatusID = 2; //confirmed
-                    opposingRecord.WinCount--;
                     ownRecord.LossCount--;
+                    if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
+                    {
+                        var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
+                        opposingRecord.WinCount--;
+                    }
                 }
             }
 
@@ -337,20 +339,18 @@ namespace Gordon360.Services.RecIM
             {
                 var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
 
-                if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
+                if (match.StatusID != 6) //not already set to complete
                 {
-                    var match = _context.Match.Find(matchID);
-                    if (match.StatusID != 6) //not already set to complete
+                    var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+                    teamstats.Score = 0; //remove team score of forfeit
+                    var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
+                    // complete match
+                    match.StatusID = 6; //completed
+                    ownRecord.LossCount++;
+                    if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
                     {
-                        var seriesID = match.SeriesID;
-                        var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
                         var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
-                        var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
-                        // complete match
-                        match.StatusID = 6; //completed
-                        teamstats.Score = 0; //remove team score of forfeit
                         opposingRecord.WinCount++;
-                        ownRecord.LossCount++;
                     }
                 }
             }
@@ -406,7 +406,7 @@ namespace Gordon360.Services.RecIM
             match.StatusID = vm.StatusID ?? match.StatusID;
             match.SurfaceID = vm.SurfaceID ?? match.SurfaceID;
 
-            if (vm.TeamIDs is not null)
+            if (vm.TeamIDs is not null && match.StatusID != 6) //make sure that completed matches cant have their team list updated
             {
                 List<int> updatedTeams = vm.TeamIDs.ToList();
                 var removedTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && !updatedTeams.Any(t_id => mt.TeamID == t_id));
