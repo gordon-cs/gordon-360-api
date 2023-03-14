@@ -312,6 +312,8 @@ namespace Gordon360.Services.RecIM
         {
 
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
+            teamstats.Score = vm.Score ?? teamstats.Score;
+            teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
 
             if (teamstats.StatusID == 4 && vm.StatusID != 4 ) //statusID = 4 (forfeited) 
             {
@@ -346,14 +348,13 @@ namespace Gordon360.Services.RecIM
                         var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
                         // complete match
                         match.StatusID = 6; //completed
+                        teamstats.Score = 0; //remove team score of forfeit
                         opposingRecord.WinCount++;
                         ownRecord.LossCount++;
                     }
                 }
             }
 
-            teamstats.Score = vm.Score ?? teamstats.Score;
-            teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
             teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
 
             await _context.SaveChangesAsync();
