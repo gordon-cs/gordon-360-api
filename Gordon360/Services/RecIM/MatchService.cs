@@ -90,7 +90,22 @@ namespace Gordon360.Services.RecIM
                             Name = _mt.Team.Name,
                         })
                         .AsEnumerable(),
-                    Activity = mt.Match.Series.Activity,
+                    Series = _context.Series
+                        .Include(s => s.SeriesTeam)
+                            .ThenInclude(s => s.Team)
+                        .Where(s => s.ID == mt.Match.SeriesID)
+                        .Select(s => new SeriesExtendedViewModel
+                        {
+                            ID = s.ID,
+                            Name = s.Name,
+                            Type = s.Type.Description,
+                            TeamStanding = s.SeriesTeam.Select(st => (TeamRecordViewModel)st)
+                        }).FirstOrDefault(),
+                    Activity = new ActivityExtendedViewModel
+                    {
+                        ID = mt.Team.ActivityID,
+                        Name = mt.Team.Activity.Name
+                    },
 
                 })
                 .FirstOrDefault();
@@ -130,22 +145,23 @@ namespace Gordon360.Services.RecIM
                             Username = mp.ParticipantUsername
                         }).AsEnumerable(),
                     
-                    SeriesID = m.SeriesID,
-                    // Team will eventually be handled by TeamService 
-                    Activity = _context.Activity
-                        .Where(a => a.ID == m.Series.ActivityID)
-                        .Select(a => new ActivityExtendedViewModel
+                    Series = _context.Series
+                        .Include(s => s.SeriesTeam)
+                            .ThenInclude(s => s.Team)
+                        .Where(s => s.ID == m.SeriesID)
+                        .Select(s => new SeriesExtendedViewModel
                         {
-                            ID = a.ID,
-                            Name = a.Name,
-                            Team = a.Team.Select(t => new TeamExtendedViewModel
-                            {
-                                ID = t.ID,
-                                Name = t.Name,
-                                Logo = t.Logo
-                            })
-                        })
-                        .FirstOrDefault(),
+                            ID = s.ID,
+                            Name = s.Name,
+                            Type = s.Type.Description,
+                            TeamStanding = s.SeriesTeam.Select(st => (TeamRecordViewModel)st)
+                        }).FirstOrDefault(),
+                    // Team will eventually be handled by TeamService 
+                    Activity = new ActivityExtendedViewModel
+                    {
+                        ID = m.Series.ActivityID,
+                        Name = m.Series.Activity.Name
+                    },
                     Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
                     {
                         ID = mt.TeamID,
