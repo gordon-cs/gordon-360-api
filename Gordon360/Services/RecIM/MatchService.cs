@@ -293,10 +293,50 @@ namespace Gordon360.Services.RecIM
 
         public async Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel vm)
         {
+
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
+
+            if (teamstats.StatusID == 4 && vm.StatusID != 4 ) //statusID = 4 (forfeited) 
+            {
+                var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
+
+                if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (retract win)
+                {
+                    var match = _context.Match.Find(matchID);
+                    var seriesID = match.SeriesID;
+                    var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
+                    var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
+                    var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
+                    // complete match
+                    match.StatusID = 2; //confirmed
+                    opposingRecord.WinCount--;
+                    ownRecord.LossCount--;
+                }
+            }
+
+
             teamstats.Score = vm.Score ?? teamstats.Score;
             teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
             teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
+            
+            if (teamstats.StatusID == 4) //statusID = 4 (forfeited) 
+            {
+                var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
+
+                if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
+                {
+                    var match = _context.Match.Find(matchID);
+                    var seriesID = match.SeriesID;
+                    var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == seriesID);
+                    var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
+                    var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
+                    // complete match
+                    match.StatusID = 6; //completed
+                    opposingRecord.WinCount++;
+                    ownRecord.LossCount++;
+                }
+            }
+
             await _context.SaveChangesAsync();
             return teamstats;
 
