@@ -135,8 +135,8 @@ namespace Gordon360.Services.RecIM
                                                     Username = pt.ParticipantUsername,
                                                     Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                                     Role = pt.RoleType.Description,
-                                                    GamesAttended = ParticipantAttendanceCount(teamID, pt.ParticipantUsername)
-                                                }),
+                                                    GamesAttended = _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == pt.ParticipantUsername)
+        }),
                                 MatchHistory = _context.Match.Where(m => m.StatusID == 6) // completed status
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
@@ -269,20 +269,24 @@ namespace Gordon360.Services.RecIM
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.ParticipantUsername == participant.Username && pt.TeamID == teamID);
             var roleID = participant.RoleTypeID ?? 3; //update or default to member
 
-            //if user is currently requested to join and have just accepted to join the team, user should have other instances of themselves removed from other teams
-            if (participantTeam.RoleTypeID == 2 && roleID == 3)
+
+            var activityID = _context.Team.Find(teamID).ActivityID;
+            var otherInstances = _context.ParticipantTeam
+                .Where(pt => pt.ID != participantTeam.ID && pt.ParticipantUsername == participantTeam.ParticipantUsername)
+                .Join(_context.Team.Where(t => t.ActivityID == activityID),
+                pt => pt.TeamID,
+                t => t.ID,
+                (pt, t) => pt);
+
+            //if captain or inactive on another team, delete this participant team (admins can bypass)
+            if (otherInstances.Any(pt => new int[] { 5,6 }.Contains(pt.RoleTypeID) && !_participantService.IsAdmin(participant.Username)))  
             {
-                var activityID = _context.Team.Find(teamID).ActivityID;
-                var otherInstances = _context.ParticipantTeam
-                    .Where(pt => pt.ID != participantTeam.ID && pt.ParticipantUsername == participantTeam.ParticipantUsername)
-                    .Join(_context.Team.Where(t => t.ActivityID == activityID),
-                    pt => pt.TeamID,
-                    t => t.ID,
-                    (pt, t) => pt)
-                    .ToList();
-                _context.ParticipantTeam.RemoveRange(otherInstances);
+                _context.ParticipantTeam.Remove(participantTeam);
+                throw new ResourceCreationException() { ExceptionMessage = $"Participant is in an immutable role in this activity" };
             }
 
+            //unconditionally will remove all other instances to ensure no edge case
+            _context.ParticipantTeam.RemoveRange(otherInstances);
             participantTeam.RoleTypeID = roleID;
             await _context.SaveChangesAsync();
 
@@ -360,14 +364,25 @@ namespace Gordon360.Services.RecIM
                 && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)) //doesn't check for deleted or invited
                 throw new UnprocessibleEntity { ExceptionMessage = $"Participant {participant.Username} is already in this team" };
 
-            var participantTeam = new ParticipantTeam
+            // if a participant is "deleted, modify the existing participantTeam instance
+            var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == participant.Username && pt.RoleTypeID == 0);
+            if (participantTeam is ParticipantTeam pt)
             {
-                TeamID = teamID,
-                ParticipantUsername = participant.Username,
-                SignDate = DateTime.UtcNow,
-                RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
-            };
-            await _context.ParticipantTeam.AddAsync(participantTeam);
+                pt.SignDate = DateTime.UtcNow;
+                pt.RoleTypeID = participant.RoleTypeID ?? 2;
+            }
+            else
+            {
+                participantTeam = new ParticipantTeam
+                    {
+                        TeamID = teamID,
+                        ParticipantUsername = participant.Username,
+                        SignDate = DateTime.UtcNow,
+                        RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
+                    };
+                await _context.ParticipantTeam.AddAsync(participantTeam);
+            }
+            
             await _context.SaveChangesAsync();
             if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
