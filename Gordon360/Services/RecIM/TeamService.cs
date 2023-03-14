@@ -135,8 +135,9 @@ namespace Gordon360.Services.RecIM
                                                     Username = pt.ParticipantUsername,
                                                     Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                                     Role = pt.RoleType.Description,
+                                                    GamesAttended = ParticipantAttendanceCount(teamID, pt.ParticipantUsername)
                                                 }),
-                                MatchHistory = _context.Match.Where(m => m.StatusID != 0) // deleted status
+                                MatchHistory = _context.Match.Where(m => m.StatusID == 6) // completed status
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
 
