@@ -37,12 +37,6 @@ namespace Gordon360.Exceptions
                 case UnauthorizedAccessException:
                     statusCode = HttpStatusCode.Unauthorized;
                     break;
-
-                // Not a custom exception
-                case NotFound:
-                    statusCode = HttpStatusCode.NotFound;
-                    break;
-
             }
 
             // Create Http Response

@@ -21,9 +21,5 @@ namespace Gordon360.Exceptions
     {
         public string ExceptionMessage { get; set; }
     }
-    public class NotFound : Exception
-    {
-        public string ExceptionMessage { get; set; }
-    }
 }
 

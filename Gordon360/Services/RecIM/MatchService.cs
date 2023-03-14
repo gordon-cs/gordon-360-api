@@ -380,7 +380,7 @@ namespace Gordon360.Services.RecIM
                 return newAttendee;
             }
 
-            throw new NotFound() { ExceptionMessage = "Participant was not found in a team in this match" };
+            throw new ResourceNotFoundException() { ExceptionMessage = "Participant was not found in a team in this match" };
         }
 
         public async Task DeleteParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
@@ -397,7 +397,7 @@ namespace Gordon360.Services.RecIM
             var res = _context.MatchParticipant
                 .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
 
-            if (teamID is null || res is null) throw new NotFound() { ExceptionMessage = "Participant was not found in a team in this match" };
+            if (teamID is null || res is null) throw new ResourceNotFoundException() { ExceptionMessage = "Participant was not found in a team in this match" };
 
             _context.MatchParticipant.Remove(res);
             await _context.SaveChangesAsync();

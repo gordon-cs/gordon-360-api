@@ -644,9 +644,9 @@ namespace Gordon360.Services.RecIM
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                 {
-                    StartTime = series.StartDate, //default time, autoscheduling will modify
+                    StartTime = series.StartDate, //default time, will be modified by autoscheduling
                     SeriesID = series.ID,
-                    SurfaceID = 1, //temporary before 25live integration
+                    SurfaceID = 0, //default surface (undefined surface type) will be modified by autoscheduling
                     TeamIDs = teamPair
                 });
                 matches.Add(createdMatch);
