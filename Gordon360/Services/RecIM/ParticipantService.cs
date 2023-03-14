@@ -45,13 +45,21 @@ namespace Gordon360.Services.RecIM
 
         public ParticipantExtendedViewModel GetParticipantByUsername(string username)
         {
-            var account = _accountService.GetAccountByUsername(username);
+            string? accountEmail = null;
+            try
+            {
+                accountEmail = _accountService.GetAccountByUsername(username).Email;
+            }
+            catch
+            {
+                // if exception is thrown, we know that this was a manually added participant
+            }
             var participant = _context.Participant
                                 .Where(p => p.Username == username)
                                 .Select(p => new ParticipantExtendedViewModel
                                 {
                                     Username = username,
-                                    Email = account.Email,
+                                    Email = accountEmail,
                                     Status = p.ParticipantStatusHistory
                                                 .OrderByDescending(psh => psh.ID)
                                                 .FirstOrDefault()
@@ -102,9 +110,7 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username)
         {
-       
-            //to be handled by teamservice
-            var teams = _context.ParticipantTeam
+                   var teams = _context.ParticipantTeam
                             .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0)
                                 .Join(_context.Team.Where(t => t.StatusID != 0),
                                     pt => pt.TeamID,
@@ -128,7 +134,6 @@ namespace Gordon360.Services.RecIM
             var participants = _context.Participant.Select(p => new ParticipantExtendedViewModel
             {
                 Username = p.Username,
-                Email = _accountService.GetAccountByUsername(p.Username).Email,
                 Status = p.ParticipantStatusHistory.OrderByDescending(psh => psh.ID).FirstOrDefault().Status.Description,
                 IsAdmin = p.IsAdmin
             });
