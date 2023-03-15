@@ -78,7 +78,7 @@ namespace Gordon360.Services.RecIM
             sport.Rules = updatedSport.Rules ?? sport.Rules;
             
             // UNTESTED FEATURE
-            if (updatedSport.Logo != null)
+            if (updatedSport.Logo != null && updatedSport.Logo != "NONE")
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
                 var (extension, format, data) = ImageUtils.GetImageFormat(updatedSport.Logo);

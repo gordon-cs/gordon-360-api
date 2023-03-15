@@ -346,7 +346,7 @@ namespace Gordon360.Services.RecIM
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
             
-            if (update.Logo != null)
+            if (update.Logo != null && update.Logo != "NONE")
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
                 var (extension, format, data) = ImageUtils.GetImageFormat(update.Logo);

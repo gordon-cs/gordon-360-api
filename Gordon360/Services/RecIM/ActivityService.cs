@@ -159,7 +159,7 @@ namespace Gordon360.Services.RecIM
             activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
             activity.SeriesScheduleID = updatedActivity.SeriesScheduleID ?? activity.SeriesScheduleID;
 
-            if (updatedActivity.Logo != null)
+            if (updatedActivity.Logo != null && updatedActivity.Logo != "NONE")
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
                 var (extension, format, data) = ImageUtils.GetImageFormat(updatedActivity.Logo);
