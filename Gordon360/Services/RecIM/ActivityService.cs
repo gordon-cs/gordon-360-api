@@ -328,7 +328,7 @@ namespace Gordon360.Services.RecIM
         private string GetImageURL(string filename)
         {
             var serverAddress = _serverUtils.GetAddress();
-            if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
+            if (serverAddress is not string) throw new Exception("Could not upload Rec-IM Activity Image: Server Address is null");
 
             if (serverAddress.Contains("localhost"))
                 serverAddress += '/';
