@@ -254,8 +254,6 @@ namespace Gordon360.Controllers.RecIM
 
             if (invite is null)
                 return NotFound("You were not invited by this team.");
-            if (invite.RoleTypeID == 0)
-                return UnprocessableEntity("Team has been deleted");
             if (username != invite.ParticipantUsername)
                 return Forbid($"You are not permitted to accept invitations for another participant.");
 

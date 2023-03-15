@@ -11,8 +11,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime StartTime { get; set; }
         public string Surface { get; set; }
         public string Status { get; set; }
-        public int SeriesID { get; set; }
         public ActivityExtendedViewModel Activity { get; set; }
+        public SeriesExtendedViewModel Series { get; set; }
         public IEnumerable<ParticipantExtendedViewModel> Attendance { get; set; }
         public IEnumerable<TeamExtendedViewModel> Team { get; set; }
     }
