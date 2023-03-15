@@ -167,7 +167,7 @@ namespace Gordon360.Controllers.RecIM
         {
             var username = AuthUtils.GetUsername(User);
             var participantTeam = _teamService.GetParticipantTeam(teamID, username);
-            if (participantTeam is null)
+            if (participantTeam is null && !_participantService.IsAdmin(username))
                 return NotFound("The user is not part of the team.");
             if (participantTeam.RoleTypeID != 5 || !_participantService.IsAdmin(username))
                 return Forbid($"You are not permitted to delete this team");
