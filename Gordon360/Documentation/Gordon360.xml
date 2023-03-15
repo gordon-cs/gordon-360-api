@@ -1275,6 +1275,38 @@
             <param name="nullableDateTime"></param>
             <returns>dateTime with type UTC, or null</returns>
         </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.ConvertUtcToEst(System.DateTime)">
+            <summary>
+            Converts UTC DateTime to Eastern Standard Time 
+            List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
+            </summary>
+            <param name="dateTime">DateTime with kind UTC</param>
+            <returns>Converted DateTime with kind Unspecified</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.ConvertUtcToEst(System.Nullable{System.DateTime})">
+            <summary>
+            Converts UTC DateTime? to Eastern Standard Time 
+            List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
+            </summary>
+            <param name="nullableDateTime">DateTime? with kind UTC</param>
+            <returns>Converted DateTime with kind Unspecified or null if parameter is null</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.ConvertEstToUtc(System.DateTime)">
+            <summary>
+            Converts Eastern Standard Time DateTime to UTC
+            List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
+            </summary>
+            <param name="dateTime">Unspecified kind DateTime</param>
+            <returns>Converted DateTime with kind UTC</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.ConvertEstToUtc(System.Nullable{System.DateTime})">
+            <summary>
+            Converts Eastern Standard Time DateTime? to UTC
+            List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
+            </summary>
+            <param name="nullableDateTime">Unspecified kind DateTime?</param>
+            <returns>Converted DateTime with kind UTC</returns>
+        </member>
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>
             Whether the user wants their strengths to be private (not shown to other users)

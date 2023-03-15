@@ -11,5 +11,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime? EndDate { get; set; }
         public int? StatusID { get; set; }
         public int? ScheduleID { get; set; }
+        public int[]? TeamIDs { get; set; }
     }
 }

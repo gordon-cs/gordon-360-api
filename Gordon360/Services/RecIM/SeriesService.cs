@@ -48,6 +48,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<SeriesExtendedViewModel> GetSeries(bool active = false)
         {
             var series = _context.Series
+                .Include(s => s.Schedule)
                 .Where(s => s.StatusID != 0)
                     .Select(s => new SeriesExtendedViewModel
                     {
@@ -73,7 +74,7 @@ namespace Gordon360.Services.RecIM
                                         .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
                                         .Count() - st.WinCount - st.LossCount
                             }).OrderByDescending(st => st.WinCount).AsEnumerable(),
-                        Schedule = _context.SeriesSchedule.FirstOrDefault(ss => ss.ID == s.ScheduleID)
+                        Schedule = s.Schedule
                     });
             if (active)
             {
@@ -168,6 +169,11 @@ namespace Gordon360.Services.RecIM
                 }
                 return existingSchedule;
             }
+            // sanitize start/end time dates
+            var defaultDate = new DateTime(1998,12,23);
+            var start = defaultDate.Add(seriesSchedule.DailyStartTime.TimeOfDay);
+            var end = defaultDate.Add(seriesSchedule.DailyEndTime.TimeOfDay);
+
             // if schedule does not exist
             var schedule = new SeriesSchedule
             {
@@ -179,8 +185,8 @@ namespace Gordon360.Services.RecIM
                 Fri = seriesSchedule.AvailableDays.Fri,
                 Sat = seriesSchedule.AvailableDays.Sat,
                 EstMatchTime = seriesSchedule.EstMatchTime,
-                StartTime = seriesSchedule.DailyStartTime,
-                EndTime = seriesSchedule.DailyEndTime
+                StartTime = start,
+                EndTime = end
             };
             await _context.SeriesSchedule.AddAsync(schedule);
             await _context.SaveChangesAsync();
@@ -196,18 +202,46 @@ namespace Gordon360.Services.RecIM
 
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
-            var s = _context.Series.Find(seriesID);
+            var series = _context.Series
+                .Include(s => s.SeriesTeam)
+                .FirstOrDefault(s => s.ID == seriesID);
+
+            var seriesTeams = series.SeriesTeam;
+            
             //if the series is deleted, throw exception
-            if (s.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
+            if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
 
-            s.Name = update.Name ?? s.Name;
-            s.StartDate = update.StartDate ?? s.StartDate;
-            s.EndDate = update.EndDate ?? s.EndDate;
-            s.StatusID = update.StatusID ?? s.StatusID;
-            s.ScheduleID = update.ScheduleID ?? s.ScheduleID;
+            series.Name = update.Name ?? series.Name;
+            series.StartDate = update.StartDate ?? series.StartDate;
+            series.EndDate = update.EndDate ?? series.EndDate;
+            series.StatusID = update.StatusID ?? series.StatusID;
+            series.ScheduleID = update.ScheduleID ?? series.ScheduleID;
+            
+            //update teams
+            if (update.TeamIDs is not null)
+            {
+                var updatedSeriesTeams = update.TeamIDs.ToList();
+                foreach (var team in seriesTeams)
+                {
+                    if (!update.TeamIDs.Any(id => id == team.TeamID))
+                        _context.SeriesTeam.Remove(team);
+                    else
+                        updatedSeriesTeams.Remove(team.TeamID);
+                }
 
+                foreach (var teamID in updatedSeriesTeams)
+                    await _context.SeriesTeam.AddAsync(
+                        new SeriesTeam
+                        {
+                            TeamID = teamID,
+                            SeriesID = seriesID,
+                            WinCount = 0,
+                            LossCount = 0
+                        });
+            }
+            
             await _context.SaveChangesAsync();
-            return s;
+            return series;
         }
 
         public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
@@ -281,8 +315,11 @@ namespace Gordon360.Services.RecIM
             var series = _context.Series
                 .Include(s => s.Type)
                 .FirstOrDefault(s => s.ID == seriesID);
-            //if the series is deleted, throw exception
+            // if the series is deleted, throw exception
             if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
+
+            // ensure series has surfaces to autoschedule on
+            if (!_context.SeriesSurface.Any(ss => ss.SeriesID == seriesID)) throw new UnprocessibleEntity { ExceptionMessage = "Series has no specified surfaces" };
 
             var typeCode = series.Type.TypeCode;
 
@@ -299,7 +336,10 @@ namespace Gordon360.Services.RecIM
         private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID, UploadScheduleRequest request)
         {
             var createdMatches = new List<MatchViewModel>();
-            var series = _context.Series.Include(s => s.SeriesSurface).FirstOrDefault(s => s.ID == seriesID);
+            var series = _context.Series
+                .Include(s => s.SeriesSurface)
+                .Include(s => s.Schedule)
+                .FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
                 .Where(st => st.SeriesID == seriesID)
                 .Select(st => st.TeamID)
@@ -308,14 +348,20 @@ namespace Gordon360.Services.RecIM
             //algorithm requires odd number of teams
             teams.Add(0);//0 is not a valid true team ID thus will act as dummy team
 
-            SeriesScheduleViewModel schedule = _context.SeriesSchedule
-                            .FirstOrDefault(ss => ss.ID == series.ScheduleID);
+            SeriesScheduleViewModel schedule = series.Schedule;
             var availableSurfaces = series.SeriesSurface.ToArray();
 
             //day = starting datetime accurate to minute and seconds based on scheduler
             var day = series.StartDate;
-            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
+                .SpecifyUtc()
+                .ConvertUtcToEst();
             string dayOfWeek = day.DayOfWeek.ToString();
+            // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
+            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
             int surfaceIndex = 0;
             for (int cycles = 0; cycles < numCycles; cycles++)
@@ -333,12 +379,14 @@ namespace Gordon360.Services.RecIM
                     //ensure matchtime is in an available day will be a "bug" if the match goes beyond 12AM
                     //minor bug as it just means that some games will be scheduled on the next possible day
                     //even if they are "hypothetically" able to play on the original day
-                    while (!schedule.AvailableDays[dayOfWeek] ||
-                        day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
-                        )
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
                     {
-                        day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                        // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
+                        // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
+                        if (!schedule.AvailableDays[dayOfWeek])
+                            day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
                         dayOfWeek = day.DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
@@ -348,7 +396,7 @@ namespace Gordon360.Services.RecIM
                     {
                         var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                         {
-                            StartTime = day,
+                            StartTime = day.ConvertEstToUtc(),//convert back to UTC for post
                             SeriesID = seriesID,
                             SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                             TeamIDs = teamIDs
@@ -366,7 +414,6 @@ namespace Gordon360.Services.RecIM
             return createdMatches;
         }
 
-        //rudamentary implementation (only allows all teams into 1 match)
         private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID, UploadScheduleRequest request)
         {
             //created return
@@ -376,6 +423,7 @@ namespace Gordon360.Services.RecIM
             var series = _context.Series
                 .Include(s => s.SeriesTeam)
                 .Include(s => s.SeriesSurface)
+                .Include(s => s.Schedule)
                 .FirstOrDefault(s => s.ID == seriesID);
             var teams = series.SeriesTeam
                 .Select(st => st.TeamID)
@@ -383,11 +431,18 @@ namespace Gordon360.Services.RecIM
 
             //scheduler based variables
             var availableSurfaces = series.SeriesSurface.ToArray();
-            SeriesScheduleViewModel schedule = _context.SeriesSchedule
-                            .FirstOrDefault(ss => ss.ID == series.ScheduleID);
+            SeriesScheduleViewModel schedule = series.Schedule;
+
             var day = series.StartDate;
-            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
+                .SpecifyUtc()
+                .ConvertUtcToEst();
             string dayOfWeek = day.DayOfWeek.ToString();
+            // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
+            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
             //local variables
             var numMatchesRemaining = request.NumberOfLadderMatches ?? 1;
@@ -403,11 +458,15 @@ namespace Gordon360.Services.RecIM
                     day = day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
                 }
 
-                while (!schedule.AvailableDays[dayOfWeek] ||
-                    day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay)
+                while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
                 {
-                    day = day.AddDays(1);
-                    day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                    // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
+                    // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
+                    if (!schedule.AvailableDays[dayOfWeek])
+                        day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                    scheduleEndTime = scheduleEndTime.AddDays(1);
+
                     dayOfWeek = day.DayOfWeek.ToString();
                     surfaceIndex = 0;
                 }
@@ -423,7 +482,7 @@ namespace Gordon360.Services.RecIM
 
                 var match = new MatchUploadViewModel
                 {
-                    StartTime = day,
+                    StartTime = day.ConvertEstToUtc(),//convert back to UTC for post
                     SeriesID = seriesID,
                     SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                     TeamIDs = teamIDs
@@ -452,15 +511,25 @@ namespace Gordon360.Services.RecIM
                .Where(st => st.SeriesID == seriesID)
                .OrderByDescending(st => st.WinCount);
 
+            // seriesschedule casts start and end time to utc
             SeriesScheduleViewModel schedule = series.Schedule;
 
             var availableSurfaces = _context.SeriesSurface
                                         .Where(ss => ss.SeriesID == seriesID)
                                         .ToArray();
+
             var day = series.StartDate;
-            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
+                .SpecifyUtc()
+                .ConvertUtcToEst();
             string dayOfWeek = day.DayOfWeek.ToString();
             int surfaceIndex = 0;
+            // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
+            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
+
 
             //schedule first round
             var elimScheduler = await ScheduleElimRoundAsync(teams);
@@ -473,19 +542,23 @@ namespace Gordon360.Services.RecIM
                     surfaceIndex = 0;
                     day = day.AddMinutes(schedule.EstMatchTime + 15);
                 }
-                while (!schedule.AvailableDays[dayOfWeek] ||
-                    day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay
-                    )
+                while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+
                 {
-                    day = day.AddDays(1);
-                    day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                    // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
+                    // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
+                    if (!schedule.AvailableDays[dayOfWeek])
+                        day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                    scheduleEndTime = scheduleEndTime.AddDays(1);
+
                     dayOfWeek = day.DayOfWeek.ToString();
                     surfaceIndex = 0;
                 }
                 var createdMatch = await _matchService.UpdateMatchAsync(matchID,
                     new MatchPatchViewModel
                     {
-                        StartTime = day,
+                        StartTime = day.ConvertEstToUtc(),//convert back to UTC for post
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
                 createdMatches.Add(createdMatch);
@@ -496,7 +569,9 @@ namespace Gordon360.Services.RecIM
             {
                 //reset between rounds + prime the pump from first round
                 day = day.AddDays(1);
-                day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                scheduleEndTime = scheduleEndTime.AddDays(1);
+
                 dayOfWeek = day.DayOfWeek.ToString();
                 surfaceIndex = 0;
                 for (int i = 0; i < teamsInNextRound / 2; i++)
@@ -506,21 +581,27 @@ namespace Gordon360.Services.RecIM
                         surfaceIndex = 0;
                         day = day.AddMinutes(schedule.EstMatchTime + 15);
                     }
-                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15).TimeOfDay > schedule.EndTime.TimeOfDay)
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
                     {
-                        day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second);
+                        // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
+                        // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
+                        if (!schedule.AvailableDays[dayOfWeek])
+                            day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+
                         dayOfWeek = day.DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
                     var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
-                        StartTime = day,
+                        StartTime = day.ConvertEstToUtc(),//convert back to UTC for post
                         SeriesID = series.ID,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
                         TeamIDs = new List<int>().AsEnumerable() //no teams
                     });
                     createdMatches.Add(createdMatch);
+                    surfaceIndex++;
                 }
                 teamsInNextRound /= 2;
             }
@@ -563,7 +644,7 @@ namespace Gordon360.Services.RecIM
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                 {
-                    StartTime = series.StartDate, //temporary before autoscheduling
+                    StartTime = series.StartDate, //default time, autoscheduling will modify
                     SeriesID = series.ID,
                     SurfaceID = 1, //temporary before 25live integration
                     TeamIDs = teamPair
