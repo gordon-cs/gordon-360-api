@@ -8,6 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
+using Microsoft.Graph;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.TermStore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Gordon360.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Extensions.System;
 
@@ -21,8 +28,10 @@ namespace Gordon360.Services.RecIM
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
         private readonly IEmailService _emailService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ServerUtils _serverUtils;
 
-        public TeamService(CCTContext context, IEmailService emailService, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountService)
+        public TeamService(CCTContext context, IEmailService emailService, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountService, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
             _context = context;
             _config = config;
@@ -30,6 +39,8 @@ namespace Gordon360.Services.RecIM
             _accountService = accountService;
             _participantService = participantSerivce;
             _emailService = emailService;
+            _webHostEnvironment = webHostEnvironment;
+            _serverUtils = serverUtils;
         }
 
         // status ID of 0 implies deleted
@@ -235,6 +246,21 @@ namespace Gordon360.Services.RecIM
             if(_context.Activity.Find(newTeam.ActivityID).Team.Any(team => team.Name == newTeam.Name))
                 throw new UnprocessibleEntity
                 { ExceptionMessage = $"Team name {newTeam.Name} has already been taken by another team in this activity" };
+            
+            if (newTeam.Logo != null)
+            {
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(newTeam.Logo);
+
+                // Use a unique alphanumeric GUID string as the file name
+                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                var imagePath = GetImagePath(filename);
+                var url = GetImageURL(filename);
+
+                ImageUtils.UploadImage(imagePath, data, format);
+
+                newTeam.Logo = url;
+            }
 
             var team = newTeam.ToTeam();
             await _context.Team.AddAsync(team);
@@ -313,13 +339,47 @@ namespace Gordon360.Services.RecIM
                 .FirstOrDefault(t => t.ID == teamID);
             if (update.Name is not null)
             {
-                if (t.Activity.Team.Any(team => team.Name == update.Name)) 
+                if (t.Activity.Team.Any(team => team.Name == update.Name && team.ID != teamID)) 
                     throw new UnprocessibleEntity 
                         { ExceptionMessage = $"Team name {update.Name} has already been taken by another team in this activity" };
             }
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
-            t.Logo = update.Logo ?? t.Logo;
+            
+            if (update.Logo != null)
+            {
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(update.Logo);
+
+                string? imagePath = null;
+                // If old image exists, overwrite it with new image at same path
+                if (t.Logo != null)
+                {
+                    imagePath = GetImagePath(Path.GetFileName(t.Logo));
+                }
+                // Otherwise, upload new image and save url to db
+                else
+                {
+                    // Use a unique alphanumeric GUID string as the file name
+                    var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                    imagePath = GetImagePath(filename);
+                    var url = GetImageURL(filename);
+                    t.Logo = url;
+                }
+
+                ImageUtils.UploadImage(imagePath, data, format);
+            }
+
+            //If the image property is null, it means that either the user
+            //chose to remove the previous image or that there was no previous
+            //image (DeleteImage is designed to handle this).
+            else if (t.Logo != null)
+            {
+                var imagePath = GetImagePath(Path.GetFileName(t.Logo));
+
+                ImageUtils.DeleteImage(imagePath);
+                t.Logo = update.Logo; //null
+            }
 
             await _context.SaveChangesAsync();
 
@@ -449,6 +509,22 @@ namespace Gordon360.Services.RecIM
             }
             await _context.SaveChangesAsync();
             return (res);
+        }
+
+        private string GetImagePath(string filename)
+        {
+            return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "recim", "team", filename);
+        }
+
+        private string GetImageURL(string filename)
+        {
+            var serverAddress = _serverUtils.GetAddress();
+            if (serverAddress is not string) throw new Exception("Could not upload Rec-IM Team Image: Server Address is null");
+
+            if (serverAddress.Contains("localhost"))
+                serverAddress += '/';
+            var url = $"{serverAddress}browseable/uploads/recim/team/{filename}";
+            return url;
         }
     }
 }
