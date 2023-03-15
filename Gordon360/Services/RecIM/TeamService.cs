@@ -522,7 +522,7 @@ namespace Gordon360.Services.RecIM
 
             if (serverAddress.Contains("localhost"))
                 serverAddress += '/';
-            var url = $"{serverAddress}/browseable/uploads/recim/team/{filename}";
+            var url = $"{serverAddress}browseable/uploads/recim/team/{filename}";
             return url;
         }
     }
