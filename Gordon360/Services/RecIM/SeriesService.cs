@@ -170,10 +170,6 @@ namespace Gordon360.Services.RecIM
                 }
                 return existingSchedule;
             }
-            // sanitize start/end time dates
-            var defaultDate = new DateTime(1998,12,23);
-            var start = defaultDate.Add(seriesSchedule.DailyStartTime.TimeOfDay);
-            var end = defaultDate.Add(seriesSchedule.DailyEndTime.TimeOfDay);
 
             // if schedule does not exist
             var schedule = new SeriesSchedule
@@ -186,8 +182,8 @@ namespace Gordon360.Services.RecIM
                 Fri = seriesSchedule.AvailableDays.Fri,
                 Sat = seriesSchedule.AvailableDays.Sat,
                 EstMatchTime = seriesSchedule.EstMatchTime,
-                StartTime = start,
-                EndTime = end
+                StartTime = seriesSchedule.DailyStartTime,
+                EndTime = seriesSchedule.DailyEndTime
             };
             await _context.SeriesSchedule.AddAsync(schedule);
             await _context.SaveChangesAsync();
@@ -355,14 +351,14 @@ namespace Gordon360.Services.RecIM
             //day = starting datetime accurate to minute and seconds based on scheduler
             var day = series.StartDate;
             day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
-                .SpecifyUtc()
-                .ConvertFromUtc(Time_Zones.EST);
-            string dayOfWeek = day.DayOfWeek.ToString();
+                .SpecifyUtc();
+            string dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = schedule.EndTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
-            var start = schedule.StartTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
+            var end = schedule.EndTime.SpecifyUtc().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().TimeOfDay;
             DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
-            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                .SpecifyUtc();
 
             int surfaceIndex = 0;
             for (int cycles = 0; cycles < numCycles; cycles++)
@@ -386,39 +382,18 @@ namespace Gordon360.Services.RecIM
                         // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
                         if (!schedule.AvailableDays[dayOfWeek])
                             day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start).SpecifyUtc();
                         scheduleEndTime = scheduleEndTime.AddDays(1);
-                        dayOfWeek = day.DayOfWeek.ToString();
+                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
 
                     var teamIDs = new List<int>() { teams[i], teams[j] };
                     if (!teamIDs.Contains(0))
                     {
-                        DateTime matchStartTime;
-                        try
-                        {
-                            matchStartTime = day.ConvertToUtc(Time_Zones.EST);
-                        }
-                        catch
-                        {
-                            // edgecase where a match is scheduled ON daylight saving
-                            day = day.AddMinutes(60 + schedule.EstMatchTime);
-                            while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
-                            {
-                                if (!schedule.AvailableDays[dayOfWeek])
-                                    day = day.AddDays(1);
-                                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
-                                scheduleEndTime = scheduleEndTime.AddDays(1);
-                                dayOfWeek = day.DayOfWeek.ToString();
-                                surfaceIndex = 0;
-                            }
-
-                            matchStartTime = day.ConvertToUtc(Time_Zones.EST);
-                        }
                         var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                         {
-                            StartTime = matchStartTime,
+                            StartTime = day,
                             SeriesID = seriesID,
                             SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                             TeamIDs = teamIDs
@@ -457,14 +432,14 @@ namespace Gordon360.Services.RecIM
 
             var day = series.StartDate;
             day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
-                .SpecifyUtc()
-                .ConvertFromUtc(Time_Zones.EST);
-            string dayOfWeek = day.DayOfWeek.ToString();
+                .SpecifyUtc();
+            string dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = schedule.EndTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
-            var start = schedule.StartTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
+            var end = schedule.EndTime.SpecifyUtc().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().TimeOfDay;
             DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
-            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                .SpecifyUtc();
 
             //local variables
             var numMatchesRemaining = request.NumberOfLadderMatches ?? 1;
@@ -486,10 +461,10 @@ namespace Gordon360.Services.RecIM
                     // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
                     if (!schedule.AvailableDays[dayOfWeek])
                         day = day.AddDays(1);
-                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start).SpecifyUtc();
                     scheduleEndTime = scheduleEndTime.AddDays(1);
 
-                    dayOfWeek = day.DayOfWeek.ToString();
+                    dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
                     surfaceIndex = 0;
                 }
 
@@ -501,30 +476,9 @@ namespace Gordon360.Services.RecIM
                     teamIndex++;
                     numTeamsInMatch--;
                 }
-                DateTime matchStartTime;
-                try
-                {
-                    matchStartTime = day.ConvertToUtc(Time_Zones.EST);
-                }
-                catch
-                {
-                    // edgecase where a match is scheduled ON daylight saving
-                    day = day.AddMinutes(60 + schedule.EstMatchTime);
-                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
-                    {
-                        if (!schedule.AvailableDays[dayOfWeek])
-                            day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
-                        scheduleEndTime = scheduleEndTime.AddDays(1);
-                        dayOfWeek = day.DayOfWeek.ToString();
-                        surfaceIndex = 0;
-                    }
-
-                    matchStartTime = day.ConvertToUtc(Time_Zones.EST);
-                }
                 var match = new MatchUploadViewModel
                 {
-                    StartTime = matchStartTime,
+                    StartTime = day,
                     SeriesID = seriesID,
                     SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                     TeamIDs = teamIDs
@@ -543,6 +497,7 @@ namespace Gordon360.Services.RecIM
         {
             throw new NotImplementedException();
         }
+
         private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
         {
             var createdMatches = new List<MatchViewModel>();
@@ -562,16 +517,16 @@ namespace Gordon360.Services.RecIM
 
             var day = series.StartDate;
             day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
-                .SpecifyUtc()
-                .ConvertFromUtc(Time_Zones.EST);
-            string dayOfWeek = day.DayOfWeek.ToString();
-            int surfaceIndex = 0;
+                .SpecifyUtc();
+            string dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = schedule.EndTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
-            var start = schedule.StartTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
+            var end = schedule.EndTime.SpecifyUtc().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().TimeOfDay;
             DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
-            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                .SpecifyUtc();
 
+            int surfaceIndex = 0;
 
             //schedule first round
             var elimScheduler = await ScheduleElimRoundAsync(teams);
@@ -594,34 +549,13 @@ namespace Gordon360.Services.RecIM
                     day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                     scheduleEndTime = scheduleEndTime.AddDays(1);
 
-                    dayOfWeek = day.DayOfWeek.ToString();
+                    dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
                     surfaceIndex = 0;
-                }
-                DateTime matchStartTime;
-                try
-                {
-                    matchStartTime = day.ConvertToUtc(Time_Zones.EST);
-                }
-                catch
-                {
-                    // edgecase where a match is scheduled ON daylight saving
-                    day = day.AddMinutes(60 + schedule.EstMatchTime);
-                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
-                    {
-                        if (!schedule.AvailableDays[dayOfWeek])
-                            day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
-                        scheduleEndTime = scheduleEndTime.AddDays(1);
-                        dayOfWeek = day.DayOfWeek.ToString();
-                        surfaceIndex = 0;
-                    }
-
-                    matchStartTime = day.ConvertToUtc(Time_Zones.EST);
                 }
                 var createdMatch = await _matchService.UpdateMatchAsync(matchID,
                     new MatchPatchViewModel
                     {
-                        StartTime = matchStartTime,
+                        StartTime = day,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
                 createdMatches.Add(createdMatch);
@@ -657,31 +591,9 @@ namespace Gordon360.Services.RecIM
                         surfaceIndex = 0;
                     }
 
-                    DateTime matchStartTime;
-                    try
-                    {
-                        matchStartTime = day.ConvertToUtc(Time_Zones.EST);
-                    }
-                    catch
-                    {
-                        // edgecase where a match is scheduled ON daylight saving
-                        day = day.AddHours(1+ schedule.EstMatchTime);
-                        while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
-                        {
-                            if (!schedule.AvailableDays[dayOfWeek])
-                                day = day.AddDays(1);
-                            day = new DateTime(day.Year, day.Month, day.Day).Add(start);
-                            scheduleEndTime = scheduleEndTime.AddDays(1);
-                            dayOfWeek = day.DayOfWeek.ToString();
-                            surfaceIndex = 0;
-                        }
-
-                        matchStartTime = day.ConvertToUtc(Time_Zones.EST);
-                    }
-
                     var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
-                        StartTime = matchStartTime,
+                        StartTime = day.ConvertToUtc(Time_Zones.EST),
                         SeriesID = series.ID,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
                         TeamIDs = new List<int>().AsEnumerable() //no teams
@@ -743,6 +655,7 @@ namespace Gordon360.Services.RecIM
                 Match = matches
             };
         }
+
         public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)
         {
             throw new NotImplementedException();
