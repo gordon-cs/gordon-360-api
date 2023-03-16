@@ -1,18 +1,12 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Authorization;
 using Gordon360.Static.Names;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
+
 
 namespace Gordon360.Controllers.RecIM
 {
@@ -49,7 +43,7 @@ namespace Gordon360.Controllers.RecIM
        /// <returns></returns>
         [HttpGet]
         [Route("{matchID}/attendance")]
-        public ActionResult<IEnumerable<ParticipantAttendanceViewModel>> GetMatchAttendance(int matchID)
+        public ActionResult<IEnumerable<ParticipantAttendanceViewModel>> GetMatchAttendanceByMatchID(int matchID)
         {
             var res = _matchService.GetMatchAttendance(matchID);
             return Ok(res);
@@ -154,7 +148,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchTeamViewModel>> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
             var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
-            return CreatedAtAction(nameof(UpdateStats), new { matchTeamID = stats.ID }, stats);
+            return Ok(stats);
         }
 
         /// <summary>
@@ -169,7 +163,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
         {
             var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
-            return CreatedAtAction(nameof(UpdateMatch), new { matchID = match.ID }, match);
+            return CreatedAtAction(nameof(GetMatchByID), new { matchID = match.ID }, match);
         }
 
         /// <summary>
@@ -183,7 +177,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<MatchViewModel>> CreateMatch(MatchUploadViewModel newMatch)
         {
             var match = await _matchService.PostMatchAsync(newMatch);
-            return CreatedAtAction(nameof(CreateMatch), new { matchID = match.ID }, match);
+            return CreatedAtAction(nameof(GetMatchByID), new { matchID = match.ID }, match);
         }
 
         /// <summary>
@@ -214,7 +208,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<IEnumerable<MatchAttendance>>> PutParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
         {
             var attendance = await _teamService.PutParticipantAttendanceAsync(matchID, teamAttendanceList);
-            return CreatedAtAction(nameof(PutParticipantAttendance), attendance);
+            return CreatedAtAction(nameof(GetMatchAttendanceByMatchID), new { matchID = matchID }, attendance);
         }
 
 
@@ -230,7 +224,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendance(int matchID, MatchAttendance attendee)
         {
             var attendance = await _matchService.AddParticipantAttendanceAsync(matchID, attendee);
-            return CreatedAtAction(nameof(AddParticipantAttendance), attendance);
+            return Ok(attendance);
         }
 
         /// <summary>

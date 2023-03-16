@@ -1,17 +1,12 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Authorization;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace Gordon360.Controllers.RecIM
 {
@@ -94,7 +89,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ActivityViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
         {
             var activity = await _activityService.PostActivityAsync(newActivity);
-            return CreatedAtAction(nameof(CreateActivity), new { activityID = activity.ID }, activity);
+            return CreatedAtAction(nameof(GetActivityByID), new { activityID = activity.ID }, activity);
         }
 
         /// <summary>
@@ -109,7 +104,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ActivityViewModel>> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
-            return CreatedAtAction(nameof(UpdateActivity), new { activityID = activity.ID }, activity);
+            return CreatedAtAction(nameof(GetActivityByID), new { activityID = activity.ID }, activity);
         }
 
         /// <summary>

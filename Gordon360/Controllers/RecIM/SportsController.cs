@@ -1,14 +1,8 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Static.Names;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -58,7 +52,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SportViewModel>> UpdateSport(int sportID, SportPatchViewModel updatedSport)
         {
             var sport = await _sportService.UpdateSportAsync(sportID,updatedSport);
-            return CreatedAtAction("UpdateSport", sport);
+            return CreatedAtAction(nameof(GetSportByID), new { sportID = sport.ID }, sport);
         }
         /// <summary>
         /// Creates new Sport for RecIM
@@ -71,7 +65,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SportViewModel>> CreateSport(SportUploadViewModel newSport)
         {
             var sport = await _sportService.PostSportAsync(newSport);
-            return CreatedAtAction("CreateSport", sport);
+            return CreatedAtAction(nameof(GetSportByID), new { sportID = sport.ID }, sport);
         }
 
     }

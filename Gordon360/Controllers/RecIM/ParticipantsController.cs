@@ -1,15 +1,8 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Static.Names;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Schema;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -74,7 +67,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ParticipantExtendedViewModel>> AddParticipant(string username)
         {
             var participant = await _participantService.PostParticipantAsync(username);
-            return CreatedAtAction("AddParticipant", participant);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
         }
 
         [HttpPatch]
@@ -83,7 +76,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ParticipantExtendedViewModel>> UpdateParticipant(string username, [FromBody] bool isAdmin)
         {
             var participant = await _participantService.UpdateParticipantAsync(username,isAdmin);
-            return CreatedAtAction("AddParticipant", participant);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
         }
 
 
@@ -92,7 +85,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ParticipantNotificationViewModel>> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
             var notification = await _participantService.SendParticipantNotificationAsync(username, notificationVM);
-            return CreatedAtAction("SendParticipantNotification", notification);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { participantUsername = notification.ParticipantUsername }, notification);
         }
 
 
@@ -103,7 +96,7 @@ namespace Gordon360.Controllers.RecIM
         {
 
             var participant = await _participantService.UpdateParticipantActivityAsync(username, updatedParticipantActivity);
-            return CreatedAtAction("UpdateParticipantActivity", participant);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.ParticipantUsername }, participant);
         }
 
         [HttpPatch]
@@ -112,7 +105,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<ParticipantStatusHistoryViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
             var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
-            return CreatedAtAction("UpdateParticipantStatus",status);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { username = status.ParticipantUsername }, status);
         }
 
     }

@@ -751,7 +751,7 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchAttendance(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchAttendanceByMatchID(System.Int32)">
             <summary>
             Get's current match attendance for a specified match
             </summary>
@@ -877,7 +877,7 @@
             <param name="type">specific series type</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesSchedule(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesScheduleByID(System.Int32)">
             <summary>
             Returns 
             </summary>
@@ -970,7 +970,7 @@
             <param name="type">specified team type</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.CreateTeam(Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.PostTeam(Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
             <summary>
             Create a new team with the requesting user set to team captain
             </summary>

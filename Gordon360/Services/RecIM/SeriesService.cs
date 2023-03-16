@@ -569,7 +569,7 @@ namespace Gordon360.Services.RecIM
                 day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                 scheduleEndTime = scheduleEndTime.AddDays(1);
 
-                dayOfWeek = day.DayOfWeek.ToString();
+                dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
                 surfaceIndex = 0;
                 for (int i = 0; i < teamsInNextRound / 2; i++)
                 {
@@ -587,13 +587,13 @@ namespace Gordon360.Services.RecIM
                         day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                         scheduleEndTime = scheduleEndTime.AddDays(1);
 
-                        dayOfWeek = day.DayOfWeek.ToString();
+                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
 
                     var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
-                        StartTime = day.ConvertToUtc(Time_Zones.EST),
+                        StartTime = day,
                         SeriesID = series.ID,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
                         TeamIDs = new List<int>().AsEnumerable() //no teams

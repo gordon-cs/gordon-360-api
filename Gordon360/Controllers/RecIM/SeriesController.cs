@@ -1,18 +1,11 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Authorization;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers.RecIM
 {
@@ -77,7 +70,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("{seriesID}/schedule")]
-        public ActionResult<SeriesScheduleViewModel> GetSeriesSchedule(int seriesID)
+        public ActionResult<SeriesScheduleViewModel> GetSeriesScheduleByID(int seriesID)
         {
             var res = _seriesService.GetSeriesScheduleByID(seriesID);
             if (res is null) return NotFound();
@@ -97,7 +90,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SeriesViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
             var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
-            return CreatedAtAction(nameof(UpdateSeries), new { seriesID = series.ID }, series);
+            return CreatedAtAction(nameof(GetSeriesByID), new { seriesID = series.ID }, series);
         }
 
         /// <summary>
@@ -112,7 +105,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SeriesViewModel>> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
             var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
-            return CreatedAtAction(nameof(CreateSeries), new { seriesID = series.ID }, series);
+            return CreatedAtAction(nameof(GetSeriesByID), new { seriesID = series.ID }, series);
         }
 
 
@@ -127,7 +120,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SeriesScheduleViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
         {
             var schedule = await _seriesService.PutSeriesScheduleAsync(seriesSchedule);
-            return CreatedAtAction(nameof(CreateSeriesSchedule), new { scheduleID = schedule.ID }, schedule);
+            return CreatedAtAction(nameof(GetSeriesScheduleByID), new { scheduleID = schedule.ID }, schedule);
 
         }
 
@@ -162,7 +155,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return BadRequest();
             }
-            return CreatedAtAction(nameof(ScheduleMatches), createdMatches);
+            return Ok(createdMatches);
         }
     }
 }

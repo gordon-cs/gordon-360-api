@@ -1,18 +1,10 @@
 using Gordon360.Authorization;
 using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Static.Names;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.RecIM
@@ -87,7 +79,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<TeamViewModel>> CreateTeam(TeamUploadViewModel newTeam)
+        public async Task<ActionResult<TeamViewModel>> PostTeam(TeamUploadViewModel newTeam)
         {
             var username = AuthUtils.GetUsername(User);
             var activity = _activityService.GetActivityByID(newTeam.ActivityID);
@@ -113,7 +105,7 @@ namespace Gordon360.Controllers.RecIM
             {
                 return BadRequest($"Participant {username} already is a part of a team in this activity");
             }
-            return CreatedAtAction(nameof(CreateTeam), new { teamID = team.ID }, team);
+            return CreatedAtAction(nameof(GetTeamByID), new { teamID = team.ID }, team);
 
 
         }
@@ -153,7 +145,7 @@ namespace Gordon360.Controllers.RecIM
         {
             participant.RoleTypeID = participant.RoleTypeID ?? 3;
             var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
-            return CreatedAtAction(nameof(UpdateParticipantTeam), new { participantTeamID = participantTeam.ID }, participantTeam);
+            return Ok(participantTeam);
         }
 
         /// <summary>
@@ -165,13 +157,14 @@ namespace Gordon360.Controllers.RecIM
         [Route("{teamID}")]
         public async Task<ActionResult> DeleteTeam(int teamID)
         {
+            /*
             var username = AuthUtils.GetUsername(User);
             var participantTeam = _teamService.GetParticipantTeam(teamID, username);
             if (participantTeam is null && !_participantService.IsAdmin(username))
                 return NotFound("The user is not part of the team.");
             if (participantTeam.RoleTypeID != 5 || !_participantService.IsAdmin(username))
                 return Forbid($"You are not permitted to delete this team");
-
+            */
             var res = await _teamService.DeleteTeamCascadeAsync(teamID);
             return Ok(res);
         }
@@ -209,7 +202,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<TeamViewModel>> UpdateTeamInfo(int teamID, TeamPatchViewModel team)
         {
             var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
-            return CreatedAtAction(nameof(UpdateTeamInfo), new { teamID = updatedTeam.ID }, updatedTeam);
+            return CreatedAtAction(nameof(GetTeamByID), new { teamID = updatedTeam.ID }, updatedTeam);
 ;       }
 
         /// <summary>
@@ -256,14 +249,14 @@ namespace Gordon360.Controllers.RecIM
                 return NotFound("You were not invited by this team.");
             if (username != invite.ParticipantUsername)
                 return Forbid($"You are not permitted to accept invitations for another participant.");
-
+            
             switch (response)
             {
                 case "accepted":
                     var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,
                         new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 }
                         );
-                    return CreatedAtAction(nameof(HandleTeamInvite), new { teamParticipantID = joinedParticipantTeam.ID }, joinedParticipantTeam);
+                    return Ok(joinedParticipantTeam);
                 case "rejected":
                     var res = await _teamService.DeleteParticipantTeamAsync(invite.TeamID, username);
                     return Ok(res);
