@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Services.RecIM
 {
@@ -355,11 +356,11 @@ namespace Gordon360.Services.RecIM
             var day = series.StartDate;
             day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
                 .SpecifyUtc()
-                .ConvertUtcToEst();
+                .ConvertFromUtc(Time_Zones.EST);
             string dayOfWeek = day.DayOfWeek.ToString();
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
-            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var end = schedule.EndTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
             DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
             scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
@@ -396,7 +397,7 @@ namespace Gordon360.Services.RecIM
                     {
                         var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                         {
-                            StartTime = day.ConvertEstToUtc(),//convert back to UTC for post
+                            StartTime = day.ConvertToUtc(Time_Zones.EST),//convert back to UTC for post
                             SeriesID = seriesID,
                             SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                             TeamIDs = teamIDs
@@ -436,11 +437,11 @@ namespace Gordon360.Services.RecIM
             var day = series.StartDate;
             day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
                 .SpecifyUtc()
-                .ConvertUtcToEst();
+                .ConvertFromUtc(Time_Zones.EST);
             string dayOfWeek = day.DayOfWeek.ToString();
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
-            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var end = schedule.EndTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
             DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
             scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
@@ -482,7 +483,7 @@ namespace Gordon360.Services.RecIM
 
                 var match = new MatchUploadViewModel
                 {
-                    StartTime = day.ConvertEstToUtc(),//convert back to UTC for post
+                    StartTime = day.ConvertToUtc(Time_Zones.EST),//convert back to UTC for post
                     SeriesID = seriesID,
                     SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                     TeamIDs = teamIDs
@@ -521,12 +522,12 @@ namespace Gordon360.Services.RecIM
             var day = series.StartDate;
             day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
                 .SpecifyUtc()
-                .ConvertUtcToEst();
+                .ConvertFromUtc(Time_Zones.EST);
             string dayOfWeek = day.DayOfWeek.ToString();
             int surfaceIndex = 0;
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
-            var end = schedule.EndTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
-            var start = schedule.StartTime.SpecifyUtc().ConvertUtcToEst().TimeOfDay;
+            var end = schedule.EndTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().ConvertFromUtc(Time_Zones.EST).TimeOfDay;
             DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
             scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second);
 
@@ -558,7 +559,7 @@ namespace Gordon360.Services.RecIM
                 var createdMatch = await _matchService.UpdateMatchAsync(matchID,
                     new MatchPatchViewModel
                     {
-                        StartTime = day.ConvertEstToUtc(),//convert back to UTC for post
+                        StartTime = day.ConvertToUtc(Time_Zones.EST),//convert back to UTC for post
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
                 createdMatches.Add(createdMatch);
@@ -595,7 +596,7 @@ namespace Gordon360.Services.RecIM
                     }
                     var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
-                        StartTime = day.ConvertEstToUtc(),//convert back to UTC for post
+                        StartTime = day.ConvertToUtc(Time_Zones.EST),//convert back to UTC for post
                         SeriesID = series.ID,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
                         TeamIDs = new List<int>().AsEnumerable() //no teams

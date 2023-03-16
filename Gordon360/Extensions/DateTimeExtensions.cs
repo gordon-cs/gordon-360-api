@@ -19,7 +19,7 @@ static public class DateTimeExtensions
     static public DateTime? SpecifyUtc(this DateTime? nullableDateTime)
     {
         if (nullableDateTime is DateTime dateTime)
-            return DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+            return dateTime.SpecifyUtc();
         return null;
     }
 
@@ -28,8 +28,9 @@ static public class DateTimeExtensions
     /// List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
     /// </summary>
     /// <param name="dateTime">DateTime with kind UTC</param>
+    /// <param name="timeZoneID">String timezoneinfo location</param>
     /// <returns>Converted DateTime with kind Unspecified</returns>
-    static public DateTime ConvertUtcToEst(this DateTime dateTime) => TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+    static public DateTime ConvertFromUtc(this DateTime dateTime, string timeZoneID) => TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById(timeZoneID));
 
 
     /// <summary>
@@ -37,32 +38,35 @@ static public class DateTimeExtensions
     /// List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
     /// </summary>
     /// <param name="nullableDateTime">DateTime? with kind UTC</param>
+    /// <param name="timeZoneID">String timezoneinfo location</param>
     /// <returns>Converted DateTime with kind Unspecified or null if parameter is null</returns>
-    static public DateTime? ConvertUtcToEst(this DateTime? nullableDateTime)
+    static public DateTime? ConvertFromUtc(this DateTime? nullableDateTime, string timeZoneID)
     {
         if (nullableDateTime is DateTime dateTime)
-            return TimeZoneInfo.ConvertTimeFromUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+            return dateTime.ConvertFromUtc(timeZoneID);
         return null;
     }
 
     /// <summary>
-    /// Converts Eastern Standard Time DateTime to UTC
+    /// Converts Location of specified by TimeZoneInfoID DateTime to UTC
     /// List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
     /// </summary>
     /// <param name="dateTime">Unspecified kind DateTime</param>
+    /// <param name="timeZoneID">String timezoneinfo location</param>
     /// <returns>Converted DateTime with kind UTC</returns>
-    static public DateTime ConvertEstToUtc(this DateTime dateTime) => TimeZoneInfo.ConvertTimeToUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+    static public DateTime ConvertToUtc(this DateTime dateTime, string timeZoneID) => TimeZoneInfo.ConvertTimeToUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById(timeZoneID));
 
     /// <summary>
-    /// Converts Eastern Standard Time DateTime? to UTC
+    /// Converts Location of specified by TimeZoneInfoID DateTime to UTC
     /// List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
     /// </summary>
     /// <param name="nullableDateTime">Unspecified kind DateTime?</param>
+    /// <param name="timeZoneID">String timezoneinfo location</param>
     /// <returns>Converted DateTime with kind UTC</returns>
-    static public DateTime? ConvertEstToUtc(this DateTime? nullableDateTime)
+    static public DateTime? ConvertToUtc(this DateTime? nullableDateTime, string timeZoneID)
     {
         if (nullableDateTime is DateTime dateTime)
-            return TimeZoneInfo.ConvertTimeToUtc(dateTime, TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time"));
+            return dateTime.ConvertToUtc(timeZoneID);
         return null;
     }
 }

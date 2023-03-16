@@ -90,4 +90,10 @@ namespace Gordon360.Static.Names
         public const string APPROVED = "Approved";
         public const string DENIED = "Denied";
     }
+
+    public static class Time_Zones
+    {
+        public const string EST = "Eastern Standard Time";
+        //fill out when needed
+    }
 }
