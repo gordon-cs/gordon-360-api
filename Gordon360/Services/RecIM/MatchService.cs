@@ -133,7 +133,7 @@ namespace Gordon360.Services.RecIM
                 .Select(m => new MatchExtendedViewModel
                 {
                     ID = matchID,
-                    Scores = m.MatchTeam
+                    Scores = m.MatchTeam.Where(mt => mt.StatusID != 0)
                         .Select(mt => (TeamMatchHistoryViewModel)mt)
                         .AsEnumerable(),
                     StartTime = m.StartTime.SpecifyUtc(),
@@ -162,42 +162,44 @@ namespace Gordon360.Services.RecIM
                         ID = m.Series.ActivityID,
                         Name = m.Series.Activity.Name
                     },
-                    Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
-                    {
-                        ID = mt.TeamID,
-                        Name = mt.Team.Name,
-                        Status = mt.Status.Description,
-                        Participant = mt.Team.ParticipantTeam
-                            .Where(pt => !new int[] {0,1,2}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
-                            .Select(pt => new ParticipantExtendedViewModel
-                            {
-                                Username = pt.ParticipantUsername,
-                                Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                                Role = pt.RoleType.Description
-                            }),
-                        MatchHistory = _context.MatchTeam.Where(_mt => _mt.ID == mt.ID)
-                            .Join(
-                                _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
-                                own_mt => own_mt.MatchID,
-                                other_mt => other_mt.MatchID,
-                                (own_mt, other_mt) => new TeamMatchHistoryViewModel
+                    Team = m.MatchTeam
+                        .Where(mt => mt.StatusID != 0 )
+                        .Select(mt => new TeamExtendedViewModel
+                        {
+                            ID = mt.TeamID,
+                            Name = mt.Team.Name,
+                            Status = mt.Status.Description,
+                            Participant = mt.Team.ParticipantTeam
+                                .Where(pt => !new int[] {0,1,2}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
+                                .Select(pt => new ParticipantExtendedViewModel
                                 {
-                                    TeamID = own_mt.TeamID,
-                                    MatchID = own_mt.MatchID,
-                                    Opponent = other_mt.Team,
-                                    TeamScore = own_mt.Score,
-                                    OpposingTeamScore = other_mt.Score,
-                                    Status = own_mt.Score > other_mt.Score
-                                            ? "Win"
-                                            : own_mt.Score < other_mt.Score
-                                                ? "Lose"
-                                                : "Tie",
-                                    MatchStatusID = own_mt.Match.StatusID,
-                                    MatchStartTime = own_mt.Match.StartTime.SpecifyUtc(),  
-                                }
-                            ),
-                        TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
-                    })
+                                    Username = pt.ParticipantUsername,
+                                    Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
+                                    Role = pt.RoleType.Description
+                                }),
+                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.ID == mt.ID)
+                                .Join(
+                                    _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
+                                    own_mt => own_mt.MatchID,
+                                    other_mt => other_mt.MatchID,
+                                    (own_mt, other_mt) => new TeamMatchHistoryViewModel
+                                    {
+                                        TeamID = own_mt.TeamID,
+                                        MatchID = own_mt.MatchID,
+                                        Opponent = other_mt.Team,
+                                        TeamScore = own_mt.Score,
+                                        OpposingTeamScore = other_mt.Score,
+                                        Status = own_mt.Score > other_mt.Score
+                                                ? "Win"
+                                                : own_mt.Score < other_mt.Score
+                                                    ? "Lose"
+                                                    : "Tie",
+                                        MatchStatusID = own_mt.Match.StatusID,
+                                        MatchStartTime = own_mt.Match.StartTime.SpecifyUtc(),  
+                                    }
+                                ),
+                            TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
+                        })
                 }).FirstOrDefault();
             return match;
         }
@@ -220,7 +222,7 @@ namespace Gordon360.Services.RecIM
                     StartTime = m.StartTime.SpecifyUtc(),
                     Surface = m.Surface.Name,
                     Status = m.Status.Description,
-                    Team = m.MatchTeam.Select(mt => new TeamExtendedViewModel
+                    Team = m.MatchTeam.Where(mt => mt.StatusID != 0).Select(mt => new TeamExtendedViewModel
                     {
                         ID = mt.TeamID,
                         Name = mt.Team.Name,

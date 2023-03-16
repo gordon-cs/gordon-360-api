@@ -329,8 +329,14 @@ namespace Gordon360.Services.RecIM
 
         public async Task<TeamViewModel> DeleteTeamCascadeAsync(int teamID)
         {
-            var team = _context.Team.Find(teamID);
+            var team = _context.Team
+                .Include(t => t.MatchTeam)
+                .FirstOrDefault(t => t.ID == teamID);
             team.StatusID = 0;
+
+            foreach(var mt in team.MatchTeam)
+                mt.StatusID = 0;
+
             await _context.SaveChangesAsync();
 
             return team;
