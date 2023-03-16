@@ -395,9 +395,30 @@ namespace Gordon360.Services.RecIM
                     var teamIDs = new List<int>() { teams[i], teams[j] };
                     if (!teamIDs.Contains(0))
                     {
+                        DateTime matchStartTime;
+                        try
+                        {
+                            matchStartTime = day.ConvertToUtc(Time_Zones.EST);
+                        }
+                        catch
+                        {
+                            // edgecase where a match is scheduled ON daylight saving
+                            day = day.AddMinutes(60 + schedule.EstMatchTime);
+                            while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                            {
+                                if (!schedule.AvailableDays[dayOfWeek])
+                                    day = day.AddDays(1);
+                                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                                scheduleEndTime = scheduleEndTime.AddDays(1);
+                                dayOfWeek = day.DayOfWeek.ToString();
+                                surfaceIndex = 0;
+                            }
+
+                            matchStartTime = day.ConvertToUtc(Time_Zones.EST);
+                        }
                         var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                         {
-                            StartTime = day.ConvertToUtc(Time_Zones.EST),//convert back to UTC for post
+                            StartTime = matchStartTime,
                             SeriesID = seriesID,
                             SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                             TeamIDs = teamIDs
@@ -480,10 +501,30 @@ namespace Gordon360.Services.RecIM
                     teamIndex++;
                     numTeamsInMatch--;
                 }
+                DateTime matchStartTime;
+                try
+                {
+                    matchStartTime = day.ConvertToUtc(Time_Zones.EST);
+                }
+                catch
+                {
+                    // edgecase where a match is scheduled ON daylight saving
+                    day = day.AddMinutes(60 + schedule.EstMatchTime);
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                    {
+                        if (!schedule.AvailableDays[dayOfWeek])
+                            day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+                        dayOfWeek = day.DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
 
+                    matchStartTime = day.ConvertToUtc(Time_Zones.EST);
+                }
                 var match = new MatchUploadViewModel
                 {
-                    StartTime = day.ConvertToUtc(Time_Zones.EST),//convert back to UTC for post
+                    StartTime = matchStartTime,
                     SeriesID = seriesID,
                     SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
                     TeamIDs = teamIDs
@@ -556,10 +597,31 @@ namespace Gordon360.Services.RecIM
                     dayOfWeek = day.DayOfWeek.ToString();
                     surfaceIndex = 0;
                 }
+                DateTime matchStartTime;
+                try
+                {
+                    matchStartTime = day.ConvertToUtc(Time_Zones.EST);
+                }
+                catch
+                {
+                    // edgecase where a match is scheduled ON daylight saving
+                    day = day.AddMinutes(60 + schedule.EstMatchTime);
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                    {
+                        if (!schedule.AvailableDays[dayOfWeek])
+                            day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+                        dayOfWeek = day.DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
+
+                    matchStartTime = day.ConvertToUtc(Time_Zones.EST);
+                }
                 var createdMatch = await _matchService.UpdateMatchAsync(matchID,
                     new MatchPatchViewModel
                     {
-                        StartTime = day.ConvertToUtc(Time_Zones.EST),//convert back to UTC for post
+                        StartTime = matchStartTime,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
                     });
                 createdMatches.Add(createdMatch);
@@ -594,9 +656,32 @@ namespace Gordon360.Services.RecIM
                         dayOfWeek = day.DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
+
+                    DateTime matchStartTime;
+                    try
+                    {
+                        matchStartTime = day.ConvertToUtc(Time_Zones.EST);
+                    }
+                    catch
+                    {
+                        // edgecase where a match is scheduled ON daylight saving
+                        day = day.AddHours(1+ schedule.EstMatchTime);
+                        while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                        {
+                            if (!schedule.AvailableDays[dayOfWeek])
+                                day = day.AddDays(1);
+                            day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                            scheduleEndTime = scheduleEndTime.AddDays(1);
+                            dayOfWeek = day.DayOfWeek.ToString();
+                            surfaceIndex = 0;
+                        }
+
+                        matchStartTime = day.ConvertToUtc(Time_Zones.EST);
+                    }
+
                     var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                     {
-                        StartTime = day.ConvertToUtc(Time_Zones.EST),//convert back to UTC for post
+                        StartTime = matchStartTime,
                         SeriesID = series.ID,
                         SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
                         TeamIDs = new List<int>().AsEnumerable() //no teams

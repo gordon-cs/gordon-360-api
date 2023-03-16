@@ -274,6 +274,7 @@ namespace Gordon360.Authorization
                         }
                         return false;
                     }
+
                 case Resource.EMAILS_BY_ACTIVITY:
                     {
                         var publicParticipantTypes = new List<string>
