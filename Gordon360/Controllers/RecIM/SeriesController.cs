@@ -80,7 +80,7 @@ namespace Gordon360.Controllers.RecIM
         public ActionResult<SeriesScheduleViewModel> GetSeriesSchedule(int seriesID)
         {
             var res = _seriesService.GetSeriesScheduleByID(seriesID);
-            if (res is null) return BadRequest();
+            if (res is null) return NotFound();
             return Ok(res);
         }
 
@@ -93,7 +93,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns>modified series</returns>
         [HttpPatch]
         [Route("{seriesID}")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
         public async Task<ActionResult<SeriesViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
         {
             var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);

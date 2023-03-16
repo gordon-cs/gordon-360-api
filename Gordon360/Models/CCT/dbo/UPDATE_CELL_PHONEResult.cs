@@ -7,5 +7,7 @@ namespace Gordon360.Models.CCT
 {
     public partial class UPDATE_CELL_PHONEResult
     {
+        public bool? Success { get; set; }
+        public string Message { get; set; }
     }
 }
