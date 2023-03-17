@@ -132,6 +132,15 @@ namespace Gordon360.Services.RecIM
             }
 
             await CreateSeriesTeamMappingAsync(teams, series.ID);
+
+            //assign default series surface (To Be Decided)
+            await _context.SeriesSurface.AddAsync(
+                new SeriesSurface { 
+                    SeriesID = series.ID,
+                    SurfaceID = 0 
+                }
+            );
+
             return series;
         }
 
