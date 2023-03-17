@@ -356,7 +356,8 @@ namespace Gordon360.Services.RecIM
             // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
             var end = schedule.EndTime.SpecifyUtc().TimeOfDay;
             var start = schedule.StartTime.SpecifyUtc().TimeOfDay;
-            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
+            var shouldAddDay = new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0;
+            DateTime scheduleEndTime = day.AddDays(shouldAddDay);
             scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
                 .SpecifyUtc();
 
@@ -378,12 +379,11 @@ namespace Gordon360.Services.RecIM
                     //even if they are "hypothetically" able to play on the original day
                     while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
                     {
-                        // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
-                        // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
-                        if (!schedule.AvailableDays[dayOfWeek])
-                            day = day.AddDays(1);
+                        day = day.AddDays(1);
                         day = new DateTime(day.Year, day.Month, day.Day).Add(start).SpecifyUtc();
-                        scheduleEndTime = scheduleEndTime.AddDays(1);
+                        scheduleEndTime = new DateTime(day.Year, day.Month, day.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                            .AddDays(shouldAddDay)
+                            .SpecifyUtc();
                         dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
@@ -457,10 +457,7 @@ namespace Gordon360.Services.RecIM
 
                 while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
                 {
-                    // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
-                    // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
-                    if (!schedule.AvailableDays[dayOfWeek])
-                        day = day.AddDays(1);
+                    day = day.AddDays(1);
                     day = new DateTime(day.Year, day.Month, day.Day).Add(start).SpecifyUtc();
                     scheduleEndTime = scheduleEndTime.AddDays(1);
 
@@ -542,10 +539,7 @@ namespace Gordon360.Services.RecIM
                 while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
 
                 {
-                    // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
-                    // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
-                    if (!schedule.AvailableDays[dayOfWeek])
-                        day = day.AddDays(1);
+                    day = day.AddDays(1);
                     day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                     scheduleEndTime = scheduleEndTime.AddDays(1);
 
@@ -580,10 +574,7 @@ namespace Gordon360.Services.RecIM
                     }
                     while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
                     {
-                        // this check covers the basis that the while loop is initialized by only the condition that current schedule time has passed end time
-                        // thus to ensure that we aren't skipping consecutive days if we pass midnight, we need to NOT add a day if we're still on an accepted day of the week
-                        if (!schedule.AvailableDays[dayOfWeek])
-                            day = day.AddDays(1);
+                        day = day.AddDays(1);
                         day = new DateTime(day.Year, day.Month, day.Day).Add(start);
                         scheduleEndTime = scheduleEndTime.AddDays(1);
 
