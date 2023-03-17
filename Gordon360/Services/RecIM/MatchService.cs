@@ -168,6 +168,7 @@ namespace Gordon360.Services.RecIM
                         {
                             ID = mt.TeamID,
                             Name = mt.Team.Name,
+                            Logo = mt.Team.Logo,
                             Status = mt.Status.Description,
                             Participant = mt.Team.ParticipantTeam
                                 .Where(pt => !new int[] {0,1,2}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
