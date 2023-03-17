@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services.RecIM
 {
@@ -123,7 +124,12 @@ namespace Gordon360.Services.RecIM
                                         Status = _context.TeamStatus
                                                     .FirstOrDefault(ts => ts.ID == t.StatusID)
                                                     .Description,
-                                        Logo = t.Logo
+                                        Logo = t.Logo,
+                                        TeamRecord = _context.SeriesTeam
+                                            .Include(st => st.Team)
+                                            .Where(st => st.TeamID == t.ID)
+                                            .Select(st => (TeamRecordViewModel)st)
+                                    
                                     });
             return teams;
         }

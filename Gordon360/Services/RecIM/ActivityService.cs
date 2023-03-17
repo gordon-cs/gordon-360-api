@@ -132,7 +132,11 @@ namespace Gordon360.Services.RecIM
                                             ID = t.ActivityID, 
                                             Name = a.Name
                                         },
-                                        Logo = t.Logo
+                                        Logo = t.Logo,
+                                        TeamRecord = _context.SeriesTeam
+                                            .Include(st => st.Team)
+                                            .Where(st => st.TeamID == t.ID)
+                                            .Select(st => (TeamRecordViewModel) st)
                                     }),
                                 SeriesScheduleID = a.SeriesScheduleID,
                             })

@@ -107,6 +107,13 @@ namespace Gordon360.Services.RecIM
             // inherit activity series schedule id if own scheduleID is null
             var activityInheritiedSeriesScheduleID = activity.SeriesScheduleID ?? 0;
             var series = newSeries.ToSeries(activityInheritiedSeriesScheduleID);
+            series.SeriesSurface.Add(
+                new SeriesSurface
+                    {
+                        SeriesID = series.ID,
+                        SurfaceID = 1
+                    }
+            );
 
             await _context.Series.AddAsync(series);
             await _context.SaveChangesAsync();
@@ -133,14 +140,6 @@ namespace Gordon360.Services.RecIM
 
             await CreateSeriesTeamMappingAsync(teams, series.ID);
 
-            //assign default series surface (To Be Decided)
-            await _context.SeriesSurface.AddAsync(
-                new SeriesSurface { 
-                    SeriesID = series.ID,
-                    SurfaceID = 0 
-                }
-            );
-            await _context.SaveChangesAsync();
 
             return series;
         }

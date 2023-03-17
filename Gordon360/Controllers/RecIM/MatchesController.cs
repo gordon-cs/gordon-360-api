@@ -23,24 +23,10 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
-        /// Not implemented (yet) might be removed
+        /// Get's current match attendance for a specified match
         /// </summary>
-        /// <param name="day"></param>
-        /// <param name="active"></param>
+        /// <param name="matchID"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        [HttpGet]
-        [Route("")]
-        public ActionResult<IEnumerable<MatchExtendedViewModel>> GetMatches([FromQuery] DateTime? day, bool active)
-        {
-            throw new NotImplementedException();
-        }
-
-       /// <summary>
-       /// Get's current match attendance for a specified match
-       /// </summary>
-       /// <param name="matchID"></param>
-       /// <returns></returns>
         [HttpGet]
         [Route("{matchID}/attendance")]
         public ActionResult<IEnumerable<ParticipantAttendanceViewModel>> GetMatchAttendanceByMatchID(int matchID)

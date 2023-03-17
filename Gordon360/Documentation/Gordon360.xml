@@ -742,15 +742,6 @@
             <param name="activityID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches(System.Nullable{System.DateTime},System.Boolean)">
-            <summary>
-            Not implemented (yet) might be removed
-            </summary>
-            <param name="day"></param>
-            <param name="active"></param>
-            <returns></returns>
-            <exception cref="T:System.NotImplementedException"></exception>
-        </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchAttendanceByMatchID(System.Int32)">
             <summary>
             Get's current match attendance for a specified match
