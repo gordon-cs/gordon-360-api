@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Services;
+using Gordon360.Services.RecIM;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
@@ -17,6 +18,8 @@ using Gordon360.Extensions.System;
 using static Gordon360.Services.MembershipService;
 using System.Linq.Expressions;
 using Gordon360.Enums;
+using Microsoft.Extensions.Configuration;
+
 
 namespace Gordon360.Authorization
 {
@@ -43,10 +46,20 @@ namespace Gordon360.Authorization
 
         private ActionExecutingContext context;
         private CCTContext _CCTContext;
+        private MyGordonContext _MyGordonContext;
         private IAccountService _accountService;
         private IMembershipService _membershipService;
         private IMembershipRequestService _membershipRequestService;
         private INewsService _newsService;
+
+        private IConfiguration _config;
+
+        //RecIM services
+        private IParticipantService _participantService;
+        private Services.RecIM.IActivityService _activityService;
+        private ISeriesService _seriesService;
+        private ITeamService _teamService;
+        private IMatchService _matchService;
 
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
@@ -63,6 +76,15 @@ namespace Gordon360.Authorization
             _membershipService = context.HttpContext.RequestServices.GetRequiredService<IMembershipService>();
             _membershipRequestService = context.HttpContext.RequestServices.GetRequiredService<IMembershipRequestService>();
             _newsService = context.HttpContext.RequestServices.GetRequiredService<INewsService>();
+            _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
+            _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
+
+            // set RecIM services
+            _participantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
+            _matchService = context.HttpContext.RequestServices.GetRequiredService<IMatchService>();
+            _teamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
+            _seriesService = context.HttpContext.RequestServices.GetRequiredService<ISeriesService>();
+            _activityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
@@ -253,6 +275,7 @@ namespace Gordon360.Authorization
                         }
                         return false;
                     }
+
                 case Resource.EMAILS_BY_ACTIVITY:
                     {
                         var publicParticipantTypes = new List<string>
@@ -486,6 +509,18 @@ namespace Gordon360.Authorization
                     return true;
                 case Resource.NEWS:
                     return true;
+                case Resource.RECIM_ACTIVITY:
+                    //fallthrough
+                case Resource.RECIM_SERIES:
+                    //fallthrough
+                case Resource.RECIM_MATCH:
+                    //fallthrough
+                case Resource.RECIM_SURFACE:
+                    //fallthrough
+                case Resource.RECIM_SPORT:
+                    {
+                        return _participantService.IsAdmin(user_name);
+                    }
                 default: return false;
             }
         }
@@ -648,7 +683,7 @@ namespace Gordon360.Authorization
                                 .Any();
                             if (isGroupAdmin && context.ActionArguments["sess_cde"] is string sessionCode)
                             {
-                                var activityService = context.HttpContext.RequestServices.GetRequiredService<IActivityService>();
+                                var activityService = context.HttpContext.RequestServices.GetRequiredService<Services.IActivityService>();
                                 // If an activity is currently open, then a group admin has the ability to close it
                                 return activityService.IsOpen(activityCode, sessionCode);
                             }
@@ -691,6 +726,41 @@ namespace Gordon360.Authorization
                         return false;
                     }
 
+                case Resource.RECIM_PARTICIPANT:
+                    //fallthrough 
+                case Resource.RECIM_ACTIVITY:
+                    //fallthrough
+                case Resource.RECIM_SERIES:
+                    //fallthrough
+                case Resource.RECIM_SURFACE:
+                    //fallthrough
+                case Resource.RECIM_SPORT:
+                    {
+                        return _participantService.IsAdmin(user_name);
+                    }
+
+                case Resource.RECIM_TEAM:
+                    {
+                        if(context.ActionArguments.TryGetValue("teamID",out object? teamID_object) && teamID_object is int teamID)
+                        {
+                            return _teamService.IsTeamCaptain(user_name, teamID) || _participantService.IsAdmin(user_name);
+                        }
+                        return false;
+                    }
+
+                case Resource.RECIM_MATCH:
+                    {
+                        if (context.ActionArguments.TryGetValue("matchID", out object? matchID_Object) && matchID_Object is int matchID)
+                        {
+                            // if admin
+                            if (_participantService.IsAdmin(user_name)) return true;
+
+                            //if ref
+                            var activityID = _CCTContext.Match.Find(matchID).Series.ActivityID;
+                            return _activityService.IsReferee(user_name, activityID);
+                        }
+                        return false;
+                    }
                 default: return false;
             }
         }
@@ -812,6 +882,18 @@ namespace Gordon360.Authorization
                             return true;
                         return false;
                     }
+                case Resource.RECIM_ACTIVITY:
+                    //fallthrough
+                case Resource.RECIM_SERIES:
+                    //fallthrough
+                case Resource.RECIM_SPORT:
+                    //fallthrough
+                case Resource.RECIM_TEAM:
+                    //fallthrough
+                case Resource.RECIM_SURFACE:
+                    //fallthrough
+                case Resource.RECIM_MATCH:
+                    return _participantService.IsAdmin(user_name);
                 default: return false;
             }
         }

@@ -29,6 +29,11 @@ namespace Gordon360.Exceptions
                     break;
 
                 // Not a custom exception
+                case UnprocessibleEntity:
+                    statusCode = HttpStatusCode.UnprocessableEntity;
+                    break;
+
+                // Not a custom exception
                 case UnauthorizedAccessException:
                     statusCode = HttpStatusCode.Unauthorized;
                     break;

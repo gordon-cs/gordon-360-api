@@ -3,6 +3,7 @@ using Gordon360.Exceptions;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -19,11 +20,13 @@ namespace Gordon360.Services
     {
         private readonly CCTContext _context;
         private readonly IMembershipService _membershipService;
+        private readonly IConfiguration _config;
 
-        public EmailService(CCTContext context, IMembershipService membershipService)
+        public EmailService(CCTContext context, IMembershipService membershipService, IConfiguration config)
         {
             _context = context;
             _membershipService = membershipService;
+            _config = config;
         }
 
         /// <summary>
@@ -69,7 +72,7 @@ namespace Gordon360.Services
                 Password = password
             };
             smtp.Credentials = credential;
-            smtp.Host = "smtp.office365.com";
+            smtp.Host = _config["SmtpHost"];
             smtp.Port = 587;
             smtp.EnableSsl = true;
 
@@ -110,9 +113,9 @@ namespace Gordon360.Services
             using var smtp = new SmtpClient
             {
                 Credentials = credential,
-                Host = "smtp.office365.com",
+                Host = _config["SmtpHost"],
                 Port = 587,
-                EnableSsl = true
+                EnableSsl = true,
             };
 
             var message = new MailMessage
