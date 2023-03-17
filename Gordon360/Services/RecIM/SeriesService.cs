@@ -140,6 +140,7 @@ namespace Gordon360.Services.RecIM
                     SurfaceID = 0 
                 }
             );
+            await _context.SaveChangesAsync();
 
             return series;
         }
