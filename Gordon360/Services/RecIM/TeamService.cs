@@ -411,8 +411,7 @@ namespace Gordon360.Services.RecIM
                  $"Hey {invitee.FirstName}!<br><br>" +
                 $"{inviter.FirstName} {inviter.LastName} has invited you join <b>{team.Name}</b> for <b>{team.Activity.Name}</b> <br>" +
                 $"Registration closes on <i>{team.Activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
-                //$"check it out <a href='https://360.gordon.edu/recim'>here</a>! <br><br>" + //for production
-                $"check it out <a href='https://360recim.gordon.edu/recim'>here</a>! <br><br>" +//for development
+                $"check it out <a href='{_config["RecIM_Url"]}'>here</a>! <br><br>" +
                 $"Gordon Rec-IM";
             string subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!";
 
