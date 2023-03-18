@@ -397,7 +397,7 @@ namespace Gordon360.Services.RecIM
             return t;
         }
 
-        private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
+        private void SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
         {
             var team = _context.Team
                 .Include(t => t.Activity)
@@ -452,7 +452,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
-                await SendInviteEmail(teamID, participant.Username, inviterUsername);
+                SendInviteEmail(teamID, participant.Username, inviterUsername);
             }
             return participantTeam;
         }
