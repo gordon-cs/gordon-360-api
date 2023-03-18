@@ -66,6 +66,7 @@ namespace Gordon360.Services.RecIM
                             .Select(st => new TeamRecordViewModel
                             {
                                 SeriesID = st.ID,
+                                TeamID = st.TeamID,
                                 Name = _context.Team
                                         .FirstOrDefault(t => t.ID == st.TeamID)
                                         .Name,
