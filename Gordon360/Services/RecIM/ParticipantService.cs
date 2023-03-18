@@ -112,7 +112,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username)
         {
                    var teams = _context.ParticipantTeam
-                            .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0)
+                            .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2 )
                                 .Join(_context.Team.Where(t => t.StatusID != 0),
                                     pt => pt.TeamID,
                                     t => t.ID,
