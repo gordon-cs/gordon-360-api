@@ -3,8 +3,6 @@ using Gordon360.Extensions.System;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Static.Methods;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -83,11 +81,12 @@ namespace Gordon360.Services.RecIM
                     StartTime = mt.Match.StartTime.SpecifyUtc(),
                     Status = mt.Match.Status.Description,
                     Surface = mt.Match.Surface.Name,
-                    Team = mt.Match.MatchTeam
+                    Team = mt.Match.MatchTeam.Where(mt => mt.StatusID != 0)
                         .Select(_mt => new TeamExtendedViewModel
                         {
                             ID = _mt.TeamID,
                             Name = _mt.Team.Name,
+                            Logo = _mt.Team.Logo
                         })
                         .AsEnumerable(),
                     Series = _context.Series
@@ -198,7 +197,10 @@ namespace Gordon360.Services.RecIM
                                         MatchStatusID = own_mt.Match.StatusID,
                                         MatchStartTime = own_mt.Match.StartTime.SpecifyUtc(),  
                                     }
-                                ),
+                                )
+                                .OrderByDescending(mh => mh.MatchStartTime)
+                                .Take(5)
+                                .ToList(),
                             TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
                         })
                 }).FirstOrDefault();
