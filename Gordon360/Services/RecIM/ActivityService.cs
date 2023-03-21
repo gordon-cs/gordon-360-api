@@ -88,16 +88,9 @@ namespace Gordon360.Services.RecIM
                 });
             return activities;
         }
-        public IEnumerable<ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time)
+        public IEnumerable<ActivityExtendedViewModel> GetActiveActivities(bool isActive)
         {
-            if (time is null)
-            {
-                return GetActivities().Where(a => !a.Completed);
-            }
-            else
-            {
-                return GetActivities().Where(a => a.RegistrationEnd.SpecifyUtc() > time);
-            }
+            return GetActivities().Where(a => !a.Completed == isActive);
         }
 
         public ActivityExtendedViewModel? GetActivityByID(int activityID)

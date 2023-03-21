@@ -74,7 +74,6 @@ namespace Gordon360.Controllers.RecIM
         /// <summary>
         /// Create a new team with the requesting user set to team captain
         /// </summary>
-        /// <param name="username">creator's username</param>
         /// <param name="newTeam"></param>
         /// <returns></returns>
         [HttpPost]

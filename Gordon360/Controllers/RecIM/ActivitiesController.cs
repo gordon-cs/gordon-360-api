@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
+    [AllowAnonymous]
     public class ActivitiesController : GordonControllerBase
     {
         private readonly IActivityService _activityService;
@@ -21,22 +22,21 @@ namespace Gordon360.Controllers.RecIM
         }
 
         ///<summary>Gets a list of all Activities by parameter </summary>
-        ///<param name="active"> Optional active parameter </param>
-        ///<param name="time"> Optional time parameter </param>
+        ///<param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
         /// <returns>
         /// All Existing Activities 
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ActivityExtendedViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
+        public ActionResult<IEnumerable<ActivityExtendedViewModel>> GetActivities([FromQuery] bool? active)
         {   
-            if (time is null && active)
+            if ( active is bool isActive)
             {
-                var activeResults = _activityService.GetActivities();
-                return Ok(activeResults);
+                var res = _activityService.GetActiveActivities(isActive);
+                return Ok(res);
 
             }
-            var result = _activityService.GetActivitiesByTime(time);
+            var result = _activityService.GetActivities();
             return Ok(result);
         }
 

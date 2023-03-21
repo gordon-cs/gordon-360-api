@@ -698,10 +698,9 @@
             <param name="participationTypes">Optional participation type. If passed, only memberships of those participation types will be inlcuded</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.Boolean})">
             <summary>Gets a list of all Activities by parameter </summary>
-            <param name="active"> Optional active parameter </param>
-            <param name="time"> Optional time parameter </param>
+            <param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
              <returns>
              All Existing Activities 
              </returns>
@@ -965,7 +964,6 @@
             <summary>
             Create a new team with the requesting user set to team captain
             </summary>
-            <param name="username">creator's username</param>
             <param name="newTeam"></param>
             <returns></returns>
         </member>
