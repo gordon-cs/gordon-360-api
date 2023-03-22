@@ -1,5 +1,5 @@
-﻿using Gordon360.Enums;
-using Gordon360.Models.CCT;
+﻿using Gordon360.Models.CCT;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +8,8 @@ namespace Gordon360.Models.ViewModels
     public record MembershipHistoryViewModel(string ActivityCode,
                                              string ActivityDescription,
                                              string ActivityImagePath,
-                                             IEnumerable<MembershipHistorySessionViewModel> Sessions)
+                                             IEnumerable<MembershipHistorySessionViewModel> Sessions,
+                                             DateTime LatestDate)
     {
         public static MembershipHistoryViewModel FromMembershipGroup(IGrouping<string, MembershipView> membershipGroup)
         {
@@ -25,7 +26,8 @@ namespace Gordon360.Models.ViewModels
                     ActivityCode: membershipGroup.Key,
                     ActivityDescription: first.ActivityDescription,
                     ActivityImagePath: first.ActivityImagePath,
-                    Sessions: sessions
+                    Sessions: sessions,
+                    LatestDate: membershipGroup.Max(m => m.EndDate ?? m.StartDate)
                 );
         }
     }
