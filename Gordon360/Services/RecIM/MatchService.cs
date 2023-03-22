@@ -178,7 +178,7 @@ namespace Gordon360.Services.RecIM
                                     Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                     Role = pt.RoleType.Description
                                 }),
-                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.ID == mt.ID && _mt.StatusID != 0s)
+                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.ID == mt.ID && _mt.StatusID != 0)
                                 .Join(
                                     _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
                                     own_mt => own_mt.MatchID,
