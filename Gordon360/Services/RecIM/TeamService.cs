@@ -139,6 +139,7 @@ namespace Gordon360.Services.RecIM
                                 Status = t.Status.Description,
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
+                                    .Where(mt => mt.Match.StatusID != 0)
                                     .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)).AsEnumerable(),
                                 Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
                                                 .Select(pt => new ParticipantExtendedViewModel

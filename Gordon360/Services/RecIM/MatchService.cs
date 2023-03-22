@@ -77,7 +77,7 @@ namespace Gordon360.Services.RecIM
                 {
                     ID = mt.MatchID,
                     Scores = mt.Match.MatchTeam
-                        .Where(mt => mt.StatusID != 0)
+                        //.Where(mt => mt.StatusID != 0)
                         .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
                     StartTime = mt.Match.StartTime.SpecifyUtc(),
                     Status = mt.Match.Status.Description,
@@ -178,8 +178,8 @@ namespace Gordon360.Services.RecIM
                                     Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                     Role = pt.RoleType.Description
                                 }),
-                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.ID == mt.ID && _mt.StatusID != 0)
-                                .Join(
+                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID)
+                              .Join(
                                     _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
                                     own_mt => own_mt.MatchID,
                                     other_mt => other_mt.MatchID,
@@ -196,12 +196,10 @@ namespace Gordon360.Services.RecIM
                                                     ? "Lose"
                                                     : "Tie",
                                         MatchStatusID = own_mt.Match.StatusID,
-                                        MatchStartTime = own_mt.Match.StartTime.SpecifyUtc(),  
+                                        MatchStartTime = own_mt.Match.StartTime.SpecifyUtc(),
                                     }
-                                )
-                                .OrderByDescending(mh => mh.MatchStartTime)
-                                .Take(5)
-                                .ToList(),
+                                ),
+
                             TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
                         })
                 }).FirstOrDefault();
