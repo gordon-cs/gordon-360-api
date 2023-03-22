@@ -24,15 +24,13 @@ namespace Gordon360.Controllers
         private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
         private readonly IMembershipService _membershipService;
-        private readonly IActivityService _activityService;
         private readonly IConfiguration _config;
 
-        public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IActivityService activityService, IConfiguration config)
+        public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IConfiguration config)
         {
             _profileService = profileService;
             _accountService = accountService;
             _membershipService = membershipService;
-            _activityService = activityService;
             _config = config;
         }
 

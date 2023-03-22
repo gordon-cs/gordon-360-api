@@ -16,12 +16,10 @@ namespace Gordon360.Controllers
     public class MembershipsController : GordonControllerBase
     {
         private readonly IMembershipService _membershipService;
-        private readonly IActivityService _activityService;
 
-        public MembershipsController(IMembershipService membershipService, IActivityService activityService)
+        public MembershipsController(IMembershipService membershipService)
         {
             _membershipService = membershipService;
-            _activityService = activityService;
         }
 
         /// <summary>
