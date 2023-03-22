@@ -348,7 +348,8 @@ namespace Gordon360.Services.RecIM
                 .Include(s => s.Schedule)
                 .FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
-                .Where(st => st.SeriesID == seriesID)
+                .Include(s => s.Team)
+                .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
                 .Select(st => st.TeamID)
                 .ToList();
             int numCycles = request.RoundRobinMatchCapacity ?? teams.Count;
@@ -432,7 +433,9 @@ namespace Gordon360.Services.RecIM
                 .Include(s => s.SeriesSurface)
                 .Include(s => s.Schedule)
                 .FirstOrDefault(s => s.ID == seriesID);
-            var teams = series.SeriesTeam
+            var teams = _context.SeriesTeam
+                .Include(s => s.Team)
+                .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
                 .Select(st => st.TeamID)
                 .ToList();
 
@@ -512,8 +515,10 @@ namespace Gordon360.Services.RecIM
                 .Include(s => s.Schedule)
                 .FirstOrDefault(s => s.ID == seriesID);
             var teams = _context.SeriesTeam
-               .Where(st => st.SeriesID == seriesID)
-               .OrderByDescending(st => st.WinCount);
+                .Include(s => s.Team)
+                .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
+                .OrderByDescending(st => st.WinCount);
+               
 
             // seriesschedule casts start and end time to utc
             SeriesScheduleViewModel schedule = series.Schedule;
