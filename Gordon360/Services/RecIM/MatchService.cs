@@ -154,7 +154,8 @@ namespace Gordon360.Services.RecIM
                             ID = s.ID,
                             Name = s.Name,
                             Type = s.Type.Description,
-                            TeamStanding = s.SeriesTeam.Select(st => (TeamRecordViewModel)st)
+                            TeamStanding = s.SeriesTeam.Where(st => st.Team.StatusID != 0)
+                            .Select(st => (TeamRecordViewModel)st)
                         }).FirstOrDefault(),
                     // Team will eventually be handled by TeamService 
                     Activity = new ActivityExtendedViewModel
