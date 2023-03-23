@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -544,6 +545,7 @@ namespace Gordon360.Services.RecIM
             var elimScheduler = await ScheduleElimRoundAsync(teams);
             int teamsInNextRound = elimScheduler.TeamsInNextRound;
             var matchIDs = elimScheduler.Match.Select(es => es.ID);
+            // int numNonBye = matchIDs.count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-buys and official bracket
             foreach (var matchID in matchIDs)
             {
                 if (surfaceIndex == availableSurfaces.Length)
@@ -629,20 +631,36 @@ namespace Gordon360.Services.RecIM
             var series = _context.Series.Find(involvedTeams.First().SeriesID);
 
             var teams = involvedTeams.Reverse();
-
+            var matches = new List<MatchViewModel>();
+            var byeTeams = new List<int>();
+            //bye logic
             while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0))) //while not power of 2
             {
                 await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
                 {
                     ID = teams.Last().ID,
                     WinCount = 1 //Bye round
-                });
+                }) ;
+
+                byeTeams.Add(teams.Last().TeamID);
                 teams = teams.Take(--remainingTeamCount);
                 numByes++;
             }
 
-            var teamPairings = EliminationRoundTeamPairsAsync(teams);
-            var matches = new List<MatchViewModel>();
+            // logic for handling bye teams that play another buy team in the next round
+            var teamPairings = EliminationRoundTeamPairsAsync(teams).ToList();
+            while (teamPairings.Count() < byeTeams.Count())
+            {
+                var byePair = byeTeams.TakeLast(2);
+                teamPairings.Add(new List<int> { byePair.First(), byePair.Last() });
+                byeTeams.Remove(byePair.First());
+                byeTeams.Remove(byePair.Last());
+                
+            }
+
+
+            foreach (int teamID in byeTeams)
+                teamPairings.Add(new List<int> { teamID });
 
             foreach (var teamPair in teamPairings)
             {
@@ -657,7 +675,7 @@ namespace Gordon360.Services.RecIM
             }
             return new EliminationRound
             {
-                TeamsInNextRound = teamPairings.Count() + numByes,
+                TeamsInNextRound = teamPairings.Count() - byeTeams.Count(),
                 Match = matches
             };
         }
