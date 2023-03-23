@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
-using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM
 {
@@ -641,7 +640,6 @@ namespace Gordon360.Services.RecIM
                     ID = teams.Last().ID,
                     WinCount = 1 //Bye round
                 }) ;
-
                 byeTeams.Add(teams.Last().TeamID);
                 teams = teams.Take(--remainingTeamCount);
                 numByes++;
@@ -655,10 +653,7 @@ namespace Gordon360.Services.RecIM
                 teamPairings.Add(new List<int> { byePair.First(), byePair.Last() });
                 byeTeams.Remove(byePair.First());
                 byeTeams.Remove(byePair.Last());
-                
             }
-
-
             foreach (int teamID in byeTeams)
                 teamPairings.Add(new List<int> { teamID });
 
