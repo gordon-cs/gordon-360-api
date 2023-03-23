@@ -187,6 +187,7 @@ namespace Gordon360.Services
         MembershipView GetMembershipViewById(int membershipId);
         bool ValidateMembership(MembershipUploadViewModel membership);
         bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);
+        IEnumerable<MembershipView> RemovePrivateMemberships(IEnumerable<MembershipView> memberships, string viewerUsername);
     }
 
     public interface IJobsService

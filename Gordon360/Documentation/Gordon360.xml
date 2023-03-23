@@ -698,6 +698,13 @@
             <param name="participationTypes">Optional participation type. If passed, only memberships of those participation types will be inlcuded</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetMembershipHistory(System.String)">
+            <summary>
+            Fetch the history of a user's memberships
+            </summary>
+            <param name="username">The Student Username</param>
+            <returns>The history of that user's membership in involvements</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean)">
             <summary>Gets a list of all Activities by parameter </summary>
             <param name="active"> Optional active parameter </param>
@@ -2076,6 +2083,14 @@
             </summary>
             <param name="membershipId">The MEMBERSHIP to match on MembershipID</param>	
             <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.WithoutPrivateMemberships(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.MembershipView},System.String)">
+            <summary>
+            Filters out memberships that are private with respect to the given viewer
+            </summary>
+            <param name="memberships">Enumerable of memberships to filter</param>
+            <param name="viewerUsername">username of viewer to whom memberships are/are not private</param>
+            <returns>The membership enumerable with private memberships removed</returns>
         </member>
         <member name="T:Gordon360.Services.MyScheduleService">
             <summary>
