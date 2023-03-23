@@ -156,39 +156,42 @@ namespace Gordon360.Services.RecIM
             activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
             activity.SeriesScheduleID = updatedActivity.SeriesScheduleID ?? activity.SeriesScheduleID;
 
-            if (updatedActivity.Logo != null)
+            if (updatedActivity.IsLogoUpdate)
             {
-                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(updatedActivity.Logo);
-
-                string? imagePath = null;
-                // If old image exists, overwrite it with new image at same path
-                if (activity.Logo != null)
+                if (updatedActivity.Logo != null)
                 {
-                    imagePath = GetImagePath(Path.GetFileName(activity.Logo));
+                    // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                    var (extension, format, data) = ImageUtils.GetImageFormat(updatedActivity.Logo);
+
+                    string? imagePath = null;
+                    // If old image exists, overwrite it with new image at same path
+                    if (activity.Logo != null)
+                    {
+                        imagePath = GetImagePath(Path.GetFileName(activity.Logo));
+                    }
+                    // Otherwise, upload new image and save url to db
+                    else
+                    {
+                        // Use a unique alphanumeric GUID string as the file name
+                        var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                        imagePath = GetImagePath(filename);
+                        var url = GetImageURL(filename);
+                        activity.Logo = url;
+                    }
+
+                    ImageUtils.UploadImage(imagePath, data, format);
                 }
-                // Otherwise, upload new image and save url to db
-                else
+
+                //If the image property is null, it means that either the user
+                //chose to remove the previous image or that there was no previous
+                //image (DeleteImage is designed to handle this).
+                else if (activity.Logo != null)
                 {
-                    // Use a unique alphanumeric GUID string as the file name
-                    var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                    imagePath = GetImagePath(filename);
-                    var url = GetImageURL(filename);
-                    activity.Logo = url;
+                    var imagePath = GetImagePath(Path.GetFileName(activity.Logo));
+
+                    ImageUtils.DeleteImage(imagePath);
+                    activity.Logo = updatedActivity.Logo; //null
                 }
-
-                ImageUtils.UploadImage(imagePath, data, format);
-            }
-
-            //If the image property is null, it means that either the user
-            //chose to remove the previous image or that there was no previous
-            //image (DeleteImage is designed to handle this).
-            else if (activity.Logo != null)
-            {
-                var imagePath = GetImagePath(Path.GetFileName(activity.Logo));
-
-                ImageUtils.DeleteImage(imagePath);
-                activity.Logo = updatedActivity.Logo; //null
             }
 
             await _context.SaveChangesAsync();

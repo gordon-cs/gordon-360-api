@@ -358,39 +358,42 @@ namespace Gordon360.Services.RecIM
             t.Name = update.Name ?? t.Name;
             t.StatusID = update.StatusID ?? t.StatusID;
             
-            if (update.Logo != null)
+            if (update.IsLogoUpdate)
             {
-                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(update.Logo);
-
-                string? imagePath = null;
-                // If old image exists, overwrite it with new image at same path
-                if (t.Logo != null)
+                if (update.Logo != null)
                 {
-                    imagePath = GetImagePath(Path.GetFileName(t.Logo));
+                    // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                    var (extension, format, data) = ImageUtils.GetImageFormat(update.Logo);
+
+                    string? imagePath = null;
+                    // If old image exists, overwrite it with new image at same path
+                    if (t.Logo != null)
+                    {
+                        imagePath = GetImagePath(Path.GetFileName(t.Logo));
+                    }
+                    // Otherwise, upload new image and save url to db
+                    else
+                    {
+                        // Use a unique alphanumeric GUID string as the file name
+                        var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                        imagePath = GetImagePath(filename);
+                        var url = GetImageURL(filename);
+                        t.Logo = url;
+                    }
+
+                    ImageUtils.UploadImage(imagePath, data, format);
                 }
-                // Otherwise, upload new image and save url to db
-                else
+
+                //If the image property is null, it means that either the user
+                //chose to remove the previous image or that there was no previous
+                //image (DeleteImage is designed to handle this).
+                else if (t.Logo != null)
                 {
-                    // Use a unique alphanumeric GUID string as the file name
-                    var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                    imagePath = GetImagePath(filename);
-                    var url = GetImageURL(filename);
-                    t.Logo = url;
+                    var imagePath = GetImagePath(Path.GetFileName(t.Logo));
+
+                    ImageUtils.DeleteImage(imagePath);
+                    t.Logo = update.Logo; //null
                 }
-
-                ImageUtils.UploadImage(imagePath, data, format);
-            }
-
-            //If the image property is null, it means that either the user
-            //chose to remove the previous image or that there was no previous
-            //image (DeleteImage is designed to handle this).
-            else if (t.Logo != null)
-            {
-                var imagePath = GetImagePath(Path.GetFileName(t.Logo));
-
-                ImageUtils.DeleteImage(imagePath);
-                t.Logo = update.Logo; //null
             }
 
             await _context.SaveChangesAsync();

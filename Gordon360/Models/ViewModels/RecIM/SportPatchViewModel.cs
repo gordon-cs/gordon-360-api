@@ -10,6 +10,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string? Description { get; set; }
         public string? Rules { get; set; }
         public string? Logo { get; set; }
+        public bool IsLogoUpdate { get; set; }
 
     }
 }
