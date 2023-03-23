@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Gordon360.Controllers
 {
@@ -107,6 +108,15 @@ namespace Gordon360.Controllers
             {
                 return NotFound();
             }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("unapproved")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.NEWS)]
+        public ActionResult<IEnumerable<StudentNewsViewModel>> GetNewsUnapproved()
+        {
+            var result = _newsService.GetNewsUnapproved();
             return Ok(result);
         }
 

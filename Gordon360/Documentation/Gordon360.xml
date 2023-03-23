@@ -201,12 +201,12 @@
             <returns> All minors</returns>
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPRECATED_GetStates">
-            <summary>
-            Return a list states.
-            </summary>
+             <summary>
+             Return a list states.
+             </summary>
             
-            <remarks>DEPRECATED: Use AddressController instead</remarks>
-            <returns> All states</returns>
+             <remarks>DEPRECATED: Use AddressController instead</remarks>
+             <returns> All states</returns>
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.DEPREACTED_GetCountries">
             <summary>
@@ -705,6 +705,338 @@
             <param name="username">The Student Username</param>
             <returns>The history of that user's membership in involvements</returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean)">
+            <summary>Gets a list of all Activities by parameter </summary>
+            <param name="active"> Optional active parameter </param>
+            <param name="time"> Optional time parameter </param>
+             <returns>
+             All Existing Activities 
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivityByID(System.Int32)">
+            <summary>Gets a Activity object by ID number</summary>
+             <param name="activityID">Activity ID Number</param>
+             <returns>
+             Activity object
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivityRegistrationStatus(System.Int32)">
+            <summary>
+            Niche function to check if the activity is still open for registration
+            </summary>
+            <param name="activityID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.ViewModels.RecIM.ActivityUploadViewModel)">
+            <summary>
+            Posts Activity into CCT.RecIM.Activity
+            </summary>
+            <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
+            <returns>Posted Activity</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(System.Int32,Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
+            <summary>
+            Updates Activity based on input
+            </summary>
+            <param name="activityID"> Activity ID</param>
+            <param name="updatedActivity"> Updated Activity Object </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.DeleteActivityCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given ActivityID
+            </summary>
+            <param name="activityID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchAttendanceByMatchID(System.Int32)">
+            <summary>
+            Get's current match attendance for a specified match
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchByID(System.Int32)">
+            <summary>
+            Fetches Match by MatchID
+            </summary>
+            <param name="matchID"></param>
+            <returns>The match with the requested matchID (or null)</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchTypes(System.String)">
+            <summary>
+            Match lookup
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetSurfaces">
+            <summary>
+            Gets all surfaces
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.PostSurface(Gordon360.Models.ViewModels.RecIM.SurfaceUploadViewModel)">
+            <summary>
+            Creates a new match/series surface
+            </summary>
+            <param name="newSurface"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateSurface(System.Int32,Gordon360.Models.ViewModels.RecIM.SurfaceUploadViewModel)">
+            <summary>
+            Updates a given surface
+            </summary>
+            <param name="surfaceID"></param>
+            <param name="updatedSurface"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteSurface(System.Int32)">
+            <summary>
+            Deletes surface, points all foreign keys to an unknown surface
+            to prevent corrupted data
+            </summary>
+            <param name="surfaceID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchStatsPatchViewModel)">
+            <summary>
+            Updates Match Scores, Sportsmanship Ratings, and Team Status
+            </summary>
+            <param name="matchID"></param>
+            <param name="updatedMatch"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateMatch(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchPatchViewModel)">
+            <summary>
+            Updates Match Start Times and Surfaces
+            </summary>
+            <param name="matchID"></param>
+            <param name="updatedMatch"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.CreateMatch(Gordon360.Models.ViewModels.RecIM.MatchUploadViewModel)">
+            <summary>
+            Creates Match
+            </summary>
+            <param name="newMatch"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteMatchCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given Match ID
+            </summary>
+            <param name="matchID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.PutParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantAttendanceViewModel)">
+            <summary>
+            creates match attendance
+            </summary>
+            <param name="matchID"></param>
+            <param name="teamID"></param>
+            <param name="teamAttendanceList">List of attendees for a team</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.AddParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchAttendance)">
+            <summary>
+            Adds single match participant
+            </summary>
+            <param name="matchID">match id</param>
+            <param name="attendee">object holding required username (optional teamID)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchAttendance)">
+            <summary>
+            Deletes single match participant
+            </summary>
+            <param name="matchID">match id</param>
+            <param name="attendee">object holding required username (optional teamID)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
+            <summary>
+            Queries all Series with an optional active tag
+            </summary>
+            <param name="active"></param>
+            <returns>Enumerable Set of Series</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesByID(System.Int32)">
+            <summary>
+            Gets specific Series
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesTypes(System.String)">
+            <summary>
+            Returns all types/statuses of a series available for selection
+            </summary>
+            <param name="type">specific series type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesScheduleByID(System.Int32)">
+            <summary>
+            Returns 
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(System.Int32,Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
+            <summary>
+            Updates Series Information
+            </summary>
+            <param name="seriesID"></param>
+            <param name="updatedSeries"></param>
+            <returns>modified series</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeries(Gordon360.Models.ViewModels.RecIM.SeriesUploadViewModel,System.Nullable{System.Int32})">
+            <summary>
+            Creates Series and associated SeriesTeam Models
+            </summary>
+            <param name="newSeries">CreateSeriesViewModel</param>
+            <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
+            <returns>created series</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeriesSchedule(Gordon360.Models.ViewModels.RecIM.SeriesScheduleUploadViewModel)">
+            <summary>
+            Creates schedule or finds existing schedule
+            </summary>
+            <param name="seriesSchedule">created schedule for series</param>
+            <returns>created series schedule</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.DeleteSeriesCascade(System.Int32)">
+            <summary>
+            Cascade deletes all DBobjects related to given Series ID
+            </summary>
+            <param name="seriesID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+            <summary>
+            Automatically creates Matches based on given Series
+            </summary>
+            <param name="seriesID"></param>
+            <param name="request">optional request data, used for additional options on autoscheduling</param>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
+            <summary>
+            Fetches all Sports in the RecIM database
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSportByID(System.Int32)">
+            <summary>
+            Gets specific sport by ID
+            </summary>
+            <param name="sportID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.UpdateSport(System.Int32,Gordon360.Models.ViewModels.RecIM.SportPatchViewModel)">
+            <summary>
+            Update Sport in the database by ID
+            </summary>
+            <param name="sportID"></param>
+            <param name="updatedSport"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.CreateSport(Gordon360.Models.ViewModels.RecIM.SportUploadViewModel)">
+            <summary>
+            Creates new Sport for RecIM
+            </summary>
+            <param name="newSport"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeams(System.Boolean)">
+            <summary>
+            Get all team objects stored in rec-im
+            </summary>
+             <param name="active"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamByID(System.Int32)">
+            <summary>
+            Get a Team object by ID number
+            </summary>
+             <param name="teamID"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamTypes(System.String)">
+            <summary>
+            Returns all team lookup types
+            </summary>
+            <param name="type">specified team type</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.PostTeam(Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
+            <summary>
+            Create a new team with the requesting user set to team captain
+            </summary>
+            <param name="username">creator's username</param>
+            <param name="newTeam"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddParticipantToTeam(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
+            <summary>
+            Add a participant to a team
+            </summary>
+            <param name="teamID"></param>
+            <param name="participant">Default Role Value value 3 (Member)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateParticipantTeam(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
+            <summary>
+            Updates Participant role in a team
+            </summary>
+            <param name="teamID"></param>
+            <param name="participant"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeam(System.Int32)">
+            <summary>
+            Removes team and all participants in the team
+            </summary>
+            <param name="teamID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeamParticipant(System.Int32,System.String)">
+            <summary>
+            Removes specified user from a team
+            </summary>
+            <param name="teamID"></param>
+            <param name="username"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamInfo(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamPatchViewModel)">
+            <summary>
+            Update a team info
+            </summary>
+            <param name="team"></param>
+            <param name="teamID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.GetTeamInvites">
+            <summary>
+            Get all team invites of the user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.NumberOfGamesParticipatedByParticipant(System.Int32,System.String)">
+            <summary>
+            Gets number of games a participant has participated in for a team
+            </summary>
+            <param name="teamID"></param>
+            <param name="username"></param>
+            <returns>number of games a participant has attended for a team</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.HandleTeamInvite(System.Int32,System.String)">
+            <summary>
+            Accept one specified team invite and true delete others from the same activity if there's any
+            </summary>
+            <param name="teamID"></param>
+            <param name="response"></param>
+            <returns>The accepted TeamInviteViewModel</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -926,6 +1258,56 @@
             It's a separate role that Advisors and Leaders can have, with a separate flag in the database 
             BUT, it's convenient to treat it as a participation type in several places throughout the API
             </summary>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.DateTime)">
+            <summary>
+            Specify the given DateTime as UTC, without changing the time value.
+            </summary>
+            <param name="dateTime"></param>
+            <returns>dateTime with type UTC</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.SpecifyUtc(System.Nullable{System.DateTime})">
+            <summary>
+            Specify the given DateTime? as UTC, without changing the time value.
+            </summary>
+            <param name="nullableDateTime"></param>
+            <returns>dateTime with type UTC, or null</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.ConvertFromUtc(System.DateTime,System.String)">
+            <summary>
+            Converts UTC DateTime to Eastern Standard Time 
+            List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
+            </summary>
+            <param name="dateTime">DateTime with kind UTC</param>
+            <param name="timeZoneID">String timezoneinfo location</param>
+            <returns>Converted DateTime with kind Unspecified</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.ConvertFromUtc(System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Converts UTC DateTime? to Eastern Standard Time 
+            List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
+            </summary>
+            <param name="nullableDateTime">DateTime? with kind UTC</param>
+            <param name="timeZoneID">String timezoneinfo location</param>
+            <returns>Converted DateTime with kind Unspecified or null if parameter is null</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.ConvertToUtc(System.DateTime,System.String)">
+            <summary>
+            Converts Location of specified by TimeZoneInfoID DateTime to UTC
+            List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
+            </summary>
+            <param name="dateTime">Unspecified kind DateTime</param>
+            <param name="timeZoneID">String timezoneinfo location</param>
+            <returns>Converted DateTime with kind UTC</returns>
+        </member>
+        <member name="M:Gordon360.Extensions.System.DateTimeExtensions.ConvertToUtc(System.Nullable{System.DateTime},System.String)">
+            <summary>
+            Converts Location of specified by TimeZoneInfoID DateTime to UTC
+            List of time zones specified by TimeZoneInfo https://i.stack.imgur.com/zHzGt.png
+            </summary>
+            <param name="nullableDateTime">Unspecified kind DateTime?</param>
+            <param name="timeZoneID">String timezoneinfo location</param>
+            <returns>Converted DateTime with kind UTC</returns>
         </member>
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>
@@ -1940,6 +2322,34 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
+            <summary>
+            this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
+            within other queries. The only solution is to return each individual instance and have the original
+            query handle the enumeration.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+            <summary>
+            Scheduler does not currently handle overlaps
+            eventually:
+            - ensure that matches that occur within 1 hour do not share the same surface
+               unless they're in the same series
+            </summary>
+            <param name="seriesID"></param>
+            <returns>Created Match objects</returns>
+        </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam})">
+            <summary>
+            Goal of this function is to generate a single elimination round.
+            On the first possible round, this would imply handling teams with byes to ensure
+            that the second round will be in a power of 2 (so that no further rounds need byes). 
+            
+            These functions may need to be modified later as there may be more efficient ways to handle scheduling
+            with the context that surfaces need to be booked ahead of time on 25Live
+            </summary>
+            <returns>Matches created as well as number of teams in the next round</returns>
         </member>
         <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
             <summary>

@@ -8,6 +8,7 @@
    "ModelNamespace": null,
    "OutputContextPath": "Models\/CCT\/Context",
    "OutputPath": "Models\/CCT",
+   "PreserveCasingWithRegex": true,
    "ProjectRootNamespace": "Gordon360",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
@@ -47,10 +48,6 @@
       },
       {
          "Name": "[dbo].[Health_Status_CTRL]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Housing_Admins]",
          "ObjectType": 0
       },
       {
@@ -138,7 +135,119 @@
          "ObjectType": 0
       },
       {
+         "Name": "[RecIM].[Activity]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ActivityStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ActivityType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Match]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[MatchParticipant]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[MatchStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[MatchTeam]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[MatchTeamStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Participant]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantActivity]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantNotification]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantStatusHistory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[ParticipantTeam]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[PrivType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[RoleType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Series]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesSchedule]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesSurface]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesTeam]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SeriesType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Sport]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Statistic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Surface]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Team]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[TeamStatus]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[ACCOUNT]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[AccountPhotoURL]",
          "ObjectType": 3
       },
       {
@@ -223,6 +332,10 @@
       },
       {
          "Name": "[dbo].[MembershipView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[Minors]",
          "ObjectType": 3
       },
       {
@@ -314,10 +427,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[DELETE_AA_ADMIN]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[DELETE_AA_APARTMENT_CHOICE]",
          "ObjectType": 1
       },
@@ -395,10 +504,6 @@
       },
       {
          "Name": "[dbo].[FINALIZATION_UPDATEDEMOGRAPHIC]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_ADMIN]",
          "ObjectType": 1
       },
       {
@@ -491,10 +596,6 @@
       },
       {
          "Name": "[dbo].[GRP_ADMIN_EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_AA_ADMIN]",
          "ObjectType": 1
       },
       {
@@ -714,7 +815,7 @@
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
-   "UseSchemaFolders": false,
+   "UseSchemaFolders": true,
    "UseSpatial": false,
    "UseT4": false
 }

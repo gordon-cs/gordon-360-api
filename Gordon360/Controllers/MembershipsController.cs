@@ -114,7 +114,7 @@ namespace Gordon360.Controllers
             var result = _membershipService.GetMemberships(
                 activityCode: activityCode,
                 sessionCode: sessionCode,
-                participationTypes: new List<string> { Participation.GroupAdmin.GetDescription() });
+                participationTypes: new List<string> { Participation.GroupAdmin.GetCode() });
 
             return Ok(result);
         }
@@ -135,7 +135,7 @@ namespace Gordon360.Controllers
                 .GetMemberships(
                     activityCode: activityCode,
                     sessionCode: sessionCode,
-                    participationTypes: new List<string> { Participation.Guest.GetDescription() })
+                    participationTypes: new List<string> { Participation.Guest.GetCode() })
                 .Count();
 
 
@@ -158,7 +158,7 @@ namespace Gordon360.Controllers
                 .GetMemberships(
                     activityCode: activityCode,
                     sessionCode: sessionCode)
-                .Count(m => m.Participation != Participation.Guest.GetDescription());
+                .Count(m => m.Participation != Participation.Guest.GetCode());
 
             return Ok(result);
         }

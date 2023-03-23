@@ -60,7 +60,7 @@ namespace Gordon360.Services
 
             if (participationTypes?.Count > 0)
             {
-                var groupAdmin = Participation.GroupAdmin.GetDescription();
+                var groupAdmin = Participation.GroupAdmin.GetCode();
                 var includesGroupAdmin = participationTypes.Contains(groupAdmin) == true;
                 if (includesGroupAdmin) participationTypes.Remove(groupAdmin);
 
@@ -158,7 +158,7 @@ namespace Gordon360.Services
             original.COMMENT_TXT = membership.CommentText;
             original.PART_CDE = membership.Participation;
 
-            if (membership.Participation == Participation.Guest.GetDescription())
+            if (membership.Participation == Participation.Guest.GetCode())
             {
                 await SetGroupAdminAsync(membershipID, false);
             }
@@ -312,7 +312,7 @@ namespace Gordon360.Services
                             activityCode: m.ActivityCode,
                             username: viewerUsername,
                             sessionCode: m.SessionCode)
-                        .Any(m => m.Participation != Participation.Guest.GetDescription());
+                        .Any(m => m.Participation != Participation.Guest.GetCode());
                     }
                 });
     }
