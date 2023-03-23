@@ -51,7 +51,7 @@ namespace Gordon360.Controllers
                     || viewerGroups.Contains(AuthGroup.Police)
                     ))
                 {
-                    memberships = _membershipService.WithoutPrivateMemberships(memberships, authenticatedUserUsername);
+                    memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
                 }
             }
 

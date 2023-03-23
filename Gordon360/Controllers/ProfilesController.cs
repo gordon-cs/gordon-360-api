@@ -523,7 +523,7 @@ namespace Gordon360.Controllers
                 return Ok(memberships);
             }
 
-            var visibleMemberships = _membershipService.WithoutPrivateMemberships(memberships, authenticatedUserUsername);
+            var visibleMemberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
 
             return Ok(visibleMemberships);
         }
@@ -550,7 +550,7 @@ namespace Gordon360.Controllers
                 || viewerGroups.Contains(AuthGroup.Police)
                 ))
             {
-                memberships = _membershipService.WithoutPrivateMemberships(memberships, authenticatedUserUsername);
+                memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
             }
 
             var membershipHistories = memberships.GroupBy(m => m.ActivityCode).Select(group => MembershipHistoryViewModel.FromMembershipGroup(group));
