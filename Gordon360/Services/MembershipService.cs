@@ -294,7 +294,7 @@ namespace Gordon360.Services
         /// Filters out memberships that are private with respect to the given viewer
         /// </summary>
         /// <param name="memberships">Enumerable of memberships to filter</param>
-        /// <param name="viewerUsername">username of viewer to whom memberships are/are not private</param>
+        /// <param name="viewerUsername">username of viewer</param>
         /// <returns>The membership enumerable with private memberships removed</returns>
         public IEnumerable<MembershipView> RemovePrivateMemberships(IEnumerable<MembershipView> memberships, string viewerUsername)
             => memberships.Where(m =>
