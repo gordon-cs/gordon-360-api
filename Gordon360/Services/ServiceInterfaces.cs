@@ -187,6 +187,7 @@ namespace Gordon360.Services
         MembershipView GetMembershipViewById(int membershipId);
         bool ValidateMembership(MembershipUploadViewModel membership);
         bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest);
+        IEnumerable<MembershipView> RemovePrivateMemberships(IEnumerable<MembershipView> memberships, string viewerUsername);
     }
 
     public interface IJobsService
@@ -270,6 +271,7 @@ namespace Gordon360.Services
         Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpiredAsync();
         Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync();
         IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories();
+        IEnumerable<StudentNewsViewModel> GetNewsUnapproved();
         Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapprovedAsync(string username);
         StudentNews SubmitNews(StudentNews newsItem, string username);
         StudentNews DeleteNews(int newsID);

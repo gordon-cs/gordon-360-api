@@ -139,8 +139,7 @@ namespace Gordon360.Services
         /// <returns> Clifton strengths of the given user. </returns>
         public CliftonStrengthsViewModel? GetCliftonStrengths(int id)
         {
-            return _context.Clifton_Strengths
-                .FirstOrDefault(c => c.ID_NUM == id);
+            return _context.Clifton_Strengths.FirstOrDefault(c => c.ID_NUM == id);
         }
 
         /// <summary>

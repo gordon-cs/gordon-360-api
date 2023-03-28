@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Gordon360.Models.ViewModels;
 using Gordon360.Extensions.System;
 using static Gordon360.Services.MembershipService;
+using System.Linq.Expressions;
 using Gordon360.Enums;
 using Microsoft.Extensions.Configuration;
 
@@ -368,8 +369,11 @@ namespace Gordon360.Authorization
                         return false; // See reasons for this in CanReadOne(). No one (except for super admin) should be able to access student records through
                                       // our API.
                 case Resource.ADVISOR:
-                    // User is admin
-                    if (user_groups.Contains(AuthGroup.SiteAdmin))
+                    // User is authorized to view academic info
+                    if (user_groups.Contains(AuthGroup.AcademicInfoView))
+                        return true;
+                    // User looks his or her own profile
+                    else if (context.ActionArguments["username"] is string username && username.EqualsIgnoreCase(user_name))
                         return true;
                     else
                         return false;
@@ -394,7 +398,7 @@ namespace Gordon360.Authorization
                         return false;
                     }
                 case Resource.NEWS:
-                    return true;
+                    return user_groups.Contains(AuthGroup.NewsAdmin);
                 default: return false;
             }
         }
