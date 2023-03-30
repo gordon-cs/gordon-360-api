@@ -123,20 +123,21 @@ namespace Gordon360.Services.RecIM
             if (referenceSeriesID is null)
             {
                 teams = _context.Team
-                        .Where(t => t.ActivityID == series.ActivityID)
+                        .Where(t => t.ActivityID == series.ActivityID && t.StatusID != 0)
                         .Select(t => t.ID)
                         .AsEnumerable();
             }
             else
             {
                 teams = _context.SeriesTeam
-                                .Where(st => st.SeriesID == referenceSeriesID)
+                                .Include(s => s.Team)
+                                .Where(st => st.SeriesID == referenceSeriesID && st.Team.StatusID != 0)
                                 .OrderByDescending(st => st.WinCount)
                                 .Select(st => st.TeamID);
             }
-            if (newSeries.NumberOfTeamsAdmitted is not null)
+            if (newSeries.NumberOfTeamsAdmitted is int topTeams)
             {
-                teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null after the if check but 0 is to silence error
+                teams = teams.Take(topTeams);
             }
 
             await CreateSeriesTeamMappingAsync(teams, series.ID);
@@ -647,16 +648,21 @@ namespace Gordon360.Services.RecIM
 
             // logic for handling bye teams that play another buy team in the next round
             var teamPairings = EliminationRoundTeamPairsAsync(teams).ToList();
-            while (teamPairings.Count() < byeTeams.Count())
+            var byePairings = new List<List<int>>();
+            var fullBye = new List<List<int>>();
+
+            while (teamPairings.Count() + byePairings.Count() < byeTeams.Count())
             {
                 var byePair = byeTeams.TakeLast(2);
-                teamPairings.Add(new List<int> { byePair.First(), byePair.Last() });
+                byePairings.Add(new List<int> { byePair.First(), byePair.Last() });
                 byeTeams.Remove(byePair.First());
                 byeTeams.Remove(byePair.Last());
             }
-            foreach (int teamID in byeTeams)
-                teamPairings.Add(new List<int> { teamID });
 
+            foreach (int teamID in byeTeams)
+                fullBye.Add(new List<int> { teamID });
+
+            var playInMatchIDs = new List<int>();
             foreach (var teamPair in teamPairings)
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
@@ -667,10 +673,48 @@ namespace Gordon360.Services.RecIM
                     TeamIDs = teamPair
                 });
                 matches.Add(createdMatch);
+                playInMatchIDs.Add(createdMatch.ID);
             }
+
+            var byePairsMatchIDs = new List<int>();
+            foreach (var teamPair in byePairings)
+            {
+                var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                {
+                    StartTime = series.StartDate, //default time, will be modified by autoscheduling
+                    SeriesID = series.ID,
+                    SurfaceID = 0, //default surface (undefined surface type) will be modified by autoscheduling
+                    TeamIDs = teamPair
+                });
+                matches.Add(createdMatch);
+                byePairsMatchIDs.Add(createdMatch.ID);
+            }
+
+            var byeMatchIDs = new List<int>();
+            foreach (var bye in fullBye)
+            {
+                var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                {
+                    StartTime = series.StartDate, //default time, will be modified by autoscheduling
+                    SeriesID = series.ID,
+                    SurfaceID = 0, //default surface (undefined surface type) will be modified by autoscheduling
+                    TeamIDs = bye
+                });
+                matches.Add(createdMatch);
+                byeMatchIDs.Add(createdMatch.ID);
+            }
+
+            // assign bracket information
+            int currentRoundNumber = 0;
+            int currentRoundOf = (teamPairings.Count() + byePairings.Count()) * 4; //2 * 2 since we handle BOTH buy in and round 1
+
+
+
+
+
             return new EliminationRound
             {
-                TeamsInNextRound = teamPairings.Count() - byeTeams.Count(),
+                TeamsInNextRound = teamPairings.Count() + byePairings.Count(),
                 Match = matches
             };
         }
