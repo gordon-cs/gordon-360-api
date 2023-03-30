@@ -62,6 +62,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Mailboxes> Mailboxes { get; set; }
         public virtual DbSet<Majors> Majors { get; set; }
         public virtual DbSet<Match> Match { get; set; }
+        public virtual DbSet<MatchBracket> MatchBracket { get; set; }
         public virtual DbSet<MatchParticipant> MatchParticipant { get; set; }
         public virtual DbSet<MatchStatus> MatchStatus { get; set; }
         public virtual DbSet<MatchTeam> MatchTeam { get; set; }
@@ -446,6 +447,15 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.SurfaceID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Match_Surface");
+            });
+
+            modelBuilder.Entity<MatchBracket>(entity =>
+            {
+                entity.HasOne(d => d.Match)
+                    .WithMany()
+                    .HasForeignKey(d => d.MatchID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_MatchBracket_Match");
             });
 
             modelBuilder.Entity<MatchParticipant>(entity =>
