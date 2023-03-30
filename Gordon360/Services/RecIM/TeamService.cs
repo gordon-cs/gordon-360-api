@@ -334,8 +334,6 @@ namespace Gordon360.Services.RecIM
             foreach(var mt in team.MatchTeam)
                 mt.StatusID = 0;
 
-            foreach(var st in team.SeriesTeam)
-                _context.SeriesTeam.Remove(st);
 
             await _context.SaveChangesAsync();
 
