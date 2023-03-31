@@ -13,6 +13,7 @@ namespace Gordon360.Models.CCT
         public Housing_Applications()
         {
             Housing_Applicants = new HashSet<Housing_Applicants>();
+            Housing_HallChoices = new HashSet<Housing_HallChoices>();
         }
 
         [Key]
@@ -28,5 +29,7 @@ namespace Gordon360.Models.CCT
 
         [InverseProperty("HousingApp")]
         public virtual ICollection<Housing_Applicants> Housing_Applicants { get; set; }
+        [InverseProperty("HousingApp")]
+        public virtual ICollection<Housing_HallChoices> Housing_HallChoices { get; set; }
     }
 }

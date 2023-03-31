@@ -468,7 +468,7 @@ namespace Gordon360.Authorization
                             var sess_cde = Helpers.GetCurrentSession(_CCTContext);
                             var housingService = new HousingService(_CCTContext);
                             int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
-                            if (!applicationID.HasValue)
+                            if (!applicationID.HasValue || applicationID == 0)
                             {
                                 return true;
                             }

@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels
     public class ApartmentApplicantViewModel
     {
         public int? ApplicationID { get; set; }
-        public PublicStudentProfileViewModel Profile { get; set; }
+        public PublicStudentProfileViewModel? Profile { get; set; }
         private string _username;
         public string Username
         {
