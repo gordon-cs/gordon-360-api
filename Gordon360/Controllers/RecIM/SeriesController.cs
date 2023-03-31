@@ -157,5 +157,17 @@ namespace Gordon360.Controllers.RecIM
             }
             return Ok(createdMatches);
         }
+
+        /// <summary>
+        /// Gets available bracket information for a givaen series
+        /// </summary>
+        /// <param name="seriesID"></param>
+        [HttpGet]
+        [Route("{seriesID}/bracket")]
+        public async Task<ActionResult<IEnumerable<MatchViewModel>>> GetBracket(int seriesID)
+        {
+            var res = _seriesService.GetSeriesBracketInformation(seriesID);
+            return Ok(res);
+        }
     }
 }

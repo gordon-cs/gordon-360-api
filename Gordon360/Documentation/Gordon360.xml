@@ -918,6 +918,12 @@
             <param name="seriesID"></param>
             <param name="request">optional request data, used for additional options on autoscheduling</param>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetBracket(System.Int32)">
+            <summary>
+            Gets available bracket information for a givaen series
+            </summary>
+            <param name="seriesID"></param>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
             <summary>
             Fetches all Sports in the RecIM database
