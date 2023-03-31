@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Keyless]
-    [Table("Housing_HallChoices", Schema = "dbo")]
+    [Index("HousingAppID", Name = "IX_Housing_HallChoices")]
     public partial class Housing_HallChoices
     {
+        [Key]
+        public long HallChoiceID { get; set; }
         public int HousingAppID { get; set; }
         public int Ranking { get; set; }
         [Required]
@@ -20,6 +21,7 @@ namespace Gordon360.Models.CCT
         public string HallName { get; set; }
 
         [ForeignKey("HousingAppID")]
+        [InverseProperty("Housing_HallChoices")]
         public virtual Housing_Applications HousingApp { get; set; }
     }
 }
