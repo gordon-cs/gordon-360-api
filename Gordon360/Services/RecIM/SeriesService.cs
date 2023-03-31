@@ -662,7 +662,8 @@ namespace Gordon360.Services.RecIM
             foreach (int teamID in byeTeams)
                 fullBye.Add(new List<int> { teamID });
 
-            var playInMatchIDs = new List<int>();
+
+            var playInMatches = new List<MatchViewModel>();
             foreach (var teamPair in teamPairings)
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
@@ -673,10 +674,10 @@ namespace Gordon360.Services.RecIM
                     TeamIDs = teamPair
                 });
                 matches.Add(createdMatch);
-                playInMatchIDs.Add(createdMatch.ID);
+                playInMatches.Add(createdMatch);
             }
 
-            var byePairsMatchIDs = new List<int>();
+            var byePairMatches = new List<MatchViewModel>();
             foreach (var teamPair in byePairings)
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
@@ -687,10 +688,11 @@ namespace Gordon360.Services.RecIM
                     TeamIDs = teamPair
                 });
                 matches.Add(createdMatch);
-                byePairsMatchIDs.Add(createdMatch.ID);
+                byePairMatches.Add(new MatchViewModel());
+                byePairMatches.Add(new MatchViewModel());
             }
 
-            var byeMatchIDs = new List<int>();
+            var fullByeMatches = new List<MatchViewModel>();
             foreach (var bye in fullBye)
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
@@ -701,15 +703,15 @@ namespace Gordon360.Services.RecIM
                     TeamIDs = bye
                 });
                 matches.Add(createdMatch);
-                byeMatchIDs.Add(createdMatch.ID);
+                fullByeMatches.Add(new MatchViewModel());
             }
 
             // assign bracket information
             int currentRoundNumber = 0;
             int currentRoundOf = (teamPairings.Count() + byePairings.Count()) * 4; //2 * 2 since we handle BOTH buy in and round 1
-
-
-
+            int matchSeed = 0;
+            List<MatchViewModel> allMatches = fullByeMatches.Concat(byePairMatches.Concat(playInMatches)).ToList();
+            CreateEliminationBracket(allMatches, 0);
 
 
             return new EliminationRound
@@ -717,6 +719,42 @@ namespace Gordon360.Services.RecIM
                 TeamsInNextRound = teamPairings.Count() + byePairings.Count(),
                 Match = matches
             };
+        }
+
+        private async void CreateEliminationBracket(List<MatchViewModel> matches, int roundNumber)
+        {
+            int rounds = (int)Math.Log(matches.Count(), 2)-1;
+            var matchArr = matches.ToArray();
+            var matchIndexes = new List<int> {  0, 1 };
+
+            for(int i = 0; i < rounds; i++)
+            {
+                var temp = new List<int>();
+                var newLength = matchIndexes.Count() * 2 - 1;
+                foreach (int index in matchIndexes)
+                {
+                    temp.Add(index);
+                    temp.Add(newLength - index);
+                }
+                matchIndexes = temp;
+            }
+            var indexArr = matchIndexes.ToArray();
+            int j = 0;
+            foreach(MatchViewModel match in matchArr)
+            {
+                if (match.ID != 0)
+                    await _context.MatchBracket.AddAsync(new MatchBracket()
+                    {
+                        MatchID = match.ID,
+                        RoundNumber = roundNumber,
+                        RoundOf = matchArr.Length * 2,
+                        SeedIndex = indexArr[j],
+                        IsLosers = false //Double elimination not handled yet
+                    });
+                j++;
+            }
+            await _context.SaveChangesAsync();
+
         }
 
         public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)
