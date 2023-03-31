@@ -451,9 +451,11 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<MatchBracket>(entity =>
             {
+                entity.Property(e => e.MatchID).ValueGeneratedNever();
+
                 entity.HasOne(d => d.Match)
-                    .WithMany()
-                    .HasForeignKey(d => d.MatchID)
+                    .WithOne(p => p.MatchBracket)
+                    .HasForeignKey<MatchBracket>(d => d.MatchID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_MatchBracket_Match");
             });

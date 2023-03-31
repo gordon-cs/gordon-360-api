@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Keyless]
     [Table("MatchBracket", Schema = "RecIM")]
     public partial class MatchBracket
     {
+        [Key]
         public int MatchID { get; set; }
         public int RoundNumber { get; set; }
         public int RoundOf { get; set; }
@@ -19,6 +19,7 @@ namespace Gordon360.Models.CCT
         public bool IsLosers { get; set; }
 
         [ForeignKey("MatchID")]
+        [InverseProperty("MatchBracket")]
         public virtual Match Match { get; set; }
     }
 }
