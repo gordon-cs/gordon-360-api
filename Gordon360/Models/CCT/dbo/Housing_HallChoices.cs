@@ -19,9 +19,5 @@ namespace Gordon360.Models.CCT
         [StringLength(15)]
         [Unicode(false)]
         public string HallName { get; set; }
-
-        [ForeignKey("HousingAppID")]
-        [InverseProperty("Housing_HallChoices")]
-        public virtual Housing_Applications HousingApp { get; set; }
     }
 }
