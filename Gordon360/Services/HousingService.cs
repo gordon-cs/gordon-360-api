@@ -5,6 +5,8 @@ using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gordon360.Authorization;
+using Gordon360.Enums;
 
 namespace Gordon360.Services
 {
@@ -25,7 +27,7 @@ namespace Gordon360.Services
         /// <returns> Whether or not the user is on the staff whitelist </returns>
         public bool CheckIfHousingAdmin(string username)
         {
-            return false;
+            return AuthUtils.GetGroups(username).Contains(AuthGroup.HousingAdmin);
         }
 
         /// <summary>
