@@ -265,14 +265,6 @@ namespace Gordon360.Models.CCT.Context
                     .HasConstraintName("FK_Applicants_HousingAppID");
             });
 
-            modelBuilder.Entity<Housing_HallChoices>(entity =>
-            {
-                entity.HasOne(d => d.HousingApp)
-                    .WithMany()
-                    .HasForeignKey(d => d.HousingAppID)
-                    .HasConstraintName("FK_HallChoices_HousingAppID");
-            });
-
             modelBuilder.Entity<Information_Change_Request>(entity =>
             {
                 entity.Property(e => e.TimeStamp).HasDefaultValueSql("(getdate())");
