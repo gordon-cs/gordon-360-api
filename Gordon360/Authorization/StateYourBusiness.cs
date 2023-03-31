@@ -16,6 +16,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Extensions.System;
 using static Gordon360.Services.MembershipService;
 using Gordon360.Enums;
+using Microsoft.VisualBasic;
 
 namespace Gordon360.Authorization
 {
@@ -62,6 +63,7 @@ namespace Gordon360.Authorization
             _membershipService = context.HttpContext.RequestServices.GetRequiredService<IMembershipService>();
             _membershipRequestService = context.HttpContext.RequestServices.GetRequiredService<IMembershipRequestService>();
             _newsService = context.HttpContext.RequestServices.GetRequiredService<INewsService>();
+            _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
