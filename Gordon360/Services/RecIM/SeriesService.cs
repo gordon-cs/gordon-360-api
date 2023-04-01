@@ -574,7 +574,7 @@ namespace Gordon360.Services.RecIM
                 surfaceIndex++;
             }
             //create matches for remaining rounds 
-            int roundNumber = 3; //scheduleElimRound will auto schedule the first 2 rounds for bracketing
+            int roundNumber = 2; //scheduleElimRound will auto schedule the first 2 rounds for bracketing
             while (teamsInNextRound > 1)
             {
                 //reset between rounds + prime the pump from first round
@@ -619,7 +619,7 @@ namespace Gordon360.Services.RecIM
                         IsLosers = false //Double elimination not handled yet
                     };
                     await _context.MatchBracket.AddAsync(matchBracketPlacement);
-
+                    await _context.SaveChangesAsync();
                     surfaceIndex++;
                 }
                 roundNumber++;
@@ -685,6 +685,7 @@ namespace Gordon360.Services.RecIM
 
 
             // Play-in matches, need to be created first in order for scheduling times
+           teamPairings.Reverse();
             var playInMatches = new List<int>();
             foreach (var teamPair in teamPairings)
             {
@@ -784,16 +785,16 @@ namespace Gordon360.Services.RecIM
             }
             var indexArr = matchIndexes.ToArray();
             int j = 0;
-            foreach(int ID in matchArr)
+            foreach(int i in indexArr)
             {
-                if (ID != 0)
+                if (matchArr[i] != 0)
                 {
                     var matchBracketPlacement = new MatchBracket()
                     {
-                        MatchID = ID,
+                        MatchID = matchArr[i],
                         RoundNumber = roundNumber,
                         RoundOf = matchArr.Length * 2,
-                        SeedIndex = indexArr[j],
+                        SeedIndex = j,
                         IsLosers = false //Double elimination not handled yet
                     };
                     await _context.MatchBracket.AddAsync(matchBracketPlacement);
