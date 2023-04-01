@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace Gordon360.Services.RecIM
 {
@@ -572,7 +573,8 @@ namespace Gordon360.Services.RecIM
                 createdMatches.Add(createdMatch);
                 surfaceIndex++;
             }
-            //create matches for remaining rounds (possible implementation of including round number optional field)
+            //create matches for remaining rounds 
+            int roundNumber = 3; //scheduleElimRound will auto schedule the first 2 rounds for bracketing
             while (teamsInNextRound > 1)
             {
                 //reset between rounds + prime the pump from first round
@@ -607,8 +609,20 @@ namespace Gordon360.Services.RecIM
                         TeamIDs = new List<int>().AsEnumerable() //no teams
                     });
                     createdMatches.Add(createdMatch);
+
+                    var matchBracketPlacement = new MatchBracket()
+                    {
+                        MatchID = createdMatch.ID,
+                        RoundNumber = roundNumber,
+                        RoundOf = teamsInNextRound,
+                        SeedIndex = i,
+                        IsLosers = false //Double elimination not handled yet
+                    };
+                    await _context.MatchBracket.AddAsync(matchBracketPlacement);
+
                     surfaceIndex++;
                 }
+                roundNumber++;
                 teamsInNextRound /= 2;
             }
             return createdMatches;
@@ -738,18 +752,19 @@ namespace Gordon360.Services.RecIM
             List<int> allMatches = fullByeMatches.Concat(byePairMatches.Concat(playInMatches)).ToList();
 
             // bracket place first round
-            CreateEliminationBracket(allMatches, 0);
+            await CreateEliminationBracket(allMatches, 0);
             // bracket place second round
+            await CreateEliminationBracket(secondRoundMatches, 1);
 
             return new EliminationRound
             {
-                TeamsInNextRound = teamPairings.Count() + byePairings.Count(),
+                TeamsInNextRound = allMatches.Count()/2,
                 NumByeTeams = numByes,
                 Match = matches
             };
         }
 
-        private async IEnumerable<MatchBracketViewModel> CreateEliminationBracket(List<int> matchesIDs, int roundNumber)
+        private async Task<IEnumerable<MatchBracketViewModel>> CreateEliminationBracket(List<int> matchesIDs, int roundNumber)
         {
             var res = new List<MatchBracketViewModel>();
             int rounds = (int)Math.Log(matchesIDs.Count(), 2)-1;
@@ -773,21 +788,21 @@ namespace Gordon360.Services.RecIM
             {
                 if (ID != 0)
                 {
-                    var matchBracketPlacement = await _context.MatchBracket.AddAsync(new MatchBracket()
-                        {
-                            MatchID = ID,
-                            RoundNumber = roundNumber,
-                            RoundOf = matchArr.Length * 2,
-                            SeedIndex = indexArr[j],
-                            IsLosers = false //Double elimination not handled yet
-                        });
+                    var matchBracketPlacement = new MatchBracket()
+                    {
+                        MatchID = ID,
+                        RoundNumber = roundNumber,
+                        RoundOf = matchArr.Length * 2,
+                        SeedIndex = indexArr[j],
+                        IsLosers = false //Double elimination not handled yet
+                    };
+                    await _context.MatchBracket.AddAsync(matchBracketPlacement);
                     res.Add(matchBracketPlacement);
                 }
-                   
                 j++;
             }
             await _context.SaveChangesAsync();
-
+            return res;
         }
 
         public IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID)
