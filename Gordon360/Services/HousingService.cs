@@ -41,7 +41,8 @@ namespace Gordon360.Services
             try
             {
                 var result = _context.Housing_Applications.Remove(new Housing_Applications { HousingAppID = applicationID });
-                return result == null;
+                _context.SaveChanges();
+                return true;
             }
             catch
             {
