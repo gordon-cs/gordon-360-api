@@ -698,6 +698,13 @@
             <param name="participationTypes">Optional participation type. If passed, only memberships of those participation types will be inlcuded</param>
             <returns>The membership information that the student is a part of</returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetMembershipHistory(System.String)">
+            <summary>
+            Fetch the history of a user's memberships
+            </summary>
+            <param name="username">The Student Username</param>
+            <returns>The history of that user's membership in involvements</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.Boolean})">
             <summary>Gets a list of all Activities by parameter </summary>
             <param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
@@ -910,6 +917,12 @@
             </summary>
             <param name="seriesID"></param>
             <param name="request">optional request data, used for additional options on autoscheduling</param>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetBracket(System.Int32)">
+            <summary>
+            Gets available bracket information for a givaen series
+            </summary>
+            <param name="seriesID"></param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
             <summary>
@@ -1381,6 +1394,14 @@
             <param name="firstnameSearch">The first name of the search input to match against</param>
             <param name="lastnameSearch">The last name of the search input to match against</param>
             <returns>The match key if first and last name both matched a field, or <c>null</c></returns>
+        </member>
+        <member name="M:Gordon360.Models.ViewModels.StudentNewsViewModel.From(Gordon360.Models.MyGordon.StudentNews,Gordon360.Models.MyGordon.StudentNewsCategory)">
+            <summary>
+            Returns StudentNewsViewModel from StudentNews and StudentNewsCategory
+            </summary>
+            <param name="sn">The StudentNews table</param>
+            <param name="snc">The StudentNewsCategory table</param>
+            <returns> StudentNewsViewModel </returns>
         </member>
         <member name="T:Gordon360.Services.AcademicCheckInService">
             <summary>
@@ -2075,6 +2096,14 @@
             <param name="membershipId">The MEMBERSHIP to match on MembershipID</param>	
             <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
         </member>
+        <member name="M:Gordon360.Services.MembershipService.RemovePrivateMemberships(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.MembershipView},System.String)">
+            <summary>
+            Filters out memberships that are private with respect to the given viewer
+            </summary>
+            <param name="memberships">Enumerable of memberships to filter</param>
+            <param name="viewerUsername">username of viewer</param>
+            <returns>The membership enumerable with private memberships removed</returns>
+        </member>
         <member name="T:Gordon360.Services.MyScheduleService">
             <summary>
             Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
@@ -2549,4 +2578,3 @@
         </member>
     </members>
 </doc>
-

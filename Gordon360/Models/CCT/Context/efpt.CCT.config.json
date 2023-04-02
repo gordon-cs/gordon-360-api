@@ -151,6 +151,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[RecIM].[MatchBracket]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[MatchParticipant]",
          "ObjectType": 0
       },

@@ -8,10 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
-using Microsoft.Graph;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.TermStore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Gordon360.Utilities;
@@ -337,6 +333,7 @@ namespace Gordon360.Services.RecIM
 
             foreach(var mt in team.MatchTeam)
                 mt.StatusID = 0;
+
 
             await _context.SaveChangesAsync();
 

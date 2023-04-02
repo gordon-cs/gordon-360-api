@@ -7,6 +7,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     public class EliminationRound
     {
         public int TeamsInNextRound { get; set; }
+        public int NumByeTeams { get; set; }
         public IEnumerable<MatchViewModel> Match { get; set; }
 
     }

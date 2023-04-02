@@ -332,6 +332,7 @@ namespace Gordon360.Services
             Task<SeriesViewModel> DeleteSeriesCascadeAsync(int seriesID);
             Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request);
             SeriesScheduleViewModel GetSeriesScheduleByID(int seriesID);
+            IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID);
         }
 
         public interface ITeamService

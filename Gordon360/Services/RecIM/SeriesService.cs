@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace Gordon360.Services.RecIM
 {
@@ -123,20 +124,21 @@ namespace Gordon360.Services.RecIM
             if (referenceSeriesID is null)
             {
                 teams = _context.Team
-                        .Where(t => t.ActivityID == series.ActivityID)
+                        .Where(t => t.ActivityID == series.ActivityID && t.StatusID != 0)
                         .Select(t => t.ID)
                         .AsEnumerable();
             }
             else
             {
                 teams = _context.SeriesTeam
-                                .Where(st => st.SeriesID == referenceSeriesID)
+                                .Include(s => s.Team)
+                                .Where(st => st.SeriesID == referenceSeriesID && st.Team.StatusID != 0)
                                 .OrderByDescending(st => st.WinCount)
                                 .Select(st => st.TeamID);
             }
-            if (newSeries.NumberOfTeamsAdmitted is not null)
+            if (newSeries.NumberOfTeamsAdmitted is int topTeams)
             {
-                teams = teams.Take(newSeries.NumberOfTeamsAdmitted ?? 0);//will never be null after the if check but 0 is to silence error
+                teams = teams.Take(topTeams);
             }
 
             await CreateSeriesTeamMappingAsync(teams, series.ID);
@@ -571,7 +573,8 @@ namespace Gordon360.Services.RecIM
                 createdMatches.Add(createdMatch);
                 surfaceIndex++;
             }
-            //create matches for remaining rounds (possible implementation of including round number optional field)
+            //create matches for remaining rounds 
+            int roundNumber = 2; //scheduleElimRound will auto schedule the first 2 rounds for bracketing
             while (teamsInNextRound > 1)
             {
                 //reset between rounds + prime the pump from first round
@@ -606,8 +609,20 @@ namespace Gordon360.Services.RecIM
                         TeamIDs = new List<int>().AsEnumerable() //no teams
                     });
                     createdMatches.Add(createdMatch);
+
+                    var matchBracketPlacement = new MatchBracket()
+                    {
+                        MatchID = createdMatch.ID,
+                        RoundNumber = roundNumber,
+                        RoundOf = teamsInNextRound,
+                        SeedIndex = i,
+                        IsLosers = false //Double elimination not handled yet
+                    };
+                    await _context.MatchBracket.AddAsync(matchBracketPlacement);
+                    await _context.SaveChangesAsync();
                     surfaceIndex++;
                 }
+                roundNumber++;
                 teamsInNextRound /= 2;
             }
             return createdMatches;
@@ -647,16 +662,31 @@ namespace Gordon360.Services.RecIM
 
             // logic for handling bye teams that play another buy team in the next round
             var teamPairings = EliminationRoundTeamPairsAsync(teams).ToList();
-            while (teamPairings.Count() < byeTeams.Count())
-            {
-                var byePair = byeTeams.TakeLast(2);
-                teamPairings.Add(new List<int> { byePair.First(), byePair.Last() });
-                byeTeams.Remove(byePair.First());
-                byeTeams.Remove(byePair.Last());
-            }
-            foreach (int teamID in byeTeams)
-                teamPairings.Add(new List<int> { teamID });
+            var byePairings = new List<List<int>>();
+            var fullBye = new List<List<int>>();
+            var secondRoundPlayInPairs = new List<List<int>>();
 
+            if (teamPairings.Count() + byePairings.Count() < byeTeams.Count())
+                while (teamPairings.Count() + byePairings.Count() < byeTeams.Count())
+                {
+                    var byePair = byeTeams.TakeLast(2);
+                    byePairings.Add(new List<int> { byePair.First(), byePair.Last() });
+                    byeTeams.Remove(byePair.First());
+                    byeTeams.Remove(byePair.Last());
+                }
+            else
+                for (int i = 0; i < (teamPairings.Count() - byeTeams.Count) / 2; i++)
+                    secondRoundPlayInPairs.Add(new List<int>());
+
+
+
+            foreach (int teamID in byeTeams)
+                fullBye.Add(new List<int> { teamID });
+
+
+            // Play-in matches, need to be created first in order for scheduling times
+           teamPairings.Reverse();
+            var playInMatches = new List<int>();
             foreach (var teamPair in teamPairings)
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
@@ -667,12 +697,118 @@ namespace Gordon360.Services.RecIM
                     TeamIDs = teamPair
                 });
                 matches.Add(createdMatch);
+                playInMatches.Add(createdMatch.ID);
             }
+
+
+            // Full bye matches (no pair, waiting for winner of play-in) second in order for bracket ordering
+            var fullByeMatches = new List<int>();
+            var secondRoundMatches = new List<int>();
+            foreach (var bye in fullBye)
+            {
+                var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                {
+                    StartTime = series.StartDate, //default time, will be modified by autoscheduling
+                    SeriesID = series.ID,
+                    SurfaceID = 0, //default surface (undefined surface type) will be modified by autoscheduling
+                    TeamIDs = bye
+                });
+                matches.Add(createdMatch);
+                fullByeMatches.Add(0);
+                secondRoundMatches.Add(createdMatch.ID);
+            }
+
+            // Bye pair matches, consisting of purely pairs of teams in the "second round" who both had byes, 3rd in order for bracket ordering
+            var byePairMatches = new List<int>();
+            foreach (var teamPair in byePairings)
+            {
+                var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                {
+                    StartTime = series.StartDate, //default time, will be modified by autoscheduling
+                    SeriesID = series.ID,
+                    SurfaceID = 0, //default surface (undefined surface type) will be modified by autoscheduling
+                    TeamIDs = teamPair
+                });
+                matches.Add(createdMatch);
+                byePairMatches.Add(0);
+                byePairMatches.Add(0);
+                secondRoundMatches.Add(createdMatch.ID);
+            }
+
+            // Empty pairs, only happens if number of teams is greater than 24, where play-in matches outnumber bye matches. Last in order for bracket ordering.
+            foreach (var emtpyMatchPair in secondRoundPlayInPairs)
+            {
+                var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                {
+                    StartTime = series.StartDate, //default time, will be modified by autoscheduling
+                    SeriesID = series.ID,
+                    SurfaceID = 0, //default surface (undefined surface type) will be modified by autoscheduling
+                    TeamIDs = emtpyMatchPair
+                });
+                matches.Add(createdMatch);
+                secondRoundMatches.Add(createdMatch.ID);
+            }
+
+            // assign bracket information
+            List<int> allMatches = fullByeMatches.Concat(byePairMatches.Concat(playInMatches)).ToList();
+
+            // bracket place first round
+            await CreateEliminationBracket(allMatches, 0);
+            // bracket place second round
+            await CreateEliminationBracket(secondRoundMatches, 1);
+
             return new EliminationRound
             {
-                TeamsInNextRound = teamPairings.Count() - byeTeams.Count(),
+                TeamsInNextRound = allMatches.Count()/2,
+                NumByeTeams = numByes,
                 Match = matches
             };
+        }
+
+        private async Task<IEnumerable<MatchBracketViewModel>> CreateEliminationBracket(List<int> matchesIDs, int roundNumber)
+        {
+            var res = new List<MatchBracketViewModel>();
+            int rounds = (int)Math.Log(matchesIDs.Count(), 2)-1;
+            var matchArr = matchesIDs.ToArray();
+            var matchIndexes = new List<int> {  0, 1 };
+
+            for(int i = 0; i < rounds; i++)
+            {
+                var temp = new List<int>();
+                var newLength = matchIndexes.Count() * 2 - 1;
+                foreach (int index in matchIndexes)
+                {
+                    temp.Add(index);
+                    temp.Add(newLength - index);
+                }
+                matchIndexes = temp;
+            }
+            var indexArr = matchIndexes.ToArray();
+            int j = 0;
+            foreach(int i in indexArr)
+            {
+                if (matchArr[i] != 0)
+                {
+                    var matchBracketPlacement = new MatchBracket()
+                    {
+                        MatchID = matchArr[i],
+                        RoundNumber = roundNumber,
+                        RoundOf = matchArr.Length * 2,
+                        SeedIndex = j,
+                        IsLosers = false //Double elimination not handled yet
+                    };
+                    await _context.MatchBracket.AddAsync(matchBracketPlacement);
+                    res.Add(matchBracketPlacement);
+                }
+                j++;
+            }
+            await _context.SaveChangesAsync();
+            return res;
+        }
+
+        public IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID)
+        {
+            return _context.Match.Include(m => m.MatchBracket).Where(m => m.SeriesID == seriesID).Select(m => (MatchBracketViewModel) m.MatchBracket);
         }
 
         public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)
