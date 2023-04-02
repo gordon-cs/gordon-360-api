@@ -114,27 +114,21 @@ namespace Gordon360.Services.RecIM
  
         public MatchExtendedViewModel GetMatchByID(int matchID)
         {
+
             var match = _context.Match
-                .Include(m => m.Series)
-                    .ThenInclude(m => m.Activity)
-                        .ThenInclude(m => m.Team)
-                            .ThenInclude(m => m.Activity)
-                .Include(m => m.MatchTeam)
-                    .ThenInclude(m => m.Match)
-                .Include(m => m.MatchTeam)
-                    .ThenInclude(m => m.Status)
-                .Include(m => m.MatchTeam)
-                    .ThenInclude(m => m.Team) 
-                        .ThenInclude(m => m.Status)
-                .Include(m => m.MatchTeam)
-                    .ThenInclude(m => m.Team)
-                        .ThenInclude(m => m.SeriesTeam)
                 .Where(m => m.ID == matchID && m.StatusID != 0)
                 .Select(m => new MatchExtendedViewModel
                 {
                     ID = matchID,
                     Scores = m.MatchTeam.Where(mt => mt.StatusID != 0)
-                        .Select(mt => (TeamMatchHistoryViewModel)mt)
+                        .Select(mt => new TeamMatchHistoryViewModel()
+                        {
+                            TeamID = mt.TeamID,
+                            MatchID = mt.MatchID,
+                            TeamScore = mt.Score,
+                            Status = mt.Status.Description,
+                            SportsmanshipScore = mt.SportsmanshipScore
+                        })
                         .AsEnumerable(),
                     StartTime = m.StartTime.SpecifyUtc(),
                     Surface = m.Surface.Name,
@@ -146,8 +140,6 @@ namespace Gordon360.Services.RecIM
                         }).AsEnumerable(),
                     
                     Series = _context.Series
-                        .Include(s => s.SeriesTeam)
-                            .ThenInclude(s => s.Team)
                         .Where(s => s.ID == m.SeriesID)
                         .Select(s => new SeriesExtendedViewModel
                         {
@@ -155,7 +147,15 @@ namespace Gordon360.Services.RecIM
                             Name = s.Name,
                             Type = s.Type.Description,
                             TeamStanding = s.SeriesTeam.Where(st => st.Team.StatusID != 0)
-                            .Select(st => (TeamRecordViewModel)st)
+                            .Select(
+                                st => new TeamRecordViewModel()
+                                {
+                                    SeriesID = st.SeriesID,
+                                    TeamID = st.TeamID,
+                                    Name = st.Team.Name,
+                                    WinCount = st.WinCount,
+                                    LossCount = st.LossCount,
+                                }),
                         }).FirstOrDefault(),
                     // Team will eventually be handled by TeamService 
                     Activity = new ActivityExtendedViewModel
@@ -179,7 +179,7 @@ namespace Gordon360.Services.RecIM
                                     Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                     Role = pt.RoleType.Description
                                 }),
-                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID)
+                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && mt.Match.StatusID == 6 )
                               .Join(
                                     _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
                                     own_mt => own_mt.MatchID,
@@ -201,7 +201,15 @@ namespace Gordon360.Services.RecIM
                                     }
                                 ),
 
-                            TeamRecord = mt.Team.SeriesTeam.Select(st => (TeamRecordViewModel)st).AsEnumerable(),
+                            TeamRecord = _context.SeriesTeam.Where(st => st.TeamID == mt.TeamID).Select( 
+                                st => new TeamRecordViewModel()
+                                {
+                                    SeriesID = st.SeriesID,
+                                    TeamID = st.TeamID,
+                                    Name = st.Team.Name,
+                                    WinCount = st.WinCount,
+                                    LossCount = st.LossCount,
+                                }),
                         })
                 }).FirstOrDefault();
             return match;
