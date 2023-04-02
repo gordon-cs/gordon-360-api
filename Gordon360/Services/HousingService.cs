@@ -41,7 +41,8 @@ namespace Gordon360.Services
             try
             {
                 var result = _context.Housing_Applications.Remove(new Housing_Applications { HousingAppID = applicationID });
-                return result == null;
+                _context.SaveChanges();
+                return true;
             }
             catch
             {
@@ -238,7 +239,7 @@ namespace Gordon360.Services
                 var applicantResult = _context.Housing_Applicants.Add(new Housing_Applicants
                 {
                     HousingAppID = applicationID,
-                    Username = username,
+                    Username = applicant.Username,
                     SESS_CDE = sess_cde,
                     AprtProgram = applicant.OffCampusProgram ?? ""
                 });
