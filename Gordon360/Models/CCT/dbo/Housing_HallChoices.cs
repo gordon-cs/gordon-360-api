@@ -12,7 +12,7 @@ namespace Gordon360.Models.CCT
     public partial class Housing_HallChoices
     {
         [Key]
-        public long HallChoiceID { get; set; }
+        public int HallChoiceID { get; set; }
         public int HousingAppID { get; set; }
         public int Ranking { get; set; }
         [Required]
