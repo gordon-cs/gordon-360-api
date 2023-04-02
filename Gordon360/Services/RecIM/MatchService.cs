@@ -179,8 +179,10 @@ namespace Gordon360.Services.RecIM
                                     Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                     Role = pt.RoleType.Description
                                 }),
-                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && mt.Match.StatusID == 6 )
-                              .Join(
+                            MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && _mt.Match.StatusID == 6)
+                                .OrderByDescending(mt => mt.Match.StartTime)
+                                .Take(5)
+                                .Join(
                                     _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
                                     own_mt => own_mt.MatchID,
                                     other_mt => other_mt.MatchID,
@@ -219,11 +221,11 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<MatchExtendedViewModel> GetMatchesBySeriesID(int seriesID)
         {
             var matches = _context.Match
+                .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
                 .Include(m => m.MatchTeam)
                     .ThenInclude(m => m.Match)
                 .Include(m => m.MatchTeam)
                     .ThenInclude(m => m.Status)
-                .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
                 .Select(m => new MatchExtendedViewModel
                 {
                     ID = m.ID,
