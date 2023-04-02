@@ -239,7 +239,7 @@ namespace Gordon360.Services
                 var applicantResult = _context.Housing_Applicants.Add(new Housing_Applicants
                 {
                     HousingAppID = applicationID,
-                    Username = username,
+                    Username = applicant.Username,
                     SESS_CDE = sess_cde,
                     AprtProgram = applicant.OffCampusProgram ?? ""
                 });
