@@ -1002,6 +1002,14 @@
             <param name="lastnameSearch">The last name of the search input to match against</param>
             <returns>The match key if first and last name both matched a field, or <c>null</c></returns>
         </member>
+        <member name="M:Gordon360.Models.ViewModels.StudentNewsViewModel.From(Gordon360.Models.MyGordon.StudentNews,Gordon360.Models.MyGordon.StudentNewsCategory)">
+            <summary>
+            Returns StudentNewsViewModel from StudentNews and StudentNewsCategory
+            </summary>
+            <param name="sn">The StudentNews table</param>
+            <param name="snc">The StudentNewsCategory table</param>
+            <returns> StudentNewsViewModel </returns>
+        </member>
         <member name="T:Gordon360.Services.AcademicCheckInService">
             <summary>
             Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
@@ -1694,6 +1702,14 @@
             </summary>
             <param name="membershipId">The MEMBERSHIP to match on MembershipID</param>	
             <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.RemovePrivateMemberships(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.MembershipView},System.String)">
+            <summary>
+            Filters out memberships that are private with respect to the given viewer
+            </summary>
+            <param name="memberships">Enumerable of memberships to filter</param>
+            <param name="viewerUsername">username of viewer</param>
+            <returns>The membership enumerable with private memberships removed</returns>
         </member>
         <member name="T:Gordon360.Services.MyScheduleService">
             <summary>
