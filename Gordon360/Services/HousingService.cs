@@ -506,18 +506,18 @@ namespace Gordon360.Services
         /// <returns>Array of ApartmentApplicationViewModels</returns>
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            var enumerable = _context.Housing_Applications.AsEnumerable();
+            var applications = _context.Housing_Applications.AsEnumerable();
             var currentSession = Helpers.GetCurrentSession(_context);
 
             // TO DO: Refactor Housing App so that the application itself is connected
             //    to a session rather than the applicants!
-            enumerable = enumerable.Where(a => _context.Housing_Applicants.Where(
+            applications = applications.Where(a => _context.Housing_Applicants.Where(
                 apl => apl.HousingAppID == a.HousingAppID
             ).Any(
                 apl => apl.SESS_CDE == currentSession
             ));
 
-            return enumerable.Select(a => GetApartmentApplication(a.HousingAppID, true)).ToArray();
+            return applications.Select(a => GetApartmentApplication(a.HousingAppID, true)).ToArray();
         }
 
         /// <summary>
