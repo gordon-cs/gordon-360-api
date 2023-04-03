@@ -23,7 +23,7 @@ namespace Gordon360.Models.ViewModels
         public List<ApartmentApplicantViewModel> Applicants { get; set; }
         public List<ApartmentChoiceViewModel> ApartmentChoices { get; set; }
         public int TotalPoints { get { return Applicants?.Sum(applicant => applicant.Points) ?? 0; } }
-        public double AvgPoints { get { return Applicants?.Average(applicant => applicant.Points) ?? 0; } }
+        public double AvgPoints { get { return Math.Round(Applicants?.Average(applicant => applicant.Points) ?? 0, 2); } }
 
         public static implicit operator ApartmentApplicationViewModel(Housing_Applications application) => new ApartmentApplicationViewModel
         {

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Authorization;
 using Gordon360.Enums;
+using Gordon360.Static.Methods;
 
 namespace Gordon360.Services
 {
@@ -505,7 +506,18 @@ namespace Gordon360.Services
         /// <returns>Array of ApartmentApplicationViewModels</returns>
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            return _context.Housing_Applications.AsEnumerable().Select(a => GetApartmentApplication(a.HousingAppID, true)).ToArray();
+            var enumerable = _context.Housing_Applications.AsEnumerable();
+            var currentSession = Helpers.GetCurrentSession(_context);
+
+            // TO DO: Refactor Housing App so that the application itself is connected
+            //    to a session rather than the applicants!
+            enumerable = enumerable.Where(a => _context.Housing_Applicants.Where(
+                apl => apl.HousingAppID == a.HousingAppID
+            ).Any(
+                apl => apl.SESS_CDE == currentSession
+            ));
+
+            return enumerable.Select(a => GetApartmentApplication(a.HousingAppID, true)).ToArray();
         }
 
         /// <summary>
