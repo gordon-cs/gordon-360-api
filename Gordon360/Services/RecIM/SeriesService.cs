@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
-using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace Gordon360.Services.RecIM
 {
@@ -546,7 +545,7 @@ namespace Gordon360.Services.RecIM
             var elimScheduler = await ScheduleElimRoundAsync(teams);
             int teamsInNextRound = elimScheduler.TeamsInNextRound;
             var matchIDs = elimScheduler.Match.Select(es => es.ID);
-            // int numNonBye = matchIDs.count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-buys and official bracket
+            // int numNonBye = matchIDs.count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
             foreach (var matchID in matchIDs)
             {
                 if (surfaceIndex == availableSurfaces.Length)
@@ -660,7 +659,7 @@ namespace Gordon360.Services.RecIM
                 numByes++;
             }
 
-            // logic for handling bye teams that play another buy team in the next round
+            // logic for handling bye teams that play another bye team in the next round
             var teamPairings = EliminationRoundTeamPairsAsync(teams).ToList();
             var byePairings = new List<List<int>>();
             var fullBye = new List<List<int>>();
@@ -679,12 +678,11 @@ namespace Gordon360.Services.RecIM
                     secondRoundPlayInPairs.Add(new List<int>());
 
 
-
             foreach (int teamID in byeTeams)
                 fullBye.Add(new List<int> { teamID });
 
 
-            // Play-in matches, need to be created first in order for scheduling times
+           // Play-in matches, need to be created first in order for scheduling times
            teamPairings.Reverse();
             var playInMatches = new List<int>();
             foreach (var teamPair in teamPairings)

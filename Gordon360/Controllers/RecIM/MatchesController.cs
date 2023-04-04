@@ -3,10 +3,8 @@ using Gordon360.Services.RecIM;
 using Gordon360.Authorization;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Gordon360.Controllers.RecIM
 {
