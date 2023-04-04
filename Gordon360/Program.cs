@@ -62,6 +62,7 @@ builder.Services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
 builder.Services.AddScoped<RecIM.ITeamService, RecIM.TeamService>();
 builder.Services.AddScoped<RecIM.IParticipantService, RecIM.ParticipantService>();
 builder.Services.AddScoped<RecIM.ISportService, RecIM.SportService>();
+builder.Services.AddScoped<RecIM.IRecIMService, RecIM.RecIMService>();
 
 builder.Services.AddMemoryCache();
 

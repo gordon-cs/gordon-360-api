@@ -734,14 +734,14 @@ namespace Gordon360.Services.RecIM
             }
 
             // Empty pairs, only happens if number of teams is greater than 24, where play-in matches outnumber bye matches. Last in order for bracket ordering.
-            foreach (var emtpyMatchPair in secondRoundPlayInPairs)
+            foreach (var emptyMatchPair in secondRoundPlayInPairs)
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                 {
                     StartTime = series.StartDate, //default time, will be modified by autoscheduling
                     SeriesID = series.ID,
                     SurfaceID = 0, //default surface (undefined surface type) will be modified by autoscheduling
-                    TeamIDs = emtpyMatchPair
+                    TeamIDs = emptyMatchPair
                 });
                 matches.Add(createdMatch);
                 secondRoundMatches.Add(createdMatch.ID);

@@ -306,6 +306,10 @@ namespace Gordon360.Services
 
     namespace RecIM
     {
+        public interface IRecIMService
+        {
+
+        }
         public interface IActivityService
         {
             IEnumerable<LookupViewModel>? GetActivityLookup(string type);
