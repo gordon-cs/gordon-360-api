@@ -232,22 +232,15 @@ namespace Gordon360.Controllers
             //get token data from context, username is the username of current logged in person
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            bool isAdmin = _housingService.CheckIfHousingAdmin(authenticatedUserIdString); // This line can be removed once the StateYourBusiness has been implemented
-            if (isAdmin) // This line can be removed once the StateYourBusiness has been implemented
+            
+            ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
+            if (result != null)
             {
-                ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                return Ok(result);
             }
-            else // This line can be removed once the StateYourBusiness has been implemented
+            else
             {
-                throw new UnauthorizedAccessException("Unauthorized to view apartment applications"); // This line can be removed once the StateYourBusiness has been implemented
+                return NotFound();
             }
         }
     }

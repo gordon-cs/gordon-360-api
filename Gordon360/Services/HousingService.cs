@@ -5,6 +5,10 @@ using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gordon360.Authorization;
+using Gordon360.Enums;
+using Gordon360.Static.Methods;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services
 {
@@ -25,7 +29,7 @@ namespace Gordon360.Services
         /// <returns> Whether or not the user is on the staff whitelist </returns>
         public bool CheckIfHousingAdmin(string username)
         {
-            return false;
+            return AuthUtils.GetGroups(username).Contains(AuthGroup.HousingAdmin);
         }
 
         /// <summary>
@@ -39,7 +43,8 @@ namespace Gordon360.Services
             try
             {
                 var result = _context.Housing_Applications.Remove(new Housing_Applications { HousingAppID = applicationID });
-                return result == null;
+                _context.SaveChanges();
+                return true;
             }
             catch
             {
@@ -107,7 +112,7 @@ namespace Gordon360.Services
         /// <returns>Returns the application ID number if all the queries succeeded</returns>
         public int SaveApplication(string sess_cde, string editorUsername, List<ApartmentApplicantViewModel> apartmentApplicants, List<ApartmentChoiceViewModel> apartmentChoices)
         {
-            if (GetApplicationID(editorUsername, sess_cde) != null)
+            if (GetApplicationID(editorUsername, sess_cde) != 0)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "An existing application ID was found for this user. Please use 'EditApplication' to update an existing application." };
             }
@@ -115,22 +120,16 @@ namespace Gordon360.Services
             // Save the application editor and time
             // If an existing application was not found for this editor, then insert a new application entry in the database
             var newAppResult = _context.Housing_Applications.Add(new Housing_Applications { DateModified = DateTime.Now, EditorUsername = editorUsername });
-            if (newAppResult == null)
+
+            _context.SaveChanges();
+
+            if (newAppResult?.Entity == null || newAppResult?.Entity?.HousingAppID == 0)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "The application could not be saved." };
             }
 
             // Retrieve the application ID number of this new application
-            int applicationID;
-            int? maybeApplicationID = GetApplicationID(editorUsername, sess_cde);
-            if (!maybeApplicationID.HasValue)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The new application ID could not be found." };
-            }
-            else
-            {
-                applicationID = maybeApplicationID.Value;
-            }
+            int applicationID = newAppResult.Entity.HousingAppID;
 
             // Save applicant
             foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
@@ -141,16 +140,20 @@ namespace Gordon360.Services
                     throw new ResourceCreationException() { ExceptionMessage = $"Applicant {applicant.Username} could not be saved." };
                 }
             }
+            _context.SaveChanges();
 
             // Save hall information
             foreach (ApartmentChoiceViewModel choice in apartmentChoices)
             {
-                var apartmentChoiceResult = _context.Housing_HallChoices.Add(new Housing_HallChoices { HousingAppID = applicationID, HallName = choice.HallName, Ranking = choice.HallRank });
+                var newHallChoice = new Housing_HallChoices { HousingAppID = applicationID, HallName = choice.HallName, Ranking = choice.HallRank };
+                var apartmentChoiceResult = _context.Housing_HallChoices.Add(newHallChoice);
                 if (apartmentChoiceResult == null)
                 {
                     throw new ResourceCreationException() { ExceptionMessage = "The apartment preference could not be saved." };
                 }
             }
+
+            _context.SaveChanges();
 
             return applicationID;
         }
@@ -238,7 +241,7 @@ namespace Gordon360.Services
                 var applicantResult = _context.Housing_Applicants.Add(new Housing_Applicants
                 {
                     HousingAppID = applicationID,
-                    Username = username,
+                    Username = applicant.Username,
                     SESS_CDE = sess_cde,
                     AprtProgram = applicant.OffCampusProgram ?? ""
                 });
@@ -504,7 +507,16 @@ namespace Gordon360.Services
         /// <returns>Array of ApartmentApplicationViewModels</returns>
         public ApartmentApplicationViewModel[] GetAllApartmentApplication()
         {
-            return _context.Housing_Applications.AsEnumerable().Select(a => GetApartmentApplication(a.HousingAppID, true)).ToArray();
+            var applications = _context.Housing_Applications.Include(a => a.Housing_Applicants).AsEnumerable();
+            var currentSession = Helpers.GetCurrentSession(_context);
+
+            // TO DO: Refactor Housing App so that the application itself is connected
+            //    to a session rather than the applicants!
+            applications = applications.Where(a => a.Housing_Applicants.Any(
+                apl => apl.SESS_CDE == currentSession
+            ));
+
+            return applications.Select(a => GetApartmentApplication(a.HousingAppID, true)).ToArray();
         }
 
         /// <summary>
