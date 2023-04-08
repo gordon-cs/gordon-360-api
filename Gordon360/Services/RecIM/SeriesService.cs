@@ -232,7 +232,13 @@ namespace Gordon360.Services.RecIM
                 foreach (var team in seriesTeams)
                 {
                     if (!update.TeamIDs.Any(id => id == team.TeamID))
+                    {
+                        // error check (if teams that being removed are already in a match, block the patch
+                        if (_context.MatchTeam.Where(mt => mt.Match.SeriesID == seriesID).Any(mt => mt.TeamID == team.TeamID))
+                            throw new UnprocessibleEntity { ExceptionMessage = $"Team {team.ID} is already in a Match in this Series and cannot be removed." };
                         _context.SeriesTeam.Remove(team);
+                    }
+                        
                     else
                         updatedSeriesTeams.Remove(team.TeamID);
                 }
