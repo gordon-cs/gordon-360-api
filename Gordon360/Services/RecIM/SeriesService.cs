@@ -146,7 +146,7 @@ namespace Gordon360.Services.RecIM
             return series;
         }
 
-        public SeriesScheduleViewModel GetSeriesScheduleByID(int seriesID)
+        public SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID)
         {
             int scheduleID = _context.Series.Find(seriesID)?.ScheduleID ?? 0;
             return _context.SeriesSchedule.Find(scheduleID);
@@ -175,7 +175,7 @@ namespace Gordon360.Services.RecIM
                     //if the series is deleted, throw exception
                     if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
 
-                    if (series != null) return existingSchedule;
+                    if (series is null) return existingSchedule;
                     series.ScheduleID = existingSchedule.ID;
                     await _context.SaveChangesAsync();
                 }
@@ -203,6 +203,8 @@ namespace Gordon360.Services.RecIM
             {
                 var series = _context.Series.Find(seriesSchedule.SeriesID);
                 series.ScheduleID = schedule.ID;
+
+                //update surfaces
             }
             await _context.SaveChangesAsync();
             return schedule;
