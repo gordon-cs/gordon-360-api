@@ -154,7 +154,7 @@ namespace Gordon360.Services.RecIM
             var facstaff = _context.FacStaff.Where(fs => fs.AD_Username == username).FirstOrDefault();
             if (student is not null) user_gender = student.Gender;
             if (facstaff is not null) user_gender = facstaff.Gender;
-            if (user_gender is null) user_gender = "Unspecified";
+            if (user_gender is null) user_gender = "U";
 
             await _context.Participant.AddAsync(new Participant
             {
