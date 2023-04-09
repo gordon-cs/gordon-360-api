@@ -14,6 +14,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Status { get; set; }
         public IEnumerable<ParticipantNotificationViewModel> Notification { get; set; } 
         public bool IsAdmin { get; set; }
+        public bool AllowEmails { get; set; }
+        public string SpecifiedGender { get; set; }
 
         public static implicit operator ParticipantExtendedViewModel(ACCOUNT a)
         {
