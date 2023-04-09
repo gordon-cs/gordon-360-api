@@ -39,9 +39,8 @@ namespace Gordon360.Services.RecIM
                 .Select(a =>
                 new ActivityReportViewModel
                     {
-                        NumberOfParticipants = _context.Team
-                            .Where(t => t.ActivityID == a.ID)
-                            .Select(t => t.ParticipantTeam)
+                        NumberOfParticipants = _context.ParticipantTeam.
+                            Where(pt => pt.Team.ActivityID == a.ID && pt.Team.StatusID != 0 && pt.RoleTypeID != 0)
                             .Count(),
                         Activity = a
                     });
@@ -59,20 +58,22 @@ namespace Gordon360.Services.RecIM
                         .Count()
                 });
 
-            var numberOfUniqueParticipants = _context.ParticipantTeam
-                .Where(pt => pt.SignDate > start && pt.SignDate < end)
+            //active within timeframe
+            var activeParticipants = _context.ParticipantTeam
+                .Where(pt => pt.SignDate > start && pt.SignDate < end && pt.RoleTypeID != 0)
                 .Select(pt => pt.ParticipantUsername)
                 .Distinct()
-                .Count();
+                .Select(username => (ParticipantReducedReportViewModel)_context.Participant.FirstOrDefault(p => p.Username == username));
 
             return new RecIMGeneralReportViewModel()
             {
                 StartTime = start,
                 EndTime = end,
                 Activities = activities,
-                NumberOfUniqueParticipants = numberOfUniqueParticipants,
                 NumberOfNewParticipants = newParticipants.Count(),
-                NewParticipants = newParticipants
+                NewParticipants = newParticipants,
+                NumberOfActiveParticipants = activeParticipants.Count(),
+                ActiveParticipants = activeParticipants
             };
         }
     }
