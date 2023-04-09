@@ -12,7 +12,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public int EstMatchTime { get; set; }
-        public IEnumerable<int> TeamIDs { get; set; }
+        public IEnumerable<int> SurfaceIDs { get; set; }
 
         public static implicit operator SeriesScheduleExtendedViewModel(SeriesSchedule s)
         {

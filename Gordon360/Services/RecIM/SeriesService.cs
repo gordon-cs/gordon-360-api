@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Gordon360.Services.RecIM
 {
@@ -149,11 +150,40 @@ namespace Gordon360.Services.RecIM
         public SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID)
         {
             int scheduleID = _context.Series.Find(seriesID)?.ScheduleID ?? 0;
-            return _context.SeriesSchedule.Find(scheduleID);
+            SeriesScheduleExtendedViewModel res =  _context.SeriesSchedule.Find(scheduleID);
+            var surfaceIDs = _context.SeriesSurface.Where(ss => ss.SeriesID == seriesID).Select(s => s.SurfaceID);
+            res.SurfaceIDs = surfaceIDs;
+            return res;
         }
 
         public async Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
         {
+
+            if (seriesSchedule.SeriesID is int seriesID)
+            {
+                var series = _context.Series.Find(seriesID);
+                //update surfaces
+                if (seriesSchedule.AvailableSurfaceIDs.Count() == 0) throw new UnprocessibleEntity { ExceptionMessage = "Schedule cannot have no surfaces" };
+
+                var updatedSurfaces = seriesSchedule.AvailableSurfaceIDs.ToList();
+                var seriesSurfaces = _context.SeriesSurface.Where(s => s.SeriesID == seriesID);
+                foreach (var surface in seriesSurfaces)
+                {
+                    if (!seriesSchedule.AvailableSurfaceIDs.Any(id => id == surface.ID))
+                        _context.SeriesSurface.Remove(surface);
+                    else
+                        updatedSurfaces.Remove(surface.ID);
+                }
+
+                foreach (var surfaceID in updatedSurfaces)
+                    await _context.SeriesSurface.AddAsync(
+                        new SeriesSurface
+                        {
+                            SeriesID = seriesID,
+                            SurfaceID = surfaceID
+                        });
+
+            }
             //check for exact schedule existing
             var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss =>
                 ss.StartTime.TimeOfDay == seriesSchedule.DailyStartTime.TimeOfDay &&
@@ -203,8 +233,6 @@ namespace Gordon360.Services.RecIM
             {
                 var series = _context.Series.Find(seriesSchedule.SeriesID);
                 series.ScheduleID = schedule.ID;
-
-                //update surfaces
             }
             await _context.SaveChangesAsync();
             return schedule;
