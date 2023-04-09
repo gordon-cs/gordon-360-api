@@ -10,15 +10,24 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.RecIM
 {
-    [Route("api/recim/[controller]")]
-    public class RecIMController : GordonControllerBase
+    [Route("api/recim/admin")]
+    public class RecIMAdminController : GordonControllerBase
     {
         private readonly IRecIMService _recimService;
-        public RecIMController(IRecIMService recimService)
+        public RecIMAdminController(IRecIMService recimService)
         {
             _recimService = recimService;
         }
 
-       
+        [HttpGet]
+        [Route("")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.RECIM)]
+        public ActionResult<RecIMGeneralReportViewModel> GetReport(DateTime start, DateTime end)
+        {
+            var res = _recimService.GetReport(start,end);
+            return Ok(res);
+        }
+
+
     }
 }

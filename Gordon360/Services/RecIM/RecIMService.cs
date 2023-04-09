@@ -9,6 +9,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Services.RecIM
 {
@@ -35,13 +36,28 @@ namespace Gordon360.Services.RecIM
 
             var activities = _context.Activity
                 .Where(a => a.RegistrationStart > start && a.RegistrationEnd < end)
-                .Select(a => GetActivityReport(a.ID));
+                .Select(a =>
+                new ActivityReportViewModel
+                    {
+                        NumberOfParticipants = _context.Team
+                            .Where(t => t.ActivityID == a.ID)
+                            .Select(t => t.ParticipantTeam)
+                            .Count(),
+                        Activity = a
+                    });
 
             var newParticipants =  _context.ParticipantStatusHistory
                 .Where(p => p.StatusID == 4 && p.StartDate > start)
                     .Select(p => p.ParticipantUsername)
                 .Distinct()
-                .Select(p => GetParticipantReport(p,start,end));
+                .Select(username => new ParticipantReportViewModel
+                {
+                    UserAccount = _accountService.GetUnaffilicatedAccountByUsername(username),
+                    NumberOfActivitiesParticipated =
+                        _context.ParticipantTeam
+                        .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2 && pt.SignDate > start && pt.SignDate < end)
+                        .Count()
+                });
 
             var numberOfUniqueParticipants = _context.ParticipantTeam
                 .Where(pt => pt.SignDate > start && pt.SignDate < end)
@@ -58,34 +74,6 @@ namespace Gordon360.Services.RecIM
                 NumberOfNewParticipants = newParticipants.Count(),
                 NewParticipants = newParticipants
             };
-        }
-
-        private ActivityReportViewModel GetActivityReport(int activityID)
-        {
-            var numberOfParticipants = _context.Team
-                .Where(t => t.ActivityID == activityID)
-                .Select(t => t.ParticipantTeam)
-                .Count();
-            var activityReport = new ActivityReportViewModel
-                {
-                    NumberOfParticipants = numberOfParticipants,
-                    Activity = _context.Activity.Find(activityID)
-                };
-
-            return activityReport;
-        }
-
-        private ParticipantReportViewModel GetParticipantReport(string username, DateTime start, DateTime end)
-        {
-            var participantReport =  new ParticipantReportViewModel
-                {
-                    UserAccount = _accountService.GetAccountByUsername(username),
-                    NumberOfActivitiesParticipated =
-                        _context.ParticipantTeam
-                        .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2 && pt.SignDate > start && pt.SignDate < end)
-                        .Count()
-                };
-            return participantReport;
         }
     }
 }

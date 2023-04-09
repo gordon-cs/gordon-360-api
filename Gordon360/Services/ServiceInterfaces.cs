@@ -67,6 +67,7 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
+        AccountViewModel GetUnaffilicatedAccountByUsername(string username);
         IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
@@ -308,7 +309,7 @@ namespace Gordon360.Services
     {
         public interface IRecIMService
         {
-
+            RecIMGeneralReportViewModel GetReport(DateTime start, DateTime end);
         }
         public interface IActivityService
         {

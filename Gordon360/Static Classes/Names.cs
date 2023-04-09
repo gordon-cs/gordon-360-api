@@ -29,6 +29,7 @@ namespace Gordon360.Static.Names
         public const string CHECKIN = "Info relating to a student's Academic Check-In";
         public const string SHIFT = "A shift that a student has worked";
         public const string CLIFTON_STRENGTHS = "A student's uploaded clifton strengthsfinder results";
+        public const string RECIM = "General/Admin RecIM resource";
         public const string RECIM_ACTIVITY = "A RecIM activity resource";
         public const string RECIM_SERIES = "A RecIM series resource";
         public const string RECIM_MATCH = "A RecIM match resource";
