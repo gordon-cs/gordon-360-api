@@ -13,9 +13,10 @@ namespace Gordon360.Controllers.RecIM
     [Route("api/recim/[controller]")]
     public class RecIMController : GordonControllerBase
     {
-
-        public RecIMController()
+        private readonly IRecIMService _recimService;
+        public RecIMController(IRecIMService recimService)
         {
+            _recimService = recimService;
         }
 
        
