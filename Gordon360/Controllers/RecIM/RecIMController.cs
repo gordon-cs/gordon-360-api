@@ -20,7 +20,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("report")]
         [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.RECIM)]
         public ActionResult<RecIMGeneralReportViewModel> GetReport(DateTime start, DateTime end)
         {
