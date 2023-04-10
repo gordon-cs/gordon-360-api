@@ -72,7 +72,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/admin")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
         public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAdminStatus(string username, [FromBody] bool isAdmin)
         {
             var participant = await _participantService.SetParticipantAdminStatusAsync(username,isAdmin);
@@ -81,10 +81,9 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/emails")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult<ParticipantExtendedViewModel>> UpdateParticipant(string username, [FromBody] bool allowEmails)
         {
-            var user = AuthUtils.GetUsername(User);
-            if (user != username) return Unauthorized();
             var participant = await _participantService.UpdateParticipantAsync(username, allowEmails);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
         }

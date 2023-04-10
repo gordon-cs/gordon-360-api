@@ -729,7 +729,11 @@ namespace Gordon360.Authorization
                     }
 
                 case Resource.RECIM_PARTICIPANT:
-                    //fallthrough 
+                    if (context.ActionArguments["username"] is string username)
+                        return username.EqualsIgnoreCase(user_name);
+                    return false;
+                case Resource.RECIM_PARTICIPANT_ADMIN:
+                    //fallthrough
                 case Resource.RECIM_ACTIVITY:
                     //fallthrough
                 case Resource.RECIM_SERIES:
