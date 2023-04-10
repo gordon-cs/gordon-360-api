@@ -67,6 +67,7 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
+        AccountViewModel GetUnaffilicatedAccountByUsername(string username);
         IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
@@ -306,6 +307,10 @@ namespace Gordon360.Services
 
     namespace RecIM
     {
+        public interface IRecIMService
+        {
+            RecIMGeneralReportViewModel GetReport(DateTime start, DateTime end);
+        }
         public interface IActivityService
         {
             IEnumerable<LookupViewModel>? GetActivityLookup(string type);
@@ -331,7 +336,7 @@ namespace Gordon360.Services
             Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule);
             Task<SeriesViewModel> DeleteSeriesCascadeAsync(int seriesID);
             Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request);
-            SeriesScheduleViewModel GetSeriesScheduleByID(int seriesID);
+            SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID);
             IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID);
         }
 
@@ -365,10 +370,11 @@ namespace Gordon360.Services
             ParticipantExtendedViewModel GetParticipantByUsername(string username);
             IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
             Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4);
-            Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool isAdmin);
+            Task<ParticipantExtendedViewModel> SetParticipantAdminStatusAsync(string username, bool isAdmin);
             Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM);
             Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant);
             Task<ParticipantStatusHistoryViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus);
+            Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool allowEmails);
             bool IsParticipant(string username);
             bool IsAdmin(string username);
         }

@@ -70,7 +70,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpGet]
         [Route("{seriesID}/schedule")]
-        public ActionResult<SeriesScheduleViewModel> GetSeriesScheduleByID(int seriesID)
+        public ActionResult<SeriesScheduleExtendedViewModel> GetSeriesScheduleByID(int seriesID)
         {
             var res = _seriesService.GetSeriesScheduleByID(seriesID);
             if (res is null) return NotFound();
@@ -120,7 +120,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SeriesScheduleViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
         {
             var schedule = await _seriesService.PutSeriesScheduleAsync(seriesSchedule);
-            return CreatedAtAction(nameof(GetSeriesScheduleByID), new { scheduleID = schedule.ID }, schedule);
+            return Ok(schedule);
 
         }
 

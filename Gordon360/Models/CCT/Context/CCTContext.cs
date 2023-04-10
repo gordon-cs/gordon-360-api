@@ -524,6 +524,8 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasKey(e => e.Username)
                     .HasName("PK__Particip__536C85E53B50E910");
 
+                entity.Property(e => e.AllowEmails).HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
             });
 

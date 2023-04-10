@@ -399,6 +399,8 @@ namespace Gordon360.Authorization
                     }
                 case Resource.NEWS:
                     return user_groups.Contains(AuthGroup.NewsAdmin);
+                case Resource.RECIM:
+                    return _recimParticipantService.IsAdmin(user_name);
                 default: return false;
             }
         }

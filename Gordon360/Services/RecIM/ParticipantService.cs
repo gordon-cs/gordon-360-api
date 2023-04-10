@@ -148,9 +148,18 @@ namespace Gordon360.Services.RecIM
 
         public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
         {
+            // Find gender
+            string user_gender = null;
+            var student = _context.Student.Where(s => s.AD_Username == username).FirstOrDefault();
+            var facstaff = _context.FacStaff.Where(fs => fs.AD_Username == username).FirstOrDefault();
+            if (student is not null) user_gender = student.Gender;
+            if (facstaff is not null) user_gender = facstaff.Gender;
+            if (user_gender is null) user_gender = "U";
+
             await _context.Participant.AddAsync(new Participant
             {
-                Username = username
+                Username = username,
+                SpecifiedGender = user_gender
             });
             await _context.ParticipantStatusHistory.AddAsync(new ParticipantStatusHistory
             {
@@ -164,7 +173,7 @@ namespace Gordon360.Services.RecIM
             return participant;
         }
 
-        public async Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool isAdmin)
+        public async Task<ParticipantExtendedViewModel> SetParticipantAdminStatusAsync(string username, bool isAdmin)
         {
             var participant = _context.Participant.Find(username);
             participant.IsAdmin = isAdmin;
@@ -173,9 +182,26 @@ namespace Gordon360.Services.RecIM
             {
                 Username = participant.Username,
                 IsAdmin = participant.IsAdmin,
+                AllowEmails = participant.AllowEmails ?? true, //due to SQL having a default value, EFCore thinks that AllowEmails is nullable. It isn't.
+                SpecifiedGender = participant.SpecifiedGender
             };
         }
-        
+
+        public async Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool allowEmails)
+        {
+            var participant = _context.Participant.Find(username);
+            participant.AllowEmails = allowEmails;
+            await _context.SaveChangesAsync();
+            return new ParticipantExtendedViewModel
+            {
+                Username = participant.Username,
+                IsAdmin = participant.IsAdmin,
+                AllowEmails = participant.AllowEmails ?? true, //due to SQL having a default value, EFCore thinks that AllowEmails is nullable. It isn't.
+                SpecifiedGender = participant.SpecifiedGender
+            };
+        }
+
+
         public async Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant)
         {           
             var participantActivity = _context.ParticipantActivity
