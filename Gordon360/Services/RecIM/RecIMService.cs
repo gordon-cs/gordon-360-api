@@ -54,7 +54,13 @@ namespace Gordon360.Services.RecIM
                     UserAccount = _accountService.GetUnaffilicatedAccountByUsername(username),
                     NumberOfActivitiesParticipated =
                         _context.ParticipantTeam
-                        .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2 && pt.SignDate > start && pt.SignDate < end)
+                        .Where(pt => 
+                            pt.ParticipantUsername == username
+                            && pt.RoleTypeID != 0
+                            && pt.RoleTypeID != 2
+                            && pt.SignDate > start
+                            && pt.SignDate < end
+                        )
                         .Count()
                 });
 
