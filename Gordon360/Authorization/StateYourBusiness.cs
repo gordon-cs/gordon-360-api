@@ -643,8 +643,8 @@ namespace Gordon360.Authorization
                         if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
 
-                        if (context.ActionArguments["username"] is string username)
-                            return username.EqualsIgnoreCase(user_name);
+                        if (context.ActionArguments["username"] is string profile_username)
+                            return profile_username.EqualsIgnoreCase(user_name);
 
                         return false;
                     }
@@ -696,7 +696,8 @@ namespace Gordon360.Authorization
                     }
                 case Resource.EMERGENCY_CONTACT:
                     {
-                        return context.ActionArguments["username"] is string username && username.EqualsIgnoreCase(user_name);
+                        return context.ActionArguments["username"] is string emergency_contact_username 
+                            && emergency_contact_username.EqualsIgnoreCase(user_name);
                     }
 
                 case Resource.NEWS:
@@ -729,8 +730,8 @@ namespace Gordon360.Authorization
                     }
 
                 case Resource.RECIM_PARTICIPANT:
-                    if (context.ActionArguments["username"] is string username)
-                        return username.EqualsIgnoreCase(user_name);
+                    if (context.ActionArguments["username"] is string participant_username)
+                        return participant_username.EqualsIgnoreCase(user_name);
                     return false;
                 case Resource.RECIM_PARTICIPANT_ADMIN:
                     //fallthrough

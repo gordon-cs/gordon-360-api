@@ -90,7 +90,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The AD username associated with the account.</param>
         /// <returns>account information</returns>
-        public AccountViewModel GetUnaffilicatedAccountByUsername(string username)
+        public AccountViewModel GetUnaffiliatedAccountByUsername(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)

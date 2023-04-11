@@ -151,8 +151,7 @@ namespace Gordon360.Services.RecIM
         {
             int scheduleID = _context.Series.Find(seriesID)?.ScheduleID ?? 0;
             SeriesScheduleExtendedViewModel res =  _context.SeriesSchedule.Find(scheduleID);
-            var surfaceIDs = _context.SeriesSurface.Where(ss => ss.SeriesID == seriesID).Select(s => s.SurfaceID);
-            res.SurfaceIDs = surfaceIDs;
+            res.SurfaceIDs = _context.SeriesSurface.Where(ss => ss.SeriesID == seriesID).Select(s => s.SurfaceID);
             return res;
         }
 
@@ -163,7 +162,7 @@ namespace Gordon360.Services.RecIM
             {
                 var series = _context.Series.Find(seriesID);
                 //update surfaces
-                if (seriesSchedule.AvailableSurfaceIDs.Count() == 0) throw new UnprocessibleEntity { ExceptionMessage = "Schedule cannot have no surfaces" };
+                if (seriesSchedule.AvailableSurfaceIDs.Count() == 0) throw new UnprocessibleEntity { ExceptionMessage = "The schedule must have a surface" };
 
                 var updatedSurfaces = seriesSchedule.AvailableSurfaceIDs.ToList();
                 var seriesSurfaces = _context.SeriesSurface.Where(s => s.SeriesID == seriesID);
@@ -267,8 +266,7 @@ namespace Gordon360.Services.RecIM
                         if (_context.MatchTeam.Where(mt => mt.Match.SeriesID == seriesID).Any(mt => mt.TeamID == team.TeamID))
                             throw new UnprocessibleEntity { ExceptionMessage = $"Team {team.ID} is already in a Match in this Series and cannot be removed." };
                         _context.SeriesTeam.Remove(team);
-                    }
-                        
+                    } 
                     else
                         updatedSeriesTeams.Remove(team.TeamID);
                 }
@@ -391,7 +389,7 @@ namespace Gordon360.Services.RecIM
                 .ToList();
             int numCycles = request.RoundRobinMatchCapacity ?? teams.Count;
             //algorithm requires odd number of teams
-            teams.Add(0);//0 is not a valid true team ID thus will act as dummy team
+            teams.Add(-1);//-1 is not a valid true team ID thus will act as dummy team
 
             SeriesScheduleViewModel schedule = series.Schedule;
             var availableSurfaces = series.SeriesSurface.ToArray();
@@ -682,8 +680,9 @@ namespace Gordon360.Services.RecIM
             var teams = involvedTeams.Reverse();
             var matches = new List<MatchViewModel>();
             var byeTeams = new List<int>();
-            //bye logic
-            while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0))) //while not power of 2
+            // bye logic
+            // Play-off round needs to be calculated to ensure that the first round is in a power of 2
+            while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0))) 
             {
                 await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
                 {
@@ -748,7 +747,7 @@ namespace Gordon360.Services.RecIM
                     TeamIDs = bye
                 });
                 matches.Add(createdMatch);
-                fullByeMatches.Add(0);
+                fullByeMatches.Add(-1);
                 secondRoundMatches.Add(createdMatch.ID);
             }
 
@@ -764,8 +763,8 @@ namespace Gordon360.Services.RecIM
                     TeamIDs = teamPair
                 });
                 matches.Add(createdMatch);
-                byePairMatches.Add(0);
-                byePairMatches.Add(0);
+                byePairMatches.Add(-1);
+                byePairMatches.Add(-1);
                 secondRoundMatches.Add(createdMatch.ID);
             }
 
@@ -804,7 +803,7 @@ namespace Gordon360.Services.RecIM
             var res = new List<MatchBracketViewModel>();
             int rounds = (int)Math.Log(matchesIDs.Count(), 2)-1;
             var matchArr = matchesIDs.ToArray();
-            var matchIndexes = new List<int> {  0, 1 };
+            var matchIndexes = new List<int> { 0, 1 };
 
             for(int i = 0; i < rounds; i++)
             {
@@ -821,7 +820,7 @@ namespace Gordon360.Services.RecIM
             int j = 0;
             foreach(int i in indexArr)
             {
-                if (matchArr[i] != 0)
+                if (matchArr[i] != -1)
                 {
                     var matchBracketPlacement = new MatchBracket()
                     {

@@ -82,9 +82,9 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{username}/emails")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
-        public async Task<ActionResult<ParticipantExtendedViewModel>> UpdateParticipant(string username, [FromBody] bool allowEmails)
+        public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAllowEmails(string username, [FromBody] bool allowEmails)
         {
-            var participant = await _participantService.UpdateParticipantAsync(username, allowEmails);
+            var participant = await _participantService.UpdateParticipantAllowEmailsAsync(username, allowEmails);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
         }
 

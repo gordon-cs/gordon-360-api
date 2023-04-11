@@ -1486,7 +1486,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
         </member>
-        <member name="M:Gordon360.Services.AccountService.GetUnaffilicatedAccountByUsername(System.String)">
+        <member name="M:Gordon360.Services.AccountService.GetUnaffiliatedAccountByUsername(System.String)">
             <summary>
             Fetches the account record with the specified username. Inclusive of non-gordon accounts made by Rec-IM
             </summary>

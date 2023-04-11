@@ -13,7 +13,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public IEnumerable<ParticipantReportViewModel> NewParticipants { get; set; }
         public int NumberOfActiveParticipants { get; set; }
         public IEnumerable<ParticipantReducedReportViewModel> ActiveParticipants { get; set; }
-
     }
 
     public class ActivityReportViewModel

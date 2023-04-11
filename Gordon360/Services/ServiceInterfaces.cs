@@ -67,7 +67,7 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
-        AccountViewModel GetUnaffilicatedAccountByUsername(string username);
+        AccountViewModel GetUnaffiliatedAccountByUsername(string username);
         IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
@@ -374,7 +374,7 @@ namespace Gordon360.Services
             Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM);
             Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant);
             Task<ParticipantStatusHistoryViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus);
-            Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool allowEmails);
+            Task<ParticipantExtendedViewModel> UpdateParticipantAllowEmailsAsync(string username, bool allowEmails);
             bool IsParticipant(string username);
             bool IsAdmin(string username);
         }

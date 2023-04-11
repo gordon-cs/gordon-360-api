@@ -149,12 +149,10 @@ namespace Gordon360.Services.RecIM
         public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
         {
             // Find gender
-            string user_gender = null;
+            
             var student = _context.Student.Where(s => s.AD_Username == username).FirstOrDefault();
             var facstaff = _context.FacStaff.Where(fs => fs.AD_Username == username).FirstOrDefault();
-            if (student is not null) user_gender = student.Gender;
-            if (facstaff is not null) user_gender = facstaff.Gender;
-            if (user_gender is null) user_gender = "U";
+            string user_gender = student?.Gender ?? facstaff?.Gender ?? "U";
 
             await _context.Participant.AddAsync(new Participant
             {
@@ -187,7 +185,7 @@ namespace Gordon360.Services.RecIM
             };
         }
 
-        public async Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool allowEmails)
+        public async Task<ParticipantExtendedViewModel> UpdateParticipantAllowEmailsAsync(string username, bool allowEmails)
         {
             var participant = _context.Participant.Find(username);
             participant.AllowEmails = allowEmails;
