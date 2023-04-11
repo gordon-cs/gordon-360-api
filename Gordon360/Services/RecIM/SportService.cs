@@ -48,22 +48,6 @@ namespace Gordon360.Services.RecIM
                 Rules = newSport.Rules,
                 Logo = newSport.Logo
             };
-            
-            // UNTESTED FEATURE
-            if (sport.Logo != null)
-            {
-                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(sport.Logo);
-
-                // Use a unique alphanumeric GUID string as the file name
-                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                var imagePath = GetImagePath(filename);
-                var url = GetImageURL(filename);
-
-                ImageUtils.UploadImage(imagePath, data, format);
-
-                sport.Logo = url;
-            }
 
             await _context.Sport.AddAsync(sport);
             await _context.SaveChangesAsync();

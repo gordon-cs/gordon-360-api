@@ -201,21 +201,6 @@ namespace Gordon360.Services.RecIM
         public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity)
         {
             var activity = newActivity.ToActivity();
-            
-            if (activity.Logo != null)
-            {
-                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(activity.Logo);
-
-                // Use a unique alphanumeric GUID string as the file name
-                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                var imagePath = GetImagePath(filename);
-                var url = GetImageURL(filename);
-
-                ImageUtils.UploadImage(imagePath, data, format);
-
-                activity.Logo = url;
-            }
 
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();

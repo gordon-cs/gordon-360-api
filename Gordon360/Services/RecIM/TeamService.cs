@@ -244,21 +244,6 @@ namespace Gordon360.Services.RecIM
             if(_context.Activity.Find(newTeam.ActivityID).Team.Any(team => team.Name == newTeam.Name))
                 throw new UnprocessibleEntity
                 { ExceptionMessage = $"Team name {newTeam.Name} has already been taken by another team in this activity" };
-            
-            if (newTeam.Logo != null)
-            {
-                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(newTeam.Logo);
-
-                // Use a unique alphanumeric GUID string as the file name
-                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                var imagePath = GetImagePath(filename);
-                var url = GetImageURL(filename);
-
-                ImageUtils.UploadImage(imagePath, data, format);
-
-                newTeam.Logo = url;
-            }
 
             var team = newTeam.ToTeam();
             await _context.Team.AddAsync(team);
