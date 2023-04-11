@@ -21,12 +21,12 @@ namespace Gordon360.Services.RecIM
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
 
-        public RecIMService(CCTContext context, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountServices)
+        public RecIMService(CCTContext context, IConfiguration config, IParticipantService participantSerivce, IMatchService matchService, IAccountService accountService)
         {
             _context = context;
             _config = config;
             _matchService = matchService;
-            _accountService = accountServices;
+            _accountService = accountService;
             _participantService = participantSerivce;
         }
 
