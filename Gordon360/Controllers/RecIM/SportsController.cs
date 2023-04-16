@@ -54,6 +54,19 @@ namespace Gordon360.Controllers.RecIM
             var sport = await _sportService.UpdateSportAsync(sportID,updatedSport);
             return CreatedAtAction(nameof(GetSportByID), new { sportID = sport.ID }, sport);
         }
+
+        /// <summary>
+        /// Deletes Sport in the database by ID
+        /// </summary>
+        /// <param name="sportID"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{sportID}")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SPORT)]
+        public async Task<ActionResult<SportViewModel>> DeleteSport(int sportID)
+        {
+            return Ok();
+        }
         /// <summary>
         /// Creates new Sport for RecIM
         /// </summary>

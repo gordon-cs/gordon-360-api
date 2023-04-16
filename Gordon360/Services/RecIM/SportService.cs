@@ -34,6 +34,17 @@ namespace Gordon360.Services.RecIM
             return _context.Sport.Find(sportID);
         }
 
+        public async Task<SportViewModel> DeleteSportAsync(int sportID)
+        {
+            var sport = _context.Sport.Find(sportID);
+            var activities = _context.Activity.Where(a => a.SportID == sportID);
+            foreach(var activity in activities)
+                activity.SportID = 0;
+            _context.Sport.Remove(sport);
+            await _context.SaveChangesAsync();
+            return sport;
+        }
+
         public IEnumerable<SportViewModel> GetSports()
         {
             return _context.Sport.Select(s => (SportViewModel)s).AsEnumerable();
