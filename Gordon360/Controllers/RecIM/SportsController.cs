@@ -51,6 +51,7 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SPORT)]
         public async Task<ActionResult<SportViewModel>> UpdateSport(int sportID, SportPatchViewModel updatedSport)
         {
+            if (sportID == 0) return UnprocessableEntity("Default sport cannot be modified");
             var sport = await _sportService.UpdateSportAsync(sportID,updatedSport);
             return CreatedAtAction(nameof(GetSportByID), new { sportID = sport.ID }, sport);
         }
