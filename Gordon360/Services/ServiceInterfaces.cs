@@ -383,6 +383,7 @@ namespace Gordon360.Services
         {
             IEnumerable<SportViewModel> GetSports();
             SportViewModel GetSportByID(int sportID);
+            Task<SportViewModel> DeleteSportAsync(int sportID);
             Task<SportViewModel> PostSportAsync(SportUploadViewModel newSport);
             Task<SportViewModel> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport);
         }

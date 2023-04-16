@@ -945,6 +945,13 @@
             <param name="updatedSport"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.DeleteSport(System.Int32)">
+            <summary>
+            Deletes Sport in the database by ID
+            </summary>
+            <param name="sportID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.CreateSport(Gordon360.Models.ViewModels.RecIM.SportUploadViewModel)">
             <summary>
             Creates new Sport for RecIM
