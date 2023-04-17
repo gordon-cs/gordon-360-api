@@ -820,7 +820,6 @@ namespace Gordon360.Services.RecIM
             int j = 0;
             foreach(int i in indexArr)
             {
-                //if (i == matchArr.Length) break; // due to b
                 if (matchArr[i] != -1)
                 {
                     var matchBracketPlacement = new MatchBracket()
