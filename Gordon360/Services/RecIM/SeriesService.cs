@@ -801,9 +801,9 @@ namespace Gordon360.Services.RecIM
         private async Task<IEnumerable<MatchBracketViewModel>> CreateEliminationBracket(List<int> matchesIDs, int roundNumber)
         {
             var res = new List<MatchBracketViewModel>();
-            int rounds = (int)Math.Log(matchesIDs.Count(), 2)-1;
+            int rounds = (int)Math.Log(matchesIDs.Count(), 2);
             var matchArr = matchesIDs.ToArray();
-            var matchIndexes = new List<int> { 0, 1 };
+            var matchIndexes = new List<int> { 0 };
 
             for(int i = 0; i < rounds; i++)
             {
@@ -820,6 +820,7 @@ namespace Gordon360.Services.RecIM
             int j = 0;
             foreach(int i in indexArr)
             {
+                //if (i == matchArr.Length) break; // due to b
                 if (matchArr[i] != -1)
                 {
                     var matchBracketPlacement = new MatchBracket()
