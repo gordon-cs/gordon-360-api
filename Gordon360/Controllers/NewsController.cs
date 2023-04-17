@@ -209,14 +209,20 @@ namespace Gordon360.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// (Controller) Edits a news image in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newImageData">The new image string updates the image value</param>
+        /// <returns>The updated news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         [HttpPut]
         [Route("{newsID}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
         // Private route to authenticated users - authors of posting or admins
-        public ActionResult<StudentNewsViewModel> EditPostingImage(int newsID, [FromBody] StudentNewsImageUploadViewModel studentNewsImageEdit)
+        public ActionResult<StudentNewsViewModel> EditPostingImage(int newsID, [FromBody] string newImageData)
         {
-            // StateYourBusiness verifies that user is authenticated
-            var result = _newsService.EditImage(newsID, studentNewsImageEdit);
+            var result = _newsService.EditImage(newsID, newImageData);
             return Ok(result);
         }
 

@@ -260,7 +260,7 @@ namespace Gordon360.Services
         /// <param name="newImageData">The news image object that contains the updated image value</param>
         /// <returns>The updated news item's view model</returns>
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
-        public StudentNewsViewModel EditImage(int newsID, StudentNewsImageUploadViewModel newImageData)
+        public StudentNewsViewModel EditImage(int newsID, string newImageData)
         {
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
@@ -271,10 +271,10 @@ namespace Gordon360.Services
             VerifyUnexpired(newsItem);
             VerifyUnapproved(newsItem);
 
-            if (newImageData.Image != null)
+            if (newImageData != "")
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(newImageData.Image);
+                var (extension, format, data) = ImageUtils.GetImageFormat(newImageData);
 
                 string? imagePath = null;
                 // If old image exists, overwrite it with new image at same path
@@ -303,7 +303,7 @@ namespace Gordon360.Services
                 var imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
 
                 ImageUtils.DeleteImage(imagePath);
-                newsItem.Image = newImageData.Image; //null
+                newsItem.Image = null;
             }
 
             _context.SaveChanges();
