@@ -435,7 +435,7 @@ namespace Gordon360.Services.RecIM
                     }
 
                     var teamIDs = new List<int>() { teams[i], teams[j] };
-                    if (!teamIDs.Contains(0))
+                    if (!teamIDs.Contains(-1))
                     {
                         var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
                         {

@@ -100,6 +100,8 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SURFACE)]
         public async Task<ActionResult<SurfaceViewModel>> UpdateSurface(int surfaceID, SurfaceUploadViewModel updatedSurface)
         {
+            if (surfaceID == 1) //default to be decided surface
+                return UnprocessableEntity("Default surface cannot be modified or deleted");
             if (updatedSurface.Name is null && updatedSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
             var res = await _matchService.UpdateSurfaceAsync(surfaceID, updatedSurface);
             return CreatedAtAction(nameof(UpdateSurface), new { surfaceID = res.ID }, res);
@@ -116,6 +118,8 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SURFACE)]
         public async Task<ActionResult> DeleteSurface(int surfaceID)
         {
+            if (surfaceID == 1) //default to be decided surface
+                return UnprocessableEntity("Default surface cannot be modified or deleted");
             await _matchService.DeleteSurfaceAsync(surfaceID);
             return NoContent();
         }
