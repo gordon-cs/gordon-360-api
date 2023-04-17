@@ -209,6 +209,17 @@ namespace Gordon360.Controllers
             return Ok(result);
         }
 
+        [HttpPut]
+        [Route("{newsID}/image")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
+        // Private route to authenticated users - authors of posting or admins
+        public ActionResult<StudentNewsViewModel> EditPostingImage(int newsID, [FromBody] StudentNewsImageUploadViewModel studentNewsImageEdit)
+        {
+            // StateYourBusiness verifies that user is authenticated
+            var result = _newsService.EditImage(newsID, studentNewsImageEdit);
+            return Ok(result);
+        }
+
         /// <summary>
         ///  Approve or deny a news posting in the database
         /// </summary>
