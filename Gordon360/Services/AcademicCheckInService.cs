@@ -25,12 +25,12 @@ namespace Gordon360.Services
         /// <param name="data"> The object that stores the contact info </param>
         /// <param name="id"> The students id number</param>
         /// <returns> The stored data </returns>
-        public async Task<EmergencyContactViewModel> PutEmergencyContactAsync(EmergencyContactViewModel data, string id, string username)
+        public async Task<EmergencyContactViewModel> PutEmergencyContactAsync(EmergencyContactViewModel data, int id, string username)
         {
             var splitUsername = username.Split('.');
 
             var result = await _context.Procedures.UPDATE_EMRGCONTACTAsync(
-                int.Parse(id),
+                id,
                 data.SEQ_NUMBER,
                 data.LastName,
                 data.FirstName,
@@ -79,7 +79,7 @@ namespace Gordon360.Services
         /// <param name="data"> The phone number object for the user </param>
         /// <param name="id"> The id of the student to be updated </param>
         /// <returns> The stored data </returns>
-        public async Task<AcademicCheckInViewModel> PutCellPhoneAsync(string id, AcademicCheckInViewModel data)
+        public async Task<AcademicCheckInViewModel> PutCellPhoneAsync(int id, AcademicCheckInViewModel data)
         {
             var result = await _context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, data.NoPhone);
             if (result == null)
@@ -93,7 +93,7 @@ namespace Gordon360.Services
         /// <param name="data"> The race and ethnicity data for the user </param>
         /// <param name="id"> The id of the user to be updated </param>
         /// <returns> The stored data </returns>
-        public async Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data)
+        public async Task<AcademicCheckInViewModel> PutDemographicAsync(int id, AcademicCheckInViewModel data)
         {
             var result = await _context.Procedures.FINALIZATION_UPDATEDEMOGRAPHICAsync(id, data.Race, data.Ethnicity);
             if (result == null)
@@ -106,9 +106,9 @@ namespace Gordon360.Services
         /// <summary> Gets the holds of the user with the given ID </summary>
         /// <param name="id"> The id of the user whose holds are to be found </param>
         /// <returns> The stored data </returns>
-        public async Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(string id)
+        public async Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(int id)
         {
-            var result = await _context.Procedures.FINALIZATION_GETHOLDSBYIDAsync(int.Parse(id));
+            var result = await _context.Procedures.FINALIZATION_GETHOLDSBYIDAsync(id);
 
             if (result == null)
             {
@@ -133,7 +133,7 @@ namespace Gordon360.Services
 
         /// <summary> Sets the user as having been checked in </summary>
         /// <param name="id"> The id of the user who is to be marked as checked in </param>
-        public async Task SetStatusAsync(string id)
+        public async Task SetStatusAsync(int id)
         {
             var result = await _context.Procedures.FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDAsync(id);
 
@@ -145,9 +145,9 @@ namespace Gordon360.Services
 
         /// <summary> Gets the whether the user has completed Academic Checkin </summary>
         /// <param name="id"> The id of the user for which the data is to be found for </param>
-        public async Task<bool> GetStatusAsync(string id)
+        public async Task<bool> GetStatusAsync(int id)
         {
-            var result = await _context.Procedures.FINALIZATION_GET_FINALIZATION_STATUSAsync(int.Parse(id));
+            var result = await _context.Procedures.FINALIZATION_GET_FINALIZATION_STATUSAsync(id);
 
             if (result.Count() == 0)
             {
