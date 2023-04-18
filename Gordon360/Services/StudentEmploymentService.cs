@@ -28,7 +28,7 @@ namespace Gordon360.Services
         {
             var account = _accountService.GetAccountByUsername(username);
 
-            var result = await _context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(account.GordonID));
+            var result = await _context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(account.GordonID);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };

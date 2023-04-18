@@ -6,7 +6,7 @@ namespace Gordon360.Models.ViewModels
     public class MyScheduleViewModel
     {
         public string EventID { get; set; }
-        public string GordonID { get; set; } //should this really be a string? or an int?
+        public int GordonID { get; set; } 
         public string Location { get; set; }
         public string Description { get; set; }
         public string MonCode { get; set; }

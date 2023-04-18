@@ -33,7 +33,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            await _context.Procedures.UPDATE_SCHEDULE_PRIVACYAsync(int.Parse(account.gordon_id), value);
+            await _context.Procedures.UPDATE_SCHEDULE_PRIVACYAsync(account.gordon_id, value);
 
         }
 
@@ -51,7 +51,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            await _context.Procedures.UPDATE_DESCRIPTIONAsync(int.Parse(account.gordon_id), value);
+            await _context.Procedures.UPDATE_DESCRIPTIONAsync(account.gordon_id, value);
         }
 
 
@@ -69,7 +69,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            await _context.Procedures.UPDATE_TIMESTAMPAsync(int.Parse(account.gordon_id), value);
+            await _context.Procedures.UPDATE_TIMESTAMPAsync(account.gordon_id, value);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Gordon360.Models.ViewModels
 {
     public record StudentProfileViewModel
         (
-        string ID,
+        int ID,
         string Title,
         string FirstName,
         string MiddleName,
@@ -76,7 +76,7 @@ namespace Gordon360.Models.ViewModels
             }
 
             return new StudentProfileViewModel(
-                stu.ID.Trim(),
+                stu.ID,
                 stu.Title ?? "",
                 stu.FirstName ?? "",
                 stu.MiddleName ?? "",

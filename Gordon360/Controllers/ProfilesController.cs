@@ -129,7 +129,7 @@ namespace Gordon360.Controllers
         public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+            var strengths = _profileService.GetCliftonStrengths(id);
             if (strengths is null)
             {
                 return Ok(Array.Empty<string>());
@@ -151,7 +151,7 @@ namespace Gordon360.Controllers
         public ActionResult<CliftonStrengthsViewModel?> GetCliftonStrengths(string username)
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+            var strengths = _profileService.GetCliftonStrengths(id);
             if (strengths is null)
             {
                 return Ok(null);
@@ -171,7 +171,7 @@ namespace Gordon360.Controllers
         {
             var username = AuthUtils.GetUsername(User);
             var id = _accountService.GetAccountByUsername(username).GordonID;
-            var privacy = await _profileService.ToggleCliftonStrengthsPrivacyAsync(int.Parse(id));
+            var privacy = await _profileService.ToggleCliftonStrengthsPrivacyAsync(id);
 
             return Ok(privacy);
         }
