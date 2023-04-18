@@ -70,6 +70,28 @@ namespace Gordon360.Controllers.RecIM
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
         }
 
+        [HttpPut]
+        [Route("{username}/custom")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
+        public async Task<ActionResult<ParticipantExtendedViewModel>> AddCustomParticipant(string username, [FromBody] CustomParticipantViewModel newCustomParticipant)
+        {
+            var participant = await _participantService.PostCustomParticipantAsync(username, newCustomParticipant);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
+        }
+
+        [HttpPatch]
+        [Route("{username}/custom/update")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
+        public async Task<ActionResult<ParticipantExtendedViewModel>> SetCustomParticipant(string username, [FromBody] CustomParticipantViewModel updatedCustomParticipant)
+        {
+            var p = _participantService.GetParticipantByUsername(username);
+            if (!p.IsCustom)
+                return UnprocessableEntity("This is not a custom participant");
+
+            var participant = await _participantService.UpdateCustomParticipantAsync(username, updatedCustomParticipant);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username, isCustom = participant.IsCustom }, participant);
+        }
+
         [HttpPatch]
         [Route("{username}/admin")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
@@ -116,6 +138,5 @@ namespace Gordon360.Controllers.RecIM
             var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = status.ParticipantUsername }, status);
         }
-
     }
 }

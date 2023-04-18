@@ -511,6 +511,8 @@ namespace Gordon360.Authorization
                     return true;
                 case Resource.NEWS:
                     return true;
+                case Resource.RECIM_PARTICIPANT_ADMIN:
+                    //fallthrough
                 case Resource.RECIM_ACTIVITY:
                     //fallthrough
                 case Resource.RECIM_SERIES:

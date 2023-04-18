@@ -16,6 +16,9 @@ namespace Gordon360.Models.ViewModels.RecIM
         public bool IsAdmin { get; set; }
         public bool AllowEmails { get; set; }
         public string SpecifiedGender { get; set; }
+        public bool IsCustom { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
 
         public static implicit operator ParticipantExtendedViewModel(ACCOUNT a)
         {
