@@ -134,10 +134,10 @@ namespace Gordon360.Services.RecIM
             else
             {
                 teams = _context.SeriesTeam
-                                .Include(s => s.Team)
-                                .Where(st => st.SeriesID == referenceSeriesID && st.Team.StatusID != 0)
-                                .OrderByDescending(st => st.WinCount)
-                                .Select(st => st.TeamID);
+                    .Where(st => st.SeriesID == referenceSeriesID && st.Team.StatusID != 0)
+                    .OrderByDescending(st => st.WinCount)
+                    .ThenBy(st => st.Team.MatchTeam.Average(mt => mt.SportsmanshipScore))
+                    .Select(st => st.TeamID);
             }
             if (newSeries.NumberOfTeamsAdmitted is int topTeams)
             {
