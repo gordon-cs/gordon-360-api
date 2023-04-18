@@ -73,9 +73,12 @@ namespace Gordon360.Services.RecIM
                                         .Name,
                                 WinCount = st.WinCount,
                                 LossCount = st.LossCount,
-                                TieCount = _context.SeriesTeam
-                                        .Where(_st => _st.TeamID == st.TeamID && _st.SeriesID == s.ID)
-                                        .Count() - st.WinCount - st.LossCount
+                                TieCount = _context.MatchTeam
+                                        .Where(mt => mt.TeamID == st.TeamID && mt.Match.SeriesID == s.ID && mt.Match.StatusID == 6)
+                                        .Count() - st.WinCount - st.LossCount,
+                                SportsmanshipRating = _context.MatchTeam
+                                        .Where(mt => mt.TeamID == st.TeamID && mt.Match.StatusID == 6)
+                                        .Average(mt => mt.SportsmanshipScore) 
                             }).OrderByDescending(st => st.WinCount).AsEnumerable(),
                         Schedule = s.Schedule
                     });
