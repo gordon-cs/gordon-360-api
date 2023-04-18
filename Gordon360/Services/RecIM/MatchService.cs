@@ -400,15 +400,18 @@ namespace Gordon360.Services.RecIM
                     .ThenByDescending(mt => mt.Score);
                 var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
 
-                //set winner
-                var winner = seriesRecords.FirstOrDefault(st => st.TeamID == teams.First().TeamID);
-                winner.WinCount--;
-                winner.LossCount++; //done so that the foreach below does not need a conditional
+                // not tie
+                if (teams.First().Score - teams.Last().Score != 0)
+                {
+                    //set winner
+                    var winner = seriesRecords.FirstOrDefault(st => st.TeamID == teams.First().TeamID);
+                    winner.WinCount--;
+                    winner.LossCount++; //done so that the foreach below does not need a conditional
 
-                //set everyone 
-                foreach (var team in teams)
-                    seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount--;
-
+                    //set everyone 
+                    foreach (var team in teams)
+                        seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount--;
+                }
             }
 
             if (match.StatusID != 6 && vm.StatusID == 6) //not completed -> completed
@@ -418,15 +421,18 @@ namespace Gordon360.Services.RecIM
                     .ThenByDescending(mt => mt.Score);
                 var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
 
-                //set winner
-                var winner = seriesRecords.FirstOrDefault(st => st.TeamID == teams.First().TeamID);
-                winner.WinCount++;
-                winner.LossCount--; //done so that the foreach below does not need a conditional
+                // not tie
+                if (teams.First().Score - teams.Last().Score != 0)
+                {
+                    //set winner
+                    var winner = seriesRecords.FirstOrDefault(st => st.TeamID == teams.First().TeamID);
+                    winner.WinCount++;
+                    winner.LossCount--; //done so that the foreach below does not need a conditional
 
-                //set everyone 
-                foreach (var team in teams)
-                    seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount++;
-
+                    //set everyone 
+                    foreach (var team in teams)
+                        seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount++;
+                }
             }
 
             match.StartTime = vm.StartTime ?? match.StartTime;
