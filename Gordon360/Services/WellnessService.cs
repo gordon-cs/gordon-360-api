@@ -32,7 +32,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            int ID = int.Parse(account.gordon_id);
+            int ID = account.gordon_id;
             var result = _context.Health_Status.Where(x => x.ID_Num == ID).OrderByDescending(x => x.Created).FirstOrDefault();
 
             if (result == null)
@@ -70,7 +70,7 @@ namespace Gordon360.Services
 
             var statusObject = new Health_Status
             {
-                ID_Num = int.Parse(account.gordon_id),
+                ID_Num = account.gordon_id,
                 HealthStatusID = (byte)status,
                 Created = now,
                 Expires = ExpirationDate(now),
