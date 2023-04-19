@@ -66,7 +66,8 @@ namespace Gordon360.Services.RecIM
         {
             var sportsmanshipScores = _context.MatchTeam
                                     .Where(mt => mt.Match.StatusID == 6 && mt.TeamID == teamID) //6 is completed
-                                        .Select(mt => mt.SportsmanshipScore);
+                                        .Select(mt => mt.SportsmanshipScore)
+                                    .AsEnumerable();
             if (sportsmanshipScores.Count() == 0)
                 return 5;
 

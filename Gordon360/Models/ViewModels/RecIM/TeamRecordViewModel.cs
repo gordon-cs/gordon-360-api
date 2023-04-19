@@ -6,6 +6,7 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public int SeriesID { get; set; }
         public int TeamID { get; set; }
+        public string? Logo { get; set; }
         public string Name { get; set; }
         public int WinCount { get; set; }  
         public int LossCount { get; set; }

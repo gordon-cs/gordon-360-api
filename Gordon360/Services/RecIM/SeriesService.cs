@@ -66,11 +66,10 @@ namespace Gordon360.Services.RecIM
                             .Where(st => st.SeriesID == s.ID && st.Team.StatusID != 0)
                             .Select(st => new TeamRecordViewModel
                             {
-                                SeriesID = st.ID,
+                                SeriesID = st.SeriesID,
                                 TeamID = st.TeamID,
-                                Name = _context.Team
-                                        .FirstOrDefault(t => t.ID == st.TeamID)
-                                        .Name,
+                                Logo = st.Team.Logo,
+                                Name = st.Team.Name,
                                 WinCount = st.WinCount,
                                 LossCount = st.LossCount,
                                 TieCount = _context.MatchTeam
