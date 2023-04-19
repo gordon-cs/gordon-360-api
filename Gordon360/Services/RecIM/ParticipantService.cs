@@ -152,8 +152,8 @@ namespace Gordon360.Services.RecIM
                                                    AllowEmails = p.AllowEmails,
                                                    SpecifiedGender = p.SpecifiedGender,
                                                    IsCustom = p.IsCustom,
-                                                   FirstName = p.FirstName != null ? p.FirstName : ps.FirstName,
-                                                   LastName = p.LastName != null ? p.LastName : ps.LastName,
+                                                   FirstName = p.FirstName ?? ps.FirstName,
+                                                   LastName = p.LastName ?? ps.LastName,
                                                })
                                join fs in _context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
                                from psfs in psfs_join.DefaultIfEmpty()
@@ -173,8 +173,8 @@ namespace Gordon360.Services.RecIM
                                    AllowEmails = new_ps.AllowEmails ?? true,
                                    SpecifiedGender = new_ps.SpecifiedGender,
                                    IsCustom = new_ps.IsCustom,
-                                   FirstName = new_ps.FirstName != null ? new_ps.FirstName : psfs.FirstName,
-                                   LastName = new_ps.LastName != null ? new_ps.LastName : psfs.LastName,
+                                   FirstName = new_ps.FirstName ?? psfs.FirstName,
+                                   LastName = new_ps.LastName ?? psfs.LastName,
                                };
 
             return participants.OrderBy(p => p.Username);
@@ -213,9 +213,9 @@ namespace Gordon360.Services.RecIM
             await _context.Participant.AddAsync(new Participant
             {
                 Username = newUsername,
-                SpecifiedGender = newCustomParticipant.SpecifiedGender ?? "U",
+                SpecifiedGender = newCustomParticipant.SpecifiedGender,
                 IsCustom = true,
-                AllowEmails = newCustomParticipant.AllowEmails ?? true,
+                AllowEmails = newCustomParticipant.AllowEmails,
                 FirstName = newCustomParticipant.FirstName,
                 LastName = newCustomParticipant.LastName,
             });
@@ -227,7 +227,7 @@ namespace Gordon360.Services.RecIM
                 //No defined end date for creation
             });
             await _context.SaveChangesAsync();
-            var participant = GetParticipantByUsername(username);
+            var participant = GetParticipantByUsername(newUsername);
             return participant;
         }
 
@@ -333,18 +333,20 @@ namespace Gordon360.Services.RecIM
 
         private string GetCustomUnqiueUsername(string username)
         {
-            if (_context.Participant.Any((p) => p.Username == username && p.IsCustom == true))
+            var customSuffix = ".custom";
+            if (_context.Participant.Any((p) => p.Username == username + customSuffix && p.IsCustom == true))
             {
                 var index = 2;
-                string newUsername = username + index.ToString();
-                while (_context.Participant.Any((p) => p.Username == newUsername && p.IsCustom == true))
+                string newUsername = "";
+                do
                 {
+                    newUsername = username + index.ToString() + customSuffix;
                     index++;
-                }
+                } while (_context.Participant.Any((p) => p.Username == newUsername && p.IsCustom == true));
                 return newUsername;
             }
             else
-                return username;
+                return username + customSuffix;
         }
     }
 

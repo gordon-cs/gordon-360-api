@@ -2,6 +2,7 @@
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
+    [AllowAnonymous]
     public class ParticipantsController : GordonControllerBase
     {
         private readonly IParticipantService _participantService;
@@ -72,7 +74,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPut]
         [Route("{username}/custom")]
-        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
+        //[StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
         public async Task<ActionResult<ParticipantExtendedViewModel>> AddCustomParticipant(string username, [FromBody] CustomParticipantViewModel newCustomParticipant)
         {
             var participant = await _participantService.PostCustomParticipantAsync(username, newCustomParticipant);
@@ -81,7 +83,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/custom/update")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
         public async Task<ActionResult<ParticipantExtendedViewModel>> SetCustomParticipant(string username, [FromBody] CustomParticipantViewModel updatedCustomParticipant)
         {
             var p = _participantService.GetParticipantByUsername(username);
@@ -94,7 +96,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/admin")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
         public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAdminStatus(string username, [FromBody] bool isAdmin)
         {
             var participant = await _participantService.SetParticipantAdminStatusAsync(username,isAdmin);
@@ -103,7 +105,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/emails")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAllowEmails(string username, [FromBody] bool allowEmails)
         {
             var participant = await _participantService.UpdateParticipantAllowEmailsAsync(username, allowEmails);
@@ -122,7 +124,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/activities")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
         {
 
@@ -132,7 +134,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/status")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
+        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult<ParticipantStatusHistoryViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
             var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
