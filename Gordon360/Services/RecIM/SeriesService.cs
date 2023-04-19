@@ -390,9 +390,12 @@ namespace Gordon360.Services.RecIM
                 .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
                 .Select(st => st.TeamID)
                 .ToList();
-            int numCycles = request.RoundRobinMatchCapacity ?? teams.Count;
+
+            int numCycles = request.RoundRobinMatchCapacity ?? teams.Count + 1 - teams.Count%2;
             //algorithm requires odd number of teams
-            teams.Add(-1);//-1 is not a valid true team ID thus will act as dummy team
+            if (teams.Count() % 2 == 0)
+                teams.Add(-1);//-1 is not a valid true team ID thus will act as dummy team
+
 
             SeriesScheduleViewModel schedule = series.Schedule;
             var availableSurfaces = series.SeriesSurface.ToArray();
