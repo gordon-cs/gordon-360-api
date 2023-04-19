@@ -77,8 +77,8 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
         {
             var teamQuery = active 
-                ? _context.Team.Where(t => !t.Activity.Completed == active && t.StatusID != 0) // 0 is deleted
-                : _context.Team;    
+                ? _context.Team.Where(t => t.Activity.Completed != active && t.StatusID != 0) // 0 is deleted
+                : _context.Team.Where(t => t.StatusID != 0);    
 
             var teams = teamQuery
                 .Include(t => t.SeriesTeam)
