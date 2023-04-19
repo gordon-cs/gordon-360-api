@@ -396,7 +396,6 @@ namespace Gordon360.Services.RecIM
             if (teams.Count() % 2 == 0)
                 teams.Add(-1);//-1 is not a valid true team ID thus will act as dummy team
 
-
             SeriesScheduleViewModel schedule = series.Schedule;
             var availableSurfaces = series.SeriesSurface.ToArray();
 
