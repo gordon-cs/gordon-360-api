@@ -580,6 +580,16 @@ namespace Gordon360.Services.RecIM
             var matchIDs = elimScheduler.Match.Select(es => es.ID);
             // int numNonBye = matchIDs.count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
 
+
+            // at this point first round matches have been made, bye round matches have been made
+
+            //@TODO
+            /**
+             *  1) losing teams in the bye round? not going to handle, bye round will be considered a play-in 
+             *  2) "second bracket" to be made (mirrors first)
+             */
+
+
             return createdMatches;
         }
 
@@ -838,7 +848,7 @@ namespace Gordon360.Services.RecIM
             };
         }
 
-        private async Task<IEnumerable<MatchBracketViewModel>> CreateEliminationBracket(List<int> matchesIDs, int roundNumber)
+        private async Task<IEnumerable<MatchBracketViewModel>> CreateEliminationBracket(List<int> matchesIDs, int roundNumber, bool isLosers = false)
         {
             var res = new List<MatchBracketViewModel>();
             int rounds = (int)Math.Log(matchesIDs.Count(), 2);
@@ -868,7 +878,7 @@ namespace Gordon360.Services.RecIM
                         RoundNumber = roundNumber,
                         RoundOf = matchArr.Length * 2,
                         SeedIndex = j,
-                        IsLosers = false //Double elimination not handled yet
+                        IsLosers = isLosers
                     };
                     await _context.MatchBracket.AddAsync(matchBracketPlacement);
                     res.Add(matchBracketPlacement);
