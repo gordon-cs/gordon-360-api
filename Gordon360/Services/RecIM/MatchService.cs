@@ -540,6 +540,27 @@ namespace Gordon360.Services.RecIM
             var match = _context.Match
                 .Include(m => m.MatchTeam)
                 .FirstOrDefault(m => m.ID == matchID);
+
+            if (match.StatusID == 6) //deleting a completed match needs to reset the win/loss record
+            {
+                var teams = _context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
+                    .OrderByDescending(mt => mt.SportsmanshipScore)
+                    .ThenByDescending(mt => mt.Score);
+                var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+
+                // not tie
+                if (teams.First().Score - teams.Last().Score != 0)
+                {
+                    //set winner
+                    var winner = seriesRecords.FirstOrDefault(st => st.TeamID == teams.First().TeamID);
+                    winner.WinCount--;
+                    winner.LossCount++; //done so that the foreach below does not need a conditional
+
+                    //set everyone 
+                    foreach (var team in teams)
+                        seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount--;
+                }
+            }
             match.StatusID = 0; //deleted status
 
             //delete matchteam
