@@ -577,8 +577,8 @@ namespace Gordon360.Services.RecIM
             //schedule first round
             var elimScheduler = await ScheduleElimRoundAsync(teams);
             int teamsInNextRound = elimScheduler.TeamsInNextRound;
-            var matchIDs = elimScheduler.Match.Select(es => es.ID);
-            // int numNonBye = matchIDs.count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
+            var matchIDs = elimScheduler.Match.Select(m => m.ID);
+            int numByeMatches = matchIDs.Count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
 
 
             // at this point first round matches have been made, bye round matches have been made
@@ -588,7 +588,63 @@ namespace Gordon360.Services.RecIM
              *  1) losing teams in the bye round? not going to handle, bye round will be considered a play-in 
              *  2) "second bracket" to be made (mirrors first)
              */
+            int byeMatchCounter = 0;
+            foreach (var matchID in matchIDs)
+            {
+                if (surfaceIndex == availableSurfaces.Length)
+                {
+                    surfaceIndex = 0;
+                    day = day.AddMinutes(schedule.EstMatchTime + 15);
+                }
+                while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
 
+                {
+                    day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                    scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                    dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                    surfaceIndex = 0;
+                }
+                var createdMatch = await _matchService.UpdateMatchAsync(matchID,
+                    new MatchPatchViewModel
+                    {
+                        StartTime = day,
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID
+                    });
+                createdMatches.Add(createdMatch);
+                surfaceIndex++;
+
+                // partition lower bracket
+                if (byeMatchCounter > numByeMatches)
+                {
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);
+                    }
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
+                    var lowerBracketMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                    {
+                        StartTime = day, 
+                        SeriesID = series.ID,
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
+                        TeamIDs = new List<int>()
+                    });
+                    createdMatches.Add(lowerBracketMatch);
+                    surfaceIndex++;
+                }
+                byeMatchCounter++;
+            }
 
             return createdMatches;
         }
