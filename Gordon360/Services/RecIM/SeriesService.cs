@@ -544,7 +544,43 @@ namespace Gordon360.Services.RecIM
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
-            throw new NotImplementedException();
+            var createdMatches = new List<MatchViewModel>();
+            var series = _context.Series
+                .Include(s => s.Schedule)
+                .FirstOrDefault(s => s.ID == seriesID);
+            var teams = _context.SeriesTeam
+                .Include(s => s.Team)
+                .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
+                .OrderByDescending(st => st.WinCount);
+
+
+            // seriesschedule casts start and end time to utc
+            SeriesScheduleViewModel schedule = series.Schedule;
+
+            var availableSurfaces = _context.SeriesSurface
+                                        .Where(ss => ss.SeriesID == seriesID)
+                                        .ToArray();
+
+            var day = series.StartDate;
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
+                .SpecifyUtc();
+            string dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+            // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
+            var end = schedule.EndTime.SpecifyUtc().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                .SpecifyUtc();
+
+            int surfaceIndex = 0;
+
+            //schedule first round
+            var elimScheduler = await ScheduleElimRoundAsync(teams);
+            int teamsInNextRound = elimScheduler.TeamsInNextRound;
+            var matchIDs = elimScheduler.Match.Select(es => es.ID);
+            // int numNonBye = matchIDs.count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
+
+            return createdMatches;
         }
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
