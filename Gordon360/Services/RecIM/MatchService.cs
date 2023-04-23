@@ -309,7 +309,8 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             foreach (var teamID in newMatch.TeamIDs)
             {
-                await CreateMatchTeamMappingAsync(teamID, match.ID);
+                if (teamID != -1) // do not create team mappings for fake teams
+                    await CreateMatchTeamMappingAsync(teamID, match.ID);
             }
             await _context.SaveChangesAsync();
             return match;

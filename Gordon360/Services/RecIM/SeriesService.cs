@@ -541,7 +541,11 @@ namespace Gordon360.Services.RecIM
             }
             return createdMatches;
         }
-
+        
+        /// <summary>
+        /// Current double elimination autoscheduling will consider "play-in" as a "play-in" tournament
+        /// Losers of the play in do not count for the double elimination bracket.
+        /// </summary>
         private async Task<IEnumerable<MatchViewModel>> ScheduleDoubleElimination(int seriesID)
         {
             var createdMatches = new List<MatchViewModel>();
@@ -586,8 +590,10 @@ namespace Gordon360.Services.RecIM
             //@TODO
             /**
              *  1) losing teams in the bye round? not going to handle, bye round will be considered a play-in 
+             *      * ammendment, will do it...
              *  2) "second bracket" to be made (mirrors first)
              */
+            var byeLoserTeams = new List<int>();
             int byeMatchCounter = 0;
             foreach (var matchID in matchIDs)
             {
@@ -766,6 +772,7 @@ namespace Gordon360.Services.RecIM
             }
             return createdMatches;
         }
+
 
         /// <summary>
         /// Goal of this function is to generate a single elimination round.
