@@ -580,14 +580,10 @@ namespace Gordon360.Services.RecIM
 
             //schedule play-in + first round
             var elimScheduler = await ScheduleElimRoundAsync(teams);
+            int teamsInNextRound = elimScheduler.TeamsInNextRound;
             var matchIDs = elimScheduler.Match.Select(m => m.ID);
             int numPlayInMatches = elimScheduler.NumByeTeams == 0 ? 0 : matchIDs.Count() - elimScheduler.TeamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
-
-            //schedule lower bracket play-in + first round
-            var byeLoserTeams = Enumerable.Repeat(new SeriesTeam { SeriesID = seriesID, TeamID = -1 }, matchIDs.Count()).ToList(); // generate pseudo teams
-            var losersScheduler = await ScheduleElimRoundAsync(byeLoserTeams);
-            var loserMatchIDs = losersScheduler.Match.Select(m => m.ID);
-
+            int numOfBracketParticipatingTeams = elimScheduler.NumByeTeams == 0 ? elimScheduler.TeamsInNextRound * 2 : elimScheduler.TeamsInNextRound; // play-in teams do not count
             // at this point first round matches have been made, bye round matches have been made
 
 
@@ -596,8 +592,6 @@ namespace Gordon360.Services.RecIM
              *  1) losing teams in the bye round? not going to handle, bye round will be considered a play-in 
              *  2) "second bracket" to be made (mirrors first)
              */
-
-            int i = 0;
             foreach (var matchID in matchIDs)
             {
                 if (surfaceIndex == availableSurfaces.Length)
@@ -623,8 +617,21 @@ namespace Gordon360.Services.RecIM
                     });
                 createdMatches.Add(createdMatch);
                 surfaceIndex++;
+            }
 
-                if ( i > numPlayInMatches )
+            //create matches for remaining rounds 
+            int roundNumber = 2; //scheduleElimRound will auto schedule the first 2 rounds for bracketing
+            while (teamsInNextRound > 1)
+            {
+                //reset between rounds + prime the pump from first round
+                day = day.AddDays(1);
+                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                surfaceIndex = 0;
+
+                for (int i = 0; i < teamsInNextRound / 2; i++)
                 {
                     if (surfaceIndex == availableSurfaces.Length)
                     {
@@ -632,7 +639,6 @@ namespace Gordon360.Services.RecIM
                         day = day.AddMinutes(schedule.EstMatchTime + 15);
                     }
                     while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
-
                     {
                         day = day.AddDays(1);
                         day = new DateTime(day.Year, day.Month, day.Day).Add(start);
@@ -641,19 +647,107 @@ namespace Gordon360.Services.RecIM
                         dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
                         surfaceIndex = 0;
                     }
-                    var createdLoserSideMatch = await _matchService.PostMatchAsync(
-                        new MatchUploadViewModel
-                        {
-                            StartTime = day,
-                            SeriesID = seriesID,
-                            SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
-                            TeamIDs = new List<int>().AsEnumerable(), 
-                        });
-                    createdMatches.Add(createdLoserSideMatch);
+
+                    var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                    {
+                        StartTime = day,
+                        SeriesID = series.ID,
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
+                        TeamIDs = new List<int>().AsEnumerable() //no teams
+                    });
+                    createdMatches.Add(createdMatch);
+
+                    var matchBracketPlacement = new MatchBracket()
+                    {
+                        MatchID = createdMatch.ID,
+                        RoundNumber = roundNumber,
+                        RoundOf = teamsInNextRound,
+                        SeedIndex = i,
+                        IsLosers = false 
+                    };
+                    await _context.MatchBracket.AddAsync(matchBracketPlacement);
+                    await _context.SaveChangesAsync();
                     surfaceIndex++;
                 }
-                i++;
-                
+                roundNumber++;
+                teamsInNextRound /= 2;
+            }
+            //temporary solution: losers bracket will be played in the time between winners finals -> grandfinals
+            int j = 0;
+            roundNumber = 0;
+            while (numOfBracketParticipatingTeams > 1)
+            {
+                //reset between rounds + prime the pump from first round
+                day = day.AddDays(1);
+                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                surfaceIndex = 0;
+
+                // round modfier, for a lack of a better name, is used to calculate losers current round and how to handle the round
+                // - losers bracket alternates between matches among the teams of the lower bracket and teams that JUST lost from the winners side
+                var roundModifier = j % 2 == 0 ? 2 : 1;
+
+                for (int i = 0; i < numOfBracketParticipatingTeams / roundModifier; i++)
+                {
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);
+                    }
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
+
+                    var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                    {
+                        StartTime = day,
+                        SeriesID = series.ID,
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
+                        TeamIDs = new List<int>().AsEnumerable() //no teams
+                    });
+                    createdMatches.Add(createdMatch);
+
+                    var matchBracketPlacement = new MatchBracket()
+                    {
+                        MatchID = createdMatch.ID,
+                        RoundNumber = roundNumber,
+                        RoundOf = numOfBracketParticipatingTeams,
+                        SeedIndex = i,
+                        IsLosers = false
+                    };
+                    await _context.MatchBracket.AddAsync(matchBracketPlacement);
+                    await _context.SaveChangesAsync();
+                    surfaceIndex++;
+                }
+                numOfBracketParticipatingTeams /= roundModifier;
+                j++;
+                roundNumber++;
+            }
+
+
+
+            // GRAND FINALS (played on the same day [if possible] as the losers bracket)
+            if (surfaceIndex == availableSurfaces.Length)
+            {
+                surfaceIndex = 0;
+                day = day.AddMinutes(schedule.EstMatchTime + 15);
+            }
+            while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+            {
+                day = day.AddDays(1);
+                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                surfaceIndex = 0;
             }
 
             return createdMatches;
