@@ -266,7 +266,6 @@ namespace Gordon360.Services.RecIM
             return participant;
         }
 
-        // change to ParticipantUploadViewModel: a new viewmodel only for adds custom participants
         public async Task<ParticipantExtendedViewModel> PostCustomParticipantAsync(string username, CustomParticipantViewModel newCustomParticipant)
         {
             var newUsername = GetCustomUnqiueUsername(username);
