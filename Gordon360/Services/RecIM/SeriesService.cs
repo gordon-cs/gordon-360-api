@@ -652,7 +652,7 @@ namespace Gordon360.Services.RecIM
                     {
                         StartTime = day,
                         SeriesID = series.ID,
-                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
                         TeamIDs = new List<int>().AsEnumerable() //no teams
                     });
                     createdMatches.Add(createdMatch);
@@ -710,7 +710,7 @@ namespace Gordon360.Services.RecIM
                     {
                         StartTime = day,
                         SeriesID = series.ID,
-                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, //temporary before 25live integration
+                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
                         TeamIDs = new List<int>().AsEnumerable() //no teams
                     });
                     createdMatches.Add(createdMatch);
@@ -721,7 +721,7 @@ namespace Gordon360.Services.RecIM
                         RoundNumber = roundNumber,
                         RoundOf = numOfBracketParticipatingTeams,
                         SeedIndex = i,
-                        IsLosers = false
+                        IsLosers = true
                     };
                     await _context.MatchBracket.AddAsync(matchBracketPlacement);
                     await _context.SaveChangesAsync();
@@ -735,19 +735,42 @@ namespace Gordon360.Services.RecIM
 
 
             // GRAND FINALS (played on the same day [if possible] as the losers bracket)
-            if (surfaceIndex == availableSurfaces.Length)
+            for (int i = 1; i < 3; i++)
             {
-                surfaceIndex = 0;
-                day = day.AddMinutes(schedule.EstMatchTime + 15);
-            }
-            while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
-            {
-                day = day.AddDays(1);
-                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
-                scheduleEndTime = scheduleEndTime.AddDays(1);
+                if (surfaceIndex == availableSurfaces.Length)
+                {
+                    surfaceIndex = 0;
+                    day = day.AddMinutes(schedule.EstMatchTime + 15);
+                }
+                while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                {
+                    day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                    scheduleEndTime = scheduleEndTime.AddDays(1);
 
-                dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
-                surfaceIndex = 0;
+                    dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                    surfaceIndex = 0;
+                }
+                var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
+                {
+                    StartTime = day,
+                    SeriesID = series.ID,
+                    SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
+                    TeamIDs = new List<int>().AsEnumerable() //no teams
+                });
+                createdMatches.Add(createdMatch);
+
+                var matchBracketPlacement = new MatchBracket()
+                {
+                    MatchID = createdMatch.ID,
+                    RoundNumber = roundNumber + i,
+                    RoundOf = 2,
+                    SeedIndex = 0,
+                    IsLosers = true
+                };
+                await _context.MatchBracket.AddAsync(matchBracketPlacement);
+                await _context.SaveChangesAsync();
+                surfaceIndex++;
             }
 
             return createdMatches;
