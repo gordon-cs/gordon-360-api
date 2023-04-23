@@ -587,11 +587,6 @@ namespace Gordon360.Services.RecIM
             // at this point first round matches have been made, bye round matches have been made
 
 
-            //@TODO
-            /**
-             *  1) losing teams in the bye round? not going to handle, bye round will be considered a play-in 
-             *  2) "second bracket" to be made (mirrors first)
-             */
             foreach (var matchID in matchIDs)
             {
                 if (surfaceIndex == availableSurfaces.Length)
@@ -672,10 +667,10 @@ namespace Gordon360.Services.RecIM
                 roundNumber++;
                 teamsInNextRound /= 2;
             }
-            //temporary solution: losers bracket will be played in the time between winners finals -> grandfinals
+            //current solution: losers bracket will be played in the time between winners finals -> grandfinals
             int j = 0;
             roundNumber = 0;
-            while (numOfBracketParticipatingTeams > 1)
+            while (numOfBracketParticipatingTeams > 0)
             {
                 //reset between rounds + prime the pump from first round
                 day = day.AddDays(1);
@@ -685,11 +680,9 @@ namespace Gordon360.Services.RecIM
                 dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
                 surfaceIndex = 0;
 
-                // round modfier, for a lack of a better name, is used to calculate losers current round and how to handle the round
-                // - losers bracket alternates between matches among the teams of the lower bracket and teams that JUST lost from the winners side
-                var roundModifier = j % 2 == 0 ? 2 : 1;
 
-                for (int i = 0; i < numOfBracketParticipatingTeams / roundModifier; i++)
+                // - losers bracket alternates between matches among the teams of the lower bracket and teams that JUST lost from the winners side
+                for (int i = 0; i < numOfBracketParticipatingTeams / (j % 2 == 0 ? 2 : 1); i++)
                 {
                     if (surfaceIndex == availableSurfaces.Length)
                     {
@@ -727,12 +720,10 @@ namespace Gordon360.Services.RecIM
                     await _context.SaveChangesAsync();
                     surfaceIndex++;
                 }
-                numOfBracketParticipatingTeams /= roundModifier;
+                numOfBracketParticipatingTeams /= (j % 2 == 0 ? 2 : 1);
                 j++;
                 roundNumber++;
             }
-
-
 
             // GRAND FINALS (played on the same day [if possible] as the losers bracket)
             for (int i = 1; i < 3; i++)
