@@ -395,7 +395,7 @@ namespace Gordon360.Services.RecIM
 
         private string GetCustomUnqiueUsername(string username)
         {
-            var customSuffix = "Custom";
+            var customSuffix = ".custom";
             if (_context.Participant.Any((p) => p.Username == username + customSuffix && p.IsCustom == true))
             {
                 var index = 2;
