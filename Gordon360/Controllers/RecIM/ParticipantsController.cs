@@ -104,7 +104,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("{username}/custom")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
-        public async Task<ActionResult<ParticipantExtendedViewModel>> AddCustomParticipant(string username, [FromBody] CustomParticipantViewModel newCustomParticipant)
+        public async Task<ActionResult<ParticipantExtendedViewModel>> AddCustomParticipantAsync(string username, [FromBody] CustomParticipantViewModel newCustomParticipant)
         {
             var participant = await _participantService.PostCustomParticipantAsync(username, newCustomParticipant);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
