@@ -74,8 +74,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("search/{searchString}")]
         public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchAsync(string searchString)
         {
-            //var username = AuthUtils.GetUsername(User);
-            var isAdmin = true;// _participantService.IsAdmin(username);
+            var username = AuthUtils.GetUsername(User);
+            var isAdmin = _participantService.IsAdmin(username);
 
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
             if (isAdmin)
