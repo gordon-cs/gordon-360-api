@@ -581,10 +581,10 @@ namespace Gordon360.Services.RecIM
             //schedule play-in + first round
             var elimScheduler = await ScheduleElimRoundAsync(teams);
             var matchIDs = elimScheduler.Match.Select(m => m.ID);
-            int numByeMatches = matchIDs.Count() - elimScheduler.TeamsInNextRound;
+            int numPlayInMatches = elimScheduler.NumByeTeams == 0 ? 0 : matchIDs.Count() - elimScheduler.TeamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
 
             //schedule lower bracket play-in + first round
-            var byeLoserTeams = Enumerable.Repeat(new SeriesTeam { SeriesID = seriesID, TeamID = -1 }, numByeMatches).ToList(); // generate pseudo teams
+            var byeLoserTeams = Enumerable.Repeat(new SeriesTeam { SeriesID = seriesID, TeamID = -1 }, matchIDs.Count()).ToList(); // generate pseudo teams
             var losersScheduler = await ScheduleElimRoundAsync(byeLoserTeams);
             var loserMatchIDs = losersScheduler.Match.Select(m => m.ID);
 
@@ -594,7 +594,6 @@ namespace Gordon360.Services.RecIM
             //@TODO
             /**
              *  1) losing teams in the bye round? not going to handle, bye round will be considered a play-in 
-             *      * ammendment, will do it...
              *  2) "second bracket" to be made (mirrors first)
              */
 
@@ -625,6 +624,35 @@ namespace Gordon360.Services.RecIM
                 createdMatches.Add(createdMatch);
                 surfaceIndex++;
 
+                if ( i > numPlayInMatches )
+                {
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);
+                    }
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
+                    var createdLoserSideMatch = await _matchService.PostMatchAsync(
+                        new MatchUploadViewModel
+                        {
+                            StartTime = day,
+                            SeriesID = seriesID,
+                            SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
+                            TeamIDs = new List<int>().AsEnumerable(), 
+                        });
+                    createdMatches.Add(createdLoserSideMatch);
+                    surfaceIndex++;
+                }
+                i++;
                 
             }
 
@@ -667,7 +695,7 @@ namespace Gordon360.Services.RecIM
             var elimScheduler = await ScheduleElimRoundAsync(teams);
             int teamsInNextRound = elimScheduler.TeamsInNextRound;
             var matchIDs = elimScheduler.Match.Select(es => es.ID);
-            // int numNonBye = matchIDs.count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
+            //int numPlayInMatches = elimScheduler.NumByeTeams == 0 ? 0 : matchIDs.Count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
             foreach (var matchID in matchIDs)
             {
                 if (surfaceIndex == availableSurfaces.Length)
