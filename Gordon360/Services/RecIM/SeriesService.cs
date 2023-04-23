@@ -578,14 +578,18 @@ namespace Gordon360.Services.RecIM
 
             int surfaceIndex = 0;
 
-            //schedule first round
+            //schedule play-in + first round
             var elimScheduler = await ScheduleElimRoundAsync(teams);
-            int teamsInNextRound = elimScheduler.TeamsInNextRound;
             var matchIDs = elimScheduler.Match.Select(m => m.ID);
-            int numByeMatches = matchIDs.Count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
+            int numByeMatches = matchIDs.Count() - elimScheduler.TeamsInNextRound;
 
+            //schedule lower bracket play-in + first round
+            var byeLoserTeams = Enumerable.Repeat(new SeriesTeam { SeriesID = seriesID, TeamID = -1 }, numByeMatches).ToList(); // generate pseudo teams
+            var losersScheduler = await ScheduleElimRoundAsync(byeLoserTeams);
+            var loserMatchIDs = losersScheduler.Match.Select(m => m.ID);
 
             // at this point first round matches have been made, bye round matches have been made
+
 
             //@TODO
             /**
@@ -593,8 +597,8 @@ namespace Gordon360.Services.RecIM
              *      * ammendment, will do it...
              *  2) "second bracket" to be made (mirrors first)
              */
-            var byeLoserTeams = new List<int>();
-            int byeMatchCounter = 0;
+
+            int i = 0;
             foreach (var matchID in matchIDs)
             {
                 if (surfaceIndex == availableSurfaces.Length)
@@ -621,35 +625,7 @@ namespace Gordon360.Services.RecIM
                 createdMatches.Add(createdMatch);
                 surfaceIndex++;
 
-                // partition lower bracket
-                if (byeMatchCounter > numByeMatches)
-                {
-                    if (surfaceIndex == availableSurfaces.Length)
-                    {
-                        surfaceIndex = 0;
-                        day = day.AddMinutes(schedule.EstMatchTime + 15);
-                    }
-                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
-
-                    {
-                        day = day.AddDays(1);
-                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
-                        scheduleEndTime = scheduleEndTime.AddDays(1);
-
-                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
-                        surfaceIndex = 0;
-                    }
-                    var lowerBracketMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
-                    {
-                        StartTime = day, 
-                        SeriesID = series.ID,
-                        SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
-                        TeamIDs = new List<int>()
-                    });
-                    createdMatches.Add(lowerBracketMatch);
-                    surfaceIndex++;
-                }
-                byeMatchCounter++;
+                
             }
 
             return createdMatches;
@@ -783,7 +759,7 @@ namespace Gordon360.Services.RecIM
         /// with the context that surfaces need to be booked ahead of time on 25Live
         /// </summary>
         /// <returns>Matches created as well as number of teams in the next round</returns>
-        public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<SeriesTeam> involvedTeams)
+        public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<SeriesTeam> involvedTeams, bool isLosers = false)
         {
             int numTeams = involvedTeams.Count();
             int remainingTeamCount = involvedTeams.Count();
@@ -797,11 +773,12 @@ namespace Gordon360.Services.RecIM
             // Play-off round needs to be calculated to ensure that the first round is in a power of 2
             while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0))) 
             {
-                await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
-                {
-                    ID = teams.Last().ID,
-                    WinCount = 1 //Bye round
-                }) ;
+                if (teams.Last().ID != -1)
+                    await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
+                    {
+                        ID = teams.Last().ID,
+                        WinCount = 1 //Bye round
+                    });
                 byeTeams.Add(teams.Last().TeamID);
                 teams = teams.Take(--remainingTeamCount);
                 numByes++;
@@ -823,7 +800,10 @@ namespace Gordon360.Services.RecIM
                 }
             else
                 for (int i = 0; i < (teamPairings.Count() - byeTeams.Count) / 2; i++)
+                {
                     secondRoundPlayInPairs.Add(new List<int>());
+                    if (isLosers) secondRoundPlayInPairs.Add(new List<int>()); // double elim losers side needs twice as many matches
+                }
 
 
             foreach (int teamID in byeTeams)
@@ -882,6 +862,7 @@ namespace Gordon360.Services.RecIM
             }
 
             // Empty pairs, only happens if number of teams is greater than 24, where play-in matches outnumber bye matches. Last in order for bracket ordering.
+            // or when teams are already in a power of 2
             foreach (var emptyMatchPair in secondRoundPlayInPairs)
             {
                 var createdMatch = await _matchService.PostMatchAsync(new MatchUploadViewModel
@@ -899,9 +880,9 @@ namespace Gordon360.Services.RecIM
             List<int> allMatches = fullByeMatches.Concat(byePairMatches.Concat(playInMatches)).ToList();
 
             // bracket place first round
-            await CreateEliminationBracket(allMatches, 0);
+            await CreateEliminationBracket(allMatches, 0, isLosers);
             // bracket place second round
-            await CreateEliminationBracket(secondRoundMatches, 1);
+            await CreateEliminationBracket(secondRoundMatches, 1, isLosers);
 
             return new EliminationRound
             {
@@ -911,7 +892,7 @@ namespace Gordon360.Services.RecIM
             };
         }
 
-        private async Task<IEnumerable<MatchBracketViewModel>> CreateEliminationBracket(List<int> matchesIDs, int roundNumber, bool isLosers = false)
+        private async Task<IEnumerable<MatchBracketViewModel>> CreateEliminationBracket(List<int> matchesIDs, int roundNumber, bool isLosers)
         {
             var res = new List<MatchBracketViewModel>();
             int rounds = (int)Math.Log(matchesIDs.Count(), 2);
