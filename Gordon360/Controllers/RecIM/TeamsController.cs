@@ -3,6 +3,7 @@ using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
+    [AllowAnonymous]
     public class TeamsController : GordonControllerBase
     {
         private readonly ITeamService _teamService;
@@ -120,7 +122,7 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
         public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeam(int teamID, ParticipantTeamUploadViewModel participant)
         {
-            var inviterUsername = AuthUtils.GetUsername(User);
+            var inviterUsername = "";// AuthUtils.GetUsername(User);
             var activityID = _teamService.GetTeamActivityID(teamID);
             if (!_teamService.HasUserJoined(activityID, participant.Username) || _participantService.IsAdmin(inviterUsername))
             {

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Services.RecIM
 {
@@ -61,7 +63,7 @@ namespace Gordon360.Services.RecIM
                                 .Select(p => new ParticipantExtendedViewModel
                                 {
                                     Username = username,
-                                    Email = accountEmail,
+                                    Email = accountEmail ?? p.Email,
                                     Status = p.ParticipantStatusHistory
                                                 .OrderByDescending(psh => psh.ID)
                                                 .FirstOrDefault()
@@ -75,8 +77,8 @@ namespace Gordon360.Services.RecIM
                                     IsAdmin = p.IsAdmin,
                                     SpecifiedGender = p.SpecifiedGender,
                                     IsCustom = p.IsCustom,
-                                    FirstName = p.FirstName,
-                                    LastName = p.LastName,
+                                    FirstName = GetParticipantFirstName(username),
+                                    LastName = GetParticipantLastName(username),
                                 })
                                 .FirstOrDefault();
             return participant;
@@ -150,6 +152,7 @@ namespace Gordon360.Services.RecIM
                                                    Username = p.Username,
                                                    IsAdmin = p.IsAdmin,
                                                    AllowEmails = p.AllowEmails,
+                                                   Email = p.Email,
                                                    SpecifiedGender = p.SpecifiedGender,
                                                    IsCustom = p.IsCustom,
                                                    FirstName = p.FirstName ?? ps.FirstName,
@@ -171,6 +174,7 @@ namespace Gordon360.Services.RecIM
                                              }
                                             ).FirstOrDefault().Description,
                                    AllowEmails = new_ps.AllowEmails ?? true,
+                                   Email = new_ps.Email,
                                    SpecifiedGender = new_ps.SpecifiedGender,
                                    IsCustom = new_ps.IsCustom,
                                    FirstName = new_ps.FirstName ?? psfs.FirstName,
@@ -178,6 +182,63 @@ namespace Gordon360.Services.RecIM
                                };
 
             return participants.OrderBy(p => p.Username);
+        }
+
+        public IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo()
+        {
+            var customParticipants = from p in _context.Participant
+                                     where p.IsCustom == true
+                                     select new BasicInfoViewModel
+                                     {
+                                         FirstName = p.FirstName,
+                                         LastName = p.LastName,
+                                         UserName = p.Username,
+                                         Nickname = null,
+                                         MaidenName = null,
+                                     };
+            return customParticipants;
+        }
+
+        public string GetParticipantFirstName(string username)
+        {
+            var firstName = (from new_ps in (from p in _context.Participant
+                                            join s in _context.Student on p.Username equals s.AD_Username into ps_join
+                                            from ps in ps_join.DefaultIfEmpty()
+                                            where p.Username == username
+                                            select new
+                                            {
+                                                Username = p.Username,
+                                                FirstName = p.FirstName ?? ps.FirstName,
+                                            })
+                            join fs in _context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
+                            from psfs in psfs_join.DefaultIfEmpty()
+                            select new_ps.FirstName ?? psfs.FirstName).Single();
+            return firstName;
+        }
+
+        public string GetParticipantLastName(string username)
+        {
+            var lastName = (from new_ps in (from p in _context.Participant
+                                            join s in _context.Student on p.Username equals s.AD_Username into ps_join
+                                            from ps in ps_join.DefaultIfEmpty()
+                                            where p.Username == username
+                                            select new
+                                            {
+                                                Username = p.Username,
+                                                LastName = p.LastName ?? ps.LastName,
+                                            })
+                            join fs in _context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
+                            from psfs in psfs_join.DefaultIfEmpty()
+                            select new_ps.LastName ?? psfs.LastName).Single();
+            return lastName;
+        }
+
+        public bool GetParticipantIsCustom(string username)
+        {
+            var isCustom = (from p in _context.Participant
+                            where p.Username == username
+                            select p.IsCustom).Single();
+            return isCustom;
         }
 
         public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
@@ -216,6 +277,7 @@ namespace Gordon360.Services.RecIM
                 SpecifiedGender = newCustomParticipant.SpecifiedGender,
                 IsCustom = true,
                 AllowEmails = newCustomParticipant.AllowEmails,
+                Email = newCustomParticipant.Email,
                 FirstName = newCustomParticipant.FirstName,
                 LastName = newCustomParticipant.LastName,
             });
@@ -254,6 +316,7 @@ namespace Gordon360.Services.RecIM
             participant.LastName = updatedParticipant.LastName ?? participant.LastName;
             participant.SpecifiedGender = updatedParticipant.SpecifiedGender ?? participant.SpecifiedGender;
             participant.AllowEmails = updatedParticipant.AllowEmails ?? participant.AllowEmails;
+            participant.Email = updatedParticipant.Email ?? participant.Email;
 
             await _context.SaveChangesAsync();
             return GetParticipantByUsername(username);
@@ -333,7 +396,7 @@ namespace Gordon360.Services.RecIM
 
         private string GetCustomUnqiueUsername(string username)
         {
-            var customSuffix = ".custom";
+            var customSuffix = "Custom";
             if (_context.Participant.Any((p) => p.Username == username + customSuffix && p.IsCustom == true))
             {
                 var index = 2;

@@ -39,6 +39,9 @@ namespace Gordon360.Models.CCT
         [StringLength(20)]
         [Unicode(false)]
         public string LastName { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Email { get; set; }
 
         [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }

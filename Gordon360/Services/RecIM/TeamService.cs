@@ -94,7 +94,10 @@ namespace Gordon360.Services.RecIM
                         .Select(pt => new ParticipantExtendedViewModel
                         {
                             Username = pt.ParticipantUsername,
-                            Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
+                            FirstName = _participantService.GetParticipantFirstName(pt.ParticipantUsername),
+                            LastName = _participantService.GetParticipantLastName(pt.ParticipantUsername),
+                            IsCustom = _participantService.GetParticipantIsCustom(pt.ParticipantUsername),
+                            Email = _context.Participant.First(p => p.Username == pt.ParticipantUsername).Email ?? _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                             Role = pt.RoleType.Description,
                         }),
                     TeamRecord = t.SeriesTeam
@@ -141,10 +144,13 @@ namespace Gordon360.Services.RecIM
                                                 .Select(pt => new ParticipantExtendedViewModel
                                                 {
                                                     Username = pt.ParticipantUsername,
-                                                    Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
+                                                    FirstName = _participantService.GetParticipantFirstName(pt.ParticipantUsername),
+                                                    LastName = _participantService.GetParticipantLastName(pt.ParticipantUsername),
+                                                    IsCustom = _participantService.GetParticipantIsCustom(pt.ParticipantUsername),
+                                                    Email = _context.Participant.First(p => p.Username == pt.ParticipantUsername).Email ?? _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                                     Role = pt.RoleType.Description,
-                                                    GamesAttended = _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == pt.ParticipantUsername)
-        }),
+                                                    GamesAttended = _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == pt.ParticipantUsername),
+                                                }),
                                 MatchHistory = _context.Match.Where(m => m.StatusID == 6 || m.StatusID == 4) // completed or forfeited status
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
@@ -383,23 +389,29 @@ namespace Gordon360.Services.RecIM
             return t;
         }
 
-        private void SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
+        private void SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername, bool isCustom)
         {
             var team = _context.Team
                 .Include(t => t.Activity)
                 .FirstOrDefault(t => t.ID == teamID);
-            var invitee = _accountService.GetAccountByUsername(inviteeUsername);
+            var invitee = _participantService.GetParticipantByUsername(inviteeUsername);
             var inviter = _accountService.GetAccountByUsername(inviterUsername);
             var password = _config["Emails:RecIM:Password"];
             string from_email = _config["Emails:RecIM:Username"];
             string to_email = invitee.Email;
-            string messageBody =
-                 $"Hey {invitee.FirstName}!<br><br>" +
+            string messageBody = isCustom ? ($"Hey {invitee.FirstName}!<br><br>" +
                 $"{inviter.FirstName} {inviter.LastName} has invited you join <b>{team.Name}</b> for <b>{team.Activity.Name}</b> <br>" +
                 $"Registration closes on <i>{team.Activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
                 $"<a href='{_config["RecIM_Url"]}'>Respond to your invite on 360/recim</a>! <br><br>" +
-                $"Gordon Rec-IM";
-            string subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!";
+                $"Gordon Rec-IM") : (
+                    $"Hey {invitee.FirstName}!<br><br>" +
+                    $"{inviter.FirstName} {inviter.LastName} has added you to <b>{team.Name}</b> for <b>{team.Activity.Name}</b> <br>" +
+                    $"Registration closes on <i>{team.Activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
+                    $"<a href='{_config["RecIM_Url"]}'>You are now a member of <b>{team.Name}</b></a>! <br><br>" +
+                    $"Gordon Rec-IM"
+                );
+            string subject = isCustom ? $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has added you to a team!"
+                : $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!";
 
             _emailService.SendEmails(new string[] {to_email},from_email,subject,messageBody,password);
         }
@@ -416,6 +428,11 @@ namespace Gordon360.Services.RecIM
                 throw new UnprocessibleEntity { ExceptionMessage = $"Participant {participant.Username} is already in this team" };
 
             // if a participant is "deleted, modify the existing participantTeam instance
+            var isCustom = _participantService.GetParticipantIsCustom(participant.Username);
+            if (isCustom)
+            {
+                participant.RoleTypeID = participant.RoleTypeID == null || participant.RoleTypeID == 2 ? 3 : participant.RoleTypeID;
+            }
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == participant.Username && pt.RoleTypeID == 0);
             if (participantTeam is ParticipantTeam pt)
             {
@@ -438,7 +455,7 @@ namespace Gordon360.Services.RecIM
             if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
                 if (_context.Participant.Find(participant.Username).AllowEmails ?? true)
-                    SendInviteEmail(teamID, participant.Username, inviterUsername);
+                    SendInviteEmail(teamID, participant.Username, inviterUsername, isCustom);
             }
             return participantTeam;
         }

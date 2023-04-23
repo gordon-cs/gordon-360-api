@@ -366,6 +366,10 @@ namespace Gordon360.Services
         {
             IEnumerable<LookupViewModel>? GetParticipantLookup(string type);
             IEnumerable<ParticipantExtendedViewModel> GetParticipants();
+            string GetParticipantFirstName(string username);
+            string GetParticipantLastName(string username);
+            bool GetParticipantIsCustom(string username);
+            IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
             ParticipantExtendedViewModel GetParticipantByUsername(string username);
             IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
