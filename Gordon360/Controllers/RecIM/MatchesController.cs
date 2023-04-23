@@ -82,11 +82,11 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("surfaces")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SURFACE)]
-        public async Task<ActionResult<SurfaceViewModel>> PostSurface(SurfaceUploadViewModel newSurface)
+        public async Task<ActionResult<SurfaceViewModel>> PostSurfaceAsync(SurfaceUploadViewModel newSurface)
         {
             if (newSurface.Name is null && newSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
             var res = await _matchService.PostSurfaceAsync(newSurface);
-            return CreatedAtAction(nameof(UpdateSurface), new { surfaceID = res.ID }, res);
+            return CreatedAtAction(nameof(GetSurfaces), new { surfaceID = res.ID }, res);
         }
 
         /// <summary>
@@ -98,13 +98,13 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("surfaces/{surfaceID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SURFACE)]
-        public async Task<ActionResult<SurfaceViewModel>> UpdateSurface(int surfaceID, SurfaceUploadViewModel updatedSurface)
+        public async Task<ActionResult<SurfaceViewModel>> UpdateSurfaceAsync(int surfaceID, SurfaceUploadViewModel updatedSurface)
         {
             if (surfaceID == 1) //default to be decided surface
                 return UnprocessableEntity("Default surface cannot be modified or deleted");
             if (updatedSurface.Name is null && updatedSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
             var res = await _matchService.UpdateSurfaceAsync(surfaceID, updatedSurface);
-            return CreatedAtAction(nameof(UpdateSurface), new { surfaceID = res.ID }, res);
+            return CreatedAtAction(nameof(GetSurfaces), new { surfaceID = res.ID }, res);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpDelete]
         [Route("surfaces/{surfaceID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SURFACE)]
-        public async Task<ActionResult> DeleteSurface(int surfaceID)
+        public async Task<ActionResult> DeleteSurfaceAsync(int surfaceID)
         {
             if (surfaceID == 1) //default to be decided surface
                 return UnprocessableEntity("Default surface cannot be modified or deleted");
@@ -133,7 +133,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{matchID}/stats")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<MatchTeamViewModel>> UpdateStats(int matchID, MatchStatsPatchViewModel updatedMatch)
+        public async Task<ActionResult<MatchTeamViewModel>> UpdateStatsAsync(int matchID, MatchStatsPatchViewModel updatedMatch)
         {
             var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
             return Ok(stats);
@@ -148,7 +148,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{matchID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<MatchViewModel>> UpdateMatch(int matchID, MatchPatchViewModel updatedMatch)
+        public async Task<ActionResult<MatchViewModel>> UpdateMatchAsync(int matchID, MatchPatchViewModel updatedMatch)
         {
             var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
             return CreatedAtAction(nameof(GetMatchByID), new { matchID = match.ID }, match);
@@ -162,7 +162,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<MatchViewModel>> CreateMatch(MatchUploadViewModel newMatch)
+        public async Task<ActionResult<MatchViewModel>> CreateMatchAsync(MatchUploadViewModel newMatch)
         {
             var match = await _matchService.PostMatchAsync(newMatch);
             return CreatedAtAction(nameof(GetMatchByID), new { matchID = match.ID }, match);
@@ -176,7 +176,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpDelete]
         [Route("{matchID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult> DeleteMatchCascade(int matchID)
+        public async Task<ActionResult> DeleteMatchCascadeAsync(int matchID)
         {
             var res = await _matchService.DeleteMatchCascadeAsync(matchID);
             return Ok(res);
@@ -193,7 +193,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("{matchID}/attendance")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<IEnumerable<MatchAttendance>>> PutParticipantAttendance(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
+        public async Task<ActionResult<IEnumerable<MatchAttendance>>> PutParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
         {
             var attendance = await _teamService.PutParticipantAttendanceAsync(matchID, teamAttendanceList);
             return CreatedAtAction(nameof(GetMatchAttendanceByMatchID), new { matchID = matchID }, attendance);
@@ -209,7 +209,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("{matchID}/attendance")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendance(int matchID, MatchAttendance attendee)
+        public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
         {
             var attendance = await _matchService.AddParticipantAttendanceAsync(matchID, attendee);
             return Ok(attendance);
@@ -224,7 +224,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpDelete]
         [Route("{matchID}/attendance")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
-        public async Task<ActionResult<IEnumerable<MatchAttendance>>> DeleteParticipantAttendance(int matchID, MatchAttendance attendee)
+        public async Task<ActionResult<IEnumerable<MatchAttendance>>> DeleteParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
         {
             await _matchService.DeleteParticipantAttendanceAsync(matchID, attendee);
             return NoContent();
