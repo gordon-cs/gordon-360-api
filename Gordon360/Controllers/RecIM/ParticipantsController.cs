@@ -154,7 +154,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPatch]
         [Route("{username}/activities")]
-        //[StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
         public async Task<ActionResult> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
         {
 
