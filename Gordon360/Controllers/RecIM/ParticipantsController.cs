@@ -64,7 +64,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPut]
         [Route("{username}")]
-        public async Task<ActionResult<ParticipantExtendedViewModel>> AddParticipant(string username)
+        public async Task<ActionResult<ParticipantExtendedViewModel>> AddParticipantAsync(string username)
         {
             var participant = await _participantService.PostParticipantAsync(username);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
@@ -73,7 +73,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{username}/admin")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
-        public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAdminStatus(string username, [FromBody] bool isAdmin)
+        public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAdminStatusAsync(string username, [FromBody] bool isAdmin)
         {
             var participant = await _participantService.SetParticipantAdminStatusAsync(username,isAdmin);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
@@ -91,7 +91,7 @@ namespace Gordon360.Controllers.RecIM
 
         [HttpPost]
         [Route("{username}/notifications")]
-        public async Task<ActionResult<ParticipantNotificationViewModel>> SendParticipantNotification(string username, ParticipantNotificationUploadViewModel notificationVM)
+        public async Task<ActionResult<ParticipantNotificationViewModel>> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM)
         {
             var notification = await _participantService.SendParticipantNotificationAsync(username, notificationVM);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { participantUsername = notification.ParticipantUsername }, notification);
@@ -101,7 +101,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{username}/activities")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
-        public async Task<ActionResult> UpdateParticipantActivity(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
+        public async Task<ActionResult> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
         {
 
             var participant = await _participantService.UpdateParticipantActivityAsync(username, updatedParticipantActivity);
@@ -111,7 +111,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{username}/status")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
-        public async Task<ActionResult<ParticipantStatusHistoryViewModel>> UpdateParticipantStatus(string username, ParticipantStatusPatchViewModel updatedParticipant)
+        public async Task<ActionResult<ParticipantStatusHistoryViewModel>> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel updatedParticipant)
         {
             var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = status.ParticipantUsername }, status);

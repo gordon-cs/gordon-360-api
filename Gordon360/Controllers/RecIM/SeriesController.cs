@@ -87,7 +87,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{seriesID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<SeriesViewModel>> UpdateSeries(int seriesID, SeriesPatchViewModel updatedSeries)
+        public async Task<ActionResult<SeriesViewModel>> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel updatedSeries)
         {
             var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
             return CreatedAtAction(nameof(GetSeriesByID), new { seriesID = series.ID }, series);
@@ -102,7 +102,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<SeriesViewModel>> CreateSeries(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
+        public async Task<ActionResult<SeriesViewModel>> CreateSeriesAsync(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
         {
             var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
             return CreatedAtAction(nameof(GetSeriesByID), new { seriesID = series.ID }, series);
@@ -117,7 +117,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("schedule")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<SeriesScheduleViewModel>> CreateSeriesSchedule(SeriesScheduleUploadViewModel seriesSchedule)
+        public async Task<ActionResult<SeriesScheduleViewModel>> CreateSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
         {
             var schedule = await _seriesService.PutSeriesScheduleAsync(seriesSchedule);
             return Ok(schedule);
@@ -132,7 +132,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpDelete]
         [Route("{seriesID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult> DeleteSeriesCascade(int seriesID)
+        public async Task<ActionResult> DeleteSeriesCascadeAsync(int seriesID)
         {
             var res = await _seriesService.DeleteSeriesCascadeAsync(seriesID);
             return Ok(res);
@@ -147,7 +147,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("{seriesID}/autoschedule")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatches(int seriesID, UploadScheduleRequest? request)
+        public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest? request)
         {
             var req = request ?? new UploadScheduleRequest();
             var createdMatches = await _seriesService.ScheduleMatchesAsync(seriesID, req);
@@ -164,7 +164,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="seriesID"></param>
         [HttpGet]
         [Route("{seriesID}/bracket")]
-        public async Task<ActionResult<IEnumerable<MatchBracketViewModel>>> GetBracket(int seriesID)
+        public ActionResult<IEnumerable<MatchBracketViewModel>> GetBracket(int seriesID)
         {
             var res = _seriesService.GetSeriesBracketInformation(seriesID);
             return Ok(res);
