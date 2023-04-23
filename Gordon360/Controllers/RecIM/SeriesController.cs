@@ -164,7 +164,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="seriesID"></param>
         [HttpGet]
         [Route("{seriesID}/bracket")]
-        public Task<ActionResult<IEnumerable<MatchBracketViewModel>>> GetBracket(int seriesID)
+        public ActionResult<IEnumerable<MatchBracketViewModel>> GetBracket(int seriesID)
         {
             var res = _seriesService.GetSeriesBracketInformation(seriesID);
             return Ok(res);
