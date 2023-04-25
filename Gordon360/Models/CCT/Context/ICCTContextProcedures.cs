@@ -107,7 +107,7 @@ namespace Gordon360.Models.CCT.Context
         Task<int> UPDATE_AA_APPLICATION_DATESUBMITTEDAsync(int? APPLICATION_ID, DateTime? NOW, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UPDATE_AA_APPLICATION_EDITORAsync(int? APPLICATION_ID, string EDITOR_USERNAME, DateTime? NOW, string NEW_EDITOR_USERNAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UPDATE_ACT_INFOAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<UPDATE_CELL_PHONEResult>> UPDATE_CELL_PHONEAsync(string UserID, string PhoneUnformatted, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<UPDATE_CELL_PHONEResult>> UPDATE_CELL_PHONEAsync(int UserID, string PhoneUnformatted, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UPDATE_DESCRIPTIONAsync(int? ID, string VALUE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UPDATE_EMRGCONTACTAsync(int? StudentID, int? ContactNum, string ContactLastName, string ContactFirstName, string ContactHomePhone, string ContactMobilePhone, string ContactRelationship, string Notes, string Username, string JobName, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> Update_Health_Status_Upon_Form_CompletionAsync(string ResponderEmail, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

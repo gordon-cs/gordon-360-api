@@ -29,7 +29,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var result = await _context.Procedures.VICTORY_PROMISE_BY_STUDENT_IDAsync(int.Parse(account.gordon_id));
+            var result = await _context.Procedures.VICTORY_PROMISE_BY_STUDENT_IDAsync(account.gordon_id);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };

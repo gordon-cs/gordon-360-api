@@ -63,7 +63,7 @@ namespace Gordon360.Authorization
 
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
-        private string user_id { get; set; }
+        private int user_id { get; set; }
         private string user_name { get; set; }
 
         public async override Task OnActionExecutionAsync(ActionExecutingContext actionContext, ActionExecutionDelegate next)
