@@ -3131,7 +3131,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<UPDATE_CELL_PHONEResult>> UPDATE_CELL_PHONEAsync(string UserID, string PhoneUnformatted, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<UPDATE_CELL_PHONEResult>> UPDATE_CELL_PHONEAsync(int UserID, string PhoneUnformatted, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -3146,7 +3146,7 @@ namespace Gordon360.Models.CCT.Context
                 {
                     ParameterName = "UserID",
                     Size = 9,
-                    Value = UserID ?? Convert.DBNull,
+                    Value = UserID,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
