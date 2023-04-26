@@ -219,7 +219,6 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("{newsID}/image")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
-        // Private route to authenticated users - authors of posting or admins
         public ActionResult<StudentNewsViewModel> EditPostingImage(int newsID, [FromBody] string newImageData)
         {
             var result = _newsService.EditImage(newsID, newImageData);
