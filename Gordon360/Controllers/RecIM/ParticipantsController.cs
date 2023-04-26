@@ -1,9 +1,15 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
+using Gordon360.Services;
 using Gordon360.Services.RecIM;
+using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers.RecIM
@@ -12,10 +18,12 @@ namespace Gordon360.Controllers.RecIM
     public class ParticipantsController : GordonControllerBase
     {
         private readonly IParticipantService _participantService;
+        private readonly IAccountService _accountService;
 
-        public ParticipantsController(IParticipantService participantService)
+        public ParticipantsController(IParticipantService participantService, IAccountService accountService)
         {
             _participantService = participantService;
+            _accountService = accountService;
         }
 
         [HttpGet]
@@ -62,12 +70,57 @@ namespace Gordon360.Controllers.RecIM
             return NotFound();
         }
 
+        [HttpGet]
+        [Route("search/{searchString}")]
+        public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchAsync(string searchString)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var isAdmin = _participantService.IsAdmin(username);
+
+            var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
+            if (isAdmin)
+            {
+                var customAccounts = _participantService.GetAllCustomParticipantsBasicInfo();
+                accounts = accounts.Union(customAccounts);
+            }
+
+            var searchResults = accounts.AsParallel()
+               .Select(account => (matchKey: account.MatchSearch(searchString), account))
+               .Where(pair => pair.matchKey is not null)
+               .OrderBy(pair => pair.matchKey)
+               .Select(pair => pair.account);
+
+            return Ok(searchResults);
+        }
+
         [HttpPut]
         [Route("{username}")]
         public async Task<ActionResult<ParticipantExtendedViewModel>> AddParticipantAsync(string username)
         {
             var participant = await _participantService.PostParticipantAsync(username);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
+        }
+
+        [HttpPut]
+        [Route("{username}/custom")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
+        public async Task<ActionResult<ParticipantExtendedViewModel>> AddCustomParticipantAsync(string username, [FromBody] CustomParticipantViewModel newCustomParticipant)
+        {
+            var participant = await _participantService.PostCustomParticipantAsync(username, newCustomParticipant);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
+        }
+
+        [HttpPatch]
+        [Route("{username}/custom/update")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
+        public async Task<ActionResult<ParticipantExtendedViewModel>> SetCustomParticipantAsync(string username, [FromBody] CustomParticipantViewModel updatedCustomParticipant)
+        {
+            var p = _participantService.GetParticipantByUsername(username);
+            if (!p.IsCustom)
+                return UnprocessableEntity("This is not a custom participant");
+
+            var participant = await _participantService.UpdateCustomParticipantAsync(username, updatedCustomParticipant);
+            return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username, isCustom = participant.IsCustom }, participant);
         }
 
         [HttpPatch]
@@ -116,6 +169,5 @@ namespace Gordon360.Controllers.RecIM
             var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
             return CreatedAtAction(nameof(GetParticipantByUsername), new { username = status.ParticipantUsername }, status);
         }
-
     }
 }

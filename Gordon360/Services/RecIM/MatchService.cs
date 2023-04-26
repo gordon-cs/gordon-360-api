@@ -17,12 +17,14 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly IAccountService _accountService;
+        private readonly IParticipantService _participantService;
 
 
-        public MatchService(CCTContext context,  IAccountService accountService)
+        public MatchService(CCTContext context,  IAccountService accountService, IParticipantService participantService)
         {
             _context = context;
             _accountService = accountService;
+            _participantService = participantService;
         }
 
         public MatchViewModel GetSimpleMatchViewByID(int matchID)
@@ -176,7 +178,11 @@ namespace Gordon360.Services.RecIM
                                 .Select(pt => new ParticipantExtendedViewModel
                                 {
                                     Username = pt.ParticipantUsername,
-                                    Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
+
+                                    FirstName = _participantService.GetParticipantFirstName(pt.ParticipantUsername),
+                                    LastName = _participantService.GetParticipantLastName(pt.ParticipantUsername),
+                                    IsCustom = _participantService.GetParticipantIsCustom(pt.ParticipantUsername),
+                                    Email = _context.Participant.First(p => p.Username == pt.ParticipantUsername).Email ?? _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
                                     Role = pt.RoleType.Description
                                 }),
                             MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && _mt.Match.StatusID == 6)
