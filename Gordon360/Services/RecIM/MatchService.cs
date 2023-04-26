@@ -309,7 +309,8 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             foreach (var teamID in newMatch.TeamIDs)
             {
-                await CreateMatchTeamMappingAsync(teamID, match.ID);
+                if (teamID != -1) // do not create team mappings for fake teams
+                    await CreateMatchTeamMappingAsync(teamID, match.ID);
             }
             await _context.SaveChangesAsync();
             return match;
@@ -333,6 +334,9 @@ namespace Gordon360.Services.RecIM
 
             var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
             var match = _context.Match.Find(matchID);
+
+            if (match.SeriesID == 6) throw new UnprocessibleEntity() { ExceptionMessage = "Stats cannot be updated for a completed match" };
+
             teamstats.Score = vm.Score ?? teamstats.Score;
             teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
 

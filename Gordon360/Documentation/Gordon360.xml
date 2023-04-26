@@ -2366,7 +2366,13 @@
             <param name="seriesID"></param>
             <returns>Created Match objects</returns>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam})">
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleDoubleElimination(System.Int32)">
+            <summary>
+            Current double elimination autoscheduling will consider "play-in" as a "play-in" tournament
+            Losers of the play in do not count for the double elimination bracket.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam},System.Boolean)">
             <summary>
             Goal of this function is to generate a single elimination round.
             On the first possible round, this would imply handling teams with byes to ensure
