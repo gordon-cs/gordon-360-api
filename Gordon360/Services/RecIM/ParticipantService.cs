@@ -74,6 +74,7 @@ namespace Gordon360.Services.RecIM
                                                     .OrderByDescending(pn => pn.DispatchDate)
                                                     .Select(pn => (ParticipantNotificationViewModel)pn)
                                                     .AsEnumerable(),
+                                    AllowEmails = p.AllowEmails ?? true, //ef core "nullable" due to default value
                                     IsAdmin = p.IsAdmin,
                                     SpecifiedGender = p.SpecifiedGender,
                                     IsCustom = p.IsCustom,
