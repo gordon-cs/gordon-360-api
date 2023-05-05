@@ -248,10 +248,33 @@ namespace Gordon360.Services
             newsItem.Subject = newData.Subject;
             newsItem.Body = newData.Body;
 
-            if (newData.Image != null)
+            _context.SaveChanges();
+
+            return newsItem;
+        }
+
+        /// <summary>
+        /// (Service) Edits the image of a news item in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newImageData">The news image object that contains the updated image value</param>
+        /// <returns>The updated news item's view model</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        public StudentNewsViewModel EditImage(int newsID, string newImageData)
+        {
+            // Service method 'Get' throws its own exceptions
+            var newsItem = Get(newsID);
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+            VerifyUnapproved(newsItem);
+
+            if (newImageData != "")
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(newData.Image);
+                var (extension, format, data) = ImageUtils.GetImageFormat(newImageData);
 
                 string? imagePath = null;
                 // If old image exists, overwrite it with new image at same path
@@ -280,8 +303,9 @@ namespace Gordon360.Services
                 var imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
 
                 ImageUtils.DeleteImage(imagePath);
-                newsItem.Image = newData.Image; //null
+                newsItem.Image = null;
             }
+
             _context.SaveChanges();
 
             return newsItem;

@@ -276,6 +276,7 @@ namespace Gordon360.Services
         StudentNews SubmitNews(StudentNews newsItem, string username);
         StudentNews DeleteNews(int newsID);
         StudentNewsViewModel EditPosting(int newsID, StudentNewsUploadViewModel newsItem);
+        StudentNewsViewModel EditImage(int newsID, string newImageData);
         StudentNewsViewModel AlterPostAcceptStatus(int newsID, bool isAccepted);
     }
 
