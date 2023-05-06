@@ -113,10 +113,10 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{username}/custom/update")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
-        public async Task<ActionResult<ParticipantExtendedViewModel>> SetCustomParticipantAsync(string username, [FromBody] CustomParticipantViewModel updatedCustomParticipant)
+        public async Task<ActionResult<ParticipantExtendedViewModel>> SetCustomParticipantAsync(string username, [FromBody] CustomParticipantPatchViewModel updatedCustomParticipant)
         {
-            var p = _participantService.GetParticipantByUsername(username);
-            if (!p.IsCustom)
+            var isCustom = _participantService.GetParticipantIsCustom(username);
+            if (!isCustom)
                 return UnprocessableEntity("This is not a custom participant");
 
             var participant = await _participantService.UpdateCustomParticipantAsync(username, updatedCustomParticipant);

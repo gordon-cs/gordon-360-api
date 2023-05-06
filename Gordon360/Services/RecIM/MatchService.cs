@@ -116,7 +116,6 @@ namespace Gordon360.Services.RecIM
  
         public MatchExtendedViewModel GetMatchByID(int matchID)
         {
-
             var match = _context.Match
                 .Where(m => m.ID == matchID && m.StatusID != 0)
                 .Select(m => new MatchExtendedViewModel
@@ -175,16 +174,7 @@ namespace Gordon360.Services.RecIM
                             Status = mt.Status.Description,
                             Participant = mt.Team.ParticipantTeam
                                 .Where(pt => !new int[] {0,1,2}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
-                                .Select(pt => new ParticipantExtendedViewModel
-                                {
-                                    Username = pt.ParticipantUsername,
-
-                                    FirstName = _participantService.GetParticipantFirstName(pt.ParticipantUsername),
-                                    LastName = _participantService.GetParticipantLastName(pt.ParticipantUsername),
-                                    IsCustom = _participantService.GetParticipantIsCustom(pt.ParticipantUsername),
-                                    Email = _context.Participant.First(p => p.Username == pt.ParticipantUsername).Email ?? _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                                    Role = pt.RoleType.Description
-                                }),
+                                .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername)),
                             MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && _mt.Match.StatusID == 6)
                                 .OrderByDescending(mt => mt.Match.StartTime)
                                 .Take(5)

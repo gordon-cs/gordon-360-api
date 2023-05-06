@@ -147,6 +147,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[RecIM].[CustomParticipant]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Match]",
          "ObjectType": 0
       },

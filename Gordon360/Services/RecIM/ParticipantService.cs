@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
@@ -58,31 +59,59 @@ namespace Gordon360.Services.RecIM
             {
                 // if exception is thrown, we know that this was a manually added participant
             }
-            var participant = _context.Participant
-                                .Where(p => p.Username == username)
-                                .Select(p => new ParticipantExtendedViewModel
-                                {
-                                    Username = username,
-                                    Email = accountEmail ?? p.Email,
-                                    Status = p.ParticipantStatusHistory
-                                                .OrderByDescending(psh => psh.ID)
-                                                .FirstOrDefault()
-                                                .Status
-                                                .Description,
-                                    Notification = _context.ParticipantNotification
-                                                    .Where(pn => pn.ParticipantUsername == username && pn.EndDate > DateTime.UtcNow)
-                                                    .OrderByDescending(pn => pn.DispatchDate)
-                                                    .Select(pn => (ParticipantNotificationViewModel)pn)
-                                                    .AsEnumerable(),
-                                    AllowEmails = p.AllowEmails ?? true, //ef core "nullable" due to default value
+            // This is Participant left join CustomParticipant left join Student
+            //  left join FacStaff to get each participant's firstname and lastname
+            var participant = from new_ps in (from p in ((from p in _context.Participant
+                                              join cp in _context.CustomParticipant on p.Username equals cp.Username into cpp_join
+                                              from cpp in cpp_join.DefaultIfEmpty()
+                                              where p.Username == username
+                                              select new
+                                              {
+                                                    Username = p.Username,
+                                                    IsAdmin = p.IsAdmin,
+                                                    AllowEmails = p.AllowEmails,
+                                                    Email = cpp.Email,
+                                                    SpecifiedGender = p.SpecifiedGender,
+                                                    IsCustom = p.IsCustom,
+                                                    FirstName = cpp.FirstName,
+                                                    LastName = cpp.LastName,
+                                               }))
+                              join s in _context.Student on p.Username equals s.AD_Username into ps_join
+                              from ps in ps_join.DefaultIfEmpty()
+                              select new
+                              {
+                                    Username = p.Username,
                                     IsAdmin = p.IsAdmin,
+                                    AllowEmails = p.AllowEmails,
+                                    Email = p.Email,
                                     SpecifiedGender = p.SpecifiedGender,
                                     IsCustom = p.IsCustom,
-                                    FirstName = GetParticipantFirstName(username),
-                                    LastName = GetParticipantLastName(username),
-                                })
-                                .FirstOrDefault();
-            return participant;
+                                    FirstName = p.FirstName ?? ps.FirstName,
+                                    LastName = p.LastName ?? ps.LastName,
+                               })
+                               join fs in _context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
+                               from psfs in psfs_join.DefaultIfEmpty()
+                               select new ParticipantExtendedViewModel
+                               {
+                                   Username = new_ps.Username,
+                                   IsAdmin = new_ps.IsAdmin,
+                                   Status = (from psh in _context.ParticipantStatusHistory
+                                             join pstatus in _context.ParticipantStatus on psh.StatusID equals pstatus.ID
+                                             where psh.ParticipantUsername == new_ps.Username
+                                             orderby psh.ID descending
+                                             select new
+                                             {
+                                                 Description = pstatus.Description
+                                             }
+                                            ).FirstOrDefault().Description,
+                                   AllowEmails = new_ps.AllowEmails ?? true,
+                                   Email = new_ps.Email,
+                                   SpecifiedGender = new_ps.SpecifiedGender,
+                                   IsCustom = new_ps.IsCustom,
+                                   FirstName = new_ps.FirstName ?? psfs.FirstName,
+                                   LastName = new_ps.LastName ?? psfs.LastName,
+                               };
+            return participant.First();
         }
 
         public async Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM)
@@ -144,8 +173,22 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<ParticipantExtendedViewModel> GetParticipants()
         {
-            // This is Participant left join Student left join FacStaff to get each participant's firstname and lastname
-            var participants = from new_ps in (from p in _context.Participant
+            // This is Participant left join CustomParticipant left join Student
+            //  left join FacStaff to get each participant's firstname and lastname
+            var participants = from new_ps in (from p in ((from p in _context.Participant
+                                                           join cp in _context.CustomParticipant on p.Username equals cp.Username into cpp_join
+                                                           from cpp in cpp_join.DefaultIfEmpty()
+                                                           select new
+                                                           {
+                                                               Username = p.Username,
+                                                               IsAdmin = p.IsAdmin,
+                                                               AllowEmails = p.AllowEmails,
+                                                               Email = cpp.Email,
+                                                               SpecifiedGender = p.SpecifiedGender,
+                                                               IsCustom = p.IsCustom,
+                                                               FirstName = cpp.FirstName,
+                                                               LastName = cpp.LastName,
+                                                           }))
                                                join s in _context.Student on p.Username equals s.AD_Username into ps_join
                                                from ps in ps_join.DefaultIfEmpty()
                                                select new
@@ -188,50 +231,17 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo()
         {
             var customParticipants = from p in _context.Participant
+                                     join cp in _context.CustomParticipant on p.Username equals cp.Username
                                      where p.IsCustom == true
                                      select new BasicInfoViewModel
                                      {
-                                         FirstName = p.FirstName,
-                                         LastName = p.LastName,
+                                         FirstName = cp.FirstName,
+                                         LastName = cp.LastName,
                                          UserName = p.Username,
                                          Nickname = null,
                                          MaidenName = null,
                                      };
             return customParticipants;
-        }
-
-        public string GetParticipantFirstName(string username)
-        {
-            var firstName = (from new_ps in (from p in _context.Participant
-                                            join s in _context.Student on p.Username equals s.AD_Username into ps_join
-                                            from ps in ps_join.DefaultIfEmpty()
-                                            where p.Username == username
-                                            select new
-                                            {
-                                                Username = p.Username,
-                                                FirstName = p.FirstName ?? ps.FirstName,
-                                            })
-                            join fs in _context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
-                            from psfs in psfs_join.DefaultIfEmpty()
-                            select new_ps.FirstName ?? psfs.FirstName).Single();
-            return firstName;
-        }
-
-        public string GetParticipantLastName(string username)
-        {
-            var lastName = (from new_ps in (from p in _context.Participant
-                                            join s in _context.Student on p.Username equals s.AD_Username into ps_join
-                                            from ps in ps_join.DefaultIfEmpty()
-                                            where p.Username == username
-                                            select new
-                                            {
-                                                Username = p.Username,
-                                                LastName = p.LastName ?? ps.LastName,
-                                            })
-                            join fs in _context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
-                            from psfs in psfs_join.DefaultIfEmpty()
-                            select new_ps.LastName ?? psfs.LastName).Single();
-            return lastName;
         }
 
         public bool GetParticipantIsCustom(string username)
@@ -277,6 +287,11 @@ namespace Gordon360.Services.RecIM
                 SpecifiedGender = newCustomParticipant.SpecifiedGender,
                 IsCustom = true,
                 AllowEmails = newCustomParticipant.AllowEmails,
+                
+            });
+            await _context.CustomParticipant.AddAsync(new CustomParticipant
+            {
+                Username = newUsername,
                 Email = newCustomParticipant.Email,
                 FirstName = newCustomParticipant.FirstName,
                 LastName = newCustomParticipant.LastName,
@@ -308,15 +323,16 @@ namespace Gordon360.Services.RecIM
             };
         }
 
-        public async Task<ParticipantExtendedViewModel> UpdateCustomParticipantAsync(string username, CustomParticipantViewModel updatedParticipant)
+        public async Task<ParticipantExtendedViewModel> UpdateCustomParticipantAsync(string username, CustomParticipantPatchViewModel updatedParticipant)
         {
             var participant = _context.Participant.First((p) => p.Username == username && p.IsCustom == true);
+            var customParticipant = _context.CustomParticipant.First((p) => p.Username == username);
 
-            participant.FirstName = updatedParticipant.FirstName ?? participant.FirstName;
-            participant.LastName = updatedParticipant.LastName ?? participant.LastName;
+            customParticipant.FirstName = updatedParticipant.FirstName ?? customParticipant.FirstName;
+            customParticipant.LastName = updatedParticipant.LastName ?? customParticipant.LastName;
             participant.SpecifiedGender = updatedParticipant.SpecifiedGender ?? participant.SpecifiedGender;
             participant.AllowEmails = updatedParticipant.AllowEmails ?? participant.AllowEmails;
-            participant.Email = updatedParticipant.Email ?? participant.Email;
+            customParticipant.Email = updatedParticipant.Email ?? customParticipant.Email;
 
             await _context.SaveChangesAsync();
             return GetParticipantByUsername(username);
@@ -396,20 +412,15 @@ namespace Gordon360.Services.RecIM
 
         private string GetCustomUnqiueUsername(string username)
         {
-            var customSuffix = ".custom";
-            if (_context.Participant.Any((p) => p.Username == username + customSuffix && p.IsCustom == true))
+            var customSuffix = RecIM_Resources.CUSTOM_PARTICIPANT_USERNAME_SUFFIX;
+            var newUsername = username;
+            var index = 2;
+            while (_context.Participant.Any((p) => p.Username == newUsername + customSuffix && p.IsCustom == true))
             {
-                var index = 2;
-                string newUsername = "";
-                do
-                {
-                    newUsername = username + index.ToString() + customSuffix;
-                    index++;
-                } while (_context.Participant.Any((p) => p.Username == newUsername && p.IsCustom == true));
-                return newUsername;
+                newUsername = username + index.ToString();
+                index++;
             }
-            else
-                return username + customSuffix;
+            return newUsername + customSuffix;
         }
     }
 

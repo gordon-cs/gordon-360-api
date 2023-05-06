@@ -366,8 +366,6 @@ namespace Gordon360.Services
         {
             IEnumerable<LookupViewModel>? GetParticipantLookup(string type);
             IEnumerable<ParticipantExtendedViewModel> GetParticipants();
-            string GetParticipantFirstName(string username);
-            string GetParticipantLastName(string username);
             bool GetParticipantIsCustom(string username);
             IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
@@ -380,7 +378,7 @@ namespace Gordon360.Services
             Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant);
             Task<ParticipantStatusHistoryViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus);
             Task<ParticipantExtendedViewModel> UpdateParticipantAllowEmailsAsync(string username, bool allowEmails);
-            Task<ParticipantExtendedViewModel> UpdateCustomParticipantAsync(string username, CustomParticipantViewModel updatedParticipant);
+            Task<ParticipantExtendedViewModel> UpdateCustomParticipantAsync(string username, CustomParticipantPatchViewModel updatedParticipant);
             bool IsParticipant(string username);
             bool IsAdmin(string username);
         }
