@@ -13,10 +13,6 @@ namespace Gordon360.Controllers
     {
         private readonly IErrorLogService _errorLogService;
 
-        public LogController(CCTContext context)
-        {
-            _errorLogService = new ErrorLogService(context);
-        }
         public LogController(IErrorLogService errorLogService)
         {
             _errorLogService = errorLogService;
