@@ -1,5 +1,4 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Services;
@@ -36,23 +35,6 @@ namespace Gordon360.Controllers
             var result = _errorLogService.Log(error_message);
 
             return Created("error log", result);
-        }
-
-
-        /// <summary>Create a new error log item to be added to database</summary>
-        /// <param name="error_log">The error log containing the ERROR_TIME, and the LOG_MESSAGE</param>
-        /// <returns></returns>
-        /// <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
-        // POST api/<controller>
-        [HttpPost]
-        [Route("add", Name = "error_add")]
-        [StateYourBusiness(operation = Operation.ADD, resource = Resource.ERROR_LOG)]
-        public ActionResult<ERROR_LOG> Post([FromBody] ERROR_LOG error_log)
-        {
-            var result = _errorLogService.Add(error_log);
-
-            return Created("error log", result);
-
         }
     }
 }
