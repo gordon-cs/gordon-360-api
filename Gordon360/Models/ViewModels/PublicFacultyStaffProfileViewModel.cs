@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -38,6 +35,7 @@ namespace Gordon360.Models.ViewModels
         public string BuildingDescription { get; set; }
         public string Country { get; set; }
         public string Mail_Location { get; set; }
+        public string Mail_Description { get; set; }
 
 
 
@@ -76,9 +74,10 @@ namespace Gordon360.Models.ViewModels
                 show_pic = fac.show_pic,
                 BuildingDescription = fac.BuildingDescription ?? "",
                 Country = fac.Country ?? "",
-                Mail_Location = fac.Mail_Location ?? ""
+                Mail_Location = fac.Mail_Location ?? "",
+                Mail_Description = fac.Mail_Description ?? ""
             };
-            if (vm.KeepPrivate.Contains("1"))
+            if (vm.KeepPrivate.Contains('1'))
             {
                 vm.HomeCity = "Private as requested.";
                 vm.HomeState = "";

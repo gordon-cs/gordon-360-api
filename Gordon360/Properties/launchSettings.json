@@ -1,0 +1,34 @@
+{
+  "profiles": {
+    "Development": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:51627/swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sqlDebugging": true,
+      "applicationUrl": "https://localhost:51627;http://localhost:51626"
+    },
+    "Train": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:51627/swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Train"
+      },
+      "sqlDebugging": true,
+      "applicationUrl": "https://localhost:51627;http://localhost:51626"
+    },
+    "Production": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:51627/swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "sqlDebugging": true,
+      "applicationUrl": "https://localhost:51627;http://localhost:51626"
+    }
+  }
+}

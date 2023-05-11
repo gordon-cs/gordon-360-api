@@ -1,4 +1,6 @@
-﻿namespace Gordon360.Models.ViewModels
+﻿using Gordon360.Models.CCT;
+
+namespace Gordon360.Models.ViewModels
 {
     // The view model used to send/receive apartment hall choice data to/from the frontend
     public class ApartmentChoiceViewModel
@@ -7,16 +9,11 @@
         public int HallRank { get; set; }
         public string HallName { get; set; }
 
-        public static implicit operator ApartmentChoiceViewModel(GET_AA_APARTMENT_CHOICES_BY_APP_ID_Result apartmentChoiceDBModel)
+        public static implicit operator ApartmentChoiceViewModel(Housing_HallChoices apartmentChoiceDBModel) => new ApartmentChoiceViewModel
         {
-            ApartmentChoiceViewModel vm = new ApartmentChoiceViewModel
-            {
-                ApplicationID = apartmentChoiceDBModel.AprtAppID,
-                HallRank = apartmentChoiceDBModel.Ranking,
-                HallName = apartmentChoiceDBModel.HallName,
-            };
-
-            return vm;
-        }
+            ApplicationID = apartmentChoiceDBModel.HousingAppID,
+            HallRank = apartmentChoiceDBModel.Ranking,
+            HallName = apartmentChoiceDBModel.HallName,
+        };
     }
 }

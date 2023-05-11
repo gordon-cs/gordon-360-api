@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
-using System.Data.SqlClient;
+using Gordon360.Static_Classes;
+using Microsoft.Extensions.Caching.Memory;
+using System;
+using System.Collections.Generic;
 using System.Data;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Static.Data;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Xml.Linq;
-
+using Gordon360.Models.CCT;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
@@ -21,24 +23,36 @@ namespace Gordon360.Services
     /// </summary>
     public class EventService : IEventService
     {
-        // See UnitOfWork class
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly CCTContext _context;
+        private readonly IMemoryCache _cache;
+        private readonly IAccountService _accountService;
 
-        // Set the namespace for XML Paths
-        private readonly XNamespace r25 = "http://www.collegenet.com/r25";
+        /**
+         * URL to retrieve events from the 25Live API. 
+         * event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
+         * All other event types are not appropiate for the 360 events feed.
+         * end_after parameter  limits the request to events from the current academic year.
+         * state parameter fetches only confirmed events
+         */
+        private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
+        
+        private IEnumerable<EventViewModel> Events => _cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events);
 
-        public EventService(IUnitOfWork unitOfWork)
+        public EventService(CCTContext context, IMemoryCache cache, IAccountService accountService)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
+            _cache = cache;
+            _accountService = accountService;
         }
 
         /// <summary>
         /// Access the memory stream created by the cached task and parse it into events
+        /// Splits events with multiple repeated occurrences into individual records for each occurrence
         /// </summary>
         /// <returns>All events for the current academic year.</returns>
         public IEnumerable<EventViewModel> GetAllEvents()
         {
-            return Data.AllEvents.Descendants(r25 + "event").Select(e => new EventViewModel(e));
+            return Events;
         }
 
         /// <summary>
@@ -47,7 +61,7 @@ namespace Gordon360.Services
         /// <returns>All Public Events</returns>
         public IEnumerable<EventViewModel> GetPublicEvents()
         {
-            return GetAllEvents().Where(e => e.IsPublic);
+            return Events.Where(e => e.IsPublic);
         }
 
         /// <summary>
@@ -56,44 +70,84 @@ namespace Gordon360.Services
         /// <returns>All CLAW Events</returns>
         public IEnumerable<EventViewModel> GetCLAWEvents()
         {
-            return GetAllEvents().Where(e => e.HasCLAWCredit);
+            return Events.Where(e => e.HasCLAWCredit);
         }
-
 
         /// <summary>
         /// Returns all attended events for a student in a specific term
         /// </summary>
-        /// <param name="user_name"> The student's ID</param>
+        /// <param name="username"> The student's AD Username</param>
         /// <param name="term"> The current term</param>
         /// <returns></returns>
-        public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string user_name, string term)
+        public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string username, string term)
         {
-            var studentExists = _unitOfWork.AccountRepository.Where(x => x.AD_Username.Trim() == user_name.Trim()).Count() > 0;
-            if (!studentExists)
+            var account = _accountService.GetAccountByUsername(username);
+
+            var result = _context.ChapelEvent
+                                 .Where(c => c.CHBarcode == account.Barcode && c.CHTermCD == term)
+                                 .Select<ChapelEvent, ChapelEventViewModel>(c => c);
+
+            if (result is not IEnumerable<ChapelEventViewModel> chapelEvents)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+                return Enumerable.Empty<AttendedEventViewModel>();
             }
 
-            // Declare the variables used
-            var idParam = new SqlParameter("@STU_USERNAME", user_name.Trim());
+            // Left join to 25Live Events for extra event data when matching 25Live event is found
+            var attendedEvents = from chapelEvent in chapelEvents
+                           join event25Live in Events on chapelEvent.LiveID equals event25Live.Event_ID?.Split('_')?.FirstOrDefault() into liveEvents
+                           from liveEvent in liveEvents.DefaultIfEmpty()
+                           select new AttendedEventViewModel(liveEvent, chapelEvent);
 
-            // Run the stored query  and return an iterable list of objects
-            var result = RawSqlQuery<ChapelEventViewModel>.query("EVENTS_BY_STUDENT_ID @STU_USERNAME", idParam);
+            return attendedEvents;
+        }
 
-            // Confirm that result is not empty
-            if (result == null)
+        public static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
+        {
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+
+            var response = await client.GetAsync(AllEventsURL);
+            if (response != null && response.IsSuccessStatusCode)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The student was not found" };
+                var content = await response.Content.ReadAsStringAsync();
+                var eventsXML = XDocument.Parse(content);
+                return eventsXML
+                    .Descendants(EventViewModel.r25 + "event")
+                    .SelectMany(
+                        // Select occurrences of each events
+                        elem => elem.Element(EventViewModel.r25 + "profile")?.Descendants(EventViewModel.r25 + "reservation"),
+                        // Map the event e with it's occurrence details o to a new EventViewModel
+                        (e, o) => new EventViewModel(e, o)
+                    );
             }
+            else
+            {
+                throw new ResourceNotFoundException();
+            }
+        }
 
-            return result
-                .Where(x => x.CHTermCD.Trim().Equals(term))
-                .Join(
-                    GetAllEvents(),
-                    c => c.LiveID,
-                    e => e.Event_ID,
-                    (c, e) => new AttendedEventViewModel(e, c)
-                );
+        /// <summary>
+        ///  Helper function to determine the current academic year
+        /// </summary>
+        /// <returns></returns>
+        private static string GetFirstEventDate()
+        {
+            //Beginning date of fall semester (MM/DD)
+            var fallDate = "0815";
+            //Beginning date of summer (MM/DD)
+            var summerDate = "0515";
+
+            // We need to determine what the current date is
+            DateTime today = DateTime.Today;
+            if (today.Month < 06)
+            {
+                return (today.Year - 1).ToString() + fallDate;
+            }
+            else if (today.Month > 07)
+            {
+                return today.Year.ToString() + fallDate;
+            }
+            return today.Year.ToString() + summerDate;
         }
     }
 }

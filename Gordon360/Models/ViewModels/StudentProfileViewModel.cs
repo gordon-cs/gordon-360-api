@@ -1,147 +1,150 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Gordon360.Models.CCT;
 
 namespace Gordon360.Models.ViewModels
 {
-    public class StudentProfileViewModel
+    public record StudentProfileViewModel
+        (
+        string ID,
+        string Title,
+        string FirstName,
+        string MiddleName,
+        string LastName,
+        string Suffix,
+        string MaidenName,
+        string NickName,
+        string OnOffCampus,
+        string OnCampusBuilding,
+        string OnCampusRoom,
+        string OnCampusPhone,
+        string OnCampusPrivatePhone,
+        string OnCampusFax,
+        string OffCampusStreet1,
+        string OffCampusStreet2,
+        string OffCampusCity,
+        string OffCampusState,
+        string OffCampusPostalCode,
+        string OffCampusCountry,
+        string OffCampusPhone,
+        string OffCampusFax,
+        string HomeStreet1,
+        string HomeStreet2,
+        string HomeCity,
+        string HomeState,
+        string HomePostalCode,
+        string HomeCountry,
+        string HomePhone,
+        string HomeFax,
+        string Cohort,
+        string Class,
+        string KeepPrivate,
+        string Barcode,
+        string AdvisorIDs,
+        string Married,
+        string Commuter,
+        string Major,
+        string Major2,
+        string Major3,
+        string Minor1,
+        string Minor2,
+        string Minor3,
+        string Email,
+        string Gender,
+        string grad_student,
+        string GradDate,
+        string MobilePhone,
+        bool IsMobilePhonePrivate,
+        string AD_Username,
+        int? show_pic,
+        int? preferred_photo,
+        string Country,
+        string BuildingDescription,
+        string Major1Description,
+        string Major2Description,
+        string Major3Description,
+        string Minor1Description,
+        string Minor2Description,
+        string Minor3Description,
+        string Mail_Location,
+        int? ChapelRequired,
+        int? ChapelAttended)
     {
-        public string ID { get; set; }
-        public string Title { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string Suffix { get; set; }
-        public string MaidenName { get; set; }
-        public string NickName { get; set; }
-        public string OnOffCampus { get; set; }
-        public string OnCampusBuilding { get; set; }
-        public string OnCampusRoom { get; set; }
-        public string OnCampusPhone { get; set; }
-        public string OnCampusPrivatePhone { get; set; }
-        public string OnCampusFax { get; set; }
-        public string OffCampusStreet1 { get; set; }
-        public string OffCampusStreet2 { get; set; }
-        public string OffCampusCity { get; set; }
-        public string OffCampusState { get; set; }
-        public string OffCampusPostalCode { get; set; }
-        public string OffCampusCountry { get; set; }
-        public string OffCampusPhone { get; set; }
-        public string OffCampusFax { get; set; }
-        public string HomeStreet1 { get; set; }
-        public string HomeStreet2 { get; set; }
-        public string HomeCity { get; set; }
-        public string HomeState { get; set; }
-        public string HomePostalCode { get; set; }
-        public string HomeCountry { get; set; }
-        public string HomePhone { get; set; }
-        public string HomeFax { get; set; }
-        public string Cohort { get; set; }
-        public string Class { get; set; }
-        public string KeepPrivate { get; set; }
-        public string Major { get; set; }
-        public string Barcode { get; set; }
-        public string AdvisorIDs { get; set; }
-        public string Married { get; set; }
-        public string Commuter { get; set; }
-        public string Major2 { get; set; }
-        public string Email { get; set; }
-        public string Gender { get; set; }
-        public string grad_student { get; set; }
-        public string GradDate { get; set; }
-        public string Major3 { get; set; }
-        public string Minor1 { get; set; }
-        public string Minor2 { get; set; }
-        public string Minor3 { get; set; }
-        public string MobilePhone { get; set; }
-        public int IsMobilePhonePrivate { get; set; }
-        public string AD_Username { get; set; }
-        public int? show_pic { get; set; }
-        public int? preferred_photo { get; set; }
-        public string Country { get; set; }
-        public string BuildingDescription { get; set; }
-        public string Major1Description { get; set; }
-        public string Major2Description { get; set; }
-        public string Major3Description { get; set; }
-        public string Minor1Description { get; set; }
-        public string Minor2Description { get; set; }
-        public string Minor3Description { get; set; }
-        public string Mail_Location { get; set; }
-        public int? ChapelRequired { get; set; }
-        public int? ChapelAttended { get; set; }
-
-
-        public static implicit operator StudentProfileViewModel(Student stu)
+        public static implicit operator StudentProfileViewModel?(Student? stu)
         {
-            StudentProfileViewModel vm = new StudentProfileViewModel
+            if (stu == null)
             {
-                Title = stu.Title ?? "",
-                ID = stu.ID.Trim(),
-                FirstName = stu.FirstName ?? "",
-                MiddleName = stu.MiddleName ?? "",
-                LastName = stu.LastName ?? "",
-                Suffix = stu.Suffix ?? "",
-                MaidenName = stu.MaidenName ?? "",
-                NickName = stu.NickName ?? "", // Just in case some random record has a null user_name 
-                AD_Username = stu.AD_Username ?? "", // Just in case some random record has a null email field
-                Cohort = stu.Cohort ?? "",
-                Class = stu.Class ?? "",
-                Commuter = stu.Commuter ?? "",
-                grad_student = stu.grad_student ?? "",
-                GradDate = stu.GradDate ?? "",
-                OnOffCampus = stu.OnOffCampus ?? "",
-                OnCampusBuilding = stu.OnCampusBuilding ?? "",
-                OnCampusRoom = stu.OnCampusRoom ?? "",
-                OnCampusPhone = stu.OnCampusPhone ?? "",
-                OnCampusPrivatePhone = stu.OnCampusPrivatePhone ?? "",
-                OnCampusFax = stu.OnCampusFax ?? "",
-                OffCampusStreet1 = stu.OffCampusStreet1 ?? "",
-                OffCampusStreet2 = stu.OffCampusStreet2 ?? "",
-                OffCampusCity = stu.OffCampusCity ?? "",
-                OffCampusState = stu.OffCampusState ?? "",
-                OffCampusCountry = stu.OffCampusCountry ?? "",
-                OffCampusPostalCode = stu.OffCampusPostalCode ?? "",
-                OffCampusPhone = stu.OffCampusPhone ?? "",
-                OffCampusFax = stu.OffCampusFax ?? "",
-                HomeStreet1 = stu.HomeStreet1 ?? "",
-                HomeStreet2 = stu.HomeStreet2 ?? "",
-                HomeCity = stu.HomeCity ?? "",
-                HomeState = stu.HomeState ?? "",
-                HomePostalCode = stu.HomePostalCode ?? "",
-                HomeCountry = stu.HomeCountry ?? "",
-                HomePhone = stu.HomePhone ?? "",
-                HomeFax = stu.HomeFax ?? "",
-                Barcode = stu.Barcode ?? "",
-                AdvisorIDs = stu.AdvisorIDs ?? "",
-                Married = stu.Married ?? "",
-                KeepPrivate = stu.KeepPrivate ?? "",
-                Major = stu.Major ?? "",
-                Major2 = stu.Major2 ?? "",
-                Major3 = stu.Major3 ?? "",
-                Minor1 = stu.Minor1 ?? "",
-                Minor2 = stu.Minor2 ?? "",
-                Minor3 = stu.Minor3 ?? "",
-                Email = stu.Email ?? "",
-                Gender = stu.Gender ?? "",
-                MobilePhone = stu.MobilePhone ?? "",
-                IsMobilePhonePrivate = stu.IsMobilePhonePrivate,
-                show_pic = stu.show_pic,
-                preferred_photo = stu.preferred_photo,
-                Country = stu.Country ?? "",
-                BuildingDescription = stu.BuildingDescription ?? "",
-                Major1Description = stu.Major1Description ?? "",
-                Major2Description = stu.Major2Description ?? "",
-                Major3Description = stu.Major3Description ?? "",
-                Minor1Description = stu.Minor1Description ?? "",
-                Minor2Description = stu.Minor2Description ?? "",
-                Minor3Description = stu.Minor3Description ?? "",
-                Mail_Location = stu.Mail_Location ?? "",
-                ChapelRequired = stu.ChapelRequired ?? 0,
-                ChapelAttended = stu.ChapelAttended ?? 0
-            };
+                return null;
+            }
 
-            return vm;
+            return new StudentProfileViewModel(
+                stu.ID.Trim(),
+                stu.Title ?? "",
+                stu.FirstName ?? "",
+                stu.MiddleName ?? "",
+                stu.LastName ?? "",
+                stu.Suffix ?? "",
+                stu.MaidenName ?? "",
+                stu.NickName ?? "", // Just in case some random record has a null user_name 
+                stu.OnOffCampus ?? "",
+                stu.OnCampusBuilding ?? "",
+                stu.OnCampusRoom ?? "",
+                stu.OnCampusPhone ?? "",
+                stu.OnCampusPrivatePhone ?? "",
+                stu.OnCampusFax ?? "",
+                stu.OffCampusStreet1 ?? "",
+                stu.OffCampusStreet2 ?? "",
+                stu.OffCampusCity ?? "",
+                stu.OffCampusState ?? "",
+                stu.OffCampusPostalCode ?? "",
+                stu.OffCampusCountry ?? "",
+                stu.OffCampusPhone ?? "",
+                stu.OffCampusFax ?? "",
+                stu.HomeStreet1 ?? "",
+                stu.HomeStreet2 ?? "",
+                stu.HomeCity ?? "",
+                stu.HomeState ?? "",
+                stu.HomePostalCode ?? "",
+                stu.HomeCountry ?? "",
+                stu.HomePhone ?? "",
+                stu.HomeFax ?? "",
+                stu.Cohort ?? "",
+                stu.Class ?? "",
+                stu.KeepPrivate ?? "",
+                stu.Barcode ?? "",
+                stu.AdvisorIDs ?? "",
+                stu.Married ?? "",
+                stu.Commuter ?? "",
+                stu.Major ?? "",
+                stu.Major2 ?? "",
+                stu.Major3 ?? "",
+                stu.Minor1 ?? "",
+                stu.Minor2 ?? "",
+                stu.Minor3 ?? "",
+                stu.Email ?? "",
+                stu.Gender ?? "",
+                stu.grad_student ?? "",
+                stu.GradDate ?? "",
+                stu.MobilePhone ?? "",
+                stu.IsMobilePhonePrivate == 1 ? true : false,
+                stu.AD_Username ?? "", // Just in case some random record has a null email field
+                stu.show_pic,
+                stu.preferred_photo,
+                stu.Country ?? "",
+                stu.BuildingDescription ?? "",
+                stu.Major1Description ?? "",
+                stu.Major2Description ?? "",
+                stu.Major3Description ?? "",
+                stu.Minor1Description ?? "",
+                stu.Minor2Description ?? "",
+                stu.Minor3Description ?? "",
+                stu.Mail_Location ?? "",
+                stu.ChapelRequired ?? 0,
+                stu.ChapelAttended ?? 0
+            );
         }
     }
 }
+
+
+
+
+

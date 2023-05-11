@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Models;
-using Gordon360.Repositories;
 
 namespace Gordon360.Services
 {
@@ -12,94 +12,77 @@ namespace Gordon360.Services
     /// </summary>
     public class AdministratorService : IAdministratorService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
+        private IAccountService _accountService;
 
-        public AdministratorService(IUnitOfWork unitOfWork)
+        public AdministratorService(CCTContext context, IAccountService accountService)
         {
-            _unitOfWork = unitOfWork;
-        }
-        
-        /// <summary>
-        /// Fetches the admin resource whose id is specified as an argument.
-        /// </summary>
-        /// <param name="id">The admin ID.l</param>
-        /// <returns>The Specified administrator. If none was found, a null value is returned.</returns>
-        public ADMIN Get(int id)
-        {
-            var query = _unitOfWork.AdministratorRepository.GetById(id);
-            if (query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Administrator was not found." };
-            }
-            return query;
-        }
-
-        /// <summary>
-        /// Fetches the admin resource whose username matches the specified argument
-        /// </summary>
-        /// <param name="gordon_id">The administrator's gordon id</param>
-        /// <returns>The Specified administrator. If none was found, a null value is returned.</returns>
-        public ADMIN Get(string gordon_id)
-        {
-            var query = _unitOfWork.AdministratorRepository.FirstOrDefault(x => x.ID_NUM.ToString() == gordon_id);
-            if(query == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Administrator was not found." };
-            }
-            return query;
+            _context = context;
+            _accountService = accountService;
         }
         /// <summary>
         /// Fetches all the administrators from the database
         /// </summary>
         /// <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        public IEnumerable<ADMIN> GetAll()
+        public IEnumerable<AdminViewModel?> GetAll()
         {
-            var query = _unitOfWork.AdministratorRepository.GetAll();
-            return query;
+            return _context.ADMIN.Select<ADMIN,AdminViewModel?>(a => a);
+        }
+
+        /// <summary>
+        /// Fetches a specific admin from the database
+        /// </summary>
+        /// <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
+        public AdminViewModel? GetByUsername(string username)
+        {
+            var admin = _context.ADMIN.FirstOrDefault(a => a.USER_NAME == username);
+            return admin;
         }
 
         /// <summary>
         /// Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
         /// we do it here by using the validateAdmin() method.
         /// </summary>
-        /// <param name="admin">The admin to be added</param>
+        /// <param name="adminView">The admin to be added</param>
         /// <returns>The newly added Admin object</returns>
-        public ADMIN Add(ADMIN admin)
+        public AdminViewModel Add(AdminViewModel adminView)
         {
             // validate returns a boolean value.
-            validateAdmin(admin);
+            validateAdmin(adminView);
+
+            var gordonId = int.Parse(_accountService.GetAccountByUsername(adminView.Username).GordonID);
 
             // The Add() method returns the added membership.
-            var payload = _unitOfWork.AdministratorRepository.Add(admin);
+            var payload = _context.ADMIN.Add(adminView.ToAdmin(gordonId));
 
             // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
             if (payload == null)
             {
-                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the admin. Verify that this admin doesn't already exist." };
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the admin." };
             }
-            _unitOfWork.Save();
+            _context.SaveChanges();
 
-            return payload;
+            return adminView;
 
         }
 
         /// <summary>
         /// Delete the admin whose id is specified by the parameter.
         /// </summary>
-        /// <param name="id">The admin id</param>
+        /// <param name="username">The username of the admin to demote</param>
         /// <returns>The admin that was just deleted</returns>
-        public ADMIN Delete(int id)
+        public AdminViewModel Delete(string username)
         {
-            var result = _unitOfWork.AdministratorRepository.GetById(id);
+            var result = _context.ADMIN.FirstOrDefault(a => a.USER_NAME == username);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Admin was not found." };
             }
-            result = _unitOfWork.AdministratorRepository.Delete(result);
+            _context.ADMIN.Remove(result);
 
-            _unitOfWork.Save();
+            _context.SaveChanges();
 
-            return result;
+            return (AdminViewModel)result;
         }
 
         /// <summary>
@@ -107,16 +90,15 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="admin">The admin to validate</param>
         /// <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
-        private bool validateAdmin(ADMIN admin)
+        private bool validateAdmin(AdminViewModel adminView)
         {
-            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == admin.ID_NUM.ToString()).Count() > 0;
+            var personExists = _context.ACCOUNT.Where(a => a.AD_Username == adminView.Username).Count() > 0;
             if (!personExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
             }
 
-            var personIsAlreadyAdmin = _unitOfWork.AdministratorRepository.Any(x => x.EMAIL == admin.EMAIL);
-
+            var personIsAlreadyAdmin = _context.ADMIN.Any(a => a.USER_NAME == adminView.Username);
             if (personIsAlreadyAdmin)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "This person is already an admin." };

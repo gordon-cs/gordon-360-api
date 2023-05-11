@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Models;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
 using Gordon360.Static.Names;
+using Gordon360.Static.Methods;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -16,312 +16,249 @@ namespace Gordon360.Services
     /// </summary>
     public class MembershipRequestService : IMembershipRequestService
     {
-        private IUnitOfWork _unitOfWork;
+        private CCTContext _context;
+        private IMembershipService _membershipService;
+        private IAccountService _accountService;
 
-        public MembershipRequestService(IUnitOfWork unitOfWork)
+        public MembershipRequestService(CCTContext context, IMembershipService membershipService, IAccountService accountService)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
+            _membershipService = membershipService;
+            _accountService = accountService;
         }
 
         /// <summary>
         /// Generate a new request to join an activity at a participation level higher than 'Guest'
         /// </summary>
-        /// <param name="membershipRequest">The membership request object</param>
-        /// <returns>The membership request object once it is added</returns>
-        public REQUEST Add(REQUEST membershipRequest)
+        /// <param name="membershipRequestUpload">The membership request object</param>
+        /// <returns>The new request object as a RequestView</returns>
+        public async Task<RequestView> AddAsync(RequestUploadViewModel membershipRequestUpload)
         {
+
+            MembershipUploadViewModel m = (MembershipUploadViewModel) membershipRequestUpload;
             // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
-            validateMembershipRequest(membershipRequest);
-            isPersonAlreadyInActivity(membershipRequest);
+            _membershipService.ValidateMembership(m);
+            _membershipService.IsPersonAlreadyInActivity(m);
+            if (RequestAlreadyExists(membershipRequestUpload))
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "A request already exists with this activity, session, and user." };
+            }
 
-            membershipRequest.STATUS = Request_Status.PENDING;
-            var addedMembershipRequest = _unitOfWork.MembershipRequestRepository.Add(membershipRequest);
-            _unitOfWork.Save();
+            var request = (REQUEST) membershipRequestUpload;
+            request.ID_NUM = int.Parse(_accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID);
 
-            return addedMembershipRequest;
+            var addedMembershipRequest = _context.REQUEST.Add(request);
+            await _context.SaveChangesAsync();
 
+            return Get(addedMembershipRequest.Entity.REQUEST_ID);
+
+        }
+
+        private bool RequestAlreadyExists(RequestUploadViewModel requestUpload)
+        {
+            return _context.REQUEST.Any(r => 
+                r.STATUS == Request_Status.PENDING
+                && r.ACT_CDE == requestUpload.Activity
+                && r.SESS_CDE == requestUpload.Session
+            );
         }
 
         /// <summary>
         /// Approves the request with the specified ID.
         /// </summary>
-        /// <param name="id">The ID of the request to be approved</param>
-        /// <returns>The approved membership</returns>
-        public MEMBERSHIP ApproveRequest(int id)
+        /// <param name="requestID">The ID of the request to be approved</param>
+        /// <returns>The approved request as a RequestView</returns>
+        public async Task<RequestView> ApproveAsync(int requestID)
         {
-            var query = _unitOfWork.MembershipRequestRepository.GetById(id);
-            if (query == null)
+            var request = await _context.REQUEST.FindAsync(requestID);
+            if (request == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
-            query.STATUS = Request_Status.APPROVED;
 
-            MEMBERSHIP newMembership = new MEMBERSHIP
+            if (request.STATUS == Request_Status.APPROVED)
             {
-                ACT_CDE = query.ACT_CDE,
-                ID_NUM = query.ID_NUM,
-                SESS_CDE = query.SESS_CDE,
-                PART_CDE = query.PART_CDE,
-                BEGIN_DTE = DateTime.Now,
-                COMMENT_TXT = "",
-                GRP_ADMIN = false
-            };
-
-            MEMBERSHIP created;
-
-            var personAlreadyInActivity = _unitOfWork.MembershipRepository.Where(x => x.SESS_CDE == query.SESS_CDE &&
-                x.ACT_CDE == query.ACT_CDE && x.ID_NUM == query.ID_NUM);
-
-            // If the person is already in the activity, we simply change his or her role
-            if (personAlreadyInActivity.Count() > 0)
-            {
-                created = personAlreadyInActivity.First();
-
-                if (created == null)
-                {
-                    throw new ResourceNotFoundException() { ExceptionMessage = "There was an error creating the membership." };
-                }
-
-                // Simply change role and comment
-                created.COMMENT_TXT = newMembership.COMMENT_TXT;
-                created.PART_CDE = newMembership.PART_CDE;
+                throw new BadInputException() { ExceptionMessage = "The request has already been approved."};
             }
-            // Else, we add him or her to the activity
-            else
-            {
-                // The add will fail if they are already a member.
-                created = _unitOfWork.MembershipRepository.Add(newMembership);
 
-                if (created == null)
-                {
-                    // The main reason why a membership won't be added is if a similar one (similar id_num, part_lvl, sess_cde and act_cde ) exists.
-                    throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
-                }
-            }
-            
-            _unitOfWork.Save();
+            var username = _accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
+            MembershipUploadViewModel newMembership = MembershipUploadViewModel.FromRequest(request, username);
 
-            return created;
+            var createdMembership = await _membershipService.AddAsync(newMembership);
 
-        }
+            if (createdMembership == null)
+                throw new ResourceCreationException();
 
-        /// <summary>
-        /// Delete the membershipRequest object whose id is given in the parameters 
-        /// </summary>
-        /// <param name="id">The membership request id</param>
-        /// <returns>A copy of the deleted membership request</returns>
-        public REQUEST Delete(int id)
-        {
-            var result = _unitOfWork.MembershipRequestRepository.GetById(id);
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
-            }
-            result = _unitOfWork.MembershipRequestRepository.Delete(result);
-            _unitOfWork.Save();
-            return result;
+            request.STATUS = Request_Status.APPROVED;
+            await _context.SaveChangesAsync();
+
+            return Get(request.REQUEST_ID);
+
         }
 
         /// <summary>
         /// Denies the membership request object whose id is given in the parameters
         /// </summary>
-        /// <param name="id">The membership request id</param>
-        /// <returns></returns>
-        public REQUEST DenyRequest(int id)
+        /// <param name="requestID">The membership request id</param>
+        /// <returns>A RequestView object of the denied request</returns>
+        public async Task<RequestView> DenyAsync(int requestID)
         {
-            var query = _unitOfWork.MembershipRequestRepository.GetById(id);
-            if (query == null)
+            var request = await _context.REQUEST.FindAsync(requestID);
+
+            if (request == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
             }
 
-            query.STATUS = Request_Status.DENIED;
-            _unitOfWork.Save();
-            return query;
+            if (request.STATUS == Request_Status.DENIED)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request has already been denied." };
+            }
+
+            if (request.STATUS == Request_Status.APPROVED)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request has already been approved" };
+            }
+
+            request.STATUS = Request_Status.DENIED;
+            await _context.SaveChangesAsync();
+
+            return Get(request.REQUEST_ID);
+        }
+
+        /// <summary>
+        /// Denies the membership request object whose id is given in the parameters
+        /// </summary>
+        /// <param name="requestID">The membership request id</param>
+        /// <returns>A RequestView object of the now pending request</returns>
+        public async Task<RequestView> SetPendingAsync(int requestID)
+        {
+            var request = await _context.REQUEST.FindAsync(requestID);
+
+            if (request == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
+            }
+
+            if (request.STATUS == Request_Status.PENDING)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request is already pending." };
+            }
+
+            if (request.STATUS == Request_Status.APPROVED)
+            {
+                throw new BadInputException() { ExceptionMessage = "The request has already been approved" };
+            }
+
+            request.STATUS = Request_Status.PENDING;
+            await _context.SaveChangesAsync();
+
+            return Get(request.REQUEST_ID);
+        }
+
+        /// <summary>
+        /// Delete the membershipRequest object whose id is given in the parameters 
+        /// </summary>
+        /// <param name="requestID">The membership request id</param>
+        /// <returns>A copy of the deleted request as a RequestView</returns>
+        public async Task<RequestView> DeleteAsync(int requestID)
+        {
+            var request = await _context.REQUEST.FindAsync(requestID);
+            if (request == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
+            }
+
+            RequestView rv = Get(request.REQUEST_ID);
+
+            _context.REQUEST.Remove(request);
+            await _context.SaveChangesAsync();
+
+            return rv;
         }
 
         /// <summary>
         /// Get the membership request object whose Id is specified in the parameters.
         /// </summary>
-        /// <param name="id">The membership request id</param>
-        /// <returns>If found, returns MembershipRequestViewModel. If not found, returns null.</returns>
-        public MembershipRequestViewModel Get(int id)
+        /// <param name="requestID">The membership request id</param>
+        /// <returns>The matching RequestView</returns>
+        public RequestView Get(int requestID)
         {
-            
-            var idParameter = new SqlParameter("@REQUEST_ID", id);
-            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUEST_PER_REQUEST_ID @REQUEST_ID", idParameter).FirstOrDefault();
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
-            }
+            RequestView? query = _context.RequestView.FirstOrDefault(rv => rv.RequestID == requestID);
 
-            // Getting rid of database-inherited whitespace
-            result.ActivityCode = result.ActivityCode.Trim();
-            result.ActivityDescription = result.ActivityDescription.Trim();
-            result.SessionCode = result.SessionCode.Trim();
-            result.SessionDescription = result.SessionDescription.Trim();
-            result.IDNumber = result.IDNumber;
-            result.FirstName = result.FirstName.Trim();
-            result.LastName = result.LastName.Trim();
-            result.Participation = result.Participation.Trim();
-            result.ParticipationDescription = result.ParticipationDescription.Trim();
+            if (query is not RequestView request) throw new ResourceNotFoundException() { ExceptionMessage = "The request was not found"};
 
-            return result;
+            return request;
         }
 
         /// <summary>
         /// Fetches all the membership request objects from the database.
         /// </summary>
-        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public IEnumerable<MembershipRequestViewModel> GetAll()
+        /// <returns>RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        public IEnumerable<RequestView> GetAll()
         {
-            
-            var result = RawSqlQuery<MembershipRequestViewModel>.query("ALL_REQUESTS");
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-            return trimmedResult;
+            return _context.RequestView;
         }
 
         /// <summary>
         /// Fetches all the membership requests associated with this activity
         /// </summary>
-        /// <param name="id">The activity id</param>
-        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForActivity(string id)
+        /// <param name="activityCode">The activity id</param>
+        /// <param name="sessionCode">The session code to filter by</param>
+        /// <param name="requestStatus">The request status to filter by</param>
+        /// <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        public IEnumerable<RequestView> GetMembershipRequests(string activityCode, string? sessionCode = null, string? requestStatus = null)
         {
-            
-            var idParameter = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUESTS_PER_ACT_CDE @ACT_CDE", idParameter);
-
-            var trimmedResult = result.Select(x =>
+            if (!_context.ACT_INFO.Any(a => a.ACT_CDE == activityCode))
             {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-            return trimmedResult; 
+                throw new ResourceNotFoundException() { ExceptionMessage = "The activity could not be found." };
+            }
+
+            sessionCode ??= Helpers.GetCurrentSession(_context);
+            var requests = _context.RequestView.Where(r => r.ActivityCode == activityCode && r.SessionCode == sessionCode);
+            if (requestStatus != null)
+            {
+                requests = requests.Where(r => r.Status == requestStatus);
+            }
+            return requests;
         }
 
         /// <summary>
         /// Fetches all the membership requests associated with this student
         /// </summary>
-        /// <param name="id">The student id</param>
-        /// <returns>MembershipRequestViewModel IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
-        public IEnumerable<MembershipRequestViewModel> GetMembershipRequestsForStudent(string id)
+        /// <param name="username">The AD Username of the user</param>
+        /// <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
+        public IEnumerable<RequestView> GetMembershipRequestsByUsername(string username)
         {
-            
-            var idParameter = new SqlParameter("@STUDENT_ID", id);
-            var result = RawSqlQuery<MembershipRequestViewModel>.query("REQUESTS_PER_STUDENT_ID @STUDENT_ID", idParameter);
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-            return trimmedResult;
+            return _context.RequestView.Where(r => r.Username == username);
         }
 
         /// <summary>
         /// Update an existing membership request object
         /// </summary>
-        /// <param name="id">The membership request id</param>
+        /// <param name="requestID">The membership request id</param>
         /// <param name="membershipRequest">The newly modified membership request</param>
-        /// <returns></returns>
-        public REQUEST Update(int id, REQUEST membershipRequest)
+        /// <returns>A RequestView object of the updated request</returns>
+        public async Task<RequestView?> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest)
         {
-            var original = _unitOfWork.MembershipRequestRepository.GetById(id);
+            var original = await _context.REQUEST.FindAsync(requestID);
             if (original == null)
             {
-                return null;
+                throw new ResourceNotFoundException { ExceptionMessage = "The Request was not found." };
             }
 
-            // The validate function throws ResourceNotFoundExceptino where needed. The exceptions are caught in my CustomExceptionFilter
-            validateMembershipRequest(membershipRequest);
+            // The validate function throws ResourceNotFoundException where needed. The exceptions are caught in my CustomExceptionFilter
+            _membershipService.ValidateMembership((MembershipUploadViewModel) membershipRequest);
 
             // Only a few fields should be able to be changed through an update.
-            original.SESS_CDE = membershipRequest.SESS_CDE;
-            original.COMMENT_TXT = membershipRequest.COMMENT_TXT;
-            original.DATE_SENT = membershipRequest.DATE_SENT;
-            original.PART_CDE = membershipRequest.PART_CDE;
+            original.SESS_CDE = membershipRequest.Session;
+            original.COMMENT_TXT = membershipRequest.CommentText;
+            original.DATE_SENT = membershipRequest.DateSent;
+            original.PART_CDE = membershipRequest.Participation;
 
-            _unitOfWork.Save();
+            await _context.SaveChangesAsync();
 
-            return original;
-        }
-
-        // Helper method to help validate a membership request that comes in.
-        // Return true if it is valid. Throws an exception if not. Exception is cauth in an Exception filter.
-        private bool validateMembershipRequest(REQUEST membershipRequest)
-        {
-            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membershipRequest.ID_NUM.ToString()).Count() > 0;
-            if(!personExists)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
-            }
-            var activityExists = _unitOfWork.ActivityInfoRepository.Where(x => x.ACT_CDE.Trim() == membershipRequest.ACT_CDE).Count() > 0;
-            if(!activityExists)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
-            }
-            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membershipRequest.PART_CDE).Count() > 0;
-            if(!participationExists)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Participation level was not found." };
-            }
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membershipRequest.SESS_CDE).Count() > 0;
-            if(!sessionExists)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
-            }
-            // Check for a pending request
-            var pendingRequest = _unitOfWork.MembershipRequestRepository.Any(x => x.ID_NUM == membershipRequest.ID_NUM &&
-                x.SESS_CDE.Equals(membershipRequest.SESS_CDE) && x.ACT_CDE.Equals(membershipRequest.ACT_CDE) && 
-                x.STATUS.Equals("Pending"));
-            if (pendingRequest)
-            {
-                throw new ResourceCreationException() { ExceptionMessage = "A request for this activity has already been made for you and is awaiting group leader approval." };
-            }
-
-            return true;
-        }
-
-        private bool isPersonAlreadyInActivity(REQUEST membershipRequest)
-        {
-            var personAlreadyInActivity = _unitOfWork.MembershipRepository.Where(x => x.SESS_CDE == membershipRequest.SESS_CDE &&
-                x.ACT_CDE == membershipRequest.ACT_CDE && x.ID_NUM == membershipRequest.ID_NUM).Count() > 0;
-            if (personAlreadyInActivity)
-            {
-                throw new ResourceCreationException() { ExceptionMessage = "You are already part of the activity." };
-            }
-
-            return true;
+            return Get(original.REQUEST_ID);
         }
     }
 }

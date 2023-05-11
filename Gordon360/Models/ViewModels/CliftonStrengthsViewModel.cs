@@ -1,28 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Gordon360.Static.Names;
+﻿using Gordon360.Models.CCT;
+using System;
+
 namespace Gordon360.Models.ViewModels
 {
-    public class CliftonStrengthsViewModel
+    public record CliftonStrengthsViewModel(string AccessCode, string Email, DateTime? DateCompleted, string[] Themes, bool Private)
     {
-        public List<String> Strengths { get; set; }
-
-        public static implicit operator CliftonStrengthsViewModel(Clifton_Strengths clif)
-        {
-            CliftonStrengthsViewModel vm = new CliftonStrengthsViewModel
-            {
-                Strengths = new List<string>()
-                {
-                    clif.THEME_1,
-                    clif.THEME_2,
-                    clif.THEME_3,
-                    clif.THEME_4,
-                    clif.THEME_5
-                },
-            };
-            return vm;
-        }
-    }
+        public static implicit operator CliftonStrengthsViewModel?(Clifton_Strengths? cs) => cs is null ? null : new(
+            AccessCode: cs.ACCESS_CODE, 
+            Email: cs.EMAIL, 
+            DateCompleted: cs.DTE_COMPLETED,
+            Themes: new string[5] { cs.THEME_1, cs.THEME_2, cs.THEME_3, cs.THEME_4, cs.THEME_5 },
+            Private: cs.Private);
+    };
 }

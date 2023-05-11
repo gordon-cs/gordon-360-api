@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Gordon360.Models;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
-using System.Data.SqlClient;
-using System.Data;
-using Gordon360.Exceptions.CustomExceptions;
 using Gordon360.Static.Methods;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using Gordon360.Enums;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services
 {
@@ -19,400 +20,197 @@ namespace Gordon360.Services
     /// </summary>
     public class MembershipService : IMembershipService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly CCTContext _context;
+        private readonly IAccountService _accountService;
+        private readonly IActivityService _activityService;
 
-        public MembershipService(IUnitOfWork unitOfWork)
+        public MembershipService(CCTContext context, IAccountService accountService, IActivityService activityService)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
+            _accountService = accountService;
+            _activityService = activityService;
+        }
+
+        /// <summary>
+        /// Fetches the memberships associated with the activity whose code is specified by the parameter.
+        /// </summary>
+        /// <param name="activityCode">Optional activity code filter</param>
+        /// <param name="username">Optional username filter</param>
+        /// <param name="sessionCode">Optional session code, defaults to current session. Use "*" for all sessions</param>
+        /// <param name="participationTypes">Optional filter for involvement participation types (MEMBR, ADV, LEAD, GUEST, GRP_ADMIN)</param>
+        /// <returns>An IEnumerable of the matching MembershipView objects</returns>
+        public IEnumerable<MembershipView> GetMemberships(
+            string? activityCode = null,
+            string? username = null,
+            string? sessionCode = null,
+            List<string>? participationTypes = null
+        )
+        {
+            IQueryable<MembershipView> memberships = _context.MembershipView;
+            if (username is not null) memberships = memberships.Where(m => EF.Functions.Like(m.Username, username));
+            if (activityCode is not null) memberships = memberships.Where(m => m.ActivityCode == activityCode);
+
+            // Null sessionCode defaults to current session
+            sessionCode ??= Helpers.GetCurrentSession(_context);
+            // session code "*" means all sessions
+            if (sessionCode != "*")
+            {
+                memberships = memberships.Where(m => m.SessionCode.Trim() == sessionCode);
+            }
+
+            if (participationTypes?.Count > 0)
+            {
+                var groupAdmin = Participation.GroupAdmin.GetCode();
+                var includesGroupAdmin = participationTypes.Contains(groupAdmin) == true;
+                if (includesGroupAdmin) participationTypes.Remove(groupAdmin);
+
+                memberships = memberships.Where(m => participationTypes.Contains(m.Participation) || (includesGroupAdmin && m.GroupAdmin == true));
+            }
+
+            return memberships.OrderByDescending(m => m.StartDate);
+        }
+
+        /// <summary>	
+        /// Fetch the membership whose id is specified by the parameter	
+        /// </summary>	
+        /// <param name="membershipID">The membership id</param>	
+        /// <returns>The found membership as a MembershipView</returns>	
+        public MembershipView GetSpecificMembership(int membershipID)
+        {
+            var result = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
+
+            if (result == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
+            }
+
+            return result;
         }
 
         /// <summary>
         /// Adds a new Membership record to storage. Since we can't establish foreign key constraints and relationships on the database side,
         /// we do it here by using the validateMembership() method.
         /// </summary>
-        /// <param name="membership">The membership to be added</param>
-        /// <returns>The newly added Membership object</returns>
-        public MEMBERSHIP Add(MEMBERSHIP membership)
+        /// <param name="membershipUpload">The membership to be added</param>
+        /// <returns>The newly added membership object as a MembershipView</returns>
+        public async Task<MembershipView> AddAsync(MembershipUploadViewModel membershipUpload)
         {
-            // validate returns a boolean value.
-            validateMembership(membership);
-            isPersonAlreadyInActivity(membership);
+            ValidateMembership(membershipUpload);
+            IsPersonAlreadyInActivity(membershipUpload);
 
-            // Get session begin date of the membership
-            var sessionCode = _unitOfWork.SessionRepository.Find(x => x.SESS_CDE.Equals(membership.SESS_CDE)).FirstOrDefault();
-            membership.BEGIN_DTE = (DateTime) sessionCode.SESS_BEGN_DTE;
+            var sessionBeginDate = _context.CM_SESSION_MSTR
+                .Where(x => x.SESS_CDE.Equals(membershipUpload.Session))
+                .FirstOrDefault()?.SESS_BEGN_DTE ?? DateTime.Now;
 
-            // The Add() method returns the added membership.
-            var payload = _unitOfWork.MembershipRepository.Add(membership);
+            int gordonId = int.Parse(_accountService.GetAccountByUsername(membershipUpload.Username).GordonID);
 
-            // There is a unique constraint in the Database on columns (ID_NUM, PART_LVL, SESS_CDE and ACT_CDE)
-            if (payload == null)
+            MEMBERSHIP m = membershipUpload.ToMembership(gordonId, sessionBeginDate);
+            var payload = await _context.MEMBERSHIP.AddAsync(m);
+
+            if (payload?.Entity == null)
             {
-                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership. Verify that a similar membership doesn't already exist." };
+                throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the membership." };
             }
-            _unitOfWork.Save();
-
-            return payload;
-
+            else
+            {
+                await _context.SaveChangesAsync();
+                return GetMembershipViewById(payload.Entity.MEMBERSHIP_ID);
+            }
         }
 
         /// <summary>
         /// Delete the membership whose id is specified by the parameter.
         /// </summary>
-        /// <param name="id">The membership id</param>
-        /// <returns>The membership that was just deleted</returns>
-        public MEMBERSHIP Delete(int id)
+        /// <param name="membershipID">The membership id</param>
+        /// <returns>The membership that was just deleted as a MembershipView</returns>
+        public MembershipView Delete(int membershipID)
         {
-            var result = _unitOfWork.MembershipRepository.GetById(id);
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
-            }
-            result = _unitOfWork.MembershipRepository.Delete(result);
+            var result = _context.MEMBERSHIP.Find(membershipID);
 
-            _unitOfWork.Save();
-
-            return result;
-        }
-
-        /// <summary>	
-        /// Fetch the membership whose id is specified by the parameter	
-        /// </summary>	
-        /// <param name="id">The membership id</param>	
-        /// <returns>MembershipViewModel if found, null if not found</returns>	
-        public MEMBERSHIP GetSpecificMembership(int id)
-        {
-            MEMBERSHIP result = _unitOfWork.MembershipRepository.GetById(id);
             if (result == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            return result;
-        }
+            MembershipView toReturn = GetMembershipViewById(result.MEMBERSHIP_ID);
 
-        /// <summary>
-        /// Fetches all membership records from storage.
-        /// </summary>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipViewModel> GetAll()
-        {
+            _context.MEMBERSHIP.Remove(result);
+            _context.SaveChanges();
 
-            var result = RawSqlQuery<MembershipViewModel>.query("ALL_MEMBERSHIPS");
-            // Trimming database generated whitespace ._.
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-            return trimmedResult.OrderByDescending(x => x.StartDate);
-        }
-
-        /// <summary>
-        /// Fetches the group admin (who have edit privileges of the page) of the activity whose activity code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipViewModel> GetGroupAdminMembershipsForActivity(string id)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
-
-            // Filter group admin
-            result = result.Where(x => x.GroupAdmin.HasValue && x.GroupAdmin.Value == true);
-            // Getting rid of whitespace inherited from the database .__.
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-
-            return trimmedResult;
-
-        }
-
-        /// <summary>
-        /// Fetches the leaders of the activity whose activity code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipViewModel> GetLeaderMembershipsForActivity(string id)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
-            // Filter leaders
-            
-            var leaderRoles = Helpers.GetLeaderRoleCodes();
-            result = result.Where(x => leaderRoles == x.Participation.Trim());
-
-            // Getting rid of whitespace inherited from the database .__.
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-            
-            return trimmedResult;
-        }
-
-        /// <summary>
-        /// Fetches the advisors of the activity whose activity code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipViewModel> GetAdvisorMembershipsForActivity(string id)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
-            // Filter advisors
-
-            var advisorRole = Helpers.GetAdvisorRoleCodes();
-            result = result.Where(x => advisorRole == x.Participation.Trim());
-
-            // Getting rid of whitespace inherited from the database .__.
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                return trim;
-            });
-
-            return trimmedResult;
-        }
-
-        /// <summary>
-        /// Fetches the memberships associated with the activity whose code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>MembershipViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipViewModel> GetMembershipsForActivity(string id)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.Mail_Location = x.Mail_Location.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                trim.GroupAdmin = x.GroupAdmin;
-                return trim;
-            });
-            return trimmedResult.OrderByDescending(x => x.StartDate);
-        }
-
-        /// <summary>
-        /// Fetches all the membership information linked to the student whose id appears as a parameter.
-        /// </summary>
-        /// <param name="id">The student id.</param>
-        /// <returns>A MembershipViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
-        public IEnumerable<MembershipViewModel> GetMembershipsForStudent(string id)
-        {
-            var studentExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == id).Count() > 0;
-            if (!studentExists)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
-            }
-
-            var idParam = new SqlParameter("@STUDENT_ID", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_STUDENT_ID @STUDENT_ID", idParam);
-            
-            // The Views that were given to were defined as char(n) instead of varchar(n)
-            // They return with whitespace padding which messes up comparisons later on.
-            // I'm using the IEnumerable Select method here to help get rid of that.
-            var trimmedResult = result.Select(x =>
-            {
-                var trim = x;
-                trim.ActivityCode = x.ActivityCode.Trim();
-                trim.ActivityDescription = x.ActivityDescription.Trim();
-                trim.SessionCode = x.SessionCode.Trim();
-                trim.SessionDescription = x.SessionDescription.Trim();
-                trim.Participation = x.Participation.Trim();
-                trim.ParticipationDescription = x.ParticipationDescription.Trim();
-                trim.FirstName = x.FirstName.Trim();
-                trim.LastName = x.LastName.Trim();
-                trim.IDNumber = x.IDNumber;
-                trim.ActivityType = x.ActivityType;
-                trim.ActivityTypeDescription = x.ActivityTypeDescription;
-                return trim;
-            });
-
-            return trimmedResult.OrderByDescending(x => x.StartDate);
-        }
-
-        /// <summary>
-        /// Fetches the number of followers associated with the activity whose code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>int.</returns>
-        public int GetActivityFollowersCount(string id)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
-
-            return result.Where(x => x.Participation == "GUEST").Count();
-        }
-
-        /// <summary>
-        /// Fetches the number of memberships associated with the activity whose code is specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <returns>int.</returns>
-        public int GetActivityMembersCount(string id)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
-
-            return result.Where(x => x.Participation != "GUEST").Count();
-        }
-
-        /// <summary>
-        /// Fetches the number of followers associated with the activity and session whose codes are specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <param name="sess_cde">The session code</param>
-        /// <returns>int.</returns>
-        public int GetActivityFollowersCountForSession(string id, string sess_cde)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
-
-            return result.Where(x => x.Participation == "GUEST" && x.SessionCode.Trim() == sess_cde).Count();
-        }
-
-        /// <summary>
-        /// Fetches the number of memberships associated with the activity and session whose codes are specified by the parameter.
-        /// </summary>
-        /// <param name="id">The activity code.</param>
-        /// <param name="sess_cde">The session code</param>
-        /// <returns>int.</returns>
-        public int GetActivityMembersCountForSession(string id, string sess_cde)
-        {
-            var idParam = new SqlParameter("@ACT_CDE", id);
-            var result = RawSqlQuery<MembershipViewModel>.query("MEMBERSHIPS_PER_ACT_CDE @ACT_CDE", idParam);
-
-            return result.Where(x => x.Participation != "GUEST" && x.SessionCode.Trim() == sess_cde).Count();
+            return toReturn;
         }
 
         /// <summary>
         /// Updates the membership whose id is given as the first parameter to the contents of the second parameter.
         /// </summary>
-        /// <param name="id">The membership id.</param>
-        /// <param name="membership">The updated membership.</param>
-        /// <returns>The newly modified membership.</returns>
-        public MEMBERSHIP Update(int id, MEMBERSHIP membership)
+        /// <param name="membershipID">The id of the membership to update</param>
+        /// <param name="membership">The updated membership</param>
+        /// <returns>The newly modified membership as a MembershipView object</returns>
+        public async Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership)
         {
-            var original = _unitOfWork.MembershipRepository.GetById(id);
+            var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            validateMembership(membership);
-
             // One can only update certain fields within a membrship
-            //original.BEGIN_DTE = membership.BEGIN_DTE;
-            original.COMMENT_TXT = membership.COMMENT_TXT;
-            //original.END_DTE = membership.END_DTE;
-            original.PART_CDE = membership.PART_CDE;
-            original.SESS_CDE = membership.SESS_CDE;
+            original.COMMENT_TXT = membership.CommentText;
+            original.PART_CDE = membership.Participation;
 
-            _unitOfWork.Save();
+            if (membership.Participation == Participation.Guest.GetCode())
+            {
+                await SetGroupAdminAsync(membershipID, false);
+            }
 
-            return original;
+            await _context.SaveChangesAsync();
+
+            return GetMembershipViewById(original.MEMBERSHIP_ID);
 
         }
         /// <summary>
         /// Switches the group-admin property of the person whose membership id is given
         /// </summary>
-        /// <param name="id">The membership id.</param>
-        /// <param name="membership">The corresponding membership object</param>
-        /// <returns>The newly modified membership.</returns>
-        public MEMBERSHIP ToggleGroupAdmin(int id, MEMBERSHIP membership)
+        /// <param name="membershipID">The corresponding membership object</param>
+        /// <param name="isGroupAdmin">The new value of group admin</param>
+        /// <returns>The newly modified membership as a MembershipView object</returns>
+        public async Task<MembershipView> SetGroupAdminAsync(int membershipID, bool isGroupAdmin)
         {
-            var original = _unitOfWork.MembershipRepository.GetById(id);
+            var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            validateMembership(membership);
+            if (original.PART_CDE == "GUEST" && isGroupAdmin)
+                throw new ArgumentException("A guest cannot be assigned as an admin.", "Participation Level");
 
-            var isGuest = original.PART_CDE == "GUEST";
+            original.GRP_ADMIN = isGroupAdmin;
 
-            if (isGuest)
-                throw new ArgumentException("A guest cannot be assigned as an admin.", "Participation Level" );
+            await _context.SaveChangesAsync();
 
-            var isAdmin = original.GRP_ADMIN ?? false;
-            if (!isAdmin)
-                original.GRP_ADMIN = true;
-            else
-                original.GRP_ADMIN = false;
-
-            _unitOfWork.Save();
-
-            return original;
+            return GetMembershipViewById(original.MEMBERSHIP_ID);
         }
 
         /// <summary>
         /// Switches the privacy property of the person whose membership id is given
         /// </summary>
-        /// <param name="id">The membership id.</param>
-        /// <param name="p">membership private or not</param>
-        /// <returns>The newly modified membership.</returns>
-        public void TogglePrivacy(int id, bool p)
+        /// <param name="membershipID">The membership object passed</param>
+        /// <param name="isPrivate">The new value of privacy</param>
+        /// <returns>The newly modified membership as a MembershipView object</returns>
+        public async Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate)
         {
-            var original = _unitOfWork.MembershipRepository.GetById(id);
+            var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
             }
 
-            original.PRIVACY = p;
+            original.PRIVACY = isPrivate;
 
-            _unitOfWork.Save();
+            await _context.SaveChangesAsync();
+
+            return GetMembershipViewById(original.MEMBERSHIP_ID);
         }
 
 
@@ -420,54 +218,43 @@ namespace Gordon360.Services
         /// Helper method to Validate a membership
         /// </summary>
         /// <param name="membership">The membership to validate</param>
-        /// <returns>True if the membership is valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
-        private bool validateMembership(MEMBERSHIP membership)
+        /// <returns>True if the membership is valid. Throws an Exception if not. Exception is caught in an Exception Filter</returns>
+        public bool ValidateMembership(MembershipUploadViewModel membership)
         {
-            var personExists = _unitOfWork.AccountRepository.Where(x => x.gordon_id.Trim() == membership.ID_NUM.ToString()).Count() > 0;
-            if (!personExists)
+            var personExists = _accountService.GetAccountByUsername(membership.Username);
+            if (personExists == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
             }
-            var participationExists = _unitOfWork.ParticipationRepository.Where(x => x.PART_CDE.Trim() == membership.PART_CDE).Count() > 0;
+            var participationExists = _context.PART_DEF.Any(x => x.PART_CDE.Trim() == membership.Participation);
             if (!participationExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Participation was not found." };
             }
-            var sessionExists = _unitOfWork.SessionRepository.Where(x => x.SESS_CDE.Trim() == membership.SESS_CDE).Count() > 0;
+            var sessionExists = _context.CM_SESSION_MSTR.Any(x => x.SESS_CDE.Trim() == membership.Session);
             if (!sessionExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
             }
-            var activityExists = _unitOfWork.ActivityInfoRepository.Where(x => x.ACT_CDE.Trim() == membership.ACT_CDE).Count() > 0;
+            var activityExists = _context.ACT_INFO.Any(x => x.ACT_CDE.Trim() == membership.Activity);
             if (!activityExists)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
             }
 
-            var activitiesThisSession = RawSqlQuery<ActivityViewModel>.query("ACTIVE_CLUBS_PER_SESS_ID @SESS_CDE", new SqlParameter("SESS_CDE", SqlDbType.VarChar) { Value = membership.SESS_CDE });
-
-            bool offered = false;
-            foreach (var activityResult in activitiesThisSession)
+            if (!_context.InvolvementOffering.Any(i => i.SessionCode == membership.Session && i.ActivityCode.Trim() == membership.Activity))
             {
-                if (activityResult.ACT_CDE.Trim() == membership.ACT_CDE)
-                {
-                    offered = true;
-                }
+                throw new BadInputException() { ExceptionMessage = "The Activity is not available for this session." };
             }
 
-            if (!offered)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Activity is not available for this session." };
-            }
-
-            
             return true;
         }
 
-        private bool isPersonAlreadyInActivity(MEMBERSHIP membershipRequest)
+        public bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest)
         {
-            var personAlreadyInActivity = _unitOfWork.MembershipRepository.Where(x => x.SESS_CDE == membershipRequest.SESS_CDE &&
-                x.ACT_CDE == membershipRequest.ACT_CDE && x.ID_NUM == membershipRequest.ID_NUM).Count() > 0;
+            var personAlreadyInActivity = _context.MembershipView.Any(x => x.SessionCode == membershipRequest.Session &&
+                x.ActivityCode == membershipRequest.Activity && x.Username == membershipRequest.Username);
+
             if (personAlreadyInActivity)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "The Person is already part of the activity." };
@@ -477,26 +264,56 @@ namespace Gordon360.Services
         }
 
         /// <summary>	
-        /// Determines whether or not the given student is a Group Admin of some activity	
+        /// Determines whether or not the given user is a Group Admin of some activity	
         /// </summary>
-        /// <param name="studentID">The student id</param>	
+        /// <param name="username">Username of the user to check</param>	
         /// <returns>true if student is a Group Admin, else false</returns>	
-        public Boolean IsGroupAdmin(int studentID)
+        public bool IsGroupAdmin(string username)
         {
-            // find memberships that the student is both apart of and group admin
-            var membershipsWhereStudentIsGroupAdmin = _unitOfWork.MembershipRepository.Where(
-                membership => membership.ID_NUM == studentID &&
-                              membership.GRP_ADMIN == true);
-            // probably should also add clauses to require membership to be recent
+            return _context.MembershipView.Any(membership => membership.Username == username && membership.GroupAdmin == true);
+        }
 
-            // potentially could modify this method to return the list of memberships where 
-            // student is group admin rather than a simple binary
-            if (membershipsWhereStudentIsGroupAdmin != null && membershipsWhereStudentIsGroupAdmin.Count() > 0)
+        /// <summary>	
+        /// Finds the matching MembershipView object from an existing MEMBERSHIP object
+        /// </summary>
+        /// <param name="membershipId">The MEMBERSHIP to match on MembershipID</param>	
+        /// <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
+        public MembershipView GetMembershipViewById(int membershipId)
+        {
+            var foundMembership = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipId);
+
+            if (foundMembership == null)
             {
-                return true;
+                throw new ResourceNotFoundException();
             }
 
-            return false;
+            return foundMembership;
         }
+
+        /// <summary>
+        /// Filters out memberships that are private with respect to the given viewer
+        /// </summary>
+        /// <param name="memberships">Enumerable of memberships to filter</param>
+        /// <param name="viewerUsername">username of viewer</param>
+        /// <returns>The membership enumerable with private memberships removed</returns>
+        public IEnumerable<MembershipView> RemovePrivateMemberships(IEnumerable<MembershipView> memberships, string viewerUsername)
+            => memberships.Where(m =>
+                {
+                    var act = _activityService.Get(m.ActivityCode);
+                    var isPublic = !(act.Privacy == true || m.Privacy == true);
+                    if (isPublic)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        // If the current authenticated user is an admin of this group, then include the membership
+                        return GetMemberships(
+                            activityCode: m.ActivityCode,
+                            username: viewerUsername,
+                            sessionCode: m.SessionCode)
+                        .Any(m => m.Participation != Participation.Guest.GetCode());
+                    }
+                });
     }
 }

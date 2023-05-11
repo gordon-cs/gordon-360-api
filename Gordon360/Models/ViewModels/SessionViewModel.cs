@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Web;
+﻿using Gordon360.Models.CCT;
+using System;
 
 namespace Gordon360.Models.ViewModels
 {

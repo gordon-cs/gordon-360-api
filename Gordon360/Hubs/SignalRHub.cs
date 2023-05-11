@@ -1,26 +1,23 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Threading.Tasks;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
 using Gordon360;
 using Gordon360.Services;
-using Gordon360.ApiControllers;
-using System.Web.Http;
+using Gordon360.Controllers;
 using Gordon360.Models.ViewModels;
 using Gordon360.Repositories;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Hubs
 {
-    [RoutePrefix("api/signalr")]
+    [Route("api/signalr")]
     [HubName("ChatHub")]
     public class ChatHub : Hub
     {
-        public async Task refreshMessages(List<string> userIds, SendTextViewModel message, string userId)
+        public async Task RefreshMessagesAsync(List<string> userIds, SendTextViewModel message, string userId)
          {
             DirectMessageService _DirectMessageService = new DirectMessageService();
             var connectionIds =_DirectMessageService.GetUserConnectionIds(userIds);
@@ -37,17 +34,17 @@ namespace Gordon360.Hubs
         public string savedUserId;
         public string savedConnectionId;
 
-        public async Task saveFunction(string id)
+        public async Task SaveFunctionAsync(string id)
         {
             DirectMessageService _DirectMessageService = new DirectMessageService();
             _DirectMessageService.StoreUserConnectionIds(id, Context.ConnectionId);
         }
 
-        public  async Task saveConnection(string id)
+        public  async Task SaveConnectionAsync(string id)
         {
             savedUserId = id;
             savedConnectionId = Context.ConnectionId;
-            await saveFunction(id);
+            await SaveFunctionAsync(id);
 
             Clients.All.BroadcastMessage("Saved Connection!");
 
@@ -77,4 +74,4 @@ namespace Gordon360.Hubs
     }
  
 
-}
+}*/

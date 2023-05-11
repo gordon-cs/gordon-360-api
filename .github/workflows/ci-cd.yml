@@ -1,0 +1,80 @@
+name: Continuous Integration & Deployment
+
+on: push
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK 6
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build
+    
+  deploy-train:
+    runs-on: windows-latest
+    if: ${{ github.ref == 'refs/heads/develop' }}
+    needs: build
+    environment:
+      name: Train
+      url: https://360ApiTrain.gordon.edu
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK 6
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Publish
+        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -p:PublishDir=${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
+          if-no-files-found: error
+          
+  deploy-prod:
+    runs-on: windows-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: build
+    environment:
+      name: Production
+      url: https://360Api.gordon.edu
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK 6
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Publish
+        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -p:PublishDir=${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
+          if-no-files-found: error
+

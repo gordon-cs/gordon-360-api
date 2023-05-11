@@ -6,6 +6,7 @@
  * The implicit operator allows conversion between the model and the view model
  ********************************/
 
+using Gordon360.Models.MyGordon;
 using System;
 
 namespace Gordon360.Models.ViewModels
@@ -17,14 +18,14 @@ namespace Gordon360.Models.ViewModels
         public int categoryID { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
-        // defaults below to unapproved (if null), hence not a nullable bool
+        public string Image { get; set; }
         public bool Accepted { get; set; }
-        public Nullable<bool> Sent { get; set; }
-        public Nullable<bool> thisPastMailing { get; set; }
-        public Nullable<DateTime> Entered { get; set; }
+        public bool? Sent { get; set; }
+        public bool? thisPastMailing { get; set; }
+        public DateTime? Entered { get; set; }
         public string categoryName { get; set; }
-        public Nullable<int> SortOrder { get; set; }
-        public Nullable<DateTime> ManualExpirationDate { get; set; }
+        public int? SortOrder { get; set; }
+        public DateTime? ManualExpirationDate { get; set; }
 
         public static implicit operator StudentNewsViewModel(StudentNews n)
         {
@@ -35,14 +36,43 @@ namespace Gordon360.Models.ViewModels
                 categoryID = n.categoryID,
                 Subject = n.Subject,
                 Body = n.Body,
+                Image = n.Image,
                 // should default to unapproved (if null)
                 Accepted = n.Accepted ?? false,
                 Sent = n.Sent,
                 thisPastMailing = n.thisPastMailing,
                 Entered = n.Entered,
-                categoryName = n.StudentNewsCategory.categoryName,
-                SortOrder = n.StudentNewsCategory.SortOrder,
+                categoryName = n.category?.categoryName ?? "",
+                SortOrder = n.category?.SortOrder ?? null,
                 ManualExpirationDate = n.ManualExpirationDate,
+            };
+
+            return vm;
+        }
+
+        /// <summary>
+        /// Returns StudentNewsViewModel from StudentNews and StudentNewsCategory
+        /// </summary>
+        /// <param name="sn">The StudentNews table</param>
+        /// <param name="snc">The StudentNewsCategory table</param>
+        /// <returns> StudentNewsViewModel </returns>
+        public static StudentNewsViewModel From(StudentNews sn, StudentNewsCategory snc)
+        {
+            StudentNewsViewModel vm = new StudentNewsViewModel
+            {
+                SNID = sn.SNID,
+                ADUN = sn.ADUN,
+                categoryID = sn.categoryID,
+                Subject = sn.Subject,
+                Body = sn.Body,
+                Image = sn.Image,
+                Accepted = true,
+                Sent = sn.Sent,
+                thisPastMailing = sn.thisPastMailing,
+                Entered = sn.Entered,
+                categoryName = snc.categoryName,
+                SortOrder = snc.SortOrder,
+                ManualExpirationDate = sn.ManualExpirationDate,
             };
 
             return vm;

@@ -1,21 +1,33 @@
-﻿using Gordon360.Exceptions.CustomExceptions;
-using Gordon360.Models;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Models.MyGordon.Context;
+using Gordon360.Exceptions;
+using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
-using Gordon360.Repositories;
-using Gordon360.Services.ComplexQueries;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services
 {
     public class NewsService : INewsService
     {
-        private IUnitOfWork _unitOfWork;
+        private readonly MyGordonContext _context;
+        private readonly CCTContext _contextCCT;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ServerUtils _serverUtils;
 
-        public NewsService(IUnitOfWork unitOfWork)
+        public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
         {
-            _unitOfWork = unitOfWork;
+            _context = context;
+            _contextCCT = contextCCT;
+            _webHostEnvironment = webHostEnvironment;
+            _serverUtils = serverUtils;
         }
 
         /// <summary>
@@ -28,80 +40,157 @@ namespace Gordon360.Services
         /// <returns>The news item</returns>
         public StudentNews Get(int newsID)
         {
-            var newsItem = _unitOfWork.StudentNewsRepository.GetById(newsID);
+            var newsItem = _context.StudentNews.Find(newsID);
             // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
             if (newsItem == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The news item was not found." };
             }
+
             return newsItem;
         }
 
-        public IEnumerable<StudentNewsViewModel> GetNewsNotExpired()
+        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpiredAsync()
         {
-            return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NOT_EXPIRED");
+
+            var news = (from sn in _context.StudentNews
+                        join snc in _context.StudentNewsCategory
+                        on sn.categoryID equals snc.categoryID
+                        where sn.Accepted == true
+                        && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && EF.Functions.DateDiffDay(sn.ManualExpirationDate ?? DateTime.Today, DateTime.Today) < 1))
+                        orderby sn.Entered descending
+                        select StudentNewsViewModel.From(sn, snc));
+
+            return news;
         }
 
-        public IEnumerable<StudentNewsViewModel> GetNewsNew()
+        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
         {
-            return RawSqlQuery<StudentNewsViewModel>.query("NEWS_NEW");
+            var news = (from sn in _context.StudentNews
+                         join snc in _context.StudentNewsCategory
+                         on sn.categoryID equals snc.categoryID
+                         where sn.Accepted == true
+                         && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
+                         && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
+                         orderby snc.SortOrder
+                         select StudentNewsViewModel.From(sn, snc));
+                         
+            return news;
         }
 
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
         {
-            return RawSqlQuery<StudentNewsCategoryViewModel>.query("NEWS_CATEGORIES");
+            return _context.StudentNewsCategory.OrderBy(c => c.SortOrder).Select<StudentNewsCategory, StudentNewsCategoryViewModel>(c => c);
+        }
+
+        public IEnumerable<StudentNewsViewModel> GetNewsUnapproved()
+        {
+            var news = (from sn in _context.StudentNews
+                        join snc in _context.StudentNewsCategory
+                        on sn.categoryID equals snc.categoryID
+                        where sn.Accepted == false
+                        && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && EF.Functions.DateDiffDay(sn.ManualExpirationDate ?? DateTime.Today, DateTime.Today) < 1))
+                        orderby sn.SNID descending
+                        select new StudentNewsViewModel
+                        {
+                            SNID = sn.SNID,
+                            ADUN = sn.ADUN,
+                            categoryID = sn.categoryID,
+                            Subject = sn.Subject,
+                            Body = sn.Body,
+                            Image = sn.Image,
+                            Accepted = false,
+                            Sent = sn.Sent,
+                            thisPastMailing = sn.thisPastMailing,
+                            Entered = sn.Entered,
+                            categoryName = snc.categoryName,
+                            SortOrder = snc.SortOrder,
+                            ManualExpirationDate = sn.ManualExpirationDate,
+                        });
+            return news;
         }
 
         /// <summary>
         /// Gets unapproved unexpired news submitted by user.
         /// </summary>
-        /// <param name="id">user id</param>
         /// <param name="username">username</param>
         /// <returns>Result of query</returns>
-        public IEnumerable<StudentNewsViewModel> GetNewsPersonalUnapproved(string id, string username)
+        public async Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapprovedAsync(string username)
         {
             // Verify account
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
+            var account = await _contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            // Query the database
-            var usernameParam = new SqlParameter("@Username", username);
-            return RawSqlQuery<StudentNewsViewModel>.query("NEWS_PERSONAL_UNAPPROVED @Username", usernameParam);
+            var news = (from sn in _context.StudentNews
+                         join snc in _context.StudentNewsCategory
+                         on sn.categoryID equals snc.categoryID
+                         where sn.Accepted != true
+                         && (sn.ADUN == username)
+                         && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
+                        orderby sn.SNID descending
+                         select StudentNewsViewModel.From(sn, snc)); 
+            return news;
         }
-
 
         /// <summary>
         /// Adds a news item record to storage.
         /// </summary>
         /// <param name="newsItem">The news item to be added</param>
         /// <param name="username">username</param>
-        /// <param name="id">id</param>
         /// <returns>The newly added Membership object</returns>
-        public StudentNews SubmitNews(StudentNews newsItem, string username, string id)
+        public StudentNews SubmitNews(StudentNews newsItem, string username)
         {
             // Not currently used
             ValidateNewsItem(newsItem);
 
-            VerifyAccount(id);
+            VerifyAccount(username);
 
-            // SQL Parameters
-            var usernameParam = new SqlParameter("@Username", username);
-            var categoryIDParam = new SqlParameter("@CategoryID", newsItem.categoryID);
-            var subjectParam = new SqlParameter("@Subject", newsItem.Subject);
-            var bodyParam = new SqlParameter("@Body", newsItem.Body);
-
-            // Run stored procedure
-            var result = RawSqlQuery<StudentNewsViewModel>.query("INSERT_NEWS_ITEM @Username, @CategoryID, @Subject, @Body", usernameParam, categoryIDParam, subjectParam, bodyParam);
-            if (result == null)
+            var itemToSubmit = new StudentNews
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
+                categoryID = newsItem.categoryID,
+                Subject = newsItem.Subject,
+                Body = newsItem.Body,
+                Image = newsItem.Image,
+                ADUN = username,
+                Accepted = false,
+                Sent = true,
+                thisPastMailing = false,
+                Entered = DateTime.Now
+            };
+
+            _context.StudentNews.Add(itemToSubmit);
+            if (itemToSubmit.Image != null)
+            {
+
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(itemToSubmit.Image);
+                
+                // Use a unique alphanumeric GUID string as the file name
+                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                var imagePath = GetImagePath(filename);
+                var url = GetImageURL(filename);
+
+                ImageUtils.UploadImage(imagePath, data, format);
+
+                itemToSubmit.Image = url;
             }
 
-            return newsItem;
+
+            _context.SaveChanges();
+
+            return itemToSubmit;
         }
 
         /// <summary>
@@ -114,15 +203,21 @@ namespace Gordon360.Services
         {
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
-            
-            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
 
-            var result = _unitOfWork.StudentNewsRepository.Delete(newsItem);
-            _unitOfWork.Save();
-            return result;
+            if (newsItem.Image != null)
+            {
+                var imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
+
+                ImageUtils.DeleteImage(imagePath);
+            }
+            _context.StudentNews.Remove(newsItem);
+            _context.SaveChanges();
+            return newsItem;
         }
 
         /// <summary>
@@ -132,19 +227,19 @@ namespace Gordon360.Services
         /// <param name="newData">The news object that contains updated values</param>
         /// <returns>The updated news item's view model</returns>
         /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
-        public StudentNewsViewModel EditPosting(int newsID, StudentNews newData)
+        public StudentNewsViewModel EditPosting(int newsID, StudentNewsUploadViewModel newData)
         {
             // Service method 'Get' throws its own exceptions
             var newsItem = Get(newsID);
 
-            // Note: These checks have been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             VerifyUnexpired(newsItem);
             VerifyUnapproved(newsItem);
-            
+
             // categoryID is required, not nullable in StudentNews model
-            if(newData.Subject == null || newData.Body == null)
+            if (newData.Subject == null || newData.Body == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The new data to update the news item is missing some entries." };
             }
@@ -153,9 +248,104 @@ namespace Gordon360.Services
             newsItem.Subject = newData.Subject;
             newsItem.Body = newData.Body;
 
-            _unitOfWork.Save();
-            
-            return (StudentNewsViewModel)newsItem;
+            _context.SaveChanges();
+
+            return newsItem;
+        }
+
+        /// <summary>
+        /// (Service) Edits the image of a news item in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newImageData">The news image object that contains the updated image value</param>
+        /// <returns>The updated news item's view model</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        public StudentNewsViewModel EditImage(int newsID, string newImageData)
+        {
+            // Service method 'Get' throws its own exceptions
+            var newsItem = Get(newsID);
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+            VerifyUnapproved(newsItem);
+
+            if (newImageData != "")
+            {
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(newImageData);
+
+                string? imagePath = null;
+                // If old image exists, overwrite it with new image at same path
+                if (newsItem.Image != null)
+                {
+                    imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
+                }
+                // Otherwise, upload new image and save url to db
+                else
+                {
+                    // Use a unique alphanumeric GUID string as the file name
+                    var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                    imagePath = GetImagePath(filename);
+                    var url = GetImageURL(filename);
+                    newsItem.Image = url;
+                }
+
+                ImageUtils.UploadImage(imagePath, data, format);
+            }
+
+            //If the image property is null, it means that either the user
+            //chose to remove the previous image or that there was no previous
+            //image (DeleteImage is designed to handle this).
+            else if (newsItem.Image != null)
+            {
+                var imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
+
+                ImageUtils.DeleteImage(imagePath);
+                newsItem.Image = null;
+            }
+
+            _context.SaveChanges();
+
+            return newsItem;
+        }
+
+        public StudentNewsViewModel AlterPostAcceptStatus(int newsID, bool accepted)
+        {
+            var newsItem = Get(newsID);
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+
+            if (accepted)
+                VerifyUnapproved(newsItem);
+            else
+                VerfiyApproved(newsItem);
+
+            newsItem.Accepted = accepted;
+
+            _context.SaveChanges();
+
+            return newsItem;
+        }
+
+        private string GetImagePath(string filename)
+        {
+            return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "news", filename);
+        }
+
+        private string GetImageURL(string filename)
+        {
+            var serverAddress = _serverUtils.GetAddress();
+            if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
+
+            if (serverAddress.Contains("localhost"))
+                serverAddress += '/';
+            var url = $"{serverAddress}browseable/uploads/news/{filename}";
+            return url;
         }
 
         /// <summary>
@@ -163,18 +353,35 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsItem">The news item to verify</param>
         /// <returns>true if unapproved, otherwise throws some kind of meaningful exception</returns>
-        private bool VerifyUnapproved(StudentNews newsItem)
+        private static bool VerifyUnapproved(StudentNews newsItem)
         {
-            // Note: This check has been duplicated from StateYourBusiness because we do not SuperAdmins
-            //    to be able to delete expired news, this should be fixed eventually by removing some of
-            //    the SuperAdmin permissions that are not explicitly given
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
             if (newsItem.Accepted == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The news item acceptance status could not be verified." };
+                throw new Exception();
             }
-            if(newsItem.Accepted == true)
+            if (newsItem.Accepted == true)
             {
                 throw new BadInputException() { ExceptionMessage = "The news item has already been approved." };
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Helper method to verify that a given news item has already been approved
+        /// </summary>
+        /// <param name="newsItem">The news item to verify</param>
+        /// <returns>true if approved, otherwise throws some kind of meaningful exception</returns>
+        private static bool VerfiyApproved(StudentNews newsItem)
+        {
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
+            if (newsItem.Accepted != true)
+            {
+                throw new BadInputException() { ExceptionMessage = "The news item has not been approved." };
             }
             return true;
         }
@@ -185,7 +392,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsItem">The news item to verify</param>
         /// <returns>true if unexpired, otherwise throws some kind of meaningful exception</returns>
-        private bool VerifyUnexpired(StudentNews newsItem)
+        private static bool VerifyUnexpired(StudentNews newsItem)
         {
             // DateTime of date entered is nullable, so we need to check that here before comparing
             // If the entered date is null we shouldn't allow deletion to be safe
@@ -201,7 +408,7 @@ namespace Gordon360.Services
             var dateDiff = (todaysDate - newsDate).Days;
             if (dateDiff >= 14)
             {
-                throw new Exceptions.CustomExceptions.UnauthorizedAccessException() { ExceptionMessage = "Unauthorized to delete expired news items." };
+                throw new UnauthorizedAccessException("Unauthorized to delete expired news items.");
             }
             return true;
         }
@@ -211,7 +418,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="newsItem">The news item to validate</param>
         /// <returns>True if valid. Throws ResourceNotFoundException if not. Exception is caught in an Exception Filter</returns>
-        private bool ValidateNewsItem(StudentNews newsItem)
+        private static bool ValidateNewsItem(StudentNews newsItem)
         {
             // any input sanitization should go here
 
@@ -221,14 +428,13 @@ namespace Gordon360.Services
         /// <summary>
         /// Verifies that a student account exists
         /// </summary>
-        /// <param name="id">The id of the student</param>
+        /// <param name="username">The AD Username of the student</param>
         /// <returns>true if account exists, ResourceNotFoundException if null</returns>
-        private bool VerifyAccount(string id)
+        private bool VerifyAccount(string username)
         {
             // Verify account
-            var _unitOfWork = new UnitOfWork();
-            var query = _unitOfWork.AccountRepository.FirstOrDefault(x => x.gordon_id == id);
-            if (query == null)
+            var account = _contextCCT.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
