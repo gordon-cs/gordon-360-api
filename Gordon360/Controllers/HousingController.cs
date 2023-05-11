@@ -233,7 +233,7 @@ namespace Gordon360.Controllers
             var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             
-            ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
+            ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication() ?? new ApartmentApplicationViewModel[0];
             if (result != null)
             {
                 return Ok(result);
