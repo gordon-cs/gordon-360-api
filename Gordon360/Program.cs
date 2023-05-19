@@ -44,6 +44,7 @@ builder.Services.AddDbContext<CCTContext>(options =>
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IActivityService, ActivityService>();
 builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IErrorLogService, ErrorLogService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAddressesService, AddressesService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
