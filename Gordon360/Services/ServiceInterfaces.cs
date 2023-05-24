@@ -84,6 +84,7 @@ namespace Gordon360.Services
             string? building);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
+        ParallelQuery<BasicInfoViewModel> applySearchLogic(string searchString, IEnumerable<BasicInfoViewModel> accounts);
     }
 
     public interface IWellnessService
