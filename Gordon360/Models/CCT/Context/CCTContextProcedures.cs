@@ -52,7 +52,6 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_UPDATECELLPHONEResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_UPDATEDEMOGRAPHICResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<GET_AA_ADMINResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_AA_APARTMENT_CHOICES_BY_APP_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_AA_APARTMENT_HALLSResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_AA_APPID_BY_NAME_AND_DATEResult>().HasNoKey().ToView(null);
@@ -722,33 +721,6 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<int> DELETE_AA_ADMINAsync(string ADMIN_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ADMIN_ID",
-                    Size = 10,
-                    Value = ADMIN_ID ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.VarChar,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[DELETE_AA_ADMIN] @ADMIN_ID", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
         public virtual async Task<int> DELETE_AA_APARTMENT_CHOICEAsync(int? APPLICATION_ID, string HALL_NAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
@@ -1384,33 +1356,6 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<GET_AA_ADMINResult>> GET_AA_ADMINAsync(string ADMIN_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ADMIN_ID",
-                    Size = 10,
-                    Value = ADMIN_ID ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.VarChar,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<GET_AA_ADMINResult>("EXEC @returnValue = [dbo].[GET_AA_ADMIN] @ADMIN_ID", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
         public virtual async Task<List<GET_AA_APARTMENT_CHOICES_BY_APP_IDResult>> GET_AA_APARTMENT_CHOICES_BY_APP_IDAsync(int? APPLICATION_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
@@ -1994,33 +1939,6 @@ namespace Gordon360.Models.CCT.Context
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<GRP_ADMIN_EMAILS_PER_ACT_CDEResult>("EXEC @returnValue = [dbo].[GRP_ADMIN_EMAILS_PER_ACT_CDE] @ACT_CDE, @SESS_CDE", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<int> INSERT_AA_ADMINAsync(string ADMIN_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ADMIN_ID",
-                    Size = 10,
-                    Value = ADMIN_ID ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.VarChar,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[INSERT_AA_ADMIN] @ADMIN_ID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

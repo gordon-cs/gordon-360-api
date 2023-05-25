@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Gordon360.Controllers
 {
@@ -110,6 +111,15 @@ namespace Gordon360.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("unapproved")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.NEWS)]
+        public ActionResult<IEnumerable<StudentNewsViewModel>> GetNewsUnapproved()
+        {
+            var result = _newsService.GetNewsUnapproved();
+            return Ok(result);
+        }
+
         /** Call the service that gets all unapproved student news entries (by a particular user)
          * not yet expired, filtering out the expired news
          * @TODO: Remove redundant username/id from this and service
@@ -196,6 +206,22 @@ namespace Gordon360.Controllers
         {
             // StateYourBusiness verifies that user is authenticated
             var result = _newsService.EditPosting(newsID, studentNewsEdit);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// (Controller) Edits a news image in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newImageData">The new image string updates the image value</param>
+        /// <returns>The updated news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        [HttpPut]
+        [Route("{newsID}/image")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
+        public ActionResult<StudentNewsViewModel> EditPostingImage(int newsID, [FromBody] string newImageData)
+        {
+            var result = _newsService.EditImage(newsID, newImageData);
             return Ok(result);
         }
 

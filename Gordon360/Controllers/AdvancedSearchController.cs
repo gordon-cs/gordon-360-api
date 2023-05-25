@@ -61,7 +61,7 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Return a list states.
         /// </summary>
-        /// 
+        ///
         /// <remarks>DEPRECATED: Use AddressController instead</remarks>
         /// <returns> All states</returns>
         [HttpGet]

@@ -3,8 +3,10 @@ using Gordon360.Enums;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,15 +25,13 @@ namespace Gordon360.Controllers
         private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
         private readonly IMembershipService _membershipService;
-        private readonly IActivityService _activityService;
         private readonly IConfiguration _config;
 
-        public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IActivityService activityService, IConfiguration config)
+        public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IConfiguration config)
         {
             _profileService = profileService;
             _accountService = accountService;
             _membershipService = membershipService;
-            _activityService = activityService;
             _config = config;
         }
 
@@ -112,6 +112,7 @@ namespace Gordon360.Controllers
         /// </returns>
         [HttpGet]
         [Route("Advisors/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADVISOR)]
         public async Task<ActionResult<IEnumerable<AdvisorViewModel>>> GetAdvisorsAsync(string username)
         {
             var advisors = await _profileService.GetAdvisorsAsync(username);
@@ -129,8 +130,15 @@ namespace Gordon360.Controllers
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
-
-            return Ok(strengths?.Themes ?? Array.Empty<string>());
+            if (strengths is null)
+            {
+                return Ok(Array.Empty<string>());
+            }
+            
+            var authenticatedUserName = AuthUtils.GetUsername(User);
+            return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
+                ? Ok(strengths.Themes)
+                : Ok(Array.Empty<string>());
         }
 
 
@@ -144,8 +152,15 @@ namespace Gordon360.Controllers
         {
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
-
-            return Ok(strengths);
+            if (strengths is null)
+            {
+                return Ok(null);
+            }
+            
+            var authenticatedUserName = AuthUtils.GetUsername(User);
+            return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
+                ? Ok(strengths)
+                : Ok(null);
         }
 
         /// <summary>Toggle privacy of the current user's Clifton Strengths</summary>
@@ -494,7 +509,6 @@ namespace Gordon360.Controllers
             }
         }
 
-
         /// <summary>
         /// Fetch memberships that a specific student has been a part of
         /// @TODO: Move security checks to state your business? Or consider changing implementation here
@@ -525,28 +539,39 @@ namespace Gordon360.Controllers
                 return Ok(memberships);
             }
 
-            var visibleMemberships = memberships.Where(m =>
-            {
-                var act = _activityService.Get(m.ActivityCode);
-                var isPublic = !(act.Privacy == true || m.Privacy == true);
-                if (isPublic)
-                {
-                    return true;
-                }
-                else
-                {
-                    // If the current authenticated user is an admin of this group, then include the membership
-                    return _membershipService.GetMemberships(
-                        activityCode: m.ActivityCode,
-                        username: authenticatedUserUsername,
-                        sessionCode: m.SessionCode,
-                        participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
-                    .Any();
-
-                }
-            });
+            var visibleMemberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
 
             return Ok(visibleMemberships);
+        }
+
+        /// <summary>
+        /// Fetch the history of a user's memberships
+        /// </summary>
+        /// <param name="username">The Student Username</param>
+        /// <returns>The history of that user's membership in involvements</returns>
+        [Route("{username}/memberships-history")]
+        [HttpGet]
+        public ActionResult<IEnumerable<MembershipHistoryViewModel>> GetMembershipHistory(string username)
+        {
+            var memberships = _membershipService
+                .GetMemberships(username: username, sessionCode: "*")
+                .Where(m => m.Participation != Participation.Guest.GetCode());
+
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
+
+            // User can see all their own memberships. SiteAdmin and Police can see all of anyone's memberships
+            if (!(username == authenticatedUserUsername
+                || viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)
+                ))
+            {
+                memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
+            }
+
+            var membershipHistories = memberships.GroupBy(m => m.ActivityCode).Select(group => MembershipHistoryViewModel.FromMembershipGroup(group));
+
+            return Ok(membershipHistories);
         }
     }
 }
