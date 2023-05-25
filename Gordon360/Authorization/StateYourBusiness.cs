@@ -18,12 +18,8 @@ using Gordon360.Extensions.System;
 using static Gordon360.Services.MembershipService;
 using System.Linq.Expressions;
 using Gordon360.Enums;
-<<<<<<< HEAD
 using Microsoft.VisualBasic;
-=======
 using Microsoft.Extensions.Configuration;
-
->>>>>>> develop
 
 namespace Gordon360.Authorization
 {
@@ -81,8 +77,6 @@ namespace Gordon360.Authorization
             _membershipRequestService = context.HttpContext.RequestServices.GetRequiredService<IMembershipRequestService>();
             _newsService = context.HttpContext.RequestServices.GetRequiredService<INewsService>();
             _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
-<<<<<<< HEAD
-=======
             _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
 
             // set RecIM services
@@ -91,7 +85,6 @@ namespace Gordon360.Authorization
             _teamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
             _seriesService = context.HttpContext.RequestServices.GetRequiredService<ISeriesService>();
             _activityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
->>>>>>> develop
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
