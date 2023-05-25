@@ -137,8 +137,8 @@ namespace Gordon360.Services
 
             if (firstname is not null)
             {
-                accounts = accounts.Where(a => 
-                    a.FirstName.StartsWithIgnoreCase(firstname) 
+                accounts = accounts.Where(a =>
+                    a.FirstName.StartsWithIgnoreCase(firstname)
                     || a.NickName.StartsWithIgnoreCase(firstname));
             }
 
@@ -159,7 +159,8 @@ namespace Gordon360.Services
                 );
             }
 
-            if (minor is not null) {
+            if (minor is not null)
+            {
                 accounts = accounts.Where(a =>
                        a.Minor1Description.EqualsIgnoreCase(minor)
                     || a.Minor2Description.EqualsIgnoreCase(minor)

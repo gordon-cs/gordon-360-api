@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services
 {
@@ -51,49 +52,68 @@ namespace Gordon360.Services
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpiredAsync()
         {
-            var news = await _contextCCT.Procedures.NEWS_NOT_EXPIREDAsync();
-            return news.Select(n => new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                Image = n.Image,
-                Accepted = true,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            });
+
+            var news = (from sn in _context.StudentNews
+                        join snc in _context.StudentNewsCategory
+                        on sn.categoryID equals snc.categoryID
+                        where sn.Accepted == true
+                        && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && EF.Functions.DateDiffDay(sn.ManualExpirationDate ?? DateTime.Today, DateTime.Today) < 1))
+                        orderby sn.Entered descending
+                        select StudentNewsViewModel.From(sn, snc));
+
+            return news;
         }
 
         public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
         {
-            var news = await _contextCCT.Procedures.NEWS_NEWAsync();
-            return news.Select(n => new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                Image = n.Image,
-                Accepted = true,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            });
+            var news = (from sn in _context.StudentNews
+                         join snc in _context.StudentNewsCategory
+                         on sn.categoryID equals snc.categoryID
+                         where sn.Accepted == true
+                         && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
+                         && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
+                         orderby snc.SortOrder
+                         select StudentNewsViewModel.From(sn, snc));
+                         
+            return news;
         }
 
         public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
         {
             return _context.StudentNewsCategory.OrderBy(c => c.SortOrder).Select<StudentNewsCategory, StudentNewsCategoryViewModel>(c => c);
+        }
+
+        public IEnumerable<StudentNewsViewModel> GetNewsUnapproved()
+        {
+            var news = (from sn in _context.StudentNews
+                        join snc in _context.StudentNewsCategory
+                        on sn.categoryID equals snc.categoryID
+                        where sn.Accepted == false
+                        && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && EF.Functions.DateDiffDay(sn.ManualExpirationDate ?? DateTime.Today, DateTime.Today) < 1))
+                        orderby sn.SNID descending
+                        select new StudentNewsViewModel
+                        {
+                            SNID = sn.SNID,
+                            ADUN = sn.ADUN,
+                            categoryID = sn.categoryID,
+                            Subject = sn.Subject,
+                            Body = sn.Body,
+                            Image = sn.Image,
+                            Accepted = false,
+                            Sent = sn.Sent,
+                            thisPastMailing = sn.thisPastMailing,
+                            Entered = sn.Entered,
+                            categoryName = snc.categoryName,
+                            SortOrder = snc.SortOrder,
+                            ManualExpirationDate = sn.ManualExpirationDate,
+                        });
+            return news;
         }
 
         /// <summary>
@@ -110,23 +130,18 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            var news = await _contextCCT.Procedures.NEWS_PERSONAL_UNAPPROVEDAsync(username);
-            return news.Select(n => new StudentNewsViewModel
-            {
-                SNID = n.SNID,
-                ADUN = n.ADUN,
-                categoryID = n.categoryID,
-                Subject = n.Subject,
-                Body = n.Body,
-                Image = n.Image,
-                Accepted = true,
-                Sent = n.Sent,
-                thisPastMailing = n.thisPastMailing,
-                Entered = n.Entered,
-                categoryName = n.categoryName,
-                SortOrder = n.SortOrder,
-                ManualExpirationDate = n.ManualExpirationDate,
-            });
+            var news = (from sn in _context.StudentNews
+                         join snc in _context.StudentNewsCategory
+                         on sn.categoryID equals snc.categoryID
+                         where sn.Accepted != true
+                         && (sn.ADUN == username)
+                         && ((sn.ManualExpirationDate == null
+                               && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                           || (sn.ManualExpirationDate != null
+                           && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
+                        orderby sn.SNID descending
+                         select StudentNewsViewModel.From(sn, snc)); 
+            return news;
         }
 
         /// <summary>
@@ -233,10 +248,33 @@ namespace Gordon360.Services
             newsItem.Subject = newData.Subject;
             newsItem.Body = newData.Body;
 
-            if (newData.Image != null)
+            _context.SaveChanges();
+
+            return newsItem;
+        }
+
+        /// <summary>
+        /// (Service) Edits the image of a news item in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newImageData">The news image object that contains the updated image value</param>
+        /// <returns>The updated news item's view model</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        public StudentNewsViewModel EditImage(int newsID, string newImageData)
+        {
+            // Service method 'Get' throws its own exceptions
+            var newsItem = Get(newsID);
+
+            // Note: These checks have been duplicated from StateYourBusiness because we do not want
+            //    SuperAdmins to be able to delete expired news, this should be fixed eventually by
+            //    removing some of the SuperAdmin permissions that are not explicitly given
+            VerifyUnexpired(newsItem);
+            VerifyUnapproved(newsItem);
+
+            if (newImageData != "")
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(newData.Image);
+                var (extension, format, data) = ImageUtils.GetImageFormat(newImageData);
 
                 string? imagePath = null;
                 // If old image exists, overwrite it with new image at same path
@@ -265,8 +303,9 @@ namespace Gordon360.Services
                 var imagePath = GetImagePath(Path.GetFileName(newsItem.Image));
 
                 ImageUtils.DeleteImage(imagePath);
-                newsItem.Image = newData.Image; //null
+                newsItem.Image = null;
             }
+
             _context.SaveChanges();
 
             return newsItem;
@@ -302,6 +341,9 @@ namespace Gordon360.Services
         {
             var serverAddress = _serverUtils.GetAddress();
             if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
+
+            if (serverAddress.Contains("localhost"))
+                serverAddress += '/';
             var url = $"{serverAddress}browseable/uploads/news/{filename}";
             return url;
         }
