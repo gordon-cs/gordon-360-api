@@ -12,9 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Identity.Web;
 using System.IO;
-using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var azureConfig = builder.Configuration.GetSection("AzureAd").Get<AzureAdConfig>();
 
 // Add services to the container.
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAd");
@@ -27,7 +31,42 @@ builder.Services.AddControllers(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.OAuth2,
+        Flows = new OpenApiOAuthFlows()
+        {
+            AuthorizationCode = new OpenApiOAuthFlow()
+            {
+                AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{azureConfig.TenantId}/oauth2/v2.0/authorize"),
+                TokenUrl = new Uri($"https://login.microsoftonline.com/{azureConfig.TenantId}/oauth2/v2.0/token"),
+                Scopes = new Dictionary<string, string> {
+                {
+                    $"{azureConfig.Audience}/access_as_user",
+                    "Access 360 as you."
+                }
+            }
+            }
+        }
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement() {
+    {
+        new OpenApiSecurityScheme {
+            Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "oauth2"
+                },
+                Scheme = "oauth2",
+                Name = "oauth2",
+                In = ParameterLocation.Header
+        },
+        new List < string > ()
+    }
+});
+}
+);
 
 string corsPolicy = "360UI";
 builder.Services.AddCors(p => p.AddPolicy(name: corsPolicy, corsBuilder =>
@@ -68,8 +107,14 @@ builder.Services.AddMemoryCache();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.OAuthClientId(azureConfig.ClientId);
+    c.OAuthScopes($"{azureConfig.Audience}/access_as_user");
+    c.OAuthUsePkce();
+});
 
 app.UseStaticFiles(new StaticFileOptions
 {
