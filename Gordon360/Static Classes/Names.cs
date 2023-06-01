@@ -98,4 +98,9 @@ namespace Gordon360.Static.Names
         public const string EST = "Eastern Standard Time";
         //fill out when needed
     }
+
+    public static class RecIM_Resources
+    {
+        public const string CUSTOM_PARTICIPANT_USERNAME_SUFFIX = ".custom";
+    }
 }
