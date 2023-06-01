@@ -580,6 +580,39 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             return match;
         }
+
+        public IEnumerable<MatchExtendedViewModel> GetMatches()
+        {
+            var matches = _context.Match
+                 .Where(m => m.StatusID != 0 && m.StatusID != 4 && m.StatusID !=6)
+                 .Include(m => m.MatchTeam)
+                     .ThenInclude(m => m.Match)
+                 .Include(m => m.MatchTeam)
+                     .ThenInclude(m => m.Status)
+                 .Select(m => new MatchExtendedViewModel
+                 {
+                     ID = m.ID,
+                     Scores = m.MatchTeam
+                         .Select(mt => (TeamMatchHistoryViewModel)mt)
+                         .AsEnumerable(),
+                     StartTime = m.StartTime.SpecifyUtc(),
+                     Surface = m.Surface.Name,
+                     Status = m.Status.Description,
+                     Team = m.MatchTeam.Where(mt => mt.StatusID != 0).Select(mt => new TeamExtendedViewModel
+                     {
+                         ID = mt.TeamID,
+                         Name = mt.Team.Name,
+                         TeamRecord = _context.SeriesTeam
+                             .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
+                             .Select(st => new TeamRecordViewModel
+                             {
+                                 WinCount = st.WinCount,
+                                 LossCount = st.LossCount,
+                             })
+                     })
+                 });
+            return matches;
+        }
     }
 
 }

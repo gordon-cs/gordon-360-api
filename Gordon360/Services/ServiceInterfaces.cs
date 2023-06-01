@@ -396,6 +396,7 @@ namespace Gordon360.Services
 
         public interface IMatchService
         {
+            IEnumerable<MatchExtendedViewModel> GetMatches();
             MatchViewModel GetSimpleMatchViewByID(int matchID);
             IEnumerable<ParticipantAttendanceViewModel> GetMatchAttendance(int matchID);
             IEnumerable<LookupViewModel>? GetMatchLookup(string type);

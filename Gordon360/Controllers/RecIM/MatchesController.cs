@@ -21,6 +21,18 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
+        /// Get all matches
+        /// </summary>
+        /// <returns>all matches</returns>
+        [HttpGet]
+        [Route("")]
+        public ActionResult<MatchExtendedViewModel> GetMatches()
+        {
+            var matches = _matchService.GetMatches();
+            return Ok(matches);
+        }
+
+        /// <summary>
         /// Get's current match attendance for a specified match
         /// </summary>
         /// <param name="matchID"></param>
