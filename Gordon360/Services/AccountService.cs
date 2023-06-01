@@ -279,5 +279,14 @@ namespace Gordon360.Services
                     UserName = b.Username
                 });
         }
+
+        public ParallelQuery<BasicInfoViewModel> applySearchLogic(string searchString, IEnumerable<BasicInfoViewModel> accounts)
+        {
+            return accounts.AsParallel()
+               .Select(account => (matchKey: account.MatchSearch(searchString), account))
+               .Where(pair => pair.matchKey is not null)
+               .OrderBy(pair => pair.matchKey)
+               .Select(pair => pair.account);
+        }
     }
 }

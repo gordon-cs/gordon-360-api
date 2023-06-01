@@ -35,6 +35,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Clifton_Strengths> Clifton_Strengths { get; set; }
         public virtual DbSet<Config> Config { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
+        public virtual DbSet<CustomParticipant> CustomParticipant { get; set; }
         public virtual DbSet<DiningInfo> DiningInfo { get; set; }
         public virtual DbSet<Dining_Meal_Choice_Desc> Dining_Meal_Choice_Desc { get; set; }
         public virtual DbSet<Dining_Meal_Plan_Change_History> Dining_Meal_Plan_Change_History { get; set; }
@@ -212,6 +213,20 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("Countries", "dbo");
 
                 entity.Property(e => e.CTY).IsFixedLength();
+            });
+
+            modelBuilder.Entity<CustomParticipant>(entity =>
+            {
+                entity.HasKey(e => e.Username)
+                    .HasName("PK__CustomPa__536C85E5A0FDE2AE");
+
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.UsernameNavigation)
+                    .WithOne(p => p.CustomParticipant)
+                    .HasForeignKey<CustomParticipant>(d => d.Username)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CustomPar__Usern__70D3A237");
             });
 
             modelBuilder.Entity<DiningInfo>(entity =>
@@ -521,12 +536,11 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Participant>(entity =>
             {
-                entity.HasKey(e => e.Username)
-                    .HasName("PK__Particip__536C85E53B50E910");
-
                 entity.Property(e => e.AllowEmails).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.SpecifiedGender).IsFixedLength();
             });
 
             modelBuilder.Entity<ParticipantActivity>(entity =>
@@ -539,6 +553,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantActivity)
                     .HasForeignKey(d => d.ParticipantUsername)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantActivity_Participant");
 
                 entity.HasOne(d => d.PrivType)
@@ -554,7 +569,7 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.ParticipantNotification)
                     .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PartipantNotification_Participant");
+                    .HasConstraintName("FK_ParticipantNotification_Participant");
             });
 
             modelBuilder.Entity<ParticipantStatusHistory>(entity =>
@@ -577,6 +592,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantTeam)
                     .HasForeignKey(d => d.ParticipantUsername)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantTeam_Participant");
 
                 entity.HasOne(d => d.RoleType)

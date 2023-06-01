@@ -61,11 +61,7 @@ namespace Gordon360.Controllers
         {
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            var searchResults = accounts.AsParallel()
-                .Select(account => (matchKey: account.MatchSearch(searchString), account))
-                .Where(pair => pair.matchKey is not null)
-                .OrderBy(pair => pair.matchKey)
-                .Select(pair => pair.account);
+            var searchResults = _accountService.applySearchLogic(searchString, accounts);
 
             return Ok(searchResults);
         }

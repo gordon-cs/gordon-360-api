@@ -92,15 +92,7 @@ namespace Gordon360.Services.RecIM
                     Status = t.Status.Description,
                     Logo = t.Logo,
                     Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0) // 0 is deleted
-                        .Select(pt => new ParticipantExtendedViewModel
-                        {
-                            Username = pt.ParticipantUsername,
-                            FirstName = _participantService.GetParticipantFirstName(pt.ParticipantUsername),
-                            LastName = _participantService.GetParticipantLastName(pt.ParticipantUsername),
-                            IsCustom = _participantService.GetParticipantIsCustom(pt.ParticipantUsername),
-                            Email = _context.Participant.First(p => p.Username == pt.ParticipantUsername).Email ?? _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                            Role = pt.RoleType.Description,
-                        }),
+                        .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername)),
                     TeamRecord = t.SeriesTeam
                         .Select(st => (TeamRecordViewModel)st)
                         .AsEnumerable(),
@@ -142,16 +134,7 @@ namespace Gordon360.Services.RecIM
                                     .Where(mt => mt.Match.StatusID != 0)
                                     .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)).AsEnumerable(),
                                 Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
-                                                .Select(pt => new ParticipantExtendedViewModel
-                                                {
-                                                    Username = pt.ParticipantUsername,
-                                                    FirstName = _participantService.GetParticipantFirstName(pt.ParticipantUsername),
-                                                    LastName = _participantService.GetParticipantLastName(pt.ParticipantUsername),
-                                                    IsCustom = _participantService.GetParticipantIsCustom(pt.ParticipantUsername),
-                                                    Email = _context.Participant.First(p => p.Username == pt.ParticipantUsername).Email ?? _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                                                    Role = pt.RoleType.Description,
-                                                    GamesAttended = _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == pt.ParticipantUsername),
-                                                }),
+                                                .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername)),
                                 MatchHistory = _context.Match.Where(m => m.StatusID == 6 || m.StatusID == 4) // completed or forfeited status
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
@@ -408,11 +391,10 @@ namespace Gordon360.Services.RecIM
                     $"Hey {invitee.FirstName}!<br><br>" +
                     $"{inviter.FirstName} {inviter.LastName} has added you to <b>{team.Name}</b> for <b>{team.Activity.Name}</b> <br>" +
                     $"Registration closes on <i>{team.Activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
-                    $"<a href='{_config["RecIM_Url"]}'>You are now a member of <b>{team.Name}</b></a>! <br><br>" +
+                    $"You are now a member of <b>{team.Name}</b>! <br><br>" +
                     $"Gordon Rec-IM"
                 );
-            string subject = isCustom ? $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has added you to a team!"
-                : $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!";
+            string subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has {(isCustom ? "added" : "invited")} you to a team!";
 
             _emailService.SendEmails(new string[] {to_email},from_email,subject,messageBody,password);
         }
