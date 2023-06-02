@@ -43,7 +43,7 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 - It is easiest to use the development virtual machinea to of work on this project. Follow [these instructions](docs/RemoteDesktopToVM.md##How-to-connect-to-a-CPS-Server-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
 
-- Open the project in Visual Studio
+- Open the project in Visual Studio (*Note:* **not** Visual Studio *Code*, but Visual Studio 2022 or later).
 
   - Look for the desktop app Visual Studio, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microasoft of account. Your Gordon email will work for this. 
 
@@ -57,7 +57,7 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 ### Building and running
 
-- Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar).   If you get an error, double click on Gordon360.sln in the solution explorer.
+- Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar).   If you get an error, double click on **Gordon360.sln** in the solution explorer.
 
 - A web browser will open. If you get a "Your connection isn't priviate" warning, click "Advanced" and then "Continue to locahost (unsafe)".  You should see the Swagger page. Swagger is a tool that lets you send HTTP requests to each API Endpoint defined in the project.
 
