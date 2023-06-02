@@ -48,7 +48,7 @@ namespace Gordon360.Services.RecIM
             };
         }
 
-        public ParticipantExtendedViewModel GetParticipantByUsername(string username)
+        public ParticipantExtendedViewModel GetParticipantByUsername(string username, string? roleType = null)
         {
             string? accountEmail = null;
             try
@@ -110,6 +110,7 @@ namespace Gordon360.Services.RecIM
                                    IsCustom = new_ps.IsCustom,
                                    FirstName = new_ps.FirstName ?? psfs.FirstName,
                                    LastName = new_ps.LastName ?? psfs.LastName,
+                                   Role = roleType,
                                };
             return participant.First();
         }

@@ -92,7 +92,7 @@ namespace Gordon360.Services.RecIM
                     Status = t.Status.Description,
                     Logo = t.Logo,
                     Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0) // 0 is deleted
-                        .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername)),
+                        .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                     TeamRecord = t.SeriesTeam
                         .Select(st => (TeamRecordViewModel)st)
                         .AsEnumerable(),
@@ -134,7 +134,7 @@ namespace Gordon360.Services.RecIM
                                     .Where(mt => mt.Match.StatusID != 0)
                                     .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)).AsEnumerable(),
                                 Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
-                                                .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername)),
+                                                .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                                 MatchHistory = _context.Match.Where(m => m.StatusID == 6 || m.StatusID == 4) // completed or forfeited status
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
