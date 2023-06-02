@@ -28,7 +28,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public ActionResult<MatchExtendedViewModel> GetMatches()
         {
-            var matches = _matchService.GetMatches();
+            var matches = _matchService.GetAllMatches();
             return Ok(matches);
         }
 

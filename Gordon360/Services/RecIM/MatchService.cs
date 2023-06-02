@@ -571,7 +571,7 @@ namespace Gordon360.Services.RecIM
             return match;
         }
 
-        public IEnumerable<MatchExtendedViewModel> GetMatches()
+        public IEnumerable<MatchExtendedViewModel> GetAllMatches()
         {
             var matches = _context.Match
                  .Where(m => m.StatusID != 0 && m.StatusID != 4 && m.StatusID !=6)
@@ -582,6 +582,7 @@ namespace Gordon360.Services.RecIM
                  .Select(m => new MatchExtendedViewModel
                  {
                      ID = m.ID,
+                     Activity = m.Series.Activity,
                      Scores = m.MatchTeam
                          .Select(mt => (TeamMatchHistoryViewModel)mt)
                          .AsEnumerable(),
