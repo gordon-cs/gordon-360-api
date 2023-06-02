@@ -20,6 +20,6 @@ namespace Gordon360.Models.CCT
         [Key]
         [StringLength(10)]
         [Unicode(false)]
-        public string gordon_id { get; set; }
+        public int gordon_id { get; set; }
     }
 }

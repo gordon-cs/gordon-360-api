@@ -43,11 +43,11 @@ namespace Gordon360.Models.CCT.Context
         Task<List<DISTINCT_ACT_TYPEResult>> DISTINCT_ACT_TYPEAsync(string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<EMAILS_PER_ACT_CDEResult>> EMAILS_PER_ACT_CDEAsync(string ACT_CDE, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GET_FINALIZATION_STATUSResult>> FINALIZATION_GET_FINALIZATION_STATUSAsync(int? UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<FINALIZATION_GETDEMOGRAPHICResult>> FINALIZATION_GETDEMOGRAPHICAsync(string UserID, string FeatureID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<FINALIZATION_GETDEMOGRAPHICResult>> FINALIZATION_GETDEMOGRAPHICAsync(int UserID, string FeatureID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GETHOLDSBYIDResult>> FINALIZATION_GETHOLDSBYIDAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>> FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDAsync(string UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<FINALIZATION_UPDATECELLPHONEResult>> FINALIZATION_UPDATECELLPHONEAsync(string UserID, string PhoneUnformatted, bool? DoNotPublish, bool? NoneProvided, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<FINALIZATION_UPDATEDEMOGRAPHICResult>> FINALIZATION_UPDATEDEMOGRAPHICAsync(string UserID, string RaceValue, int? EthnicityValue, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>> FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDAsync(int UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<FINALIZATION_UPDATECELLPHONEResult>> FINALIZATION_UPDATECELLPHONEAsync(int UserID, string PhoneUnformatted, bool? DoNotPublish, bool? NoneProvided, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<FINALIZATION_UPDATEDEMOGRAPHICResult>> FINALIZATION_UPDATEDEMOGRAPHICAsync(int UserID, string RaceValue, int? EthnicityValue, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_AA_APARTMENT_CHOICES_BY_APP_IDResult>> GET_AA_APARTMENT_CHOICES_BY_APP_IDAsync(int? APPLICATION_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_AA_APARTMENT_HALLSResult>> GET_AA_APARTMENT_HALLSAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_AA_APPID_BY_NAME_AND_DATEResult>> GET_AA_APPID_BY_NAME_AND_DATEAsync(DateTime? NOW, string EDITOR_USERNAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -107,7 +107,7 @@ namespace Gordon360.Models.CCT.Context
         Task<int> UPDATE_AA_APPLICATION_DATESUBMITTEDAsync(int? APPLICATION_ID, DateTime? NOW, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UPDATE_AA_APPLICATION_EDITORAsync(int? APPLICATION_ID, string EDITOR_USERNAME, DateTime? NOW, string NEW_EDITOR_USERNAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UPDATE_ACT_INFOAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<UPDATE_CELL_PHONEResult>> UPDATE_CELL_PHONEAsync(string UserID, string PhoneUnformatted, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<UPDATE_CELL_PHONEResult>> UPDATE_CELL_PHONEAsync(int UserID, string PhoneUnformatted, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UPDATE_DESCRIPTIONAsync(int? ID, string VALUE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> UPDATE_EMRGCONTACTAsync(int? StudentID, int? ContactNum, string ContactLastName, string ContactFirstName, string ContactHomePhone, string ContactMobilePhone, string ContactRelationship, string Notes, string Username, string JobName, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> Update_Health_Status_Upon_Form_CompletionAsync(string ResponderEmail, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

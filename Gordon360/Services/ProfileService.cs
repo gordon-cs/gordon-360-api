@@ -112,7 +112,7 @@ namespace Gordon360.Services
             var account = _accountService.GetAccountByUsername(username);
 
             // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
-            var advisorIDsEnumerable = await _context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.GordonID));
+            var advisorIDsEnumerable = await _context.Procedures.ADVISOR_SEPARATEAsync(account.GordonID);
             var advisorIDs = advisorIDsEnumerable.FirstOrDefault();
 
             if (advisorIDs == null)
@@ -124,7 +124,7 @@ namespace Gordon360.Services
 
             foreach (var advisorID in new[] { advisorIDs.Advisor1, advisorIDs.Advisor2, advisorIDs.Advisor3 })
             {
-                if (!string.IsNullOrEmpty(advisorID))
+                if (advisorID != 0)
                 {
                     var advisor = _accountService.GetAccountByID(advisorID);
                     resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
@@ -186,7 +186,7 @@ namespace Gordon360.Services
         {
             var account = _accountService.GetAccountByUsername(username);
 
-            var photoInfoList = await _context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.GordonID));
+            var photoInfoList = await _context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(account.GordonID);
             return photoInfoList.Select(p => new PhotoPathViewModel { Img_Name = p.Img_Name, Img_Path = p.Img_Path, Pref_Img_Name = p.Pref_Img_Name, Pref_Img_Path = p.Pref_Img_Path }).FirstOrDefault();
         }
 
@@ -210,7 +210,7 @@ namespace Gordon360.Services
         {
             var account = _accountService.GetAccountByUsername(username);
 
-            await _context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.GordonID), path, name);
+            await _context.Procedures.UPDATE_PHOTO_PATHAsync(account.GordonID, path, name);
             // Update value in cached data
             var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
             var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
@@ -286,7 +286,7 @@ namespace Gordon360.Services
         public async Task UpdateMobilePrivacyAsync(string username, string value)
         {
             var account = _accountService.GetAccountByUsername(username);
-            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
+            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(account.GordonID, value);
             // Update value in cached data
             var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
             if (student != null)

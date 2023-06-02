@@ -4,7 +4,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class AccountViewModel
     {
-        public string GordonID { get; set; }
+        public int GordonID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -19,7 +19,7 @@ namespace Gordon360.Models.ViewModels
         {
             AccountViewModel vm = new AccountViewModel
             {
-                GordonID = a.gordon_id.Trim(),
+                GordonID = a.gordon_id,
                 FirstName = a.firstname.Trim(),
                 LastName = a.lastname.Trim(),
                 Email = a.email ?? "", // Some random records have null for an email.

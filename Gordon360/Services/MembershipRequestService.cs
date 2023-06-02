@@ -45,7 +45,7 @@ namespace Gordon360.Services
             }
 
             var request = (REQUEST) membershipRequestUpload;
-            request.ID_NUM = int.Parse(_accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID);
+            request.ID_NUM = _accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID;
 
             var addedMembershipRequest = _context.REQUEST.Add(request);
             await _context.SaveChangesAsync();
@@ -81,7 +81,7 @@ namespace Gordon360.Services
                 throw new BadInputException() { ExceptionMessage = "The request has already been approved."};
             }
 
-            var username = _accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
+            var username = _accountService.GetAccountByID(request.ID_NUM).ADUserName;
             MembershipUploadViewModel newMembership = MembershipUploadViewModel.FromRequest(request, username);
 
             var createdMembership = await _membershipService.AddAsync(newMembership);

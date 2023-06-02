@@ -102,7 +102,7 @@ namespace Gordon360.Services
                 .Where(x => x.SESS_CDE.Equals(membershipUpload.Session))
                 .FirstOrDefault()?.SESS_BEGN_DTE ?? DateTime.Now;
 
-            int gordonId = int.Parse(_accountService.GetAccountByUsername(membershipUpload.Username).GordonID);
+            int gordonId = _accountService.GetAccountByUsername(membershipUpload.Username).GordonID;
 
             MEMBERSHIP m = membershipUpload.ToMembership(gordonId, sessionBeginDate);
             var payload = await _context.MEMBERSHIP.AddAsync(m);

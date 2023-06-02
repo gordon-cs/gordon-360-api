@@ -50,7 +50,7 @@ namespace Gordon360.Services
             // validate returns a boolean value.
             validateAdmin(adminView);
 
-            var gordonId = int.Parse(_accountService.GetAccountByUsername(adminView.Username).GordonID);
+            var gordonId = _accountService.GetAccountByUsername(adminView.Username).GordonID;
 
             // The Add() method returns the added membership.
             var payload = _context.ADMIN.Add(adminView.ToAdmin(gordonId));

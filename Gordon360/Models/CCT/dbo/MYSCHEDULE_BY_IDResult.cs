@@ -8,7 +8,7 @@ namespace Gordon360.Models.CCT
     public partial class MYSCHEDULE_BY_IDResult
     {
         public string EVENT_ID { get; set; }
-        public string GORDON_ID { get; set; }
+        public int GORDON_ID { get; set; }
         public string LOCATION { get; set; }
         public string DESCRIPTION { get; set; }
         public string MON_CDE { get; set; }

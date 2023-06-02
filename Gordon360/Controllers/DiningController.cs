@@ -34,7 +34,7 @@ namespace Gordon360.Controllers
         {
             var sessionCode = Helpers.GetCurrentSession(_context);
             var authenticatedUsername = AuthUtils.GetUsername(User);
-            var authenticatedUserId = int.Parse(_accountService.GetAccountByUsername(authenticatedUsername).GordonID);
+            var authenticatedUserId = _accountService.GetAccountByUsername(authenticatedUsername).GordonID;
             var diningInfo = _diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
 
             if (diningInfo == null)

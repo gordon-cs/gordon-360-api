@@ -44,7 +44,7 @@ namespace Gordon360.Controllers
                         UploadResult = "Not Found"
                     };
                 }
-                int gordonID = int.Parse(account.GordonID);
+                int gordonID = account.GordonID;
                 string rowState;
 
                 Clifton_Strengths? existing = _context.Clifton_Strengths.FirstOrDefault(x => x.ID_NUM == gordonID);

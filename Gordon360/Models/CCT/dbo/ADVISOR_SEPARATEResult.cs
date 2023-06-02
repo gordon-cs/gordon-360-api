@@ -7,8 +7,8 @@ namespace Gordon360.Models.CCT
 {
     public partial class ADVISOR_SEPARATEResult
     {
-        public string Advisor1 { get; set; }
-        public string Advisor2 { get; set; }
-        public string Advisor3 { get; set; }
+        public int Advisor1 { get; set; }
+        public int Advisor2 { get; set; }
+        public int Advisor3 { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Gordon360.Models.CCT
     {
         [StringLength(10)]
         [Unicode(false)]
-        public string Gordonid { get; set; }
+        public int Gordonid { get; set; }
         [StringLength(86)]
         [Unicode(false)]
         public string PhotoURL { get; set; }

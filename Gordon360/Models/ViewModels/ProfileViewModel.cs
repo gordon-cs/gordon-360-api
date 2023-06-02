@@ -2,7 +2,7 @@
 {
     public record ProfileViewModel(
         // All Profiles
-        string ID,
+        int ID,
         string Title,
         string FirstName,
         string MiddleName,

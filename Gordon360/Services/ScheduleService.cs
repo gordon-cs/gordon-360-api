@@ -36,7 +36,7 @@ namespace Gordon360.Services
 
 
             var sessionCode = Helpers.GetCurrentSession(_context);
-            var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
+            var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(account.gordon_id, sessionCode);
 
             return result.Select(x => new ScheduleViewModel
             {
@@ -71,7 +71,7 @@ namespace Gordon360.Services
             }
 
             var sessionCode = Helpers.GetCurrentSession(_context);
-            var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
+            var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(account.gordon_id, sessionCode);
 
             return result.Select(x => new ScheduleViewModel
             {

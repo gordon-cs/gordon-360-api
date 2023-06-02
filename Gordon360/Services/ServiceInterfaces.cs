@@ -63,7 +63,7 @@ namespace Gordon360.Services
 
     public interface IAccountService
     {
-        AccountViewModel GetAccountByID(string id);
+        AccountViewModel GetAccountByID(int id);
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
@@ -297,12 +297,12 @@ namespace Gordon360.Services
 
     public interface IAcademicCheckInService
     {
-        Task<AcademicCheckInViewModel> PutCellPhoneAsync(string id, AcademicCheckInViewModel data);
-        Task<EmergencyContactViewModel> PutEmergencyContactAsync(EmergencyContactViewModel data, string id, string username);
-        Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(string id);
-        Task SetStatusAsync(string id);
-        Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
-        Task<bool> GetStatusAsync(string id);
+        Task<AcademicCheckInViewModel> PutCellPhoneAsync(int id, AcademicCheckInViewModel data);
+        Task<EmergencyContactViewModel> PutEmergencyContactAsync(EmergencyContactViewModel data, int id, string username);
+        Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(int id);
+        Task SetStatusAsync(int id);
+        Task<AcademicCheckInViewModel> PutDemographicAsync(int id, AcademicCheckInViewModel data);
+        Task<bool> GetStatusAsync(int id);
     }
 
     namespace RecIM

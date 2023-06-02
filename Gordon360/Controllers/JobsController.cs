@@ -31,7 +31,7 @@ namespace Gordon360.Controllers
         {
             var username = AuthUtils.GetUsername(User);
             var account = _accountService.GetAccountByUsername(username);
-            return int.Parse(account.GordonID);
+            return account.GordonID;
         }
 
         /// <summary>

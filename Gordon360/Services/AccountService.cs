@@ -31,7 +31,7 @@ namespace Gordon360.Services
         /// <param name="id">The person's gordon id</param>
         /// <returns>AccountViewModel if found, null if not found</returns>
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-        public AccountViewModel GetAccountByID(string id)
+        public AccountViewModel GetAccountByID(int id)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
             if (account == null)

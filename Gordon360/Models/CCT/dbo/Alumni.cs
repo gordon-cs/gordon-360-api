@@ -14,7 +14,7 @@ namespace Gordon360.Models.CCT
         [Required]
         [StringLength(25)]
         [Unicode(false)]
-        public string ID { get; set; }
+        public int ID { get; set; }
         [StringLength(25)]
         [Unicode(false)]
         public string WebUpdate { get; set; }

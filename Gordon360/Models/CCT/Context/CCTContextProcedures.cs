@@ -1183,7 +1183,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<FINALIZATION_GETDEMOGRAPHICResult>> FINALIZATION_GETDEMOGRAPHICAsync(string UserID, string FeatureID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<FINALIZATION_GETDEMOGRAPHICResult>> FINALIZATION_GETDEMOGRAPHICAsync(int UserID, string FeatureID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1198,7 +1198,7 @@ namespace Gordon360.Models.CCT.Context
                 {
                     ParameterName = "UserID",
                     Size = 9,
-                    Value = UserID ?? Convert.DBNull,
+                    Value = UserID,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
@@ -1243,7 +1243,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>> FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDAsync(string UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>> FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDAsync(int UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1258,7 +1258,7 @@ namespace Gordon360.Models.CCT.Context
                 {
                     ParameterName = "UserID",
                     Size = 9,
-                    Value = UserID ?? Convert.DBNull,
+                    Value = UserID,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 parameterreturnValue,
@@ -1270,7 +1270,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<FINALIZATION_UPDATECELLPHONEResult>> FINALIZATION_UPDATECELLPHONEAsync(string UserID, string PhoneUnformatted, bool? DoNotPublish, bool? NoneProvided, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<FINALIZATION_UPDATECELLPHONEResult>> FINALIZATION_UPDATECELLPHONEAsync(int UserID, string PhoneUnformatted, bool? DoNotPublish, bool? NoneProvided, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1285,7 +1285,7 @@ namespace Gordon360.Models.CCT.Context
                 {
                     ParameterName = "UserID",
                     Size = 9,
-                    Value = UserID ?? Convert.DBNull,
+                    Value = UserID,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
@@ -1316,7 +1316,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<FINALIZATION_UPDATEDEMOGRAPHICResult>> FINALIZATION_UPDATEDEMOGRAPHICAsync(string UserID, string RaceValue, int? EthnicityValue, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<FINALIZATION_UPDATEDEMOGRAPHICResult>> FINALIZATION_UPDATEDEMOGRAPHICAsync(int UserID, string RaceValue, int? EthnicityValue, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1331,7 +1331,7 @@ namespace Gordon360.Models.CCT.Context
                 {
                     ParameterName = "UserID",
                     Size = 9,
-                    Value = UserID ?? Convert.DBNull,
+                    Value = UserID,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
@@ -3131,7 +3131,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<UPDATE_CELL_PHONEResult>> UPDATE_CELL_PHONEAsync(string UserID, string PhoneUnformatted, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<UPDATE_CELL_PHONEResult>> UPDATE_CELL_PHONEAsync(int UserID, string PhoneUnformatted, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -3146,7 +3146,7 @@ namespace Gordon360.Models.CCT.Context
                 {
                     ParameterName = "UserID",
                     Size = 9,
-                    Value = UserID ?? Convert.DBNull,
+                    Value = UserID,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 new SqlParameter
