@@ -174,7 +174,7 @@ namespace Gordon360.Services.RecIM
                             Status = mt.Status.Description,
                             Participant = mt.Team.ParticipantTeam
                                 .Where(pt => !new int[] {0,1,2}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
-                                .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername)),
+                                .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                             MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && _mt.Match.StatusID == 6)
                                 .OrderByDescending(mt => mt.Match.StartTime)
                                 .Take(5)
