@@ -59,8 +59,6 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 - Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar).   If you get an error, double click on Gordon360.sln in the solution explorer.
 
-- If any pop-up windows appear asking if you would like to trust a certificate, click "No".
-
 - A web browser will open. If you get a "Your connection isn't priviate" warning, click "Advanced" and then "Continue to locahost (unsafe)".  You should see the Swagger page. Swagger is a tool that lets you send HTTP requests to each API Endpoint defined in the project.
 
 - If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/docs/Developer's%20Guide.md#connecting-to-the-backend).
