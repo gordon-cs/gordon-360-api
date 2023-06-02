@@ -51,6 +51,7 @@ If using Remmina on Linux, use the following steps to configure the RDP connecti
 1. Select the "Advanced" tab.  Feel free to change the quality of the connection then scroll down to the very bottom to find multiple checkboxes and make the following changes:
    - Deselect "Share Printers"
    - Select "Server detection using Remote Desktop Gateway"
+   - If present, select "Use base credentials for gateway too"
    - Select "Ignore certificate"
 
 1. Click "Save and Connect" and continue 
@@ -58,6 +59,4 @@ If using Remmina on Linux, use the following steps to configure the RDP connecti
 ## Authentication
 
 Sign in with your Gordon account and accept the MFA prompt in the Microsoft Authenticator app.  Note: When using Remmina, you may be prompted for your password twice before the MFA prompt is sent.
-
-
 
