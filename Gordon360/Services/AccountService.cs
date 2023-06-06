@@ -95,6 +95,7 @@ namespace Gordon360.Services
         /// <param name="minor">The minor search param</param>
         /// <param name="hall">The hall search param</param>
         /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+        /// <param name="preferredClassYear">The preferred class year search param</param>
         /// <param name="homeCity">The home city search param</param>
         /// <param name="state">The state search param</param>
         /// <param name="country">The country search param</param>
@@ -109,6 +110,7 @@ namespace Gordon360.Services
             string? minor,
             string? hall,
             string? classType,
+            string? preferredClassYear,
             string? homeCity,
             string? state,
             string? country,
@@ -170,6 +172,7 @@ namespace Gordon360.Services
 
             if (hall is not null) accounts = accounts.Where(a => a.Hall.StartsWithIgnoreCase(hall));
             if (classType is not null) accounts = accounts.Where(a => a.Class.StartsWithIgnoreCase(classType));
+            if (preferredClassYear is not null) accounts = accounts.Where(a => a.PreferredClassYear.StartsWithIgnoreCase(preferredClassYear));
             if (homeCity is not null) accounts = accounts.Where(a => a.HomeCity.StartsWithIgnoreCase(homeCity));
             if (state is not null) accounts = accounts.Where(a => a.HomeState.StartsWithIgnoreCase(state));
             if (country is not null) accounts = accounts.Where(a => a.Country.StartsWithIgnoreCase(country));

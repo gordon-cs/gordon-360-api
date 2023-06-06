@@ -76,6 +76,7 @@ namespace Gordon360.Services
             string? minor,
             string? hall,
             string? classType,
+            string? preferredClassYear,
             string? homeCity,
             string? state,
             string? country,

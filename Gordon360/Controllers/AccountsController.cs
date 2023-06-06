@@ -102,6 +102,7 @@ namespace Gordon360.Controllers
         /// <param name="minor"></param>
         /// <param name="hall"></param>
         /// <param name="classType"></param>
+        /// <param name="preferredClassYear"></param>
         /// <param name="homeCity"></param>
         /// <param name="state"></param>
         /// <param name="country"></param>
@@ -118,6 +119,7 @@ namespace Gordon360.Controllers
             string? minor,
             string? hall,
             string? classType,
+            string? preferredClassYear,
             string? homeCity,
             string? state,
             string? country,
@@ -136,6 +138,7 @@ namespace Gordon360.Controllers
                 minor,
                 hall,
                 classType,
+                preferredClassYear,
                 homeCity,
                 state,
                 country,
