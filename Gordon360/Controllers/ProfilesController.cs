@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Controllers
 {
@@ -504,8 +505,7 @@ namespace Gordon360.Controllers
             }
             catch (FileNotFoundException)
             {
-                // The 360 default profile image path is a URL, so we have to download it over an HTTP connection
-                return await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
+                throw new ResourceNotFoundException();
             }
         }
 
