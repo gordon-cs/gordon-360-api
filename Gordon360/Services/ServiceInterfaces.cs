@@ -77,6 +77,7 @@ namespace Gordon360.Services
             string? hall,
             string? classType,
             string? preferredClassYear,
+            string? preferredClassYearRange,
             string? homeCity,
             string? state,
             string? country,

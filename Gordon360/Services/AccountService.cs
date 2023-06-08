@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 
 namespace Gordon360.Services
 {
@@ -96,6 +98,7 @@ namespace Gordon360.Services
         /// <param name="hall">The hall search param</param>
         /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
         /// <param name="preferredClassYear">The preferred class year search param</param>
+        /// <param name="preferredClassYearRange">The preferred class year range search param</param>
         /// <param name="homeCity">The home city search param</param>
         /// <param name="state">The state search param</param>
         /// <param name="country">The country search param</param>
@@ -111,6 +114,7 @@ namespace Gordon360.Services
             string? hall,
             string? classType,
             string? preferredClassYear,
+            string? preferredClassYearRange,
             string? homeCity,
             string? state,
             string? country,
@@ -172,7 +176,12 @@ namespace Gordon360.Services
 
             if (hall is not null) accounts = accounts.Where(a => a.Hall.StartsWithIgnoreCase(hall));
             if (classType is not null) accounts = accounts.Where(a => a.Class.StartsWithIgnoreCase(classType));
-            if (preferredClassYear is not null) accounts = accounts.Where(a => a.PreferredClassYear.StartsWithIgnoreCase(preferredClassYear));
+            if (preferredClassYear is not null) accounts = accounts.Where(a => a.PreferredClassYear == (preferredClassYear));
+            if (preferredClassYearRange is not null){
+                accounts = accounts.Where(a => a.PreferredClassYear != "");
+                var yearValues = preferredClassYearRange.Split(',');
+                accounts = accounts.Where(a => Convert.ToInt32(a.PreferredClassYear) >= Convert.ToInt32(yearValues[0]) && Convert.ToInt32(a.PreferredClassYear) <= Convert.ToInt32(yearValues[1]));
+            };
             if (homeCity is not null) accounts = accounts.Where(a => a.HomeCity.StartsWithIgnoreCase(homeCity));
             if (state is not null) accounts = accounts.Where(a => a.HomeState.StartsWithIgnoreCase(state));
             if (country is not null) accounts = accounts.Where(a => a.Country.StartsWithIgnoreCase(country));

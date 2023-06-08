@@ -103,6 +103,7 @@ namespace Gordon360.Controllers
         /// <param name="hall"></param>
         /// <param name="classType"></param>
         /// <param name="preferredClassYear"></param>
+        /// <param name="preferredClassYearRange"></param>
         /// <param name="homeCity"></param>
         /// <param name="state"></param>
         /// <param name="country"></param>
@@ -120,6 +121,7 @@ namespace Gordon360.Controllers
             string? hall,
             string? classType,
             string? preferredClassYear,
+            string? preferredClassYearRange,
             string? homeCity,
             string? state,
             string? country,
@@ -139,6 +141,7 @@ namespace Gordon360.Controllers
                 hall,
                 classType,
                 preferredClassYear,
+                preferredClassYearRange,
                 homeCity,
                 state,
                 country,

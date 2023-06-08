@@ -53,7 +53,7 @@
             <param name="lastnameSearch">The lastname portion of the search</param>
             <returns> All accounts matching some or all of both the firstname and lastname parameters, sorted by how well the account matched the search.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
@@ -66,6 +66,7 @@
             <param name="hall"></param>
             <param name="classType"></param>
             <param name="preferredClassYear"></param>
+            <param name="preferredClassYearRange"></param>
             <param name="homeCity"></param>
             <param name="state"></param>
             <param name="country"></param>
@@ -1486,7 +1487,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
         </member>
-        <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Given a list of accounts, and search params, return all the accounts that match those search params.
             </summary>
@@ -1498,6 +1499,7 @@
             <param name="hall">The hall search param</param>
             <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
             <param name="preferredClassYear">The preferred class year search param</param>
+            <param name="preferredClassYearRange">The preferred class year range search param</param>
             <param name="homeCity">The home city search param</param>
             <param name="state">The state search param</param>
             <param name="country">The country search param</param>
