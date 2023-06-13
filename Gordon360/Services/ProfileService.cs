@@ -305,7 +305,7 @@ namespace Gordon360.Services
         public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
         {
             var profile = GetStudentProfileByUsername(username);
-
+            Console.WriteLine(profile);
             if (profile == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
@@ -321,6 +321,51 @@ namespace Gordon360.Services
             }
 
             return profile;
+        }
+
+        /// I am adding this
+        /// <summary>
+        /// office location setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose phone is to be updated </param>
+        /// <param name="newBuilding">The new building location to update the user's office location to</param> 
+        /// <param name="newRoom">The new room to update the user's office room to</param>
+        public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
+        {
+            var profile = GetFacultyStaffProfileByUsername(username);
+            Console.WriteLine(profile);
+            if (profile == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+
+           // var result = await _context.Procedures.UPDATE_OFFICEAsync(profile.ID, profile.);
+
+            // Update value in cached data
+            // var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
+            // if (student != null)
+            // {
+            //     student.MobilePhone = profile.MobilePhone;
+            // }
+
+            //return profile;
+            return null;
+        }
+
+        /// I am adding this
+        /// <summary>
+        /// Return a list buildings.
+        /// </summary>
+        /// <returns> All buildings</returns>
+        [HttpGet]
+        [Route("buildings")]
+        public Task<ActionResult<IEnumerable<string>>> GetBuildingsAsync()
+        {
+            var buildings = _context.FacStaff.Select(fs => fs.BuildingDescription)
+                                    .Distinct()
+                                    .Where(d => d != null)
+                                    .OrderBy(d => d);
+            return buildings;
         }
 
         /// <summary>

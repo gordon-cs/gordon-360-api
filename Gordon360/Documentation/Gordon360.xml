@@ -384,12 +384,6 @@
             <returns></returns>
             <remarks>Posts a new message to the service to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.LogController.Post(Gordon360.Models.CCT.ERROR_LOG)">
-            <summary>Create a new error log item to be added to database</summary>
-            <param name="error_log">The error log containing the ERROR_TIME, and the LOG_MESSAGE</param>
-            <returns></returns>
-            <remarks>Posts a new error_log to the server to be added into the database. Useful if you want to input the datetime in the front end for greater accuracy</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
@@ -560,6 +554,15 @@
             <returns>The updated news item</returns>
             <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.NewsController.EditPostingImage(System.Int32,System.String)">
+            <summary>
+            (Controller) Edits a news image in the database
+            </summary>
+            <param name="newsID">The id of the news item to edit</param>
+            <param name="newImageData">The new image string updates the image value</param>
+            <returns>The updated news item</returns>
+            <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        </member>
         <member name="M:Gordon360.Controllers.NewsController.UpdateAcceptedStatus(System.Int32,System.Boolean)">
             <summary>
              Approve or deny a news posting in the database
@@ -651,6 +654,14 @@
             Update mobile phone number
             </summary>
             <param name="value">phoneNumber</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(System.String)">
+            I am adding this
+            <summary>
+            Update office location (building description and room number)
+            </summary>
+            <param name="value">office location</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
@@ -2184,6 +2195,15 @@
             <returns>The updated news item's view model</returns>
             <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
         </member>
+        <member name="M:Gordon360.Services.NewsService.EditImage(System.Int32,System.String)">
+            <summary>
+            (Service) Edits the image of a news item in the database
+            </summary>
+            <param name="newsID">The id of the news item to edit</param>
+            <param name="newImageData">The news image object that contains the updated image value</param>
+            <returns>The updated news item's view model</returns>
+            <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        </member>
         <member name="M:Gordon360.Services.NewsService.VerifyUnapproved(Gordon360.Models.MyGordon.StudentNews)">
             <summary>
             Helper method to verify that a given news item has not yet been approved
@@ -2323,6 +2343,15 @@
             </summary>
             <param name="username"> The username for the user whose phone is to be updated </param>
             <param name="newMobilePhoneNumber">The new number to update the user's phone number to</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateOfficeLocationAsync(System.String,System.String,System.String)">
+            I am adding this
+            <summary>
+            office location setting
+            </summary>
+            <param name="username"> The username for the user whose phone is to be updated </param>
+            <param name="newBuilding">The new building location to update the user's office location to</param> 
+            <param name="newRoom">The new room to update the user's office room to</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacyAsync(System.String,System.String)">
             <summary>
