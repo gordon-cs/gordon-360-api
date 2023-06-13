@@ -4,6 +4,7 @@ using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Controllers
 {
@@ -94,8 +95,8 @@ namespace Gordon360.Controllers
         /// <param name="value">New description</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("description/{value}")]
-        public ActionResult UpdateDescription(string value)
+        [Route("description")]
+        public ActionResult UpdateDescription([FromBody]String value)
         {
             DateTime localDate = DateTime.Now;
 
