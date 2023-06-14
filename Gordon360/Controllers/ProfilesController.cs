@@ -449,7 +449,8 @@ namespace Gordon360.Controllers
         [Route("office_location/{value}")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(string value)
         {
-            var username = AuthUtils.GetUsername(User);
+            // var username = AuthUtils.GetUsername(User);
+            var username = "jonathan.senning";
             var values = value.Split(',');
             var result = await _profileService.UpdateOfficeLocationAsync(username, values[0], values[1]);
             return Ok(result);
@@ -460,13 +461,13 @@ namespace Gordon360.Controllers
         /// Return a list buildings.
         /// </summary>
         /// <returns> All buildings</returns>
-        [HttpGet]
-        [Route("buildings")]
-        public Task<ActionResult<IEnumerable<string>>> GetBuildings()
-        {
-            var buildings = await GetBuildingsAsync;
-            return Ok(buildings);
-        }
+        // [HttpGet]
+        // [Route("buildings")]
+        // public Task<ActionResult<IEnumerable<string>>> GetBuildings()
+        // {
+        //     var buildings = await GetBuildingsAsync;
+        //     return Ok(buildings);
+        // }
 
 
         /// <summary>

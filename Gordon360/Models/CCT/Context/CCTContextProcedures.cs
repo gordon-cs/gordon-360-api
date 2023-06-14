@@ -3165,8 +3165,6 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        //public virtual async Task<// I am adding this
-
         public virtual async Task<int> UPDATE_DESCRIPTIONAsync(int? ID, string VALUE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter

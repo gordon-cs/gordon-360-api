@@ -305,7 +305,6 @@ namespace Gordon360.Services
         public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
         {
             var profile = GetStudentProfileByUsername(username);
-            Console.WriteLine(profile);
             if (profile == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
@@ -339,17 +338,18 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
             }
 
-           // var result = await _context.Procedures.UPDATE_OFFICEAsync(profile.ID, profile.);
 
-            // Update value in cached data
-            // var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
-            // if (student != null)
-            // {
-            //     student.MobilePhone = profile.MobilePhone;
-            // }
+            var user = _context.FacStaff.FirstOrDefault(f => f.AD_Username == username);
+            user.OnCampusRoom = newRoom;
+            user.BuildingDescription = newBuilding;
+            var temp = _context.Buildings.FirstOrDefault(b => b.BUILDING_DESC == newBuilding);
+            user.OnCampusBuilding = temp.BLDG_CDE;
+            await _context.SaveChangesAsync();
+            Console.WriteLine(profile);
 
-            //return profile;
-            return null;
+           // var result = await _context.Procedures.UPDATE_OFFICEAsync(profile.ID, profile.BuildingDescription, profile.OnCampusRoom);
+
+            return profile;
         }
 
         /// I am adding this
@@ -357,16 +357,16 @@ namespace Gordon360.Services
         /// Return a list buildings.
         /// </summary>
         /// <returns> All buildings</returns>
-        [HttpGet]
-        [Route("buildings")]
-        public Task<ActionResult<IEnumerable<string>>> GetBuildingsAsync()
-        {
-            var buildings = _context.FacStaff.Select(fs => fs.BuildingDescription)
-                                    .Distinct()
-                                    .Where(d => d != null)
-                                    .OrderBy(d => d);
-            return buildings;
-        }
+        // [HttpGet]
+        // [Route("buildings")]
+        // public Task<ActionResult<IEnumerable<string>>> GetBuildingsAsync()
+        // {
+        //     var buildings = _context.FacStaff.Select(fs => fs.BuildingDescription)
+        //                             .Distinct()
+        //                             .Where(d => d != null)
+        //                             .OrderBy(d => d);
+        //     return buildings;
+        // }
 
         /// <summary>
         /// privacy setting user profile photo.
