@@ -329,7 +329,7 @@ namespace Gordon360.Services
         /// <summary>
         /// office location setting
         /// </summary>
-        /// <param name="username"> The username for the user whose phone is to be updated </param>
+        /// <param name="username"> The username for the user whose office location is to be updated </param>
         /// <param name="newBuilding">The new building location to update the user's office location to</param> 
         /// <param name="newRoom">The new room to update the user's office room to</param>
         public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)

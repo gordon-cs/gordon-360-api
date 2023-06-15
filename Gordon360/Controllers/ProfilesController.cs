@@ -449,7 +449,7 @@ namespace Gordon360.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(string value)
         {
-            var username = "Jonathan.Senning";
+            var username = AuthUtils.GetUsername(User);
             var values = value.Split(',');
             var result = await _profileService.UpdateOfficeLocationAsync(username, values[0], values[1]);
             return Ok(result);
