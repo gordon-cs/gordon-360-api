@@ -8,13 +8,13 @@ using Gordon360.Models.webSQL.Models;
 
 namespace Gordon360.Models.webSQL.Context
 {
-    public partial class webSQL : DbContext
+    public partial class webSQLContext : DbContext
     {
-        public webSQL()
+        public webSQLContext()
         {
         }
 
-        public webSQL(DbContextOptions<webSQL> options)
+        public webSQLContext(DbContextOptions<webSQLContext> options)
             : base(options)
         {
         }
