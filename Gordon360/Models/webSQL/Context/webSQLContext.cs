@@ -42,23 +42,7 @@ namespace Gordon360.Models.webSQL.Context
                 entity.HasIndex(e => e.AD_Username, "IX_account")
                     .HasFillFactor(90);
 
-                entity.HasIndex(e => e.account_type, "IX_account_account_type")
-                    .HasFillFactor(90);
-
-                entity.HasIndex(e => new { e.gordon_id, e.account_type, e.disabled }, "IX_account_account_type_disabled_gordon_id")
-                    .HasFillFactor(90);
-
                 entity.HasIndex(e => e.AD_Username, "IX_account_ad_username")
-                    .HasFillFactor(90);
-
-                entity.HasIndex(e => e.barcode, "IX_account_barcode")
-                    .HasFillFactor(90);
-
-                entity.HasIndex(e => e.disabled, "IX_account_disabled")
-                    .HasFillFactor(90);
-
-                entity.HasIndex(e => e.gordon_id, "IX_gordon_id")
-                    .IsUnique()
                     .HasFillFactor(90);
 
                 entity.HasIndex(e => e.account_id, "PK_account")
@@ -72,70 +56,6 @@ namespace Gordon360.Models.webSQL.Context
                     .HasFillFactor(100);
 
                 entity.Property(e => e.AD_Username).HasComment("Active Directory Username");
-
-                entity.Property(e => e.AD_dt_added).HasComment("Date account was added to Active Directory");
-
-                entity.Property(e => e.AD_dt_changed).HasComment("Date account was changed in Active Directory");
-
-                entity.Property(e => e.AD_dt_disabled).HasComment("Date account was disabled in Active Directory");
-
-                entity.Property(e => e.Challenge_Answer).HasComment("Password Reset Challenge Answer");
-
-                entity.Property(e => e.Challenge_question).HasComment("Password Reset Challenge Question");
-
-                entity.Property(e => e.Cur_Division)
-                    .IsFixedLength()
-                    .HasComment("Current Student Division");
-
-                entity.Property(e => e.DisMailBy).HasComment("Email Shut Off By");
-
-                entity.Property(e => e.DisMailDate).HasComment("Email Shut Off Date");
-
-                entity.Property(e => e.DisMailRsn).HasComment("Email Shut Off Reason");
-
-                entity.Property(e => e.DisMailed)
-                    .IsFixedLength()
-                    .HasComment("Email Shut Off Flag Y/N");
-
-                entity.Property(e => e.First_Time_Usr)
-                    .IsFixedLength()
-                    .HasComment("First Time User Flag");
-
-                entity.Property(e => e.Forward_Keep_Copy).IsFixedLength();
-
-                entity.Property(e => e.GCSA_voted).IsFixedLength();
-
-                entity.Property(e => e.Grad_Date).HasComment("Used for first time login challenge");
-
-                entity.Property(e => e.KeepEmail)
-                    .IsFixedLength()
-                    .HasComment("Employee Keep Email Flag Y/N");
-
-                entity.Property(e => e.KeepEmailRsn).HasComment("Emp Keep Email Reason");
-
-                entity.Property(e => e.MSOL_Alumni).IsFixedLength();
-
-                entity.Property(e => e.MSOL_Faculty).IsFixedLength();
-
-                entity.Property(e => e.MSOL_License).IsFixedLength();
-
-                entity.Property(e => e.MSOL_Student).IsFixedLength();
-
-                entity.Property(e => e.bus_lic).HasComment("'1' indicates licensed driver ");
-
-                entity.Property(e => e.disabled).IsFixedLength();
-
-                entity.Property(e => e.ferpa).IsFixedLength();
-
-                entity.Property(e => e.policy).IsFixedLength();
-
-                entity.Property(e => e.pwd_changed).IsFixedLength();
-
-                entity.Property(e => e.special)
-                    .IsFixedLength()
-                    .HasComment("Special Access");
-
-                entity.Property(e => e.van_lic).HasComment("'1' indicates licensed driver ");
             });
 
             modelBuilder.Entity<account_profile>(entity =>

@@ -1410,6 +1410,31 @@
             <param name="snc">The StudentNewsCategory table</param>
             <returns> StudentNewsViewModel </returns>
         </member>
+        <member name="P:Gordon360.Models.webSQL.Models.account.AD_Username">
+            <summary>
+            Active Directory Username
+            </summary>
+        </member>
+        <member name="P:Gordon360.Models.webSQL.Models.account_profile.Show_Pic">
+            <summary>
+            Display Who&apos;s Who Picture (Y/N)
+            </summary>
+        </member>
+        <member name="P:Gordon360.Models.webSQL.Models.account_profile.CHException">
+            <summary>
+            Chapel Credit Exception Value
+            </summary>
+        </member>
+        <member name="P:Gordon360.Models.webSQL.Models.Photo.ID">
+            <summary>
+            Unique sequntial ID
+            </summary>
+        </member>
+        <member name="P:Gordon360.Models.webSQL.Models.Photo.Accountid">
+            <summary>
+            From account table
+            </summary>
+        </member>
         <member name="T:Gordon360.Services.AcademicCheckInService">
             <summary>
             Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.

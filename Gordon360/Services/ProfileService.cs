@@ -2,6 +2,8 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.webSQL.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -18,12 +20,14 @@ namespace Gordon360.Services
         private readonly CCTContext _context;
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
+        private readonly webSQLContext _webSQLContext;
 
-        public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService)
+        public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext)
         {
             _context = context;
             _config = config;
             _accountService = accountService;
+            _webSQLContext = webSQLContext;
         }
 
         /// <summary>
@@ -322,7 +326,6 @@ namespace Gordon360.Services
             return profile;
         }
 
-        /// I am adding this
         /// <summary>
         /// office location setting
         /// </summary>
@@ -332,41 +335,17 @@ namespace Gordon360.Services
         public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
         {
             var profile = GetFacultyStaffProfileByUsername(username);
-            Console.WriteLine(profile);
             if (profile == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
             }
-
-
-            var user = _context.FacStaff.FirstOrDefault(f => f.AD_Username == username);
-            user.OnCampusRoom = newRoom;
-            user.BuildingDescription = newBuilding;
-            var temp = _context.Buildings.FirstOrDefault(b => b.BUILDING_DESC == newBuilding);
-            user.OnCampusBuilding = temp.BLDG_CDE;
-            await _context.SaveChangesAsync();
-            Console.WriteLine(profile);
-
-           // var result = await _context.Procedures.UPDATE_OFFICEAsync(profile.ID, profile.BuildingDescription, profile.OnCampusRoom);
+            var user = _webSQLContext.accounts.Where(a => a.AD_Username == username).FirstOrDefault();
+            user.Building = newBuilding;
+            user.Room = newRoom;
+            await _webSQLContext.SaveChangesAsync();
 
             return profile;
         }
-
-        /// I am adding this
-        /// <summary>
-        /// Return a list buildings.
-        /// </summary>
-        /// <returns> All buildings</returns>
-        // [HttpGet]
-        // [Route("buildings")]
-        // public Task<ActionResult<IEnumerable<string>>> GetBuildingsAsync()
-        // {
-        //     var buildings = _context.FacStaff.Select(fs => fs.BuildingDescription)
-        //                             .Distinct()
-        //                             .Where(d => d != null)
-        //                             .OrderBy(d => d);
-        //     return buildings;
-        // }
 
         /// <summary>
         /// privacy setting user profile photo.
