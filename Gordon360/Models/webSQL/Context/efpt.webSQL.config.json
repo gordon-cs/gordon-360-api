@@ -1,0 +1,57 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "webSQL",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Models\/webSQL\/Context",
+   "OutputPath": "Models\/webSQL\/Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Gordon360",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[account]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[account_profile]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[GlobalSettings]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Mailstops]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Photos]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "sqltrain1.webSQL.dbo",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false,
+   "UseT4": false
+}
