@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Controllers
 {
@@ -435,6 +436,21 @@ namespace Gordon360.Controllers
             var username = AuthUtils.GetUsername(User);
             var result = await _profileService.UpdateMobilePhoneNumberAsync(username, value);
 
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Update office location (building description and room number)
+        /// </summary>
+        /// <param name="value">office location</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("office_hours/{value}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours(string value)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var result = await _profileService.UpdateOfficeHoursAsync(username, value);
             return Ok(result);
         }
 
