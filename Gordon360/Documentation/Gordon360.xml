@@ -656,12 +656,10 @@
             <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(System.String)">
-            I am adding this
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(Gordon360.Models.ViewModels.OfficeLocationPatchViewModel)">
             <summary>
             Update office location (building description and room number)
             </summary>
-            <param name="value">office location</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
@@ -2370,11 +2368,10 @@
             <param name="newMobilePhoneNumber">The new number to update the user's phone number to</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateOfficeLocationAsync(System.String,System.String,System.String)">
-            I am adding this
             <summary>
             office location setting
             </summary>
-            <param name="username"> The username for the user whose phone is to be updated </param>
+            <param name="username"> The username for the user whose office location is to be updated </param>
             <param name="newBuilding">The new building location to update the user's office location to</param> 
             <param name="newRoom">The new room to update the user's office room to</param>
         </member>

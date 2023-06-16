@@ -442,16 +442,13 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Update office location (building description and room number)
         /// </summary>
-        /// <param name="value">office location</param>
         /// <returns></returns>
-        [HttpPut]
-        [Route("office_location/{value}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(string value)
+        [HttpPatch]
+        [Route("office_location")]
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
         {
             var username = AuthUtils.GetUsername(User);
-            var values = value.Split(',');
-            var result = await _profileService.UpdateOfficeLocationAsync(username, values[0], values[1]);
+            var result = await _profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingDescription, officeLocation.RoomNumber);
             return Ok(result);
         }
 
