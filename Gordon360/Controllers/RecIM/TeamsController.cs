@@ -169,7 +169,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="username"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("{teamID}/participants")]
+        [Route("{teamID}/participants/{username}")]
         public async Task<ActionResult> DeleteTeamParticipantAsync(int teamID, string username)
         {
             var user_name = AuthUtils.GetUsername(User);
@@ -219,7 +219,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="username"></param>
         /// <returns>number of games a participant has attended for a team</returns>
         [HttpGet]
-        [Route("{teamID}/attendance")]
+        [Route("{teamID}/participants/{username}/attendance")]
         public ActionResult<int> NumberOfGamesParticipatedByParticipant(int teamID, string username)
         {
             var res = _teamService.ParticipantAttendanceCount(teamID, username);
