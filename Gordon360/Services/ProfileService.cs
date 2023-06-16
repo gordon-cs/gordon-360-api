@@ -348,6 +348,26 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// office hours setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose office hours is to be updated </param>
+        /// <param name="newHours">The new hours to update the user's office hours to</param>
+        public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
+        {
+            var profile = GetFacultyStaffProfileByUsername(username);
+            if (profile == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+            var user = _webSQLContext.accounts.Where(a => a.AD_Username == username).FirstOrDefault();
+            var user2 = _webSQLContext.account_profiles.Where(a => a.account_id == user.account_id).FirstOrDefault();
+            user2.office_hours = newHours;
+            await _webSQLContext.SaveChangesAsync();
+
+            return profile;
+        }
+
+        /// <summary>
         /// privacy setting user profile photo.
         /// </summary>
         /// <param name="username">AD Username</param>
