@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Diagnostics;
 
 
 namespace Gordon360.Services.RecIM
@@ -71,45 +72,29 @@ namespace Gordon360.Services.RecIM
             sport.Name = updatedSport.Name ?? sport.Name;
             sport.Description = updatedSport.Description ?? sport.Description;
             sport.Rules = updatedSport.Rules ?? sport.Rules;
-            
-            // UNTESTED FEATURE
-            if (updatedSport.IsLogoUpdate)
+           
+            // note: sport has not been tested
+            if (updatedSport.Logo != null)
             {
-                if (updatedSport.Logo != null)
+                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
+                var (extension, format, data) = ImageUtils.GetImageFormat(updatedSport.Logo.Image);
+
+                // remove old
+                var imagePath = GetImagePath(Path.GetFileName(sport.Logo));
+                ImageUtils.DeleteImage(imagePath);
+
+                if (updatedSport.Logo.Image is not null)
                 {
-                    // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                    var (extension, format, data) = ImageUtils.GetImageFormat(updatedSport.Logo);
-
-                    string? imagePath = null;
-                    // If old image exists, overwrite it with new image at same path
-                    if (sport.Logo != null)
-                    {
-                        imagePath = GetImagePath(Path.GetFileName(sport.Logo));
-                    }
-                    // Otherwise, upload new image and save url to db
-                    else
-                    {
-                        // Use a unique alphanumeric GUID string as the file name
-                        var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                        imagePath = GetImagePath(filename);
-                        var url = GetImageURL(filename);
-                        sport.Logo = url;
-                    }
-
+                    // Use a unique alphanumeric GUID string as the file name
+                    var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+                    imagePath = GetImagePath(filename);
+                    var url = GetImageURL(filename);
+                    sport.Logo = url;
                     ImageUtils.UploadImage(imagePath, data, format);
                 }
-
-                //If the image property is null, it means that either the user
-                //chose to remove the previous image or that there was no previous
-                //image (DeleteImage is designed to handle this).
-                else if (sport.Logo != null)
-                {
-                    var imagePath = GetImagePath(Path.GetFileName(sport.Logo));
-
-                    ImageUtils.DeleteImage(imagePath);
-                    sport.Logo = updatedSport.Logo; //null
-                }
+                sport.Logo = updatedSport.Logo.Image;
             }
+            
 
             await _context.SaveChangesAsync();
 
