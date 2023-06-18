@@ -13,6 +13,7 @@ using System.IO;
 using Gordon360.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Extensions.System;
+using System.Diagnostics;
 
 namespace Gordon360.Services.RecIM
 {
@@ -335,9 +336,14 @@ namespace Gordon360.Services.RecIM
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
                 var (extension, format, data) = ImageUtils.GetImageFormat(updatedTeam.Logo.Image);
 
+                string? imagePath = null;
                 // remove old
-                var imagePath = GetImagePath(Path.GetFileName(team.Logo));
-                ImageUtils.DeleteImage(imagePath);
+                if (team.Logo is not null && updatedTeam.Logo.Image is null)
+                {
+                    imagePath = GetImagePath(Path.GetFileName(team.Logo));
+                    ImageUtils.DeleteImage(imagePath);
+                    team.Logo = updatedTeam.Logo.Image;
+                }
 
                 if (updatedTeam.Logo.Image is not null)
                 {
@@ -348,7 +354,6 @@ namespace Gordon360.Services.RecIM
                     team.Logo = url;
                     ImageUtils.UploadImage(imagePath, data, format);
                 }
-                team.Logo = updatedTeam.Logo.Image;
             }
 
             await _context.SaveChangesAsync();

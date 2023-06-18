@@ -162,9 +162,14 @@ namespace Gordon360.Services.RecIM
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
                 var (extension, format, data) = ImageUtils.GetImageFormat(updatedActivity.Logo.Image);
 
+                string? imagePath = null;
                 // remove old
-                var imagePath = GetImagePath(Path.GetFileName(activity.Logo));
-                ImageUtils.DeleteImage(imagePath);
+                if(activity.Logo is not null && updatedActivity.Logo.Image is null)
+                {
+                    imagePath = GetImagePath(Path.GetFileName(activity.Logo));
+                    ImageUtils.DeleteImage(imagePath);
+                    activity.Logo = updatedActivity.Logo.Image;
+                }
 
                 if (updatedActivity.Logo.Image is not null)
                 {
@@ -175,7 +180,6 @@ namespace Gordon360.Services.RecIM
                     activity.Logo = url;
                     ImageUtils.UploadImage(imagePath, data, format);
                 }
-                activity.Logo = updatedActivity.Logo.Image;
             }
 
             await _context.SaveChangesAsync();

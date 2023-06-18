@@ -13,6 +13,7 @@ using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
+using Microsoft.Graph;
 
 
 namespace Gordon360.Services.RecIM
@@ -72,16 +73,21 @@ namespace Gordon360.Services.RecIM
             sport.Name = updatedSport.Name ?? sport.Name;
             sport.Description = updatedSport.Description ?? sport.Description;
             sport.Rules = updatedSport.Rules ?? sport.Rules;
-           
+
             // note: sport has not been tested
             if (updatedSport.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
                 var (extension, format, data) = ImageUtils.GetImageFormat(updatedSport.Logo.Image);
 
+                string? imagePath = null;
                 // remove old
-                var imagePath = GetImagePath(Path.GetFileName(sport.Logo));
-                ImageUtils.DeleteImage(imagePath);
+                if (sport.Logo is not null && updatedSport.Logo.Image is null)
+                {
+                    imagePath = GetImagePath(Path.GetFileName(sport.Logo));
+                    ImageUtils.DeleteImage(imagePath);
+                    sport.Logo = updatedSport.Logo.Image;
+                }
 
                 if (updatedSport.Logo.Image is not null)
                 {
@@ -92,9 +98,8 @@ namespace Gordon360.Services.RecIM
                     sport.Logo = url;
                     ImageUtils.UploadImage(imagePath, data, format);
                 }
-                sport.Logo = updatedSport.Logo.Image;
             }
-            
+
 
             await _context.SaveChangesAsync();
 
