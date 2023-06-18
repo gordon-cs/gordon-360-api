@@ -67,7 +67,6 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
-        AccountViewModel GetUnaffiliatedAccountByUsername(string username);
         IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
@@ -371,6 +370,7 @@ namespace Gordon360.Services
             IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
             ParticipantExtendedViewModel GetParticipantByUsername(string username, string? roleType = null);
+            AccountViewModel GetUnaffiliatedAccountByUsername(string username);
             IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
             Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4);
             Task<ParticipantExtendedViewModel> PostCustomParticipantAsync(string username, CustomParticipantViewModel newCustomParticipant);

@@ -51,7 +51,7 @@ namespace Gordon360.Services.RecIM
                 .Distinct()
                 .Select(username => new ParticipantReportViewModel
                 {
-                    UserAccount = _accountService.GetUnaffiliatedAccountByUsername(username),
+                    UserAccount = _participantService.GetUnaffiliatedAccountByUsername(username),
                     NumberOfActivitiesParticipated =
                         _context.ParticipantTeam
                         .Where(pt => 

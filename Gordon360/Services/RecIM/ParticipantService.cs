@@ -48,6 +48,25 @@ namespace Gordon360.Services.RecIM
             };
         }
 
+        /// <summary>
+        /// Fetches the account record with the specified username. Inclusive of non-gordon accounts made by Rec-IM
+        /// </summary>
+        /// <param name="username">The AD username associated with the account.</param>
+        /// <returns>account information</returns>
+        public AccountViewModel GetUnaffiliatedAccountByUsername(string username)
+        {
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            if (account == null)
+            {
+                return new AccountViewModel()
+                {
+                    ADUserName = username,
+                    AccountType = "Unaffiliated"
+                };
+            }
+            return account;
+        }
+
         public ParticipantExtendedViewModel GetParticipantByUsername(string username, string? roleType = null)
         {
             string? accountEmail = null;
