@@ -859,6 +859,21 @@
             <param name="attendee">object holding required username (optional teamID)</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.RecIMAdminController.GetReport(System.DateTime,System.DateTime)">
+            <summary>
+            Rec-IM Reporting:
+                Every semester Rec-IM needs to report, their own client,
+                information regarding new users, retention of users, 
+                gender ratio, involvements...
+                
+                This route does not specify semester terms, however, is more
+                specific in which it can select time constraints from beginning
+                to end with no limit to time in between
+            </summary>
+            <param name="startTime">report start time</param>
+            <param name="endTime">report end time</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
             <summary>
             Queries all Series with an optional active tag
@@ -1498,13 +1513,6 @@
             </summary>
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
-        </member>
-        <member name="M:Gordon360.Services.AccountService.GetUnaffiliatedAccountByUsername(System.String)">
-            <summary>
-            Fetches the account record with the specified username. Inclusive of non-gordon accounts made by Rec-IM
-            </summary>
-            <param name="username">The AD username associated with the account.</param>
-            <returns>account information</returns>
         </member>
         <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
@@ -2361,6 +2369,13 @@
             within other queries. The only solution is to return each individual instance and have the original
             query handle the enumeration.
             </summary>
+        </member>
+        <member name="M:Gordon360.Services.RecIM.ParticipantService.GetUnaffiliatedAccountByUsername(System.String)">
+            <summary>
+            Fetches the account record with the specified username. Inclusive of non-gordon accounts made by Rec-IM
+            </summary>
+            <param name="username">The AD username associated with the account.</param>
+            <returns>account information</returns>
         </member>
         <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
