@@ -748,6 +748,12 @@
             <param name="activityID"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches">
+            <summary>
+            Get all matches
+            </summary>
+            <returns>all matches</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchAttendanceByMatchID(System.Int32)">
             <summary>
             Get's current match attendance for a specified match
