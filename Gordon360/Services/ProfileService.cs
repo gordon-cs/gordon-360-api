@@ -332,6 +332,7 @@ namespace Gordon360.Services
         /// <param name="username"> The username for the user whose office location is to be updated </param>
         /// <param name="newBuilding">The new building location to update the user's office location to</param> 
         /// <param name="newRoom">The new room to update the user's office room to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
         {
             var profile = GetFacultyStaffProfileByUsername(username);
@@ -352,6 +353,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username"> The username for the user whose office hours is to be updated </param>
         /// <param name="newHours">The new hours to update the user's office hours to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
         {
             var profile = GetFacultyStaffProfileByUsername(username);
