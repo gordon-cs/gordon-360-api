@@ -114,8 +114,8 @@ namespace Gordon360.Services
             string? hall,
             string? classType,
             string? preferredClassYear,
-            string? initialYear,
-            string? finalYear,
+            int? initialYear,
+            int? finalYear,
             string? homeCity,
             string? state,
             string? country,
@@ -181,7 +181,7 @@ namespace Gordon360.Services
             if ((initialYear is not null) && (finalYear is not null))
             {
                 accounts = accounts.Where(a => a.PreferredClassYear != "");
-                accounts = accounts.Where(a => Convert.ToInt32(a.PreferredClassYear) >= Convert.ToInt32(initialYear) && Convert.ToInt32(a.PreferredClassYear) <= Convert.ToInt32(finalYear));
+                accounts = accounts.Where(a => Convert.ToInt32(a.PreferredClassYear) >= initialYear && Convert.ToInt32(a.PreferredClassYear) <= finalYear);
             }
             if (homeCity is not null) accounts = accounts.Where(a => a.HomeCity.StartsWithIgnoreCase(homeCity));
             if (state is not null) accounts = accounts.Where(a => a.HomeState.StartsWithIgnoreCase(state));

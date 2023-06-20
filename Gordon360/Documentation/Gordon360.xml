@@ -53,7 +53,7 @@
             <param name="lastnameSearch">The lastname portion of the search</param>
             <returns> All accounts matching some or all of both the firstname and lastname parameters, sorted by how well the account matched the search.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
@@ -1488,7 +1488,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
         </member>
-        <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Given a list of accounts, and search params, return all the accounts that match those search params.
             </summary>
