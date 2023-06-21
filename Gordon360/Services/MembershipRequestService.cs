@@ -56,10 +56,15 @@ namespace Gordon360.Services
 
         private bool RequestAlreadyExists(RequestUploadViewModel requestUpload)
         {
+            var acc = _accountService.GetAccountByUsername(requestUpload.Username);
+            if (acc == null) throw new UnprocessibleEntity() { ExceptionMessage = "Account not found" };
+
+            var g_id = Int32.Parse(acc.GordonID);
             return _context.REQUEST.Any(r => 
                 r.STATUS == Request_Status.PENDING
                 && r.ACT_CDE == requestUpload.Activity
                 && r.SESS_CDE == requestUpload.Session
+                && r.ID_NUM == g_id
             );
         }
 
