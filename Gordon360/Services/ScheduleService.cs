@@ -24,18 +24,25 @@ namespace Gordon360.Services
         /// Fetch the schedule item whose id and session code is specified by the parameter
         /// </summary>
         /// <param name="username">The AD Username of the student</param>
+        /// <param name="sessionID">The selected session of the student</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username, string? sessionID)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
             if (account == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
-
-            var sessionCode = Helpers.GetCurrentSession(_context);
+            var sessionCode = "";
+            if (sessionID is not null)
+            {
+                sessionCode = sessionID;
+            } else
+            {
+                sessionCode = Helpers.GetCurrentSession(_context);
+            }
             var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
 
             return result.Select(x => new ScheduleViewModel
@@ -60,91 +67,31 @@ namespace Gordon360.Services
         /// Fetch the schedule item whose id and session code is specified by the parameter
         /// </summary>
         /// <param name="username">The AD Username of the instructor</param>
+        /// <param name="sessionID">The selected session of the instructor</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username, string? sessionID)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            //var currentSessionCode = Helpers.GetCurrentSession().SessionCode;
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
-            var sessionCode = Helpers.GetCurrentSession(_context);
+            var sessionCode = "";
+            if (sessionID is not null)
+            {
+                sessionCode = sessionID;
+            }
+            else
+            {
+                sessionCode = Helpers.GetCurrentSession(_context);
+            }
+
             var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
 
             return result.Select(x => new ScheduleViewModel
             {
                 ID_NUM = x.ID_NUM ?? default,
-                CRS_CDE = x.CRS_CDE,
-                CRS_TITLE = x.CRS_TITLE,
-                BLDG_CDE = x.BLDG_CDE,
-                ROOM_CDE = x.ROOM_CDE,
-                MONDAY_CDE = x.MONDAY_CDE,
-                TUESDAY_CDE = x.TUESDAY_CDE,
-                WEDNESDAY_CDE = x.WEDNESDAY_CDE,
-                THURSDAY_CDE = x.THURSDAY_CDE,
-                FRIDAY_CDE = x.FRIDAY_CDE,
-                BEGIN_TIME = x.BEGIN_TIME,
-                END_TIME = x.END_TIME
-            });
-        }
-
-
-        /// <summary>
-        /// Fetch the schedule item whose id and session code is specified by the parameter
-        /// </summary>
-        /// <param name="username">The AD Username of the instructor</param>
-        /// <param name="sessionID">The session of the instructor</param>
-        /// <returns>StudentScheduleViewModel if found, empty array if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetSpecificScheduleFacultyAsync(string username, string sessionID)
-        {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
-            }
-
-            var sessionCode = sessionID;
-            var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
-
-            return result.Select(x => new ScheduleViewModel
-            {
-                ID_NUM = x.ID_NUM ?? default,
-                CRS_CDE = x.CRS_CDE,
-                CRS_TITLE = x.CRS_TITLE,
-                BLDG_CDE = x.BLDG_CDE,
-                ROOM_CDE = x.ROOM_CDE,
-                MONDAY_CDE = x.MONDAY_CDE,
-                TUESDAY_CDE = x.TUESDAY_CDE,
-                WEDNESDAY_CDE = x.WEDNESDAY_CDE,
-                THURSDAY_CDE = x.THURSDAY_CDE,
-                FRIDAY_CDE = x.FRIDAY_CDE,
-                BEGIN_TIME = x.BEGIN_TIME,
-                END_TIME = x.END_TIME
-            });
-        }
-
-        /// <summary>
-        /// Fetch the schedule item whose id and session code is specified by the parameter
-        /// </summary>
-        /// <param name="username">The AD Username of the Student</param>
-        /// <param name="sessionID">The session of the student</param>
-        /// <returns>StudentScheduleViewModel if found, empty array if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetSpecificScheduleStudentAsync(string username, string sessionID)
-        {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
-            }
-
-            var sessionCode = sessionID;
-            var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
-
-            return result.Select(x => new ScheduleViewModel
-            {
-                ID_NUM = x.ID_NUM,
                 CRS_CDE = x.CRS_CDE,
                 CRS_TITLE = x.CRS_TITLE,
                 BLDG_CDE = x.BLDG_CDE,

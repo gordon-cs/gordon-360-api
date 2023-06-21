@@ -32,14 +32,14 @@ namespace Gordon360.Controllers
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<ScheduleViewModel> Get(string sessionID)
+        public ActionResult<ScheduleViewModel> Get()
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var groups = AuthUtils.GetGroups(User);
 
             if (groups.Contains(AuthGroup.Student))
             {
-                var result = _scheduleService.GetScheduleStudentAsync(authenticatedUserUsername);
+                var result = _scheduleService.GetScheduleStudentAsync(authenticatedUserUsername, null);
                 if (result == null)
                 {
                     return NotFound();
@@ -49,7 +49,7 @@ namespace Gordon360.Controllers
 
             else if (groups.Contains(AuthGroup.FacStaff))
             {
-                var result = _scheduleService.GetScheduleFacultyAsync(authenticatedUserUsername);
+                var result = _scheduleService.GetScheduleFacultyAsync(authenticatedUserUsername, null);
                 if (result == null)
                 {
                     return NotFound();
@@ -84,48 +84,21 @@ namespace Gordon360.Controllers
 
                 if (viewerGroups.Contains(AuthGroup.Police) || viewerGroups.Contains(AuthGroup.SiteAdmin))
                 {
-                    if (sessionID is not null)
-                    {
-                        scheduleResult = await _scheduleService.GetSpecificScheduleStudentAsync(username, sessionID);
-                    }
-                    else
-                    {
-                        scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
-                    }
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
+
                 }
                 else if (viewerGroups.Contains(AuthGroup.Student) && schedulePrivacy == 1)
                 {
-                    if (sessionID is not null)
-                    {
-                        scheduleResult = await _scheduleService.GetSpecificScheduleStudentAsync(username, sessionID);
-                    }
-                    else
-                    {
-                        scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
-                    }
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
                 }
                 else if (viewerGroups.Contains(AuthGroup.Advisors))
                 {
-                    if (sessionID is not null)
-                    {
-                        scheduleResult = await _scheduleService.GetSpecificScheduleStudentAsync(username, sessionID);
-                    }
-                    else
-                    {
-                        scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
-                    }
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
                 }
             }
             else if (groups.Contains(AuthGroup.FacStaff))
             {
-                if (sessionID is not null)
-                {
-                    scheduleResult = await _scheduleService.GetSpecificScheduleFacultyAsync(username, sessionID);
-                }
-                else
-                {
-                    scheduleResult = await _scheduleService.GetScheduleFacultyAsync(username);
-                }
+                scheduleResult = await _scheduleService.GetScheduleFacultyAsync(username, sessionID);
             }
             else
             {
