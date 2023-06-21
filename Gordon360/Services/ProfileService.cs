@@ -2,6 +2,8 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.webSQL.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -18,12 +20,14 @@ namespace Gordon360.Services
         private readonly CCTContext _context;
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
+        private readonly webSQLContext _webSQLContext;
 
-        public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService)
+        public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext)
         {
             _context = context;
             _config = config;
             _accountService = accountService;
+            _webSQLContext = webSQLContext;
         }
 
         /// <summary>
@@ -305,7 +309,6 @@ namespace Gordon360.Services
         public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
         {
             var profile = GetStudentProfileByUsername(username);
-
             if (profile == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
@@ -319,6 +322,27 @@ namespace Gordon360.Services
             {
                 student.MobilePhone = profile.MobilePhone;
             }
+
+            return profile;
+        }
+
+        /// <summary>
+        /// office location setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose office location is to be updated </param>
+        /// <param name="newBuilding">The new building location to update the user's office location to</param> 
+        /// <param name="newRoom">The new room to update the user's office room to</param>
+        public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
+        {
+            var profile = GetFacultyStaffProfileByUsername(username);
+            if (profile == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+            var user = _webSQLContext.accounts.Where(a => a.AD_Username == username).FirstOrDefault();
+            user.Building = newBuilding;
+            user.Room = newRoom;
+            await _webSQLContext.SaveChangesAsync();
 
             return profile;
         }

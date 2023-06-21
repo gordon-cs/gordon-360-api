@@ -210,6 +210,22 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// (Controller) Edits a news image in the database
+        /// </summary>
+        /// <param name="newsID">The id of the news item to edit</param>
+        /// <param name="newImageData">The new image string updates the image value</param>
+        /// <returns>The updated news item</returns>
+        /// <remarks>The news item must be authored by the user and must not be expired and must be unapproved</remarks>
+        [HttpPut]
+        [Route("{newsID}/image")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
+        public ActionResult<StudentNewsViewModel> EditPostingImage(int newsID, [FromBody] string newImageData)
+        {
+            var result = _newsService.EditImage(newsID, newImageData);
+            return Ok(result);
+        }
+
+        /// <summary>
         ///  Approve or deny a news posting in the database
         /// </summary>
         /// <param name="newsID">The id of the news item to approve</param>
