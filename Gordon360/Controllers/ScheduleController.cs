@@ -77,20 +77,17 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             var groups = AuthUtils.GetGroups(username);
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            var scheduleControl = _context.Schedule_Control.Find(id);
 
             IEnumerable<ScheduleViewModel>? scheduleResult = null;
-            if (authenticatedUserUsername == username)
-            {
-                scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
-            }
 
             if (groups.Contains(AuthGroup.Student))
             {
-                int schedulePrivacy = scheduleControl?.IsSchedulePrivate ?? 1;
+                if (authenticatedUserUsername == username)
+                {
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
 
-                if (viewerGroups.Contains(AuthGroup.Police) || viewerGroups.Contains(AuthGroup.SiteAdmin))
+                }
+                else if (viewerGroups.Contains(AuthGroup.Police) || viewerGroups.Contains(AuthGroup.SiteAdmin))
                 {
                     scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
 
