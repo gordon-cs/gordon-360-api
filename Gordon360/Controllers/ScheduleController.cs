@@ -39,7 +39,7 @@ namespace Gordon360.Controllers
 
             if (groups.Contains(AuthGroup.Student))
             {
-                var result = _scheduleService.GetScheduleStudentAsync(authenticatedUserUsername, null);
+                var result = _scheduleService.GetScheduleStudentAsync(authenticatedUserUsername);
                 if (result == null)
                 {
                     return NotFound();
@@ -49,7 +49,7 @@ namespace Gordon360.Controllers
 
             else if (groups.Contains(AuthGroup.FacStaff))
             {
-                var result = _scheduleService.GetScheduleFacultyAsync(authenticatedUserUsername, null);
+                var result = _scheduleService.GetScheduleFacultyAsync(authenticatedUserUsername);
                 if (result == null)
                 {
                     return NotFound();
