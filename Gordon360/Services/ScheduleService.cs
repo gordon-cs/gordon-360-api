@@ -26,7 +26,7 @@ namespace Gordon360.Services
         /// <param name="username">The AD Username of the student</param>
         /// <param name="sessionID">The selected session of the student</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username, string? sessionID)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username, string? sessionID = null)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
@@ -35,14 +35,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
             }
 
-            var sessionCode = "";
-            if (sessionID is not null)
-            {
-                sessionCode = sessionID;
-            } else
-            {
-                sessionCode = Helpers.GetCurrentSession(_context);
-            }
+            var sessionCode = sessionID ?? Helpers.GetCurrentSession(_context);
             var result = await _context.Procedures.STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
 
             return result.Select(x => new ScheduleViewModel
@@ -69,7 +62,7 @@ namespace Gordon360.Services
         /// <param name="username">The AD Username of the instructor</param>
         /// <param name="sessionID">The selected session of the instructor</param>
         /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username, string? sessionID)
+        public async Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username, string? sessionID = null)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             if (account == null)
@@ -77,16 +70,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Schedule was not found." };
             }
 
-            var sessionCode = "";
-            if (sessionID is not null)
-            {
-                sessionCode = sessionID;
-            }
-            else
-            {
-                sessionCode = Helpers.GetCurrentSession(_context);
-            }
-
+            var sessionCode = sessionID ?? Helpers.GetCurrentSession(_context);
             var result = await _context.Procedures.INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEAsync(int.Parse(account.gordon_id), sessionCode);
 
             return result.Select(x => new ScheduleViewModel

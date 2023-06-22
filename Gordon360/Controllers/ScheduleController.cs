@@ -73,6 +73,9 @@ namespace Gordon360.Controllers
             //probably needs privacy stuff like ProfilesController and service
             var viewerGroups = AuthUtils.GetGroups(User);
 
+
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
             var groups = AuthUtils.GetGroups(username);
             var id = _accountService.GetAccountByUsername(username).GordonID;
             var scheduleControl = _context.Schedule_Control.Find(id);
@@ -87,10 +90,6 @@ namespace Gordon360.Controllers
                     scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
 
                 }
-                else if (viewerGroups.Contains(AuthGroup.Student) && schedulePrivacy == 1)
-                {
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
-                }
                 else if (viewerGroups.Contains(AuthGroup.Advisors))
                 {
                     scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
@@ -103,6 +102,11 @@ namespace Gordon360.Controllers
             else
             {
                 return NotFound();
+            }
+
+            if (authenticatedUserUsername == username)
+            {
+                scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
             }
 
             JArray result = JArray.FromObject(scheduleResult);
