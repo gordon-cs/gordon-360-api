@@ -91,7 +91,7 @@ namespace Gordon360.Controllers
             }
             else if (viewerGroups.Contains(AuthGroup.Alumni) && viewerGroups.Contains(AuthGroup.Student))
             {
-                // Ask Chris about what group (Alumni + Student) can see
+                // Ask Chris Carlson about what group (Alumni + Student) can see
                 student = _student == null ? null : (PublicStudentProfileViewModel)_student;
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
@@ -100,7 +100,7 @@ namespace Gordon360.Controllers
             {
                 /* student = _student == null ? null : (PublicStudentProfileViewModel)_student;
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty; */
-                // Ask Chris about what group Alumni can see
+                // Ask Chris Carlson about what group Alumni can see
                 student = null;
                 faculty = null;
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
