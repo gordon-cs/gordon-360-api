@@ -89,16 +89,32 @@ namespace Gordon360.Controllers
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
             }
+            else if (viewerGroups.Contains(AuthGroup.Alumni) && viewerGroups.Contains(AuthGroup.Student))
+            {
+                // Ask Chris about what group (Alumni + Student) can see
+                student = _student == null ? null : (PublicStudentProfileViewModel)_student;
+                faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
+            }
+            else if (viewerGroups.Contains(AuthGroup.Alumni))
+            {
+                /* student = _student == null ? null : (PublicStudentProfileViewModel)_student;
+                faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty; */
+                // Ask Chris about what group Alumni can see
+                student = null;
+                faculty = null;
+                alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
+            }
             else if (viewerGroups.Contains(AuthGroup.Student))
             {
                 student = _student == null ? null : (PublicStudentProfileViewModel)_student;
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                alumni = null;  //student can't see alumini
+                alumni = null;  //student can't see alumni
             }
 
             if (student is null && alumni is null && faculty is null)
             {
-                return Ok(null);
+                return Ok();
             }
 
             var profile = _profileService.ComposeProfile(student, alumni, faculty, _customInfo);
