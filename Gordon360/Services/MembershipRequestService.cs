@@ -56,7 +56,8 @@ namespace Gordon360.Services
 
         private bool RequestAlreadyExists(RequestUploadViewModel requestUpload)
         {
-            var g_id = Int32.Parse(_accountService.GetAccountByUsername(requestUpload.Username).GordonID);
+            var account =_accountService.GetAccountByUsername(requestUpload.Username);
+            var g_id = Int32.Parse(account.GordonID);
             return _context.REQUEST.Any(r => 
                 r.STATUS == Request_Status.PENDING
                 && r.ACT_CDE == requestUpload.Activity
