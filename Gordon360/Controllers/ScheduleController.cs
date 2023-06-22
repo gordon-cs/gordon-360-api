@@ -81,6 +81,11 @@ namespace Gordon360.Controllers
             var scheduleControl = _context.Schedule_Control.Find(id);
 
             IEnumerable<ScheduleViewModel>? scheduleResult = null;
+            if (authenticatedUserUsername == username)
+            {
+                scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
+            }
+
             if (groups.Contains(AuthGroup.Student))
             {
                 int schedulePrivacy = scheduleControl?.IsSchedulePrivate ?? 1;
@@ -102,11 +107,6 @@ namespace Gordon360.Controllers
             else
             {
                 return NotFound();
-            }
-
-            if (authenticatedUserUsername == username)
-            {
-                scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
             }
 
             JArray result = JArray.FromObject(scheduleResult);
