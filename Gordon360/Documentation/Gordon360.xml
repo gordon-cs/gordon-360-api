@@ -1174,13 +1174,13 @@
             <param name="value">New description</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.Get">
+        <member name="M:Gordon360.Controllers.ScheduleController.Get(System.String)">
             <summary>
              Gets all schedule objects for a user
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.GetAsync(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAsync(System.String,System.String)">
             <summary>
              Gets all schedule objects for a user
             </summary>
@@ -2505,6 +2505,22 @@
             Fetch the schedule item whose id and session code is specified by the parameter
             </summary>
             <param name="username">The AD Username of the instructor</param>
+            <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetSpecificScheduleFacultyAsync(System.String,System.String)">
+            <summary>
+            Fetch the schedule item whose id and session code is specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the instructor</param>
+            <param name="sessionID">The session of the instructor</param>
+            <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetSpecificScheduleStudentAsync(System.String,System.String)">
+            <summary>
+            Fetch the schedule item whose id and session code is specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the Student</param>
+            <param name="sessionID">The session of the student</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">

@@ -228,8 +228,8 @@ namespace Gordon360.Services
     }
     public interface IScheduleService
     {
-        Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username);
-        Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username);
+        Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username, string? sessionID = null);
+        Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username, string? sessionID = null);
     }
 
     public interface IScheduleControlService
