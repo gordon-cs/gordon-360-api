@@ -17,8 +17,8 @@ namespace UnitTestsGordon360
     public class AuthenticationTests
     { 
         [Theory]
-        [InlineData("A student news resource")] // Resource.NEWS
-        [InlineData("Slider to be shown on the homepage")] // Resource.SLIDER
+        // [InlineData(Resource.NEWS)] // Resource.NEWS
+        [InlineData(Resource.SLIDER)] // Resource.SLIDER
         public void CanReadPublic_X_Y(string resource)
         {
             // Arrange
