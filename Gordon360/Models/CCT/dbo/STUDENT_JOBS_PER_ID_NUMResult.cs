@@ -7,11 +7,5 @@ namespace Gordon360.Models.CCT
 {
     public partial class STUDENT_JOBS_PER_ID_NUMResult
     {
-        public string Job_Title { get; set; }
-        public string Job_Department { get; set; }
-        public string Job_Department_Name { get; set; }
-        public DateTime? Job_Start_Date { get; set; }
-        public DateTime? Job_End_Date { get; set; }
-        public DateTime? Job_Expected_End_Date { get; set; }
     }
 }

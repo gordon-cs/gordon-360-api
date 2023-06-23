@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT
 {
     [Table("Participant", Schema = "RecIM")]
+    [Index("Username", "IsCustom", Name = "Unique_Participant", IsUnique = true)]
     public partial class Participant
     {
         public Participant()
@@ -26,6 +27,13 @@ namespace Gordon360.Models.CCT
         public string Username { get; set; }
         public bool IsAdmin { get; set; }
         public int ID { get; set; }
+        [Required]
+        [StringLength(1)]
+        [Unicode(false)]
+        public string SpecifiedGender { get; set; }
+        [Required]
+        public bool? AllowEmails { get; set; }
+        public bool IsCustom { get; set; }
 
         [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }

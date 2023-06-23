@@ -8,17 +8,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Housing_HallChoices", Schema = "dbo")]
-    [Index("HousingAppID", Name = "IX_Housing_HallChoices")]
-    public partial class Housing_HallChoices
+    [Table("FacStaff_Privacy", Schema = "dbo")]
+    public partial class FacStaff_Privacy
     {
         [Key]
-        public int HallChoiceID { get; set; }
-        public int HousingAppID { get; set; }
-        public int Ranking { get; set; }
-        [Required]
-        [StringLength(15)]
+        [StringLength(10)]
         [Unicode(false)]
-        public string HallName { get; set; }
+        public string gordon_id { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Field { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Viewer { get; set; }
     }
 }
