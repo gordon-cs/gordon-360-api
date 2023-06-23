@@ -1,4 +1,5 @@
 ﻿using Gordon360.Exceptions;
+// using UnitTestsGordon360.Images;
 using Microsoft.AspNetCore.Http;
 // using Moq;
 using System;
@@ -6,6 +7,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
+using Gordon360.Models.CCT;
 
 namespace Gordon360.Utilities.Tests
 {
@@ -17,6 +19,7 @@ namespace Gordon360.Utilities.Tests
         private const string TestImageData = "base64-encoded-image-data";
         private const string NonExistingImagePath = "path/to/non/existing/image.jpg";
         private const string DefaultImageURL = "https://example.com/default-image.jpg";
+        // private const string TestImageData = UnitTestsGordon360.
 
         [Fact]
         public void DeleteImage_ShouldDeleteImageFromPath()
