@@ -11,7 +11,9 @@ namespace Gordon360.Utilities.Tests
 {
     public class ImageUtilsTests
     {
-        private const string TestImagePath = "path/to/test/image.jpg";
+        // May need to use the following commented-out code later
+        // private const string TestImagePath = "c:\\Users\\arabella.ji\\Source\\Repos\\gordon-cs\\gordon-360-api\\UnitTestsGordon360\\activityImage.png"; 
+        private const string TestImagePath = "\\\\cftrain1\\photos\\21607000171196.jpg";
         private const string TestImageData = "base64-encoded-image-data";
         private const string NonExistingImagePath = "path/to/non/existing/image.jpg";
         private const string DefaultImageURL = "https://example.com/default-image.jpg";
@@ -33,13 +35,12 @@ namespace Gordon360.Utilities.Tests
         public void RetrieveImageFromPath_WithValidImagePath_ShouldReturnImageData()
         {
             // Arrange
-            File.Create(TestImagePath).Dispose(); // Create a test image file
-
+            // File.Create(TestImagePath).Dispose(); // Create a test image file
             // Act
             string imageData = ImageUtils.RetrieveImageFromPath(TestImagePath);
 
             // Assert
-            Assert.Equal(TestImageData, imageData);
+            Assert.Equal(imageData, TestImageData);
         }
 
         [Fact]
