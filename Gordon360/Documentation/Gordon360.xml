@@ -231,6 +231,12 @@
             </summary>
             <returns> All buildings</returns>
         </member>
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetInvolvements">
+            <summary>
+            Return a list buildings.
+            </summary>
+            <returns> All buildings</returns>
+        </member>
         <member name="M:Gordon360.Controllers.ContentManagementController.GetBannerSlides">
             <summary>Get all the banner slides for the dashboard banner</summary>
             <returns>A list of all the slides for the banner</returns>
@@ -1184,7 +1190,7 @@
             <param name="value">New description</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.Get(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleController.Get">
             <summary>
              Gets all schedule objects for a user
             </summary>
@@ -2387,6 +2393,7 @@
             <param name="username"> The username for the user whose office location is to be updated </param>
             <param name="newBuilding">The new building location to update the user's office location to</param> 
             <param name="newRoom">The new room to update the user's office room to</param>
+            <returns>updated fac/staff profile if found</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateOfficeHoursAsync(System.String,System.String)">
             <summary>
@@ -2394,6 +2401,7 @@
             </summary>
             <param name="username"> The username for the user whose office hours is to be updated </param>
             <param name="newHours">The new hours to update the user's office hours to</param>
+            <returns>updated fac/staff profile if found</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacyAsync(System.String,System.String)">
             <summary>
@@ -2513,34 +2521,20 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudentAsync(System.String)">
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudentAsync(System.String,System.String)">
             <summary>
             Fetch the schedule item whose id and session code is specified by the parameter
             </summary>
             <param name="username">The AD Username of the student</param>
+            <param name="sessionID">The selected session of the student</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFacultyAsync(System.String)">
+        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFacultyAsync(System.String,System.String)">
             <summary>
             Fetch the schedule item whose id and session code is specified by the parameter
             </summary>
             <param name="username">The AD Username of the instructor</param>
-            <returns>StudentScheduleViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetSpecificScheduleFacultyAsync(System.String,System.String)">
-            <summary>
-            Fetch the schedule item whose id and session code is specified by the parameter
-            </summary>
-            <param name="username">The AD Username of the instructor</param>
-            <param name="sessionID">The session of the instructor</param>
-            <returns>StudentScheduleViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetSpecificScheduleStudentAsync(System.String,System.String)">
-            <summary>
-            Fetch the schedule item whose id and session code is specified by the parameter
-            </summary>
-            <param name="username">The AD Username of the Student</param>
-            <param name="sessionID">The session of the student</param>
+            <param name="sessionID">The selected session of the instructor</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
