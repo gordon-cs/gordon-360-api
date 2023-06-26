@@ -332,6 +332,7 @@ namespace Gordon360.Services
         /// <param name="username"> The username for the user whose office location is to be updated </param>
         /// <param name="newBuilding">The new building location to update the user's office location to</param> 
         /// <param name="newRoom">The new room to update the user's office room to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
         {
             var profile = GetFacultyStaffProfileByUsername(username);
@@ -339,9 +340,30 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
             }
-            var user = _webSQLContext.accounts.Where(a => a.AD_Username == username).FirstOrDefault();
+            var user = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
             user.Building = newBuilding;
             user.Room = newRoom;
+            await _webSQLContext.SaveChangesAsync();
+
+            return profile;
+        }
+
+        /// <summary>
+        /// office hours setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose office hours is to be updated </param>
+        /// <param name="newHours">The new hours to update the user's office hours to</param>
+        /// <returns>updated fac/staff profile if found</returns>
+        public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
+        {
+            var profile = GetFacultyStaffProfileByUsername(username);
+            if (profile == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+            var acccount = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+            var user = _webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
+            user.office_hours = newHours;
             await _webSQLContext.SaveChangesAsync();
 
             return profile;

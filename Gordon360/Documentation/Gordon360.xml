@@ -665,6 +665,13 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeHours(System.String)">
+            <summary>
+            Update office hours
+            </summary>
+            <param name="value">office hours</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
             <summary>
             Update privacy of mobile phone number
@@ -2380,6 +2387,13 @@
             <param name="username"> The username for the user whose office location is to be updated </param>
             <param name="newBuilding">The new building location to update the user's office location to</param> 
             <param name="newRoom">The new room to update the user's office room to</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateOfficeHoursAsync(System.String,System.String)">
+            <summary>
+            office hours setting
+            </summary>
+            <param name="username"> The username for the user whose office hours is to be updated </param>
+            <param name="newHours">The new hours to update the user's office hours to</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacyAsync(System.String,System.String)">
             <summary>
