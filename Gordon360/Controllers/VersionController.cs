@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Gordon360.Controllers
@@ -16,14 +17,9 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<string> Get()
         {
-            string gitVersion = string.Empty;
-            using (Stream stream = Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream("Gordon360." + "version.txt"))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                gitVersion = reader.ReadLine();
-            }
-            return Ok(gitVersion);
+            var asm = typeof(VersionController).Assembly;
+            var attrs = asm.GetCustomAttributes<AssemblyMetadataAttribute>();
+            return $"Git Hash: {attrs.FirstOrDefault(a => a.Key == "GitHash")?.Value}";
         }
     }
 }
