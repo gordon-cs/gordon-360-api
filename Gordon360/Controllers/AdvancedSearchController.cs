@@ -137,7 +137,7 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Return a list involvements.
+        /// Return a list of involvements' descriptions.
         /// </summary>
         /// <returns> All involvements</returns>
         [HttpGet]
