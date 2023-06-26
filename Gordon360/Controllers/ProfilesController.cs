@@ -105,7 +105,7 @@ namespace Gordon360.Controllers
 
             if (student is null && alumni is null && faculty is null)
             {
-                return Ok();
+                return Ok(null);
             }
 
             var profile = _profileService.ComposeProfile(student, alumni, faculty, _customInfo);
