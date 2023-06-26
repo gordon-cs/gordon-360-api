@@ -136,7 +136,6 @@ namespace Gordon360.Controllers
             return Ok(buildings);
         }
 
-        // I am adding this
         /// <summary>
         /// Return a list involvements.
         /// </summary>
