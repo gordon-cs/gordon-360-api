@@ -104,6 +104,7 @@ namespace Gordon360.Services
         /// <param name="country">The country search param</param>
         /// <param name="department">The department search param</param>
         /// <param name="building">The building search param</param>
+        /// <param name="involvement">The involvement search param</param>
         /// <returns>The accounts from the provided list that match the given search params</returns>
         public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
@@ -120,7 +121,8 @@ namespace Gordon360.Services
             string? state,
             string? country,
             string? department,
-            string? building)
+            string? building,
+            string? involvement)
         {
             // Accept common town abbreviations in advanced people search
             // East = E, West = W, South = S, North = N
@@ -188,6 +190,11 @@ namespace Gordon360.Services
             if (country is not null) accounts = accounts.Where(a => a.Country.StartsWithIgnoreCase(country));
             if (department is not null) accounts = accounts.Where(a => a.OnCampusDepartment.StartsWithIgnoreCase(department));
             if (building is not null) accounts = accounts.Where(a => a.BuildingDescription.StartsWithIgnoreCase(building));
+            if (involvement is not null)
+            {
+                var temp = _context.MembershipView.Where(mv => mv.ActivityDescription == involvement && mv.Privacy != true);
+                accounts = accounts.Join(temp, a => a.AD_Username, mv => mv.Username, (a, mv) => a).Distinct();
+            }
 
             return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
         }

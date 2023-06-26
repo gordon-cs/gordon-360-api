@@ -109,7 +109,8 @@ namespace Gordon360.Controllers
         /// <param name="state"></param>
         /// <param name="country"></param>
         /// <param name="department"></param>   
-        /// <param name="building"></param>     
+        /// <param name="building"></param> 
+        /// <param name="involvement"></param>
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("advanced-people-search")]
@@ -128,7 +129,8 @@ namespace Gordon360.Controllers
             string? state,
             string? country,
             string? department,
-            string? building)
+            string? building,
+            string? involvement)
         {
             IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
@@ -149,7 +151,8 @@ namespace Gordon360.Controllers
                 state,
                 country,
                 department,
-                building);
+                building,
+                involvement);
 
             // Return all of the profile views
             return Ok(searchResults);
