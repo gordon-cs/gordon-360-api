@@ -192,8 +192,8 @@ namespace Gordon360.Services
             if (building is not null) accounts = accounts.Where(a => a.BuildingDescription.StartsWithIgnoreCase(building));
             if (involvement is not null)
             {
-                var temp = _context.MembershipView.Where(mv => mv.ActivityDescription == involvement && mv.Privacy != true);
-                accounts = accounts.Join(temp, a => a.AD_Username, mv => mv.Username, (a, mv) => a).Distinct();
+                var members = _context.MembershipView.Where(mv => mv.ActivityDescription == involvement && mv.Privacy != true);
+                accounts = accounts.Join(members, a => a.AD_Username, mv => mv.Username, (a, mv) => a).Distinct();
             }
 
             return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
