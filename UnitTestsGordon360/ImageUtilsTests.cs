@@ -15,8 +15,11 @@ namespace Gordon360.Utilities.Tests
     {
         // May need to use the following commented-out code later
         // private const string TestImagePath = "c:\\Users\\arabella.ji\\Source\\Repos\\gordon-cs\\gordon-360-api\\UnitTestsGordon360\\activityImage.png"; 
-        private const string TestImagePath = "\\\\cftrain1\\photos\\21607000171196.jpg";
-        private const string TestImageData = "base64-encoded-image-data";
+        private const string TestImagePath = "\\\\cftrain1\\photos\\testimage.png";
+        //private const string TestImageData = "base64-encoded-image-data";
+        private const string TestImageData = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABlBMVEVyhbP///+V8u2BAAAAAWJLR0QB/wIt3gAAAAlwSFlzAAALEgAACxIB0t1+/AAAAAd0SU1FB+cGFxQSHPLBPCwAAAAKSURBVAjXY2AAAAACAAHiIbwzAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIzLTA1LTI1VDE4OjQyOjAwKzAwOjAw1iuafQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNi0wOC0xOFQxNjoxNTo0MSswMDowMLyx2xsAAAAASUVORK5CYII=";
+        private const string ValidImagePath = "\\\\cftrain1\\photos\\21607000171196.jpg";
+        private const string ValidImageData = "base64-encoded-image-data";
         private const string NonExistingImagePath = "path/to/non/existing/image.jpg";
         private const string DefaultImageURL = "https://example.com/default-image.jpg";
         // private const string TestImageData = UnitTestsGordon360.
@@ -38,7 +41,8 @@ namespace Gordon360.Utilities.Tests
         public void RetrieveImageFromPath_WithValidImagePath_ShouldReturnImageData()
         {
             // Arrange
-            // File.Create(TestImagePath).Dispose(); // Create a test image file
+            ImageUtils.UploadImage(TestImagePath, TestImageData, ImageFormat.Png);
+            
             // Act
             string imageData = ImageUtils.RetrieveImageFromPath(TestImagePath);
 
