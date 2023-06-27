@@ -39,6 +39,18 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[FacStaff_Field_Type]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FacStaff_Privacy]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[FacStaff_Viewer_Type]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Health_Question]",
          "ObjectType": 0
       },
@@ -799,7 +811,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "SQLTrain1.CCT",
+   "UiHint": "sqltrain1.CCT.dbo",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDbContextSplitting": false,

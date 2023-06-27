@@ -44,6 +44,9 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<EmergencyContact> EmergencyContact { get; set; }
         public virtual DbSet<FacStaff> FacStaff { get; set; }
+        public virtual DbSet<FacStaff_Field_Type> FacStaff_Field_Type { get; set; }
+        public virtual DbSet<FacStaff_Privacy> FacStaff_Privacy { get; set; }
+        public virtual DbSet<FacStaff_Viewer_Type> FacStaff_Viewer_Type { get; set; }
         public virtual DbSet<Graduation> Graduation { get; set; }
         public virtual DbSet<Health_Question> Health_Question { get; set; }
         public virtual DbSet<Health_Status> Health_Status { get; set; }
@@ -295,6 +298,23 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
             });
 
+            modelBuilder.Entity<FacStaff_Field_Type>(entity =>
+            {
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<FacStaff_Privacy>(entity =>
+            {
+                entity.Property(e => e.Field).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.Viewer).HasDefaultValueSql("((0))");
+            });
+
+            modelBuilder.Entity<FacStaff_Viewer_Type>(entity =>
+            {
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            });
+
             modelBuilder.Entity<Graduation>(entity =>
             {
                 entity.ToView("Graduation", "dbo");
@@ -509,10 +529,11 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Participant>(entity =>
             {
-                entity.HasKey(e => e.Username)
-                    .HasName("PK__Particip__536C85E53B50E910");
+                entity.Property(e => e.AllowEmails).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.SpecifiedGender).IsFixedLength();
             });
 
             modelBuilder.Entity<ParticipantActivity>(entity =>
@@ -525,6 +546,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantActivity)
                     .HasForeignKey(d => d.ParticipantUsername)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantActivity_Participant");
 
                 entity.HasOne(d => d.PrivType)
@@ -540,7 +562,7 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.ParticipantNotification)
                     .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PartipantNotification_Participant");
+                    .HasConstraintName("FK_ParticipantNotification_Participant");
             });
 
             modelBuilder.Entity<ParticipantStatusHistory>(entity =>
@@ -563,6 +585,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantTeam)
                     .HasForeignKey(d => d.ParticipantUsername)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantTeam_Participant");
 
                 entity.HasOne(d => d.RoleType)
