@@ -529,11 +529,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Participant>(entity =>
             {
-                entity.Property(e => e.AllowEmails).HasDefaultValueSql("((1))");
-
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.SpecifiedGender).IsFixedLength();
             });
 
             modelBuilder.Entity<ParticipantActivity>(entity =>
