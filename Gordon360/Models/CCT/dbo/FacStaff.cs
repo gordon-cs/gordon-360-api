@@ -11,7 +11,8 @@ namespace Gordon360.Models.CCT
     [Keyless]
     public partial class FacStaff
     {
-        [StringLength(9)]
+        [Required]
+        [StringLength(10)]
         [Unicode(false)]
         public string ID { get; set; }
         [StringLength(5)]
