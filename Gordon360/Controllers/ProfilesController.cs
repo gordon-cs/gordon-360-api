@@ -93,12 +93,11 @@ namespace Gordon360.Controllers
             {
                 student = _student == null ? null : (PublicStudentProfileViewModel)_student;
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                // If this student is also in Alumni AuthGroup, then s/he can see alumni's public profile; if not, return null.
-                alumni = (_alumni == null)
-                       ? null 
-                       : viewerGroups.Contains(AuthGroup.Alumni) 
-                       ? (PublicAlumniProfileViewModel)_alumni 
-                       : null;
+                // If this student is also in Alumni AuthGroup, then s/he can see alumni's
+                // public profile; if not, return null.
+                alumni = (_alumni == null) ? null :
+                         viewerGroups.Contains(AuthGroup.Alumni) ? 
+                             (PublicAlumniProfileViewModel)_alumni : null;
             }
             else if (viewerGroups.Contains(AuthGroup.Alumni))
             {
