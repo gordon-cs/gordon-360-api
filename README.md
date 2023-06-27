@@ -43,7 +43,7 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 - It is easiest to use the development virtual machinea to of work on this project. Follow [these instructions](docs/RemoteDesktopToVM.md##How-to-connect-to-a-CPS-Server-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
 
-- Open the project in Visual Studio
+- Open the project in Visual Studio (*Note:* **not** Visual Studio *Code*, but Visual Studio 2022 or later).
 
   - Look for the desktop app Visual Studio, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microasoft of account. Your Gordon email will work for this. 
 
@@ -51,15 +51,17 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 - Before you can run the project, you need to configure it:
 
-  - You will need a copy of the `appsettings.Development.json` file. This file contains environment variables used to configure the application for local development. On the VM, it can be found at the path `D:\`. Copy it to the same folder as the default `appsettings.json` file in the project. To find that folder, from Visual Studio, right-click on `appsettings.json` and select "Open Containig Folder".
+  - You will need a copy of the `appsettings.Development.json` file. This file contains environment variables used to configure the application for local development. On the VM, it can be found at the path `C:\360ConfigFiles`. Copy it to the same folder as the default `appsettings.json` file in the project. To find that folder, from Visual Studio, look in the solution explorer on the right and open the `Gordon360` folder.  Right-click on `appsettings.json` and select "Open Folder in File Explorer".
 
-  - When running the project on the shared VMs, you need to make sure that runs on a different port than everyore else using that machine. In the solution explorer on the right, open `Gordon360 > Properties > launchSettings.json`. Edit the `profiles.Development.applicationUrl` property so it contains a port that is unused on the machine. For example, if you chose port 5555, change `applicationUrl` to `"http://localhost:5555"`. Make sure to edit the `profiles.Development.launchUrl` setting to the same Port number.
+  - When running the project on the shared VMs, you need to make sure that runs on a different port than everyore else using that machine. In the solution explorer on the right, open `Gordon360 > Properties > launchSettings.json`. Edit the `profiles.Development.applicationUrl` property so it contains two ports that are unused on the machine. For example, if you chose ports 51620 (for non-SSL http://) and 51621 (for SSL https://), change `applicationUrl` to `"https://localhost:51621;http://localhost:51620"`. Make sure to edit the `profiles.Development.launchUrl` setting the same SSL port number.
 
 ### Building and running
 
-- Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar). It will open the web browser and load the Swagger page. Swagger is a tool that lets you send HTTP requests to each API Endpoint defined in the project.
+- Now, you can press the Start button in Visual Studio to run the server (it is a green play button in the top middle of the tool bar).   If you get an error, double click on **Gordon360.sln** in the solution explorer.
 
-- If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/README.md#connect-local-backend-to-react) under "Connect Local Backend to React".
+- A web browser will open. If you get a "Your connection isn't priviate" warning, click "Advanced" and then "Continue to locahost (unsafe)".  You should see the Swagger page. Swagger is a tool that lets you send HTTP requests to each API Endpoint defined in the project.
+
+- If you want to test the UI, keep the server running and follow the directions found [here](https://github.com/gordon-cs/gordon-360-ui/blob/develop/docs/Developer's%20Guide.md#connecting-to-the-backend).
 
 ## API Maintenance
 
