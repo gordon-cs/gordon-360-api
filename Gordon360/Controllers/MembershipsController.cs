@@ -233,7 +233,7 @@ namespace Gordon360.Controllers
         /// <param name="isPrivate">The new value of Privacy for the membership</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         /// <returns>The updated membership as a MembershipView object</returns>
-        [HttpPut]
+        [HttpPatch]
         [Route("{membershipID}/privacy")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_PRIVACY)]
         public async Task<ActionResult<MembershipView>> SetPrivacyAsync(int membershipID, [FromBody] bool isPrivate)
