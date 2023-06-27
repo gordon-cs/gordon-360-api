@@ -19,7 +19,7 @@ namespace Gordon360.Controllers
         {
             var asm = typeof(VersionController).Assembly;
             var attrs = asm.GetCustomAttributes<AssemblyMetadataAttribute>();
-            return $"Git Hash: {attrs.FirstOrDefault(a => a.Key == "GitHash")?.Value}";
+            return $"Git Hash: {attrs.FirstOrDefault(a => a.Key == "SourceRevisionId")?.Value}";
         }
     }
 }
