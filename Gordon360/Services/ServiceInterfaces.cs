@@ -34,7 +34,7 @@ namespace Gordon360.Services
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
         Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
-        Task UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
+        Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
         Task UpdateHomePrivacyAsync(string username, string value);

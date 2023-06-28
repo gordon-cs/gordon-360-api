@@ -318,10 +318,6 @@ namespace Gordon360.Services
             {
                 student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
             }
-            else if (facStaff != null)
-            {
-                facStaff.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
-            }
 
             _context.SaveChanges();
         }
