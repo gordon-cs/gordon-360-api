@@ -474,6 +474,25 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Update visibility of some piece of personal data for facstaff.
+        /// </summary>
+        /// <param name="field">Identifies the piece of information (home phone, etc.)</param>
+        /// <param name="permission">Specifies who to show this field to (public, private, facstaff)</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("facstaff_privacy/field/{field}/permission/{permission}")]
+        public async Task<ActionResult> UpdateFacStaffPrivacyAsync(string field, string permission)
+        {
+            // Since the database stores each permission in a separate row for the
+            // role that can access it, a single call will change multiple rows.
+            // For example, private will need to delete all rows for this person and field.
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            await _profileService.UpdateFacStaffPrivacyAsync(authenticatedUserUsername, field, permission);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Update privacy of mobile phone number
         /// </summary>
         /// <param name="value">Y or N</param>

@@ -4,6 +4,7 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -281,6 +282,27 @@ namespace Gordon360.Services
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// privacy setting of home phone.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="field">Y or N</param>
+        /// <param name="viewer">Y or N</param>
+        public async Task UpdateFacStaffPrivacyAsync(string username, string field, string viewer)
+        {
+            var account = _accountService.GetAccountByUsername(username);
+            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
+            // Update value in cached data
+            var facStaff = _context.FacStaff_Privacy.FirstOrDefault(x => x.gordon_id == account.GordonID);
+            if (facStaff != null)
+            {
+                facStaff.Field = (field == "HomePhoneNumber" ? "HomePhoneNumber" : null);
+                facStaff.Viewer = (viewer == "Student" ? "Student" : null);
+            }
+
+            _context.SaveChanges();
         }
 
         /// <summary>

@@ -672,6 +672,13 @@
             <param name="value">office hours</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateHomePrivacyAsync(System.String)">
+            <summary>
+            Update privacy of home phone number
+            </summary>
+            <param name="value">Y or N</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
             <summary>
             Update privacy of mobile phone number
@@ -2365,6 +2372,13 @@
             <param name="username">The username</param>
             <param name="type"></param>
             <param name="links"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateHomePrivacyAsync(System.String,System.String)">
+            <summary>
+            privacy setting of home phone.
+            </summary>
+            <param name="username">AD Username</param>
+            <param name="value">Y or N</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>
