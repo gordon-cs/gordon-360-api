@@ -474,6 +474,21 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Update privacy of home phone number
+        /// </summary>
+        /// <param name="value">Y or N</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("home_privacy/{value}")]
+        public async Task<ActionResult> UpdateHomePrivacyAsync(string value)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            await _profileService.UpdateHomePrivacyAsync(authenticatedUserUsername, value);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Update privacy of mobile phone number
         /// </summary>
         /// <param name="value">Y or N</param>

@@ -284,25 +284,6 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// privacy setting of home phone.
-        /// </summary>
-        /// <param name="username">AD Username</param>
-        /// <param name="value">Y or N</param>
-        public async Task UpdateHomePrivacyAsync(string username, string value)
-        {
-            var account = _accountService.GetAccountByUsername(username);
-            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
-            // Update value in cached data
-            var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
-            if (facStaff != null)
-            {
-                facStaff.IsHomePhonePrivate = (value == "Y" ? 1 : 0);
-            }
-
-            _context.SaveChanges();
-        }
-
-        /// <summary>
         /// privacy setting of mobile phone.
         /// </summary>
         /// <param name="username">AD Username</param>
@@ -313,7 +294,6 @@ namespace Gordon360.Services
             await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
             // Update value in cached data
             var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
-            var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
             if (student != null)
             {
                 student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
