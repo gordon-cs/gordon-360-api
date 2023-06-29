@@ -414,6 +414,13 @@
             <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
             <returns>The number of followers of the activity</returns>
         </member>
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsOfUser(System.String)">
+            <summary>
+            Gets the memberships of the given user
+            </summary>
+            <param name="username"> username filter </param>
+            <returns>The number of followers of the activity</returns>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivityAndSession(System.String,System.String)">
             <summary>
             Get all the memberships associated with a given activity

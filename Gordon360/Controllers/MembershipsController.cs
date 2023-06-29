@@ -84,6 +84,21 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Gets the memberships of the given user
+        /// </summary>
+        /// <param name="username"> username filter </param>
+        /// <returns>The number of followers of the activity</returns>
+        [HttpGet]
+        [Route("student/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)] // not sure why
+        public ActionResult<int> GetMembershipsOfUser(string username)
+        {
+            var result = _membershipService.GetMemberships(username: username, sessionCode: "*");
+
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Get all the memberships associated with a given activity
         /// </summary>
         /// <param name="activityCode">The activity ID</param>
@@ -218,7 +233,7 @@ namespace Gordon360.Controllers
         /// <param name="isPrivate">The new value of Privacy for the membership</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         /// <returns>The updated membership as a MembershipView object</returns>
-        [HttpPut]
+        [HttpPatch]
         [Route("{membershipID}/privacy")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_PRIVACY)]
         public async Task<ActionResult<MembershipView>> SetPrivacyAsync(int membershipID, [FromBody] bool isPrivate)
