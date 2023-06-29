@@ -4,7 +4,7 @@
 			<VerFile>$(IntermediateOutputPath)gitver</VerFile>
 			<BuildFile>$(IntermediateOutputPath)buildtime</BuildFile>
 		</PropertyGroup>
-		<Exec Command="git -C $(ProjectDir) describe --long --always --dirty &gt; $(VerFile)" />
+		<Exec Command="git -C $(ProjectDir) describe --long --always &gt; $(VerFile)" />
 		<Exec Command="echo $([System.DateTime]::UtcNow) &gt; $(BuildFile)" />
 		<ReadLinesFromFile File="$(VerFile)">
 			<Output TaskParameter="Lines" ItemName="GitVersion" />
