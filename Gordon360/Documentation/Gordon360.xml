@@ -672,11 +672,11 @@
             <param name="value">office hours</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateHomePrivacyAsync(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateFacStaffPrivacyAsync(Gordon360.Models.ViewModels.FacultyStaffPrivacyViewModel)">
             <summary>
-            Update privacy of home phone number
+            Update visibility of some piece of personal data for facstaff.
             </summary>
-            <param name="value">Y or N</param>
+            <param name="facultyStaffPrivacy">Faculty Staff Privacy Decisions</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
@@ -2373,12 +2373,27 @@
             <param name="type"></param>
             <param name="links"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateHomePrivacyAsync(System.String,System.String)">
+        <member name="M:Gordon360.Services.ProfileService.AddFacStaffPrivacyAsync(System.String,System.String,System.String)">
             <summary>
             privacy setting of home phone.
             </summary>
             <param name="username">AD Username</param>
-            <param name="value">Y or N</param>
+            <param name="field">Y or N</param>
+            <param name="viewer">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateFacStaffPrivacyAsync(System.String,Gordon360.Models.ViewModels.FacultyStaffPrivacyViewModel)">
+            <summary>
+            privacy setting of home phone.
+            </summary>
+            <param name="username">AD Username</param>
+            <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateFacStaffPrivacyAsync2(System.String,Gordon360.Models.ViewModels.FacultyStaffPrivacyViewModel)">
+            <summary>
+            privacy setting of home phone.
+            </summary>
+            <param name="username">AD Username</param>
+            <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>

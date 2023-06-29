@@ -4,7 +4,6 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,6 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Privacy = Gordon360.Models.CCT.FacStaff_Privacy;
 
 namespace Gordon360.Services
 {
@@ -290,16 +290,69 @@ namespace Gordon360.Services
         /// <param name="username">AD Username</param>
         /// <param name="field">Y or N</param>
         /// <param name="viewer">Y or N</param>
-        public async Task UpdateFacStaffPrivacyAsync(string username, string field, string viewer)
+        public async Task AddFacStaffPrivacyAsync(string username, string field, string viewer)
         {
             var account = _accountService.GetAccountByUsername(username);
-            await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
             // Update value in cached data
             var facStaff = _context.FacStaff_Privacy.FirstOrDefault(x => x.gordon_id == account.GordonID);
             if (facStaff != null)
             {
                 facStaff.Field = (field == "HomePhoneNumber" ? "HomePhoneNumber" : null);
                 facStaff.Viewer = (viewer == "Student" ? "Student" : null);
+            }
+
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// privacy setting of home phone.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
+        public async Task UpdateFacStaffPrivacyAsync(string username, FacultyStaffPrivacyViewModel facultyStaffPrivacy)
+        {
+            var account = _accountService.GetAccountByUsername(username);
+            var facStaff = _context.FacStaff_Privacy.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Field == facultyStaffPrivacy.field);
+            if (facStaff == null)
+            {
+                var privacy = new Privacy
+                {
+                    gordon_id = account.GordonID,
+                    Field = facultyStaffPrivacy.field,
+                    Viewer = facultyStaffPrivacy.viewer
+                }; ;
+                await _context.FacStaff_Privacy.AddAsync(privacy);
+            }
+            else
+            {
+                facStaff.Viewer = facultyStaffPrivacy.viewer;
+            }
+
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// privacy setting of home phone.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
+        public async Task UpdateFacStaffPrivacyAsync2(string username, FacultyStaffPrivacyViewModel facultyStaffPrivacy)
+        {
+            var account = _accountService.GetAccountByUsername(username);
+            var facStaff = _context.FacStaff_Privacy.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Field == facultyStaffPrivacy.field && x.Viewer == facultyStaffPrivacy.viewer);
+            if (facStaff == null && facultyStaffPrivacy.visiable)
+            {
+                var privacy = new Privacy
+                {
+                    gordon_id = account.GordonID,
+                    Field = facultyStaffPrivacy.field,
+                    Viewer = facultyStaffPrivacy.viewer
+                };
+                await _context.FacStaff_Privacy.AddAsync(privacy);
+            }
+            else if (facStaff != null && !facultyStaffPrivacy.visiable)
+            {
+                facStaff.Viewer = facultyStaffPrivacy.viewer;
             }
 
             _context.SaveChanges();
