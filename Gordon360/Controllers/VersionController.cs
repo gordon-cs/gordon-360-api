@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Gordon360.Static_Classes;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 
 namespace Gordon360.Controllers
 {
@@ -13,13 +17,14 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class VersionController : ControllerBase
     {
+
         [HttpGet]
         [Route("")]
         public ActionResult<string> Get()
         {
             var asm = typeof(VersionController).Assembly;
             var attrs = asm.GetCustomAttributes<AssemblyMetadataAttribute>();
-            return $"Git Hash: {attrs.FirstOrDefault(a => a.Key == "SourceRevisionId")?.Value}";
+            return $"Git Hash: {attrs.FirstOrDefault(a => a.Key == "GitHash")?.Value}";
         }
     }
 }

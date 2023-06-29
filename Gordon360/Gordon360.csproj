@@ -2,13 +2,19 @@
 	<Target Name="GetGitHash" BeforeTargets="WriteGitHash" Condition="'$(BuildHash)' == ''">
 		<PropertyGroup>
 			<VerFile>$(IntermediateOutputPath)gitver</VerFile>
+			<BuildFile>$(IntermediateOutputPath)buildtime</BuildFile>
 		</PropertyGroup>
 		<Exec Command="git -C $(ProjectDir) describe --long --always --dirty &gt; $(VerFile)" />
+		<Exec Command="echo $([System.DateTime]::UtcNow) &gt; $(BuildFile)" />
 		<ReadLinesFromFile File="$(VerFile)">
 			<Output TaskParameter="Lines" ItemName="GitVersion" />
 		</ReadLinesFromFile>
+		<ReadLinesFromFile File="$(BuildFile)">
+			<Output TaskParameter="Lines" ItemName="BuildTime" />
+		</ReadLinesFromFile>
 		<PropertyGroup>
 			<BuildHash>@(GitVersion)</BuildHash>
+			<BuildTime>@(BuildTime)</BuildTime>
 		</PropertyGroup>
 	</Target>
 
@@ -23,6 +29,10 @@
 			<AssemblyAttributes Include="AssemblyMetadata">
 				<_Parameter1>GitHash</_Parameter1>
 				<_Parameter2>$(BuildHash)</_Parameter2>
+			</AssemblyAttributes>
+			<AssemblyAttributes Include="AssemblyMetadata">
+				<_Parameter1>BuildTime</_Parameter1>
+				<_Parameter2>$(BuildTime)</_Parameter2>
 			</AssemblyAttributes>
 		</ItemGroup>
 		<WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
