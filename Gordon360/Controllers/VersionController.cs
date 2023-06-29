@@ -2,7 +2,8 @@
 using System.Linq;
 using System.Reflection;
 using Gordon360.Models.ViewModels;
-
+using System;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Controllers
 {
@@ -21,10 +22,11 @@ namespace Gordon360.Controllers
         {
             var asm = typeof(VersionController).Assembly;
             var attrs = asm.GetCustomAttributes<AssemblyMetadataAttribute>();
+            DateTime bt = DateTime.Parse(attrs.FirstOrDefault(a => a.Key == "BuildTime")?.Value);
             return new VersionViewModel
             {
                 GitHash = attrs.FirstOrDefault(a => a.Key == "GitHash")?.Value,
-                BuildTime = attrs.FirstOrDefault(a => a.Key == "BuildTime")?.Value,
+                BuildTime = bt.ToString("yyyy/MM/dd HH:mm:ss UTC"),
             };
         }
     }
