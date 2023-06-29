@@ -90,7 +90,7 @@ namespace Gordon360.Controllers
         /// <returns>The number of followers of the activity</returns>
         [HttpGet]
         [Route("student/{username}")]
-        //[StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)] // not sure why
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)] // not sure why
         public ActionResult<int> GetMembershipsOfUser(string username)
         {
             var result = _membershipService.GetMemberships(username: username, sessionCode: "*");
