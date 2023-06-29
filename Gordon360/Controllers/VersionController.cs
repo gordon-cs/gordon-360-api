@@ -1,10 +1,7 @@
-﻿using Gordon360.Static_Classes;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Globalization;
-using System.IO;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Reflection;
+using Gordon360.Models.ViewModels;
 
 
 namespace Gordon360.Controllers
@@ -20,11 +17,15 @@ namespace Gordon360.Controllers
 
         [HttpGet]
         [Route("")]
-        public ActionResult<string> Get()
+        public ActionResult<VersionViewModel> Get()
         {
             var asm = typeof(VersionController).Assembly;
             var attrs = asm.GetCustomAttributes<AssemblyMetadataAttribute>();
-            return $"Git Hash: {attrs.FirstOrDefault(a => a.Key == "GitHash")?.Value}";
+            return new VersionViewModel
+            {
+                GitHash = attrs.FirstOrDefault(a => a.Key == "GitHash")?.Value,
+                BuildTime = attrs.FirstOrDefault(a => a.Key == "BuildTime")?.Value,
+            };
         }
     }
 }
