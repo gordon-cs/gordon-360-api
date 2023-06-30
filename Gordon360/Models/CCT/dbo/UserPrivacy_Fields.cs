@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("FacStaff_Field_Type", Schema = "dbo")]
-    public partial class FacStaff_Field_Type
+    [Table("UserPrivacy_Fields", Schema = "dbo")]
+    public partial class UserPrivacy_Fields
     {
         public int ID { get; set; }
         [Key]

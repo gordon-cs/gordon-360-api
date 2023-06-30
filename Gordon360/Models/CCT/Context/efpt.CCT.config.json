@@ -39,18 +39,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[FacStaff_Field_Type]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[FacStaff_Privacy]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[FacStaff_Viewer_Type]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Health_Question]",
          "ObjectType": 0
       },
@@ -140,6 +128,18 @@
       },
       {
          "Name": "[dbo].[User_Rooms]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserPrivacy_Fields]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserPrivacy_Settings]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserPrivacy_Visibility_Groups]",
          "ObjectType": 0
       },
       {

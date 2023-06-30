@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("FacStaff_Privacy", Schema = "dbo")]
-    public partial class FacStaff_Privacy
+    [Keyless]
+    [Table("UserPrivacy_Settings", Schema = "dbo")]
+    public partial class UserPrivacy_Settings
     {
-        [Key]
+        [Required]
         [StringLength(10)]
         [Unicode(false)]
         public string gordon_id { get; set; }
@@ -22,6 +23,11 @@ namespace Gordon360.Models.CCT
         [Required]
         [StringLength(50)]
         [Unicode(false)]
-        public string Viewer { get; set; }
+        public string Visibility { get; set; }
+
+        [ForeignKey("Field")]
+        public virtual UserPrivacy_Fields FieldNavigation { get; set; }
+        [ForeignKey("Visibility")]
+        public virtual UserPrivacy_Visibility_Groups VisibilityNavigation { get; set; }
     }
 }

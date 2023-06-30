@@ -44,9 +44,6 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
         public virtual DbSet<EmergencyContact> EmergencyContact { get; set; }
         public virtual DbSet<FacStaff> FacStaff { get; set; }
-        public virtual DbSet<FacStaff_Field_Type> FacStaff_Field_Type { get; set; }
-        public virtual DbSet<FacStaff_Privacy> FacStaff_Privacy { get; set; }
-        public virtual DbSet<FacStaff_Viewer_Type> FacStaff_Viewer_Type { get; set; }
         public virtual DbSet<Graduation> Graduation { get; set; }
         public virtual DbSet<Health_Question> Health_Question { get; set; }
         public virtual DbSet<Health_Status> Health_Status { get; set; }
@@ -106,6 +103,9 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<TeamStatus> TeamStatus { get; set; }
         public virtual DbSet<Timesheets_Clock_In_Out> Timesheets_Clock_In_Out { get; set; }
+        public virtual DbSet<UserPrivacy_Fields> UserPrivacy_Fields { get; set; }
+        public virtual DbSet<UserPrivacy_Settings> UserPrivacy_Settings { get; set; }
+        public virtual DbSet<UserPrivacy_Visibility_Groups> UserPrivacy_Visibility_Groups { get; set; }
         public virtual DbSet<User_Connection_Ids> User_Connection_Ids { get; set; }
         public virtual DbSet<User_Rooms> User_Rooms { get; set; }
         public virtual DbSet<Users> Users { get; set; }
@@ -296,23 +296,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("FacStaff", "dbo");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
-            });
-
-            modelBuilder.Entity<FacStaff_Field_Type>(entity =>
-            {
-                entity.Property(e => e.ID).ValueGeneratedOnAdd();
-            });
-
-            modelBuilder.Entity<FacStaff_Privacy>(entity =>
-            {
-                entity.Property(e => e.Field).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Viewer).HasDefaultValueSql("((0))");
-            });
-
-            modelBuilder.Entity<FacStaff_Viewer_Type>(entity =>
-            {
-                entity.Property(e => e.ID).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<Graduation>(entity =>
@@ -748,6 +731,35 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.StatusID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Team_TeamStatus");
+            });
+
+            modelBuilder.Entity<UserPrivacy_Fields>(entity =>
+            {
+                entity.HasKey(e => e.Field)
+                    .HasName("Field");
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<UserPrivacy_Settings>(entity =>
+            {
+                entity.HasOne(d => d.FieldNavigation)
+                    .WithMany()
+                    .HasForeignKey(d => d.Field)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserPrivacy_Settings_UserPrivacy_Fields");
+
+                entity.HasOne(d => d.VisibilityNavigation)
+                    .WithMany()
+                    .HasForeignKey(d => d.Visibility)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserPrivacy_Settings_UserPrivacy_Visibility_Groups");
+            });
+
+            modelBuilder.Entity<UserPrivacy_Visibility_Groups>(entity =>
+            {
+                entity.HasKey(e => e.Group)
+                    .HasName("Group");
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");

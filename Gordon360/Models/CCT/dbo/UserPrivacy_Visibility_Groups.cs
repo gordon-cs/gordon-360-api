@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("FacStaff_Viewer_Type", Schema = "dbo")]
-    public partial class FacStaff_Viewer_Type
+    [Table("UserPrivacy_Visibility_Groups", Schema = "dbo")]
+    public partial class UserPrivacy_Visibility_Groups
     {
         public int ID { get; set; }
         [Key]
         [StringLength(50)]
         [Unicode(false)]
-        public string Viewer { get; set; }
+        public string Group { get; set; }
     }
 }
