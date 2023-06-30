@@ -2373,22 +2373,7 @@
             <param name="type"></param>
             <param name="links"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.AddFacStaffPrivacyAsync(System.String,System.String,System.String)">
-            <summary>
-            privacy setting of home phone.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="field">Y or N</param>
-            <param name="viewer">Y or N</param>
-        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateFacStaffPrivacyAsync(System.String,Gordon360.Models.ViewModels.FacultyStaffPrivacyViewModel)">
-            <summary>
-            privacy setting of home phone.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateFacStaffPrivacyAsync2(System.String,Gordon360.Models.ViewModels.FacultyStaffPrivacyViewModel)">
             <summary>
             privacy setting of home phone.
             </summary>
