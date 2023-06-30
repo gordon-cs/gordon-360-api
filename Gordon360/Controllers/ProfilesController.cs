@@ -86,7 +86,7 @@ namespace Gordon360.Controllers
             else if (viewerGroups.Contains(AuthGroup.FacStaff))
             {
                 student = _student;
-                faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                faculty = _faculty == null ? null : _profileService.ToPublicFacultyStaffProfileViewModel(username, "fac", _faculty);
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
             }
             else if (viewerGroups.Contains(AuthGroup.Student))
@@ -480,10 +480,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("facstaff_privacy")]
-        public async Task<ActionResult<UserPrivacyViewModel>> UpdateFacStaffPrivacyAsync(UserPrivacyViewModel facultyStaffPrivacy)
+        public async Task<ActionResult<UserPrivacyViewModel>> UpdateUserPrivacyAsync(UserPrivacyViewModel facultyStaffPrivacy)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            await _profileService.UpdateFacStaffPrivacyAsync(authenticatedUserUsername, facultyStaffPrivacy);
+            await _profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, facultyStaffPrivacy);
 
             return Ok();
         }

@@ -283,12 +283,57 @@ namespace Gordon360.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<PublicFacultyStaffProfileViewModel> ToPublicFacultyStaffProfileViewModel
+            (string username, string currentUser, FacultyStaffProfileViewModel fac)
+        {
+            PublicFacultyStaffProfileViewModel publicFac = (PublicFacultyStaffProfileViewModel) fac;
+            var account = _accountService.GetAccountByUsername(username);
+            var user = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID);
+            if (user == null)
+            {
+                publicFac.HomeCity = "";
+                publicFac.HomeState = "";
+                publicFac.HomeCountry = "";
+                publicFac.SpouseName = "";
+                publicFac.Country = "";
+                publicFac.HomePhone = "";
+                publicFac.MobilePhone = "";
+            }
+            else
+            {
+                // Find out all the rows that contain Private value in Visibility column for the user who has been searched for
+                var privateOption = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Visibility == "Private");
+                if (privateOption != null)
+                {
+                    if (privateOption.Field == "HomeCity") publicFac.HomeCity = "";
+                    if (privateOption.Field == "HomeState") publicFac.HomeState = "";
+                    if (privateOption.Field == "HomeCountry") publicFac.HomeCountry = "";
+                    if (privateOption.Field == "SpouseName") publicFac.SpouseName = "";
+                    if (privateOption.Field == "Country") publicFac.Country = "";
+                    if (privateOption.Field == "HomePhone") publicFac.HomePhone = "";
+                    if (privateOption.Field == "MobilePhone") publicFac.MobilePhone = "";
+                }
+                var facStaffOption = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Visibility == "FacStaff");
+                if (facStaffOption != null)
+                {
+                    if (facStaffOption.Field == "HomeCity" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomeCity = "";
+                    if (facStaffOption.Field == "HomeState" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomeState = "";
+                    if (facStaffOption.Field == "HomeCountry" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomeCountry = "";
+                    if (facStaffOption.Field == "SpouseName" && (currentUser == "stu" || currentUser == "alu")) publicFac.SpouseName = "";
+                    if (facStaffOption.Field == "Country" && (currentUser == "stu" || currentUser == "alu")) publicFac.Country = "";
+                    if (facStaffOption.Field == "HomePhone" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomePhone = "";
+                    if (facStaffOption.Field == "MobilePhone" && (currentUser == "stu" || currentUser == "alu")) publicFac.MobilePhone = "";
+                }
+            }
+            return publicFac;
+        }
+
         /// <summary>
         /// privacy setting of home phone.
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
-        public async Task UpdateFacStaffPrivacyAsync(string username, UserPrivacyViewModel facultyStaffPrivacy)
+        public async Task UpdateUserPrivacyAsync(string username, UserPrivacyViewModel facultyStaffPrivacy)
         {
             var account = _accountService.GetAccountByUsername(username);
             var facStaff = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Field == facultyStaffPrivacy.Field);
