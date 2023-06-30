@@ -2,7 +2,7 @@
 {
     public class UserPrivacyViewModel
     {
-        public string field { get; set; }
-        public string viewer { get; set; }
+        public string Field { get; set; }
+        public string VisibilityGroup { get; set; }
     }
 }

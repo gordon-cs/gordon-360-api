@@ -480,7 +480,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("facstaff_privacy")]
-        public async Task<ActionResult<FacultyStaffPrivacyViewModel>> UpdateFacStaffPrivacyAsync(FacultyStaffPrivacyViewModel facultyStaffPrivacy)
+        public async Task<ActionResult<UserPrivacyViewModel>> UpdateFacStaffPrivacyAsync(UserPrivacyViewModel facultyStaffPrivacy)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.UpdateFacStaffPrivacyAsync(authenticatedUserUsername, facultyStaffPrivacy);
