@@ -107,7 +107,7 @@ namespace Gordon360.Controllers
             {
                 throw new ResourceCreationException() { ExceptionMessage = "Error: shift overlap detected" };
             }
-            var result = _jobsService.EditShift(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, authenticatedUserUsername);
+            var result = _jobsService.EditShift(shiftDetails.ID, shiftDetails.SHIFT_START_DATETIME, shiftDetails.SHIFT_END_DATETIME, shiftDetails.HOURS_WORKED, shiftDetails.SHIFT_NOTES, authenticatedUserUsername);
             return Ok(result);
         }
 

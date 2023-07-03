@@ -40,7 +40,7 @@ namespace Gordon360.Services
             await _context.Procedures.student_timesheets_insert_shiftAsync(studentID, jobID, shiftStart, shiftEnd, hoursWorked, shiftNotes, lastChangedBy);
         }
 
-        public StudentTimesheetsViewModel EditShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username)
+        public StudentTimesheetsViewModel EditShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked,string shiftNotes, string username)
         {
 
             var result = _context.student_timesheets.Find(rowID);
@@ -49,6 +49,7 @@ namespace Gordon360.Services
             result.shift_end_datetime = shiftEnd;
             result.hours_worked = decimal.Parse(hoursWorked);
             result.last_changed_by = username;
+            result.shift_notes = shiftNotes;
             result.comments = null;
             _context.SaveChanges();
 
