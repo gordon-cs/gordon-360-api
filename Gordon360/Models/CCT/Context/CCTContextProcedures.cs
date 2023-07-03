@@ -3185,7 +3185,7 @@ namespace Gordon360.Models.CCT.Context
                 new SqlParameter
                 {
                     ParameterName = "VALUE",
-                    Size = 200,
+                    Size = 4096,
                     Value = VALUE ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
