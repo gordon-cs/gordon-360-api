@@ -302,6 +302,8 @@ namespace Gordon360.Services
             else
             {
                 // Find out all the rows that contain Private value in Visibility column for the user who has been searched for
+                // May be used later
+                /*
                 var privateOption = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Visibility == "Private");
                 if (privateOption != null)
                 {
@@ -323,6 +325,62 @@ namespace Gordon360.Services
                     if (facStaffOption.Field == "Country" && (currentUser == "stu" || currentUser == "alu")) publicFac.Country = "";
                     if (facStaffOption.Field == "HomePhone" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomePhone = "";
                     if (facStaffOption.Field == "MobilePhone" && (currentUser == "stu" || currentUser == "alu")) publicFac.MobilePhone = "";
+                }
+                */
+
+                // May be used later
+                // List<string,string> thing = new() { };
+                //foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
+                //{
+
+                //}
+
+                // select all privacy settings
+                var privacy = _context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+                // get type of viewmodel for reflection property setting
+                Type fs_vm = new PublicFacultyStaffProfileViewModel().GetType();
+
+                foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
+                {
+
+                    var row = privacy.FirstOrDefault(p => p.Field == field.Field);
+                    if (row is UserPrivacy_Settings instance)
+                        if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUser != "fac"))
+                            fs_vm.GetProperty(field.Field).SetValue(publicFac, "");          
+                    else
+                        fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
+
+                    // May be used later
+                    //    if (row is null)
+                    //        publicFac.HomeCity = "";
+
+                    //    switch (field.Field)
+                    //    {
+                    //        case "HomeCity":
+
+                    //            if (row is UserPrivacy_Settings instance)
+                    //            {
+                    //                if (instance.Visibility == "Private")
+                    //                    publicFac.HomeCity = "";
+                    //                if (instance.Visibility == "FacStaff" && currentUser != "fac")
+                    //                    publicFac.HomeCity = "";
+                    //            }
+                    //            break;
+                    //        case "HomeState":
+                    //            break;
+                    //        case "HomeCountry":
+                    //            break;
+                    //        case "SpouseName":
+                    //            break;
+                    //        case "Country":
+                    //            break;
+                    //        case "HomePhone":
+                    //            break;
+                    //        case "MobilePhone":
+                    //        default:
+                    //            break;
+                    //    }
+                    //}
                 }
             }
             return publicFac;
