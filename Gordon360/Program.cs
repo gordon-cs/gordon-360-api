@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.StudentTimesheets.Context;
+using Gordon360.Models.webSQL.Context;
 using RecIM = Gordon360.Services.RecIM;
 using Gordon360.Services;
 using Gordon360.Utilities;
@@ -80,6 +81,8 @@ builder.Services.AddDbContext<CCTContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyGordon"))
 ).AddDbContext<StudentTimesheetsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StudentTimesheets"))
+).AddDbContext<webSQLContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("webSQL"))
 );
 
 builder.Services.AddScoped<IAccountService, AccountService>();

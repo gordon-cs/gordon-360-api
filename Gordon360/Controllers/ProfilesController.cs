@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Controllers
 {
@@ -92,7 +93,17 @@ namespace Gordon360.Controllers
             {
                 student = _student == null ? null : (PublicStudentProfileViewModel)_student;
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                alumni = null;  //student can't see alumini
+                // If this student is also in Alumni AuthGroup, then s/he can see alumni's
+                // public profile; if not, return null.
+                alumni = (_alumni == null) ? null :
+                         viewerGroups.Contains(AuthGroup.Alumni) ? 
+                             (PublicAlumniProfileViewModel)_alumni : null;
+            }
+            else if (viewerGroups.Contains(AuthGroup.Alumni))
+            {
+                student = null;
+                faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
             }
 
             if (student is null && alumni is null && faculty is null)
@@ -435,6 +446,33 @@ namespace Gordon360.Controllers
             var username = AuthUtils.GetUsername(User);
             var result = await _profileService.UpdateMobilePhoneNumberAsync(username, value);
 
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Update office location (building description and room number)
+        /// </summary>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("office_location")]
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var result = await _profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingDescription, officeLocation.RoomNumber);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Update office hours
+        /// </summary>
+        /// <param name="value">office hours</param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("office_hours")]
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours(string value)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var result = await _profileService.UpdateOfficeHoursAsync(username, value);
             return Ok(result);
         }
 

@@ -68,37 +68,38 @@ namespace Gordon360.Controllers
         /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
         [Route("{username}")]
-        public async Task<ActionResult<JArray>> GetAsync(string username)
+        public async Task<ActionResult<JArray>> GetAsync(string username, [FromQuery] string? sessionID)
         {
             //probably needs privacy stuff like ProfilesController and service
             var viewerGroups = AuthUtils.GetGroups(User);
 
+
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
             var groups = AuthUtils.GetGroups(username);
-            var id = _accountService.GetAccountByUsername(username).GordonID;
-            var scheduleControl = _context.Schedule_Control.Find(id);
 
             IEnumerable<ScheduleViewModel>? scheduleResult = null;
+
             if (groups.Contains(AuthGroup.Student))
             {
-                int schedulePrivacy = scheduleControl?.IsSchedulePrivate ?? 1;
-
-                if (viewerGroups.Contains(AuthGroup.Police) || viewerGroups.Contains(AuthGroup.SiteAdmin))
+                if (authenticatedUserUsername == username)
                 {
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
+
                 }
-                else if (viewerGroups.Contains(AuthGroup.Student) && schedulePrivacy == 0)
+                else if (viewerGroups.Contains(AuthGroup.Police) || viewerGroups.Contains(AuthGroup.SiteAdmin))
                 {
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
 
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
                 }
                 else if (viewerGroups.Contains(AuthGroup.Advisors))
                 {
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username);
+                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
                 }
             }
             else if (groups.Contains(AuthGroup.FacStaff))
             {
-                scheduleResult = await _scheduleService.GetScheduleFacultyAsync(username);
+                scheduleResult = await _scheduleService.GetScheduleFacultyAsync(username, sessionID);
             }
             else
             {

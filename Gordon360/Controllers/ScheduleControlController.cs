@@ -94,8 +94,8 @@ namespace Gordon360.Controllers
         /// <param name="value">New description</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("description/{value}")]
-        public ActionResult UpdateDescription(string value)
+        [Route("description")]
+        public ActionResult UpdateDescription([FromBody]string value)
         {
             DateTime localDate = DateTime.Now;
 

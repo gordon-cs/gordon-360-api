@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
+using System;
 
 namespace Gordon360.Services
 {
@@ -95,11 +96,15 @@ namespace Gordon360.Services
         /// <param name="minor">The minor search param</param>
         /// <param name="hall">The hall search param</param>
         /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+        /// <param name="preferredClassYear">The preferred class year search param</param>
+        /// <param name="initialYear">The initial year range search param</param>
+        /// <param name="finalYear">The final year range search param</param>
         /// <param name="homeCity">The home city search param</param>
         /// <param name="state">The state search param</param>
         /// <param name="country">The country search param</param>
         /// <param name="department">The department search param</param>
         /// <param name="building">The building search param</param>
+        /// <param name="involvement">The involvement search param</param>
         /// <returns>The accounts from the provided list that match the given search params</returns>
         public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
@@ -109,11 +114,15 @@ namespace Gordon360.Services
             string? minor,
             string? hall,
             string? classType,
+            string? preferredClassYear,
+            int? initialYear,
+            int? finalYear,
             string? homeCity,
             string? state,
             string? country,
             string? department,
-            string? building)
+            string? building,
+            string? involvement)
         {
             // Accept common town abbreviations in advanced people search
             // East = E, West = W, South = S, North = N
@@ -170,11 +179,22 @@ namespace Gordon360.Services
 
             if (hall is not null) accounts = accounts.Where(a => a.Hall.StartsWithIgnoreCase(hall));
             if (classType is not null) accounts = accounts.Where(a => a.Class.StartsWithIgnoreCase(classType));
+            if (preferredClassYear is not null) accounts = accounts.Where(a => a.PreferredClassYear == (preferredClassYear));
+            if ((initialYear is not null) && (finalYear is not null))
+            {
+                accounts = accounts.Where(a => a.PreferredClassYear != "");
+                accounts = accounts.Where(a => Convert.ToInt32(a.PreferredClassYear) >= initialYear && Convert.ToInt32(a.PreferredClassYear) <= finalYear);
+            }
             if (homeCity is not null) accounts = accounts.Where(a => a.HomeCity.StartsWithIgnoreCase(homeCity));
             if (state is not null) accounts = accounts.Where(a => a.HomeState.StartsWithIgnoreCase(state));
             if (country is not null) accounts = accounts.Where(a => a.Country.StartsWithIgnoreCase(country));
             if (department is not null) accounts = accounts.Where(a => a.OnCampusDepartment.StartsWithIgnoreCase(department));
             if (building is not null) accounts = accounts.Where(a => a.BuildingDescription.StartsWithIgnoreCase(building));
+            if (involvement is not null)
+            {
+                var members = _context.MembershipView.Where(mv => mv.ActivityDescription == involvement && mv.Privacy != true);
+                accounts = accounts.Join(members, a => a.AD_Username, mv => mv.Username, (a, mv) => a).Distinct();
+            }
 
             return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
         }
