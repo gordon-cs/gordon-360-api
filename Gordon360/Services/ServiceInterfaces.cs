@@ -88,7 +88,8 @@ namespace Gordon360.Services
             string? state,
             string? country,
             string? department,
-            string? building);
+            string? building,
+            string? involvement);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
     }

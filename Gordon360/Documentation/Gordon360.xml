@@ -53,7 +53,7 @@
             <param name="lastnameSearch">The lastname portion of the search</param>
             <returns> All accounts matching some or all of both the firstname and lastname parameters, sorted by how well the account matched the search.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Return a list of accounts matching some or all of the search parameters
             We are searching through all the info of a user, then narrowing it down to get only what we want
@@ -72,7 +72,8 @@
             <param name="state"></param>
             <param name="country"></param>
             <param name="department"></param>   
-            <param name="building"></param>     
+            <param name="building"></param> 
+            <param name="involvement"></param>
             <returns> All accounts meeting some or all of the parameter</returns>
         </member>
         <member name="M:Gordon360.Controllers.ActivitiesController.GetActivitiesForSessionAsync(System.String)">
@@ -230,6 +231,12 @@
             Return a list buildings.
             </summary>
             <returns> All buildings</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetInvolvements">
+            <summary>
+            Return a list involvements.
+            </summary>
+            <returns> All involvements</returns>
         </member>
         <member name="M:Gordon360.Controllers.ContentManagementController.GetBannerSlides">
             <summary>Get all the banner slides for the dashboard banner</summary>
@@ -405,6 +412,13 @@
             <param name="username">Optional username filter</param>
             <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
             <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
+            <returns>The number of followers of the activity</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsOfUser(System.String)">
+            <summary>
+            Gets the memberships of the given user
+            </summary>
+            <param name="username"> username filter </param>
             <returns>The number of followers of the activity</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivityAndSession(System.String,System.String)">
@@ -1533,7 +1547,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
         </member>
-        <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Given a list of accounts, and search params, return all the accounts that match those search params.
             </summary>
@@ -1552,6 +1566,7 @@
             <param name="country">The country search param</param>
             <param name="department">The department search param</param>
             <param name="building">The building search param</param>
+            <param name="involvement">The involvement search param</param>
             <returns>The accounts from the provided list that match the given search params</returns>
         </member>
         <member name="M:Gordon360.Services.AccountService.GetAccountsToSearch(System.Collections.Generic.List{System.String},System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},System.String)">
