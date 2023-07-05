@@ -284,105 +284,26 @@ namespace Gordon360.Services
         }
 
         public async Task<PublicFacultyStaffProfileViewModel> ToPublicFacultyStaffProfileViewModel
-            (string username, string currentUser, FacultyStaffProfileViewModel fac)
+            (string username, string currentUserType, FacultyStaffProfileViewModel fac)
         {
             PublicFacultyStaffProfileViewModel publicFac = (PublicFacultyStaffProfileViewModel) fac;
             var account = _accountService.GetAccountByUsername(username);
-            var user = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID);
-            if (user == null)
+
+            // select all privacy settings
+            var privacy = _context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+            // get type of viewmodel for reflection property setting
+            Type fs_vm = new PublicFacultyStaffProfileViewModel().GetType();
+
+            foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
             {
-                publicFac.HomeCity = "";
-                publicFac.HomeState = "";
-                publicFac.HomeCountry = "";
-                publicFac.SpouseName = "";
-                publicFac.Country = "";
-                publicFac.HomePhone = "";
-                publicFac.MobilePhone = "";
+                var row = privacy.FirstOrDefault(p => p.Field == field.Field);
+                if (row is UserPrivacy_Settings instance)
+                    if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
+                        fs_vm.GetProperty(field.Field).SetValue(publicFac, "");          
+                else
+                    fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
             }
-            else
-            {
-                // Find out all the rows that contain Private value in Visibility column for the user who has been searched for
-                // May be used later
-                /*
-                var privateOption = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Visibility == "Private");
-                if (privateOption != null)
-                {
-                    if (privateOption.Field == "HomeCity") publicFac.HomeCity = "";
-                    if (privateOption.Field == "HomeState") publicFac.HomeState = "";
-                    if (privateOption.Field == "HomeCountry") publicFac.HomeCountry = "";
-                    if (privateOption.Field == "SpouseName") publicFac.SpouseName = "";
-                    if (privateOption.Field == "Country") publicFac.Country = "";
-                    if (privateOption.Field == "HomePhone") publicFac.HomePhone = "";
-                    if (privateOption.Field == "MobilePhone") publicFac.MobilePhone = "";
-                }
-                var facStaffOption = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Visibility == "FacStaff");
-                if (facStaffOption != null)
-                {
-                    if (facStaffOption.Field == "HomeCity" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomeCity = "";
-                    if (facStaffOption.Field == "HomeState" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomeState = "";
-                    if (facStaffOption.Field == "HomeCountry" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomeCountry = "";
-                    if (facStaffOption.Field == "SpouseName" && (currentUser == "stu" || currentUser == "alu")) publicFac.SpouseName = "";
-                    if (facStaffOption.Field == "Country" && (currentUser == "stu" || currentUser == "alu")) publicFac.Country = "";
-                    if (facStaffOption.Field == "HomePhone" && (currentUser == "stu" || currentUser == "alu")) publicFac.HomePhone = "";
-                    if (facStaffOption.Field == "MobilePhone" && (currentUser == "stu" || currentUser == "alu")) publicFac.MobilePhone = "";
-                }
-                */
-
-                // May be used later
-                // List<string,string> thing = new() { };
-                //foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
-                //{
-
-                //}
-
-                // select all privacy settings
-                var privacy = _context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
-                // get type of viewmodel for reflection property setting
-                Type fs_vm = new PublicFacultyStaffProfileViewModel().GetType();
-
-                foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
-                {
-
-                    var row = privacy.FirstOrDefault(p => p.Field == field.Field);
-                    if (row is UserPrivacy_Settings instance)
-                        if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUser != "fac"))
-                            fs_vm.GetProperty(field.Field).SetValue(publicFac, "");          
-                    else
-                        fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
-
-                    // May be used later
-                    //    if (row is null)
-                    //        publicFac.HomeCity = "";
-
-                    //    switch (field.Field)
-                    //    {
-                    //        case "HomeCity":
-
-                    //            if (row is UserPrivacy_Settings instance)
-                    //            {
-                    //                if (instance.Visibility == "Private")
-                    //                    publicFac.HomeCity = "";
-                    //                if (instance.Visibility == "FacStaff" && currentUser != "fac")
-                    //                    publicFac.HomeCity = "";
-                    //            }
-                    //            break;
-                    //        case "HomeState":
-                    //            break;
-                    //        case "HomeCountry":
-                    //            break;
-                    //        case "SpouseName":
-                    //            break;
-                    //        case "Country":
-                    //            break;
-                    //        case "HomePhone":
-                    //            break;
-                    //        case "MobilePhone":
-                    //        default:
-                    //            break;
-                    //    }
-                    //}
-                }
-            }
+            
             return publicFac;
         }
 
