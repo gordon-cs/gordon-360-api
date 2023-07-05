@@ -326,6 +326,33 @@ namespace Gordon360.Services
             return profile;
         }
 
+        /// I am adding this
+        /// <summary>
+        /// mobile phone number setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose phone is to be updated </param>
+        /// <param name="newPlannedGraduationYear">The new planned graduation year to update the user's planned graduation year to</param>
+        public async Task<StudentProfileViewModel> UpdatePlannedGraduationYearAsync(string username, string newPlannedGraduationYear)
+        {
+            var profile = GetStudentProfileByUsername(username);
+            if (profile == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+
+            // still need to change here, but need the database to store  planned graduation year
+            var result = await _context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, profile.MobilePhone);
+
+            // Update value in cached data
+            var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
+            if (student != null)
+            {
+                student.MobilePhone = profile.MobilePhone;
+            }
+
+            return profile;
+        }
+
         /// <summary>
         /// office location setting
         /// </summary>
