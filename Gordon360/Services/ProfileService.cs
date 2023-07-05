@@ -326,9 +326,8 @@ namespace Gordon360.Services
             return profile;
         }
 
-        /// I am adding this
         /// <summary>
-        /// mobile phone number setting
+        /// planned graduation year setting
         /// </summary>
         /// <param name="username"> The username for the user whose phone is to be updated </param>
         /// <param name="newPlannedGraduationYear">The new planned graduation year to update the user's planned graduation year to</param>

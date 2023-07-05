@@ -234,7 +234,7 @@
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetInvolvements">
             <summary>
-            Return a list involvements.
+            Return a list of involvements' descriptions.
             </summary>
             <returns> All involvements</returns>
         </member>
@@ -671,6 +671,13 @@
             Update mobile phone number
             </summary>
             <param name="value">phoneNumber</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYear(System.String)">
+            <summary>
+            Update planned graduation year
+            </summary>
+            <param name="value">planned graduation year</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(Gordon360.Models.ViewModels.OfficeLocationPatchViewModel)">
@@ -2394,6 +2401,13 @@
             </summary>
             <param name="username"> The username for the user whose phone is to be updated </param>
             <param name="newMobilePhoneNumber">The new number to update the user's phone number to</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdatePlannedGraduationYearAsync(System.String,System.String)">
+            <summary>
+            planned graduation year setting
+            </summary>
+            <param name="username"> The username for the user whose phone is to be updated </param>
+            <param name="newPlannedGraduationYear">The new planned graduation year to update the user's planned graduation year to</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateOfficeLocationAsync(System.String,System.String,System.String)">
             <summary>

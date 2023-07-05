@@ -4,6 +4,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     public class MembershipsController : GordonControllerBase
     {
         private readonly IMembershipService _membershipService;
@@ -31,7 +33,7 @@ namespace Gordon360.Controllers
         /// <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
         /// <returns>An IEnumerable of the matching MembershipViews</returns>
         [HttpGet]
-        [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP)]
+        //[StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP)]
         public ActionResult<IEnumerable<MembershipView>> GetMemberships(string? involvementCode = null, string? username = null, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
         {
             var memberships = _membershipService.GetMemberships(
