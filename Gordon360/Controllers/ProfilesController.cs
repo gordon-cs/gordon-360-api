@@ -21,7 +21,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
-    [AllowAnonymous]
     public class ProfilesController : GordonControllerBase
     {
         private readonly IProfileService _profileService;
@@ -43,8 +42,7 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<ProfileViewModel?> Get()
         {
-            // var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            var authenticatedUserUsername = "amos.cha";
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             var student = _profileService.GetStudentProfileByUsername(authenticatedUserUsername);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
@@ -89,7 +87,8 @@ namespace Gordon360.Controllers
             else if (viewerGroups.Contains(AuthGroup.FacStaff))
             {
                 student = _student;
-                faculty = _faculty == null ? null : _profileService.ToPublicFacultyStaffProfileViewModel(username, "fac", _faculty);
+                faculty = _faculty == null ? null : 
+                    _profileService.ToPublicFacultyStaffProfileViewModel(username, "fac", _faculty);
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
             }
             else if (viewerGroups.Contains(AuthGroup.Student))
@@ -105,7 +104,8 @@ namespace Gordon360.Controllers
             else if (viewerGroups.Contains(AuthGroup.Alumni))
             {
                 student = null;
-                faculty = _faculty == null ? null : await _profileService.ToPublicFacultyStaffProfileViewModel(username, "alu", _faculty);
+                faculty = _faculty == null ? null : 
+                    await _profileService.ToPublicFacultyStaffProfileViewModel(username, "alu", _faculty);
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
             }
 
