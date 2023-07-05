@@ -38,7 +38,7 @@ namespace Gordon360.Services
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
         Task<PublicFacultyStaffProfileViewModel> ToPublicFacultyStaffProfileViewModel
-            (string username, string currentUser, FacultyStaffProfileViewModel fac);
+            (string username, string currentUserType, FacultyStaffProfileViewModel fac);
         Task UpdateUserPrivacyAsync(string username, UserPrivacyViewModel facultyStaffPrivacy);
         Task UpdateMobilePrivacyAsync(string username, string value);
         Task UpdateImagePrivacyAsync(string username, string value);
