@@ -305,6 +305,29 @@ namespace Gordon360.Services
         /// mobile phone number setting
         /// </summary>
         /// <param name="username"> The username for the user whose phone is to be updated </param>
+        /// <param name="newPlannedGraduationYear">The new number to update the user's phone number to</param>
+        public async Task<StudentProfileViewModel> UpdatePlannedGraduationYearAsync(string username, string newPlannedGraduationYear)
+        {
+            var profile = GetStudentProfileByUsername(username);
+            if (profile == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+
+            // Update value in cached data
+            var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
+            if (student != null)
+            {
+                student.MobilePhone = profile.MobilePhone;
+            }
+
+            return profile;
+        }
+
+        /// <summary>
+        /// mobile phone number setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose phone is to be updated </param>
         /// <param name="newMobilePhoneNumber">The new number to update the user's phone number to</param>
         public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
         {
