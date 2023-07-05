@@ -228,6 +228,25 @@ namespace Gordon360.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Update an existing membership item to be private or not
+        /// 
+        /// TO BE DEPRECATED. Next release to use HttpPatch
+        /// </summary>
+        /// <param name="membershipID">The membership to set the privacy of</param>
+        /// <param name="isPrivate">The new value of Privacy for the membership</param>
+        /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
+        /// <returns>The updated membership as a MembershipView object</returns>
+        [HttpPut]
+        [Route("{membershipID}/privacy")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP_PRIVACY)]
+        public async Task<ActionResult<MembershipView>> SetPrivacyAsync(int membershipID, [FromBody] bool isPrivate)
+        {
+
+            var updatedMembership = await _membershipService.SetPrivacyAsync(membershipID, isPrivate);
+            return Ok(updatedMembership);
+        }
+
         /// <summary>Update an existing membership item to be private or not</summary>
         /// <param name="membershipID">The membership to set the privacy of</param>
         /// <param name="isPrivate">The new value of Privacy for the membership</param>
