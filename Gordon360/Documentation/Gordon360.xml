@@ -579,7 +579,7 @@
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfile(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfileAsync(System.String)">
             <summary>Get public profile info for a user</summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
@@ -672,7 +672,7 @@
             <param name="value">office hours</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateFacStaffPrivacyAsync(Gordon360.Models.ViewModels.UserPrivacyViewModel)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateUserPrivacyAsync(Gordon360.Models.ViewModels.UserPrivacyViewModel)">
             <summary>
             Update visibility of some piece of personal data for facstaff.
             </summary>
@@ -2373,7 +2373,7 @@
             <param name="type"></param>
             <param name="links"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateFacStaffPrivacyAsync(System.String,Gordon360.Models.ViewModels.UserPrivacyViewModel)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateUserPrivacyAsync(System.String,Gordon360.Models.ViewModels.UserPrivacyViewModel)">
             <summary>
             privacy setting of home phone.
             </summary>

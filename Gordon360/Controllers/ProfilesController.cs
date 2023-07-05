@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     public class ProfilesController : GordonControllerBase
     {
         private readonly IProfileService _profileService;
@@ -42,7 +43,8 @@ namespace Gordon360.Controllers
         [Route("")]
         public ActionResult<ProfileViewModel?> Get()
         {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            // var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var authenticatedUserUsername = "amos.cha";
 
             var student = _profileService.GetStudentProfileByUsername(authenticatedUserUsername);
             var faculty = _profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
@@ -64,7 +66,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-        public ActionResult<ProfileViewModel?> GetUserProfile(string username)
+        public async Task<ActionResult<ProfileViewModel?>> GetUserProfileAsync(string username)
         {
             var viewerGroups = AuthUtils.GetGroups(User);
 
@@ -77,6 +79,7 @@ namespace Gordon360.Controllers
             object? faculty = null;
             object? alumni = null;
 
+            
             if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
             {
                 student = _student;
@@ -92,14 +95,14 @@ namespace Gordon360.Controllers
             else if (viewerGroups.Contains(AuthGroup.Student))
             {
                 student = _student == null ? null : (PublicStudentProfileViewModel)_student;
-                faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                faculty = _faculty == null ? null : await _profileService.ToPublicFacultyStaffProfileViewModel(username, "stu", _faculty);
                 // If this student is also in Alumni AuthGroup, then s/he can see alumni's public profile; if not, return null.
                 alumni = _alumni == null ? null : viewerGroups.Contains(AuthGroup.Alumni) ? (PublicAlumniProfileViewModel)_alumni : null;
             }
             else if (viewerGroups.Contains(AuthGroup.Alumni))
             {
                 student = null;
-                faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+                faculty = _faculty == null ? null : await _profileService.ToPublicFacultyStaffProfileViewModel(username, "alu", _faculty);
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
             }
 
@@ -107,6 +110,7 @@ namespace Gordon360.Controllers
             {
                 return Ok(null);
             }
+            
 
             var profile = _profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 
