@@ -468,10 +468,11 @@ namespace Gordon360.Controllers
         /// <param name="value">office hours</param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("office_hours")]
+        [Route("office_hours/{value}")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours(string value)
         {
-            var username = AuthUtils.GetUsername(User);
+            //var username = AuthUtils.GetUsername(User);
+            var username ="Jonathan.Senning";
             var result = await _profileService.UpdateOfficeHoursAsync(username, value);
             return Ok(result);
         }
