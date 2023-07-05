@@ -79,15 +79,6 @@ namespace Gordon360.Models.ViewModels
                 Mail_Location = fac.Mail_Location ?? "",
                 Mail_Description = fac.Mail_Description ?? ""
             };
-            if (vm.KeepPrivate.Contains('1'))
-            {
-                vm.HomeCity = "Private as requested.";
-                vm.HomeState = "";
-                vm.HomeCountry = "";
-                vm.SpouseName = "Private as requested.";
-                vm.Country = "";
-                vm.HomePhone = "";
-            }
             return vm;
         }
     }
