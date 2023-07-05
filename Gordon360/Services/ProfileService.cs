@@ -318,7 +318,7 @@ namespace Gordon360.Services
             var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
             if (student != null)
             {
-                student.MobilePhone = profile.MobilePhone;
+                student.GraduationYear = profile.GraduationYear;
             }
 
             return profile;

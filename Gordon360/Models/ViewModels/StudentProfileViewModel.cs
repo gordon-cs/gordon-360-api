@@ -53,6 +53,7 @@ namespace Gordon360.Models.ViewModels
         string GradDate,
         string MobilePhone,
         bool IsMobilePhonePrivate,
+        string GraduationYear,
         string AD_Username,
         int? show_pic,
         int? preferred_photo,
