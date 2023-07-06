@@ -84,21 +84,6 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Gets the memberships of the given user
-        /// </summary>
-        /// <param name="username"> username filter </param>
-        /// <returns>The number of followers of the activity</returns>
-        [HttpGet]
-        [Route("student/{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)] // not sure why
-        public ActionResult<int> GetMembershipsOfUser(string username)
-        {
-            var result = _membershipService.GetMemberships(username: username, sessionCode: "*");
-
-            return Ok(result);
-        }
-
-        /// <summary>
         /// Get all the memberships associated with a given activity
         /// </summary>
         /// <param name="activityCode">The activity ID</param>
