@@ -453,7 +453,7 @@ namespace Gordon360.Controllers
         /// Update office location (building description and room number)
         /// </summary>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPut]
         [Route("office_location")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
         {
@@ -467,7 +467,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <param name="value">office hours</param>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPut]
         [Route("office_hours")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours(string value)
         {
