@@ -25,6 +25,7 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Get all the memberships associated with a given activity
         /// </summary>
+        /// <param name="myProf">Optional boolean indication if you are searching for your public profile</param>
         /// <param name="involvementCode">Optional involvementCode filter</param>
         /// <param name="username">Optional username filter</param>
         /// <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
@@ -32,7 +33,7 @@ namespace Gordon360.Controllers
         /// <returns>An IEnumerable of the matching MembershipViews</returns>
         [HttpGet]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP)]
-        public ActionResult<IEnumerable<MembershipView>> GetMemberships(string? involvementCode = null, string? username = null, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
+        public ActionResult<IEnumerable<MembershipView>> GetMemberships(bool? myProf, string? involvementCode = null, string? username = null, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
         {
             var memberships = _membershipService.GetMemberships(
                 activityCode: involvementCode,
@@ -44,15 +45,20 @@ namespace Gordon360.Controllers
             {
                 var authenticatedUserUsername = AuthUtils.GetUsername(User);
                 var viewerGroups = AuthUtils.GetGroups(User);
+                bool mp = myProf ?? false;
 
+         
                 // User can see all their own memberships. SiteAdmin and Police can see all of anyone's memberships
                 if (!(username == authenticatedUserUsername
                     || viewerGroups.Contains(AuthGroup.SiteAdmin)
                     || viewerGroups.Contains(AuthGroup.Police)
+                    || mp // Not sure why could not be just "|| myPublicProf"
                     ))
                 {
                     memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
                 }
+                
+                
             }
 
             return Ok(memberships);
