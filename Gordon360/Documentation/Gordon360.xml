@@ -394,10 +394,11 @@
             <returns></returns>
             <remarks>Posts a new message to the service to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.Nullable{System.Boolean},System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
             </summary>
+            <param name="myProf">Optional boolean indication if you are searching for your public profile</param>
             <param name="involvementCode">Optional involvementCode filter</param>
             <param name="username">Optional username filter</param>
             <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
@@ -1435,16 +1436,6 @@
         <member name="P:Gordon360.Models.webSQL.Models.account.AD_Username">
             <summary>
             Active Directory Username
-            </summary>
-        </member>
-        <member name="P:Gordon360.Models.webSQL.Models.account_profile.Show_Pic">
-            <summary>
-            Display Who&apos;s Who Picture (Y/N)
-            </summary>
-        </member>
-        <member name="P:Gordon360.Models.webSQL.Models.account_profile.CHException">
-            <summary>
-            Chapel Credit Exception Value
             </summary>
         </member>
         <member name="P:Gordon360.Models.webSQL.Models.Photo.ID">
