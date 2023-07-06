@@ -302,7 +302,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// mobile phone number setting
+        /// update planned graduation
         /// </summary>
         /// <param name="username"> The username for the user whose phone is to be updated </param>
         /// <param name="newPlannedGraduationYear">The new number to update the user's phone number to</param>
@@ -318,8 +318,9 @@ namespace Gordon360.Services
             var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
             if (student != null)
             {
-                // student.GraduationYear = profile.GraduationYear;
+                student.PlannedGradYear = profile.PlannedGradYear;
             }
+            await _context.SaveChangesAsync();
 
             return profile;
         }

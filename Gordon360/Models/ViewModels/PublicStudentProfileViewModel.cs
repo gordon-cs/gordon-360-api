@@ -23,6 +23,7 @@ namespace Gordon360.Models.ViewModels
         public string Email { get; set; }
         public string Gender { get; set; }
         public string grad_student { get; set; }
+        public string planned_grad_year { get; set; }
         public string MobilePhone { get; set; }
         public string AD_Username { get; set; }
         public bool IsMobilePhonePrivate { get; set; }
@@ -58,6 +59,7 @@ namespace Gordon360.Models.ViewModels
                 Hall = stu.BuildingDescription ?? "",
                 Cohort = stu.Cohort ?? "",
                 grad_student = stu.grad_student ?? "",
+                planned_grad_year = stu.PlannedGradYear ?? "",
                 KeepPrivate = stu.KeepPrivate ?? "",
                 Email = stu.Email ?? "",
                 Gender = stu.Gender ?? "",

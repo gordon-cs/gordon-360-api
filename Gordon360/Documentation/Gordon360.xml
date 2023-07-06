@@ -673,6 +673,13 @@
             <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYear(System.String)">
+            <summary>
+            Update mobile phone number
+            </summary>
+            <param name="value">phoneNumber</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(Gordon360.Models.ViewModels.OfficeLocationPatchViewModel)">
             <summary>
             Update office location (building description and room number)
@@ -1435,16 +1442,6 @@
         <member name="P:Gordon360.Models.webSQL.Models.account.AD_Username">
             <summary>
             Active Directory Username
-            </summary>
-        </member>
-        <member name="P:Gordon360.Models.webSQL.Models.account_profile.Show_Pic">
-            <summary>
-            Display Who&apos;s Who Picture (Y/N)
-            </summary>
-        </member>
-        <member name="P:Gordon360.Models.webSQL.Models.account_profile.CHException">
-            <summary>
-            Chapel Credit Exception Value
             </summary>
         </member>
         <member name="P:Gordon360.Models.webSQL.Models.Photo.ID">
@@ -2387,6 +2384,13 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdatePlannedGraduationYearAsync(System.String,System.String)">
+            <summary>
+            update planned graduation
+            </summary>
+            <param name="username"> The username for the user whose phone is to be updated </param>
+            <param name="newPlannedGraduationYear">The new number to update the user's phone number to</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumberAsync(System.String,System.String)">
             <summary>
