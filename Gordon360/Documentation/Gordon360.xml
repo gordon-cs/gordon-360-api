@@ -673,7 +673,7 @@
             <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYear(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYear(System.String,System.String)">
             <summary>
             Update mobile phone number
             </summary>

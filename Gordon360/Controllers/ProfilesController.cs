@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     public class ProfilesController : GordonControllerBase
     {
         private readonly IProfileService _profileService;
@@ -456,9 +457,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("planned_graduation_year")]
-        public async Task<ActionResult<StudentProfileViewModel>> UpdatePlannedGraduationYear(string value)
+        //
+        public async Task<ActionResult<StudentProfileViewModel>> UpdatePlannedGraduationYear(string value,string username)
         {
-            var username = AuthUtils.GetUsername(User);
+            //var username = AuthUtils.GetUsername(User);
             var result = await _profileService.UpdatePlannedGraduationYearAsync(username, value);
 
             return Ok(result);

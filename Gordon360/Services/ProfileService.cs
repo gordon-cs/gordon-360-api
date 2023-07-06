@@ -304,8 +304,8 @@ namespace Gordon360.Services
         /// <summary>
         /// update planned graduation
         /// </summary>
-        /// <param name="username"> The username for the user whose phone is to be updated </param>
-        /// <param name="newPlannedGraduationYear">The new number to update the user's phone number to</param>
+        /// <param name="username">The username for the user whose planned graduation year is to be updated</param>
+        /// <param name="newPlannedGraduationYear">The new year to update the user's planned graduation year to</param>
         public async Task<StudentProfileViewModel> UpdatePlannedGraduationYearAsync(string username, string newPlannedGraduationYear)
         {
             var profile = GetStudentProfileByUsername(username);
@@ -315,11 +315,8 @@ namespace Gordon360.Services
             }
 
             // Update value in cached data
-            var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
-            if (student != null)
-            {
-                student.PlannedGradYear = profile.PlannedGradYear;
-            }
+            var user = _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
+            user.PlannedGradYear = newPlannedGraduationYear;
             await _context.SaveChangesAsync();
 
             return profile;
