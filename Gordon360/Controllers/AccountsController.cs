@@ -98,11 +98,15 @@ namespace Gordon360.Controllers
         /// <param name="minor"></param>
         /// <param name="hall"></param>
         /// <param name="classType"></param>
+        /// <param name="preferredClassYear"></param>
+        /// <param name="initialYear"></param>
+        /// <param name="finalYear"></param>
         /// <param name="homeCity"></param>
         /// <param name="state"></param>
         /// <param name="country"></param>
         /// <param name="department"></param>   
-        /// <param name="building"></param>     
+        /// <param name="building"></param> 
+        /// <param name="involvement"></param>
         /// <returns> All accounts meeting some or all of the parameter</returns>
         [HttpGet]
         [Route("advanced-people-search")]
@@ -114,11 +118,15 @@ namespace Gordon360.Controllers
             string? minor,
             string? hall,
             string? classType,
+            string? preferredClassYear,
+            int? initialYear,
+            int? finalYear,
             string? homeCity,
             string? state,
             string? country,
             string? department,
-            string? building)
+            string? building,
+            string? involvement)
         {
             IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
@@ -132,11 +140,15 @@ namespace Gordon360.Controllers
                 minor,
                 hall,
                 classType,
+                preferredClassYear,
+                initialYear,
+                finalYear,
                 homeCity,
                 state,
                 country,
                 department,
-                building);
+                building,
+                involvement);
 
             // Return all of the profile views
             return Ok(searchResults);

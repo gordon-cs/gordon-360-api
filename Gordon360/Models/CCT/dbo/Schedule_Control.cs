@@ -14,7 +14,7 @@ namespace Gordon360.Models.CCT
         public int IsSchedulePrivate { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? ModifiedTimeStamp { get; set; }
-        [StringLength(100)]
+        [StringLength(4096)]
         [Unicode(false)]
         public string Description { get; set; }
         [Key]

@@ -36,6 +36,7 @@ namespace Gordon360.Services
         Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
+        Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
         Task UpdateMobilePrivacyAsync(string username, string value);
         Task UpdateImagePrivacyAsync(string username, string value);
         Task UpdateProfileImageAsync(string username, string path, string name);
@@ -77,11 +78,15 @@ namespace Gordon360.Services
             string? minor,
             string? hall,
             string? classType,
+            string? preferredClassYear,
+            int? initialYear,
+            int? finalYear,
             string? homeCity,
             string? state,
             string? country,
             string? department,
-            string? building);
+            string? building,
+            string? involvement);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
         ParallelQuery<BasicInfoViewModel> applySearchLogic(string searchString, IEnumerable<BasicInfoViewModel> accounts);
@@ -229,8 +234,8 @@ namespace Gordon360.Services
     }
     public interface IScheduleService
     {
-        Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username);
-        Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username);
+        Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username, string? sessionID = null);
+        Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username, string? sessionID = null);
     }
 
     public interface IScheduleControlService
