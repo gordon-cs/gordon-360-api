@@ -1430,16 +1430,6 @@
             Active Directory Username
             </summary>
         </member>
-        <member name="P:Gordon360.Models.webSQL.Models.account_profile.Show_Pic">
-            <summary>
-            Display Who&apos;s Who Picture (Y/N)
-            </summary>
-        </member>
-        <member name="P:Gordon360.Models.webSQL.Models.account_profile.CHException">
-            <summary>
-            Chapel Credit Exception Value
-            </summary>
-        </member>
         <member name="P:Gordon360.Models.webSQL.Models.Photo.ID">
             <summary>
             Unique sequntial ID
