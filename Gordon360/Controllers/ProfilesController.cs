@@ -93,8 +93,11 @@ namespace Gordon360.Controllers
             {
                 student = _student == null ? null : (PublicStudentProfileViewModel)_student;
                 faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-                // If this student is also in Alumni AuthGroup, then s/he can see alumni's public profile; if not, return null.
-                alumni = _alumni == null ? null : viewerGroups.Contains(AuthGroup.Alumni) ? (PublicAlumniProfileViewModel)_alumni : null;
+                // If this student is also in Alumni AuthGroup, then s/he can see alumni's
+                // public profile; if not, return null.
+                alumni = (_alumni == null) ? null :
+                         viewerGroups.Contains(AuthGroup.Alumni) ? 
+                             (PublicAlumniProfileViewModel)_alumni : null;
             }
             else if (viewerGroups.Contains(AuthGroup.Alumni))
             {
@@ -450,7 +453,7 @@ namespace Gordon360.Controllers
         /// Update office location (building description and room number)
         /// </summary>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPut]
         [Route("office_location")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
         {
@@ -464,7 +467,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <param name="value">office hours</param>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPut]
         [Route("office_hours")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours(string value)
         {

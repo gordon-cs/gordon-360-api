@@ -136,5 +136,20 @@ namespace Gordon360.Controllers
             return Ok(buildings);
         }
 
+        /// <summary>
+        /// Return a list of involvements' descriptions.
+        /// </summary>
+        /// <returns> All involvements</returns>
+        [HttpGet]
+        [Route("involvements")]
+        public ActionResult<IEnumerable<string>> GetInvolvements()
+        {
+            var involvements = _context.MembershipView.Select(m => m.ActivityDescription)
+                                   .Distinct()
+                                   .Where(d => d != null)
+                                   .OrderBy(d => d);
+            return Ok(involvements);
+        }
+
     }
 }

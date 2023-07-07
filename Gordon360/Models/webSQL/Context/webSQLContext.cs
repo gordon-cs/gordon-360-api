@@ -61,32 +61,6 @@ namespace Gordon360.Models.webSQL.Context
             modelBuilder.Entity<account_profile>(entity =>
             {
                 entity.Property(e => e.account_id).ValueGeneratedNever();
-
-                entity.Property(e => e.CHException).HasComment("Chapel Credit Exception Value");
-
-                entity.Property(e => e.Show_Pic)
-                    .IsFixedLength()
-                    .HasComment("Display Who's Who Picture (Y/N)");
-
-                entity.Property(e => e.athletic_events).IsFixedLength();
-
-                entity.Property(e => e.campus_events).IsFixedLength();
-
-                entity.Property(e => e.dining_menus).IsFixedLength();
-
-                entity.Property(e => e.future_events).IsFixedLength();
-
-                entity.Property(e => e.mylinks).IsFixedLength();
-
-                entity.Property(e => e.supervisor_id).IsFixedLength();
-
-                entity.Property(e => e.systems).IsFixedLength();
-
-                entity.Property(e => e.today_events).IsFixedLength();
-
-                entity.Property(e => e.weather).IsFixedLength();
-
-                entity.Property(e => e.world_news).IsFixedLength();
             });
 
             OnModelCreatingPartial(modelBuilder);
