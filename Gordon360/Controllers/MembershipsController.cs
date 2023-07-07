@@ -48,7 +48,7 @@ namespace Gordon360.Controllers
             // SiteAdmin and Police can see all of anyone's memberships. If looking at your public profile should not show up private involvements.
             if ((viewerGroups.Contains(AuthGroup.SiteAdmin)
                 || viewerGroups.Contains(AuthGroup.Police)
-                ) )
+                ) || !mp)
             {
                 memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
                 return Ok(memberships);
