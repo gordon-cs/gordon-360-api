@@ -144,9 +144,6 @@ namespace Gordon360.Models.CCT
         [StringLength(255)]
         [Unicode(false)]
         public string GradDate { get; set; }
-        [StringLength(10)]
-        [Unicode(false)]
-        public string PlannedGradYear { get; set; }
         [StringLength(5)]
         [Unicode(false)]
         public string Minor1 { get; set; }
@@ -194,5 +191,8 @@ namespace Gordon360.Models.CCT
         public string Mail_Location { get; set; }
         public int? ChapelRequired { get; set; }
         public int? ChapelAttended { get; set; }
+        [StringLength(4)]
+        [Unicode(false)]
+        public string PlannedGradYear { get; set; }
     }
 }
