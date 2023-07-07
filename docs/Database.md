@@ -5,6 +5,46 @@ The `CCT` and `MyGordon` databases exist in:
 - `admintrainsql.gordon.edu` - The development/testing database server
 - `adminprodsql.gordon.edu` - The live production database server.
 
+### Updating context tables (_new columns, tables, procedures..._)
+
+SQL Table models are handled in `360api` by Entity Framework Power Tools (`efpt`). To script in new tables do the following:
+
+0) This _might_ need to be done: On to the top tab of Visual Studio
+   - click `tools` -> `Connect to Database...`.
+   - select `Microsoft SQL Server` -> `Continue`
+   - <img width="509" alt="image" src="https://github.com/gordon-cs/gordon-360-api/assets/78386128/344d27eb-0882-44e6-812d-7ea4c7eb8be9">
+
+     - select the appropriate Database Server (listed above)
+     - select the appropriate database (CCT, MyGordon...)
+     - press `ok`
+   - It is highly suggested to commit/stash your existing changes before doing an `efpt` edit.
+    
+1) Navigate on Solution Explorer to `\Models\{database name}\Context\`
+   - <img width="243" alt="image" src="https://github.com/gordon-cs/gordon-360-api/assets/78386128/0a6b6ef8-9a5f-494e-b3b2-eeff298f1ccc">
+   - right-click `efpt.{database name}.config.json`
+   - select `EF Core Power Tools - edit`
+   - select the appropriate Database. IF THERE ARE NO OPTIONS HERE, PLEASE RETURN TO STEP 0
+   - press `ok`
+   - select new database objects that you are trying to add
+   - press `ok` after you're done selecting, then press `ok` on the next window
+   - <img width="412" alt="image" src="https://github.com/gordon-cs/gordon-360-api/assets/78386128/a98b3d19-520a-4273-8a6f-6cdbfb50f6ff">
+
+2) At this point, Git Changes should reflect changes to the API codebase of which there should be expected and unexpected changes.
+
+   - <img width="275" alt="image" src="https://github.com/gordon-cs/gordon-360-api/assets/78386128/5d60e742-9496-424b-8a7e-674c51281a74">
+    
+   - At this point is is very important to note the changes that you expect and to revert all unexpected changes
+   - This is in exception to:
+     - your expected changes
+     - `CCTContext.cs`
+     - `efpt.[database name].config.json`
+   - It is possible that reverting all other files will still prevent the API from deploying/compiling. This is usually due to unexpected changes. The common suspects are:
+     1) Other changes in `CCTContext.cs` where you would have to comb through and revert unexpected changes
+     2) Not reverting `deleted` files.
+   - If you have lost track of expected changes, do not panic! Revert all changes and start again and keep track again.
+
+
+
 ### CCT Tables
 
 All the tables were created from scratch by our team.
