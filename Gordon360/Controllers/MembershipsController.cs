@@ -33,11 +33,10 @@ namespace Gordon360.Controllers
         /// <returns>An IEnumerable of the matching MembershipViews</returns>
         [HttpGet]
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP)]
-        public ActionResult<IEnumerable<MembershipView>> GetMemberships(bool? myProf, string? involvementCode = null, string? username = null, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
+        public ActionResult<IEnumerable<MembershipView>> GetMemberships(string? involvementCode = null, string? username = null, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var viewerGroups = AuthUtils.GetGroups(User);
-            bool mp = myProf ?? false;
 
             var memberships = _membershipService.GetMemberships(
                 activityCode: involvementCode,
@@ -45,16 +44,19 @@ namespace Gordon360.Controllers
                 sessionCode: sessionCode,
                 participationTypes: participationTypes);
 
-            // SiteAdmin and Police can see all of anyone's memberships. If looking at your public profile should not show up private involvements.
-            if ((viewerGroups.Contains(AuthGroup.SiteAdmin)
-                || viewerGroups.Contains(AuthGroup.Police)
-                ) || !mp)
+            // When user is null, only SiteAdmin and Police can see all the user's memberships.
+            if ((username is null) && !(viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)))
             {
                 memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
                 return Ok(memberships);
             }
-            // User can see all their own memberships.
-            if ((username is not null) && !(username == authenticatedUserUsername)){
+            // Only user, siteAdmin and Police can see all the user's memberships.
+            else if (!(username == authenticatedUserUsername
+                || viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)
+                ))
+            {
                 memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
             }
 

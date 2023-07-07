@@ -394,7 +394,7 @@
             <returns></returns>
             <remarks>Posts a new message to the service to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.Nullable{System.Boolean},System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
+        <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
             </summary>
