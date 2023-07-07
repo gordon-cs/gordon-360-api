@@ -40,6 +40,7 @@ namespace Gordon360.Services
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
         Task UpdateMobilePrivacyAsync(string username, string value);
         Task UpdateImagePrivacyAsync(string username, string value);
+        Task UpdatePlannedGraduationYearPrivacyAsync(string username, string value);
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);

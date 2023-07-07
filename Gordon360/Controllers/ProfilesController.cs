@@ -451,19 +451,34 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update mobile phone number
+        /// Update planned graduation year
         /// </summary>
-        /// <param name="value">phoneNumber</param>
+        /// <param name="value">planned graduation year</param>
         /// <returns></returns>
         [HttpPut]
         [Route("planned_graduation_year")]
         //
-        public async Task<ActionResult<StudentProfileViewModel>> UpdatePlannedGraduationYear(string value,string username)
+        public async Task<ActionResult<StudentProfileViewModel>> UpdatePlannedGraduationYearAsync(string value,string username)
         {
             //var username = AuthUtils.GetUsername(User);
             var result = await _profileService.UpdatePlannedGraduationYearAsync(username, value);
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Update privacy of planned graduation year
+        /// </summary>
+        /// <param name="value">Y or N</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("planned_graduation_year_privacy/{value}")]
+        public async Task<ActionResult> UpdatePlannedGraduationYearPrivacyAsync(string value,string authenticatedUserUsername)
+        {
+            // var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            await _profileService.UpdatePlannedGraduationYearPrivacyAsync(authenticatedUserUsername, value);
+
+            return Ok();
         }
 
         /// <summary>
