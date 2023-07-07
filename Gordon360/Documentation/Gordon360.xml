@@ -234,7 +234,7 @@
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetInvolvements">
             <summary>
-            Return a list involvements.
+            Return a list of involvements' descriptions.
             </summary>
             <returns> All involvements</returns>
         </member>
@@ -593,7 +593,7 @@
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfileAsync(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfileAsync(System.String,System.String)">
             <summary>Get public profile info for a user</summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
@@ -686,12 +686,18 @@
             <param name="value">office hours</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateUserPrivacyAsync(Gordon360.Models.ViewModels.UserPrivacyViewModel)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateUserPrivacyAsync(Gordon360.Models.ViewModels.UserPrivacyViewModel,System.String)">
             <summary>
-            Update visibility of some piece of personal data for facstaff.
+            Set visibility of some piece of personal data for user.
             </summary>
-            <param name="facultyStaffPrivacy">Faculty Staff Privacy Decisions</param>
+            <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyViewModel)</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetVisibilityGroup">
+            <summary>
+            Return a list buildings.
+            </summary>
+            <returns> All buildings</returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
             <summary>
@@ -2390,7 +2396,7 @@
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateUserPrivacyAsync(System.String,Gordon360.Models.ViewModels.UserPrivacyViewModel)">
             <summary>
-            privacy setting of home phone.
+            privacy setting of some piece of personal data for user.
             </summary>
             <param name="username">AD Username</param>
             <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>

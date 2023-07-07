@@ -735,21 +735,21 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<UserPrivacy_Fields>(entity =>
             {
-                entity.HasKey(e => e.Field)
-                    .HasName("Field");
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<UserPrivacy_Settings>(entity =>
             {
+                entity.HasKey(e => new { e.gordon_id, e.Field });
+
                 entity.HasOne(d => d.FieldNavigation)
-                    .WithMany()
+                    .WithMany(p => p.UserPrivacy_Settings)
                     .HasForeignKey(d => d.Field)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserPrivacy_Settings_UserPrivacy_Fields");
 
                 entity.HasOne(d => d.VisibilityNavigation)
-                    .WithMany()
+                    .WithMany(p => p.UserPrivacy_Settings)
                     .HasForeignKey(d => d.Visibility)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_UserPrivacy_Settings_UserPrivacy_Visibility_Groups");
@@ -757,8 +757,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<UserPrivacy_Visibility_Groups>(entity =>
             {
-                entity.HasKey(e => e.Group)
-                    .HasName("Group");
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
             });
 

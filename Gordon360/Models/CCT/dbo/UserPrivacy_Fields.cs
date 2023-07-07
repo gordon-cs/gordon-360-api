@@ -11,10 +11,18 @@ namespace Gordon360.Models.CCT
     [Table("UserPrivacy_Fields", Schema = "dbo")]
     public partial class UserPrivacy_Fields
     {
+        public UserPrivacy_Fields()
+        {
+            UserPrivacy_Settings = new HashSet<UserPrivacy_Settings>();
+        }
+
         public int ID { get; set; }
         [Key]
         [StringLength(50)]
         [Unicode(false)]
         public string Field { get; set; }
+
+        [InverseProperty("FieldNavigation")]
+        public virtual ICollection<UserPrivacy_Settings> UserPrivacy_Settings { get; set; }
     }
 }

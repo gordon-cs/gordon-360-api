@@ -308,7 +308,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// privacy setting of home phone.
+        /// privacy setting of some piece of personal data for user.
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>

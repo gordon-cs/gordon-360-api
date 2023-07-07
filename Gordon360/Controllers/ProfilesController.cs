@@ -17,23 +17,28 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.CCT.Context;
 
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     public class ProfilesController : GordonControllerBase
     {
         private readonly IProfileService _profileService;
         private readonly IAccountService _accountService;
         private readonly IMembershipService _membershipService;
         private readonly IConfiguration _config;
+        private readonly CCTContext _context;
 
-        public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IConfiguration config)
+        public ProfilesController(IProfileService profileService, IAccountService accountService, 
+                                  IMembershipService membershipService, IConfiguration config, CCTContext context)
         {
             _profileService = profileService;
             _accountService = accountService;
             _membershipService = membershipService;
             _config = config;
+            _context = context;
         }
 
         /// <summary>Get profile info of currently logged in user</summary>
@@ -64,9 +69,9 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-        public async Task<ActionResult<ProfileViewModel?>> GetUserProfileAsync(string username)
+        public async Task<ActionResult<ProfileViewModel?>> GetUserProfileAsync(string username,string tester)
         {
-            var viewerGroups = AuthUtils.GetGroups(User);
+            var viewerGroups = AuthUtils.GetGroups(tester);
 
             var _student = _profileService.GetStudentProfileByUsername(username);
             var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
@@ -481,19 +486,34 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update visibility of some piece of personal data for facstaff.
+        /// Set visibility of some piece of personal data for user.
         /// </summary>
-        /// <param name="facultyStaffPrivacy">Faculty Staff Privacy Decisions</param>
+        /// <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyViewModel)</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("facstaff_privacy")]
-        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_PRIVACY)]
-        public async Task<ActionResult<UserPrivacyViewModel>> UpdateUserPrivacyAsync(UserPrivacyViewModel facultyStaffPrivacy)
+        [Route("user_privacy")]
+        // [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_PRIVACY)]
+        public async Task<ActionResult<UserPrivacyViewModel>> UpdateUserPrivacyAsync(UserPrivacyViewModel userPrivacy,string authenticatedUserUsername)
         {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            await _profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, facultyStaffPrivacy);
+            //var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            await _profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, userPrivacy);
 
             return Ok();
+        }
+
+        /// <summary>
+        /// Return a list buildings.
+        /// </summary>
+        /// <returns> All buildings</returns>
+        [HttpGet]
+        [Route("visibility_group")]
+        public ActionResult<IEnumerable<string>> GetVisibilityGroup()
+        {
+            var groups = _context.UserPrivacy_Visibility_Groups.Select(fs => fs.Group)
+                                   .Distinct()
+                                   .Where(d => d != null)
+                                   .OrderBy(d => d);
+            return Ok(groups);
         }
 
         /// <summary>

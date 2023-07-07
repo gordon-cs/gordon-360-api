@@ -11,10 +11,18 @@ namespace Gordon360.Models.CCT
     [Table("UserPrivacy_Visibility_Groups", Schema = "dbo")]
     public partial class UserPrivacy_Visibility_Groups
     {
+        public UserPrivacy_Visibility_Groups()
+        {
+            UserPrivacy_Settings = new HashSet<UserPrivacy_Settings>();
+        }
+
         public int ID { get; set; }
         [Key]
         [StringLength(50)]
         [Unicode(false)]
         public string Group { get; set; }
+
+        [InverseProperty("VisibilityNavigation")]
+        public virtual ICollection<UserPrivacy_Settings> UserPrivacy_Settings { get; set; }
     }
 }
