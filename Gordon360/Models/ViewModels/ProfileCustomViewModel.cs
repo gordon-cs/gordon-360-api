@@ -9,6 +9,8 @@ namespace Gordon360.Models.ViewModels
         public string LinkedIn { get; set; }
         public string Handshake { get; set; }
         public string PlannedGradYear { get; set; }
+        // public string IsPlannedGradYearPrivate { get; set; }
+
 
         public static implicit operator ProfileCustomViewModel?(CUSTOM_PROFILE? pro)
         {
@@ -24,7 +26,8 @@ namespace Gordon360.Models.ViewModels
                 Instagram = pro.instagram ?? "",
                 LinkedIn = pro.linkedin ?? "",
                 Handshake = pro.handshake ?? "",
-                PlannedGradYear = pro.plannedgradyear ?? ""
+                PlannedGradYear = pro.PlannedGradYear ?? "",
+                // IsPlannedGradYearPrivate = pro.IsPlannedGradYearPrivate ?? 1
             };
         }
     }

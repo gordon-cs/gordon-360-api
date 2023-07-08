@@ -323,6 +323,23 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// privacy setting of mobile phone.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="value">Y or N</param>
+        public async Task UpdatePlannedGraduationYearPrivacyAsync(string username, string value)
+        {
+            var account = _accountService.GetAccountByUsername(username);
+            // Update value in cached data
+            var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+            if (student != null)
+            {
+                student.IsPlannedGradYearPrivate = (value == "Y" ? 1 : 0);
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        /// <summary>
         /// mobile phone number setting
         /// </summary>
         /// <param name="username"> The username for the user whose phone is to be updated </param>
