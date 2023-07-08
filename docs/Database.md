@@ -7,7 +7,7 @@ The `CCT` and `MyGordon` databases exist in:
 
 ### Updating context tables (_new columns, tables, procedures..._)
 
-SQL Table models are handled in `360api` by Entity Framework Power Tools (`efpt`). To script in new tables do the following:
+Entity Framework 6 Power Tools are design-time utilities used in Visual Studio when working with the code-first development approach. As you know, the code-first approach does not support visual designer for the Entity Framework model. These power tools allow you to generate designer, XML and DDL SQL for your entities. In order to utilize this extension:
 
 0) This _might_ need to be done: On to the top tab of Visual Studio
    - click `tools` -> `Connect to Database...`.
@@ -17,7 +17,8 @@ SQL Table models are handled in `360api` by Entity Framework Power Tools (`efpt`
      - select the appropriate Database Server (listed above)
      - select the appropriate database (CCT, MyGordon...)
      - press `ok`
-   - It is highly suggested to commit/stash your existing changes before doing an `efpt` edit.
+   - it is helpful to work on a clean branch/commit in order to clearly observe changes produced by `efpt`
+
     
 1) Navigate on Solution Explorer to `\Models\{database name}\Context\`
    - <img width="243" alt="image" src="https://github.com/gordon-cs/gordon-360-api/assets/78386128/0a6b6ef8-9a5f-494e-b3b2-eeff298f1ccc">
@@ -34,7 +35,7 @@ SQL Table models are handled in `360api` by Entity Framework Power Tools (`efpt`
    - <img width="275" alt="image" src="https://github.com/gordon-cs/gordon-360-api/assets/78386128/5d60e742-9496-424b-8a7e-674c51281a74">
     
    - At this point is is very important to note the changes that you expect and to revert all unexpected changes
-   - This is in exception to:
+   - Only keep these changes:
      - your expected changes
      - `CCTContext.cs`
      - `efpt.[database name].config.json`
