@@ -457,7 +457,8 @@ namespace Gordon360.Controllers
         [Route("office_location")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
         {
-            var username = AuthUtils.GetUsername(User);
+            //var username = AuthUtils.GetUsername(User);
+            var username = "Jonathan.Senning";
             var result = await _profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingDescription, officeLocation.RoomNumber);
             return Ok(result);
         }

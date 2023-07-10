@@ -1,6 +1,7 @@
 ﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
 using Microsoft.AspNetCore.Authorization;
@@ -21,13 +22,15 @@ namespace Gordon360.Services
         private readonly IAccountService _accountService;
         private readonly IConfiguration _config;
         private readonly webSQLContext _webSQLContext;
+        private readonly MyGordonContext _myGordonContext; // I am adding this
 
-        public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext)
+        public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext, MyGordonContext myGordonContext)
         {
             _context = context;
             _config = config;
             _accountService = accountService;
             _webSQLContext = webSQLContext;
+            _myGordonContext = myGordonContext; // I am adding this
         }
 
         /// <summary>
@@ -340,10 +343,23 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
             }
+            //Changing the database used by GO (webSQL), which eventually overrites CCT
             var user = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
             user.Building = newBuilding;
             user.Room = newRoom;
             await _webSQLContext.SaveChangesAsync();
+
+            //Changing CCT for instant changes in the UI, and for moving compleatlly away form GO eventually.
+            // FacStaff is view not updatable
+            var CCT_user = _context.FacStaff.FirstOrDefault(a => a.AD_Username == username);
+            var building = _context.Buildings.FirstOrDefault(b => b.BUILDING_DESC == newBuilding);
+            CCT_user.OnCampusRoom = newRoom;
+            CCT_user.BuildingDescription = newBuilding;
+            CCT_user.OnCampusBuilding = building.BLDG_CDE;
+             _context.SaveChanges();
+            profile = GetFacultyStaffProfileByUsername(username); // not sure if needs this again
+
+            //var MYG_user = _myGordonContext.facstaff_cache
 
             return profile;
         }
@@ -361,10 +377,13 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
             }
+            //Changing the database used by GO (webSQL), which eventually overrites CCT
             var acccount = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
             var user = _webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
             user.office_hours = newHours;
             await _webSQLContext.SaveChangesAsync();
+
+            //Changing CCT for instant changes in the UI, and for moving compleatlly away form GO eventually.
 
             return profile;
         }
