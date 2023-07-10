@@ -7,7 +7,9 @@ The `CCT` and `MyGordon` databases exist in:
 
 ### Updating context tables (_new columns, tables, procedures..._)
 
-Entity Framework 6 Power Tools are design-time utilities used in Visual Studio when working with the code-first development approach. As you know, the code-first approach does not support visual designer for the Entity Framework model. These power tools allow you to generate designer, XML and DDL SQL for your entities. In order to utilize this extension:
+EF Core Power Tools is a Visual Studio extension that adds a User Interface and some helpful reverse-engineering niceties on top of EF Core. [Read more](https://www.c-sharpcorner.com/article/ef-core-power-tools-in-asp-net-core-api/)
+
+In order to utilize this extension:
 
 0) This _might_ need to be done: On to the top tab of Visual Studio
    - click `tools` -> `Connect to Database...`.
