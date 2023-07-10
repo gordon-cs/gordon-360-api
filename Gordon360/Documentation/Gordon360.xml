@@ -673,14 +673,14 @@
             <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYearAsync(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYearAsync(System.String)">
             <summary>
             Update planned graduation year
             </summary>
             <param name="value">planned graduation year</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYearPrivacyAsync(System.String,System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYearPrivacyAsync(System.String)">
             <summary>
             Update privacy of planned graduation year
             </summary>

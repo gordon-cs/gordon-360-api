@@ -52,6 +52,7 @@
         string Minor3Description,
         string GradDate,
         string PlannedGradYear,
+        bool IsPlannedGradYearPrivate,
         string MobilePhone,
         bool IsMobilePhonePrivate,
         int? ChapelRequired,
