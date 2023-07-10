@@ -25,6 +25,7 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Get all the memberships associated with a given activity
         /// </summary>
+        /// <param name="myProf">Optional boolean indication if you are searching for your public profile</param>
         /// <param name="involvementCode">Optional involvementCode filter</param>
         /// <param name="username">Optional username filter</param>
         /// <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
@@ -34,25 +35,29 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP)]
         public ActionResult<IEnumerable<MembershipView>> GetMemberships(string? involvementCode = null, string? username = null, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
         {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
+
             var memberships = _membershipService.GetMemberships(
                 activityCode: involvementCode,
                 username: username,
                 sessionCode: sessionCode,
                 participationTypes: participationTypes);
 
-            if (username is not null)
+            // When user is null, only SiteAdmin and Police can see all the user's memberships.
+            if ((username is null) && !(viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)))
             {
-                var authenticatedUserUsername = AuthUtils.GetUsername(User);
-                var viewerGroups = AuthUtils.GetGroups(User);
-
-                // User can see all their own memberships. SiteAdmin and Police can see all of anyone's memberships
-                if (!(username == authenticatedUserUsername
-                    || viewerGroups.Contains(AuthGroup.SiteAdmin)
-                    || viewerGroups.Contains(AuthGroup.Police)
-                    ))
-                {
-                    memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
-                }
+                memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
+                return Ok(memberships);
+            }
+            // Only user, siteAdmin and Police can see all the user's memberships.
+            else if (!(username == authenticatedUserUsername
+                || viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)
+                ))
+            {
+                memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
             }
 
             return Ok(memberships);
