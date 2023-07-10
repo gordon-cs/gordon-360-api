@@ -77,6 +77,8 @@ The backend is deployed automatically using GitHub Actions. Whenever changes are
 
 To detect and deploy successful builds, the scheduled task `Deploy 360Api[Train]` runs every 5 minutes on the API server. It calls the powershell script `Deploy360BackEnd.ps1` (found at `F:\Scripts\Deploy`), polling GitHub's API for new builds. If it detects a new build for the relevant environment (`Train` for `develop`, `Prod` for `master`), it will backup the existing API and deploy the new one. Transcripts for these deployments can be found at `F:\Scripts\Deploy\Transcripts`.
 
+The API server publishes its build timestamp and github SHA on the /Version endpoint, so checking this with Swagger (e.g., https://360apitrain.gordon.edu/swagger/) is a good way to see when the new version is deployed and serving.
+
 ### Deploying Manually
 
 If there are problems with continuous deployment, or a specific need arises to revert or push manually, then this older procedure can be used.
