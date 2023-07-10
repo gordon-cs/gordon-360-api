@@ -315,8 +315,12 @@ namespace Gordon360.Services
             }
 
             // Update value in cached data
-            var user = _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
-            user.PlannedGradYear = newPlannedGraduationYear;
+
+            var student = _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
+            if (student != null)
+            {
+                student.PlannedGradYear = newPlannedGraduationYear;
+            }
             await _context.SaveChangesAsync();
 
             return profile;
@@ -331,7 +335,7 @@ namespace Gordon360.Services
         {
             var account = _accountService.GetAccountByUsername(username);
             // Update value in cached data
-            var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+            var student = _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
             if (student != null)
             {
                 student.IsPlannedGradYearPrivate = (value == "Y" ? 1 : 0);
