@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.IO;
+using System.Linq;
 using System.Reflection;
+using Gordon360.Models.ViewModels;
+using System;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Controllers
 {
@@ -12,18 +15,19 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class VersionController : ControllerBase
     {
+
         [HttpGet]
         [Route("")]
-        public ActionResult<string> Get()
+        public ActionResult<VersionViewModel> Get()
         {
-            string gitVersion = string.Empty;
-            using (Stream stream = Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream("Gordon360." + "version.txt"))
-            using (StreamReader reader = new StreamReader(stream))
+            var asm = typeof(VersionController).Assembly;
+            var attrs = asm.GetCustomAttributes<AssemblyMetadataAttribute>();
+            DateTime bt = DateTime.Parse(attrs.FirstOrDefault(a => a.Key == "BuildTime")?.Value);
+            return new VersionViewModel
             {
-                gitVersion = reader.ReadLine();
-            }
-            return Ok(gitVersion);
+                GitHash = attrs.FirstOrDefault(a => a.Key == "GitHash")?.Value,
+                BuildTime = bt.ToString("yyyy/MM/dd HH:mm:ss UTC"),
+            };
         }
     }
 }
