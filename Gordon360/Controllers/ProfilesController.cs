@@ -140,6 +140,20 @@ namespace Gordon360.Controllers
             return Ok(advisors);
         }
 
+        ///<summary>Get the privacy settings of a particular user</summary>
+        /// <returns>
+        /// All privacy settings of the given user.
+        /// </returns>
+        [HttpGet]
+        [Route("privacy_setting/{username}")]
+        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+        public async Task<ActionResult<IEnumerable<UserPrivacyViewModel>>> GetPrivacySettingAsync(string username)
+        {
+            var privacy = await _profileService.GetPrivacySettingAsync(username);
+
+            return Ok(privacy);
+        }
+
         /// <summary> Gets the clifton strengths of a particular user </summary>
         /// <param name="username"> The username for which to retrieve info </param>
         /// <returns> Clifton strengths of the given user. </returns>
@@ -493,9 +507,9 @@ namespace Gordon360.Controllers
         [HttpPut]
         [Route("user_privacy")]
         // [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_PRIVACY)]
-        public async Task<ActionResult<UserPrivacyViewModel>> UpdateUserPrivacyAsync(UserPrivacyViewModel userPrivacy,string authenticatedUserUsername)
+        public async Task<ActionResult<UserPrivacyViewModel>> UpdateUserPrivacyAsync(UserPrivacyViewModel userPrivacy)
         {
-            //var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, userPrivacy);
 
             return Ok();
