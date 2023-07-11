@@ -147,9 +147,9 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("privacy_setting/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-        public async Task<ActionResult<IEnumerable<UserPrivacyViewModel>>> GetPrivacySettingAsync(string username)
+        public ActionResult<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingAsync(string username)
         {
-            var privacy = await _profileService.GetPrivacySettingAsync(username);
+            var privacy = _profileService.GetPrivacySettingAsync(username);
 
             return Ok(privacy);
         }

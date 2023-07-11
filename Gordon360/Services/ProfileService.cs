@@ -303,8 +303,39 @@ namespace Gordon360.Services
                 else
                     fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
             }
-            
+
             return publicFac;
+        }
+
+        /// <summary>
+        /// get privacy setting for particular user
+        /// </summary>
+        /// <param name="username">AD username</param>
+        /// <returns></returns>
+        public IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username)
+        {
+            var account = _accountService.GetAccountByUsername(username);
+
+            // select all privacy settings
+            var privacy = _context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+
+            if (privacy == null)
+            {
+                return null;
+            }
+
+            List<UserPrivacyViewModel> resultList = new();
+
+            foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
+            {
+                var row = privacy.FirstOrDefault(p => p.Field == field.Field);
+                if (row is UserPrivacy_Settings instance)
+                {
+                    resultList.Add(new UserPrivacyViewModel(field.Field, instance.Visibility));
+                }
+            }
+
+            return resultList;
         }
 
         /// <summary>

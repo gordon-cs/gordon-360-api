@@ -605,6 +605,12 @@
              provides first name, last name, and username.
              </returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetPrivacySettingAsync(System.String)">
+            <summary>Get the privacy settings of a particular user</summary>
+             <returns>
+             All privacy settings of the given user.
+             </returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetCliftonStrengths_DEPRECATED(System.String)">
             <summary> Gets the clifton strengths of a particular user </summary>
             <param name="username"> The username for which to retrieve info </param>
@@ -2393,6 +2399,13 @@
             <param name="username">The username</param>
             <param name="type"></param>
             <param name="links"></param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetPrivacySettingAsync(System.String)">
+            <summary>
+            get privacy setting for particular user
+            </summary>
+            <param name="username">AD username</param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateUserPrivacyAsync(System.String,Gordon360.Models.ViewModels.UserPrivacyViewModel)">
             <summary>
