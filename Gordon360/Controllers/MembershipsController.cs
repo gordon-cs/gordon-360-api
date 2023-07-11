@@ -53,16 +53,8 @@ namespace Gordon360.Controllers
             if ((username is null) && !(viewerGroups.Contains(AuthGroup.SiteAdmin)
                 || viewerGroups.Contains(AuthGroup.Police)))
             {
-                // Advisor, Member, and Leader should be able to see members form a group session and activity (not Guests)
-                if ((involvementCode is not null) && (userMemberships is not null) && (userMemberships.FirstOrDefault(u => u.Participation == "GUEST") is null)) 
-                {
-                    return Ok(memberships);
-                }
-                else
-                {
                     memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
                     return Ok(memberships);
-                }
             }
             // Only user, siteAdmin and Police can see all the user's memberships.
             else if ((username is not null) && !(username == authenticatedUserUsername
