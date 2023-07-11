@@ -17,7 +17,7 @@
         string HomeCity,
         string HomeState,
         string HomePostalCode,
-        string HomeCountry,
+        string HomeCountry, // Abbreviation of Country
         string HomePhone,
         string HomeFax,
         string AD_Username,
