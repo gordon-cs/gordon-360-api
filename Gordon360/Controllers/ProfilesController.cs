@@ -477,6 +477,20 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Update mail location
+        /// </summary>
+        /// <param name="value">mail location</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("mail_location")]
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailLocation(string value)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var result = await _profileService.UpdateOfficeHoursAsync(username, value);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Update privacy of mobile phone number
         /// </summary>
         /// <param name="value">Y or N</param>

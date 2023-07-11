@@ -370,6 +370,27 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// mail location setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose mail location is to be updated </param>
+        /// <param name="newMail">The new mail location to update the user's mail location to</param>
+        /// <returns>updated fac/staff profile if found</returns>
+        public async Task<FacultyStaffProfileViewModel> UpdateMailLocationAsync(string username, string newMail)
+        {
+            var profile = GetFacultyStaffProfileByUsername(username);
+            if (profile == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+            var acccount = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+            var user = _webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
+            user.office_hours = newHours;
+            await _webSQLContext.SaveChangesAsync();
+
+            return profile;
+        }
+
+        /// <summary>
         /// privacy setting user profile photo.
         /// </summary>
         /// <param name="username">AD Username</param>
