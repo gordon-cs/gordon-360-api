@@ -25,7 +25,6 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Get all the memberships associated with a given activity
         /// </summary>
-        /// <param name="myProf">Optional boolean indication if you are searching for your public profile</param>
         /// <param name="involvementCode">Optional involvementCode filter</param>
         /// <param name="username">Optional username filter</param>
         /// <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
@@ -38,21 +37,35 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var viewerGroups = AuthUtils.GetGroups(User);
 
+            var userMemberships = _membershipService.GetMemberships(
+                activityCode: involvementCode,
+                username: authenticatedUserUsername,
+                sessionCode: sessionCode,
+                participationTypes: participationTypes);
+
             var memberships = _membershipService.GetMemberships(
                 activityCode: involvementCode,
                 username: username,
                 sessionCode: sessionCode,
                 participationTypes: participationTypes);
 
-            // When user is null, only SiteAdmin and Police can see all the user's memberships.
+            // When user is null, only SiteAdmin and Police can see all the memberships.
             if ((username is null) && !(viewerGroups.Contains(AuthGroup.SiteAdmin)
                 || viewerGroups.Contains(AuthGroup.Police)))
             {
-                memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
-                return Ok(memberships);
+                // Advisor, Member, and Leader should be able to see members form a group session and activity (not Guests)
+                if ((involvementCode is not null) && (userMemberships is not null) && (userMemberships.FirstOrDefault(u => u.Participation == "GUEST") is null)) 
+                {
+                    return Ok(memberships);
+                }
+                else
+                {
+                    memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
+                    return Ok(memberships);
+                }
             }
             // Only user, siteAdmin and Police can see all the user's memberships.
-            else if (!(username == authenticatedUserUsername
+            else if ((username is not null) && !(username == authenticatedUserUsername
                 || viewerGroups.Contains(AuthGroup.SiteAdmin)
                 || viewerGroups.Contains(AuthGroup.Police)
                 ))
