@@ -7,4 +7,6 @@ namespace Gordon360.Models.ViewModels
         public string GitHash { get; set; }
         public string BuildTime { get; set; }
     }
+
+
 }
