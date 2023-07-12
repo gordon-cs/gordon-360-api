@@ -469,7 +469,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("office_hours")]
-        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours(string value)
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody]string value)
         {
             var username = AuthUtils.GetUsername(User);
             var result = await _profileService.UpdateOfficeHoursAsync(username, value);
