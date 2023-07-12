@@ -25,6 +25,7 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Get all the memberships associated with a given activity
         /// </summary>
+        /// <param name="myProf">Optional boolean indication if you are searching for your public profile</param>
         /// <param name="involvementCode">Optional involvementCode filter</param>
         /// <param name="username">Optional username filter</param>
         /// <param name="sessionCode">Optional session code for which session memberships should be retrieved. Defaults to current session. Use "*" for all sessions.</param>
@@ -43,11 +44,18 @@ namespace Gordon360.Controllers
                 sessionCode: sessionCode,
                 participationTypes: participationTypes);
 
+            // When user is null, only SiteAdmin and Police can see all the user's memberships.
+            if ((username is null) && !(viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)))
+            {
+                memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
+                return Ok(memberships);
+            }
             // Only user, siteAdmin and Police can see all the user's memberships.
-            if (
-              (username is null || username != authenticatedUserUsername)
-              && !(viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
-              )
+            else if (!(username == authenticatedUserUsername
+                || viewerGroups.Contains(AuthGroup.SiteAdmin)
+                || viewerGroups.Contains(AuthGroup.Police)
+                ))
             {
                 memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
             }
