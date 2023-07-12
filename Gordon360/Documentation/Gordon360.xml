@@ -743,7 +743,7 @@
             <summary>
             Return a list of mail destinations' descriptions.
             </summary>
-            <returns> All involvements</returns>
+            <returns> All Mail Destinations</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean)">
             <summary>Gets a list of all Activities by parameter </summary>
