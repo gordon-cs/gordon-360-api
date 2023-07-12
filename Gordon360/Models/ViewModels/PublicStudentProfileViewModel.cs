@@ -72,12 +72,7 @@ namespace Gordon360.Models.ViewModels
                 Minor1Description = stu.Minor1Description ?? "",
                 Minor2Description = stu.Minor2Description ?? "",
                 Minor3Description = stu.Minor3Description ?? ""
-
             };
-            if (vm.IsMobilePhonePrivate)
-            {
-                vm.MobilePhone = "Private as requested.";
-            }
             if (vm.KeepPrivate.Contains("S"))
             {
                 vm.HomeCity = "Private as requested.";

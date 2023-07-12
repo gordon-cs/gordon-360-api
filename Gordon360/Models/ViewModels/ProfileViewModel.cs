@@ -30,6 +30,7 @@
         string Instagram,
         string LinkedIn,
         string Handshake,
+        string MobilePhone,
 
 
         // Student Only
@@ -51,7 +52,6 @@
         string Minor3,
         string Minor3Description,
         string GradDate,
-        string MobilePhone,
         bool IsMobilePhonePrivate,
         int? ChapelRequired,
         int? ChapelAttended,

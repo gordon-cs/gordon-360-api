@@ -69,7 +69,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-        public async Task<ActionResult<ProfileViewModel?>> GetUserProfileAsync(string username,string tester)
+        public async Task<ActionResult<ProfileViewModel?>> GetUserProfileAsync(string tester,string username)
         {
             var viewerGroups = AuthUtils.GetGroups(tester);
 
@@ -81,7 +81,6 @@ namespace Gordon360.Controllers
             object? student = null;
             object? faculty = null;
             object? alumni = null;
-
             
             if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
             {
@@ -98,7 +97,8 @@ namespace Gordon360.Controllers
             }
             else if (viewerGroups.Contains(AuthGroup.Student))
             {
-                student = _student == null ? null : (PublicStudentProfileViewModel)_student;
+                student = _student == null ? null :
+                    await _profileService.ToPublicStudentProfileViewModel(username, "stu", _student);
                 faculty = _faculty == null ? null : 
                     await _profileService.ToPublicFacultyStaffProfileViewModel(username, "stu", _faculty);
                 // If this student is also in Alumni AuthGroup, then s/he can see alumni's public profile; if not, return null.
@@ -118,7 +118,6 @@ namespace Gordon360.Controllers
             {
                 return Ok(null);
             }
-            
 
             var profile = _profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 

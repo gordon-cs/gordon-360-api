@@ -283,10 +283,17 @@ namespace Gordon360.Services
             await _context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// convert original fac/staff profile to public fac/staff profile based on individual privacy settings
+        /// </summary>
+        /// <param name="username">username of the fac/staff being searched</param>
+        /// <param name="currentUserType">personnel type of the logged-in user (fac, stu, alu)</param>
+        /// <param name="fac">original profile of the fac/staff being searched</param>
+        /// <returns>public profile of the fac/staff based on individual privacy settings</returns>
         public async Task<PublicFacultyStaffProfileViewModel> ToPublicFacultyStaffProfileViewModel
             (string username, string currentUserType, FacultyStaffProfileViewModel fac)
         {
-            PublicFacultyStaffProfileViewModel publicFac = (PublicFacultyStaffProfileViewModel) fac;
+            PublicFacultyStaffProfileViewModel publicFac = (PublicFacultyStaffProfileViewModel)fac;
             var account = _accountService.GetAccountByUsername(username);
 
             // select all privacy settings
@@ -298,13 +305,47 @@ namespace Gordon360.Services
             {
                 var row = privacy.FirstOrDefault(p => p.Field == field.Field);
                 if (row is UserPrivacy_Settings instance)
+                {
                     if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
-                        fs_vm.GetProperty(field.Field).SetValue(publicFac, "");          
-                else
-                    fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
+                        fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
+                }
+                // else
+                   //  fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
             }
 
             return publicFac;
+        }
+
+        /// <summary>
+        /// convert original student profile to public student profile based on individual privacy settings
+        /// </summary>
+        /// <param name="username">username of the student being searched</param>
+        /// <param name="currentUserType">personnel type of the logged-in user</param>
+        /// <param name="stu">original profile of the student being searched</param>
+        /// <returns>public profile of the student based on individual privacy settings</returns>
+        public async Task<PublicStudentProfileViewModel> ToPublicStudentProfileViewModel
+            (string username, string currentUserType, StudentProfileViewModel stu)
+        {
+            PublicStudentProfileViewModel publicStu = (PublicStudentProfileViewModel)stu;
+            var account = _accountService.GetAccountByUsername(username);
+
+            // select all privacy settings
+            var privacy = _context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+            // get type of viewmodel for reflection property setting
+            Type s_vm = new PublicStudentProfileViewModel().GetType();
+
+            foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
+            {
+                var row = privacy.FirstOrDefault(p => p.Field == field.Field);
+                Console.WriteLine(s_vm.GetProperty(field.Field));
+                if (row is UserPrivacy_Settings instance)
+                    if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
+                        s_vm.GetProperty(field.Field).SetValue(publicStu, "");
+                else
+                    s_vm.GetProperty(field.Field).SetValue(publicStu, "");
+            }
+
+            return publicStu;
         }
 
         /// <summary>
