@@ -633,7 +633,7 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Return a list of mail destinations' descriptions.
         /// </summary>
-        /// <returns> All involvements</returns>
+        /// <returns> All Mail Destinations</returns>
         [HttpGet]
         [Route("mail_destinations")]
         public ActionResult<IEnumerable<string>> GetMailDestinations()
