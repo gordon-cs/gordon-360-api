@@ -9,10 +9,14 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.webSQL.Models
 {
     [Table("account")]
+    [Index("mail_server", Name = "IX_account_mail_server")]
     public partial class account
     {
         [Key]
         public int account_id { get; set; }
+        [StringLength(20)]
+        [Unicode(false)]
+        public string mail_server { get; set; }
         /// <summary>
         /// Active Directory Username
         /// </summary>

@@ -11,12 +11,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using Gordon360.Models.webSQL.Context;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.webSQL.Context;
 
 namespace Gordon360.Controllers
 {
@@ -27,13 +29,15 @@ namespace Gordon360.Controllers
         private readonly IAccountService _accountService;
         private readonly IMembershipService _membershipService;
         private readonly IConfiguration _config;
+        private readonly webSQLContext _webSQLContext;
 
-        public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IConfiguration config)
+        public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IConfiguration config, webSQLContext webSQLContext)
         {
             _profileService = profileService;
             _accountService = accountService;
             _membershipService = membershipService;
             _config = config;
+            _webSQLContext = webSQLContext;
         }
 
         /// <summary>Get profile info of currently logged in user</summary>
@@ -483,10 +487,10 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("mail_location")]
-        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailLocation(string value)
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailLocation([FromBody]string value)
         {
             var username = AuthUtils.GetUsername(User);
-            var result = await _profileService.UpdateOfficeHoursAsync(username, value);
+            var result = await _profileService.UpdateMailLocationAsync(username, value);
             return Ok(result);
         }
 
@@ -497,7 +501,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("mobile_privacy/{value}")]
-        public async Task<ActionResult> UpdateMobilePrivacyAsync(string value)
+        public async Task<ActionResult> UpdateMobilePrivacyAsync([FromBody]string value)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
@@ -624,6 +628,21 @@ namespace Gordon360.Controllers
             var membershipHistories = memberships.GroupBy(m => m.ActivityCode).Select(group => MembershipHistoryViewModel.FromMembershipGroup(group));
 
             return Ok(membershipHistories);
+        }
+
+        /// <summary>
+        /// Return a list of mail destinations' descriptions.
+        /// </summary>
+        /// <returns> All involvements</returns>
+        [HttpGet]
+        [Route("mail_destinations")]
+        public ActionResult<IEnumerable<string>> GetMailDestinations()
+        {
+            var involvements = _webSQLContext.Mailstops.Select(m => m.code)
+                                   .Distinct()
+                                   .Where(d => d != null)
+                                   .OrderBy(d => d);
+            return Ok(involvements);
         }
     }
 }

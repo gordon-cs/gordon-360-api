@@ -382,9 +382,8 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
             }
-            var acccount = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
-            var user = _webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
-            user.office_hours = newHours;
+            var user = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+            user.mail_server = newMail;
             await _webSQLContext.SaveChangesAsync();
 
             return profile;
