@@ -80,6 +80,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Police> Police { get; set; }
         public virtual DbSet<PrivType> PrivType { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
+        public virtual DbSet<RequestResponseLog> RequestResponseLog { get; set; }
         public virtual DbSet<RequestView> RequestView { get; set; }
         public virtual DbSet<RoleType> RoleType { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
@@ -399,8 +400,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
-
-                entity.Property(e => e.USER_NAME).IsFixedLength();
             });
 
             modelBuilder.Entity<MYSCHEDULE>(entity =>
@@ -509,9 +508,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Participant>(entity =>
             {
-                entity.HasKey(e => e.Username)
-                    .HasName("PK__Particip__536C85E53B50E910");
-
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
             });
 
@@ -525,6 +521,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantActivity)
                     .HasForeignKey(d => d.ParticipantUsername)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantActivity_Participant");
 
                 entity.HasOne(d => d.PrivType)
@@ -540,7 +537,7 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.ParticipantNotification)
                     .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PartipantNotification_Participant");
+                    .HasConstraintName("FK_ParticipantNotification_Participant");
             });
 
             modelBuilder.Entity<ParticipantStatusHistory>(entity =>
@@ -563,6 +560,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantTeam)
                     .HasForeignKey(d => d.ParticipantUsername)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantTeam_Participant");
 
                 entity.HasOne(d => d.RoleType)
