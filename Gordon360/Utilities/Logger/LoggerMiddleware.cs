@@ -1,4 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
@@ -27,7 +28,7 @@ namespace Gordon360.Utilities.Logger
 
         public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
-            RequestResponseLogModel log = new RequestResponseLogModel();
+            RequestResponseLog log = new RequestResponseLog();
             // Middleware is enabled only when the 
             // EnableRequestResponseLogging config value is set.
             if (_options == null || !_options.IsEnabled)
@@ -35,26 +36,22 @@ namespace Gordon360.Utilities.Logger
                 await next(httpContext);
                 return;
             }
-            log.RequestDateTimeUtc = DateTime.UtcNow;
+            log.RequestDateTime = DateTime.UtcNow;
             HttpRequest request = httpContext.Request;
 
             /*log*/
-            log.LogId = Guid.NewGuid().ToString();
-            log.TraceId = httpContext.TraceIdentifier;
+            log.LogID = Guid.NewGuid().ToString();
             var ip = request.HttpContext.Connection.RemoteIpAddress;
-            log.ClientIp = ip == null ? null : ip.ToString();
-            log.Node = _options.Name;
+            log.ClientIP = ip == null ? "" : ip.ToString();
+            request.HttpContext.Connection.
 
             /*request*/
             log.RequestMethod = request.Method;
             log.RequestPath = request.Path;
             log.RequestQuery = request.QueryString.ToString();
-            log.RequestQueries = FormatQueries(request.QueryString.ToString());
-            log.RequestHeaders = FormatHeaders(request.Headers);
+            log.UserAgent = GetUserAgent(request.Headers);
             log.RequestBody = await ReadBodyFromRequest(request);
-            log.RequestScheme = request.Scheme;
             log.RequestHost = request.Host.ToString();
-            log.RequestContentType = request.ContentType;
 
             // Temporarily replace the HttpResponseStream, 
             // which is a write-only stream, with a MemoryStream to capture 
@@ -69,11 +66,9 @@ namespace Gordon360.Utilities.Logger
             {
                 await next(httpContext);
             }
-            catch (Exception exception)
+            catch
             {
-                /*exception: but was not managed at app.UseExceptionHandler()
-                  or by any middleware*/
-                LogError(log, exception);
+
             }
 
             newResponseBody.Seek(0, SeekOrigin.Begin);
@@ -83,58 +78,26 @@ namespace Gordon360.Utilities.Logger
             newResponseBody.Seek(0, SeekOrigin.Begin);
             await newResponseBody.CopyToAsync(originalResponseBody);
 
-            log.ResponseContentType = response.ContentType;
-            log.ResponseStatus = response.StatusCode.ToString();
-            log.ResponseHeaders = FormatHeaders(response.Headers);
-            // Reponse body is far too expensive to be holding onto. 
-            // log.ResponseBody = responseBodyText;
-            log.ResponseDateTimeUtc = DateTime.UtcNow;
-
-
-            /*exception: but was managed at app.UseExceptionHandler() 
-              or by any middleware*/
-            var contextFeature =
-                httpContext.Features.Get<IExceptionHandlerPathFeature>();
-            if (contextFeature != null && contextFeature.Error != null)
-            {
-                Exception exception = contextFeature.Error;
-                LogError(log, exception);
-            }
-
+            log.ResponseStatus = response.StatusCode;
+            log.ResponseContentLength = GetResponseContentLength(response.Headers);
+            _context.RequestResponseLog.Add(log);
+            _context.SaveChanges();
         }
 
-        private void LogError(RequestResponseLogModel log, Exception exception)
+        private string GetUserAgent(IHeaderDictionary headers)
         {
-            log.ExceptionMessage = exception.Message;
-            log.ExceptionStackTrace = exception.StackTrace;
+            foreach (var header in headers) 
+                if(header.Key == "User-Agent")
+                    return header.Value;
+            return "";
         }
 
-        private Dictionary<string, string> FormatHeaders(IHeaderDictionary headers)
+        private int GetResponseContentLength(IHeaderDictionary headers)
         {
-            Dictionary<string, string> pairs = new Dictionary<string, string>();
             foreach (var header in headers)
-            {
-                pairs.Add(header.Key, header.Value);
-            }
-            return pairs;
-        }
-
-        private List<KeyValuePair<string, string>> FormatQueries(string queryString)
-        {
-            List<KeyValuePair<string, string>> pairs =
-                 new List<KeyValuePair<string, string>>();
-            string key, value;
-            foreach (var query in queryString.TrimStart('?').Split("&"))
-            {
-                var items = query.Split("=");
-                key = items.Count() >= 1 ? items[0] : string.Empty;
-                value = items.Count() >= 2 ? items[1] : string.Empty;
-                if (!String.IsNullOrEmpty(key))
-                {
-                    pairs.Add(new KeyValuePair<string, string>(key, value));
-                }
-            }
-            return pairs;
+                if (header.Key == "Content-Length")
+                    return Int32.Parse(header.Value);
+            return 0;
         }
 
         private async Task<string> ReadBodyFromRequest(HttpRequest request)
