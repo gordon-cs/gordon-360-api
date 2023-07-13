@@ -4,10 +4,12 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -317,7 +319,11 @@ namespace Gordon360.Services
             // Update value in cached data
 
             var student = _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
-            if (student != null)
+            if (student == null)
+            {
+                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, PlannedGradYear = newPlannedGraduationYear });
+            }
+            else
             {
                 student.PlannedGradYear = newPlannedGraduationYear;
             }
@@ -336,10 +342,11 @@ namespace Gordon360.Services
             var account = _accountService.GetAccountByUsername(username);
             // Update value in cached data
             var student = _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
-            if (student != null)
+            if (student == null)
             {
-                student.IsPlannedGradYearPrivate = (value == "Y" ? 1 : 0);
+                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, IsPlannedGradYearPrivate = (value == "Y" ? 1 : 0) });
             }
+            student.IsPlannedGradYearPrivate = (value == "Y" ? 1 : 0);
             await _context.SaveChangesAsync();
         }
 
