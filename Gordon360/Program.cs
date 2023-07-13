@@ -16,6 +16,8 @@ using System.IO;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System;
+using Gordon360.Utilities.Logger;
+using Gordon360.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,7 +77,7 @@ builder.Services.AddCors(p => p.AddPolicy(name: corsPolicy, corsBuilder =>
     corsBuilder.WithOrigins(builder.Configuration.GetValue<string>("AllowedOrigin")).AllowAnyMethod().AllowAnyHeader();
 }));
 
-builder.Services.AddDbContext<CCTContext>(options =>
+builder.Services.AddDbContextFactory<CCTContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CCT"))
 ).AddDbContext<MyGordonContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyGordon"))
@@ -106,6 +108,12 @@ builder.Services.AddScoped<RecIM.ITeamService, RecIM.TeamService>();
 builder.Services.AddScoped<RecIM.IParticipantService, RecIM.ParticipantService>();
 builder.Services.AddScoped<RecIM.ISportService, RecIM.SportService>();
 
+/* Logging Options */
+builder.Services.AddOptions<RequestResponseLoggerOptionModel>().Bind
+(builder.Configuration.GetSection("RequestResponseLogger")).ValidateDataAnnotations();
+
+builder.Services.AddTransient<RequestResponseLoggerMiddleware>();
+
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
@@ -135,5 +143,7 @@ app.UseAuthorization();
 app.UseCors(corsPolicy);
 
 app.MapControllers();
+
+app.UseFactoryActivatedMiddleware();
 
 app.Run();
