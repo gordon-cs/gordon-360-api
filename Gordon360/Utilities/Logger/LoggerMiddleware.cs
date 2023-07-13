@@ -91,18 +91,6 @@ namespace Gordon360.Utilities.Logger
         }
 
         /// <summary>
-        /// Picks User-Agent out of given headers, defaults to empty string
-        /// </summary>
-        /// <param name="headers"></param>
-        /// <returns></returns>
-        private string GetUserAgent(IHeaderDictionary headers)
-        {
-            if (headers.UserAgent is StringValues UA) 
-                return UA;
-            return "";
-        }
-
-        /// <summary>
         /// Returns length of response content, defaults to 0
         /// </summary>
         /// <param name="headers"></param>
