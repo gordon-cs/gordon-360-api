@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,12 @@ namespace Gordon360.Utilities.Logger
             _context = context;
         }
 
+        /// <summary>
+        /// Invoke Async is called on all HTTP requests and are intercepted by httpContext pipelining
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
         public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
             RequestResponseLog log = new RequestResponseLog();
@@ -43,13 +50,12 @@ namespace Gordon360.Utilities.Logger
             log.LogID = Guid.NewGuid().ToString();
             var ip = request.HttpContext.Connection.RemoteIpAddress;
             log.ClientIP = ip == null ? "" : ip.ToString();
-            request.HttpContext.Connection.
 
             /*request*/
             log.RequestMethod = request.Method;
             log.RequestPath = request.Path;
             log.RequestQuery = request.QueryString.ToString();
-            log.UserAgent = GetUserAgent(request.Headers);
+            log.UserAgent = request.Headers.UserAgent;
             log.RequestBody = await ReadBodyFromRequest(request);
             log.RequestHost = request.Host.ToString();
 
@@ -84,19 +90,27 @@ namespace Gordon360.Utilities.Logger
             _context.SaveChanges();
         }
 
+        /// <summary>
+        /// Picks User-Agent out of given headers, defaults to empty string
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <returns></returns>
         private string GetUserAgent(IHeaderDictionary headers)
         {
-            foreach (var header in headers) 
-                if(header.Key == "User-Agent")
-                    return header.Value;
+            if (headers.UserAgent is StringValues UA) 
+                return UA;
             return "";
         }
 
+        /// <summary>
+        /// Returns length of response content, defaults to 0
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <returns></returns>
         private int GetResponseContentLength(IHeaderDictionary headers)
         {
-            foreach (var header in headers)
-                if (header.Key == "Content-Length")
-                    return Int32.Parse(header.Value);
+            if (headers.ContentLength is long contentLenth)
+                return (int)contentLenth;
             return 0;
         }
 
