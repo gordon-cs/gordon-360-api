@@ -69,9 +69,9 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{username}")]
-        public async Task<ActionResult<ProfileViewModel?>> GetUserProfileAsync(string tester,string username)
+        public ActionResult<ProfileViewModel?> GetUserProfileAsync(string username)
         {
-            var viewerGroups = AuthUtils.GetGroups(tester);
+            var viewerGroups = AuthUtils.GetGroups(User);
 
             var _student = _profileService.GetStudentProfileByUsername(username);
             var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
@@ -98,9 +98,9 @@ namespace Gordon360.Controllers
             else if (viewerGroups.Contains(AuthGroup.Student))
             {
                 student = _student == null ? null :
-                    await _profileService.ToPublicStudentProfileViewModel(username, "stu", _student);
+                    _profileService.ToPublicStudentProfileViewModel(username, "stu", _student);
                 faculty = _faculty == null ? null : 
-                    await _profileService.ToPublicFacultyStaffProfileViewModel(username, "stu", _faculty);
+                    _profileService.ToPublicFacultyStaffProfileViewModel(username, "stu", _faculty);
                 // If this student is also in Alumni AuthGroup, then s/he can see alumni's public profile; if not, return null.
                 alumni = (_alumni == null) ? null :
                      viewerGroups.Contains(AuthGroup.Alumni) ? 
@@ -110,7 +110,7 @@ namespace Gordon360.Controllers
             {
                 student = null;
                 faculty = _faculty == null ? null : 
-                    await _profileService.ToPublicFacultyStaffProfileViewModel(username, "alu", _faculty);
+                    _profileService.ToPublicFacultyStaffProfileViewModel(username, "alu", _faculty);
                 alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
             }
 

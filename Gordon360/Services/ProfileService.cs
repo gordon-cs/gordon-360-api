@@ -290,7 +290,7 @@ namespace Gordon360.Services
         /// <param name="currentUserType">personnel type of the logged-in user (fac, stu, alu)</param>
         /// <param name="fac">original profile of the fac/staff being searched</param>
         /// <returns>public profile of the fac/staff based on individual privacy settings</returns>
-        public async Task<PublicFacultyStaffProfileViewModel> ToPublicFacultyStaffProfileViewModel
+        public PublicFacultyStaffProfileViewModel ToPublicFacultyStaffProfileViewModel
             (string username, string currentUserType, FacultyStaffProfileViewModel fac)
         {
             PublicFacultyStaffProfileViewModel publicFac = (PublicFacultyStaffProfileViewModel)fac;
@@ -307,10 +307,14 @@ namespace Gordon360.Services
                 if (row is UserPrivacy_Settings instance)
                 {
                     if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
+                    {
                         fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
+                    }
                 }
-                // else
-                   //  fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
+                else
+                {
+                    fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
+                }
             }
 
             return publicFac;
@@ -323,7 +327,7 @@ namespace Gordon360.Services
         /// <param name="currentUserType">personnel type of the logged-in user</param>
         /// <param name="stu">original profile of the student being searched</param>
         /// <returns>public profile of the student based on individual privacy settings</returns>
-        public async Task<PublicStudentProfileViewModel> ToPublicStudentProfileViewModel
+        public PublicStudentProfileViewModel ToPublicStudentProfileViewModel
             (string username, string currentUserType, StudentProfileViewModel stu)
         {
             PublicStudentProfileViewModel publicStu = (PublicStudentProfileViewModel)stu;
@@ -337,12 +341,22 @@ namespace Gordon360.Services
             foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
             {
                 var row = privacy.FirstOrDefault(p => p.Field == field.Field);
-                Console.WriteLine(s_vm.GetProperty(field.Field));
-                if (row is UserPrivacy_Settings instance)
-                    if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
-                        s_vm.GetProperty(field.Field).SetValue(publicStu, "");
+                // HomePhone and SpouseName fields are not for students
+                if (field.Field == "HomePhone" || field.Field == "SpouseName") { }
                 else
-                    s_vm.GetProperty(field.Field).SetValue(publicStu, "");
+                {
+                    if (row is UserPrivacy_Settings instance)
+                    {
+                        if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
+                        {
+                            s_vm.GetProperty(field.Field).SetValue(publicStu, "");
+                        }
+                    }
+                    else
+                    {
+                        s_vm.GetProperty(field.Field).SetValue(publicStu, "");
+                    }
+                }
             }
 
             return publicStu;
