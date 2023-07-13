@@ -673,19 +673,14 @@
             <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYearAsync(System.String)">
-            <summary>
-            Update planned graduation year
-            </summary>
-            <param name="value">planned graduation year</param>
-            <returns></returns>
-        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYearPrivacyAsync(System.String)">
             <summary>
             Update privacy of planned graduation year
             </summary>
             <param name="value">Y or N</param>
             <returns></returns>
+            
+            Not being used for now
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(Gordon360.Models.ViewModels.OfficeLocationPatchViewModel)">
             <summary>
@@ -2379,7 +2374,7 @@
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateCustomProfileAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
-            Sets the path for the profile links.
+            Sets the component of the Custom_profile.
             </summary>
             <param name="username">The username</param>
             <param name="type"></param>
@@ -2392,19 +2387,14 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdatePlannedGraduationYearAsync(System.String,System.String)">
-            <summary>
-            update planned graduation
-            </summary>
-            <param name="username">The username for the user whose planned graduation year is to be updated</param>
-            <param name="newPlannedGraduationYear">The new year to update the user's planned graduation year to</param>
-        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdatePlannedGraduationYearPrivacyAsync(System.String,System.String)">
             <summary>
             privacy setting of mobile phone.
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
+            
+            not being used for now
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumberAsync(System.String,System.String)">
             <summary>
