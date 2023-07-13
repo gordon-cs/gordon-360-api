@@ -237,18 +237,18 @@ namespace Gordon360.Services
 
 
         /// <summary>
-        /// Sets the path for the profile links.
+        /// Sets the component of the Custom_profile.
         /// </summary>
         /// <param name="username">The username</param>
         /// <param name="type"></param>
         /// <param name="links"></param>
-        public async Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE links)
+        public async Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE links)
         {
             var original = await _context.CUSTOM_PROFILE.FindAsync(username);
 
             if (original == null)
             {
-                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = links.calendar, facebook = links.facebook, twitter = links.twitter, instagram = links.instagram, linkedin = links.linkedin, handshake = links.handshake });
+                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = links.calendar, facebook = links.facebook, twitter = links.twitter, instagram = links.instagram, linkedin = links.linkedin, handshake = links.handshake, PlannedGradYear = links.PlannedGradYear });
             }
             else
             {
@@ -278,6 +278,9 @@ namespace Gordon360.Services
                     case "handshake":
                         original.handshake = links.handshake;
                         break;
+                    case "plannedGradYear":
+                        original.PlannedGradYear = links.PlannedGradYear;
+                        break;
                 }
             }
 
@@ -304,39 +307,12 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// update planned graduation
-        /// </summary>
-        /// <param name="username">The username for the user whose planned graduation year is to be updated</param>
-        /// <param name="newPlannedGraduationYear">The new year to update the user's planned graduation year to</param>
-        public async Task<StudentProfileViewModel> UpdatePlannedGraduationYearAsync(string username, string newPlannedGraduationYear)
-        {
-            var profile = GetStudentProfileByUsername(username);
-            if (profile == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
-            }
-
-            // Update value in cached data
-
-            var student = _context.CUSTOM_PROFILE.FirstOrDefault(x => x.username == username);
-            if (student == null)
-            {
-                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, PlannedGradYear = newPlannedGraduationYear });
-            }
-            else
-            {
-                student.PlannedGradYear = newPlannedGraduationYear;
-            }
-            await _context.SaveChangesAsync();
-
-            return profile;
-        }
-
-        /// <summary>
         /// privacy setting of mobile phone.
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="value">Y or N</param>
+        /// 
+        /// not being used for now
         public async Task UpdatePlannedGraduationYearPrivacyAsync(string username, string value)
         {
             var account = _accountService.GetAccountByUsername(username);

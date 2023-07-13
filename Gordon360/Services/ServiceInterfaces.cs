@@ -33,7 +33,7 @@ namespace Gordon360.Services
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
-        Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
+        Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE path);
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
         Task<StudentProfileViewModel> UpdatePlannedGraduationYearAsync(string username, string newPlannedGraduationYear);
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
