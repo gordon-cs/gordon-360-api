@@ -40,6 +40,8 @@ namespace Gordon360.Models.CCT
         [StringLength(510)]
         [Unicode(false)]
         public string RequestQuery { get; set; }
+        [Unicode(false)]
+        public string RequestBody { get; set; }
         public int ResponseStatus { get; set; }
         public int? ResponseContentLength { get; set; }
     }
