@@ -20,7 +20,7 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string ClientIP { get; set; }
         [Column(TypeName = "datetime")]
-        public DateTime RequestDate { get; set; }
+        public DateTime RequestDateTime { get; set; }
         [Required]
         [StringLength(510)]
         [Unicode(false)]
