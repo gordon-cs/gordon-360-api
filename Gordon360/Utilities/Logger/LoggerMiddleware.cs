@@ -25,8 +25,7 @@ namespace Gordon360.Utilities.Logger
             _context = context;
         }
 
-        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next/*,
-               IRequestResponseLogModelCreator logCreator*/)
+        public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
         {
             RequestResponseLogModel log = new RequestResponseLogModel();
             // Middleware is enabled only when the 
@@ -101,7 +100,7 @@ namespace Gordon360.Utilities.Logger
                 Exception exception = contextFeature.Error;
                 LogError(log, exception);
             }
-            var i = _context.ParticipantStatus;
+
         }
 
         private void LogError(RequestResponseLogModel log, Exception exception)
