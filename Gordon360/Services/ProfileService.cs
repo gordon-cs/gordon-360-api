@@ -241,14 +241,14 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">The username</param>
         /// <param name="type"></param>
-        /// <param name="links"></param>
-        public async Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE links)
+        /// <param name="content"></param>
+        public async Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content)
         {
             var original = await _context.CUSTOM_PROFILE.FindAsync(username);
 
             if (original == null)
             {
-                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = links.calendar, facebook = links.facebook, twitter = links.twitter, instagram = links.instagram, linkedin = links.linkedin, handshake = links.handshake, PlannedGradYear = links.PlannedGradYear });
+                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = content.calendar, facebook = content.facebook, twitter = content.twitter, instagram = content.instagram, linkedin = content.linkedin, handshake = content.handshake, PlannedGradYear = content.PlannedGradYear });
             }
             else
             {
@@ -256,30 +256,30 @@ namespace Gordon360.Services
                 switch (type)
                 {
                     case "calendar":
-                        original.calendar = links.calendar;
+                        original.calendar = content.calendar;
                         break;
 
                     case "facebook":
-                        original.facebook = links.facebook;
+                        original.facebook = content.facebook;
                         break;
 
                     case "twitter":
-                        original.twitter = links.twitter;
+                        original.twitter = content.twitter;
                         break;
 
                     case "instagram":
-                        original.instagram = links.instagram;
+                        original.instagram = content.instagram;
                         break;
 
                     case "linkedin":
-                        original.linkedin = links.linkedin;
+                        original.linkedin = content.linkedin;
                         break;
 
                     case "handshake":
-                        original.handshake = links.handshake;
+                        original.handshake = content.handshake;
                         break;
                     case "plannedGradYear":
-                        original.PlannedGradYear = links.PlannedGradYear;
+                        original.PlannedGradYear = content.PlannedGradYear;
                         break;
                 }
             }

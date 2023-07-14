@@ -2378,7 +2378,7 @@
             </summary>
             <param name="username">The username</param>
             <param name="type"></param>
-            <param name="links"></param>
+            <param name="content"></param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>
