@@ -509,7 +509,14 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<UserPrivacyViewModel>> UpdateUserPrivacyAsync(UserPrivacyViewModel userPrivacy)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            await _profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, userPrivacy);
+            // The privacy setting of some fields (such as HomeCountry and Country) are controlled by one button,
+            // so they are conbined and sent by one API request, and we need to split them here.
+            string[] subFields = userPrivacy.Field.Split(' ');
+            foreach (var subField in subFields)
+            {
+                userPrivacy.Field = subField;
+                await _profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, userPrivacy);
+            }
 
             return Ok();
         }

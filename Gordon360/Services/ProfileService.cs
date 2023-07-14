@@ -308,12 +308,12 @@ namespace Gordon360.Services
                 {
                     if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
                     {
-                        fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
+                        fs_vm.GetProperty(field.Field).SetValue(publicFac, "Private as requested.");
                     }
                 }
                 else
                 {
-                    fs_vm.GetProperty(field.Field).SetValue(publicFac, "");
+                    fs_vm.GetProperty(field.Field).SetValue(publicFac, "Private as requested.");
                 }
             }
 
@@ -349,12 +349,12 @@ namespace Gordon360.Services
                     {
                         if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
                         {
-                            s_vm.GetProperty(field.Field).SetValue(publicStu, "");
+                            s_vm.GetProperty(field.Field).SetValue(publicStu, "Private as requested.");
                         }
                     }
                     else
                     {
-                        s_vm.GetProperty(field.Field).SetValue(publicStu, "");
+                        s_vm.GetProperty(field.Field).SetValue(publicStu, "Private as requested.");
                     }
                 }
             }
