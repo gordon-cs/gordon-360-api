@@ -486,11 +486,11 @@ namespace Gordon360.Controllers
         /// <param name="value">mail location</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("mail_location")]
-        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailLocation([FromBody]string value)
+        [Route("mail_stop")]
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody]string value)
         {
             var username = AuthUtils.GetUsername(User);
-            var result = await _profileService.UpdateMailLocationAsync(username, value);
+            var result = await _profileService.UpdateMailStopAsync(username, value);
             return Ok(result);
         }
 
@@ -635,8 +635,8 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns> All Mail Destinations</returns>
         [HttpGet]
-        [Route("mail_destinations")]
-        public ActionResult<IEnumerable<string>> GetMailDestinations()
+        [Route("mail_stops")]
+        public ActionResult<IEnumerable<string>> GetMailStops()
         {
             var involvements = _webSQLContext.Mailstops.Select(m => m.code)
                                    .Distinct()

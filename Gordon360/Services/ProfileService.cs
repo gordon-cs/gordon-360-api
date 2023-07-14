@@ -375,7 +375,7 @@ namespace Gordon360.Services
         /// <param name="username"> The username for the user whose mail location is to be updated </param>
         /// <param name="newMail">The new mail location to update the user's mail location to</param>
         /// <returns>updated fac/staff profile if found</returns>
-        public async Task<FacultyStaffProfileViewModel> UpdateMailLocationAsync(string username, string newMail)
+        public async Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail)
         {
             var profile = GetFacultyStaffProfileByUsername(username);
             if (profile == null)
