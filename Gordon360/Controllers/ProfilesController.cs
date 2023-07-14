@@ -22,7 +22,6 @@ using Gordon360.Models.CCT.Context;
 namespace Gordon360.Controllers
 {
     [Route("api/[controller]")]
-    [AllowAnonymous]
     public class ProfilesController : GordonControllerBase
     {
         private readonly IProfileService _profileService;
@@ -529,10 +528,10 @@ namespace Gordon360.Controllers
         [Route("visibility_group")]
         public ActionResult<IEnumerable<string>> GetVisibilityGroup()
         {
-            var groups = _context.UserPrivacy_Visibility_Groups.Select(fs => fs.Group)
+            var groups = _context.UserPrivacy_Visibility_Groups.Select(up_v_g => up_v_g.Group)
                                    .Distinct()
-                                   .Where(d => d != null)
-                                   .OrderBy(d => d);
+                                   .Where(g => g != null)
+                                   .OrderBy(g => g);
             return Ok(groups);
         }
 
