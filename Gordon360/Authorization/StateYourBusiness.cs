@@ -770,6 +770,8 @@ namespace Gordon360.Authorization
                         }
                         return false;
                     }
+                case Resource.RECIM_SUPER_ADMIN:
+                    return user_groups.Contains(AuthGroup.RecIMSuperAdmin);
                 default: return false;
             }
         }
