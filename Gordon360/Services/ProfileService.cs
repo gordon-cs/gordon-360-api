@@ -338,20 +338,11 @@ namespace Gordon360.Services
             // get type of viewmodel for reflection property setting
             Type s_vm = new PublicStudentProfileViewModel().GetType();
 
-            foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
+            foreach (UserPrivacy_Settings row in privacy)
             {
-                var row = privacy.FirstOrDefault(p => p.Field == field.Field);
-                // HomePhone and SpouseName fields are not for students
-                if (field.Field == "HomePhone" || field.Field == "SpouseName") { }
-                else
+                if (row.Visibility == "Private" || (row.Visibility == "FacStaff" && currentUserType != "fac"))
                 {
-                    if (row is UserPrivacy_Settings instance)
-                    {
-                        if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
-                        {
-                            s_vm.GetProperty(field.Field).SetValue(publicStu, "Private as requested.");
-                        }
-                    }
+                    s_vm.GetProperty(row.Field).SetValue(publicStu, "Private as requested.");
                 }
             }
 
