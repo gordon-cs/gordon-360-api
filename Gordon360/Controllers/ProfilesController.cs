@@ -486,7 +486,7 @@ namespace Gordon360.Controllers
         /// <param name="value">mail location</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("mail_stop")]
+        [Route("mailstop")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody]string value)
         {
             var username = AuthUtils.GetUsername(User);
@@ -635,7 +635,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns> All Mail Destinations</returns>
         [HttpGet]
-        [Route("mail_stops")]
+        [Route("mailstops")]
         public ActionResult<IEnumerable<string>> GetMailStops()
         {
             var mail_stops = _webSQLContext.Mailstops.Select(m => m.code)
