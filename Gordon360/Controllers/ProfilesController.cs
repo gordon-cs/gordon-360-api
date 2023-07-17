@@ -638,11 +638,9 @@ namespace Gordon360.Controllers
         [Route("mail_stops")]
         public ActionResult<IEnumerable<string>> GetMailStops()
         {
-            var involvements = _webSQLContext.Mailstops.Select(m => m.code)
-                                   .Distinct()
-                                   .Where(d => d != null)
+            var mail_stops = _webSQLContext.Mailstops.Select(m => m.code)
                                    .OrderBy(d => d);
-            return Ok(involvements);
+            return Ok(mail_stops);
         }
     }
 }
