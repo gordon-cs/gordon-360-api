@@ -30,6 +30,5 @@ namespace Gordon360.Models.CCT
         [StringLength(4)]
         [Unicode(false)]
         public string PlannedGradYear { get; set; }
-        public int? IsPlannedGradYearPrivate { get; set; }
     }
 }
