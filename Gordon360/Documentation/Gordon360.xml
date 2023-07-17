@@ -673,7 +673,7 @@
             <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYearPrivacyAsync(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdatePlannedGraduationYearPrivacyAsync(System.Boolean)">
             <summary>
             Update privacy of planned graduation year
             </summary>
@@ -2387,7 +2387,7 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdatePlannedGraduationYearPrivacyAsync(System.String,System.String)">
+        <member name="M:Gordon360.Services.ProfileService.UpdatePlannedGraduationYearPrivacyAsync(System.String,System.Boolean)">
             <summary>
             privacy setting of mobile phone.
             </summary>

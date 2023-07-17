@@ -458,7 +458,7 @@ namespace Gordon360.Controllers
         /// Not being used for now
         [HttpPut]
         [Route("planned_graduation_year_privacy/{value}")]
-        public async Task<ActionResult> UpdatePlannedGraduationYearPrivacyAsync(string value)
+        public async Task<ActionResult> UpdatePlannedGraduationYearPrivacyAsync(bool value)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.UpdatePlannedGraduationYearPrivacyAsync(authenticatedUserUsername, value);
