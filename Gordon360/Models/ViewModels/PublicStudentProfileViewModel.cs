@@ -24,7 +24,6 @@ namespace Gordon360.Models.ViewModels
         public string Gender { get; set; }
         public string grad_student { get; set; }
         public string PlannedGradYear { get; set; }
-        public bool IsPlannedGradYearPrivate { get; set; }
         public string MobilePhone { get; set; }
         public string AD_Username { get; set; }
         public bool IsMobilePhonePrivate { get; set; }
@@ -61,7 +60,6 @@ namespace Gordon360.Models.ViewModels
                 Cohort = stu.Cohort ?? "",
                 grad_student = stu.grad_student ?? "",
                 PlannedGradYear = stu.PlannedGradYear ?? "",
-                IsPlannedGradYearPrivate = stu.IsPlannedGradYearPrivate,
                 KeepPrivate = stu.KeepPrivate ?? "",
                 Email = stu.Email ?? "",
                 Gender = stu.Gender ?? "",

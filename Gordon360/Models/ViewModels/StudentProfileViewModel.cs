@@ -52,7 +52,6 @@ namespace Gordon360.Models.ViewModels
         string grad_student,
         string GradDate,
         string PlannedGradYear,
-        bool IsPlannedGradYearPrivate,
         string MobilePhone,
         bool IsMobilePhonePrivate,
         string AD_Username,
@@ -126,7 +125,6 @@ namespace Gordon360.Models.ViewModels
                 stu.grad_student ?? "",
                 stu.GradDate ?? "",
                 stu.PlannedGradYear ?? "",
-                stu.IsPlannedGradYearPrivate == 1 ? true : false,
                 stu.MobilePhone ?? "",
                 stu.IsMobilePhonePrivate == 1 ? true : false,
                 stu.AD_Username ?? "", // Just in case some random record has a null email field

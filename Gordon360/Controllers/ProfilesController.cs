@@ -450,23 +450,6 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update privacy of planned graduation year
-        /// </summary>
-        /// <param name="value">Y or N</param>
-        /// <returns></returns>
-        /// 
-        /// Not being used for now
-        [HttpPut]
-        [Route("planned_graduation_year_privacy/{value}")]
-        public async Task<ActionResult> UpdatePlannedGraduationYearPrivacyAsync(bool value)
-        {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            await _profileService.UpdatePlannedGraduationYearPrivacyAsync(authenticatedUserUsername, value);
-
-            return Ok();
-        }
-
-        /// <summary>
         /// Update office location (building description and room number)
         /// </summary>
         /// <returns></returns>
