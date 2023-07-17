@@ -234,7 +234,7 @@
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetInvolvements">
             <summary>
-            Return a list involvements.
+            Return a list of involvements' descriptions.
             </summary>
             <returns> All involvements</returns>
         </member>
