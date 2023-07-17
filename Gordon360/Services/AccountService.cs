@@ -196,6 +196,8 @@ namespace Gordon360.Services
                 accounts = accounts.Join(members, a => a.AD_Username, mv => mv.Username, (a, mv) => a).Distinct();
             }
 
+            // Don't show results for alumni who have requested their names not be shown
+            accounts = accounts.Where(a => a.ShareName != "N");
             return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
         }
 
