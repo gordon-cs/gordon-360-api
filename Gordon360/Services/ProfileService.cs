@@ -352,10 +352,6 @@ namespace Gordon360.Services
                             s_vm.GetProperty(field.Field).SetValue(publicStu, "Private as requested.");
                         }
                     }
-                    else
-                    {
-                        s_vm.GetProperty(field.Field).SetValue(publicStu, "Private as requested.");
-                    }
                 }
             }
 
@@ -381,13 +377,9 @@ namespace Gordon360.Services
 
             List<UserPrivacyViewModel> resultList = new();
 
-            foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
+            foreach (UserPrivacy_Settings row in privacy)
             {
-                var row = privacy.FirstOrDefault(p => p.Field == field.Field);
-                if (row is UserPrivacy_Settings instance)
-                {
-                    resultList.Add(new UserPrivacyViewModel(field.Field, instance.Visibility));
-                }
+                 resultList.Add(new UserPrivacyViewModel(row.Field, row.Visibility));
             }
 
             return resultList;
