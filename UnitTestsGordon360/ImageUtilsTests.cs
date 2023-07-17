@@ -44,7 +44,7 @@ namespace Gordon360.Utilities.Tests
             ImageUtils.UploadImage(TestImagePath, TestImageData, ImageFormat.Png);
             
         // Act & Assert
-        Assert.Throws<Exception>(() => ImageUtils.DeleteImage(imagePath));
+        Assert.Throws<Exception>(() => ImageUtils.DeleteImage(ValidImagePath));
     }
 
     [Fact]
