@@ -508,5 +508,11 @@ namespace Gordon360.Services
             });
             return profile;
         }
+
+        public IEnumerable<string> GetMailStopsAsync()
+        {
+            return _webSQLContext.Mailstops.Select(m => m.code)
+                           .OrderBy(d => d);
+        }
     }
 }

@@ -18,7 +18,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Gordon360.Models.webSQL.Context;
 
 namespace Gordon360.Controllers
 {
@@ -638,8 +637,7 @@ namespace Gordon360.Controllers
         [Route("mailstops")]
         public ActionResult<IEnumerable<string>> GetMailStops()
         {
-            var mail_stops = _webSQLContext.Mailstops.Select(m => m.code)
-                                   .OrderBy(d => d);
+            var mail_stops = _profileService.GetMailStopsAsync();
             return Ok(mail_stops);
         }
     }
