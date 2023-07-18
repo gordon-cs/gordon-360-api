@@ -120,7 +120,7 @@ namespace Gordon360.Services
                     SessionEndDate = x.SessionEndDate,
                     AllCourses = await GetScheduleFacultyAsync(username, x.SessionCode)
                 });
-                return (Task<IEnumerable<SessionCoursesViewModel>>)(IEnumerable<SessionCoursesViewModel>)sessionObject;
+                return (Task<IEnumerable<SessionCoursesViewModel>>)sessionObject;
             } else
             {
                 var sessionObject = allSessions.Select(async x => new SessionCoursesViewModel
@@ -131,7 +131,7 @@ namespace Gordon360.Services
                     SessionEndDate = x.SessionEndDate,
                     AllCourses = await GetScheduleStudentAsync(username, x.SessionCode)
                 });
-                return (Task<IEnumerable<SessionCoursesViewModel>>)(IEnumerable<SessionCoursesViewModel>)sessionObject;
+                return (Task<IEnumerable<SessionCoursesViewModel>>)sessionObject;
             }
         }
     }
