@@ -1,7 +1,9 @@
 ﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
+using Microsoft.Graph.CallRecords;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,10 +16,13 @@ namespace Gordon360.Services
     public class ScheduleService : IScheduleService
     {
         private readonly CCTContext _context;
+        private readonly ISessionService _sessionService;
 
         public ScheduleService(CCTContext context)
         {
             _context = context;
+            _sessionService = new SessionService(context);
+
         }
 
         /// <summary>
@@ -84,10 +89,50 @@ namespace Gordon360.Services
                 TUESDAY_CDE = x.TUESDAY_CDE,
                 WEDNESDAY_CDE = x.WEDNESDAY_CDE,
                 THURSDAY_CDE = x.THURSDAY_CDE,
-                FRIDAY_CDE = x.FRIDAY_CDE,
+                FRIDAY_CDE = x.FRIDAY_CDE, 
                 BEGIN_TIME = x.BEGIN_TIME,
                 END_TIME = x.END_TIME
             });
+        }
+
+        /// <summary>
+        /// Fetch the schedule item whose id and session code is specified by the parameter
+        /// </summary>
+        /// <param name="username">The AD Username of the instructor</param>
+        /// <returns>StudentScheduleViewModel if found, null if not found</returns>
+        public Task<IEnumerable<SessionCoursesViewModel>> GetAllCourses(string username)
+        {
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            var allSessions = _sessionService.GetAll();
+
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+            if (account.account_type == "FACULTY" || account.account_type == "STAFF")
+            {
+                var sessionObject = allSessions.Select(async x => new SessionCoursesViewModel
+                {
+                    SessionCode = x.SessionCode,
+                    SessionDescription = x.SessionDescription,
+                    SessionBeginDate = x.SessionBeginDate,
+                    SessionEndDate = x.SessionEndDate,
+                    AllCourses = await GetScheduleFacultyAsync(username, x.SessionCode)
+                });
+                return (Task<IEnumerable<SessionCoursesViewModel>>)(IEnumerable<SessionCoursesViewModel>)sessionObject;
+            } else
+            {
+                var sessionObject = allSessions.Select(async x => new SessionCoursesViewModel
+                {
+                    SessionCode = x.SessionCode,
+                    SessionDescription = x.SessionDescription,
+                    SessionBeginDate = x.SessionBeginDate,
+                    SessionEndDate = x.SessionEndDate,
+                    AllCourses = await GetScheduleStudentAsync(username, x.SessionCode)
+                });
+                return (Task<IEnumerable<SessionCoursesViewModel>>)(IEnumerable<SessionCoursesViewModel>)sessionObject;
+            }
         }
     }
 }

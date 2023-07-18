@@ -117,6 +117,27 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        ///  Gets all schedule objects for a user
+        /// </summary>
+        /// <returns>A IEnumerable of schedule objects</returns>
+        [HttpGet]
+        [Route("")]
+        public ActionResult<SessionCoursesViewModel> GetAllCourses(string username)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var groups = AuthUtils.GetGroups(User);
+
+          
+            var result = _scheduleService.GetAllCourses(authenticatedUserUsername);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+
+        }
+
+        /// <summary>
         /// Get whether the currently logged-in user can read student schedules
         /// </summary>
         /// <returns>Whether they can read student schedules</returns>
