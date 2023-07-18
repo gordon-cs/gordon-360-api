@@ -495,10 +495,8 @@ namespace Gordon360.Services.RecIM
 
             //local variables
             var numMatchesRemaining = request.NumberOfLadderMatches ?? 1;
-            var numTeamsRemaining = teams.Count;
             var surfaceIndex = 0;
             var teamIndex = 0;
-            // numMatchesRemaining used for other calculation, unusuable as condition
             for (int i = 0; i < (request.NumberOfLadderMatches ?? 1); i++)
             {
                 if (surfaceIndex == availableSurfaces.Length)
@@ -518,8 +516,8 @@ namespace Gordon360.Services.RecIM
                 }
 
                 var teamIDs = new List<int>();
-                int numTeamsInMatch = numTeamsRemaining / numMatchesRemaining;
-                while (numTeamsInMatch > 0)
+                int numTeamsInMatch = teams.Count / (request.NumberOfLadderMatches ?? 1);
+                while (numTeamsInMatch > 0 && teamIndex < teams.Count)
                 {
                     teamIDs.Add(teams[teamIndex]);
                     teamIndex++;
@@ -537,7 +535,6 @@ namespace Gordon360.Services.RecIM
 
                 surfaceIndex++;
                 numMatchesRemaining--;
-                numTeamsRemaining -= numTeamsInMatch;
             }
             return createdMatches;
         }
