@@ -231,7 +231,7 @@ namespace Gordon360.Services
             IEnumerable<Alumni> alumni = Enumerable.Empty<Alumni>();
             if (accountTypes.Contains("alumni"))
             {
-                alumni = _context.Alumni;
+                alumni = _context.Alumni.Where(a => a.ShareName != "N");
             }
 
             // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
