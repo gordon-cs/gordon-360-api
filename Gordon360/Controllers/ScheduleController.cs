@@ -3,6 +3,7 @@ using Gordon360.Enums;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -117,18 +118,14 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        ///  Gets all schedule objects for a user
+        ///  Gets all session objects for a user
         /// </summary>
-        /// <returns>A IEnumerable of schedule objects</returns>
+        /// <returns>A IEnumerable of session objects as well as the schedules</returns>
         [HttpGet]
-        [Route("")]
-        public ActionResult<SessionCoursesViewModel> GetAllCourses(string username)
+        [Route("{username}/courses")]
+        public async Task<ActionResult<SessionCoursesViewModel>> GetAllCourses(string username)
         {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            var groups = AuthUtils.GetGroups(User);
-
-          
-            var result = _scheduleService.GetAllCourses(authenticatedUserUsername);
+            var result = await _scheduleService.GetAllCourses(username);
             if (result == null)
             {
                 return NotFound();

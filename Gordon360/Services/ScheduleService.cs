@@ -96,43 +96,38 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Fetch the schedule item whose id and session code is specified by the parameter
+        /// Fetch the session item whose id specified by the parameter
         /// </summary>
-        /// <param name="username">The AD Username of the instructor</param>
-        /// <returns>StudentScheduleViewModel if found, null if not found</returns>
-        public Task<IEnumerable<SessionCoursesViewModel>> GetAllCourses(string username)
+        /// <param name="username">The AD Username of the user</param>
+        /// <returns>SessionCoursesViewModel if found, null if not found</returns>
+        public async Task<IEnumerable<SessionCoursesViewModel>> GetAllCourses(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
             var allSessions = _sessionService.GetAll();
+            var result = Enumerable.Empty<SessionCoursesViewModel>();
 
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
 
-            if (account.account_type == "FACULTY" || account.account_type == "STAFF")
+
+            foreach (SessionViewModel vm in allSessions)
             {
-                var sessionObject = allSessions.Select(async x => new SessionCoursesViewModel
-                {
-                    SessionCode = x.SessionCode,
-                    SessionDescription = x.SessionDescription,
-                    SessionBeginDate = x.SessionBeginDate,
-                    SessionEndDate = x.SessionEndDate,
-                    AllCourses = await GetScheduleFacultyAsync(username, x.SessionCode)
-                });
-                return (Task<IEnumerable<SessionCoursesViewModel>>)sessionObject;
-            } else
-            {
-                var sessionObject = allSessions.Select(async x => new SessionCoursesViewModel
-                {
-                    SessionCode = x.SessionCode,
-                    SessionDescription = x.SessionDescription,
-                    SessionBeginDate = x.SessionBeginDate,
-                    SessionEndDate = x.SessionEndDate,
-                    AllCourses = await GetScheduleStudentAsync(username, x.SessionCode)
-                });
-                return (Task<IEnumerable<SessionCoursesViewModel>>)sessionObject;
+                result = result.Append(
+                    new SessionCoursesViewModel
+                    {
+                        SessionCode = vm.SessionCode,
+                        SessionDescription = vm.SessionDescription,
+                        SessionBeginDate = vm.SessionBeginDate,
+                        SessionEndDate = vm.SessionEndDate,
+                        AllCourses = account.account_type == "STUDENT" || account.account_type == "ALUMNI" 
+                            ? await GetScheduleStudentAsync(username, vm.SessionCode) 
+                                : await GetScheduleFacultyAsync(username, vm.SessionCode),
+                    });
             }
+            return result;
+
         }
     }
 }
