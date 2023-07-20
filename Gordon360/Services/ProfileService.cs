@@ -354,26 +354,27 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD username</param>
         /// <returns>all privacy setting of the particular user</returns>
-        public IEnumerable<UserPrivacyGetViewModel> GetPrivacySettingAsync(string username)
+        public IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username)
         {
             var account = _accountService.GetAccountByUsername(username);
 
             // select all privacy settings
-            var privacy = _context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+            var privacy = _context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID).Select(up_s => (UserPrivacyViewModel) up_s);
 
             if (privacy == null)
             {
                 return null;
             }
 
-            List<UserPrivacyGetViewModel> resultList = new();
+            return privacy;
+            //List<UserPrivacyViewModel> resultList = new();
 
-            foreach (UserPrivacy_Settings row in privacy)
-            {
-                 resultList.Add(new UserPrivacyGetViewModel(row.Field, row.Visibility));
-            }
+            //foreach (UserPrivacy_Settings row in privacy)
+            //{
+            //     resultList.Add(new UserPrivacyViewModel(row.Field, row.Visibility));
+            //}
 
-            return resultList;
+            //return resultList;
         }
 
         /// <summary>
