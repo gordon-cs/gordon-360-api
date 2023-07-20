@@ -24,7 +24,7 @@ namespace Gordon360.Models.ViewModels
                 Instagram = pro.instagram ?? "",
                 LinkedIn = pro.linkedin ?? "",
                 Handshake = pro.handshake ?? "",
-                Calendar = pro.calendar ?? "",
+                Calendar = pro.calendar ?? ""
             };
         }
     }
