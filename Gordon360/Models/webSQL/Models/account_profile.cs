@@ -13,7 +13,7 @@ namespace Gordon360.Models.webSQL.Models
     {
         [Key]
         public int account_id { get; set; }
-        [StringLength(75)]
+        [StringLength(8000)]
         [Unicode(false)]
         public string office_hours { get; set; }
     }
