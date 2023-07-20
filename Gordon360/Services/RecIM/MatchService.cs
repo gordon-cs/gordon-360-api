@@ -116,9 +116,9 @@ namespace Gordon360.Services.RecIM
  
         public MatchExtendedViewModel GetMatchByID(int matchID)
         {
-            var query = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.StatusID != 0).ToArray();
+            var matchTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.StatusID != 0).ToArray();
 
-            if (query.Length > 2)
+            if (matchTeams.Length > 2)
             {
                 var multiTeamMatch = _context.Match
                 .Where(m => m.ID == matchID && m.StatusID != 0)
@@ -166,7 +166,8 @@ namespace Gordon360.Services.RecIM
                     Activity = new ActivityExtendedViewModel
                     {
                         ID = m.Series.ActivityID,
-                        Name = m.Series.Activity.Name
+                        Name = m.Series.Activity.Name,
+                        Logo = m.Series.Activity.Logo
                     },
                     Team = m.MatchTeam
                         .Where(mt => mt.StatusID != 0)
