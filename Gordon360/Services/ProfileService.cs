@@ -367,14 +367,6 @@ namespace Gordon360.Services
             }
 
             return privacy;
-            //List<UserPrivacyViewModel> resultList = new();
-
-            //foreach (UserPrivacy_Settings row in privacy)
-            //{
-            //     resultList.Add(new UserPrivacyViewModel(row.Field, row.Visibility));
-            //}
-
-            //return resultList;
         }
 
         /// <summary>
