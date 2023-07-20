@@ -122,7 +122,7 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns>A IEnumerable of session objects as well as the schedules</returns>
         [HttpGet]
-        [Route("{username}/courses")]
+        [Route("{username}/allcourses")]
         public async Task<ActionResult<SessionCoursesViewModel>> GetAllCourses(string username)
         {
             var result = await _scheduleService.GetAllCourses(username);

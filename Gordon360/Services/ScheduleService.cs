@@ -89,7 +89,7 @@ namespace Gordon360.Services
                 TUESDAY_CDE = x.TUESDAY_CDE,
                 WEDNESDAY_CDE = x.WEDNESDAY_CDE,
                 THURSDAY_CDE = x.THURSDAY_CDE,
-                FRIDAY_CDE = x.FRIDAY_CDE, 
+                FRIDAY_CDE = x.FRIDAY_CDE,
                 BEGIN_TIME = x.BEGIN_TIME,
                 END_TIME = x.END_TIME
             });
@@ -121,6 +121,8 @@ namespace Gordon360.Services
                         SessionDescription = vm.SessionDescription,
                         SessionBeginDate = vm.SessionBeginDate,
                         SessionEndDate = vm.SessionEndDate,
+                        //The case for "ALUMNI" does not work at the moment currently, but it doesn't affect the code,
+                        //and might be used in the future, so we decided to leave it in.
                         AllCourses = account.account_type == "STUDENT" || account.account_type == "ALUMNI" 
                             ? await GetScheduleStudentAsync(username, vm.SessionCode) 
                                 : await GetScheduleFacultyAsync(username, vm.SessionCode),
