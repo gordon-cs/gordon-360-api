@@ -639,7 +639,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<int> CREATE_SOCIAL_LINKSAsync(string USERNAME, string FACEBOOK, string TWITTER, string INSTAGRAM, string LINKEDIN, string HANDSHAKE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<int> CREATE_SOCIAL_LINKSAsync(string USERNAME, string FACEBOOK, string TWITTER, string INSTAGRAM, string LINKEDIN, string HANDSHAKE,string CALENDAR, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -690,6 +690,13 @@ namespace Gordon360.Models.CCT.Context
                     ParameterName = "HANDSHAKE",
                     Size = -1,
                     Value = HANDSHAKE ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "CALENDAR",
+                    Size = -1,
+                    Value = CALENDAR ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 parameterreturnValue,

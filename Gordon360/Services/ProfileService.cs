@@ -249,10 +249,6 @@ namespace Gordon360.Services
 
                 switch (type)
                 {
-                    case "calendar":
-                        original.calendar = links.calendar;
-                        break;
-
                     case "facebook":
                         original.facebook = links.facebook;
                         break;
@@ -271,6 +267,10 @@ namespace Gordon360.Services
 
                     case "handshake":
                         original.handshake = links.handshake;
+                        break;
+
+                    case "calendar":
+                        original.calendar = links.calendar;
                         break;
                 }
             }
