@@ -47,7 +47,7 @@ namespace Gordon360.Services
         )
         {
             IQueryable<MembershipView> memberships = _context.MembershipView;
-            if (username is not null) memberships = memberships.Where(m => m.Username == username);
+            if (username is not null) memberships = memberships.Where(m => EF.Functions.Like(m.Username, username));
 
             if (activityCode is not null) memberships = memberships.Where(m => m.ActivityCode == activityCode);
 
