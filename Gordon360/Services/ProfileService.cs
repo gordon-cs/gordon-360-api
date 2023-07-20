@@ -242,7 +242,7 @@ namespace Gordon360.Services
 
             if (original == null)
             {
-                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = links.calendar, facebook = links.facebook, twitter = links.twitter, instagram = links.instagram, linkedin = links.linkedin, handshake = links.handshake });
+                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, facebook = links.facebook, twitter = links.twitter, instagram = links.instagram, linkedin = links.linkedin, handshake = links.handshake, calendar = links.calendar });
             }
             else
             {
