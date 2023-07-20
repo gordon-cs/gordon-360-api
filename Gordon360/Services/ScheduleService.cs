@@ -1,7 +1,9 @@
 ﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
+using Microsoft.Graph.CallRecords;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,10 +16,12 @@ namespace Gordon360.Services
     public class ScheduleService : IScheduleService
     {
         private readonly CCTContext _context;
+        private readonly ISessionService _sessionService;
 
         public ScheduleService(CCTContext context)
         {
             _context = context;
+            _sessionService = new SessionService(context);
         }
 
         /// <summary>
@@ -88,6 +92,43 @@ namespace Gordon360.Services
                 BEGIN_TIME = x.BEGIN_TIME,
                 END_TIME = x.END_TIME
             });
+        }
+
+        /// <summary>
+        /// Fetch the session item whose id specified by the parameter
+        /// </summary>
+        /// <param name="username">The AD Username of the user</param>
+        /// <returns>SessionCoursesViewModel if found, null if not found</returns>
+        public async Task<IEnumerable<SessionCoursesViewModel>> GetAllCourses(string username)
+        {
+            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            var allSessions = _sessionService.GetAll();
+            var result = Enumerable.Empty<SessionCoursesViewModel>();
+
+            if (account == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+            }
+
+
+            foreach (SessionViewModel vm in allSessions)
+            {
+                result = result.Append(
+                    new SessionCoursesViewModel
+                    {
+                        SessionCode = vm.SessionCode,
+                        SessionDescription = vm.SessionDescription,
+                        SessionBeginDate = vm.SessionBeginDate,
+                        SessionEndDate = vm.SessionEndDate,
+                        //The case for "ALUMNI" does not work at the moment currently, but it doesn't affect the code,
+                        //and might be used in the future, so we decided to leave it in.
+                        AllCourses = account.account_type == "STUDENT" || account.account_type == "ALUMNI" 
+                            ? await GetScheduleStudentAsync(username, vm.SessionCode) 
+                            : await GetScheduleFacultyAsync(username, vm.SessionCode),
+                    });
+            }
+            return result;
+
         }
     }
 }
