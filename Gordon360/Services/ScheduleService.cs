@@ -125,7 +125,7 @@ namespace Gordon360.Services
                         //and might be used in the future, so we decided to leave it in.
                         AllCourses = account.account_type == "STUDENT" || account.account_type == "ALUMNI" 
                             ? await GetScheduleStudentAsync(username, vm.SessionCode) 
-                                : await GetScheduleFacultyAsync(username, vm.SessionCode),
+                            : await GetScheduleFacultyAsync(username, vm.SessionCode),
                     });
             }
             return result;
