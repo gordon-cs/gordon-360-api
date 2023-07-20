@@ -353,8 +353,8 @@ namespace Gordon360.Services
         /// get privacy setting for particular user
         /// </summary>
         /// <param name="username">AD username</param>
-        /// <returns></returns>
-        public IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username)
+        /// <returns>all privacy setting of the particular user</returns>
+        public IEnumerable<UserPrivacyGetViewModel> GetPrivacySettingAsync(string username)
         {
             var account = _accountService.GetAccountByUsername(username);
 
@@ -366,11 +366,11 @@ namespace Gordon360.Services
                 return null;
             }
 
-            List<UserPrivacyViewModel> resultList = new();
+            List<UserPrivacyGetViewModel> resultList = new();
 
             foreach (UserPrivacy_Settings row in privacy)
             {
-                 resultList.Add(new UserPrivacyViewModel(row.Field, row.Visibility));
+                 resultList.Add(new UserPrivacyGetViewModel(row.Field, row.Visibility));
             }
 
             return resultList;
@@ -381,23 +381,26 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">AD Username</param>
         /// <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
-        public async Task UpdateUserPrivacyAsync(string username, UserPrivacyViewModel facultyStaffPrivacy)
+        public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy)
         {
             var account = _accountService.GetAccountByUsername(username);
-            var facStaff = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Field == facultyStaffPrivacy.Field);
-            if (facStaff is null)
+            foreach (string subField in facultyStaffPrivacy.Field)
             {
-                var privacy = new UserPrivacy_Settings
+                var facStaff = _context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Field == subField);
+                if (facStaff is null)
                 {
-                    gordon_id = account.GordonID,
-                    Field = facultyStaffPrivacy.Field,
-                    Visibility = facultyStaffPrivacy.VisibilityGroup
-                }; ;
-                await _context.UserPrivacy_Settings.AddAsync(privacy);
-            }
-            else
-            {
-                facStaff.Visibility = facultyStaffPrivacy.VisibilityGroup;
+                    var privacy = new UserPrivacy_Settings
+                    {
+                        gordon_id = account.GordonID,
+                        Field = subField,
+                        Visibility = facultyStaffPrivacy.VisibilityGroup
+                    }; ;
+                    await _context.UserPrivacy_Settings.AddAsync(privacy);
+                }
+                else
+                {
+                    facStaff.Visibility = facultyStaffPrivacy.VisibilityGroup;
+                }
             }
 
             _context.SaveChanges();

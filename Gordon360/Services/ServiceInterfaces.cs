@@ -29,7 +29,7 @@ namespace Gordon360.Services
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
-        IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username);
+        IEnumerable<UserPrivacyGetViewModel> GetPrivacySettingAsync(string username);
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
@@ -42,7 +42,7 @@ namespace Gordon360.Services
             (string username, string currentUserType, FacultyStaffProfileViewModel fac);
         PublicStudentProfileViewModel ToPublicStudentProfileViewModel
             (string username, string currentUserType, StudentProfileViewModel stu);
-        Task UpdateUserPrivacyAsync(string username, UserPrivacyViewModel facultyStaffPrivacy);
+        Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy);
         Task UpdateMobilePrivacyAsync(string username, string value);
         Task UpdateImagePrivacyAsync(string username, string value);
         Task UpdateProfileImageAsync(string username, string path, string name);

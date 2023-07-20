@@ -145,7 +145,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("privacy_setting/{username}")]
         [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-        public ActionResult<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingAsync(string username)
+        public ActionResult<IEnumerable<UserPrivacyGetViewModel>> GetPrivacySettingAsync(string username)
         {
             var privacy = _profileService.GetPrivacySettingAsync(username);
 
@@ -500,23 +500,15 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Set visibility of some piece of personal data for user.
         /// </summary>
-        /// <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyViewModel)</param>
+        /// <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyUpdateViewModel)</param>
         /// <returns></returns>
         [HttpPut]
         [Route("user_privacy")]
         // [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_PRIVACY)]
-        public async Task<ActionResult<UserPrivacyViewModel>> UpdateUserPrivacyAsync(UserPrivacyViewModel userPrivacy)
+        public async Task<ActionResult<UserPrivacyUpdateViewModel>> UpdateUserPrivacyAsync(UserPrivacyUpdateViewModel userPrivacy)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            // The privacy setting of some fields (such as HomeCountry and Country) are controlled by one button,
-            // so they are conbined and sent by one API request, and we need to split them here.
-            string[] subFields = userPrivacy.Field.Split(' ');
-            foreach (var subField in subFields)
-            {
-                userPrivacy.Field = subField;
-                await _profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, userPrivacy);
-            }
-
+            await _profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, userPrivacy);
             return Ok();
         }
 

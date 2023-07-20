@@ -692,11 +692,11 @@
             <param name="value">office hours</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateUserPrivacyAsync(Gordon360.Models.ViewModels.UserPrivacyViewModel)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateUserPrivacyAsync(Gordon360.Models.ViewModels.UserPrivacyUpdateViewModel)">
             <summary>
             Set visibility of some piece of personal data for user.
             </summary>
-            <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyViewModel)</param>
+            <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyUpdateViewModel)</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetVisibilityGroup">
@@ -2423,9 +2423,9 @@
             get privacy setting for particular user
             </summary>
             <param name="username">AD username</param>
-            <returns></returns>
+            <returns>all privacy setting of the particular user</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateUserPrivacyAsync(System.String,Gordon360.Models.ViewModels.UserPrivacyViewModel)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateUserPrivacyAsync(System.String,Gordon360.Models.ViewModels.UserPrivacyUpdateViewModel)">
             <summary>
             privacy setting of some piece of personal data for user.
             </summary>
