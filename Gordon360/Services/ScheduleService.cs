@@ -22,7 +22,6 @@ namespace Gordon360.Services
         {
             _context = context;
             _sessionService = new SessionService(context);
-
         }
 
         /// <summary>
