@@ -30,5 +30,21 @@ namespace Gordon360.Models.ViewModels.RecIM
 
         }
 
+        public static implicit operator ParticipantExtendedViewModel(ParticipantView p)
+        {
+            return new ParticipantExtendedViewModel
+            {
+                Username = p.Username,
+                Email = p.Email,
+                IsAdmin = p.IsAdmin,
+                SpecifiedGender = p.SpecifiedGender,
+                AllowEmails = p.AllowEmails,
+                IsCustom = p.IsCustom,
+                FirstName = p.FirstName,
+                LastName = p.LastName
+            };
+
+        }
+
     }
 }
