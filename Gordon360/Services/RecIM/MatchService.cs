@@ -116,9 +116,8 @@ namespace Gordon360.Services.RecIM
  
         public MatchExtendedViewModel GetMatchByID(int matchID)
         {
-            var matchTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.StatusID != 0).ToArray();
-
-            if (matchTeams.Length > 2)
+            var teamCount = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.StatusID != 0).Count();
+            if (teamCount > 2)
             {
                 var multiTeamMatch = _context.Match
                 .Where(m => m.ID == matchID && m.StatusID != 0)
