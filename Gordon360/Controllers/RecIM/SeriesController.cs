@@ -159,6 +159,25 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
+        /// Gives last date and number of matches of which the Auto Scheduler will create matches until.
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <param name="request">optional request data, used for additional options on autoscheduling</param>
+        [HttpGet]
+        [Route("{seriesID}/autoschedule")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(int seriesID, UploadScheduleRequest? request)
+        {
+            var req = request ?? new UploadScheduleRequest();
+            var estimate = await _seriesService.GetScheduleMatchesEstimateAsync(seriesID, req);
+            if (estimate is null)
+            {
+                return BadRequest();
+            }
+            return Ok(estimate);
+        }
+
+        /// <summary>
         /// Gets available bracket information for a givaen series
         /// </summary>
         /// <param name="seriesID"></param>
