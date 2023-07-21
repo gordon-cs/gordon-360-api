@@ -30,7 +30,6 @@
         string Instagram,
         string LinkedIn,
         string Handshake,
-        string Calendar,
 
 
         // Student Only

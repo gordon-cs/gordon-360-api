@@ -701,7 +701,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[CREATE_SOCIAL_LINKS] @USERNAME, @FACEBOOK, @TWITTER, @INSTAGRAM, @LINKEDIN, @HANDSHAKE, @CALENDAR", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[CREATE_SOCIAL_LINKS] @USERNAME, @FACEBOOK, @TWITTER, @INSTAGRAM, @LINKEDIN, @HANDSHAKE", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
