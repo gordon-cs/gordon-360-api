@@ -79,7 +79,7 @@ namespace Gordon360.Services.RecIM
                 {
                     ID = mt.MatchID,
                     Scores = mt.Match.MatchTeam
-                        //.Where(mt => mt.StatusID != 0)
+                        .Where(mt => mt.StatusID != 0)
                         .Select(mt => (TeamMatchHistoryViewModel)mt).AsEnumerable(),
                     StartTime = mt.Match.StartTime.SpecifyUtc(),
                     Status = mt.Match.Status.Description,
