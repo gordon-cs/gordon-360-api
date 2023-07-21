@@ -31,7 +31,8 @@ namespace Gordon360.Controllers.RecIM
         {   
             if ( active is bool isActive)
             {
-                var res = _activityService.GetActiveActivities(isActive);
+                bool completed = !isActive;
+                var res = _activityService.GetActivitiesByCompletion(completed);
                 return Ok(res);
 
             }
