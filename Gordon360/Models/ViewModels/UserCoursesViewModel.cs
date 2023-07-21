@@ -9,8 +9,6 @@ namespace Gordon360.Models.ViewModels
     public class UserCoursesViewModel
     {
         public string UserID { get; set; }
-        public int STUDENT_ID { get; set; }
-        public int? INSTRUCTOR_ID { get; set; }
         public string SessionCode { get; set; }
         public string CRS_CDE { get; set; }
         public string CRS_TITLE { get; set; }
@@ -42,8 +40,6 @@ namespace Gordon360.Models.ViewModels
             UserCoursesViewModel vm = new UserCoursesViewModel
             {
                 UserID =course.UserID,
-                STUDENT_ID = course.STUDENT_ID,
-                INSTRUCTOR_ID = course.INSTRUCTOR_ID,
                 SessionCode = code,
                 CRS_CDE = course.CRS_CDE,
                 CRS_TITLE = course.CRS_TITLE,

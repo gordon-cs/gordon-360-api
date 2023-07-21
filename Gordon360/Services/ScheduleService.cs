@@ -108,12 +108,14 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
-
             var allSessions = _sessionService.GetAll();
             var result = Enumerable.Empty<SessionCoursesViewModel>();
             var allSchedule = _context.UserCourses
-                                  .Where(s => s.UserID == account.gordon_id).OrderByDescending(s => s.YR_CDE);
-
+                                  .Where(s => s.UserID == account.gordon_id)                  
+                                  .Select(s => (UserCoursesViewModel)s)
+                                  .ToList()
+                                  .OrderByDescending(course => course.SessionCode)
+                                  .DistinctBy(s => s.CRS_CDE);                        
 
             foreach (SessionViewModel vm in allSessions)
             {
@@ -124,7 +126,7 @@ namespace Gordon360.Services
                         SessionDescription = vm.SessionDescription,
                         SessionBeginDate = vm.SessionBeginDate,
                         SessionEndDate = vm.SessionEndDate,
-                        AllCourses = allSchedule.Select(s => (UserCoursesViewModel)s)
+                        AllCourses = allSchedule.Where(s => s.SessionCode == vm.SessionCode)
                     });
             }
             return result;
