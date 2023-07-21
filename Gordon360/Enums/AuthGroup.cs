@@ -10,6 +10,7 @@
         HousingAdmin,
         NewsAdmin,
         Police,
+        RecIMSuperAdmin,
         SiteAdmin,
         Staff,
         Student
@@ -27,6 +28,7 @@
             "360-HousingAdmin-SG" => AuthGroup.HousingAdmin,
             "360-NewsAdmin-SG" => AuthGroup.NewsAdmin,
             "360-Police-SG" => AuthGroup.Police,
+            "360-RecIMAdmin-SG" => AuthGroup.RecIMSuperAdmin,
             "360-SiteAdmin-SG" => AuthGroup.SiteAdmin,
             "360-Staff-SG" => AuthGroup.Staff,
             "360-Student-SG" => AuthGroup.Student,
