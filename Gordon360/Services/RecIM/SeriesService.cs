@@ -187,8 +187,8 @@ namespace Gordon360.Services.RecIM
             }
             //check for exact schedule existing
             var existingSchedule = _context.SeriesSchedule.FirstOrDefault(ss =>
-                ss.StartTime.TimeOfDay == seriesSchedule.DailyStartTime.TimeOfDay &&
-                ss.EndTime.TimeOfDay == seriesSchedule.DailyEndTime.TimeOfDay &&
+                ss.StartTime.TimeOfDay == seriesSchedule.DailyStartTime.ToDateTime().TimeOfDay &&
+                ss.EndTime.TimeOfDay == seriesSchedule.DailyEndTime.ToDateTime().TimeOfDay &&
                 ss.EstMatchTime == seriesSchedule.EstMatchTime &&
                 ss.Sun == seriesSchedule.AvailableDays.Sun &&
                 ss.Mon == seriesSchedule.AvailableDays.Mon &&
@@ -224,8 +224,8 @@ namespace Gordon360.Services.RecIM
                 Fri = seriesSchedule.AvailableDays.Fri,
                 Sat = seriesSchedule.AvailableDays.Sat,
                 EstMatchTime = seriesSchedule.EstMatchTime,
-                StartTime = seriesSchedule.DailyStartTime,
-                EndTime = seriesSchedule.DailyEndTime
+                StartTime = seriesSchedule.DailyStartTime.ToDateTime(),
+                EndTime = seriesSchedule.DailyEndTime.ToDateTime()
             };
             await _context.SeriesSchedule.AddAsync(schedule);
             await _context.SaveChangesAsync();
@@ -251,8 +251,8 @@ namespace Gordon360.Services.RecIM
             if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
 
             series.Name = update.Name ?? series.Name;
-            series.StartDate = update.StartDate ?? series.StartDate;
-            series.EndDate = update.EndDate ?? series.EndDate;
+            series.StartDate = update.StartDate.ToDateTime() ?? series.StartDate;
+            series.EndDate = update.EndDate.ToDateTime() ?? series.EndDate;
             series.StatusID = update.StatusID ?? series.StatusID;
             series.ScheduleID = update.ScheduleID ?? series.ScheduleID;
             
