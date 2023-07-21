@@ -377,6 +377,112 @@ namespace Gordon360.Services.RecIM
             };
         }
 
+        public async Task<SeriesAutoSchedulerEstimateViewModel> GetScheduleMatchesEstimateAsync(int seriesID, UploadScheduleRequest request)
+        {
+            var series = _context.Series
+                .Include(s => s.Type)
+                .FirstOrDefault(s => s.ID == seriesID);
+            // if the series is deleted, throw exception
+            if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
+
+            // ensure series has surfaces to autoschedule on
+            if (!_context.SeriesSurface.Any(ss => ss.SeriesID == seriesID)) throw new UnprocessibleEntity { ExceptionMessage = "Series has no specified surfaces" };
+
+            var typeCode = series.Type.TypeCode;
+
+            return typeCode switch
+            {
+                "RR" => await ScheduleRoundRobinEst(seriesID, request),
+               /* "SE" => await ScheduleSingleEliminationEst(seriesID),
+                "DE" => await ScheduleDoubleEliminationEst(seriesID),
+                "L" => await ScheduleLadderAsyncEst(seriesID, request),*/
+            _ => null
+            };
+        }
+
+        private async Task<SeriesAutoSchedulerEstimateViewModel> ScheduleRoundRobinEst(int seriesID, UploadScheduleRequest request)
+        {
+            int createdMatches = 0;
+            var series = _context.Series
+                .Include(s => s.SeriesSurface)
+                .Include(s => s.Schedule)
+                .FirstOrDefault(s => s.ID == seriesID);
+            var teams = _context.SeriesTeam
+                .Include(s => s.Team)
+                .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
+                .Select(st => st.TeamID)
+                .ToList();
+
+            int numCycles = request.RoundRobinMatchCapacity ?? teams.Count + 1 - teams.Count % 2;
+            //algorithm requires odd number of teams
+            if (teams.Count() % 2 == 0)
+                teams.Add(-1);//-1 is not a valid true team ID thus will act as dummy team
+
+            SeriesScheduleViewModel schedule = series.Schedule;
+            var availableSurfaces = series.SeriesSurface.ToArray();
+
+            //day = starting datetime accurate to minute and seconds based on scheduler
+            var day = series.StartDate;
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
+                .SpecifyUtc();
+            string dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+            // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
+            var end = schedule.EndTime.SpecifyUtc().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().TimeOfDay;
+            var shouldAddDay = new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0;
+            DateTime scheduleEndTime = day.AddDays(shouldAddDay);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                .SpecifyUtc();
+
+            int surfaceIndex = 0;
+            for (int cycles = 0; cycles < numCycles; cycles++)
+            {
+                int i = 0;
+                int j = teams.Count - 1;
+                while (i < j) //middlepoint algorithm to match opposite teams
+                {
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
+                    }
+
+                    //ensure matchtime is in an available day will be a "bug" if the match goes beyond 12AM
+                    //minor bug as it just means that some games will be scheduled on the next possible day
+                    //even if they are "hypothetically" able to play on the original day
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start).SpecifyUtc();
+                        scheduleEndTime = new DateTime(day.Year, day.Month, day.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                            .AddDays(shouldAddDay)
+                            .SpecifyUtc();
+                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
+
+                    var teamIDs = new List<int>() { teams[i], teams[j] };
+                    if (!teamIDs.Contains(-1))
+                    {
+                        createdMatches++;
+                        surfaceIndex++;
+                    }
+                    i++;
+                    j--;
+                }
+                var temp = teams[0];
+                teams.Add(temp);
+                teams.RemoveAt(0);
+            }
+            return new SeriesAutoSchedulerEstimateViewModel()
+            {
+                SeriesID = seriesID,
+                Name = series.Name,
+                EndDate = day,
+                GamesCreated = createdMatches
+            };
+        }
+
         private async Task<IEnumerable<MatchViewModel>> ScheduleRoundRobin(int seriesID, UploadScheduleRequest request)
         {
             var createdMatches = new List<MatchViewModel>();
