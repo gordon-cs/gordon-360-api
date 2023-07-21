@@ -17,6 +17,7 @@ namespace Gordon360.Models.CCT
         public int SeriesID { get; set; }
         public int WinCount { get; set; }
         public int LossCount { get; set; }
+        public int TieCount { get; set; }
 
         [ForeignKey("SeriesID")]
         [InverseProperty("SeriesTeam")]
