@@ -69,69 +69,9 @@ namespace Gordon360.Services.RecIM
 
         public ParticipantExtendedViewModel GetParticipantByUsername(string username, string? roleType = null)
         {
-            string? accountEmail = null;
-            try
-            {
-                accountEmail = _accountService.GetAccountByUsername(username).Email;
-            }
-            catch
-            {
-                // if exception is thrown, we know that this was a manually added participant
-            }
-            // This is Participant left join CustomParticipant left join Student
-            //  left join FacStaff to get each participant's firstname and lastname
-            var participant = from new_ps in (from p in ((from p in _context.Participant
-                                              join cp in _context.CustomParticipant on p.Username equals cp.Username into cpp_join
-                                              from cpp in cpp_join.DefaultIfEmpty()
-                                              where p.Username == username
-                                              select new
-                                              {
-                                                    Username = p.Username,
-                                                    IsAdmin = p.IsAdmin,
-                                                    AllowEmails = p.AllowEmails,
-                                                    Email = cpp.Email,
-                                                    SpecifiedGender = p.SpecifiedGender,
-                                                    IsCustom = p.IsCustom,
-                                                    FirstName = cpp.FirstName,
-                                                    LastName = cpp.LastName,
-                                               }))
-                              join s in _context.Student on p.Username equals s.AD_Username into ps_join
-                              from ps in ps_join.DefaultIfEmpty()
-                              select new
-                              {
-                                    Username = p.Username,
-                                    IsAdmin = p.IsAdmin,
-                                    AllowEmails = p.AllowEmails,
-                                    Email = p.Email,
-                                    SpecifiedGender = p.SpecifiedGender,
-                                    IsCustom = p.IsCustom,
-                                    FirstName = p.FirstName ?? ps.FirstName,
-                                    LastName = p.LastName ?? ps.LastName,
-                               })
-                               join fs in _context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
-                               from psfs in psfs_join.DefaultIfEmpty()
-                               select new ParticipantExtendedViewModel
-                               {
-                                   Username = new_ps.Username,
-                                   IsAdmin = new_ps.IsAdmin,
-                                   Status = (from psh in _context.ParticipantStatusHistory
-                                             join pstatus in _context.ParticipantStatus on psh.StatusID equals pstatus.ID
-                                             where psh.ParticipantUsername == new_ps.Username
-                                             orderby psh.ID descending
-                                             select new
-                                             {
-                                                 Description = pstatus.Description
-                                             }
-                                            ).FirstOrDefault().Description,
-                                   AllowEmails = new_ps.AllowEmails ?? true,
-                                   Email = new_ps.Email,
-                                   SpecifiedGender = new_ps.SpecifiedGender,
-                                   IsCustom = new_ps.IsCustom,
-                                   FirstName = new_ps.FirstName ?? psfs.FirstName,
-                                   LastName = new_ps.LastName ?? psfs.LastName,
-                                   Role = roleType,
-                               };
-            return participant.First();
+            ParticipantExtendedViewModel participant = _context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
+            participant.Role = roleType;
+            return participant;
         }
 
         public async Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM)
@@ -275,10 +215,10 @@ namespace Gordon360.Services.RecIM
         public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
         {
             // Find gender
-            
-            var student = _context.Student.Where(s => s.AD_Username == username).FirstOrDefault();
-            var facstaff = _context.FacStaff.Where(fs => fs.AD_Username == username).FirstOrDefault();
-            string user_gender = student?.Gender ?? facstaff?.Gender ?? "U";
+            string user_gender = 
+                _context.Student.FirstOrDefault(s => s.AD_Username == username)?.Gender ?? 
+                _context.FacStaff.FirstOrDefault(fs => fs.AD_Username == username)?.Gender ?? 
+                "U";
 
             await _context.Participant.AddAsync(new Participant
             {

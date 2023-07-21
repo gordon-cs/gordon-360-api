@@ -88,9 +88,9 @@ namespace Gordon360.Services.RecIM
                 });
             return activities;
         }
-        public IEnumerable<ActivityExtendedViewModel> GetActiveActivities(bool isActive)
+        public IEnumerable<ActivityExtendedViewModel> GetActivitiesByCompletion(bool isCompleted)
         {
-            return GetActivities().Where(a => !a.Completed == isActive);
+            return GetActivities().Where(a => a.Completed == isCompleted);
         }
 
         public ActivityExtendedViewModel? GetActivityByID(int activityID)

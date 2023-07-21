@@ -49,8 +49,8 @@
             <summary>
             Return a list of accounts matching some or all of the search parameter.
             </summary>
-            <param name="firstnameSearch">The firstname portion of the search</param>
-            <param name="lastnameSearch">The lastname portion of the search</param>
+            <param name="firstName">The firstname portion of the search</param>
+            <param name="lastName">The lastname portion of the search</param>
             <returns> All accounts matching some or all of both the firstname and lastname parameters, sorted by how well the account matched the search.</returns>
         </member>
         <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String)">

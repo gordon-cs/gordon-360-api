@@ -33,7 +33,7 @@ namespace Gordon360.Services
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
-        Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
+        Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content);
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
@@ -43,6 +43,7 @@ namespace Gordon360.Services
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
+        IEnumerable<string> GetMailStopsAsync();
     }
 
     public interface IAddressesService
@@ -90,7 +91,9 @@ namespace Gordon360.Services
             string? involvement);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
-        ParallelQuery<BasicInfoViewModel> applySearchLogic(string searchString, IEnumerable<BasicInfoViewModel> accounts);
+        ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
+        ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts);
+
     }
 
     public interface IWellnessService
@@ -237,6 +240,7 @@ namespace Gordon360.Services
     {
         Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username, string? sessionID = null);
         Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username, string? sessionID = null);
+        Task<IEnumerable<SessionCoursesViewModel>> GetAllCourses(string username);
     }
 
     public interface IScheduleControlService
@@ -324,7 +328,7 @@ namespace Gordon360.Services
             IEnumerable<LookupViewModel>? GetActivityLookup(string type);
             IEnumerable<ActivityExtendedViewModel> GetActivities();
             ActivityExtendedViewModel? GetActivityByID(int activityID);
-            IEnumerable<ActivityExtendedViewModel> GetActiveActivities(bool isActive);
+            IEnumerable<ActivityExtendedViewModel> GetActivitiesByCompletion(bool isActive);
             Task<RecIMActivityViewModel> UpdateActivityAsync(int activytID, ActivityPatchViewModel updatedActivity);
             Task<RecIMActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
             Task<ParticipantActivityViewModel> AddParticipantActivityInvolvementAsync(string username, int activityID, int privTypeID, bool isFreeAgent);

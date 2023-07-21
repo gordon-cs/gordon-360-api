@@ -27,5 +27,8 @@ namespace Gordon360.Models.CCT
         public string handshake { get; set; }
         [Unicode(false)]
         public string calendar { get; set; }
+        [StringLength(4)]
+        [Unicode(false)]
+        public string PlannedGradYear { get; set; }
     }
 }
