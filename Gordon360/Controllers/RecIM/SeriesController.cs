@@ -125,6 +125,22 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
+        /// Updates team record manually (mitigates potential bugs)
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <param name="update">Updated team record</param>
+        /// <returns>updated team record</returns>
+        [HttpPatch]
+        [Route("{seriesID}/teamrecord")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult<TeamRecordViewModel>> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel update)
+        {
+            var record = await _seriesService.UpdateSeriesTeamRecordAsync(seriesID ,update);
+            return Ok(record);
+
+        }
+
+        /// <summary>
         /// Cascade deletes all DBobjects related to given Series ID
         /// </summary>
         /// <param name="seriesID"></param>
