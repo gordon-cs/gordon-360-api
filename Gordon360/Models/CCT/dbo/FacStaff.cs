@@ -75,7 +75,7 @@ namespace Gordon360.Models.CCT
         [StringLength(15)]
         [Unicode(false)]
         public string HomePhone { get; set; }
-        [StringLength(1)]
+        [StringLength(15)]
         [Unicode(false)]
         public string HomeFax { get; set; }
         [Required]
