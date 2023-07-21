@@ -694,9 +694,9 @@
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetVisibilityGroup">
             <summary>
-            Return a list buildings.
+            Return a list visibility groups.
             </summary>
-            <returns> All buildings</returns>
+            <returns> All visibility groups (Public, FacStaff, Private)</returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMailStop(System.String)">
             <summary>
@@ -1234,6 +1234,12 @@
              Gets all schedule objects for a user
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
+            <summary>
+             Gets all session objects for a user
+            </summary>
+            <returns>A IEnumerable of session objects as well as the schedules</returns>
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
             <summary>
@@ -2600,6 +2606,13 @@
             <param name="username">The AD Username of the instructor</param>
             <param name="sessionID">The selected session of the instructor</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllCourses(System.String)">
+            <summary>
+            Fetch the session item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>SessionCoursesViewModel if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>
