@@ -26,6 +26,8 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
         public virtual DbSet<ActivityType> ActivityType { get; set; }
+        public virtual DbSet<AffiliationPoints> AffiliationPoints { get; set; }
+        public virtual DbSet<Affiliations> Affiliations { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<Birthdays> Birthdays { get; set; }
         public virtual DbSet<Buildings> Buildings { get; set; }
@@ -101,6 +103,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Statistic> Statistic { get; set; }
         public virtual DbSet<Student> Student { get; set; }
         public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
+        public virtual DbSet<SuperAdmin> SuperAdmin { get; set; }
         public virtual DbSet<Surface> Surface { get; set; }
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<TeamStatus> TeamStatus { get; set; }
@@ -165,6 +168,17 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.TypeID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Activity_ActivityType");
+            });
+
+            modelBuilder.Entity<AffiliationPoints>(entity =>
+            {
+                entity.HasKey(e => new { e.AffiliationName, e.ActivityID });
+
+                entity.HasOne(d => d.AffiliationNameNavigation)
+                    .WithMany(p => p.AffiliationPoints)
+                    .HasForeignKey(d => d.AffiliationName)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AffiliationPoints_Affiliations");
             });
 
             modelBuilder.Entity<Alumni>(entity =>
@@ -415,8 +429,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
-
-                entity.Property(e => e.USER_NAME).IsFixedLength();
             });
 
             modelBuilder.Entity<MYSCHEDULE>(entity =>
@@ -745,6 +757,15 @@ namespace Gordon360.Models.CCT.Context
                     .HasName("PK_StudentNewsExpiration_SNID");
 
                 entity.Property(e => e.SNID).ValueGeneratedNever();
+            });
+
+            modelBuilder.Entity<SuperAdmin>(entity =>
+            {
+                entity.HasOne(d => d.usernameNavigation)
+                    .WithOne(p => p.SuperAdmin)
+                    .HasForeignKey<SuperAdmin>(d => d.username)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_SuperAdmin_Participant");
             });
 
             modelBuilder.Entity<Team>(entity =>

@@ -147,6 +147,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[RecIM].[AffiliationPoints]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[Affiliations]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[CustomParticipant]",
          "ObjectType": 0
       },
@@ -236,6 +244,10 @@
       },
       {
          "Name": "[RecIM].[Statistic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[SuperAdmin]",
          "ObjectType": 0
       },
       {
@@ -807,7 +819,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "SQLTrain1.CCT",
+   "UiHint": "sqltrain1.CCT.dbo",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDbContextSplitting": false,

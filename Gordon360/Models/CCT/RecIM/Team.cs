@@ -30,6 +30,9 @@ namespace Gordon360.Models.CCT
         [StringLength(128)]
         [Unicode(false)]
         public string Logo { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Affiliation { get; set; }
 
         [ForeignKey("ActivityID")]
         [InverseProperty("Team")]

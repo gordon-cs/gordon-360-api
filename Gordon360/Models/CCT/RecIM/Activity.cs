@@ -43,6 +43,8 @@ namespace Gordon360.Models.CCT
         [Column(TypeName = "datetime")]
         public DateTime? EndDate { get; set; }
         public int? SeriesScheduleID { get; set; }
+        public int Points { get; set; }
+        public int? WinnerID { get; set; }
 
         [ForeignKey("SeriesScheduleID")]
         [InverseProperty("Activity")]
