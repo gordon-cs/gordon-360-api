@@ -113,9 +113,8 @@ namespace Gordon360.Services
             var allSchedule = _context.UserCourses
                                   .Where(s => s.UserID == account.gordon_id)                  
                                   .Select(s => (UserCoursesViewModel)s)
-                                  .ToList()
-                                  .OrderByDescending(course => course.SessionCode)
-                                  .DistinctBy(s => s.CRS_CDE);                        
+                                  .ToList()          
+                                  .OrderByDescending(course => course.SessionCode);                        
 
             foreach (SessionViewModel vm in allSessions)
             {
@@ -126,7 +125,7 @@ namespace Gordon360.Services
                         SessionDescription = vm.SessionDescription,
                         SessionBeginDate = vm.SessionBeginDate,
                         SessionEndDate = vm.SessionEndDate,
-                        AllCourses = allSchedule.Where(s => s.SessionCode == vm.SessionCode)
+                        AllCourses = allSchedule.Where(s => s.SessionCode == vm.SessionCode).DistinctBy(c => c.CRS_CDE)
                     });
             }
             return result;
