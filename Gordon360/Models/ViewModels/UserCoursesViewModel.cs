@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Graph;
 using System;
+using System.Linq;
 using System.Runtime.Serialization.Formatters;
 
 namespace Gordon360.Models.ViewModels
@@ -26,15 +27,18 @@ namespace Gordon360.Models.ViewModels
         public static implicit operator UserCoursesViewModel(UserCourses course)
         {
             var code = course.YR_CDE;
-            if(course.TRM_CDE == "FA")
+
+            switch (course.TRM_CDE)
             {
-                code += "09";
-            } else if (course.TRM_CDE == "SP")
-            {
-                code += "01";
-            } else
-            {
-                code += "05";
+                case "FA":
+                    code += "09";
+                    break;
+                case "SP":
+                    code = (Int32.Parse(code) + 1).ToString() + "01";
+                    break;
+                default:
+                    code = (Int32.Parse(code) + 1).ToString() + "05";
+                    break;
             }
 
             UserCoursesViewModel vm = new UserCoursesViewModel

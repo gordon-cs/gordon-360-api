@@ -7,7 +7,6 @@ using Microsoft.Graph.CallRecords;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Gordon360.Services
 {
@@ -113,7 +112,7 @@ namespace Gordon360.Services
             var allSchedule = _context.UserCourses
                                   .Where(s => s.UserID == account.gordon_id)                  
                                   .Select(s => (UserCoursesViewModel)s)
-                                  .ToList()          
+                                  .AsEnumerable()        
                                   .OrderByDescending(course => course.SessionCode);                        
 
             foreach (SessionViewModel vm in allSessions)
