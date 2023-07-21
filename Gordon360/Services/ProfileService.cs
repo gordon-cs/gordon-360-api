@@ -246,17 +246,13 @@ namespace Gordon360.Services
 
             if (original == null)
             {
-                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = links.calendar, facebook = links.facebook, twitter = links.twitter, instagram = links.instagram, linkedin = links.linkedin, handshake = links.handshake });
+                await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, facebook = links.facebook, twitter = links.twitter, instagram = links.instagram, linkedin = links.linkedin, handshake = links.handshake, calendar = links.calendar, });
             }
             else
             {
 
                 switch (type)
                 {
-                    case "calendar":
-                        original.calendar = links.calendar;
-                        break;
-
                     case "facebook":
                         original.facebook = links.facebook;
                         break;
@@ -275,6 +271,10 @@ namespace Gordon360.Services
 
                     case "handshake":
                         original.handshake = links.handshake;
+                        break;
+
+                    case "calendar":
+                        original.calendar = links.calendar;
                         break;
                 }
             }
