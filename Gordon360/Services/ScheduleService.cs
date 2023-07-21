@@ -7,6 +7,7 @@ using Microsoft.Graph.CallRecords;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Gordon360.Services
 {
@@ -102,13 +103,16 @@ namespace Gordon360.Services
         public async Task<IEnumerable<SessionCoursesViewModel>> GetAllCourses(string username)
         {
             var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            var allSessions = _sessionService.GetAll();
-            var result = Enumerable.Empty<SessionCoursesViewModel>();
 
             if (account == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
             }
+
+            var allSessions = _sessionService.GetAll();
+            var result = Enumerable.Empty<SessionCoursesViewModel>();
+            var allSchedule = _context.UserCourses
+                                  .Where(s => s.UserID == account.gordon_id).OrderByDescending(s => s.YR_CDE);
 
 
             foreach (SessionViewModel vm in allSessions)
@@ -120,11 +124,7 @@ namespace Gordon360.Services
                         SessionDescription = vm.SessionDescription,
                         SessionBeginDate = vm.SessionBeginDate,
                         SessionEndDate = vm.SessionEndDate,
-                        //The case for "ALUMNI" does not work at the moment currently, but it doesn't affect the code,
-                        //and might be used in the future, so we decided to leave it in.
-                        AllCourses = account.account_type == "STUDENT" || account.account_type == "ALUMNI" 
-                            ? await GetScheduleStudentAsync(username, vm.SessionCode) 
-                            : await GetScheduleFacultyAsync(username, vm.SessionCode),
+                        AllCourses = allSchedule.Select(s => (UserCoursesViewModel)s)
                     });
             }
             return result;
