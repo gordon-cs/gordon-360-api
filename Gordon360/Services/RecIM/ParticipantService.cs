@@ -275,10 +275,10 @@ namespace Gordon360.Services.RecIM
         public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
         {
             // Find gender
-            
-            var student = _context.Student.Where(s => s.AD_Username == username).FirstOrDefault();
-            var facstaff = _context.FacStaff.Where(fs => fs.AD_Username == username).FirstOrDefault();
-            string user_gender = student?.Gender ?? facstaff?.Gender ?? "U";
+            string user_gender = 
+                _context.Student.FirstOrDefault(s => s.AD_Username == username)?.Gender ?? 
+                _context.FacStaff.FirstOrDefault(fs => fs.AD_Username == username)?.Gender ?? 
+                "U";
 
             await _context.Participant.AddAsync(new Participant
             {
