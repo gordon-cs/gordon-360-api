@@ -807,7 +807,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "SQLTrain1.CCT",
+   "UiHint": "sqltrain1.CCT.dbo",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDbContextSplitting": false,

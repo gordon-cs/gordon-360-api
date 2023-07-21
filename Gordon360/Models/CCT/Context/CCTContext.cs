@@ -415,8 +415,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
-
-                entity.Property(e => e.USER_NAME).IsFixedLength();
             });
 
             modelBuilder.Entity<MYSCHEDULE>(entity =>

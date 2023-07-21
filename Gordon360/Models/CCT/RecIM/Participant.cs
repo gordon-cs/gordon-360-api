@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT
 {
     [Table("Participant", Schema = "RecIM")]
-    [Index("Username", "IsCustom", Name = "Unique_Participant", IsUnique = true)]
     public partial class Participant
     {
         public Participant()
