@@ -69,7 +69,9 @@ namespace Gordon360.Services.RecIM
 
         public ParticipantExtendedViewModel GetParticipantByUsername(string username, string? roleType = null)
         {
-            return _context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
+            ParticipantExtendedViewModel participant = _context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
+            participant.Role = roleType;
+            return participant;
         }
 
         public async Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM)
