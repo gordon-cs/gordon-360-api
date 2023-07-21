@@ -79,6 +79,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<ParticipantStatus> ParticipantStatus { get; set; }
         public virtual DbSet<ParticipantStatusHistory> ParticipantStatusHistory { get; set; }
         public virtual DbSet<ParticipantTeam> ParticipantTeam { get; set; }
+        public virtual DbSet<ParticipantView> ParticipantView { get; set; }
         public virtual DbSet<Police> Police { get; set; }
         public virtual DbSet<PrivType> PrivType { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
@@ -603,6 +604,13 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.ParticipantTeam)
                     .HasForeignKey(d => d.TeamID)
                     .HasConstraintName("FK_ParticipantTeam_Team");
+            });
+
+            modelBuilder.Entity<ParticipantView>(entity =>
+            {
+                entity.ToView("ParticipantView", "RecIM");
+
+                entity.Property(e => e.SpecifiedGender).IsFixedLength();
             });
 
             modelBuilder.Entity<Police>(entity =>
