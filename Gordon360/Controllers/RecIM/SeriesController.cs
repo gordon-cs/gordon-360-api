@@ -125,6 +125,22 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
+        /// Updates team record manually (mitigates potential bugs)
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <param name="update">Updated team record</param>
+        /// <returns>updated team record</returns>
+        [HttpPatch]
+        [Route("{seriesID}/teamrecord")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult<TeamRecordViewModel>> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel update)
+        {
+            var record = await _seriesService.UpdateSeriesTeamRecordAsync(seriesID ,update);
+            return Ok(record);
+
+        }
+
+        /// <summary>
         /// Cascade deletes all DBobjects related to given Series ID
         /// </summary>
         /// <param name="seriesID"></param>
@@ -156,6 +172,25 @@ namespace Gordon360.Controllers.RecIM
                 return BadRequest();
             }
             return Ok(createdMatches);
+        }
+
+        /// <summary>
+        /// Gives last date and number of matches of which the Auto Scheduler will create matches until.
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <param name="request">optional request data, used for additional options on autoscheduling</param>
+        [HttpGet]
+        [Route("{seriesID}/autoschedule")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(int seriesID, UploadScheduleRequest? request)
+        {
+            var req = request ?? new UploadScheduleRequest();
+            var estimate = _seriesService.GetScheduleMatchesEstimateAsync(seriesID, req);
+            if (estimate is null)
+            {
+                return BadRequest();
+            }
+            return Ok(estimate);
         }
 
         /// <summary>

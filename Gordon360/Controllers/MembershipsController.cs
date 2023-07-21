@@ -34,25 +34,22 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.MEMBERSHIP)]
         public ActionResult<IEnumerable<MembershipView>> GetMemberships(string? involvementCode = null, string? username = null, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
         {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
+
             var memberships = _membershipService.GetMemberships(
                 activityCode: involvementCode,
                 username: username,
                 sessionCode: sessionCode,
                 participationTypes: participationTypes);
 
-            if (username is not null)
+            // Only user, siteAdmin and Police can see all the user's memberships.
+            if (
+              (username is null || username != authenticatedUserUsername)
+              && !(viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
+              )
             {
-                var authenticatedUserUsername = AuthUtils.GetUsername(User);
-                var viewerGroups = AuthUtils.GetGroups(User);
-
-                // User can see all their own memberships. SiteAdmin and Police can see all of anyone's memberships
-                if (!(username == authenticatedUserUsername
-                    || viewerGroups.Contains(AuthGroup.SiteAdmin)
-                    || viewerGroups.Contains(AuthGroup.Police)
-                    ))
-                {
-                    memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
-                }
+                memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
             }
 
             return Ok(memberships);
@@ -79,21 +76,6 @@ namespace Gordon360.Controllers
                     participationTypes: participationTypes)
                 .Count();
 
-
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Gets the memberships of the given user
-        /// </summary>
-        /// <param name="username"> username filter </param>
-        /// <returns>The number of followers of the activity</returns>
-        [HttpGet]
-        [Route("student/{username}")]
-        [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)] // not sure why
-        public ActionResult<int> GetMembershipsOfUser(string username)
-        {
-            var result = _membershipService.GetMemberships(username: username, sessionCode: "*");
 
             return Ok(result);
         }

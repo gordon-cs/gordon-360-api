@@ -6,15 +6,18 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.webSQL.Models
+namespace Gordon360.Models.CCT
 {
-    [Table("account_profile")]
-    public partial class account_profile
+    [Table("SuperAdmin", Schema = "RecIM")]
+    public partial class SuperAdmin
     {
         [Key]
-        public int account_id { get; set; }
-        [StringLength(8000)]
+        [StringLength(50)]
         [Unicode(false)]
-        public string office_hours { get; set; }
+        public string username { get; set; }
+
+        [ForeignKey("username")]
+        [InverseProperty("SuperAdmin")]
+        public virtual Participant usernameNavigation { get; set; }
     }
 }
