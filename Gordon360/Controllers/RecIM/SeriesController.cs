@@ -169,7 +169,7 @@ namespace Gordon360.Controllers.RecIM
         public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(int seriesID, UploadScheduleRequest? request)
         {
             var req = request ?? new UploadScheduleRequest();
-            var estimate = await _seriesService.GetScheduleMatchesEstimateAsync(seriesID, req);
+            var estimate = _seriesService.GetScheduleMatchesEstimateAsync(seriesID, req);
             if (estimate is null)
             {
                 return BadRequest();

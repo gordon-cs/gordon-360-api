@@ -394,8 +394,8 @@ namespace Gordon360.Services.RecIM
             {
                 "RR" => ScheduleRoundRobinEst(seriesID, request),
                 "SE" => ScheduleSingleEliminationEst(seriesID),
-               /* "DE" => await ScheduleDoubleEliminationEst(seriesID),
-                "L" => await ScheduleLadderAsyncEst(seriesID, request),*/
+               "DE" => ScheduleDoubleEliminationEst(seriesID),
+               /*  "L" => await ScheduleLadderAsyncEst(seriesID, request),*/
             _ => null
             };
         }
@@ -644,7 +644,174 @@ namespace Gordon360.Services.RecIM
             }
             return createdMatches;
         }
-        
+
+        private SeriesAutoSchedulerEstimateViewModel ScheduleDoubleEliminationEst(int seriesID)
+        {
+            int createdMatches = 0;
+            var series = _context.Series
+                .Include(s => s.Schedule)
+                .FirstOrDefault(s => s.ID == seriesID);
+            var teams = _context.SeriesTeam
+                .Include(s => s.Team)
+                .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
+                .OrderByDescending(st => st.WinCount);
+
+
+            // seriesschedule casts start and end time to utc
+            SeriesScheduleViewModel schedule = series.Schedule;
+
+            var availableSurfaces = _context.SeriesSurface
+                                        .Where(ss => ss.SeriesID == seriesID)
+                                        .ToArray();
+
+            var day = series.StartDate;
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
+                .SpecifyUtc();
+            string dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+            // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
+            var end = schedule.EndTime.SpecifyUtc().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                .SpecifyUtc();
+
+            int surfaceIndex = 0;
+
+            //schedule play-in + first round
+            var elimScheduler = ScheduleElimRoundEst(teams);
+            int teamsInNextRound = elimScheduler.TeamsInNextRound;
+            var matchIDs = elimScheduler.Match.Select(m => m.ID);
+            int numPlayInMatches = elimScheduler.NumByeTeams == 0 ? 0 : matchIDs.Count() - elimScheduler.TeamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
+            int numOfBracketParticipatingTeams = elimScheduler.NumByeTeams == 0 ? elimScheduler.TeamsInNextRound * 2 : elimScheduler.TeamsInNextRound; // play-in teams do not count
+            // at this point first round matches have been made, bye round matches have been made
+
+
+            foreach (var matchID in matchIDs)
+            {
+                if (surfaceIndex == availableSurfaces.Length)
+                {
+                    surfaceIndex = 0;
+                    day = day.AddMinutes(schedule.EstMatchTime + 15);
+                }
+                while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+
+                {
+                    day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                    scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                    dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                    surfaceIndex = 0;
+                }
+                createdMatches++;
+                surfaceIndex++;
+            }
+
+            //create matches for remaining rounds 
+            int roundNumber = 2; //scheduleElimRound will auto schedule the first 2 rounds for bracketing
+            while (teamsInNextRound > 1)
+            {
+                //reset between rounds + prime the pump from first round
+                day = day.AddDays(1);
+                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                surfaceIndex = 0;
+
+                for (int i = 0; i < teamsInNextRound / 2; i++)
+                {
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);
+                    }
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                        surfaceIndex = 0;
+                    }
+                    createdMatches++;
+                    surfaceIndex++;
+                }
+                roundNumber++;
+                teamsInNextRound /= 2;
+            }
+            //current solution: losers bracket will be played in the time between winners finals -> grandfinals
+            int j = 0;
+            roundNumber = 0;
+            while (numOfBracketParticipatingTeams > 0)
+            {
+                //reset between rounds + prime the pump from first round
+                day = day.AddDays(1);
+                day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                surfaceIndex = 0;
+
+
+                // - losers bracket alternates between matches among the teams of the lower bracket and teams that JUST lost from the winners side
+                for (int i = 0; i < numOfBracketParticipatingTeams / (j % 2 == 0 ? 2 : 1); i++)
+                {
+                    if (surfaceIndex == availableSurfaces.Length)
+                    {
+                        surfaceIndex = 0;
+                        day = day.AddMinutes(schedule.EstMatchTime + 15);
+                    }
+                    while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                    {
+                        day = day.AddDays(1);
+                        day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                        scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                        dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                        surfaceIndex = 0;
+
+                        createdMatches++;
+                        surfaceIndex++;
+                    }
+                }
+                numOfBracketParticipatingTeams /= (j % 2 == 0 ? 2 : 1);
+                j++;
+                roundNumber++;
+            }
+
+            // GRAND FINALS (played on the same day [if possible] as the losers bracket)
+            for (int i = 1; i < 3; i++)
+            {
+                if (surfaceIndex == availableSurfaces.Length)
+                {
+                    surfaceIndex = 0;
+                    day = day.AddMinutes(schedule.EstMatchTime + 15);
+                }
+                while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                {
+                    day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start);
+                    scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                    dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                    surfaceIndex = 0;
+                }
+
+                createdMatches++;
+                surfaceIndex++;
+            }
+
+            return new SeriesAutoSchedulerEstimateViewModel()
+            {
+                SeriesID = seriesID,
+                Name = series.Name,
+                EndDate = day,
+                GamesCreated = createdMatches
+            };
+        }
+
         /// <summary>
         /// Current double elimination autoscheduling will consider "play-in" as a "play-in" tournament
         /// Losers of the play in do not count for the double elimination bracket.
@@ -903,7 +1070,7 @@ namespace Gordon360.Services.RecIM
             int surfaceIndex = 0;
 
             //schedule first round
-            var elimScheduler = ScheduleElimRoundEstAsync(teams);
+            var elimScheduler = ScheduleElimRoundEst(teams);
             int teamsInNextRound = elimScheduler.TeamsInNextRound;
             var matchIDs = elimScheduler.Match.Select(es => es.ID);
             //int numPlayInMatches = elimScheduler.NumByeTeams == 0 ? 0 : matchIDs.Count() - teamsInNextRound; // uncomment this if we decide that there should be a break day between non-byes and official bracket
@@ -1089,7 +1256,7 @@ namespace Gordon360.Services.RecIM
             return createdMatches;
         }
 
-        private EliminationRound ScheduleElimRoundEstAsync(IEnumerable<SeriesTeam> involvedTeams, bool isLosers = false)
+        private EliminationRound ScheduleElimRoundEst(IEnumerable<SeriesTeam> involvedTeams, bool isLosers = false)
         {
             MatchViewModel dummyMatch = new()
             {
