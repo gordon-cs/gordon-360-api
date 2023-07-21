@@ -249,16 +249,18 @@ namespace Gordon360.Services
             if (original == null)
             {
                 await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = content.calendar, facebook = content.facebook, twitter = content.twitter, instagram = content.instagram, linkedin = content.linkedin, handshake = content.handshake, PlannedGradYear = content.PlannedGradYear });
+
             }
             else
             {
 
                 switch (type)
                 {
+
                     case "calendar":
                         original.calendar = content.calendar;
                         break;
-
+                        
                     case "facebook":
                         original.facebook = content.facebook;
                         break;
@@ -369,6 +371,26 @@ namespace Gordon360.Services
             var acccount = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
             var user = _webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
             user.office_hours = newHours;
+            await _webSQLContext.SaveChangesAsync();
+
+            return profile;
+        }
+
+        /// <summary>
+        /// mail location setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose mail location is to be updated </param>
+        /// <param name="newMail">The new mail location to update the user's mail location to</param>
+        /// <returns>updated fac/staff profile if found</returns>
+        public async Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail)
+        {
+            var profile = GetFacultyStaffProfileByUsername(username);
+            if (profile == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            }
+            var user = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+            user.mail_server = newMail;
             await _webSQLContext.SaveChangesAsync();
 
             return profile;
@@ -492,6 +514,12 @@ namespace Gordon360.Services
                 MergeArrayHandling = MergeArrayHandling.Union
             });
             return profile;
+        }
+
+        public IEnumerable<string> GetMailStopsAsync()
+        {
+            return _webSQLContext.Mailstops.Select(m => m.code)
+                           .OrderBy(d => d);
         }
     }
 }

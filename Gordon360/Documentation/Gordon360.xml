@@ -414,13 +414,6 @@
             <param name="participationTypes">Optional list of participation types that should be retrieved. Defaults to all participation types.</param>
             <returns>The number of followers of the activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsOfUser(System.String)">
-            <summary>
-            Gets the memberships of the given user
-            </summary>
-            <param name="username"> username filter </param>
-            <returns>The number of followers of the activity</returns>
-        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMembershipsForActivityAndSession(System.String,System.String)">
             <summary>
             Get all the memberships associated with a given activity
@@ -686,6 +679,13 @@
             <param name="value">office hours</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateMailStop(System.String)">
+            <summary>
+            Update mail location
+            </summary>
+            <param name="value">mail location</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
             <summary>
             Update privacy of mobile phone number
@@ -737,6 +737,12 @@
             </summary>
             <param name="username">The Student Username</param>
             <returns>The history of that user's membership in involvements</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetMailStops">
+            <summary>
+            Return a list of mail destinations' descriptions.
+            </summary>
+            <returns> All Mail Destinations</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean)">
             <summary>Gets a list of all Activities by parameter </summary>
@@ -2400,6 +2406,14 @@
             </summary>
             <param name="username"> The username for the user whose office hours is to be updated </param>
             <param name="newHours">The new hours to update the user's office hours to</param>
+            <returns>updated fac/staff profile if found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateMailStopAsync(System.String,System.String)">
+            <summary>
+            mail location setting
+            </summary>
+            <param name="username"> The username for the user whose mail location is to be updated </param>
+            <param name="newMail">The new mail location to update the user's mail location to</param>
             <returns>updated fac/staff profile if found</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacyAsync(System.String,System.String)">

@@ -23,7 +23,6 @@
             "salt",
             "SSN",
             "barcode",
-            "mail_server",
             "account_type",
             "access_list",
             "policy",
