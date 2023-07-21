@@ -516,9 +516,9 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Return a list buildings.
+        /// Return a list visibility groups.
         /// </summary>
-        /// <returns> All buildings</returns>
+        /// <returns> All visibility groups (Public, FacStaff, Private)</returns>
         [HttpGet]
         [Route("visibility_group")]
         public ActionResult<IEnumerable<string>> GetVisibilityGroup()
