@@ -394,8 +394,8 @@ namespace Gordon360.Services.RecIM
             {
                 "RR" => ScheduleRoundRobinEst(seriesID, request),
                 "SE" => ScheduleSingleEliminationEst(seriesID),
-               "DE" => ScheduleDoubleEliminationEst(seriesID),
-               /*  "L" => await ScheduleLadderAsyncEst(seriesID, request),*/
+                "DE" => ScheduleDoubleEliminationEst(seriesID),
+                "L" =>  ScheduleLadderEst(seriesID, request),
             _ => null
             };
         }
@@ -565,6 +565,82 @@ namespace Gordon360.Services.RecIM
                 teams.RemoveAt(0);
             }
             return createdMatches;
+        }
+
+        private SeriesAutoSchedulerEstimateViewModel ScheduleLadderEst(int seriesID, UploadScheduleRequest request)
+        {
+            int createdMatches = 0;
+
+            //queries
+            var series = _context.Series
+                .Include(s => s.SeriesTeam)
+                .Include(s => s.SeriesSurface)
+                .Include(s => s.Schedule)
+                .FirstOrDefault(s => s.ID == seriesID);
+            var teams = _context.SeriesTeam
+                .Include(s => s.Team)
+                .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
+                .Select(st => st.TeamID)
+                .ToList();
+
+            //scheduler based variables
+            var availableSurfaces = series.SeriesSurface.ToArray();
+            SeriesScheduleViewModel schedule = series.Schedule;
+
+            var day = series.StartDate;
+            day = new DateTime(day.Year, day.Month, day.Day, schedule.StartTime.Hour, schedule.StartTime.Minute, schedule.StartTime.Second)
+                .SpecifyUtc();
+            string dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+            // scheduleEndTime is needed to combat the case where a schedule goes through midnight. (where EndTime < StartTime)
+            var end = schedule.EndTime.SpecifyUtc().TimeOfDay;
+            var start = schedule.StartTime.SpecifyUtc().TimeOfDay;
+            DateTime scheduleEndTime = day.AddDays(new DateTime().Add(end) < new DateTime().Add(start) ? 1 : 0);
+            scheduleEndTime = new DateTime(scheduleEndTime.Year, scheduleEndTime.Month, scheduleEndTime.Day, schedule.EndTime.Hour, schedule.EndTime.Minute, schedule.EndTime.Second)
+                .SpecifyUtc();
+
+            //local variables
+            var numMatchesRemaining = request.NumberOfLadderMatches ?? 1;
+            var surfaceIndex = 0;
+            var teamIndex = 0;
+            for (int i = 0; i < (request.NumberOfLadderMatches ?? 1); i++)
+            {
+                if (surfaceIndex == availableSurfaces.Length)
+                {
+                    surfaceIndex = 0;
+                    day = day.AddMinutes(schedule.EstMatchTime + 15);//15 minute buffer between matches as suggested by customer
+                }
+
+                while (!schedule.AvailableDays[dayOfWeek] || day.AddMinutes(schedule.EstMatchTime + 15) > scheduleEndTime)
+                {
+                    day = day.AddDays(1);
+                    day = new DateTime(day.Year, day.Month, day.Day).Add(start).SpecifyUtc();
+                    scheduleEndTime = scheduleEndTime.AddDays(1);
+
+                    dayOfWeek = day.ConvertFromUtc(Time_Zones.EST).DayOfWeek.ToString();
+                    surfaceIndex = 0;
+                }
+
+                var teamIDs = new List<int>();
+                int numTeamsInMatch = teams.Count / (request.NumberOfLadderMatches ?? 1);
+                while (numTeamsInMatch > 0 && teamIndex < teams.Count)
+                {
+                    teamIDs.Add(teams[teamIndex]);
+                    teamIndex++;
+                    numTeamsInMatch--;
+                }
+
+                createdMatches++;
+                surfaceIndex++;
+                numMatchesRemaining--;
+            }
+
+            return new SeriesAutoSchedulerEstimateViewModel()
+            {
+                SeriesID = seriesID,
+                Name = series.Name,
+                EndDate = day,
+                GamesCreated = createdMatches
+            };
         }
 
         private async Task<IEnumerable<MatchViewModel>> ScheduleLadderAsync(int seriesID, UploadScheduleRequest request)
