@@ -347,6 +347,7 @@ namespace Gordon360.Services
             SeriesAutoSchedulerEstimateViewModel GetScheduleMatchesEstimateAsync(int seriesID, UploadScheduleRequest request);
             SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID);
             IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID);
+            Task<TeamRecordViewModel> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel teamRecord);
         }
 
         public interface ITeamService

@@ -288,13 +288,27 @@ namespace Gordon360.Services.RecIM
             return series;
         }
 
-        public async Task UpdateSeriesTeamStats(SeriesTeamPatchViewModel update)
+        // used for autoscheduler
+        public async Task UpdateSeriesTeamStatsAsync(SeriesTeamPatchViewModel update)
         {
             var st = _context.SeriesTeam.Find(update.ID);
             st.WinCount = update.WinCount ?? st.WinCount;
             st.LossCount = update.LossCount ?? st.LossCount;
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<TeamRecordViewModel> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel update)
+        {
+            var teamRecord = _context.SeriesTeam.FirstOrDefault(st => st.TeamID == update.TeamID && st.SeriesID == seriesID);
+            if (teamRecord is null) throw new ResourceNotFoundException();
+
+            teamRecord.WinCount = update.WinCount ?? teamRecord.WinCount;
+            teamRecord.LossCount = update.LossCount ?? teamRecord.LossCount;
+            teamRecord.TieCount = update.TieCount ?? teamRecord.TieCount;
+
+            await _context.SaveChangesAsync();
+            return teamRecord;
         }
 
         private async Task CreateSeriesTeamMappingAsync(IEnumerable<int> teams, int seriesID)
@@ -1442,7 +1456,7 @@ namespace Gordon360.Services.RecIM
             while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0))) 
             {
                 if (teams.Last().ID != -1)
-                    await UpdateSeriesTeamStats(new SeriesTeamPatchViewModel
+                    await UpdateSeriesTeamStatsAsync(new SeriesTeamPatchViewModel
                     {
                         ID = teams.Last().ID,
                         WinCount = 1 //Bye round
