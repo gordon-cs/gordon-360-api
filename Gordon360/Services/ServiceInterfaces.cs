@@ -33,7 +33,7 @@ namespace Gordon360.Services
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
-        Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
+        Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content);
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
@@ -43,6 +43,7 @@ namespace Gordon360.Services
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
+        IEnumerable<string> GetMailStopsAsync();
     }
 
     public interface IAddressesService
@@ -239,6 +240,7 @@ namespace Gordon360.Services
     {
         Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username, string? sessionID = null);
         Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username, string? sessionID = null);
+        Task<IEnumerable<SessionCoursesViewModel>> GetAllCourses(string username);
     }
 
     public interface IScheduleControlService
