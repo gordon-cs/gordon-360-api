@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using Gordon360.Models.webSQL.Context;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,16 +29,18 @@ namespace Gordon360.Controllers
         private readonly IAccountService _accountService;
         private readonly IMembershipService _membershipService;
         private readonly IConfiguration _config;
+        private readonly webSQLContext _webSQLContext;
         private readonly CCTContext _context;
 
         public ProfilesController(IProfileService profileService, IAccountService accountService, 
-                                  IMembershipService membershipService, IConfiguration config, CCTContext context)
+                                  IMembershipService membershipService, IConfiguration config, CCTContext context, webSQLContext webSQLContext)
         {
             _profileService = profileService;
             _accountService = accountService;
             _membershipService = membershipService;
             _config = config;
             _context = context;
+            _webSQLContext = webSQLContext;
         }
 
         /// <summary>Get profile info of currently logged in user</summary>
@@ -474,7 +477,7 @@ namespace Gordon360.Controllers
         /// Update office location (building description and room number)
         /// </summary>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPut]
         [Route("office_location")]
         public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
         {
@@ -488,9 +491,9 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <param name="value">office hours</param>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPut]
         [Route("office_hours")]
-        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours(string value)
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody]string value)
         {
             var username = AuthUtils.GetUsername(User);
             var result = await _profileService.UpdateOfficeHoursAsync(username, value);
@@ -528,13 +531,27 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Update mail location
+        /// </summary>
+        /// <param name="value">mail location</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("mailstop")]
+        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody]string value)
+        {
+            var username = AuthUtils.GetUsername(User);
+            var result = await _profileService.UpdateMailStopAsync(username, value);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Update privacy of mobile phone number
         /// </summary>
         /// <param name="value">Y or N</param>
         /// <returns></returns>
         [HttpPut]
         [Route("mobile_privacy/{value}")]
-        public async Task<ActionResult> UpdateMobilePrivacyAsync(string value)
+        public async Task<ActionResult> UpdateMobilePrivacyAsync([FromBody]string value)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
@@ -661,6 +678,18 @@ namespace Gordon360.Controllers
             var membershipHistories = memberships.GroupBy(m => m.ActivityCode).Select(group => MembershipHistoryViewModel.FromMembershipGroup(group));
 
             return Ok(membershipHistories);
+        }
+
+        /// <summary>
+        /// Return a list of mail destinations' descriptions.
+        /// </summary>
+        /// <returns> All Mail Destinations</returns>
+        [HttpGet]
+        [Route("mailstops")]
+        public ActionResult<IEnumerable<string>> GetMailStops()
+        {
+            var mail_stops = _profileService.GetMailStopsAsync();
+            return Ok(mail_stops);
         }
     }
 }
