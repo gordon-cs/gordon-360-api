@@ -353,11 +353,6 @@ namespace Gordon360.Services
             // select all privacy settings
             var privacy = _context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID).Select(up_s => (UserPrivacyViewModel) up_s);
 
-            if (privacy == null)
-            {
-                return null;
-            }
-
             return privacy;
         }
 
