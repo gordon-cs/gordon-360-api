@@ -301,19 +301,11 @@ namespace Gordon360.Services
             // get type of viewmodel for reflection property setting
             Type fs_vm = new PublicFacultyStaffProfileViewModel().GetType();
 
-            foreach (UserPrivacy_Fields field in _context.UserPrivacy_Fields)
+            foreach (UserPrivacy_Settings row in privacy)
             {
-                var row = privacy.FirstOrDefault(p => p.Field == field.Field);
-                if (row is UserPrivacy_Settings instance)
+                if (row.Visibility == "Private" || (row.Visibility == "FacStaff" && currentUserType != "fac"))
                 {
-                    if (instance.Visibility == "Private" || (instance.Visibility == "FacStaff" && currentUserType != "fac"))
-                    {
-                        fs_vm.GetProperty(field.Field).SetValue(publicFac, "Private as requested.");
-                    }
-                }
-                else
-                {
-                    fs_vm.GetProperty(field.Field).SetValue(publicFac, "Private as requested.");
+                    fs_vm.GetProperty(row.Field).SetValue(publicFac, "Private as requested.");
                 }
             }
 
