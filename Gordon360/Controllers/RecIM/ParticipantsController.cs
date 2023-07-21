@@ -84,7 +84,7 @@ namespace Gordon360.Controllers.RecIM
                 accounts = accounts.Union(customAccounts);
             }
 
-            var searchResults = _accountService.applySearchLogic(searchString, accounts);
+            var searchResults = _accountService.Search(searchString, accounts);
 
             return Ok(searchResults);
         }

@@ -90,7 +90,9 @@ namespace Gordon360.Services
             string? involvement);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
-        ParallelQuery<BasicInfoViewModel> applySearchLogic(string searchString, IEnumerable<BasicInfoViewModel> accounts);
+        ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
+        ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts);
+
     }
 
     public interface IWellnessService

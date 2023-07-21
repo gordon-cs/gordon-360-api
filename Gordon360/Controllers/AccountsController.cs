@@ -61,7 +61,7 @@ namespace Gordon360.Controllers
         {
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            var searchResults = _accountService.applySearchLogic(searchString, accounts);
+            var searchResults = _accountService.Search(searchString, accounts);
 
             return Ok(searchResults);
         }
@@ -69,20 +69,17 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Return a list of accounts matching some or all of the search parameter.
         /// </summary>
-        /// <param name="firstnameSearch">The firstname portion of the search</param>
-        /// <param name="lastnameSearch">The lastname portion of the search</param>
+        /// <param name="firstName">The firstname portion of the search</param>
+        /// <param name="lastName">The lastname portion of the search</param>
         /// <returns> All accounts matching some or all of both the firstname and lastname parameters, sorted by how well the account matched the search.</returns>
         [HttpGet]
         [Route("search/{firstnameSearch}/{lastnameSearch}")]
-        public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchWithSpaceAsync(string firstnameSearch, string lastnameSearch)
+        public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchWithSpaceAsync(string firstName, string lastName)
         {
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
 
-            var searchResults = accounts.AsParallel()
-                .Select(account => (matchKey: account.MatchSearch(firstnameSearch, lastnameSearch), account))
-                .Where(pair => pair.matchKey is not null)
-                .OrderBy(pair => pair.matchKey)
-                .Select(pair => pair.account);
+            var searchResults = _accountService.Search(firstName, lastName, accounts);
+
 
             return Ok(searchResults);
         }
