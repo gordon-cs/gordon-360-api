@@ -37,12 +37,6 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var viewerGroups = AuthUtils.GetGroups(User);
 
-            var userMemberships = _membershipService.GetMemberships(
-                activityCode: involvementCode,
-                username: authenticatedUserUsername,
-                sessionCode: sessionCode,
-                participationTypes: participationTypes);
-
             var memberships = _membershipService.GetMemberships(
                 activityCode: involvementCode,
                 username: username,

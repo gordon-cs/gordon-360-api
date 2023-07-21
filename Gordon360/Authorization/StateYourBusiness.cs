@@ -241,7 +241,6 @@ namespace Gordon360.Authorization
                         // Only members can read a specific activity's memberships
                         if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object)  && involvementCode_object is string involvementCode)
                         {
-                            //System.Collections.Generic.IEnumerable<Gordon360.Models.CCT.MembershipView> activityMembers = {};
                             if (context.ActionArguments.TryGetValue("sessionCode", out object? sessionCode_object) && sessionCode_object is string sessionCode)
                             {
                                 var activityMembers = _membershipService.GetMemberships(activityCode: involvementCode, username: user_name, sessionCode: sessionCode);
@@ -255,8 +254,6 @@ namespace Gordon360.Authorization
                                 var is_personAMember = activityMembers.Any(x => x.Participation != "GUEST");
                                 return is_personAMember;
                             }
-                            //var is_personAMember = activityMembers.Any(x => x.Participation != "GUEST");
-                           // return is_personAMember;
                         }
 
 
