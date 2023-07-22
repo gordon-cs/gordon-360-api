@@ -33,10 +33,12 @@ namespace Gordon360.Models.ViewModels
                 case "FA":
                     code += "09";
                     break;
+                // We had to add a year to the YR_CDE because it was a year behind
+                // compared to the academic system that we use on 360 (same for Summer courses).
                 case "SP":
                     code = (Int32.Parse(code) + 1).ToString() + "01";
                     break;
-                default:
+                case "SU":
                     code = (Int32.Parse(code) + 1).ToString() + "05";
                     break;
             }
