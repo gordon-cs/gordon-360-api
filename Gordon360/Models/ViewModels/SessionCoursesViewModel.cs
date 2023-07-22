@@ -12,7 +12,7 @@ namespace Gordon360.Models.ViewModels
         public string SessionDescription { get; set; }
         public Nullable<System.DateTime> SessionBeginDate { get; set; }
         public Nullable<System.DateTime> SessionEndDate { get; set; }
-        public IEnumerable <ScheduleViewModel> AllCourses { get; set; }
+        public IEnumerable <UserCoursesViewModel> AllCourses { get; set; }
     }
 
 

@@ -106,6 +106,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<UserPrivacy_Fields> UserPrivacy_Fields { get; set; }
         public virtual DbSet<UserPrivacy_Settings> UserPrivacy_Settings { get; set; }
         public virtual DbSet<UserPrivacy_Visibility_Groups> UserPrivacy_Visibility_Groups { get; set; }
+        public virtual DbSet<UserCourses> UserCourses { get; set; }
         public virtual DbSet<User_Connection_Ids> User_Connection_Ids { get; set; }
         public virtual DbSet<User_Rooms> User_Rooms { get; set; }
         public virtual DbSet<Users> Users { get; set; }
@@ -402,8 +403,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
-
-                entity.Property(e => e.USER_NAME).IsFixedLength();
             });
 
             modelBuilder.Entity<MYSCHEDULE>(entity =>
@@ -758,6 +757,39 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<UserPrivacy_Visibility_Groups>(entity =>
             {
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            modelBuilder.Entity<UserCourses>(entity =>
+            {
+                entity.ToView("UserCourses", "dbo");
+
+                entity.Property(e => e.BLDG_CDE).IsFixedLength();
+
+                entity.Property(e => e.CRS_CDE).IsFixedLength();
+
+                entity.Property(e => e.CRS_TITLE).IsFixedLength();
+
+                entity.Property(e => e.DROP_FLAG).IsFixedLength();
+
+                entity.Property(e => e.FRIDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.LOC_CDE).IsFixedLength();
+
+                entity.Property(e => e.MONDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.ROOM_CDE).IsFixedLength();
+
+                entity.Property(e => e.SATURDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.SUNDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.THURSDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.TRM_CDE).IsFixedLength();
+
+                entity.Property(e => e.TUESDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.WEDNESDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.YR_CDE).IsFixedLength();
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");
