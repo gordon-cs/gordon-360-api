@@ -41,6 +41,8 @@ namespace Gordon360.Models.ViewModels
                 case "SU":
                     code = (Int32.Parse(code) + 1).ToString() + "05";
                     break;
+                default:
+                    break;
             }
 
             UserCoursesViewModel vm = new UserCoursesViewModel
