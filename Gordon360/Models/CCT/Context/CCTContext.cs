@@ -103,6 +103,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<TeamStatus> TeamStatus { get; set; }
         public virtual DbSet<Timesheets_Clock_In_Out> Timesheets_Clock_In_Out { get; set; }
+        public virtual DbSet<UserCourses> UserCourses { get; set; }
         public virtual DbSet<User_Connection_Ids> User_Connection_Ids { get; set; }
         public virtual DbSet<User_Rooms> User_Rooms { get; set; }
         public virtual DbSet<Users> Users { get; set; }
@@ -399,8 +400,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
-
-                entity.Property(e => e.USER_NAME).IsFixedLength();
             });
 
             modelBuilder.Entity<MYSCHEDULE>(entity =>
@@ -509,9 +508,6 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Participant>(entity =>
             {
-                entity.HasKey(e => e.Username)
-                    .HasName("PK__Particip__536C85E53B50E910");
-
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
             });
 
@@ -525,6 +521,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantActivity)
                     .HasForeignKey(d => d.ParticipantUsername)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantActivity_Participant");
 
                 entity.HasOne(d => d.PrivType)
@@ -540,7 +537,7 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.ParticipantNotification)
                     .HasForeignKey(d => d.ParticipantUsername)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PartipantNotification_Participant");
+                    .HasConstraintName("FK_ParticipantNotification_Participant");
             });
 
             modelBuilder.Entity<ParticipantStatusHistory>(entity =>
@@ -563,6 +560,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.HasOne(d => d.ParticipantUsernameNavigation)
                     .WithMany(p => p.ParticipantTeam)
                     .HasForeignKey(d => d.ParticipantUsername)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ParticipantTeam_Participant");
 
                 entity.HasOne(d => d.RoleType)
@@ -729,6 +727,41 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.StatusID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Team_TeamStatus");
+            });
+
+            modelBuilder.Entity<UserCourses>(entity =>
+            {
+                entity.ToView("UserCourses", "dbo");
+
+                entity.Property(e => e.BLDG_CDE).IsFixedLength();
+
+                entity.Property(e => e.CRS_CDE).IsFixedLength();
+
+                entity.Property(e => e.CRS_TITLE).IsFixedLength();
+
+                entity.Property(e => e.DROP_FLAG).IsFixedLength();
+
+                entity.Property(e => e.FRIDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.LOC_CDE).IsFixedLength();
+
+                entity.Property(e => e.MONDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.ROOM_CDE).IsFixedLength();
+
+                entity.Property(e => e.SATURDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.SUNDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.THURSDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.TRM_CDE).IsFixedLength();
+
+                entity.Property(e => e.TUESDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.WEDNESDAY_CDE).IsFixedLength();
+
+                entity.Property(e => e.YR_CDE).IsFixedLength();
             });
 
             modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");
