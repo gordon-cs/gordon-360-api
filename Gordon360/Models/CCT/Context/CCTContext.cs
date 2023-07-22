@@ -80,6 +80,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Police> Police { get; set; }
         public virtual DbSet<PrivType> PrivType { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
+        public virtual DbSet<RequestResponseLog> RequestResponseLog { get; set; }
         public virtual DbSet<RequestView> RequestView { get; set; }
         public virtual DbSet<RoleType> RoleType { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
