@@ -323,6 +323,11 @@ namespace Gordon360.Services
         {
             RecIMGeneralReportViewModel GetReport(DateTime start, DateTime end);
         }
+
+        public interface IAffiliationService
+        {
+
+        }
         public interface IActivityService
         {
             IEnumerable<LookupViewModel>? GetActivityLookup(string type);

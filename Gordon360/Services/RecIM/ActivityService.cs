@@ -10,7 +10,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Extensions.System;
 
