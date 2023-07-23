@@ -16,6 +16,7 @@ namespace Gordon360.Models.CCT
             ParticipantActivity = new HashSet<ParticipantActivity>();
             Series = new HashSet<Series>();
             Team = new HashSet<Team>();
+            AffiliationName = new HashSet<Affiliations>();
         }
 
         [Key]
@@ -64,5 +65,9 @@ namespace Gordon360.Models.CCT
         public virtual ICollection<Series> Series { get; set; }
         [InverseProperty("Activity")]
         public virtual ICollection<Team> Team { get; set; }
+
+        [ForeignKey("ActivityID")]
+        [InverseProperty("Activity")]
+        public virtual ICollection<Affiliations> AffiliationName { get; set; }
     }
 }
