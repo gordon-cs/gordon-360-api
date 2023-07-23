@@ -784,6 +784,11 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.ActivityID)
                     .HasConstraintName("FK_Team_Activity");
 
+                entity.HasOne(d => d.AffiliationNavigation)
+                    .WithMany(p => p.Team)
+                    .HasForeignKey(d => d.Affiliation)
+                    .HasConstraintName("FK_Team_Affiliations");
+
                 entity.HasOne(d => d.Status)
                     .WithMany(p => p.Team)
                     .HasForeignKey(d => d.StatusID)

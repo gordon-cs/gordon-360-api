@@ -383,6 +383,14 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[UserCourses]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[RecIM].[ParticipantView]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[ACTIVE_CLUBS_PER_SESS_ID]",
          "ObjectType": 1
       },

@@ -14,6 +14,7 @@ namespace Gordon360.Models.CCT
         public Affiliations()
         {
             AffiliationPoints = new HashSet<AffiliationPoints>();
+            Team = new HashSet<Team>();
         }
 
         [Key]
@@ -23,5 +24,7 @@ namespace Gordon360.Models.CCT
 
         [InverseProperty("AffiliationNameNavigation")]
         public virtual ICollection<AffiliationPoints> AffiliationPoints { get; set; }
+        [InverseProperty("AffiliationNavigation")]
+        public virtual ICollection<Team> Team { get; set; }
     }
 }
