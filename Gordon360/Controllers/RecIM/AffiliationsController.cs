@@ -22,5 +22,49 @@ namespace Gordon360.Controllers.RecIM
             _affiliationService = affiliationService;
         }
 
+        /// <summary>
+        /// Gets all stored affiliations/halls/clubs with associated
+        /// Points/Activities Won : Winning Team
+        /// </summary>
+        [HttpGet]
+        [Route("")]
+        public ActionResult<IEnumerable<string>> GetAllAffiliationDetails()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets specific stored affiliation with associated
+        /// Points/Activities Won : Winning Team
+        /// </summary>
+        [HttpGet]
+        [Route("{affiliationName}")]
+        public ActionResult<IEnumerable<string>> GetAffiliationDetailsByName(string affiliationName)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates new Affiliation
+        /// </summary>
+        /// <param name="affiliationName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("")]
+        public async Task<ActionResult> CreateNewAffiliation(string affiliationName)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes affiliation
+        /// </summary>
+        /// <param name="affiliationName"></param>
+        [HttpDelete]
+        [Route("")]
+        public async Task<ActionResult> DeleteAffiliation(string affiliationName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

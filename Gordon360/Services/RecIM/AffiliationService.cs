@@ -7,12 +7,14 @@ namespace Gordon360.Services.RecIM
 
         private readonly CCTContext _context;
         private readonly IActivityService _activityService;
+        private readonly ITeamService _teamService;
 
 
-        public AffiliationService(CCTContext context, IActivityService activityService)
+        public AffiliationService(CCTContext context, IActivityService activityService, ITeamService teamService)
         {
             _context = context;
             _activityService = activityService;
+            _teamService = teamService; 
         }
     }
 }
