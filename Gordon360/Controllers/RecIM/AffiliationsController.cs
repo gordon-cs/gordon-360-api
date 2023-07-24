@@ -28,7 +28,7 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<string>> GetAllAffiliationDetails()
+        public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAllAffiliationDetails()
         {
             throw new NotImplementedException();
         }
@@ -39,7 +39,7 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         [HttpGet]
         [Route("{affiliationName}")]
-        public ActionResult<IEnumerable<string>> GetAffiliationDetailsByName([FromBody] string affiliationName)
+        public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAffiliationDetailsByName([FromBody] string affiliationName)
         {
             throw new NotImplementedException();
         }
@@ -49,9 +49,9 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="affiliationName"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut]
         [Route("")]
-        public async Task<ActionResult> CreateNewAffiliation(string affiliationName)
+        public async Task<ActionResult> PutAffiliation(string affiliationName)
         {
             throw new NotImplementedException();
         }
@@ -62,9 +62,9 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="affiliationName"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPut]
         [Route("{affiliationName}")]
-        public async Task<ActionResult> AddPointsToAffilliation(string affiliationName)
+        public async Task<ActionResult> AddPointsToAffilliation(AffiliationPointsUpdateViewModel affiliationName)
         {
             throw new NotImplementedException();
         }
