@@ -91,7 +91,7 @@ namespace Gordon360.Services.RecIM
                          .AsEnumerable()
                          .Sum(),
                 Series = _context.AffiliationPoints
-                          .Where(_ap => _ap.AffiliationName == a.Name)
+                          .Where(_ap => _ap.AffiliationName == name)
                           .Select(ap => (SeriesViewModel)_context.Series.FirstOrDefault(s => s.ID == ap.SeriesID))
                           .AsEnumerable()
             };
