@@ -8,11 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    public partial class StudentNewsExpiration
+    [Table("SuperAdmin", Schema = "RecIM")]
+    public partial class SuperAdmin
     {
         [Key]
-        public int SNID { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? ManualExpirationDate { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string username { get; set; }
+
+        [ForeignKey("username")]
+        [InverseProperty("SuperAdmin")]
+        public virtual Participant usernameNavigation { get; set; }
     }
 }

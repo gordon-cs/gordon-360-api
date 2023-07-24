@@ -651,12 +651,12 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateLinkAsync(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateCustomProfile(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
-            Update the profile social media links
+            Update CUSTOM_PROFILE component
             </summary>
-            <param name="type">The type of social media</param>
-            <param name="path">The path of the links</param>
+            <param name="type">The type of component</param>
+            <param name="value">The value to change the component to</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePhoneNumber(System.String)">
@@ -786,6 +786,48 @@
             </summary>
             <param name="activityID"></param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.GetAllAffiliationDetails">
+            <summary>
+            Gets all stored affiliations/halls/clubs with associated
+            Points/Activities Won : Winning Team
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.GetAffiliationDetailsByName(System.String)">
+            <summary>
+            Gets specific stored affiliation with associated
+            Points/Activities Won : Winning Team
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.CreateAffiliation(System.String)">
+            <summary>
+            Creates new Affiliation
+            </summary>
+            <param name="affiliationName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.UpdateAffiliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPatchViewModel)">
+            <summary>
+            Updates an affiliation's logo and/or name
+            </summary>
+            <param name="affiliationName"></param>
+            <param name="update">updated instance of affiliation</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.AddPointsToAffilliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPointsUpdateViewModel)">
+            <summary>
+            Creates new AffiliationPoints entry 
+            (affiliationname, activity where points were attributed, optional points)
+            </summary>
+            <param name="vm">put viewmodel</param>
+            <param name="affiliationName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.DeleteAffiliation(System.String)">
+            <summary>
+            Deletes affiliation
+            </summary>
+            <param name="affiliationName"></param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches">
             <summary>
@@ -964,6 +1006,14 @@
             <param name="seriesSchedule">created schedule for series</param>
             <returns>created series schedule</returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeriesTeamRecordAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamRecordPatchViewModel)">
+            <summary>
+            Updates team record manually (mitigates potential bugs)
+            </summary>
+            <param name="seriesID"></param>
+            <param name="update">Updated team record</param>
+            <returns>updated team record</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.DeleteSeriesCascadeAsync(System.Int32)">
             <summary>
             Cascade deletes all DBobjects related to given Series ID
@@ -974,6 +1024,13 @@
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Automatically creates Matches based on given Series
+            </summary>
+            <param name="seriesID"></param>
+            <param name="request">optional request data, used for additional options on autoscheduling</param>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetAutoScheduleEstimate(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+            <summary>
+            Gives last date and number of matches of which the Auto Scheduler will create matches until.
             </summary>
             <param name="seriesID"></param>
             <param name="request">optional request data, used for additional options on autoscheduling</param>
@@ -1247,6 +1304,12 @@
              Gets all schedule objects for a user
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
+            <summary>
+             Gets all session objects for a user
+            </summary>
+            <returns>A IEnumerable of session objects as well as the schedules</returns>
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
             <summary>
@@ -2401,13 +2464,13 @@
             <param name="path"></param>
             <param name="name"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLinkAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateCustomProfileAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
-            Sets the path for the profile links.
+            Sets the component of the Custom_profile.
             </summary>
             <param name="username">The username</param>
             <param name="type"></param>
-            <param name="links"></param>
+            <param name="content"></param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>
@@ -2594,6 +2657,13 @@
             <param name="username">The AD Username of the instructor</param>
             <param name="sessionID">The selected session of the instructor</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllCourses(System.String)">
+            <summary>
+            Fetch the session item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>SessionCoursesViewModel if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>

@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT
 {
     [Keyless]
-    [Table("Timesheets_Clock_In_Out", Schema = "dbo")]
     public partial class Timesheets_Clock_In_Out
     {
         public int ID_Num { get; set; }

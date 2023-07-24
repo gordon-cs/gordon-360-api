@@ -41,9 +41,11 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<ALL_BASIC_INFO_NOT_ALUMNIResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<ALL_MEMBERSHIPSResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<ALL_REQUESTSResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<CHECK_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<COURSES_FOR_PROFESSORResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<CREATE_MESSAGE_ROOMResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<CURRENT_SESSIONResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<DINING_INFO_BY_STUDENT_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<DISTINCT_ACT_TYPEResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<EMAILS_PER_ACT_CDEResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<FINALIZATION_GET_FINALIZATION_STATUSResult>().HasNoKey().ToView(null);
@@ -310,7 +312,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<int> CHECK_IDAsync(string _id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<CHECK_IDResult>> CHECK_IDAsync(string _id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -330,7 +332,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[CHECK_ID] @_id", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<CHECK_IDResult>("EXEC @returnValue = [dbo].[CHECK_ID] @_id", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1070,7 +1072,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<int> DINING_INFO_BY_STUDENT_IDAsync(int? STUDENT_ID, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<DINING_INFO_BY_STUDENT_IDResult>> DINING_INFO_BY_STUDENT_IDAsync(int? STUDENT_ID, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1096,7 +1098,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[DINING_INFO_BY_STUDENT_ID] @STUDENT_ID, @SESS_CDE", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<DINING_INFO_BY_STUDENT_IDResult>("EXEC @returnValue = [dbo].[DINING_INFO_BY_STUDENT_ID] @STUDENT_ID, @SESS_CDE", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

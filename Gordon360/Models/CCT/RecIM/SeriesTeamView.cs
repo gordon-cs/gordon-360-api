@@ -8,17 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    public partial class Config
+    [Keyless]
+    public partial class SeriesTeamView
     {
-        [Key]
         public int ID { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Key { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Value { get; set; }
+        public int TeamID { get; set; }
+        public int SeriesID { get; set; }
+        public int WinCount { get; set; }
+        public int LossCount { get; set; }
+        public int TieCount { get; set; }
+        [Column(TypeName = "decimal(38, 6)")]
+        public decimal? SportsmanshipRating { get; set; }
     }
 }
