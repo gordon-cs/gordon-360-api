@@ -62,7 +62,13 @@ namespace Gordon360.Services.RecIM
 
         public async Task<string> PutAffiliation(string affiliationName)
         {
-            throw new System.NotImplementedException();
+            var existing = _context.Affiliations.Find(affiliationName);
+            if(existing is null)
+            {
+                _context.Affiliations.Add(new Affiliations { Name = affiliationName });
+                await _context.SaveChangesAsync();
+            }
+            return affiliationName;
         }
     }
 }

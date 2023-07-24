@@ -54,7 +54,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> PutAffiliation(string affiliationName)
         {
-            throw new NotImplementedException();
+            var res = await _affiliationService.PutAffiliation(affiliationName);
+            return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
         }
 
         /// <summary>
