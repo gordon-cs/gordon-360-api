@@ -323,6 +323,14 @@ namespace Gordon360.Services
         {
             RecIMGeneralReportViewModel GetReport(DateTime start, DateTime end);
         }
+
+        public interface IAffiliationService
+        {
+            IEnumerable<AffiliationExtendedViewModel> GetAllAffiliationDetails();
+            Task DeleteAffiliation(string affiliationName);
+            Task<string> PutAffiliation(string affiliationName);
+            Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm);
+        }
         public interface IActivityService
         {
             IEnumerable<LookupViewModel>? GetActivityLookup(string type);
@@ -348,8 +356,10 @@ namespace Gordon360.Services
             Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule);
             Task<SeriesViewModel> DeleteSeriesCascadeAsync(int seriesID);
             Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request);
+            SeriesAutoSchedulerEstimateViewModel GetScheduleMatchesEstimateAsync(int seriesID, UploadScheduleRequest request);
             SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID);
             IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID);
+            Task<TeamRecordViewModel> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel teamRecord);
         }
 
         public interface ITeamService

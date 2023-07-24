@@ -31,12 +31,14 @@ namespace Gordon360.Static.Names
         public const string CLIFTON_STRENGTHS = "A student's uploaded clifton strengthsfinder results";
         public const string RECIM = "A general or admin RecIM resource";
         public const string RECIM_ACTIVITY = "A RecIM activity resource";
+        public const string RECIM_AFFILIATION = "A RecIM Affiliation (Halls,Clubs...etc.)";
         public const string RECIM_SERIES = "A RecIM series resource";
         public const string RECIM_MATCH = "A RecIM match resource";
         public const string RECIM_TEAM = "A RecIM team resource";
         public const string RECIM_SPORT = "A RecIM sport resource";
         public const string RECIM_PARTICIPANT = "A RecIM participating user resource";
         public const string RECIM_PARTICIPANT_ADMIN = "The admin status of a RecIM participating user";
+        public const string RECIM_SUPER_ADMIN = "A RecIM director level resource";
         public const string RECIM_SURFACE = "RecIM Surfaces/Playing fields/Locations";
 
         // Partial resources, to be targetted by Operation.READ_PARTIAL

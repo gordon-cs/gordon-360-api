@@ -20,7 +20,7 @@ namespace Gordon360.Models.CCT.Context
         Task<List<ALL_MEMBERSHIPSResult>> ALL_MEMBERSHIPSAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<ALL_REQUESTSResult>> ALL_REQUESTSAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> CANCEL_RIDEAsync(int? STUDENT_ID, string RIDE_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> CHECK_IDAsync(string _id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<CHECK_IDResult>> CHECK_IDAsync(string _id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<COURSES_FOR_PROFESSORResult>> COURSES_FOR_PROFESSORAsync(int? professor_id, string sess_cde, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> CREATE_BOOKINGAsync(string ID, string RIDEID, byte? ISDRIVER, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<CREATE_MESSAGE_ROOMResult>> CREATE_MESSAGE_ROOMAsync(string name, bool? group, byte[] roomImage, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -39,7 +39,7 @@ namespace Gordon360.Models.CCT.Context
         Task<int> DELETE_RIDEAsync(string RIDE_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> DELETE_USER_CONNECTION_IDAsync(string connection_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> DELETE_USER_ROOMAsync(string room_id, string user_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> DINING_INFO_BY_STUDENT_IDAsync(int? STUDENT_ID, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<DINING_INFO_BY_STUDENT_IDResult>> DINING_INFO_BY_STUDENT_IDAsync(int? STUDENT_ID, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<DISTINCT_ACT_TYPEResult>> DISTINCT_ACT_TYPEAsync(string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<EMAILS_PER_ACT_CDEResult>> EMAILS_PER_ACT_CDEAsync(string ACT_CDE, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<FINALIZATION_GET_FINALIZATION_STATUSResult>> FINALIZATION_GET_FINALIZATION_STATUSAsync(int? UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
