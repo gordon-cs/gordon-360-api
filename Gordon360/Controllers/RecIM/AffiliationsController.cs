@@ -39,7 +39,7 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         [HttpGet]
         [Route("{affiliationName}")]
-        public ActionResult<IEnumerable<string>> GetAffiliationDetailsByName(string affiliationName)
+        public ActionResult<IEnumerable<string>> GetAffiliationDetailsByName([FromBody] string affiliationName)
         {
             throw new NotImplementedException();
         }
@@ -52,6 +52,19 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         public async Task<ActionResult> CreateNewAffiliation(string affiliationName)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates new AffiliationPoints entry 
+        /// (affiliationname, activity where points were attributed, optional points)
+        /// </summary>
+        /// <param name="affiliationName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("{affiliationName}")]
+        public async Task<ActionResult> AddPointsToAffilliation(string affiliationName)
         {
             throw new NotImplementedException();
         }

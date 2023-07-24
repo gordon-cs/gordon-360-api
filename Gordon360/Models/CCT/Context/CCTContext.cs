@@ -118,7 +118,7 @@ namespace Gordon360.Models.CCT.Context
         {
             modelBuilder.Entity<ACCOUNT>(entity =>
             {
-                entity.ToView("ACCOUNT", "dbo");
+                entity.ToView("ACCOUNT");
             });
 
             modelBuilder.Entity<ACT_INFO>(entity =>
@@ -143,7 +143,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<AccountPhotoURL>(entity =>
             {
-                entity.ToView("AccountPhotoURL", "dbo");
+                entity.ToView("AccountPhotoURL");
             });
 
             modelBuilder.Entity<Activity>(entity =>
@@ -174,34 +174,42 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<AffiliationPoints>(entity =>
             {
-                entity.HasOne(d => d.Activity)
-                    .WithMany(p => p.AffiliationPoints)
-                    .HasForeignKey(d => d.ActivityID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_AffiliationPoints_Activity");
+                entity.Property(e => e.Points).HasDefaultValueSql("((0))");
 
                 entity.HasOne(d => d.AffiliationNameNavigation)
-                    .WithMany(p => p.AffiliationPoints)
+                    .WithMany()
                     .HasForeignKey(d => d.AffiliationName)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AffiliationPoints_Affiliations");
+
+                entity.HasOne(d => d.Series)
+                    .WithMany()
+                    .HasForeignKey(d => d.SeriesID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AffiliationPoints_Series");
+
+                entity.HasOne(d => d.Team)
+                    .WithMany()
+                    .HasForeignKey(d => d.TeamID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AffiliationPoints_Team");
             });
 
             modelBuilder.Entity<Alumni>(entity =>
             {
-                entity.ToView("Alumni", "dbo");
+                entity.ToView("Alumni");
 
                 entity.Property(e => e.grad_student).IsFixedLength();
             });
 
             modelBuilder.Entity<Birthdays>(entity =>
             {
-                entity.ToView("Birthdays", "dbo");
+                entity.ToView("Birthdays");
             });
 
             modelBuilder.Entity<Buildings>(entity =>
             {
-                entity.ToView("Buildings", "dbo");
+                entity.ToView("Buildings");
 
                 entity.Property(e => e.BLDG_CDE).IsFixedLength();
 
@@ -210,14 +218,14 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<CM_SESSION_MSTR>(entity =>
             {
-                entity.ToView("CM_SESSION_MSTR", "dbo");
+                entity.ToView("CM_SESSION_MSTR");
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
             });
 
             modelBuilder.Entity<ChapelEvent>(entity =>
             {
-                entity.ToView("ChapelEvent", "dbo");
+                entity.ToView("ChapelEvent");
             });
 
             modelBuilder.Entity<Clifton_Strengths>(entity =>
@@ -230,7 +238,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Countries>(entity =>
             {
-                entity.ToView("Countries", "dbo");
+                entity.ToView("Countries");
 
                 entity.Property(e => e.CTY).IsFixedLength();
             });
@@ -251,7 +259,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<DiningInfo>(entity =>
             {
-                entity.ToView("DiningInfo", "dbo");
+                entity.ToView("DiningInfo");
 
                 entity.Property(e => e.ChoiceDescription).IsFixedLength();
 
@@ -260,7 +268,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Dining_Meal_Choice_Desc>(entity =>
             {
-                entity.ToView("Dining_Meal_Choice_Desc", "dbo");
+                entity.ToView("Dining_Meal_Choice_Desc");
 
                 entity.Property(e => e.Meal_Choice_Desc).IsFixedLength();
 
@@ -269,24 +277,24 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Dining_Meal_Plan_Change_History>(entity =>
             {
-                entity.ToView("Dining_Meal_Plan_Change_History", "dbo");
+                entity.ToView("Dining_Meal_Plan_Change_History");
 
                 entity.Property(e => e.OLD_PLAN_DESC).IsFixedLength();
             });
 
             modelBuilder.Entity<Dining_Meal_Plan_Id_Mapping>(entity =>
             {
-                entity.ToView("Dining_Meal_Plan_Id_Mapping", "dbo");
+                entity.ToView("Dining_Meal_Plan_Id_Mapping");
             });
 
             modelBuilder.Entity<Dining_Mealplans>(entity =>
             {
-                entity.ToView("Dining_Mealplans", "dbo");
+                entity.ToView("Dining_Mealplans");
             });
 
             modelBuilder.Entity<Dining_Student_Meal_Choice>(entity =>
             {
-                entity.ToView("Dining_Student_Meal_Choice", "dbo");
+                entity.ToView("Dining_Student_Meal_Choice");
 
                 entity.Property(e => e.MEAL_CHOICE_ID).IsFixedLength();
 
@@ -295,7 +303,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<EmergencyContact>(entity =>
             {
-                entity.ToView("EmergencyContact", "dbo");
+                entity.ToView("EmergencyContact");
 
                 entity.Property(e => e.AddressAddrCode).IsFixedLength();
 
@@ -326,14 +334,14 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<FacStaff>(entity =>
             {
-                entity.ToView("FacStaff", "dbo");
+                entity.ToView("FacStaff");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
             });
 
             modelBuilder.Entity<Graduation>(entity =>
             {
-                entity.ToView("Graduation", "dbo");
+                entity.ToView("Graduation");
             });
 
             modelBuilder.Entity<Health_Status>(entity =>
@@ -367,7 +375,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Internships_as_Involvements>(entity =>
             {
-                entity.ToView("Internships_as_Involvements", "dbo");
+                entity.ToView("Internships_as_Involvements");
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
 
@@ -378,7 +386,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<InvolvementOffering>(entity =>
             {
-                entity.ToView("InvolvementOffering", "dbo");
+                entity.ToView("InvolvementOffering");
 
                 entity.Property(e => e.ActivityCode).IsFixedLength();
 
@@ -393,7 +401,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<JENZ_ACT_CLUB_DEF>(entity =>
             {
-                entity.ToView("JENZ_ACT_CLUB_DEF", "dbo");
+                entity.ToView("JENZ_ACT_CLUB_DEF");
 
                 entity.Property(e => e.ACT_CDE).IsFixedLength();
 
@@ -444,12 +452,12 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Mailboxes>(entity =>
             {
-                entity.ToView("Mailboxes", "dbo");
+                entity.ToView("Mailboxes");
             });
 
             modelBuilder.Entity<Majors>(entity =>
             {
-                entity.ToView("Majors", "dbo");
+                entity.ToView("Majors");
             });
 
             modelBuilder.Entity<Match>(entity =>
@@ -527,7 +535,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<MembershipView>(entity =>
             {
-                entity.ToView("MembershipView", "dbo");
+                entity.ToView("MembershipView");
 
                 entity.Property(e => e.ActivityDescription).IsFixedLength();
             });
@@ -540,12 +548,12 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Minors>(entity =>
             {
-                entity.ToView("Minors", "dbo");
+                entity.ToView("Minors");
             });
 
             modelBuilder.Entity<PART_DEF>(entity =>
             {
-                entity.ToView("PART_DEF", "dbo");
+                entity.ToView("PART_DEF");
 
                 entity.Property(e => e.PART_CDE).IsFixedLength();
 
@@ -634,7 +642,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Police>(entity =>
             {
-                entity.ToView("Police", "dbo");
+                entity.ToView("Police");
             });
 
             modelBuilder.Entity<REQUEST>(entity =>
@@ -651,7 +659,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<RequestView>(entity =>
             {
-                entity.ToView("RequestView", "dbo");
+                entity.ToView("RequestView");
 
                 entity.Property(e => e.ActivityDescription).IsFixedLength();
 
@@ -660,7 +668,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<RoomAssign>(entity =>
             {
-                entity.ToView("RoomAssign", "dbo");
+                entity.ToView("RoomAssign");
 
                 entity.Property(e => e.BLDG_CDE).IsFixedLength();
 
@@ -715,6 +723,11 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.TypeID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Series_SeriesType");
+
+                entity.HasOne(d => d.Winner)
+                    .WithMany(p => p.Series)
+                    .HasForeignKey(d => d.WinnerID)
+                    .HasConstraintName("FK_Series_Team");
             });
 
             modelBuilder.Entity<SeriesSurface>(entity =>
@@ -745,7 +758,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<States>(entity =>
             {
-                entity.ToView("States", "dbo");
+                entity.ToView("States");
             });
 
             modelBuilder.Entity<Statistic>(entity =>
@@ -759,7 +772,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Student>(entity =>
             {
-                entity.ToView("Student", "dbo");
+                entity.ToView("Student");
 
                 entity.Property(e => e.BuildingDescription).IsFixedLength();
             });
@@ -803,7 +816,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<UserCourses>(entity =>
             {
-                entity.ToView("UserCourses", "dbo");
+                entity.ToView("UserCourses");
 
                 entity.Property(e => e.BLDG_CDE).IsFixedLength();
 
@@ -836,7 +849,7 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.YR_CDE).IsFixedLength();
             });
 
-            modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");
+            modelBuilder.HasSequence("Information_Change_Request_Seq");
 
             OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingPartial(modelBuilder);

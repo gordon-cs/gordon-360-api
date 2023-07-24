@@ -13,7 +13,6 @@ namespace Gordon360.Models.CCT
     {
         public Activity()
         {
-            AffiliationPoints = new HashSet<AffiliationPoints>();
             ParticipantActivity = new HashSet<ParticipantActivity>();
             Series = new HashSet<Series>();
             Team = new HashSet<Team>();
@@ -44,8 +43,6 @@ namespace Gordon360.Models.CCT
         [Column(TypeName = "datetime")]
         public DateTime? EndDate { get; set; }
         public int? SeriesScheduleID { get; set; }
-        public int Points { get; set; }
-        public int? WinnerID { get; set; }
 
         [ForeignKey("SeriesScheduleID")]
         [InverseProperty("Activity")]
@@ -59,8 +56,6 @@ namespace Gordon360.Models.CCT
         [ForeignKey("TypeID")]
         [InverseProperty("Activity")]
         public virtual ActivityType Type { get; set; }
-        [InverseProperty("Activity")]
-        public virtual ICollection<AffiliationPoints> AffiliationPoints { get; set; }
         [InverseProperty("Activity")]
         public virtual ICollection<ParticipantActivity> ParticipantActivity { get; set; }
         [InverseProperty("Activity")]

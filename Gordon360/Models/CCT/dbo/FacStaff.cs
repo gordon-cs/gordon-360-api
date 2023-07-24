@@ -11,8 +11,7 @@ namespace Gordon360.Models.CCT
     [Keyless]
     public partial class FacStaff
     {
-        [Required]
-        [StringLength(10)]
+        [StringLength(9)]
         [Unicode(false)]
         public string ID { get; set; }
         [StringLength(5)]
@@ -76,6 +75,9 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string HomePhone { get; set; }
         [StringLength(15)]
+        [Unicode(false)]
+        public string MobilePhone { get; set; }
+        [StringLength(1)]
         [Unicode(false)]
         public string HomeFax { get; set; }
         [Required]

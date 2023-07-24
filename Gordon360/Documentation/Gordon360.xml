@@ -787,6 +787,39 @@
             <param name="activityID"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.GetAllAffiliationDetails">
+            <summary>
+            Gets all stored affiliations/halls/clubs with associated
+            Points/Activities Won : Winning Team
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.GetAffiliationDetailsByName(System.String)">
+            <summary>
+            Gets specific stored affiliation with associated
+            Points/Activities Won : Winning Team
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.CreateNewAffiliation(System.String)">
+            <summary>
+            Creates new Affiliation
+            </summary>
+            <param name="affiliationName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.AddPointsToAffilliation(System.String)">
+            <summary>
+            Creates new AffiliationPoints entry 
+            (affiliationname, activity where points were attributed, optional points)
+            </summary>
+            <param name="affiliationName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.DeleteAffiliation(System.String)">
+            <summary>
+            Deletes affiliation
+            </summary>
+            <param name="affiliationName"></param>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches">
             <summary>
             Get all matches

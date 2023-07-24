@@ -32,6 +32,8 @@ namespace Gordon360.Models.CCT
         public int TypeID { get; set; }
         public int StatusID { get; set; }
         public int ScheduleID { get; set; }
+        public int? WinnerID { get; set; }
+        public int? Points { get; set; }
 
         [ForeignKey("ActivityID")]
         [InverseProperty("Series")]
@@ -45,6 +47,9 @@ namespace Gordon360.Models.CCT
         [ForeignKey("TypeID")]
         [InverseProperty("Series")]
         public virtual SeriesType Type { get; set; }
+        [ForeignKey("WinnerID")]
+        [InverseProperty("Series")]
+        public virtual Team Winner { get; set; }
         [InverseProperty("Series")]
         public virtual ICollection<Match> Match { get; set; }
         [InverseProperty("Series")]
