@@ -7,18 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
     public class AffiliationsController : GordonControllerBase
     {
-        private readonly IActivityService _activityService;
         private readonly IAffiliationService _affiliationService;
 
-        public AffiliationsController(IActivityService activityService, IAffiliationService affiliationService)
+        public AffiliationsController(IAffiliationService affiliationService)
         {
-            _activityService = activityService;
             _affiliationService = affiliationService;
         }
 
@@ -30,7 +29,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAllAffiliationDetails()
         {
-            throw new NotImplementedException();
+            return Ok(_affiliationService.GetAllAffiliationDetails());
         }
 
         /// <summary>
@@ -41,7 +40,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("{affiliationName}")]
         public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAffiliationDetailsByName([FromBody] string affiliationName)
         {
-            throw new NotImplementedException();
+            var res = _affiliationService.GetAllAffiliationDetails();
+            return Ok(res.FirstOrDefault(a => a.Name == affiliationName));
         }
 
         /// <summary>
