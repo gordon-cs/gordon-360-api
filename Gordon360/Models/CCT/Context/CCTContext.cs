@@ -26,6 +26,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
         public virtual DbSet<ActivityType> ActivityType { get; set; }
+        public virtual DbSet<AffiliationPoints> AffiliationPoints { get; set; }
         public virtual DbSet<Affiliations> Affiliations { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<Birthdays> Birthdays { get; set; }
@@ -171,22 +172,19 @@ namespace Gordon360.Models.CCT.Context
                     .HasConstraintName("FK_Activity_ActivityType");
             });
 
-            modelBuilder.Entity<Affiliations>(entity =>
+            modelBuilder.Entity<AffiliationPoints>(entity =>
             {
-                entity.HasMany(d => d.Activity)
-                    .WithMany(p => p.AffiliationName)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "AffiliationPoints",
-                        l => l.HasOne<Activity>().WithMany().HasForeignKey("ActivityID").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_AffiliationPoints_Activity"),
-                        r => r.HasOne<Affiliations>().WithMany().HasForeignKey("AffiliationName").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_AffiliationPoints_Affiliations"),
-                        j =>
-                        {
-                            j.HasKey("AffiliationName", "ActivityID");
+                entity.HasOne(d => d.Activity)
+                    .WithMany(p => p.AffiliationPoints)
+                    .HasForeignKey(d => d.ActivityID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AffiliationPoints_Activity");
 
-                            j.ToTable("AffiliationPoints", "RecIM");
-
-                            j.IndexerProperty<string>("AffiliationName").HasMaxLength(50).IsUnicode(false);
-                        });
+                entity.HasOne(d => d.AffiliationNameNavigation)
+                    .WithMany(p => p.AffiliationPoints)
+                    .HasForeignKey(d => d.AffiliationName)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_AffiliationPoints_Affiliations");
             });
 
             modelBuilder.Entity<Alumni>(entity =>
