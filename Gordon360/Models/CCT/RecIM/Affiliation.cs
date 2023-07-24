@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Affiliations", Schema = "RecIM")]
-    public partial class Affiliations
+    [Table("Affiliation", Schema = "RecIM")]
+    public partial class Affiliation
     {
-        public Affiliations()
+        public Affiliation()
         {
             Team = new HashSet<Team>();
         }

@@ -26,8 +26,8 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Activity> Activity { get; set; }
         public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
         public virtual DbSet<ActivityType> ActivityType { get; set; }
+        public virtual DbSet<Affiliation> Affiliation { get; set; }
         public virtual DbSet<AffiliationPoints> AffiliationPoints { get; set; }
-        public virtual DbSet<Affiliations> Affiliations { get; set; }
         public virtual DbSet<Alumni> Alumni { get; set; }
         public virtual DbSet<Birthdays> Birthdays { get; set; }
         public virtual DbSet<Buildings> Buildings { get; set; }
@@ -171,6 +171,12 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.TypeID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Activity_ActivityType");
+            });
+
+            modelBuilder.Entity<Affiliation>(entity =>
+            {
+                entity.HasKey(e => e.Name)
+                    .HasName("PK_Affiliations");
             });
 
             modelBuilder.Entity<AffiliationPoints>(entity =>

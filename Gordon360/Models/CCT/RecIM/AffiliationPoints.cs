@@ -21,7 +21,7 @@ namespace Gordon360.Models.CCT
         public int? Points { get; set; }
 
         [ForeignKey("AffiliationName")]
-        public virtual Affiliations AffiliationNameNavigation { get; set; }
+        public virtual Affiliation AffiliationNameNavigation { get; set; }
         [ForeignKey("SeriesID")]
         public virtual Series Series { get; set; }
         [ForeignKey("TeamID")]

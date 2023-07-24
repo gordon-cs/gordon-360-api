@@ -40,7 +40,7 @@ namespace Gordon360.Models.CCT
         public virtual Activity Activity { get; set; }
         [ForeignKey("Affiliation")]
         [InverseProperty("Team")]
-        public virtual Affiliations AffiliationNavigation { get; set; }
+        public virtual Affiliation AffiliationNavigation { get; set; }
         [ForeignKey("StatusID")]
         [InverseProperty("Team")]
         public virtual TeamStatus Status { get; set; }

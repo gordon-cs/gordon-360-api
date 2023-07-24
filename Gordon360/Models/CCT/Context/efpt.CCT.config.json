@@ -148,11 +148,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[AffiliationPoints]",
+         "Name": "[RecIM].[Affiliation]",
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[Affiliations]",
+         "Name": "[RecIM].[AffiliationPoints]",
          "ObjectType": 0
       },
       {
