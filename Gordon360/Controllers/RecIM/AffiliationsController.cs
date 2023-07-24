@@ -51,6 +51,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPut]
         [Route("")]
+        [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_AFFILIATION)]
         public async Task<ActionResult> PutAffiliation(string affiliationName)
         {
             var res = await _affiliationService.PutAffiliation(affiliationName);
@@ -66,6 +67,7 @@ namespace Gordon360.Controllers.RecIM
         /// <returns></returns>
         [HttpPut]
         [Route("{affiliationName}/points")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_AFFILIATION)]
         public async Task<ActionResult> AddPointsToAffilliation(string affiliationName,AffiliationPointsUpdateViewModel vm)
         {
             var res = await _affiliationService.AddPointsToAffilliation(affiliationName, vm);
@@ -78,6 +80,7 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="affiliationName"></param>
         [HttpDelete]
         [Route("")]
+        [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_AFFILIATION)]
         public async Task<ActionResult> DeleteAffiliation(string affiliationName)
         {
             await _affiliationService.DeleteAffiliation(affiliationName);

@@ -523,6 +523,8 @@ namespace Gordon360.Authorization
                 case Resource.NEWS:
                     return true;
                 case Resource.RECIM_PARTICIPANT_ADMIN:
+                     //fallthrough
+                case Resource.RECIM_AFFILIATION:
                     //fallthrough
                 case Resource.RECIM_ACTIVITY:
                     //fallthrough
@@ -750,6 +752,8 @@ namespace Gordon360.Authorization
                     //fallthrough
                 case Resource.RECIM_ACTIVITY:
                     //fallthrough
+                case Resource.RECIM_AFFILIATION:
+                    //fallthrough
                 case Resource.RECIM_SERIES:
                     //fallthrough
                 case Resource.RECIM_SURFACE:
@@ -905,6 +909,8 @@ namespace Gordon360.Authorization
                         return false;
                     }
                 case Resource.RECIM_ACTIVITY:
+                    //fallthrough
+                case Resource.RECIM_AFFILIATION:
                     //fallthrough
                 case Resource.RECIM_SERIES:
                     //fallthrough
