@@ -5,7 +5,7 @@ namespace Gordon360.Models.ViewModels
     public record AlumniProfileViewModel
         (
         string ID,
-        string WebUpdate,
+        int WebUpdate,
         string Title,
         string FirstName,
         string MiddleName,
@@ -54,7 +54,7 @@ namespace Gordon360.Models.ViewModels
             return new AlumniProfileViewModel
             (
                 alu.ID.Trim(),
-                alu.WebUpdate ?? "",
+                alu.WebUpdate ?? 0,
                 alu.Title ?? "",
                 alu.FirstName ?? "",
                 alu.MiddleName ?? "",

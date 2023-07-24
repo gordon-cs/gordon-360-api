@@ -11,6 +11,7 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int StatusID { get; set; }
         public int ActivityID { get; set; }
         public string? Logo { get; set; }
+        public string? Affiliation { get; set; }
         public static implicit operator TeamViewModel(Team t)
         {
             return new TeamViewModel
@@ -19,7 +20,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 Name = t.Name, 
                 StatusID = t.StatusID,  
                 ActivityID = t.ActivityID,
-                Logo = t.Logo
+                Logo = t.Logo,
+                Affiliation = t.Affiliation
             };
         }
     }

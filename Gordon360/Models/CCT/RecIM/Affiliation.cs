@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Affiliations", Schema = "RecIM")]
-    public partial class Affiliations
+    [Table("Affiliation", Schema = "RecIM")]
+    public partial class Affiliation
     {
-        public Affiliations()
+        public Affiliation()
         {
             AffiliationPoints = new HashSet<AffiliationPoints>();
+            Team = new HashSet<Team>();
         }
 
         [Key]
@@ -23,5 +24,7 @@ namespace Gordon360.Models.CCT
 
         [InverseProperty("AffiliationNameNavigation")]
         public virtual ICollection<AffiliationPoints> AffiliationPoints { get; set; }
+        [InverseProperty("AffiliationNavigation")]
+        public virtual ICollection<Team> Team { get; set; }
     }
 }

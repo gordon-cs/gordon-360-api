@@ -22,7 +22,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 EndDate = this.EndDate,
                 ActivityID = this.ActivityID,
                 TypeID = this.TypeID,
-                StatusID = 1, //default unconfirmed series
+                StatusID = 2, //default in-progress series
                 ScheduleID = this.ScheduleID ?? activityInheritiedSeriesScheduleID //updated when admin is ready to set up the schedule
             };
         }

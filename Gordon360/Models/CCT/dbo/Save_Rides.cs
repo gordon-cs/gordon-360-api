@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Save_Rides", Schema = "dbo")]
     public partial class Save_Rides
     {
         public Save_Rides()

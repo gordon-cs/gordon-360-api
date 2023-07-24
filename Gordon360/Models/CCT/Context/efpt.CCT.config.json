@@ -13,6 +13,7 @@
    "Schemas": null,
    "SelectedHandlebarsLanguage": 0,
    "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
    "Tables": [
       {
          "Name": "[dbo].[ACT_INFO]",
@@ -147,11 +148,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[AffiliationPoints]",
+         "Name": "[RecIM].[Affiliation]",
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[Affiliations]",
+         "Name": "[RecIM].[AffiliationPoints]",
          "ObjectType": 0
       },
       {
@@ -380,6 +381,18 @@
       },
       {
          "Name": "[dbo].[Student]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[UserCourses]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[RecIM].[ParticipantView]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[RecIM].[SeriesTeamView]",
          "ObjectType": 3
       },
       {
@@ -820,8 +833,10 @@
       }
    ],
    "UiHint": "sqltrain1.CCT.dbo",
+   "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
+   "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseFluentApiOnly": false,
    "UseHandleBars": false,
@@ -829,13 +844,12 @@
    "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
-   "UseNoConstructor": false,
    "UseNoDefaultConstructor": false,
-   "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": true,
+   "UseSchemaNamespaces": false,
    "UseSpatial": false,
    "UseT4": false
 }

@@ -16,10 +16,19 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string AffiliationName { get; set; }
         [Key]
-        public int ActivityID { get; set; }
+        public int TeamID { get; set; }
+        [Key]
+        public int SeriesID { get; set; }
+        public int Points { get; set; }
 
         [ForeignKey("AffiliationName")]
         [InverseProperty("AffiliationPoints")]
-        public virtual Affiliations AffiliationNameNavigation { get; set; }
+        public virtual Affiliation AffiliationNameNavigation { get; set; }
+        [ForeignKey("SeriesID")]
+        [InverseProperty("AffiliationPoints")]
+        public virtual Series Series { get; set; }
+        [ForeignKey("TeamID")]
+        [InverseProperty("AffiliationPoints")]
+        public virtual Team Team { get; set; }
     }
 }

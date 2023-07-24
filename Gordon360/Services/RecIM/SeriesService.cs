@@ -18,11 +18,12 @@ namespace Gordon360.Services.RecIM
     {
         private readonly CCTContext _context;
         private readonly IMatchService _matchService;
-
-        public SeriesService(CCTContext context, IMatchService matchService)
+        private readonly IAffiliationService _affiliationService;
+        public SeriesService(CCTContext context, IMatchService matchService, IAffiliationService affiliationService)
         {
             _context = context;
             _matchService = matchService;
+            _affiliationService = affiliationService;
         }
 
         public IEnumerable<LookupViewModel>? GetSeriesLookup(string type)
@@ -253,9 +254,49 @@ namespace Gordon360.Services.RecIM
             series.Name = update.Name ?? series.Name;
             series.StartDate = update.StartDate ?? series.StartDate;
             series.EndDate = update.EndDate ?? series.EndDate;
-            series.StatusID = update.StatusID ?? series.StatusID;
             series.ScheduleID = update.ScheduleID ?? series.ScheduleID;
+            series.WinnerID = update.WinnerID ?? series.WinnerID;
+            series.Points = update.Points ?? series.Points;
+
+            // add or subtract points to halls/affiliations logic
+
+            if (series.StatusID == 2 && update.StatusID == 3 ) //in-progress -> completed
+            {
+                var calculatedWinner = _context.SeriesTeamView
+                    .Where(st => st.SeriesID == seriesID)
+                    .OrderByDescending(st => st.WinCount)
+                    .ThenByDescending(st => st.SportsmanshipRating)
+                    .FirstOrDefault();
+
+                if (calculatedWinner is SeriesTeamView w)
+                {
+                    series.WinnerID = w.TeamID;
+
+                    string? affiliation = _context.Team
+                        .FirstOrDefault(t => t.ID == w.TeamID)?
+                        .Affiliation;
+
+                    if (affiliation is string a)
+                        await _affiliationService.AddPointsToAffilliation(a,
+                            new AffiliationPointsUpdateViewModel
+                            {
+                                TeamID = w.TeamID,
+                                SeriesID = seriesID,
+                                Points = series.Points
+                            });
+                }
+
+            }
+            if (series.StatusID == 3 && update.StatusID is not null) //completed -> anything
+            {
+                //remove all hall points attributed to this series
+                var seriesAffiliationPoints = _context.AffiliationPoints.Where(ap => ap.SeriesID == seriesID);
+                _context.AffiliationPoints.RemoveRange(seriesAffiliationPoints);
+            }
             
+            series.StatusID = update.StatusID ?? series.StatusID;
+
+
             //update teams
             if (update.TeamIDs is not null)
             {

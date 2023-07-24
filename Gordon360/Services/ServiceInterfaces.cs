@@ -323,6 +323,14 @@ namespace Gordon360.Services
         {
             RecIMGeneralReportViewModel GetReport(DateTime start, DateTime end);
         }
+
+        public interface IAffiliationService
+        {
+            IEnumerable<AffiliationExtendedViewModel> GetAllAffiliationDetails();
+            Task DeleteAffiliation(string affiliationName);
+            Task<string> PutAffiliation(string affiliationName);
+            Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm);
+        }
         public interface IActivityService
         {
             IEnumerable<LookupViewModel>? GetActivityLookup(string type);

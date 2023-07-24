@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT
 {
     [Keyless]
-    [Table("User_Rooms", Schema = "dbo")]
     public partial class User_Rooms
     {
         [Required]

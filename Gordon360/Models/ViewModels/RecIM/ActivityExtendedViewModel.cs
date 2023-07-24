@@ -23,7 +23,6 @@ namespace Gordon360.Models.ViewModels.RecIM
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public int? SeriesScheduleID { get; set; }
-
         public IEnumerable<SeriesExtendedViewModel> Series { get; set; }
         public IEnumerable<TeamExtendedViewModel> Team { get; set; }
 
