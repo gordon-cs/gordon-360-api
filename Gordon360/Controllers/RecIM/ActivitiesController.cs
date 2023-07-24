@@ -21,22 +21,22 @@ namespace Gordon360.Controllers.RecIM
         }
 
         ///<summary>Gets a list of all Activities by parameter </summary>
-        ///<param name="active"> Optional active parameter </param>
-        ///<param name="time"> Optional time parameter </param>
+        ///<param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
         /// <returns>
         /// All Existing Activities 
         /// </returns>
         [HttpGet]
         [Route("")]
-        public ActionResult<IEnumerable<ActivityExtendedViewModel>> GetActivities([FromQuery] DateTime? time, bool active)
+        public ActionResult<IEnumerable<ActivityExtendedViewModel>> GetActivities([FromQuery] bool? active)
         {   
-            if (time is null && active)
+            if ( active is bool isActive)
             {
-                var activeResults = _activityService.GetActivities();
-                return Ok(activeResults);
+                bool completed = !isActive;
+                var res = _activityService.GetActivitiesByCompletion(completed);
+                return Ok(res);
 
             }
-            var result = _activityService.GetActivitiesByTime(time);
+            var result = _activityService.GetActivities();
             return Ok(result);
         }
 
@@ -86,7 +86,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_ACTIVITY)]
-        public async Task<ActionResult<ActivityViewModel>> CreateActivity(ActivityUploadViewModel newActivity)
+        public async Task<ActionResult<ActivityViewModel>> CreateActivityAsync(ActivityUploadViewModel newActivity)
         {
             var activity = await _activityService.PostActivityAsync(newActivity);
             return CreatedAtAction(nameof(GetActivityByID), new { activityID = activity.ID }, activity);
@@ -101,7 +101,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPatch]
         [Route("{activityID}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_ACTIVITY)]
-        public async Task<ActionResult<ActivityViewModel>> UpdateActivity(int activityID, ActivityPatchViewModel updatedActivity)
+        public async Task<ActionResult<ActivityViewModel>> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
         {
             var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
             return CreatedAtAction(nameof(GetActivityByID), new { activityID = activity.ID }, activity);
@@ -115,7 +115,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpDelete]
         [Route("{activityID}")]
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_ACTIVITY)]
-        public async Task<ActionResult> DeleteActivityCascade(int activityID)
+        public async Task<ActionResult> DeleteActivityCascadeAsync(int activityID)
         {
             var res = await _activityService.DeleteActivityCascade(activityID);
             return Ok(res);

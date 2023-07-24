@@ -14,6 +14,11 @@ namespace Gordon360.Models.ViewModels.RecIM
         public string Status { get; set; }
         public IEnumerable<ParticipantNotificationViewModel> Notification { get; set; } 
         public bool IsAdmin { get; set; }
+        public bool AllowEmails { get; set; }
+        public string SpecifiedGender { get; set; }
+        public bool IsCustom { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
 
         public static implicit operator ParticipantExtendedViewModel(ACCOUNT a)
         {
@@ -21,6 +26,22 @@ namespace Gordon360.Models.ViewModels.RecIM
             {
                 Username = a.AD_Username.Trim() ?? "",
                 Email = a.email ?? "", 
+            };
+
+        }
+
+        public static implicit operator ParticipantExtendedViewModel(ParticipantView p)
+        {
+            return new ParticipantExtendedViewModel
+            {
+                Username = p.Username,
+                Email = p.Email,
+                IsAdmin = p.IsAdmin,
+                SpecifiedGender = p.SpecifiedGender,
+                AllowEmails = p.AllowEmails,
+                IsCustom = p.IsCustom,
+                FirstName = p.FirstName,
+                LastName = p.LastName
             };
 
         }

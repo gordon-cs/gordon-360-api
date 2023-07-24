@@ -35,6 +35,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Clifton_Strengths> Clifton_Strengths { get; set; }
         public virtual DbSet<Config> Config { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
+        public virtual DbSet<CustomParticipant> CustomParticipant { get; set; }
         public virtual DbSet<DiningInfo> DiningInfo { get; set; }
         public virtual DbSet<Dining_Meal_Choice_Desc> Dining_Meal_Choice_Desc { get; set; }
         public virtual DbSet<Dining_Meal_Plan_Change_History> Dining_Meal_Plan_Change_History { get; set; }
@@ -62,6 +63,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Mailboxes> Mailboxes { get; set; }
         public virtual DbSet<Majors> Majors { get; set; }
         public virtual DbSet<Match> Match { get; set; }
+        public virtual DbSet<MatchBracket> MatchBracket { get; set; }
         public virtual DbSet<MatchParticipant> MatchParticipant { get; set; }
         public virtual DbSet<MatchStatus> MatchStatus { get; set; }
         public virtual DbSet<MatchTeam> MatchTeam { get; set; }
@@ -77,6 +79,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<ParticipantStatus> ParticipantStatus { get; set; }
         public virtual DbSet<ParticipantStatusHistory> ParticipantStatusHistory { get; set; }
         public virtual DbSet<ParticipantTeam> ParticipantTeam { get; set; }
+        public virtual DbSet<ParticipantView> ParticipantView { get; set; }
         public virtual DbSet<Police> Police { get; set; }
         public virtual DbSet<PrivType> PrivType { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
@@ -212,6 +215,20 @@ namespace Gordon360.Models.CCT.Context
                 entity.ToView("Countries", "dbo");
 
                 entity.Property(e => e.CTY).IsFixedLength();
+            });
+
+            modelBuilder.Entity<CustomParticipant>(entity =>
+            {
+                entity.HasKey(e => e.Username)
+                    .HasName("PK__CustomPa__536C85E5A0FDE2AE");
+
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.UsernameNavigation)
+                    .WithOne(p => p.CustomParticipant)
+                    .HasForeignKey<CustomParticipant>(d => d.Username)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__CustomPar__Usern__70D3A237");
             });
 
             modelBuilder.Entity<DiningInfo>(entity =>
@@ -439,6 +456,17 @@ namespace Gordon360.Models.CCT.Context
                     .HasConstraintName("FK_Match_Surface");
             });
 
+            modelBuilder.Entity<MatchBracket>(entity =>
+            {
+                entity.Property(e => e.MatchID).ValueGeneratedNever();
+
+                entity.HasOne(d => d.Match)
+                    .WithOne(p => p.MatchBracket)
+                    .HasForeignKey<MatchBracket>(d => d.MatchID)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_MatchBracket_Match");
+            });
+
             modelBuilder.Entity<MatchParticipant>(entity =>
             {
                 entity.HasOne(d => d.Match)
@@ -508,7 +536,11 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Participant>(entity =>
             {
+                entity.Property(e => e.AllowEmails).HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.SpecifiedGender).IsFixedLength();
             });
 
             modelBuilder.Entity<ParticipantActivity>(entity =>
@@ -573,6 +605,13 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.ParticipantTeam)
                     .HasForeignKey(d => d.TeamID)
                     .HasConstraintName("FK_ParticipantTeam_Team");
+            });
+
+            modelBuilder.Entity<ParticipantView>(entity =>
+            {
+                entity.ToView("ParticipantView", "RecIM");
+
+                entity.Property(e => e.SpecifiedGender).IsFixedLength();
             });
 
             modelBuilder.Entity<Police>(entity =>

@@ -147,7 +147,15 @@
          "ObjectType": 0
       },
       {
+         "Name": "[RecIM].[CustomParticipant]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Match]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[RecIM].[MatchBracket]",
          "ObjectType": 0
       },
       {
@@ -799,7 +807,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "SQLTrain1.CCT",
+   "UiHint": "sqltrain1.CCT.dbo",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDbContextSplitting": false,
