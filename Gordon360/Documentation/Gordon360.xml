@@ -799,7 +799,7 @@
             Points/Activities Won : Winning Team
             </summary>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.PutAffiliation(System.String)">
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.CreateAffiliation(System.String)">
             <summary>
             Creates new Affiliation
             </summary>
@@ -808,7 +808,7 @@
         </member>
         <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.UpdateAffiliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPatchViewModel)">
             <summary>
-            Updates an affiliation's logo
+            Updates an affiliation's logo and/or name
             </summary>
             <param name="affiliationName"></param>
             <param name="update">updated instance of affiliation</param>
