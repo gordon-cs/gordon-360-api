@@ -69,9 +69,10 @@ namespace Gordon360.Services.RecIM
                          .Select(ap => ap.Points)
                          .AsEnumerable()
                          .Sum(),
-                     Series = (IEnumerable<SeriesViewModel>)_context.AffiliationPoints
-                          .FirstOrDefault(_ap => _ap.AffiliationName == a.Name)
-                          .Series
+                     Series = _context.AffiliationPoints
+                          .Where(_ap => _ap.AffiliationName == a.Name)
+                          .Select(ap => (SeriesViewModel)_context.Series.FirstOrDefault(s => s.ID == ap.SeriesID))
+                          .AsEnumerable()
                  })
                  .AsEnumerable();
         }
@@ -89,9 +90,10 @@ namespace Gordon360.Services.RecIM
                          .Select(ap => ap.Points)
                          .AsEnumerable()
                          .Sum(),
-                Series = (IEnumerable<SeriesViewModel>)_context.AffiliationPoints
-                          .FirstOrDefault(_ap => _ap.AffiliationName == name)
-                          .Series
+                Series = _context.AffiliationPoints
+                          .Where(_ap => _ap.AffiliationName == a.Name)
+                          .Select(ap => (SeriesViewModel)_context.Series.FirstOrDefault(s => s.ID == ap.SeriesID))
+                          .AsEnumerable()
             };
         }
 
