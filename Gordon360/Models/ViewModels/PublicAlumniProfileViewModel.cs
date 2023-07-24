@@ -4,7 +4,7 @@ namespace Gordon360.Models.ViewModels
 {
     public class PublicAlumniProfileViewModel
     {
-        public string WebUpdate { get; set; }
+        public int WebUpdate { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -38,7 +38,7 @@ namespace Gordon360.Models.ViewModels
         {
             PublicAlumniProfileViewModel vm = new PublicAlumniProfileViewModel
             {
-                WebUpdate = alu.WebUpdate ?? "",
+                WebUpdate = alu.WebUpdate ?? 0,
                 Title = alu.Title ?? "",
                 FirstName = alu.FirstName ?? "",
                 MiddleName = alu.MiddleName ?? "",
