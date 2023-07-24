@@ -253,9 +253,24 @@ namespace Gordon360.Services.RecIM
             series.Name = update.Name ?? series.Name;
             series.StartDate = update.StartDate ?? series.StartDate;
             series.EndDate = update.EndDate ?? series.EndDate;
+
+            // add or subtract points to halls/affiliations logic
+
+            if (series.StatusID == 2 && update.StatusID == 3 ) //in-progress -> completed
+            {
+
+            }
+            if (series.StatusID == 3) //completed -> anything
+            {
+
+            }
+
             series.StatusID = update.StatusID ?? series.StatusID;
+           
             series.ScheduleID = update.ScheduleID ?? series.ScheduleID;
-            
+            series.WinnerID = update.WinnerID ?? series.WinnerID;
+            series.Points = update.Points ?? series.Points;
+
             //update teams
             if (update.TeamIDs is not null)
             {

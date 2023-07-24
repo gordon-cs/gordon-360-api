@@ -60,11 +60,12 @@ namespace Gordon360.Controllers.RecIM
         /// Creates new AffiliationPoints entry 
         /// (affiliationname, activity where points were attributed, optional points)
         /// </summary>
+        /// <param name="vm">put viewmodel</param>
         /// <param name="affiliationName"></param>
         /// <returns></returns>
         [HttpPut]
         [Route("{affiliationName}")]
-        public async Task<ActionResult> AddPointsToAffilliation(AffiliationPointsUpdateViewModel affiliationName)
+        public async Task<ActionResult> AddPointsToAffilliation(string affiliationName,AffiliationPointsUpdateViewModel vm)
         {
             throw new NotImplementedException();
         }
