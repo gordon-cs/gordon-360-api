@@ -97,6 +97,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<SeriesStatus> SeriesStatus { get; set; }
         public virtual DbSet<SeriesSurface> SeriesSurface { get; set; }
         public virtual DbSet<SeriesTeam> SeriesTeam { get; set; }
+        public virtual DbSet<SeriesTeamView> SeriesTeamView { get; set; }
         public virtual DbSet<SeriesType> SeriesType { get; set; }
         public virtual DbSet<Slider_Images> Slider_Images { get; set; }
         public virtual DbSet<Sport> Sport { get; set; }
@@ -754,6 +755,11 @@ namespace Gordon360.Models.CCT.Context
                     .WithMany(p => p.SeriesTeam)
                     .HasForeignKey(d => d.TeamID)
                     .HasConstraintName("FK_SeriesTeam_Team");
+            });
+
+            modelBuilder.Entity<SeriesTeamView>(entity =>
+            {
+                entity.ToView("SeriesTeamView", "RecIM");
             });
 
             modelBuilder.Entity<States>(entity =>

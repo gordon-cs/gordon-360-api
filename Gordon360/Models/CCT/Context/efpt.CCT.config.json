@@ -392,6 +392,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[RecIM].[SeriesTeamView]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[ACTIVE_CLUBS_PER_SESS_ID]",
          "ObjectType": 1
       },

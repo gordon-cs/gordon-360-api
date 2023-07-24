@@ -33,7 +33,7 @@ namespace Gordon360.Models.CCT
         public int StatusID { get; set; }
         public int ScheduleID { get; set; }
         public int? WinnerID { get; set; }
-        public int? Points { get; set; }
+        public int Points { get; set; }
 
         [ForeignKey("ActivityID")]
         [InverseProperty("Series")]
