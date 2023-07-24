@@ -799,7 +799,7 @@
             Points/Activities Won : Winning Team
             </summary>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.PutAffiliation(System.String)">
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.CreateAffiliation(System.String)">
             <summary>
             Creates new Affiliation
             </summary>

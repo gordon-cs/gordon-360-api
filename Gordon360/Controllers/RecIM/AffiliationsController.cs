@@ -40,8 +40,7 @@ namespace Gordon360.Controllers.RecIM
         [Route("{affiliationName}")]
         public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAffiliationDetailsByName(string affiliationName)
         {
-            var res = _affiliationService.GetAllAffiliationDetails();
-            return Ok(res.FirstOrDefault(a => a.Name == affiliationName));
+            return Ok(_affiliationService.GetAffiliationDetailsByName(affiliationName));
         }
 
         /// <summary>
@@ -49,12 +48,12 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         /// <param name="affiliationName"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPost]
         [Route("")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_AFFILIATION)]
-        public async Task<ActionResult> PutAffiliation(string affiliationName)
+        public async Task<ActionResult> CreateAffiliation([FromBody] string affiliationName)
         {
-            var res = await _affiliationService.PutAffiliation(affiliationName);
+            var res = await _affiliationService.CreateAffiliation(affiliationName);
             return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
         }
 

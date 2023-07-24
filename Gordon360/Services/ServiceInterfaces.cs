@@ -327,8 +327,9 @@ namespace Gordon360.Services
         public interface IAffiliationService
         {
             IEnumerable<AffiliationExtendedViewModel> GetAllAffiliationDetails();
+            AffiliationExtendedViewModel GetAffiliationDetailsByName(string name);
             Task DeleteAffiliation(string affiliationName);
-            Task<string> PutAffiliation(string affiliationName);
+            Task<string> CreateAffiliation(string affiliationName);
             Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm);
         }
         public interface IActivityService

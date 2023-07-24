@@ -76,14 +76,34 @@ namespace Gordon360.Services.RecIM
                  .AsEnumerable();
         }
 
-        public async Task<string> PutAffiliation(string affiliationName)
+        public AffiliationExtendedViewModel GetAffiliationDetailsByName(string name)
+        {
+            var affiliation = _context.Affiliation.Find(name);
+            if (affiliation is null) throw new ResourceNotFoundException();
+
+            return new AffiliationExtendedViewModel()
+            {
+                Name = name,
+                Points = _context.AffiliationPoints
+                         .Where(ap => ap.AffiliationName == name)
+                         .Select(ap => ap.Points)
+                         .AsEnumerable()
+                         .Sum(),
+                Series = (IEnumerable<SeriesViewModel>)_context.AffiliationPoints
+                          .FirstOrDefault(_ap => _ap.AffiliationName == name)
+                          .Series
+            };
+        }
+
+        public async Task<string> CreateAffiliation(string affiliationName)
         {
             var existing = _context.Affiliation.Find(affiliationName);
-            if(existing is null)
-            {
-                _context.Affiliation.Add(new Affiliation { Name = affiliationName });
-                await _context.SaveChangesAsync();
-            }
+
+            if (existing is not null) throw new BadInputException() { ExceptionMessage = "Affiliation already exists" };
+
+            _context.Affiliation.Add(new Affiliation { Name = affiliationName });
+            await _context.SaveChangesAsync();
+
             return affiliationName;
         }
     }
