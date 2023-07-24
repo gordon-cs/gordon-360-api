@@ -181,22 +181,22 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<AffiliationPoints>(entity =>
             {
-                entity.Property(e => e.Points).HasDefaultValueSql("((0))");
+                entity.HasKey(e => new { e.AffiliationName, e.TeamID, e.SeriesID });
 
                 entity.HasOne(d => d.AffiliationNameNavigation)
-                    .WithMany()
+                    .WithMany(p => p.AffiliationPoints)
                     .HasForeignKey(d => d.AffiliationName)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AffiliationPoints_Affiliations");
 
                 entity.HasOne(d => d.Series)
-                    .WithMany()
+                    .WithMany(p => p.AffiliationPoints)
                     .HasForeignKey(d => d.SeriesID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AffiliationPoints_Series");
 
                 entity.HasOne(d => d.Team)
-                    .WithMany()
+                    .WithMany(p => p.AffiliationPoints)
                     .HasForeignKey(d => d.TeamID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AffiliationPoints_Team");

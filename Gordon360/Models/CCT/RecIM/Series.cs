@@ -13,6 +13,7 @@ namespace Gordon360.Models.CCT
     {
         public Series()
         {
+            AffiliationPoints = new HashSet<AffiliationPoints>();
             Match = new HashSet<Match>();
             SeriesSurface = new HashSet<SeriesSurface>();
             SeriesTeam = new HashSet<SeriesTeam>();
@@ -50,6 +51,8 @@ namespace Gordon360.Models.CCT
         [ForeignKey("WinnerID")]
         [InverseProperty("Series")]
         public virtual Team Winner { get; set; }
+        [InverseProperty("Series")]
+        public virtual ICollection<AffiliationPoints> AffiliationPoints { get; set; }
         [InverseProperty("Series")]
         public virtual ICollection<Match> Match { get; set; }
         [InverseProperty("Series")]

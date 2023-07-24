@@ -8,23 +8,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Keyless]
     [Table("AffiliationPoints", Schema = "RecIM")]
     public partial class AffiliationPoints
     {
-        [Required]
+        [Key]
         [StringLength(50)]
         [Unicode(false)]
         public string AffiliationName { get; set; }
+        [Key]
         public int TeamID { get; set; }
+        [Key]
         public int SeriesID { get; set; }
-        public int? Points { get; set; }
+        public int Points { get; set; }
 
         [ForeignKey("AffiliationName")]
+        [InverseProperty("AffiliationPoints")]
         public virtual Affiliation AffiliationNameNavigation { get; set; }
         [ForeignKey("SeriesID")]
+        [InverseProperty("AffiliationPoints")]
         public virtual Series Series { get; set; }
         [ForeignKey("TeamID")]
+        [InverseProperty("AffiliationPoints")]
         public virtual Team Team { get; set; }
     }
 }
