@@ -806,6 +806,14 @@
             <param name="affiliationName"></param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.UpdateAffiliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPatchViewModel)">
+            <summary>
+            Updates an affiliation's logo
+            </summary>
+            <param name="affiliationName"></param>
+            <param name="update">updated instance of affiliation</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.AddPointsToAffilliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPointsUpdateViewModel)">
             <summary>
             Creates new AffiliationPoints entry 

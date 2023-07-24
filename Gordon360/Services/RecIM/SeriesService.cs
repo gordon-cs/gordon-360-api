@@ -277,7 +277,7 @@ namespace Gordon360.Services.RecIM
                         .Affiliation;
 
                     if (affiliation is string a)
-                        await _affiliationService.AddPointsToAffilliation(a,
+                        await _affiliationService.AddPointsToAffilliationAsync(a,
                             new AffiliationPointsUpdateViewModel
                             {
                                 TeamID = w.TeamID,

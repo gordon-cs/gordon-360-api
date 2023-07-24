@@ -21,6 +21,9 @@ namespace Gordon360.Models.CCT
         [StringLength(50)]
         [Unicode(false)]
         public string Name { get; set; }
+        [StringLength(128)]
+        [Unicode(false)]
+        public string Logo { get; set; }
 
         [InverseProperty("AffiliationNameNavigation")]
         public virtual ICollection<AffiliationPoints> AffiliationPoints { get; set; }

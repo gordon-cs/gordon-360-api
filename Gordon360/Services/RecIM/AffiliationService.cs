@@ -22,7 +22,7 @@ namespace Gordon360.Services.RecIM
             _context = context;
         }
 
-        public async Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm)
+        public async Task<string> AddPointsToAffilliationAsync(string affiliationName, AffiliationPointsUpdateViewModel vm)
         {
             var affiliation = _context.Affiliation.Find(affiliationName);
             if (affiliation is null) throw new ResourceNotFoundException();
@@ -39,7 +39,7 @@ namespace Gordon360.Services.RecIM
             return affiliationName;
         }
 
-        public async Task DeleteAffiliation(string affiliationName)
+        public async Task DeleteAffiliationAsync(string affiliationName)
         {
             var teams = _context.Team
                 .Where(t => t.Affiliation == affiliationName);
@@ -76,7 +76,7 @@ namespace Gordon360.Services.RecIM
                  .AsEnumerable();
         }
 
-        public async Task<string> PutAffiliation(string affiliationName)
+        public async Task<string> PutAffiliationAsync(string affiliationName)
         {
             var existing = _context.Affiliation.Find(affiliationName);
             if(existing is null)
@@ -85,6 +85,17 @@ namespace Gordon360.Services.RecIM
                 await _context.SaveChangesAsync();
             }
             return affiliationName;
+        }
+
+        public async Task<string> UpdateAffiliationAsync(string affiliationName, AffiliationPatchViewModel update)
+        {
+            var affiliation = _context.Affiliation.Find(affiliationName);
+            if (affiliation is null) throw new ResourceNotFoundException();
+            affiliation.Name = update.Name ?? affiliation.Name;
+            affiliation.Logo = update.Logo ?? affiliation.Logo;
+
+            await _context.SaveChangesAsync();
+            return affiliation.Name;
         }
     }
 }

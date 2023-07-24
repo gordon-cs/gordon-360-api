@@ -54,7 +54,22 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_AFFILIATION)]
         public async Task<ActionResult> PutAffiliation(string affiliationName)
         {
-            var res = await _affiliationService.PutAffiliation(affiliationName);
+            var res = await _affiliationService.PutAffiliationAsync(affiliationName);
+            return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
+        }
+
+        /// <summary>
+        /// Updates an affiliation's logo
+        /// </summary>
+        /// <param name="affiliationName"></param>
+        /// <param name="update">updated instance of affiliation</param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("{affiliationName}")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_AFFILIATION)]
+        public async Task<ActionResult> UpdateAffiliation(string affiliationName, AffiliationPatchViewModel update)
+        {
+            var res = await _affiliationService.UpdateAffiliationAsync(affiliationName, update);
             return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
         }
 
@@ -70,7 +85,7 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_AFFILIATION)]
         public async Task<ActionResult> AddPointsToAffilliation(string affiliationName,AffiliationPointsUpdateViewModel vm)
         {
-            var res = await _affiliationService.AddPointsToAffilliation(affiliationName, vm);
+            var res = await _affiliationService.AddPointsToAffilliationAsync(affiliationName, vm);
             return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
         }
 
@@ -83,7 +98,7 @@ namespace Gordon360.Controllers.RecIM
         [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_AFFILIATION)]
         public async Task<ActionResult> DeleteAffiliation(string affiliationName)
         {
-            await _affiliationService.DeleteAffiliation(affiliationName);
+            await _affiliationService.DeleteAffiliationAsync(affiliationName);
             return Ok();
         }
     }
