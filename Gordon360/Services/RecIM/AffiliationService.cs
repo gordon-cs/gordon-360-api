@@ -24,7 +24,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm)
         {
-            var affiliation = _context.Affiliations.Find(affiliationName);
+            var affiliation = _context.Affiliation.Find(affiliationName);
             if (affiliation is null) throw new ResourceNotFoundException();
 
             _context.AffiliationPoints.Add(new AffiliationPoints
@@ -52,15 +52,15 @@ namespace Gordon360.Services.RecIM
             //required to remove fk constraints before proper removal
             await _context.SaveChangesAsync();
 
-            var affiliation = _context.Affiliations.Find(affiliationName);
-            if (affiliation is Affiliations a) _context.Remove(a);
+            var affiliation = _context.Affiliation.Find(affiliationName);
+            if (affiliation is Affiliation a) _context.Remove(a);
             await _context.SaveChangesAsync();
 
         }
 
         public IEnumerable<AffiliationExtendedViewModel> GetAllAffiliationDetails()
         {
-            return _context.Affiliations
+            return _context.Affiliation
                  .Select(a => new AffiliationExtendedViewModel
                  {
                      Name = a.Name,
@@ -78,10 +78,10 @@ namespace Gordon360.Services.RecIM
 
         public async Task<string> PutAffiliation(string affiliationName)
         {
-            var existing = _context.Affiliations.Find(affiliationName);
+            var existing = _context.Affiliation.Find(affiliationName);
             if(existing is null)
             {
-                _context.Affiliations.Add(new Affiliations { Name = affiliationName });
+                _context.Affiliation.Add(new Affiliation { Name = affiliationName });
                 await _context.SaveChangesAsync();
             }
             return affiliationName;
