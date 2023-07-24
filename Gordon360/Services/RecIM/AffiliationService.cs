@@ -4,8 +4,11 @@ using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Exceptions;
+
 
 namespace Gordon360.Services.RecIM
 {
@@ -21,15 +24,27 @@ namespace Gordon360.Services.RecIM
 
         public async Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm)
         {
-            throw new System.NotImplementedException();
+            var affiliation = _context.Affiliations.Find(affiliationName);
+            if (affiliation is null) throw new ResourceNotFoundException();
+
+            _context.AffiliationPoints.Add(new AffiliationPoints
+            {
+                AffiliationName = affiliationName,
+                TeamID = vm.TeamID,
+                SeriesID = vm.SeriesID,
+                Points = vm.Points,
+            });
+            await _context.SaveChangesAsync();
+
+            return affiliationName;
         }
 
         public async Task DeleteAffiliation(string affiliationName)
         {
             var teams = _context.Team
-                .Where(t => t.Affiliation == affiliationName)
-                .ForEachAsync(t => t.Affiliation = null);
-  
+                .Where(t => t.Affiliation == affiliationName);
+            await teams.ForEachAsync(t => t.Affiliation = null);
+
             var affiliationPoints = _context.AffiliationPoints
                 .Where(ap => ap.AffiliationName == affiliationName);
             _context.AffiliationPoints.RemoveRange(affiliationPoints);
@@ -52,10 +67,11 @@ namespace Gordon360.Services.RecIM
                      Points = _context.AffiliationPoints
                          .Where(ap => ap.AffiliationName == a.Name)
                          .Select(ap => ap.Points)
+                         .AsEnumerable()
                          .Sum() ?? 0,
-                     Series = _context.AffiliationPoints
-                        .Where(_ap => _ap.AffiliationName == a.Name)
-                        .Select(ap => (SeriesViewModel)ap.Series)
+                     Series = (IEnumerable<SeriesViewModel>)_context.AffiliationPoints
+                          .FirstOrDefault(_ap => _ap.AffiliationName == a.Name)
+                          .Series
                  })
                  .AsEnumerable();
         }

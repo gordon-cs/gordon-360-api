@@ -12,7 +12,6 @@ using System.Linq;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
-    [AllowAnonymous]
     public class AffiliationsController : GordonControllerBase
     {
         private readonly IAffiliationService _affiliationService;
@@ -39,7 +38,7 @@ namespace Gordon360.Controllers.RecIM
         /// </summary>
         [HttpGet]
         [Route("{affiliationName}")]
-        public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAffiliationDetailsByName([FromBody] string affiliationName)
+        public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAffiliationDetailsByName(string affiliationName)
         {
             var res = _affiliationService.GetAllAffiliationDetails();
             return Ok(res.FirstOrDefault(a => a.Name == affiliationName));
@@ -66,10 +65,11 @@ namespace Gordon360.Controllers.RecIM
         /// <param name="affiliationName"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("{affiliationName}")]
+        [Route("{affiliationName}/points")]
         public async Task<ActionResult> AddPointsToAffilliation(string affiliationName,AffiliationPointsUpdateViewModel vm)
         {
-            throw new NotImplementedException();
+            var res = await _affiliationService.AddPointsToAffilliation(affiliationName, vm);
+            return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
         }
 
         /// <summary>
