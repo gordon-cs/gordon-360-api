@@ -38,7 +38,7 @@ namespace Gordon360.Models.ViewModels
         {
             PublicAlumniProfileViewModel vm = new PublicAlumniProfileViewModel
             {
-                WebUpdate = alu.WebUpdate ?? 0,
+                WebUpdate = alu.WebUpdate,
                 Title = alu.Title ?? "",
                 FirstName = alu.FirstName ?? "",
                 MiddleName = alu.MiddleName ?? "",
