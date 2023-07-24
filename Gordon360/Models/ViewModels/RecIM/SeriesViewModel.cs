@@ -14,6 +14,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int TypeID { get; set; }
         public int StatusID { get; set; }
         public int? ScheduleID { get; set; }
+        public int? WinnerID { get; set; }
+        public int? Points { get; set; }
 
         public static implicit operator SeriesViewModel(Series s)
         {
@@ -26,7 +28,9 @@ namespace Gordon360.Models.ViewModels.RecIM
                 ActivityID = s.ActivityID,
                 TypeID = s.TypeID,
                 StatusID = s.StatusID,
-                ScheduleID = s.ScheduleID
+                ScheduleID = s.ScheduleID,
+                WinnerID = s.WinnerID,
+                Points = s.Points,
             };
         }
     }
