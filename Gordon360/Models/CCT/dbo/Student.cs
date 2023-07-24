@@ -11,8 +11,7 @@ namespace Gordon360.Models.CCT
     [Keyless]
     public partial class Student
     {
-        [Required]
-        [StringLength(10)]
+        [StringLength(9)]
         [Unicode(false)]
         public string ID { get; set; }
         [StringLength(3)]

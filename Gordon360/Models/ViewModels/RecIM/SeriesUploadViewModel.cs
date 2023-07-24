@@ -13,6 +13,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public int TypeID { get; set; }
         public int? NumberOfTeamsAdmitted { get; set; }
         public int? ScheduleID { get; set; }
+        public int? WinnerID { get; set; }
+        public int? Points { get; set; }
         public Series ToSeries(int activityInheritiedSeriesScheduleID = 0)
         {
             return new Series
@@ -22,8 +24,10 @@ namespace Gordon360.Models.ViewModels.RecIM
                 EndDate = this.EndDate,
                 ActivityID = this.ActivityID,
                 TypeID = this.TypeID,
-                StatusID = 1, //default unconfirmed series
-                ScheduleID = this.ScheduleID ?? activityInheritiedSeriesScheduleID //updated when admin is ready to set up the schedule
+                StatusID = 2, //default in-progress series
+                ScheduleID = this.ScheduleID ?? activityInheritiedSeriesScheduleID, //updated when admin is ready to set up the schedule
+                WinnerID = this.WinnerID,
+                Points = this.Points ?? 0
             };
         }
     }

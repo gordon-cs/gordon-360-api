@@ -41,7 +41,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 TypeID = a.TypeID,
                 StartDate = a.StartDate.SpecifyUtc(),
                 EndDate = a.EndDate.SpecifyUtc(),
-                SeriesScheduleID = a.SeriesScheduleID
+                SeriesScheduleID = a.SeriesScheduleID,
             };
         }
     }

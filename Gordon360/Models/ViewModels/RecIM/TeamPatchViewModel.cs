@@ -6,6 +6,8 @@ namespace Gordon360.Models.ViewModels.RecIM
     {
         public string? Name { get; set; }
         public int? StatusID { get; set; }
-        public string? Logo { get; set; }
+        public LogoPatchViewModel? Logo { get; set; }
+        public string? Affiliation { get; set; }
+
     }
 }

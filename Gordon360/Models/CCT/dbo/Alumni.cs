@@ -11,13 +11,10 @@ namespace Gordon360.Models.CCT
     [Keyless]
     public partial class Alumni
     {
-        [Required]
-        [StringLength(25)]
+        [StringLength(9)]
         [Unicode(false)]
         public string ID { get; set; }
-        [StringLength(25)]
-        [Unicode(false)]
-        public string WebUpdate { get; set; }
+        public int? WebUpdate { get; set; }
         [StringLength(50)]
         [Unicode(false)]
         public string Title { get; set; }
@@ -111,6 +108,7 @@ namespace Gordon360.Models.CCT
         [StringLength(15)]
         [Unicode(false)]
         public string Barcode { get; set; }
+        [Required]
         [StringLength(50)]
         [Unicode(false)]
         public string AD_Username { get; set; }
@@ -121,9 +119,9 @@ namespace Gordon360.Models.CCT
         public string Country { get; set; }
         [StringLength(50)]
         [Unicode(false)]
-        public string Major2Description { get; set; }
+        public string Major1Description { get; set; }
         [StringLength(50)]
         [Unicode(false)]
-        public string Major1Description { get; set; }
+        public string Major2Description { get; set; }
     }
 }

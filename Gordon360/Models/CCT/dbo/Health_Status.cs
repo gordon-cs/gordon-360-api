@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Health_Status", Schema = "dbo")]
     public partial class Health_Status
     {
         [Key]

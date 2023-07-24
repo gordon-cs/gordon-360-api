@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Diagnostics;
+using Microsoft.Graph;
 
 
 namespace Gordon360.Services.RecIM
@@ -34,6 +36,17 @@ namespace Gordon360.Services.RecIM
             return _context.Sport.Find(sportID);
         }
 
+        public async Task<SportViewModel> DeleteSportAsync(int sportID)
+        {
+            var sport = _context.Sport.Find(sportID);
+            var activities = _context.Activity.Where(a => a.SportID == sportID);
+            foreach(var activity in activities)
+                activity.SportID = 0;
+            _context.Sport.Remove(sport);
+            await _context.SaveChangesAsync();
+            return sport;
+        }
+
         public IEnumerable<SportViewModel> GetSports()
         {
             return _context.Sport.Select(s => (SportViewModel)s).AsEnumerable();
@@ -48,22 +61,6 @@ namespace Gordon360.Services.RecIM
                 Rules = newSport.Rules,
                 Logo = newSport.Logo
             };
-            
-            // UNTESTED FEATURE
-            if (sport.Logo != null)
-            {
-                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(sport.Logo);
-
-                // Use a unique alphanumeric GUID string as the file name
-                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                var imagePath = GetImagePath(filename);
-                var url = GetImageURL(filename);
-
-                ImageUtils.UploadImage(imagePath, data, format);
-
-                sport.Logo = url;
-            }
 
             await _context.Sport.AddAsync(sport);
             await _context.SaveChangesAsync();
@@ -76,42 +73,33 @@ namespace Gordon360.Services.RecIM
             sport.Name = updatedSport.Name ?? sport.Name;
             sport.Description = updatedSport.Description ?? sport.Description;
             sport.Rules = updatedSport.Rules ?? sport.Rules;
-            
-            // UNTESTED FEATURE
+
+            // note: sport has not been tested
             if (updatedSport.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(updatedSport.Logo);
+                var (extension, format, data) = ImageUtils.GetImageFormat(updatedSport.Logo.Image);
 
                 string? imagePath = null;
-                // If old image exists, overwrite it with new image at same path
-                if (sport.Logo != null)
+                // remove old
+                if (sport.Logo is not null && updatedSport.Logo.Image is null)
                 {
                     imagePath = GetImagePath(Path.GetFileName(sport.Logo));
+                    ImageUtils.DeleteImage(imagePath);
+                    sport.Logo = updatedSport.Logo.Image;
                 }
-                // Otherwise, upload new image and save url to db
-                else
+
+                if (updatedSport.Logo.Image is not null)
                 {
                     // Use a unique alphanumeric GUID string as the file name
                     var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
                     imagePath = GetImagePath(filename);
                     var url = GetImageURL(filename);
                     sport.Logo = url;
+                    ImageUtils.UploadImage(imagePath, data, format);
                 }
-
-                ImageUtils.UploadImage(imagePath, data, format);
             }
 
-            //If the image property is null, it means that either the user
-            //chose to remove the previous image or that there was no previous
-            //image (DeleteImage is designed to handle this).
-            else if (sport.Logo != null)
-            {
-                var imagePath = GetImagePath(Path.GetFileName(sport.Logo));
-
-                ImageUtils.DeleteImage(imagePath);
-                sport.Logo = updatedSport.Logo; //null
-            }
 
             await _context.SaveChangesAsync();
 

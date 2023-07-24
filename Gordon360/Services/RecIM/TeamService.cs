@@ -8,15 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
-using Microsoft.Graph;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.TermStore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Gordon360.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Extensions.System;
+using System.Diagnostics;
 
 namespace Gordon360.Services.RecIM
 {
@@ -70,7 +67,8 @@ namespace Gordon360.Services.RecIM
         {
             var sportsmanshipScores = _context.MatchTeam
                                     .Where(mt => mt.Match.StatusID == 6 && mt.TeamID == teamID) //6 is completed
-                                        .Select(mt => mt.SportsmanshipScore);
+                                        .Select(mt => mt.SportsmanshipScore)
+                                    .AsEnumerable();
             if (sportsmanshipScores.Count() == 0)
                 return 5;
 
@@ -80,8 +78,8 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
         {
             var teamQuery = active 
-                ? _context.Team.Where(t => !t.Activity.Completed == active && t.StatusID != 0) // 0 is deleted
-                : _context.Team;    
+                ? _context.Team.Where(t => t.Activity.Completed != active && t.StatusID != 0) // 0 is deleted
+                : _context.Team.Where(t => t.StatusID != 0);    
 
             var teams = teamQuery
                 .Include(t => t.SeriesTeam)
@@ -95,12 +93,7 @@ namespace Gordon360.Services.RecIM
                     Status = t.Status.Description,
                     Logo = t.Logo,
                     Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0) // 0 is deleted
-                        .Select(pt => new ParticipantExtendedViewModel
-                        {
-                            Username = pt.ParticipantUsername,
-                            Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                            Role = pt.RoleType.Description,
-                        }),
+                        .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                     TeamRecord = t.SeriesTeam
                         .Select(st => (TeamRecordViewModel)st)
                         .AsEnumerable(),
@@ -139,15 +132,10 @@ namespace Gordon360.Services.RecIM
                                 Status = t.Status.Description,
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
+                                    .Where(mt => mt.Match.StatusID != 0)
                                     .Select(mt => _matchService.GetMatchForTeamByMatchID(mt.MatchID)).AsEnumerable(),
                                 Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
-                                                .Select(pt => new ParticipantExtendedViewModel
-                                                {
-                                                    Username = pt.ParticipantUsername,
-                                                    Email = _accountService.GetAccountByUsername(pt.ParticipantUsername).Email,
-                                                    Role = pt.RoleType.Description,
-                                                    GamesAttended = _context.MatchParticipant.Count(mp => mp.TeamID == teamID && mp.ParticipantUsername == pt.ParticipantUsername)
-        }),
+                                                .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                                 MatchHistory = _context.Match.Where(m => m.StatusID == 6 || m.StatusID == 4) // completed or forfeited status
                                                 .Join(_context.MatchTeam
                                                     .Where(mt => mt.TeamID == teamID)
@@ -247,21 +235,6 @@ namespace Gordon360.Services.RecIM
             if(_context.Activity.Find(newTeam.ActivityID).Team.Any(team => team.Name == newTeam.Name))
                 throw new UnprocessibleEntity
                 { ExceptionMessage = $"Team name {newTeam.Name} has already been taken by another team in this activity" };
-            
-            if (newTeam.Logo != null)
-            {
-                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(newTeam.Logo);
-
-                // Use a unique alphanumeric GUID string as the file name
-                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                var imagePath = GetImagePath(filename);
-                var url = GetImageURL(filename);
-
-                ImageUtils.UploadImage(imagePath, data, format);
-
-                newTeam.Logo = url;
-            }
 
             var team = newTeam.ToTeam();
             await _context.Team.AddAsync(team);
@@ -337,84 +310,79 @@ namespace Gordon360.Services.RecIM
             foreach(var mt in team.MatchTeam)
                 mt.StatusID = 0;
 
+
             await _context.SaveChangesAsync();
 
             return team;
         }
 
-        public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel update)
+        public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam)
         {
-            var t =  _context.Team
+            var team =  _context.Team
                 .Include(t => t.Activity)
                     .ThenInclude(t => t.Team)
                 .FirstOrDefault(t => t.ID == teamID);
-            if (update.Name is not null)
+            if (updatedTeam.Name is not null)
             {
-                if (t.Activity.Team.Any(team => team.Name == update.Name && team.ID != teamID)) 
+                if (team.Activity.Team.Any(team => team.Name == updatedTeam.Name && team.ID != teamID)) 
                     throw new UnprocessibleEntity 
-                        { ExceptionMessage = $"Team name {update.Name} has already been taken by another team in this activity" };
+                        { ExceptionMessage = $"Team name {updatedTeam.Name} has already been taken by another team in this activity" };
             }
-            t.Name = update.Name ?? t.Name;
-            t.StatusID = update.StatusID ?? t.StatusID;
-            
-            if (update.Logo != null)
+            team.Name = updatedTeam.Name ?? team.Name;
+            team.StatusID = updatedTeam.StatusID ?? team.StatusID;
+
+            if (updatedTeam.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(update.Logo);
+                var (extension, format, data) = ImageUtils.GetImageFormat(updatedTeam.Logo.Image);
 
                 string? imagePath = null;
-                // If old image exists, overwrite it with new image at same path
-                if (t.Logo != null)
+                // remove old
+                if (team.Logo is not null && updatedTeam.Logo.Image is null)
                 {
-                    imagePath = GetImagePath(Path.GetFileName(t.Logo));
+                    imagePath = GetImagePath(Path.GetFileName(team.Logo));
+                    ImageUtils.DeleteImage(imagePath);
+                    team.Logo = updatedTeam.Logo.Image;
                 }
-                // Otherwise, upload new image and save url to db
-                else
+
+                if (updatedTeam.Logo.Image is not null)
                 {
                     // Use a unique alphanumeric GUID string as the file name
                     var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
                     imagePath = GetImagePath(filename);
                     var url = GetImageURL(filename);
-                    t.Logo = url;
+                    team.Logo = url;
+                    ImageUtils.UploadImage(imagePath, data, format);
                 }
-
-                ImageUtils.UploadImage(imagePath, data, format);
-            }
-
-            //If the image property is null, it means that either the user
-            //chose to remove the previous image or that there was no previous
-            //image (DeleteImage is designed to handle this).
-            else if (t.Logo != null)
-            {
-                var imagePath = GetImagePath(Path.GetFileName(t.Logo));
-
-                ImageUtils.DeleteImage(imagePath);
-                t.Logo = update.Logo; //null
             }
 
             await _context.SaveChangesAsync();
 
-            return t;
+            return team;
         }
 
-        private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername)
+        private void SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername, bool isCustom)
         {
             var team = _context.Team
                 .Include(t => t.Activity)
                 .FirstOrDefault(t => t.ID == teamID);
-            var invitee = _accountService.GetAccountByUsername(inviteeUsername);
+            var invitee = _participantService.GetParticipantByUsername(inviteeUsername);
             var inviter = _accountService.GetAccountByUsername(inviterUsername);
             var password = _config["Emails:RecIM:Password"];
             string from_email = _config["Emails:RecIM:Username"];
             string to_email = invitee.Email;
-            string messageBody =
-                 $"Hey {invitee.FirstName}!<br><br>" +
+            string messageBody = isCustom ? ($"Hey {invitee.FirstName}!<br><br>" +
                 $"{inviter.FirstName} {inviter.LastName} has invited you join <b>{team.Name}</b> for <b>{team.Activity.Name}</b> <br>" +
                 $"Registration closes on <i>{team.Activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
-                //$"check it out <a href='https://360.gordon.edu/recim'>here</a>! <br><br>" + //for production
-                $"check it out <a href='https://360recim.gordon.edu/recim'>here</a>! <br><br>" +//for development
-                $"Gordon Rec-IM";
-            string subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has invited you to a team!";
+                $"<a href='{_config["RecIM_Url"]}'>Respond to your invite on 360/recim</a>! <br><br>" +
+                $"Gordon Rec-IM") : (
+                    $"Hey {invitee.FirstName}!<br><br>" +
+                    $"{inviter.FirstName} {inviter.LastName} has added you to <b>{team.Name}</b> for <b>{team.Activity.Name}</b> <br>" +
+                    $"Registration closes on <i>{team.Activity.RegistrationEnd.ToString("D", CultureInfo.GetCultureInfo("en-US"))}</i> <br>" +
+                    $"You are now a member of <b>{team.Name}</b>! <br><br>" +
+                    $"Gordon Rec-IM"
+                );
+            string subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has {(isCustom ? "added" : "invited")} you to a team!";
 
             _emailService.SendEmails(new string[] {to_email},from_email,subject,messageBody,password);
         }
@@ -431,6 +399,11 @@ namespace Gordon360.Services.RecIM
                 throw new UnprocessibleEntity { ExceptionMessage = $"Participant {participant.Username} is already in this team" };
 
             // if a participant is "deleted, modify the existing participantTeam instance
+            var isCustom = _participantService.GetParticipantIsCustom(participant.Username);
+            if (isCustom)
+            {
+                participant.RoleTypeID = participant.RoleTypeID == null || participant.RoleTypeID == 2 ? 3 : participant.RoleTypeID;
+            }
             var participantTeam = _context.ParticipantTeam.FirstOrDefault(pt => pt.TeamID == teamID && pt.ParticipantUsername == participant.Username && pt.RoleTypeID == 0);
             if (participantTeam is ParticipantTeam pt)
             {
@@ -452,7 +425,8 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
-                await SendInviteEmail(teamID, participant.Username, inviterUsername);
+                if (_context.Participant.Find(participant.Username).AllowEmails ?? true)
+                    SendInviteEmail(teamID, participant.Username, inviterUsername, isCustom);
             }
             return participantTeam;
         }

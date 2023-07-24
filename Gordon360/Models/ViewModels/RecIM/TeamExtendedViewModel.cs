@@ -16,6 +16,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public virtual IEnumerable<TeamMatchHistoryViewModel> MatchHistory { get; set; }
         public virtual IEnumerable<TeamRecordViewModel> TeamRecord { get; set; }
         public double SportsmanshipRating { get; set; }
+        public string? Affiliation { get; set; }
+
 
         public static implicit operator TeamExtendedViewModel(Team t)
         {
@@ -26,6 +28,7 @@ namespace Gordon360.Models.ViewModels.RecIM
                 Name = t.Name,
                 Status = t.Status?.Description,
                 Logo = t.Logo,
+                Affiliation = t.Affiliation,
             };
         }
     }
