@@ -32,7 +32,7 @@ namespace Gordon360.Services.RecIM
                 AffiliationName = affiliationName,
                 TeamID = vm.TeamID,
                 SeriesID = vm.SeriesID,
-                Points = vm.Points,
+                Points = vm.Points ?? 0,
             });
             await _context.SaveChangesAsync();
 
@@ -68,7 +68,7 @@ namespace Gordon360.Services.RecIM
                          .Where(ap => ap.AffiliationName == a.Name)
                          .Select(ap => ap.Points)
                          .AsEnumerable()
-                         .Sum() ?? 0,
+                         .Sum(),
                      Series = (IEnumerable<SeriesViewModel>)_context.AffiliationPoints
                           .FirstOrDefault(_ap => _ap.AffiliationName == a.Name)
                           .Series
