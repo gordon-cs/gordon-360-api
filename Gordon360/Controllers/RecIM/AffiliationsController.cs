@@ -12,6 +12,7 @@ using System.Linq;
 namespace Gordon360.Controllers.RecIM
 {
     [Route("api/recim/[controller]")]
+    [AllowAnonymous]
     public class AffiliationsController : GordonControllerBase
     {
         private readonly IAffiliationService _affiliationService;
@@ -78,7 +79,8 @@ namespace Gordon360.Controllers.RecIM
         [Route("")]
         public async Task<ActionResult> DeleteAffiliation(string affiliationName)
         {
-            throw new NotImplementedException();
+            await _affiliationService.DeleteAffiliation(affiliationName);
+            return Ok();
         }
     }
 }
