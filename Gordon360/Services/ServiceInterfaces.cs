@@ -329,7 +329,7 @@ namespace Gordon360.Services
             IEnumerable<AffiliationExtendedViewModel> GetAllAffiliationDetails();
             Task DeleteAffiliation(string affiliationName);
             Task<string> PutAffiliation(string affiliationName);
-            Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm);
+            Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUploadViewModel vm);
         }
         public interface IActivityService
         {
@@ -353,6 +353,8 @@ namespace Gordon360.Services
             SeriesExtendedViewModel GetSeriesByID(int seriesID);
             Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID);
             Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel series);
+            IEnumerable<AffiliationPointsViewModel> GetSeriesWinners(int seriesID);
+            Task HandleAdditionalSeriesWinnersAsync(AffiliationPointsUploadViewModel vm);
             Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule);
             Task<SeriesViewModel> DeleteSeriesCascadeAsync(int seriesID);
             Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request);

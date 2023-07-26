@@ -22,7 +22,7 @@ namespace Gordon360.Services.RecIM
             _context = context;
         }
 
-        public async Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm)
+        public async Task<string> AddPointsToAffilliation(string affiliationName, AffiliationPointsUploadViewModel vm)
         {
             var affiliation = _context.Affiliation.Find(affiliationName);
             if (affiliation is null) throw new ResourceNotFoundException();
