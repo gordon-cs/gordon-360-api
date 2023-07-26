@@ -73,7 +73,7 @@ namespace Gordon360.Controllers
         /// <param name="lastName">The lastname portion of the search</param>
         /// <returns> All accounts matching some or all of both the firstname and lastname parameters, sorted by how well the account matched the search.</returns>
         [HttpGet]
-        [Route("search/{firstnameSearch}/{lastnameSearch}")]
+        [Route("search/{firstName}/{lastName}")]
         public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchWithSpaceAsync(string firstName, string lastName)
         {
             var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
