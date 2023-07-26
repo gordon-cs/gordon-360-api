@@ -159,7 +159,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("{seriesID}/winners")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult> AddAdditionalSeriesWinnersAsync(int seriesID, AffiliationPointsUploadViewModel vm)
+        public async Task<ActionResult> UpdateSeriesWinnersAsync(int seriesID, AffiliationPointsUploadViewModel vm)
         {
             await _seriesService.HandleAdditionalSeriesWinnersAsync(vm);
             return Ok();
