@@ -253,7 +253,7 @@ namespace Gordon360.Services.RecIM
 
         public async Task HandleAdditionalSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)
         {
-            if (_context.AffiliationPoints.Any(ap => ap.TeamID == vm.TeamID && ap.SeriesID == vm.SeriesID))
+            if (_context.AffiliationPoints.Any(ap => ap.TeamID == vm.TeamID && ap.SeriesID == vm.SeriesID) && vm.Points is null)
                 await RemoveSeriesWinnersAsync(vm);
             else
                 await AddAdditionalSeriesWinnerAsync(vm);
