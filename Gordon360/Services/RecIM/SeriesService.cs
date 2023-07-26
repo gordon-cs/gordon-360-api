@@ -63,6 +63,7 @@ namespace Gordon360.Services.RecIM
                         Type = s.Type.Description,
                         Status = s.Status.Description,
                         Points = s.Points,
+                        WinnerID = s.WinnerID,
                         ActivityID = s.ActivityID,
                         Match = _matchService.GetMatchesBySeriesID(s.ID),
                         TeamStanding = _context.SeriesTeam
