@@ -62,6 +62,7 @@ namespace Gordon360.Services.RecIM
                         EndDate = s.EndDate.SpecifyUtc(),
                         Type = s.Type.Description,
                         Status = s.Status.Description,
+                        Points = s.Points,
                         ActivityID = s.ActivityID,
                         Match = _matchService.GetMatchesBySeriesID(s.ID),
                         TeamStanding = _context.SeriesTeam
@@ -252,7 +253,7 @@ namespace Gordon360.Services.RecIM
         public async Task HandleAdditionalSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)
         {
             if (_context.AffiliationPoints.Any(ap => ap.TeamID == vm.TeamID && ap.SeriesID == vm.SeriesID))
-                await RemovelSeriesWinnersAsync(vm);
+                await RemoveSeriesWinnersAsync(vm);
             else
                 await AddAdditionalSeriesWinnerAsync(vm);
         }
@@ -273,7 +274,7 @@ namespace Gordon360.Services.RecIM
                     });
         }
 
-        public async Task RemovelSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)
+        public async Task RemoveSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)
         {
             var res = _context.AffiliationPoints
                 .Where(ap => ap.SeriesID == vm.SeriesID && ap.TeamID == vm.TeamID);
