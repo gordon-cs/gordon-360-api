@@ -243,7 +243,10 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<AffiliationPointsViewModel> GetSeriesWinners(int seriesID)
         {
-            return (IEnumerable<AffiliationPointsViewModel>)_context.AffiliationPoints.Where(ap => ap.SeriesID == seriesID);
+            return _context.AffiliationPoints
+                .Where(ap => ap.SeriesID == seriesID)
+                .Select(ap => (AffiliationPointsViewModel)ap)
+                .AsEnumerable();
         }
 
         public async Task HandleAdditionalSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)

@@ -1020,7 +1020,7 @@
             </summary>
             <param name="seriesID"></param>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.AddAdditionalSeriesWinnersAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.AffiliationPointsUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeriesWinnersAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.AffiliationPointsUploadViewModel)">
             <summary>
             Adds/Removes additional winners to a series
             </summary>
