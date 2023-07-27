@@ -125,7 +125,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
-        /// Updates team record manually (mitigates potential bugs)
+        /// Gets all series winners
         /// </summary>
         /// <param name="seriesID"></param>
         /// <param name="update">Updated team record</param>
@@ -137,7 +137,32 @@ namespace Gordon360.Controllers.RecIM
         {
             var record = await _seriesService.UpdateSeriesTeamRecordAsync(seriesID ,update);
             return Ok(record);
+        }
 
+        /// <summary>
+        /// gets all series winners
+        /// </summary>
+        /// <param name="seriesID"></param>
+        [HttpGet]
+        [Route("{seriesID}/winners")]
+        public ActionResult<IEnumerable<AffiliationPointsViewModel>> GetSeriesWinners(int seriesID)
+        {
+            var res = _seriesService.GetSeriesWinners(seriesID);
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// Adds/Removes additional winners to a series
+        /// </summary>
+        /// <param name="seriesID"></param>
+        /// <param name="vm"></param>
+        [HttpPut]
+        [Route("{seriesID}/winners")]
+        [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
+        public async Task<ActionResult> UpdateSeriesWinnersAsync(int seriesID, AffiliationPointsUploadViewModel vm)
+        {
+            await _seriesService.HandleAdditionalSeriesWinnersAsync(vm);
+            return Ok();
         }
 
         /// <summary>

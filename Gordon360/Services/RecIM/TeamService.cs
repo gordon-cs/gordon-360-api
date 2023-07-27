@@ -59,6 +59,12 @@ namespace Gordon360.Services.RecIM
                         Description = s.Description
                     })
                     .AsEnumerable(),
+                "affiliation" => _context.Affiliation
+                    .Select(a => new LookupViewModel
+                    {
+                        Description = a.Name
+                    })
+                    .AsEnumerable(),
                 _ => null
             };
         }
@@ -90,6 +96,7 @@ namespace Gordon360.Services.RecIM
                     ID = t.ID,
                     Activity = t.Activity,
                     Name = t.Name,
+                    Affiliation = t.Affiliation,
                     Status = t.Status.Description,
                     Logo = t.Logo,
                     Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0) // 0 is deleted
@@ -129,6 +136,7 @@ namespace Gordon360.Services.RecIM
                                 ID = teamID,
                                 Activity = t.Activity,
                                 Name = t.Name,
+                                Affiliation = t.Affiliation,
                                 Status = t.Status.Description,
                                 Logo = t.Logo,
                                 Match = t.MatchTeam
@@ -330,6 +338,7 @@ namespace Gordon360.Services.RecIM
             }
             team.Name = updatedTeam.Name ?? team.Name;
             team.StatusID = updatedTeam.StatusID ?? team.StatusID;
+            team.Affiliation = updatedTeam.Affiliation ?? team.Affiliation;
 
             if (updatedTeam.Logo != null)
             {

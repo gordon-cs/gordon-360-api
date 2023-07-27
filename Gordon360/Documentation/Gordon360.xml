@@ -814,7 +814,7 @@
             <param name="update">updated instance of affiliation</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.AddPointsToAffilliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPointsUpdateViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.AddPointsToAffilliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPointsUploadViewModel)">
             <summary>
             Creates new AffiliationPoints entry 
             (affiliationname, activity where points were attributed, optional points)
@@ -1008,11 +1008,24 @@
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeriesTeamRecordAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamRecordPatchViewModel)">
             <summary>
-            Updates team record manually (mitigates potential bugs)
+            Gets all series winners
             </summary>
             <param name="seriesID"></param>
             <param name="update">Updated team record</param>
             <returns>updated team record</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeriesWinners(System.Int32)">
+            <summary>
+            gets all series winners
+            </summary>
+            <param name="seriesID"></param>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeriesWinnersAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.AffiliationPointsUploadViewModel)">
+            <summary>
+            Adds/Removes additional winners to a series
+            </summary>
+            <param name="seriesID"></param>
+            <param name="vm"></param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.DeleteSeriesCascadeAsync(System.Int32)">
             <summary>
