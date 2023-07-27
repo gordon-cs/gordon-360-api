@@ -203,13 +203,20 @@ namespace Gordon360.Controllers.RecIM
         /// Gives last date and number of matches of which the Auto Scheduler will create matches until.
         /// </summary>
         /// <param name="seriesID"></param>
-        /// <param name="request">optional request data, used for additional options on autoscheduling</param>
+        /// <param name="RoundRobinMatchCapacity"></param>
+        /// <param name="NumberOfLadderMatches"></param>
         [HttpGet]
         [Route("{seriesID}/autoschedule")]
         [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-        public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(int seriesID, UploadScheduleRequest? request)
+        public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(
+            int seriesID, [FromQuery] int RoundRobinMatchCapacity,  [FromQuery] int NumberOfLadderMatches)
         {
-            var req = request ?? new UploadScheduleRequest();
+            var req = new UploadScheduleRequest()
+            {
+                RoundRobinMatchCapacity = RoundRobinMatchCapacity,
+                NumberOfLadderMatches = NumberOfLadderMatches,
+            };
+
             var estimate = _seriesService.GetScheduleMatchesEstimateAsync(seriesID, req);
             if (estimate is null)
             {

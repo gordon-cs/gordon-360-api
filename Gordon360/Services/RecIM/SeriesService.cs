@@ -76,9 +76,7 @@ namespace Gordon360.Services.RecIM
                                 Name = st.Team.Name,
                                 WinCount = st.WinCount,
                                 LossCount = st.LossCount,
-                                TieCount = _context.MatchTeam
-                                        .Where(mt => mt.TeamID == st.TeamID && mt.Match.SeriesID == s.ID && mt.Match.StatusID == 6)
-                                        .Count() - st.WinCount - st.LossCount,
+                                TieCount = st.TieCount,
                                 SportsmanshipRating = _context.MatchTeam
                                         .Where(mt => mt.TeamID == st.TeamID && mt.Match.StatusID == 6)
                                         .Average(mt => mt.SportsmanshipScore) 

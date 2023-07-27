@@ -1041,12 +1041,13 @@
             <param name="seriesID"></param>
             <param name="request">optional request data, used for additional options on autoscheduling</param>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetAutoScheduleEstimate(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetAutoScheduleEstimate(System.Int32,System.Int32,System.Int32)">
             <summary>
             Gives last date and number of matches of which the Auto Scheduler will create matches until.
             </summary>
             <param name="seriesID"></param>
-            <param name="request">optional request data, used for additional options on autoscheduling</param>
+            <param name="RoundRobinMatchCapacity"></param>
+            <param name="NumberOfLadderMatches"></param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetBracket(System.Int32)">
             <summary>
