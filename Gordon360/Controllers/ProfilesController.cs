@@ -32,15 +32,16 @@ namespace Gordon360.Controllers
         private readonly webSQLContext _webSQLContext;
         private readonly CCTContext _context;
 
+        /// <summary>constructor of ProfilesController</summary>
         public ProfilesController(IProfileService profileService, IAccountService accountService, 
-                                  IMembershipService membershipService, IConfiguration config, CCTContext context, webSQLContext webSQLContext)
+                                  IMembershipService membershipService, IConfiguration config, webSQLContext webSQLContext, CCTContext context)
         {
             _profileService = profileService;
             _accountService = accountService;
             _membershipService = membershipService;
             _config = config;
-            _context = context;
             _webSQLContext = webSQLContext;
+            _context = context;
         }
 
         /// <summary>Get profile info of currently logged in user</summary>
