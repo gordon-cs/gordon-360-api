@@ -110,6 +110,8 @@ namespace Gordon360.Services
             if (response != null && response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
+                try
+                {
                 var eventsXML = XDocument.Parse(content);
                 return eventsXML
                     .Descendants(EventViewModel.r25 + "event")
@@ -119,6 +121,12 @@ namespace Gordon360.Services
                         // Map the event e with it's occurrence details o to a new EventViewModel
                         (e, o) => new EventViewModel(e, o)
                     );
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
             }
             else
             {
