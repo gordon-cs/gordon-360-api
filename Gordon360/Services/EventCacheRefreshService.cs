@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using System.Diagnostics;
+using System.Collections;
+using Gordon360.Models.ViewModels;
+using System.Collections.Generic;
 
 namespace Gordon360.Services
 {
@@ -28,7 +31,15 @@ namespace Gordon360.Services
 
         private async void UpdateEventsCacheAsync(object? state)
         {
-            var events = await EventService.FetchEventsAsync();
+            IEnumerable<EventViewModel>? events = null;
+            try
+            {
+                events = await EventService.FetchEventsAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
             _cache.Set(CacheKeys.Events, events);
         }
 
