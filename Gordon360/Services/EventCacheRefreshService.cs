@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Collections;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gordon360.Services
 {
@@ -31,7 +32,7 @@ namespace Gordon360.Services
 
         private async void UpdateEventsCacheAsync(object? state)
         {
-            IEnumerable<EventViewModel>? events = null;
+            IEnumerable<EventViewModel> events = Enumerable.Empty<EventViewModel>();
             try
             {
                 events = await EventService.FetchEventsAsync();

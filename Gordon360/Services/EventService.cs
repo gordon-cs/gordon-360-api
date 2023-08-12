@@ -35,7 +35,7 @@ namespace Gordon360.Services
          * state parameter fetches only confirmed events
          */
         private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
-        
+
         private IEnumerable<EventViewModel> Events => _cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events);
 
         public EventService(CCTContext context, IMemoryCache cache, IAccountService accountService)
@@ -94,9 +94,9 @@ namespace Gordon360.Services
 
             // Left join to 25Live Events for extra event data when matching 25Live event is found
             var attendedEvents = from chapelEvent in chapelEvents
-                           join event25Live in Events on chapelEvent.LiveID equals event25Live.Event_ID?.Split('_')?.FirstOrDefault() into liveEvents
-                           from liveEvent in liveEvents.DefaultIfEmpty()
-                           select new AttendedEventViewModel(liveEvent, chapelEvent);
+                                 join event25Live in Events on chapelEvent.LiveID equals event25Live.Event_ID?.Split('_')?.FirstOrDefault() into liveEvents
+                                 from liveEvent in liveEvents.DefaultIfEmpty()
+                                 select new AttendedEventViewModel(liveEvent, chapelEvent);
 
             return attendedEvents;
         }
@@ -110,8 +110,6 @@ namespace Gordon360.Services
             if (response != null && response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                try
-                {
                 var eventsXML = XDocument.Parse(content);
                 return eventsXML
                     .Descendants(EventViewModel.r25 + "event")
@@ -121,12 +119,6 @@ namespace Gordon360.Services
                         // Map the event e with it's occurrence details o to a new EventViewModel
                         (e, o) => new EventViewModel(e, o)
                     );
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
             }
             else
             {
