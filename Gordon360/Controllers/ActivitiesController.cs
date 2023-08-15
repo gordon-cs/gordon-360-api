@@ -279,15 +279,15 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>Update an existing activity to be private or not</summary>
-        /// <param name="id">The id of the activity</param>
+        /// <param name="involvement_code">The code of the involvement</param>
         /// <param name = "p">the boolean value</param>
         /// <remarks>Calls the server to make a call and update the database with the changed information</remarks>
         [HttpPut]
-        [Route("{id}/privacy/{p}")]
+        [Route("{involvement_code}/privacy/{p}")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
-        public ActionResult TogglePrivacy(string id, bool p)
+        public ActionResult TogglePrivacy(string involvement_code, bool p)
         {
-            _activityService.TogglePrivacy(id, p);
+            _activityService.TogglePrivacy(involvement_code, p);
             return Ok();
         }
 
