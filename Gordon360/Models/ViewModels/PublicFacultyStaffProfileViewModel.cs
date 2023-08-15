@@ -21,6 +21,7 @@ namespace Gordon360.Models.ViewModels
         public string HomeCity { get; set; }
         public string HomeState { get; set; }
         public string HomeCountry { get; set; }
+        public string MobilePhone { get; set; }
         public string KeepPrivate { get; set; }
         public string JobTitle { get; set; }
         public string SpouseName { get; set; }
@@ -59,6 +60,7 @@ namespace Gordon360.Models.ViewModels
                 OnCampusPrivatePhone = fac.OnCampusPrivatePhone ?? "",
                 OnCampusFax = fac.OnCampusFax ?? "",
                 HomePhone = fac.HomePhone ?? "",
+                MobilePhone = fac.MobilePhone ?? "",
                 HomeCity = fac.HomeCity ?? "",
                 HomeState = fac.HomeState ?? "",
                 HomeCountry = fac.HomeCountry ?? "",
@@ -77,15 +79,6 @@ namespace Gordon360.Models.ViewModels
                 Mail_Location = fac.Mail_Location ?? "",
                 Mail_Description = fac.Mail_Description ?? ""
             };
-            if (vm.KeepPrivate.Contains('1'))
-            {
-                vm.HomeCity = "Private as requested.";
-                vm.HomeState = "";
-                vm.HomeCountry = "";
-                vm.SpouseName = "Private as requested.";
-                vm.Country = "";
-                vm.HomePhone = "";
-            }
             return vm;
         }
     }

@@ -110,6 +110,9 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<TeamStatus> TeamStatus { get; set; }
         public virtual DbSet<Timesheets_Clock_In_Out> Timesheets_Clock_In_Out { get; set; }
+        public virtual DbSet<UserPrivacy_Fields> UserPrivacy_Fields { get; set; }
+        public virtual DbSet<UserPrivacy_Settings> UserPrivacy_Settings { get; set; }
+        public virtual DbSet<UserPrivacy_Visibility_Groups> UserPrivacy_Visibility_Groups { get; set; }
         public virtual DbSet<UserCourses> UserCourses { get; set; }
         public virtual DbSet<User_Connection_Ids> User_Connection_Ids { get; set; }
         public virtual DbSet<User_Rooms> User_Rooms { get; set; }
@@ -826,6 +829,31 @@ namespace Gordon360.Models.CCT.Context
                     .HasConstraintName("FK_Team_TeamStatus");
             });
 
+            modelBuilder.Entity<UserPrivacy_Fields>(entity =>
+            {
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<UserPrivacy_Settings>(entity =>
+            {
+                entity.HasKey(e => new { e.gordon_id, e.Field });
+
+                entity.HasOne(d => d.FieldNavigation)
+                    .WithMany(p => p.UserPrivacy_Settings)
+                    .HasForeignKey(d => d.Field)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserPrivacy_Settings_UserPrivacy_Fields");
+
+                entity.HasOne(d => d.VisibilityNavigation)
+                    .WithMany(p => p.UserPrivacy_Settings)
+                    .HasForeignKey(d => d.Visibility)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserPrivacy_Settings_UserPrivacy_Visibility_Groups");
+            });
+
+            modelBuilder.Entity<UserPrivacy_Visibility_Groups>(entity =>
+            {
+                entity.Property(e => e.ID).ValueGeneratedOnAdd();
             modelBuilder.Entity<UserCourses>(entity =>
             {
                 entity.ToView("UserCourses");

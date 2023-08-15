@@ -25,6 +25,7 @@ namespace Gordon360.Models.ViewModels
         public string grad_student { get; set; }
         public string PlannedGradYear { get; set; }
         public string MobilePhone { get; set; }
+        public string HomePhone { get; set; }
         public string AD_Username { get; set; }
         public bool IsMobilePhonePrivate { get; set; }
         public Nullable<int> show_pic { get; set; }
@@ -65,6 +66,7 @@ namespace Gordon360.Models.ViewModels
                 Gender = stu.Gender ?? "",
                 IsMobilePhonePrivate = stu.IsMobilePhonePrivate,
                 MobilePhone = stu.MobilePhone ?? "",
+                HomePhone = stu.HomePhone ?? "",
                 show_pic = stu.show_pic,
                 preferred_photo = stu.preferred_photo,
                 Country = stu.Country ?? "",
@@ -74,12 +76,7 @@ namespace Gordon360.Models.ViewModels
                 Minor1Description = stu.Minor1Description ?? "",
                 Minor2Description = stu.Minor2Description ?? "",
                 Minor3Description = stu.Minor3Description ?? ""
-
             };
-            if (vm.IsMobilePhonePrivate)
-            {
-                vm.MobilePhone = "Private as requested.";
-            }
             if (vm.KeepPrivate.Contains("S"))
             {
                 vm.HomeCity = "Private as requested.";
