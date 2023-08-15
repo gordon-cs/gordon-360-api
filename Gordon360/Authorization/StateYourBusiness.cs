@@ -653,11 +653,11 @@ namespace Gordon360.Authorization
                         if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
 
-                        if (context.ActionArguments["id"] is string activityCode)
+                        if (context.ActionArguments.TryGetValue("involvement_code", out object? involvementCodeObject) && involvementCodeObject is string involvementCode)
                         {
                             var isGroupAdmin = _membershipService
                                 .GetMemberships(
-                                    activityCode: activityCode,
+                                    activityCode: involvementCode,
                                     username: user_name,
                                     participationTypes: new List<string> { Participation.GroupAdmin.GetCode() })
                                 .Any();
