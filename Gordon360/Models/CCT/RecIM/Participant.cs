@@ -26,7 +26,18 @@ namespace Gordon360.Models.CCT
         public string Username { get; set; }
         public bool IsAdmin { get; set; }
         public int ID { get; set; }
+        [Required]
+        [StringLength(1)]
+        [Unicode(false)]
+        public string SpecifiedGender { get; set; }
+        [Required]
+        public bool? AllowEmails { get; set; }
+        public bool IsCustom { get; set; }
 
+        [InverseProperty("UsernameNavigation")]
+        public virtual CustomParticipant CustomParticipant { get; set; }
+        [InverseProperty("usernameNavigation")]
+        public virtual SuperAdmin SuperAdmin { get; set; }
         [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }
         [InverseProperty("ParticipantUsernameNavigation")]

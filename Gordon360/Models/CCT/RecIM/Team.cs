@@ -13,9 +13,11 @@ namespace Gordon360.Models.CCT
     {
         public Team()
         {
+            AffiliationPoints = new HashSet<AffiliationPoints>();
             MatchParticipant = new HashSet<MatchParticipant>();
             MatchTeam = new HashSet<MatchTeam>();
             ParticipantTeam = new HashSet<ParticipantTeam>();
+            Series = new HashSet<Series>();
             SeriesTeam = new HashSet<SeriesTeam>();
         }
 
@@ -30,19 +32,29 @@ namespace Gordon360.Models.CCT
         [StringLength(128)]
         [Unicode(false)]
         public string Logo { get; set; }
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Affiliation { get; set; }
 
         [ForeignKey("ActivityID")]
         [InverseProperty("Team")]
         public virtual Activity Activity { get; set; }
+        [ForeignKey("Affiliation")]
+        [InverseProperty("Team")]
+        public virtual Affiliation AffiliationNavigation { get; set; }
         [ForeignKey("StatusID")]
         [InverseProperty("Team")]
         public virtual TeamStatus Status { get; set; }
+        [InverseProperty("Team")]
+        public virtual ICollection<AffiliationPoints> AffiliationPoints { get; set; }
         [InverseProperty("Team")]
         public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }
         [InverseProperty("Team")]
         public virtual ICollection<MatchTeam> MatchTeam { get; set; }
         [InverseProperty("Team")]
         public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; }
+        [InverseProperty("Winner")]
+        public virtual ICollection<Series> Series { get; set; }
         [InverseProperty("Team")]
         public virtual ICollection<SeriesTeam> SeriesTeam { get; set; }
     }

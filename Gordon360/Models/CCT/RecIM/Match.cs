@@ -35,6 +35,8 @@ namespace Gordon360.Models.CCT
         [InverseProperty("Match")]
         public virtual Surface Surface { get; set; }
         [InverseProperty("Match")]
+        public virtual MatchBracket MatchBracket { get; set; }
+        [InverseProperty("Match")]
         public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }
         [InverseProperty("Match")]
         public virtual ICollection<MatchTeam> MatchTeam { get; set; }

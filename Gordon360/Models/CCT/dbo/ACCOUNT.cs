@@ -34,7 +34,7 @@ namespace Gordon360.Models.CCT
         [StringLength(20)]
         [Unicode(false)]
         public string account_type { get; set; }
-        [StringLength(75)]
+        [StringLength(8000)]
         [Unicode(false)]
         public string office_hours { get; set; }
         public int Primary_Photo { get; set; }

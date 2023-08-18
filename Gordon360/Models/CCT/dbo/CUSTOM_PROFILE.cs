@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("CUSTOM_PROFILE", Schema = "dbo")]
     public partial class CUSTOM_PROFILE
     {
         [Key]
@@ -27,5 +26,8 @@ namespace Gordon360.Models.CCT
         public string handshake { get; set; }
         [Unicode(false)]
         public string calendar { get; set; }
+        [StringLength(4)]
+        [Unicode(false)]
+        public string PlannedGradYear { get; set; }
     }
 }

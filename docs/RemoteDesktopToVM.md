@@ -34,11 +34,9 @@ Go to [desktops.gordon.edu](https://desktops.gordon.edu/) and sign-in with your 
 
 ### Windows or MacOS
 
-Double click the downloaded link to open the connection to the remote desktop.  Continue below with [Authentication].(#authentication)
+Double click the downloaded link to open the connection to the remote desktop.  Or, drag the downloaded file onto the Microsoft Remote Desktop window, then double-click the entry it creates.  Continue below with [Authentication](#authentication).
 
 ### Linux/Remmina
-
-If using Remmina on Linux, use the following steps to configure the RDP connection, otherwise skip to [Other Systems] (#other-systems).
 
 1. Click on the "Show Applications" button at the bottom left of the screen and type "remmina" in the search bar.  Right-click on the Remmina icon and select "Add to Favorites" then left-click to open the app.
 

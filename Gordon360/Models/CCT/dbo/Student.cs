@@ -11,8 +11,7 @@ namespace Gordon360.Models.CCT
     [Keyless]
     public partial class Student
     {
-        [Required]
-        [StringLength(10)]
+        [StringLength(9)]
         [Unicode(false)]
         public string ID { get; set; }
         [StringLength(3)]
@@ -191,5 +190,8 @@ namespace Gordon360.Models.CCT
         public string Mail_Location { get; set; }
         public int? ChapelRequired { get; set; }
         public int? ChapelAttended { get; set; }
+        [StringLength(4)]
+        [Unicode(false)]
+        public string PlannedGradYear { get; set; }
     }
 }

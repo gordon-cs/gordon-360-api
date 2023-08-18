@@ -49,8 +49,8 @@
             <summary>
             Return a list of accounts matching some or all of the search parameter.
             </summary>
-            <param name="firstnameSearch">The firstname portion of the search</param>
-            <param name="lastnameSearch">The lastname portion of the search</param>
+            <param name="firstName">The firstname portion of the search</param>
+            <param name="lastName">The lastname portion of the search</param>
             <returns> All accounts matching some or all of both the firstname and lastname parameters, sorted by how well the account matched the search.</returns>
         </member>
         <member name="M:Gordon360.Controllers.AccountsController.AdvancedPeopleSearchAsync(System.Collections.Generic.List{System.String},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String)">
@@ -651,12 +651,12 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateLinkAsync(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateCustomProfile(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
-            Update the profile social media links
+            Update CUSTOM_PROFILE component
             </summary>
-            <param name="type">The type of social media</param>
-            <param name="path">The path of the links</param>
+            <param name="type">The type of component</param>
+            <param name="value">The value to change the component to</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePhoneNumber(System.String)">
@@ -744,10 +744,9 @@
             </summary>
             <returns> All Mail Destinations</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.DateTime},System.Boolean)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.Boolean})">
             <summary>Gets a list of all Activities by parameter </summary>
-            <param name="active"> Optional active parameter </param>
-            <param name="time"> Optional time parameter </param>
+            <param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
              <returns>
              All Existing Activities 
              </returns>
@@ -766,14 +765,14 @@
             <param name="activityID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivity(Gordon360.Models.ViewModels.RecIM.ActivityUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivityAsync(Gordon360.Models.ViewModels.RecIM.ActivityUploadViewModel)">
             <summary>
             Posts Activity into CCT.RecIM.Activity
             </summary>
             <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
             <returns>Posted Activity</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivity(System.Int32,Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.UpdateActivityAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.ActivityPatchViewModel)">
             <summary>
             Updates Activity based on input
             </summary>
@@ -781,12 +780,60 @@
             <param name="updatedActivity"> Updated Activity Object </param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.DeleteActivityCascade(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.DeleteActivityCascadeAsync(System.Int32)">
             <summary>
             Cascade deletes all DBobjects related to given ActivityID
             </summary>
             <param name="activityID"></param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.GetAllAffiliationDetails">
+            <summary>
+            Gets all stored affiliations/halls/clubs with associated
+            Points/Activities Won : Winning Team
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.GetAffiliationDetailsByName(System.String)">
+            <summary>
+            Gets specific stored affiliation with associated
+            Points/Activities Won : Winning Team
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.CreateAffiliation(System.String)">
+            <summary>
+            Creates new Affiliation
+            </summary>
+            <param name="affiliationName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.UpdateAffiliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPatchViewModel)">
+            <summary>
+            Updates an affiliation's logo and/or name
+            </summary>
+            <param name="affiliationName"></param>
+            <param name="update">updated instance of affiliation</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.AddPointsToAffilliation(System.String,Gordon360.Models.ViewModels.RecIM.AffiliationPointsUpdateViewModel)">
+            <summary>
+            Creates new AffiliationPoints entry 
+            (affiliationname, activity where points were attributed, optional points)
+            </summary>
+            <param name="vm">put viewmodel</param>
+            <param name="affiliationName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.AffiliationsController.DeleteAffiliation(System.String)">
+            <summary>
+            Deletes affiliation
+            </summary>
+            <param name="affiliationName"></param>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatches">
+            <summary>
+            Get all matches
+            </summary>
+            <returns>all matches</returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.MatchesController.GetMatchAttendanceByMatchID(System.Int32)">
             <summary>
@@ -815,14 +862,14 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.PostSurface(Gordon360.Models.ViewModels.RecIM.SurfaceUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.PostSurfaceAsync(Gordon360.Models.ViewModels.RecIM.SurfaceUploadViewModel)">
             <summary>
             Creates a new match/series surface
             </summary>
             <param name="newSurface"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateSurface(System.Int32,Gordon360.Models.ViewModels.RecIM.SurfaceUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateSurfaceAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.SurfaceUploadViewModel)">
             <summary>
             Updates a given surface
             </summary>
@@ -830,7 +877,7 @@
             <param name="updatedSurface"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteSurface(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteSurfaceAsync(System.Int32)">
             <summary>
             Deletes surface, points all foreign keys to an unknown surface
             to prevent corrupted data
@@ -838,7 +885,7 @@
             <param name="surfaceID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStats(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchStatsPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateStatsAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchStatsPatchViewModel)">
             <summary>
             Updates Match Scores, Sportsmanship Ratings, and Team Status
             </summary>
@@ -846,7 +893,7 @@
             <param name="updatedMatch"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateMatch(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.UpdateMatchAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchPatchViewModel)">
             <summary>
             Updates Match Start Times and Surfaces
             </summary>
@@ -854,21 +901,21 @@
             <param name="updatedMatch"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.CreateMatch(Gordon360.Models.ViewModels.RecIM.MatchUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.CreateMatchAsync(Gordon360.Models.ViewModels.RecIM.MatchUploadViewModel)">
             <summary>
             Creates Match
             </summary>
             <param name="newMatch"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteMatchCascade(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteMatchCascadeAsync(System.Int32)">
             <summary>
             Cascade deletes all DBobjects related to given Match ID
             </summary>
             <param name="matchID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.PutParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantAttendanceViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.PutParticipantAttendanceAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantAttendanceViewModel)">
             <summary>
             creates match attendance
             </summary>
@@ -877,7 +924,7 @@
             <param name="teamAttendanceList">List of attendees for a team</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.AddParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchAttendance)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.AddParticipantAttendanceAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchAttendance)">
             <summary>
             Adds single match participant
             </summary>
@@ -885,12 +932,27 @@
             <param name="attendee">object holding required username (optional teamID)</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteParticipantAttendance(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchAttendance)">
+        <member name="M:Gordon360.Controllers.RecIM.MatchesController.DeleteParticipantAttendanceAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.MatchAttendance)">
             <summary>
             Deletes single match participant
             </summary>
             <param name="matchID">match id</param>
             <param name="attendee">object holding required username (optional teamID)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.RecIMAdminController.GetReport(System.DateTime,System.DateTime)">
+            <summary>
+            Rec-IM Reporting:
+                Every semester Rec-IM needs to report, their own client,
+                information regarding new users, retention of users, 
+                gender ratio, involvements...
+                
+                This route does not specify semester terms, however, is more
+                specific in which it can select time constraints from beginning
+                to end with no limit to time in between
+            </summary>
+            <param name="startTime">report start time</param>
+            <param name="endTime">report end time</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetSeries(System.Boolean)">
@@ -921,7 +983,7 @@
             <param name="seriesID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeries(System.Int32,Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeriesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.SeriesPatchViewModel)">
             <summary>
             Updates Series Information
             </summary>
@@ -929,7 +991,7 @@
             <param name="updatedSeries"></param>
             <returns>modified series</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeries(Gordon360.Models.ViewModels.RecIM.SeriesUploadViewModel,System.Nullable{System.Int32})">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeriesAsync(Gordon360.Models.ViewModels.RecIM.SeriesUploadViewModel,System.Nullable{System.Int32})">
             <summary>
             Creates Series and associated SeriesTeam Models
             </summary>
@@ -937,26 +999,47 @@
             <param name="referenceSeriesID">ID of Series, used to select specific Teams </param>
             <returns>created series</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeriesSchedule(Gordon360.Models.ViewModels.RecIM.SeriesScheduleUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.CreateSeriesScheduleAsync(Gordon360.Models.ViewModels.RecIM.SeriesScheduleUploadViewModel)">
             <summary>
             Creates schedule or finds existing schedule
             </summary>
             <param name="seriesSchedule">created schedule for series</param>
             <returns>created series schedule</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.DeleteSeriesCascade(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.UpdateSeriesTeamRecordAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamRecordPatchViewModel)">
+            <summary>
+            Updates team record manually (mitigates potential bugs)
+            </summary>
+            <param name="seriesID"></param>
+            <param name="update">Updated team record</param>
+            <returns>updated team record</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.DeleteSeriesCascadeAsync(System.Int32)">
             <summary>
             Cascade deletes all DBobjects related to given Series ID
             </summary>
             <param name="seriesID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatches(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Automatically creates Matches based on given Series
             </summary>
             <param name="seriesID"></param>
             <param name="request">optional request data, used for additional options on autoscheduling</param>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetAutoScheduleEstimate(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+            <summary>
+            Gives last date and number of matches of which the Auto Scheduler will create matches until.
+            </summary>
+            <param name="seriesID"></param>
+            <param name="request">optional request data, used for additional options on autoscheduling</param>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SeriesController.GetBracket(System.Int32)">
+            <summary>
+            Gets available bracket information for a givaen series
+            </summary>
+            <param name="seriesID"></param>
         </member>
         <member name="M:Gordon360.Controllers.RecIM.SportsController.GetSports">
             <summary>
@@ -971,7 +1054,7 @@
             <param name="sportID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SportsController.UpdateSport(System.Int32,Gordon360.Models.ViewModels.RecIM.SportPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.UpdateSportAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.SportPatchViewModel)">
             <summary>
             Update Sport in the database by ID
             </summary>
@@ -979,7 +1062,14 @@
             <param name="updatedSport"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.SportsController.CreateSport(Gordon360.Models.ViewModels.RecIM.SportUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.DeleteSportAsync(System.Int32)">
+            <summary>
+            Deletes Sport in the database by ID
+            </summary>
+            <param name="sportID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.RecIM.SportsController.CreateSportAsync(Gordon360.Models.ViewModels.RecIM.SportUploadViewModel)">
             <summary>
             Creates new Sport for RecIM
             </summary>
@@ -1007,15 +1097,14 @@
             <param name="type">specified team type</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.PostTeam(Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.PostTeamAsync(Gordon360.Models.ViewModels.RecIM.TeamUploadViewModel)">
             <summary>
             Create a new team with the requesting user set to team captain
             </summary>
-            <param name="username">creator's username</param>
             <param name="newTeam"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddParticipantToTeam(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.AddParticipantToTeamAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
             <summary>
             Add a participant to a team
             </summary>
@@ -1023,7 +1112,7 @@
             <param name="participant">Default Role Value value 3 (Member)</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateParticipantTeam(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateParticipantTeamAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.ParticipantTeamUploadViewModel)">
             <summary>
             Updates Participant role in a team
             </summary>
@@ -1031,14 +1120,14 @@
             <param name="participant"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeam(System.Int32)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeamAsync(System.Int32)">
             <summary>
             Removes team and all participants in the team
             </summary>
             <param name="teamID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeamParticipant(System.Int32,System.String)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.DeleteTeamParticipantAsync(System.Int32,System.String)">
             <summary>
             Removes specified user from a team
             </summary>
@@ -1046,7 +1135,7 @@
             <param name="username"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamInfo(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamPatchViewModel)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.UpdateTeamInfoAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.TeamPatchViewModel)">
             <summary>
             Update a team info
             </summary>
@@ -1068,7 +1157,7 @@
             <param name="username"></param>
             <returns>number of games a participant has attended for a team</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RecIM.TeamsController.HandleTeamInvite(System.Int32,System.String)">
+        <member name="M:Gordon360.Controllers.RecIM.TeamsController.HandleTeamInviteAsync(System.Int32,System.String)">
             <summary>
             Accept one specified team invite and true delete others from the same activity if there's any
             </summary>
@@ -1215,6 +1304,12 @@
              Gets all schedule objects for a user
             </summary>
             <returns>A IEnumerable of schedule objects</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
+            <summary>
+             Gets all session objects for a user
+            </summary>
+            <returns>A IEnumerable of session objects as well as the schedules</returns>
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
             <summary>
@@ -2369,13 +2464,13 @@
             <param name="path"></param>
             <param name="name"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLinkAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateCustomProfileAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
-            Sets the path for the profile links.
+            Sets the component of the Custom_profile.
             </summary>
             <param name="username">The username</param>
             <param name="type"></param>
-            <param name="links"></param>
+            <param name="content"></param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>
@@ -2430,6 +2525,13 @@
             query handle the enumeration.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.RecIM.ParticipantService.GetUnaffiliatedAccountByUsername(System.String)">
+            <summary>
+            Fetches the account record with the specified username. Inclusive of non-gordon accounts made by Rec-IM
+            </summary>
+            <param name="username">The AD username associated with the account.</param>
+            <returns>account information</returns>
+        </member>
         <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Scheduler does not currently handle overlaps
@@ -2440,7 +2542,13 @@
             <param name="seriesID"></param>
             <returns>Created Match objects</returns>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam})">
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleDoubleElimination(System.Int32)">
+            <summary>
+            Current double elimination autoscheduling will consider "play-in" as a "play-in" tournament
+            Losers of the play in do not count for the double elimination bracket.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam},System.Boolean)">
             <summary>
             Goal of this function is to generate a single elimination round.
             On the first possible round, this would imply handling teams with byes to ensure
@@ -2549,6 +2657,13 @@
             <param name="username">The AD Username of the instructor</param>
             <param name="sessionID">The selected session of the instructor</param>
             <returns>StudentScheduleViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllCourses(System.String)">
+            <summary>
+            Fetch the session item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>SessionCoursesViewModel if found, null if not found</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>
