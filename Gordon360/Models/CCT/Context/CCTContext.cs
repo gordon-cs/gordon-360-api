@@ -105,7 +105,6 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Statistic> Statistic { get; set; }
         public virtual DbSet<Student> Student { get; set; }
         public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
-        public virtual DbSet<SuperAdmin> SuperAdmin { get; set; }
         public virtual DbSet<Surface> Surface { get; set; }
         public virtual DbSet<Team> Team { get; set; }
         public virtual DbSet<TeamStatus> TeamStatus { get; set; }
@@ -797,15 +796,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.SNID).ValueGeneratedNever();
             });
 
-            modelBuilder.Entity<SuperAdmin>(entity =>
-            {
-                entity.HasOne(d => d.usernameNavigation)
-                    .WithOne(p => p.SuperAdmin)
-                    .HasForeignKey<SuperAdmin>(d => d.username)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_SuperAdmin_Participant");
-            });
-
             modelBuilder.Entity<Team>(entity =>
             {
                 entity.HasOne(d => d.Activity)
@@ -836,11 +826,7 @@ namespace Gordon360.Models.CCT.Context
 
                 entity.Property(e => e.CRS_TITLE).IsFixedLength();
 
-                entity.Property(e => e.DROP_FLAG).IsFixedLength();
-
                 entity.Property(e => e.FRIDAY_CDE).IsFixedLength();
-
-                entity.Property(e => e.LOC_CDE).IsFixedLength();
 
                 entity.Property(e => e.MONDAY_CDE).IsFixedLength();
 
