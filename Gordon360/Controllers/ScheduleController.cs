@@ -17,14 +17,12 @@ namespace Gordon360.Controllers
     {
         private readonly CCTContext _context;
 
-        private readonly IAccountService _accountService;
         private readonly IScheduleService _scheduleService;
 
         public ScheduleController(CCTContext context)
         {
             _context = context;
             _scheduleService = new ScheduleService(context);
-            _accountService = new AccountService(context);
         }
 
         /// <summary>
@@ -123,13 +121,9 @@ namespace Gordon360.Controllers
         /// <returns>A IEnumerable of session objects as well as the schedules</returns>
         [HttpGet]
         [Route("{username}/allcourses")]
-        public async Task<ActionResult<SessionCoursesViewModel>> GetAllCourses(string username)
+        public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
         {
-            var result = await _scheduleService.GetAllCourses(username);
-            if (result == null)
-            {
-                return NotFound();
-            }
+            IEnumerable<CoursesBySessionViewModel> result = await _scheduleService.GetAllCoursesAsync(username);
             return Ok(result);
 
         }
