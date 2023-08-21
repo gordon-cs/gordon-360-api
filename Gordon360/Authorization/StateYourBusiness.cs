@@ -16,7 +16,6 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
 
-
 namespace Gordon360.Authorization
 {
     /* Authorization Filter.

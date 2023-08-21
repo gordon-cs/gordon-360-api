@@ -86,7 +86,7 @@ namespace Gordon360.Models.ViewModels
                 vm.HomeState = "";
                 vm.HomeCountry = "";
                 vm.Country = "";
-                vm.OnOffCampus = "P";
+                vm.OnOffCampus = "P"; //Private, as parsed by front end service user.js
                 vm.Hall = "";
             }
             if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
