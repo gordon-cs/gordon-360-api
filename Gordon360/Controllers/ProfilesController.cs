@@ -500,7 +500,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("mobile_privacy/{value}")]
-        public async Task<ActionResult> UpdateMobilePrivacyAsync([FromBody]string value)
+        public async Task<ActionResult> UpdateMobilePrivacyAsync(string value)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             await _profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
