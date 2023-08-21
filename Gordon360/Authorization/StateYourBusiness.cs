@@ -1,6 +1,5 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
-using Gordon360.Models.MyGordon.Context;
 using Gordon360.Services;
 using Gordon360.Services.RecIM;
 using Gordon360.Static.Methods;
@@ -15,11 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Models.ViewModels;
 using Gordon360.Extensions.System;
-using static Gordon360.Services.MembershipService;
-using System.Linq.Expressions;
 using Gordon360.Enums;
-using Microsoft.VisualBasic;
-using Microsoft.Extensions.Configuration;
 
 namespace Gordon360.Authorization
 {
@@ -46,24 +41,17 @@ namespace Gordon360.Authorization
 
         private ActionExecutingContext context;
         private CCTContext _CCTContext;
-        private MyGordonContext _MyGordonContext;
-        private IAccountService _accountService;
         private IMembershipService _membershipService;
         private IMembershipRequestService _membershipRequestService;
         private INewsService _newsService;
 
-        private IConfiguration _config;
-
         //RecIM services
         private IParticipantService _recimParticipantService;
         private Services.RecIM.IActivityService _recimActivityService;
-        private ISeriesService _recimSeriesService;
         private ITeamService _recimTeamService;
-        private IMatchService _recimMatchService;
 
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
-        private string user_id { get; set; }
         private string user_name { get; set; }
 
         public async override Task OnActionExecutionAsync(ActionExecutingContext actionContext, ActionExecutionDelegate next)
@@ -72,23 +60,18 @@ namespace Gordon360.Authorization
             // Step 1: Who is to be authorized
             var authenticatedUser = actionContext.HttpContext.User;
 
-            _accountService = context.HttpContext.RequestServices.GetRequiredService<IAccountService>();
             _membershipService = context.HttpContext.RequestServices.GetRequiredService<IMembershipService>();
             _membershipRequestService = context.HttpContext.RequestServices.GetRequiredService<IMembershipRequestService>();
             _newsService = context.HttpContext.RequestServices.GetRequiredService<INewsService>();
             _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
-            _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
 
             // set RecIM services
             _recimParticipantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
-            _recimMatchService = context.HttpContext.RequestServices.GetRequiredService<IMatchService>();
             _recimTeamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
-            _recimSeriesService = context.HttpContext.RequestServices.GetRequiredService<ISeriesService>();
             _recimActivityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
-            user_id = _accountService.GetAccountByUsername(user_name).GordonID;
 
             if (user_groups.Contains(AuthGroup.SiteAdmin))
             {
@@ -244,14 +227,14 @@ namespace Gordon360.Authorization
                             if (context.ActionArguments.TryGetValue("sessionCode", out object? sessionCode_object) && sessionCode_object is string sessionCode)
                             {
                                 var activityMembers = _membershipService.GetMemberships(activityCode: involvementCode, username: user_name, sessionCode: sessionCode);
-                                var is_personAMember = activityMembers.Any(x => x.Participation != "GUEST");
+                                var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetCode());
                                 return is_personAMember;
 
                             }
                             else
                             {
                                 var activityMembers = _membershipService.GetMemberships(activityCode: involvementCode, username: user_name, sessionCode: "*");
-                                var is_personAMember = activityMembers.Any(x => x.Participation != "GUEST");
+                                var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetCode());
                                 return is_personAMember;
                             }
                         }

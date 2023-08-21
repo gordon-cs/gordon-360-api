@@ -11,11 +11,13 @@ namespace Gordon360.Models.CCT
     [Keyless]
     public partial class UserCourses
     {
+        [StringLength(50)]
+        [Unicode(false)]
+        public string Username { get; set; }
         [Required]
         [StringLength(10)]
         [Unicode(false)]
-        public string UserID { get; set; }
-        public int STUDENT_ID { get; set; }
+        public string Role { get; set; }
         [Required]
         [StringLength(4)]
         [Unicode(false)]
@@ -32,11 +34,6 @@ namespace Gordon360.Models.CCT
         [Unicode(false)]
         public string CRS_TITLE { get; set; }
         public int? INSTRUCTOR_ID { get; set; }
-        [Unicode(false)]
-        public string COURSE_TEXT { get; set; }
-        [StringLength(5)]
-        [Unicode(false)]
-        public string LOC_CDE { get; set; }
         [StringLength(5)]
         [Unicode(false)]
         public string BLDG_CDE { get; set; }
@@ -66,15 +63,5 @@ namespace Gordon360.Models.CCT
         public string SUNDAY_CDE { get; set; }
         public TimeSpan? BEGIN_TIME { get; set; }
         public TimeSpan? END_TIME { get; set; }
-        [StringLength(60)]
-        [Unicode(false)]
-        public string CRS_TYPE { get; set; }
-        [Required]
-        [StringLength(1)]
-        [Unicode(false)]
-        public string DROP_FLAG { get; set; }
-        [StringLength(10)]
-        [Unicode(false)]
-        public string Role { get; set; }
     }
 }

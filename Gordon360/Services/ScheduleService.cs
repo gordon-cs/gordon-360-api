@@ -3,6 +3,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph.CallRecords;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,37 +99,20 @@ namespace Gordon360.Services
         /// Fetch the session item whose id specified by the parameter
         /// </summary>
         /// <param name="username">The AD Username of the user</param>
-        /// <returns>SessionCoursesViewModel if found, null if not found</returns>
-        public async Task<IEnumerable<SessionCoursesViewModel>> GetAllCourses(string username)
+        /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username)
         {
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            List<UserCoursesViewModel> courses = await _context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
 
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-            var allSessions = _sessionService.GetAll();
-            var result = Enumerable.Empty<SessionCoursesViewModel>();
-            var allSchedule = _context.UserCourses
-                                  .Where(s => s.UserID == account.gordon_id)                  
-                                  .Select(s => (UserCoursesViewModel)s)
-                                  .AsEnumerable()        
-                                  .OrderByDescending(course => course.SessionCode);                        
+            IEnumerable<SessionViewModel> sessions = _sessionService.GetAll();
+            IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
+                .GroupJoin(courses,
+                           s => s.SessionCode,
+                           c => c.SessionCode,
+                           (session, courses) => new CoursesBySessionViewModel(session, courses))
+                .Where(cbs => cbs.AllCourses.Any());
 
-            foreach (SessionViewModel vm in allSessions)
-            {
-                result = result.Append(
-                    new SessionCoursesViewModel
-                    {
-                        SessionCode = vm.SessionCode,
-                        SessionDescription = vm.SessionDescription,
-                        SessionBeginDate = vm.SessionBeginDate,
-                        SessionEndDate = vm.SessionEndDate,
-                        AllCourses = allSchedule.Where(s => s.SessionCode == vm.SessionCode).DistinctBy(c => c.CRS_CDE)
-                    });
-            }
-            return result;
-
+            return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
         }
     }
 }

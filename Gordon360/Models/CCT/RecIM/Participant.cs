@@ -36,8 +36,6 @@ namespace Gordon360.Models.CCT
 
         [InverseProperty("UsernameNavigation")]
         public virtual CustomParticipant CustomParticipant { get; set; }
-        [InverseProperty("usernameNavigation")]
-        public virtual SuperAdmin SuperAdmin { get; set; }
         [InverseProperty("ParticipantUsernameNavigation")]
         public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }
         [InverseProperty("ParticipantUsernameNavigation")]

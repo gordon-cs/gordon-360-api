@@ -43,18 +43,11 @@ namespace Gordon360.Controllers
                 sessionCode: sessionCode,
                 participationTypes: participationTypes);
 
-            // When user is null, only SiteAdmin and Police can see all the memberships.
-            if ((username is null) && !(viewerGroups.Contains(AuthGroup.SiteAdmin)
-                || viewerGroups.Contains(AuthGroup.Police)))
-            {
-                    memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
-                    return Ok(memberships);
-            }
             // Only user, siteAdmin and Police can see all the user's memberships.
-            else if ((username is not null) && !(username == authenticatedUserUsername
-                || viewerGroups.Contains(AuthGroup.SiteAdmin)
-                || viewerGroups.Contains(AuthGroup.Police)
-                ))
+            if (
+                (username is null || username != authenticatedUserUsername)
+                && !(viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
+                )
             {
                 memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
             }

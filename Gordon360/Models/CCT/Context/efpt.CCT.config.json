@@ -248,10 +248,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[RecIM].[SuperAdmin]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[RecIM].[Surface]",
          "ObjectType": 0
       },
@@ -832,7 +828,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "sqltrain1.CCT.dbo",
+   "UiHint": "SQLTrain1.CCT",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
