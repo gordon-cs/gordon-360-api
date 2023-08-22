@@ -1,21 +1,12 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT.Context;
-using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
-using Gordon360.Utilities;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using System.IO;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Gordon360.Controllers;
 
@@ -139,7 +130,7 @@ public class NewsController : GordonControllerBase
         }
         return Ok(result);
     }
-  
+
     /** Create a new news item to be added to the database
      * @TODO: Remove redundant username/id from this and service
      * @TODO: fix documentation comments

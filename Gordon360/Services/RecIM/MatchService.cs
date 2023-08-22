@@ -20,7 +20,7 @@ public class MatchService : IMatchService
     private readonly IParticipantService _participantService;
 
 
-    public MatchService(CCTContext context,  IAccountService accountService, IParticipantService participantService)
+    public MatchService(CCTContext context, IAccountService accountService, IParticipantService participantService)
     {
         _context = context;
         _accountService = accountService;
@@ -206,7 +206,7 @@ public class MatchService : IMatchService
                     {
                         Username = mp.ParticipantUsername
                     }).AsEnumerable(),
-                
+
                 Series = _context.Series
                     .Where(s => s.ID == m.SeriesID)
                     .Select(s => new SeriesExtendedViewModel
@@ -232,7 +232,7 @@ public class MatchService : IMatchService
                     Name = m.Series.Activity.Name
                 },
                 Team = m.MatchTeam
-                    .Where(mt => mt.StatusID != 0 )
+                    .Where(mt => mt.StatusID != 0)
                     .Select(mt => new TeamExtendedViewModel
                     {
                         ID = mt.TeamID,
@@ -240,7 +240,7 @@ public class MatchService : IMatchService
                         Logo = mt.Team.Logo,
                         Status = mt.Status.Description,
                         Participant = mt.Team.ParticipantTeam
-                            .Where(pt => !new int[] {0,1,2}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
+                            .Where(pt => !new int[] { 0, 1, 2 }.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
                             .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                         MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && _mt.Match.StatusID == 6)
                             .OrderByDescending(mt => mt.Match.StartTime)
@@ -266,7 +266,7 @@ public class MatchService : IMatchService
                                 }
                             ),
 
-                        TeamRecord = _context.SeriesTeam.Where(st => st.TeamID == mt.TeamID).Select( 
+                        TeamRecord = _context.SeriesTeam.Where(st => st.TeamID == mt.TeamID).Select(
                             st => new TeamRecordViewModel()
                             {
                                 SeriesID = st.SeriesID,
@@ -403,7 +403,7 @@ public class MatchService : IMatchService
         teamstats.Score = vm.Score ?? teamstats.Score;
         teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
 
-        if (teamstats.StatusID == 4 && vm.StatusID != 4 ) //forfeit -> non forfeit
+        if (teamstats.StatusID == 4 && vm.StatusID != 4) //forfeit -> non forfeit
         {
             var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
             var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
@@ -433,7 +433,7 @@ public class MatchService : IMatchService
                 var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
                 teamstats.Score = 0; //remove team score of forfeit
                 var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
-                
+
                 ownRecord.LossCount++;
                 if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
                 {
@@ -530,7 +530,7 @@ public class MatchService : IMatchService
         var res = new List<ParticipantAttendanceViewModel>();
         if (match is null) return res;
 
-        foreach(MatchTeam mt in match.MatchTeam)
+        foreach (MatchTeam mt in match.MatchTeam)
         {
             var attendance = _context.MatchParticipant
                 .Where(mp => mp.TeamID == mt.TeamID && mp.MatchID == mt.MatchID)
@@ -633,7 +633,7 @@ public class MatchService : IMatchService
         //delete matchteam
         foreach (var mt in match.MatchTeam)
             mt.StatusID = 0; //deleted status
-        
+
         await _context.SaveChangesAsync();
         return match;
     }
@@ -641,7 +641,7 @@ public class MatchService : IMatchService
     public IEnumerable<MatchExtendedViewModel> GetAllMatches()
     {
         var matches = _context.Match
-             .Where(m => m.StatusID != 0 && m.StatusID != 4 && m.StatusID !=6)
+             .Where(m => m.StatusID != 0 && m.StatusID != 4 && m.StatusID != 6)
              .Include(m => m.MatchTeam)
                  .ThenInclude(m => m.Match)
              .Include(m => m.MatchTeam)

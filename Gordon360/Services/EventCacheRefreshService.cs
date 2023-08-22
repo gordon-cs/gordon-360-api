@@ -1,13 +1,12 @@
-﻿using Gordon360.Static_Classes;
+﻿using Gordon360.Models.ViewModels;
+using Gordon360.Static_Classes;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
-using System.Threading.Tasks;
-using System.Threading;
 using System;
-using System.Diagnostics;
-using System.Collections;
-using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 

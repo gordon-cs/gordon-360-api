@@ -1,5 +1,4 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
@@ -259,7 +258,7 @@ public class ActivitiesController : GordonControllerBase
         }
 
         ActivityInfoViewModel updatedInvolvement = await _activityService.UpdateActivityImageAsync(involvement, image);
-        
+
         return Ok(updatedInvolvement);
     }
 

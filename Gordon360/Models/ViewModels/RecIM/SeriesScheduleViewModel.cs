@@ -8,7 +8,7 @@ namespace Gordon360.Models.ViewModels.RecIM;
 public class SeriesScheduleViewModel
 {
     public int ID { get; set; }
-    public Dictionary<string,bool> AvailableDays { get; set; } 
+    public Dictionary<string, bool> AvailableDays { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public int EstMatchTime { get; set; }

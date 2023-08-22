@@ -1,13 +1,11 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Exceptions;
 
 
 namespace Gordon360.Services.RecIM;
@@ -71,7 +69,7 @@ public class AffiliationService : IAffiliationService
                      .Sum(),
                  Series = _context.AffiliationPoints
                       .Where(_ap => _ap.AffiliationName == a.Name)
-                      .Select(ap => (SeriesViewModel) ap.Series)
+                      .Select(ap => (SeriesViewModel)ap.Series)
                       .AsEnumerable()
              })
              .AsEnumerable();
@@ -92,7 +90,7 @@ public class AffiliationService : IAffiliationService
                      .Sum(),
             Series = _context.AffiliationPoints
                       .Where(_ap => _ap.AffiliationName == name)
-                      .Select(ap => (SeriesViewModel) ap.Series)
+                      .Select(ap => (SeriesViewModel)ap.Series)
                       .AsEnumerable()
         };
     }

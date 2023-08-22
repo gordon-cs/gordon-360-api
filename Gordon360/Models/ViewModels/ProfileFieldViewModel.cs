@@ -1,6 +1,4 @@
-﻿using Gordon360.Models.CCT;
-
-namespace Gordon360.Models.ViewModels;
+﻿namespace Gordon360.Models.ViewModels;
 
 public class ProfileFieldViewModel
 {

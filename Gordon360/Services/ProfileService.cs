@@ -3,8 +3,6 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -260,7 +258,7 @@ public class ProfileService : IProfileService
                 case "calendar":
                     original.calendar = content.calendar;
                     break;
-                    
+
                 case "facebook":
                     original.facebook = content.facebook;
                     break;

@@ -12,7 +12,7 @@ public class WellnessViewModel
 
     public bool IsValid { get; set; }
 
-    public string StatusDescription {  get; set; }
+    public string StatusDescription { get; set; }
 
     public static implicit operator WellnessViewModel(Health_Status hs)
     {

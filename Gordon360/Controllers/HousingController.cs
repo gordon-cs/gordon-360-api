@@ -1,12 +1,10 @@
 using Gordon360.Authorization;
-using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Security.Claims;
 
 namespace Gordon360.Controllers;
@@ -232,7 +230,7 @@ public class HousingController : GordonControllerBase
         //get token data from context, username is the username of current logged in person
         var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-        
+
         ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
         if (result != null)
         {

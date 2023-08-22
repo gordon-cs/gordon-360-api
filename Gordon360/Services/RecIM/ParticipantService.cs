@@ -1,17 +1,15 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Static.Names;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.ViewModels;
+using Gordon360.Models.ViewModels.RecIM;
+using Gordon360.Static.Names;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Extensions.System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Services.RecIM;
 
@@ -108,26 +106,26 @@ public class ParticipantService : IParticipantService
 
     public IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username)
     {
-               var teams = _context.ParticipantTeam
-                        .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2 )
-                            .Join(_context.Team.Where(t => t.StatusID != 0),
-                                pt => pt.TeamID,
-                                t => t.ID,
-                                (pt, t) => new TeamExtendedViewModel
-                                {
-                                    ID = t.ID,
-                                    Activity = _context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
-                                    Name = t.Name,
-                                    Status = _context.TeamStatus
-                                                .FirstOrDefault(ts => ts.ID == t.StatusID)
-                                                .Description,
-                                    Logo = t.Logo,
-                                    TeamRecord = _context.SeriesTeam
-                                        .Include(st => st.Team)
-                                        .Where(st => st.TeamID == t.ID)
-                                        .Select(st => (TeamRecordViewModel)st)
-                                
-                                });
+        var teams = _context.ParticipantTeam
+                 .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)
+                     .Join(_context.Team.Where(t => t.StatusID != 0),
+                         pt => pt.TeamID,
+                         t => t.ID,
+                         (pt, t) => new TeamExtendedViewModel
+                         {
+                             ID = t.ID,
+                             Activity = _context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
+                             Name = t.Name,
+                             Status = _context.TeamStatus
+                                         .FirstOrDefault(ts => ts.ID == t.StatusID)
+                                         .Description,
+                             Logo = t.Logo,
+                             TeamRecord = _context.SeriesTeam
+                                 .Include(st => st.Team)
+                                 .Where(st => st.TeamID == t.ID)
+                                 .Select(st => (TeamRecordViewModel)st)
+
+                         });
         return teams;
     }
 
@@ -215,9 +213,9 @@ public class ParticipantService : IParticipantService
     public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
     {
         // Find gender
-        string user_gender = 
-            _context.Student.FirstOrDefault(s => s.AD_Username == username)?.Gender ?? 
-            _context.FacStaff.FirstOrDefault(fs => fs.AD_Username == username)?.Gender ?? 
+        string user_gender =
+            _context.Student.FirstOrDefault(s => s.AD_Username == username)?.Gender ??
+            _context.FacStaff.FirstOrDefault(fs => fs.AD_Username == username)?.Gender ??
             "U";
 
         await _context.Participant.AddAsync(new Participant
@@ -247,7 +245,7 @@ public class ParticipantService : IParticipantService
             SpecifiedGender = newCustomParticipant.SpecifiedGender,
             IsCustom = true,
             AllowEmails = newCustomParticipant.AllowEmails,
-            
+
         });
         await _context.CustomParticipant.AddAsync(new CustomParticipant
         {
@@ -315,7 +313,7 @@ public class ParticipantService : IParticipantService
 
 
     public async Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant)
-    {           
+    {
         var participantActivity = _context.ParticipantActivity
                                     .FirstOrDefault(pa => pa.ParticipantUsername == username
                                         && pa.ActivityID == updatedParticipant.ActivityID);

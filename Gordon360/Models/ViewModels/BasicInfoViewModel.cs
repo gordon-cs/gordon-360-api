@@ -1,5 +1,4 @@
-﻿using Gordon360.Models.CCT;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Gordon360.Models.ViewModels;
 

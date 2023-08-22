@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,7 @@ public class AdministratorService : IAdministratorService
     /// <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
     public IEnumerable<AdminViewModel?> GetAll()
     {
-        return _context.ADMIN.Select<ADMIN,AdminViewModel?>(a => a);
+        return _context.ADMIN.Select<ADMIN, AdminViewModel?>(a => a);
     }
 
     /// <summary>

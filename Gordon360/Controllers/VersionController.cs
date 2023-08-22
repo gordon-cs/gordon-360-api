@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Gordon360.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Reflection;
-using Gordon360.Models.ViewModels;
-using System;
-using Gordon360.Extensions.System;
 
 namespace Gordon360.Controllers;
 

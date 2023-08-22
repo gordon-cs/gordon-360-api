@@ -1,9 +1,8 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Models.CCT;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
-using Gordon360.Authorization;
 
 namespace Gordon360.Controllers;
 

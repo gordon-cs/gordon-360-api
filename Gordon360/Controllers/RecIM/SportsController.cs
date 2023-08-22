@@ -52,7 +52,7 @@ public class SportsController : GordonControllerBase
     public async Task<ActionResult<SportViewModel>> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport)
     {
         if (sportID == 0) return UnprocessableEntity("Default sport cannot be modified");
-        var sport = await _sportService.UpdateSportAsync(sportID,updatedSport);
+        var sport = await _sportService.UpdateSportAsync(sportID, updatedSport);
         return CreatedAtAction(nameof(GetSportByID), new { sportID = sport.ID }, sport);
     }
 

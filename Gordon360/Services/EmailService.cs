@@ -1,6 +1,4 @@
-﻿using Gordon360.Enums;
-using Gordon360.Exceptions;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
 using Microsoft.Extensions.Configuration;
@@ -8,8 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
-using static Gordon360.Services.MembershipService;
 
 namespace Gordon360.Services;
 

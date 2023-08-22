@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using System;
 using System.Collections.Generic;
 using System.Data;

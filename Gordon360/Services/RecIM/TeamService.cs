@@ -1,19 +1,18 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.ViewModels.RecIM;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Globalization;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
-using Gordon360.Utilities;
-using Microsoft.EntityFrameworkCore;
-using Gordon360.Extensions.System;
-using System.Diagnostics;
 
 namespace Gordon360.Services.RecIM;
 
@@ -77,9 +76,9 @@ public class TeamService : ITeamService
 
     public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
     {
-        var teamQuery = active 
+        var teamQuery = active
             ? _context.Team.Where(t => t.Activity.Completed != active && t.StatusID != 0) // 0 is deleted
-            : _context.Team.Where(t => t.StatusID != 0);    
+            : _context.Team.Where(t => t.StatusID != 0);
 
         var teams = teamQuery
             .Include(t => t.SeriesTeam)
@@ -111,7 +110,7 @@ public class TeamService : ITeamService
                             m => m.ID,
                             mt => mt.MatchID,
                             (m, mt) => mt.SportsmanshipScore
-                        ).Average() 
+                        ).Average()
             })
             .AsEnumerable();
         return teams;
@@ -178,7 +177,7 @@ public class TeamService : ITeamService
                                                         }
                                             ).AsEnumerable(),
                             TeamRecord = t.SeriesTeam
-                                        .Select(st =>  (TeamRecordViewModel)st)
+                                        .Select(st => (TeamRecordViewModel)st)
                                         .AsEnumerable(),
                             SportsmanshipRating = GetTeamSportsmanshipScore(teamID)
                         }).FirstOrDefault();
@@ -188,7 +187,7 @@ public class TeamService : ITeamService
     public IEnumerable<TeamExtendedViewModel> GetTeamInvitesByParticipantUsername(string username)
     {
         var participantStatus = _participantService.GetParticipantByUsername(username).Status;
-        if (participantStatus == "Banned" || participantStatus == "Suspended") 
+        if (participantStatus == "Banned" || participantStatus == "Suspended")
             throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
 
         var teamInvites = _context.ParticipantTeam
@@ -203,9 +202,9 @@ public class TeamService : ITeamService
                 .AsEnumerable();
 
         return teamInvites;
-;
+        ;
     }
-    
+
     public ParticipantTeamViewModel GetParticipantTeam(int teamID, string username)
     {
         var participantStatus = _participantService.GetParticipantByUsername(username).Status;
@@ -231,8 +230,8 @@ public class TeamService : ITeamService
         var participantStatus = _participantService.GetParticipantByUsername(username).Status;
         if (participantStatus == "Banned" || participantStatus == "Suspended")
             throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
-        
-        if(_context.Activity.Find(newTeam.ActivityID).Team.Any(team => team.Name == newTeam.Name))
+
+        if (_context.Activity.Find(newTeam.ActivityID).Team.Any(team => team.Name == newTeam.Name))
             throw new UnprocessibleEntity
             { ExceptionMessage = $"Team name {newTeam.Name} has already been taken by another team in this activity" };
 
@@ -248,7 +247,8 @@ public class TeamService : ITeamService
         await AddParticipantToTeamAsync(team.ID, captain);
 
         var existingSeries = _context.Series.Where(s => s.ActivityID == newTeam.ActivityID).OrderBy(s => s.StartDate)?.FirstOrDefault();
-        if (existingSeries is not null) {
+        if (existingSeries is not null)
+        {
             var seriesTeam = new SeriesTeam
             {
                 TeamID = team.ID,
@@ -278,7 +278,7 @@ public class TeamService : ITeamService
             (pt, t) => pt);
 
         //if captain or inactive on another team, delete this participant team (admins can bypass)
-        if (otherInstances.Any(pt => new int[] { 5,6 }.Contains(pt.RoleTypeID) && !_participantService.IsAdmin(participant.Username)))  
+        if (otherInstances.Any(pt => new int[] { 5, 6 }.Contains(pt.RoleTypeID) && !_participantService.IsAdmin(participant.Username)))
         {
             _context.ParticipantTeam.Remove(participantTeam);
             throw new ResourceCreationException() { ExceptionMessage = $"Participant is in an immutable role in this activity" };
@@ -307,7 +307,7 @@ public class TeamService : ITeamService
             .FirstOrDefault(t => t.ID == teamID);
         team.StatusID = 0;
 
-        foreach(var mt in team.MatchTeam)
+        foreach (var mt in team.MatchTeam)
             mt.StatusID = 0;
 
 
@@ -318,15 +318,15 @@ public class TeamService : ITeamService
 
     public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam)
     {
-        var team =  _context.Team
+        var team = _context.Team
             .Include(t => t.Activity)
                 .ThenInclude(t => t.Team)
             .FirstOrDefault(t => t.ID == teamID);
         if (updatedTeam.Name is not null)
         {
-            if (team.Activity.Team.Any(team => team.Name == updatedTeam.Name && team.ID != teamID)) 
-                throw new UnprocessibleEntity 
-                    { ExceptionMessage = $"Team name {updatedTeam.Name} has already been taken by another team in this activity" };
+            if (team.Activity.Team.Any(team => team.Name == updatedTeam.Name && team.ID != teamID))
+                throw new UnprocessibleEntity
+                { ExceptionMessage = $"Team name {updatedTeam.Name} has already been taken by another team in this activity" };
         }
         team.Name = updatedTeam.Name ?? team.Name;
         team.StatusID = updatedTeam.StatusID ?? team.StatusID;
@@ -384,17 +384,17 @@ public class TeamService : ITeamService
             );
         string subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has {(isCustom ? "added" : "invited")} you to a team!";
 
-        _emailService.SendEmails(new string[] {to_email},from_email,subject,messageBody,password);
+        _emailService.SendEmails(new string[] { to_email }, from_email, subject, messageBody, password);
     }
-    
+
     public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
     {
         //new check for enabling non-recim participants to be invited
-        if(!_context.Participant.Any(p => p.Username == participant.Username))
+        if (!_context.Participant.Any(p => p.Username == participant.Username))
             await _participantService.PostParticipantAsync(participant.Username, 1); //pending user
 
         //check for participant is on the team
-        if (_context.Team.FirstOrDefault(t => t.ID == teamID).ParticipantTeam.Any(pt => pt.ParticipantUsername == participant.Username 
+        if (_context.Team.FirstOrDefault(t => t.ID == teamID).ParticipantTeam.Any(pt => pt.ParticipantUsername == participant.Username
             && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)) //doesn't check for deleted or invited
             throw new UnprocessibleEntity { ExceptionMessage = $"Participant {participant.Username} is already in this team" };
 
@@ -413,15 +413,15 @@ public class TeamService : ITeamService
         else
         {
             participantTeam = new ParticipantTeam
-                {
-                    TeamID = teamID,
-                    ParticipantUsername = participant.Username,
-                    SignDate = DateTime.UtcNow,
-                    RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
-                };
+            {
+                TeamID = teamID,
+                ParticipantUsername = participant.Username,
+                SignDate = DateTime.UtcNow,
+                RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
+            };
             await _context.ParticipantTeam.AddAsync(participantTeam);
         }
-        
+
         await _context.SaveChangesAsync();
         if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
         {
@@ -487,7 +487,7 @@ public class TeamService : ITeamService
             && !attendees.Any(name => mp.ParticipantUsername == name));
         _context.MatchParticipant.RemoveRange(attendanceToRemove);
 
-        var existingAttendance = _context.MatchParticipant.Where(mp => mp.MatchID == matchID && mp.TeamID == teamID 
+        var existingAttendance = _context.MatchParticipant.Where(mp => mp.MatchID == matchID && mp.TeamID == teamID
             && attendees.Any(name => mp.ParticipantUsername == name));
 
         var attendanceToAdd = attendees.Where(name => !existingAttendance.Any(ea => ea.ParticipantUsername == name));
@@ -501,7 +501,7 @@ public class TeamService : ITeamService
             };
             await _context.MatchParticipant.AddAsync(created);
             res.Add(created);
-   
+
         }
         await _context.SaveChangesAsync();
         return (res);

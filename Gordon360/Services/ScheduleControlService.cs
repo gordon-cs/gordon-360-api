@@ -1,6 +1,6 @@
 ﻿
-using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

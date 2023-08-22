@@ -1,5 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Models.CCT;
+﻿using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utilities;
 using System.Collections.Generic;

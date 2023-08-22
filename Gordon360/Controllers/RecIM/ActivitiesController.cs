@@ -1,10 +1,8 @@
-﻿using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
-using Gordon360.Authorization;
 using Gordon360.Static.Names;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -28,8 +26,8 @@ public class ActivitiesController : GordonControllerBase
     [HttpGet]
     [Route("")]
     public ActionResult<IEnumerable<ActivityExtendedViewModel>> GetActivities([FromQuery] bool? active)
-    {   
-        if ( active is bool isActive)
+    {
+        if (active is bool isActive)
         {
             bool completed = !isActive;
             var res = _activityService.GetActivitiesByCompletion(completed);

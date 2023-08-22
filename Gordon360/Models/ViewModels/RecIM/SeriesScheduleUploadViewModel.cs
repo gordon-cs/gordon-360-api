@@ -1,12 +1,10 @@
-﻿using Gordon360.Models.CCT;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM;
 
 public record Schedule(
-    bool Sun, 
+    bool Sun,
     bool Mon,
     bool Tue,
     bool Wed,

@@ -95,7 +95,7 @@ public class ScheduleControlController : GordonControllerBase
     /// <returns></returns>
     [HttpPut]
     [Route("description")]
-    public ActionResult UpdateDescription([FromBody]string value)
+    public ActionResult UpdateDescription([FromBody] string value)
     {
         DateTime localDate = DateTime.Now;
 
