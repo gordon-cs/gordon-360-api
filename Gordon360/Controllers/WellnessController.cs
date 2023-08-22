@@ -5,86 +5,85 @@ using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
 using Gordon360.Authorization;
 
-namespace Gordon360.Controllers
+namespace Gordon360.Controllers;
+
+[Route("api/[controller]")]
+public class WellnessController : GordonControllerBase
 {
-    [Route("api/[controller]")]
-    public class WellnessController : GordonControllerBase
+    private readonly IWellnessService _wellnessService;
+
+    public WellnessController(CCTContext context)
     {
-        private readonly IWellnessService _wellnessService;
+        _wellnessService = new WellnessService(context);
+    }
 
-        public WellnessController(CCTContext context)
+    /// <summary>
+    /// Enum representing three possible wellness statuses.
+    /// GREEN - Healthy, no known contact/symptoms
+    /// YELLOW - Symptomatic or cautionary hold
+    /// RED - Quarantine/Isolation
+    /// </summary>
+    public enum WellnessStatusColor
+    {
+        GREEN, YELLOW, RED
+    }
+
+    /// <summary>
+    ///  Gets wellness status of current user
+    /// </summary>
+    /// <returns>A WellnessViewModel representing the most recent status of the user</returns>
+    [HttpGet]
+    [Route("")]
+    public ActionResult<WellnessViewModel> Get()
+    {
+        var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+        var result = _wellnessService.GetStatus(authenticatedUserUsername);
+
+        if (result == null)
         {
-            _wellnessService = new WellnessService(context);
+            return NotFound();
         }
 
-        /// <summary>
-        /// Enum representing three possible wellness statuses.
-        /// GREEN - Healthy, no known contact/symptoms
-        /// YELLOW - Symptomatic or cautionary hold
-        /// RED - Quarantine/Isolation
-        /// </summary>
-        public enum WellnessStatusColor
+        return Ok(result);
+    }
+
+    /// <summary>
+    ///  Gets question for wellness check from the back end
+    /// </summary>
+    /// <returns>A WellnessQuestionViewModel</returns>
+    [HttpGet]
+    [Route("question")]
+    public ActionResult<WellnessQuestionViewModel> GetQuestion()
+    {
+        var result = _wellnessService.GetQuestion();
+
+        if (result == null)
         {
-            GREEN, YELLOW, RED
+            return NotFound();
         }
 
-        /// <summary>
-        ///  Gets wellness status of current user
-        /// </summary>
-        /// <returns>A WellnessViewModel representing the most recent status of the user</returns>
-        [HttpGet]
-        [Route("")]
-        public ActionResult<WellnessViewModel> Get()
+        return Ok(result);
+    }
+
+    /// <summary>
+    ///  Stores the user's wellness status
+    /// </summary>
+    /// <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
+    /// <returns>The status that was stored in the database</returns>
+    [HttpPost]
+    [Route("")]
+    public ActionResult<WellnessViewModel> Post([FromBody] WellnessStatusColor status)
+    {
+        var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+        var result = _wellnessService.PostStatus(status, authenticatedUserUsername);
+
+        if (result == null)
         {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-
-            var result = _wellnessService.GetStatus(authenticatedUserUsername);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
+            return NotFound();
         }
 
-        /// <summary>
-        ///  Gets question for wellness check from the back end
-        /// </summary>
-        /// <returns>A WellnessQuestionViewModel</returns>
-        [HttpGet]
-        [Route("question")]
-        public ActionResult<WellnessQuestionViewModel> GetQuestion()
-        {
-            var result = _wellnessService.GetQuestion();
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
-
-        /// <summary>
-        ///  Stores the user's wellness status
-        /// </summary>
-        /// <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
-        /// <returns>The status that was stored in the database</returns>
-        [HttpPost]
-        [Route("")]
-        public ActionResult<WellnessViewModel> Post([FromBody] WellnessStatusColor status)
-        {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-
-            var result = _wellnessService.PostStatus(status, authenticatedUserUsername);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Created("Recorded answer :", result);
-        }
+        return Created("Recorded answer :", result);
     }
 }

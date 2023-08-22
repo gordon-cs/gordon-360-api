@@ -3,11 +3,10 @@ using Gordon360.Models.CCT;
 using System;
 using System.Collections.Generic;
 
-namespace Gordon360.Models.ViewModels.RecIM
+namespace Gordon360.Models.ViewModels.RecIM;
+
+public class AffiliationPatchViewModel
 {
-    public class AffiliationPatchViewModel
-    {
-        public string? Name { get; set; }
-        public string? Logo { get; set; }
-    }
+    public string? Name { get; set; }
+    public string? Logo { get; set; }
 }

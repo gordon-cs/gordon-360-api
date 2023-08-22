@@ -6,195 +6,194 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace Gordon360.Services
+namespace Gordon360.Services;
+
+/// <summary>
+/// Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
+/// </summary>
+public class MyScheduleService : IMyScheduleService
 {
-    /// <summary>
-    /// Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
-    /// </summary>
-    public class MyScheduleService : IMyScheduleService
+    private CCTContext _context;
+
+    public MyScheduleService(CCTContext context)
     {
-        private CCTContext _context;
+        _context = context;
+    }
 
-        public MyScheduleService(CCTContext context)
+    /// <summary>
+    /// Fetch the myschedule item whose id is specified by the parameter
+    /// </summary>
+    /// <param name="eventID">The myschedule id</param>
+    /// <param name="username">AD Username</param>
+    /// <returns>Myschedule if found, null if not found</returns>
+    public MYSCHEDULE GetForID(string eventID, string username)
+    {
+        // Account Verification
+        var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+        if (account == null)
         {
-            _context = context;
+            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
         }
 
-        /// <summary>
-        /// Fetch the myschedule item whose id is specified by the parameter
-        /// </summary>
-        /// <param name="eventID">The myschedule id</param>
-        /// <param name="username">AD Username</param>
-        /// <returns>Myschedule if found, null if not found</returns>
-        public MYSCHEDULE GetForID(string eventID, string username)
+        var result = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == account.gordon_id && x.EVENT_ID == eventID);
+        if (result == null)
         {
-            // Account Verification
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-
-            var result = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == account.gordon_id && x.EVENT_ID == eventID);
-            if (result == null)
-            {
-                return null;
-            }
-
-            return result;
+            return null;
         }
 
+        return result;
+    }
 
-        /// <summary>
-        /// Fetch all myschedule items belonging to the given user
-        /// </summary>
-        /// <param name="username">The AD Username</param>
-        /// <returns>Array of Myschedule if found, null if not found</returns>
-        public IEnumerable<MYSCHEDULE> GetAllForUser(string username)
+
+    /// <summary>
+    /// Fetch all myschedule items belonging to the given user
+    /// </summary>
+    /// <param name="username">The AD Username</param>
+    /// <returns>Array of Myschedule if found, null if not found</returns>
+    public IEnumerable<MYSCHEDULE> GetAllForUser(string username)
+    {
+
+        // Account Verification
+        var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+
+        if (account == null)
         {
-
-            // Account Verification
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-
-            var result = _context.MYSCHEDULE.Where(x => x.GORDON_ID == account.gordon_id);
-            if (result == null)
-            {
-                return null;
-            }
-
-            return result;
+            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
         }
 
-
-
-
-        /// <summary>
-        /// Adds a new mySchedule record to storage.
-        /// </summary>
-        /// <param name="mySchedule">The membership to be added</param>
-        /// <returns>The newly added custom event</returns>
-        public MYSCHEDULE Add(MYSCHEDULE mySchedule)
+        var result = _context.MYSCHEDULE.Where(x => x.GORDON_ID == account.gordon_id);
+        if (result == null)
         {
-
-            // Account verification
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == mySchedule.GORDON_ID);
-
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-
-            // Assign event id
-            var myScheduleList = _context.MYSCHEDULE.Where(x => x.GORDON_ID == mySchedule.GORDON_ID);
-            int largestEventId = 1000;
-            int i = 0;
-            foreach (var schedule in myScheduleList)
-            {
-
-                if (!Int32.TryParse(schedule.EVENT_ID, out i))
-                {
-                    i = -1;
-                }
-                if (largestEventId < i)
-                {
-                    largestEventId = i;
-                }
-            }
-            largestEventId++;
-            mySchedule.EVENT_ID = largestEventId.ToString();
-
-
-            // The Add() method returns the added schedule
-            var payload = _context.MYSCHEDULE.Add(mySchedule);
-
-            // There is a unique constraint in the Database on columns
-            if (payload == null)
-            {
-                throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the myschedule event. Verify that a similar schedule doesn't already exist." };
-            }
-            _context.SaveChanges();
-
-            return mySchedule;
-
+            return null;
         }
 
-        /// <summary>
-        /// Delete the myschedule whose id is specified by the parameter.
-        /// </summary>
-        /// <param name="eventID">The myschedule id</param>
-        /// <param name="username">The gordon id</param>
-        /// <returns>The myschedule that was just deleted</returns>
-        public MYSCHEDULE Delete(string eventID, string username)
+        return result;
+    }
+
+
+
+
+    /// <summary>
+    /// Adds a new mySchedule record to storage.
+    /// </summary>
+    /// <param name="mySchedule">The membership to be added</param>
+    /// <returns>The newly added custom event</returns>
+    public MYSCHEDULE Add(MYSCHEDULE mySchedule)
+    {
+
+        // Account verification
+        var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == mySchedule.GORDON_ID);
+
+        if (account == null)
         {
-            // Account Verification
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-            if (account == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
-            }
-
-            var result = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == account.gordon_id && x.EVENT_ID == eventID);
-            if (result == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
-            }
-
-            _context.MYSCHEDULE.Remove(new MYSCHEDULE { EVENT_ID = eventID, GORDON_ID = account.gordon_id });
-            _context.SaveChanges();
-
-            return result;
+            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
         }
 
-        /// <summary>
-        /// Update the myschedule item.
-        /// </summary>
-        /// <param name="sched">The schedule information</param>
-        /// <returns>The original schedule</returns>
-        public MYSCHEDULE Update(MYSCHEDULE sched)
+        // Assign event id
+        var myScheduleList = _context.MYSCHEDULE.Where(x => x.GORDON_ID == mySchedule.GORDON_ID);
+        int largestEventId = 1000;
+        int i = 0;
+        foreach (var schedule in myScheduleList)
         {
 
-            var gordon_id = sched.GORDON_ID;
-            var event_id = sched.EVENT_ID;
-
-            // Account Verification
-            var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == gordon_id);
-            if (account == null)
+            if (!Int32.TryParse(schedule.EVENT_ID, out i))
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+                i = -1;
             }
-
-            var original = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
-
-
-            if (original == null)
+            if (largestEventId < i)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
+                largestEventId = i;
             }
-
-            // Update value only if new value was given
-            original.LOCATION = sched.LOCATION ?? original.LOCATION;
-            original.DESCRIPTION = sched.DESCRIPTION ?? original.DESCRIPTION;
-            original.MON_CDE = sched.MON_CDE ?? original.MON_CDE;
-            original.TUE_CDE = sched.TUE_CDE ?? original.TUE_CDE;
-            original.WED_CDE = sched.WED_CDE ?? original.WED_CDE;
-            original.THU_CDE = sched.THU_CDE ?? original.THU_CDE;
-            original.FRI_CDE = sched.FRI_CDE ?? original.FRI_CDE;
-            original.SAT_CDE = sched.SAT_CDE ?? original.SAT_CDE;
-            original.SUN_CDE = sched.SUN_CDE ?? original.SUN_CDE;
-            original.IS_ALLDAY = sched.IS_ALLDAY ?? original.IS_ALLDAY;
-            original.BEGIN_TIME = sched.BEGIN_TIME ?? original.BEGIN_TIME;
-            original.END_TIME = sched.END_TIME ?? original.END_TIME;
-
-            _context.SaveChanges();
-
-            return original;
-
         }
+        largestEventId++;
+        mySchedule.EVENT_ID = largestEventId.ToString();
+
+
+        // The Add() method returns the added schedule
+        var payload = _context.MYSCHEDULE.Add(mySchedule);
+
+        // There is a unique constraint in the Database on columns
+        if (payload == null)
+        {
+            throw new ResourceCreationException() { ExceptionMessage = "There was an error adding the myschedule event. Verify that a similar schedule doesn't already exist." };
+        }
+        _context.SaveChanges();
+
+        return mySchedule;
 
     }
+
+    /// <summary>
+    /// Delete the myschedule whose id is specified by the parameter.
+    /// </summary>
+    /// <param name="eventID">The myschedule id</param>
+    /// <param name="username">The gordon id</param>
+    /// <returns>The myschedule that was just deleted</returns>
+    public MYSCHEDULE Delete(string eventID, string username)
+    {
+        // Account Verification
+        var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+        if (account == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+        }
+
+        var result = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == account.gordon_id && x.EVENT_ID == eventID);
+        if (result == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
+        }
+
+        _context.MYSCHEDULE.Remove(new MYSCHEDULE { EVENT_ID = eventID, GORDON_ID = account.gordon_id });
+        _context.SaveChanges();
+
+        return result;
+    }
+
+    /// <summary>
+    /// Update the myschedule item.
+    /// </summary>
+    /// <param name="sched">The schedule information</param>
+    /// <returns>The original schedule</returns>
+    public MYSCHEDULE Update(MYSCHEDULE sched)
+    {
+
+        var gordon_id = sched.GORDON_ID;
+        var event_id = sched.EVENT_ID;
+
+        // Account Verification
+        var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == gordon_id);
+        if (account == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
+        }
+
+        var original = _context.MYSCHEDULE.FirstOrDefault(x => x.GORDON_ID == gordon_id && x.EVENT_ID == event_id);
+
+
+        if (original == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The MySchedule was not found." };
+        }
+
+        // Update value only if new value was given
+        original.LOCATION = sched.LOCATION ?? original.LOCATION;
+        original.DESCRIPTION = sched.DESCRIPTION ?? original.DESCRIPTION;
+        original.MON_CDE = sched.MON_CDE ?? original.MON_CDE;
+        original.TUE_CDE = sched.TUE_CDE ?? original.TUE_CDE;
+        original.WED_CDE = sched.WED_CDE ?? original.WED_CDE;
+        original.THU_CDE = sched.THU_CDE ?? original.THU_CDE;
+        original.FRI_CDE = sched.FRI_CDE ?? original.FRI_CDE;
+        original.SAT_CDE = sched.SAT_CDE ?? original.SAT_CDE;
+        original.SUN_CDE = sched.SUN_CDE ?? original.SUN_CDE;
+        original.IS_ALLDAY = sched.IS_ALLDAY ?? original.IS_ALLDAY;
+        original.BEGIN_TIME = sched.BEGIN_TIME ?? original.BEGIN_TIME;
+        original.END_TIME = sched.END_TIME ?? original.END_TIME;
+
+        _context.SaveChanges();
+
+        return original;
+
+    }
+
 }

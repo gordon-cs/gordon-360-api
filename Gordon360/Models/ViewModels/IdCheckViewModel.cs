@@ -1,7 +1,6 @@
-﻿namespace Gordon360.Models.ViewModels
+﻿namespace Gordon360.Models.ViewModels;
+
+public class IdCheckViewModel
 {
-    public class IdCheckViewModel
-    {
-        public bool IdCheck { get; set; }
-    }
+    public bool IdCheck { get; set; }
 }

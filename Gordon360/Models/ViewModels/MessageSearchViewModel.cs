@@ -1,9 +1,8 @@
-﻿namespace Gordon360.Models.ViewModels
-{
-    public class MessageSearchViewModel
-    {
-        public string messageID { get; set; }
+﻿namespace Gordon360.Models.ViewModels;
 
-        public string roomID { get; set; }
-    }
+public class MessageSearchViewModel
+{
+    public string messageID { get; set; }
+
+    public string roomID { get; set; }
 }

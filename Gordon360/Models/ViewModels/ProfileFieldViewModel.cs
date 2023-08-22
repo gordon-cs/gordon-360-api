@@ -1,11 +1,10 @@
 ﻿using Gordon360.Models.CCT;
 
-namespace Gordon360.Models.ViewModels
+namespace Gordon360.Models.ViewModels;
+
+public class ProfileFieldViewModel
 {
-    public class ProfileFieldViewModel
-    {
-        public string Field { get; set; }
-        public string Value { get; set; }
-        public string Label { get; set; }
-    }
+    public string Field { get; set; }
+    public string Value { get; set; }
+    public string Label { get; set; }
 }
