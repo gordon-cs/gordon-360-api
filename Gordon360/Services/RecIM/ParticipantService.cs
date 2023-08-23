@@ -9,8 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Services.RecIM
@@ -73,6 +71,12 @@ namespace Gordon360.Services.RecIM
             if (participant is null) return null;
 
             participant.Role = roleType;
+            participant.Status = _context.ParticipantStatusHistory
+                .Where(psh => psh.ParticipantUsername == username)
+                .OrderByDescending(psh => psh.ID)
+                .Select(psh => psh.Status.Description)
+                .FirstOrDefault();
+
             return participant;
         }
 

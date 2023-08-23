@@ -196,7 +196,7 @@ namespace Gordon360.Services.RecIM
         public IEnumerable<TeamExtendedViewModel> GetTeamInvitesByParticipantUsername(string username)
         {
             var participantStatus = _participantService.GetParticipantByUsername(username)?.Status;
-            if (participantStatus is null) return Enumerable.Empty<TeamExtendedViewModel>(); ; 
+            if (participantStatus is null) return Enumerable.Empty<TeamExtendedViewModel>();
 
             if (participantStatus == "Banned" || participantStatus == "Suspended") 
                 throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
