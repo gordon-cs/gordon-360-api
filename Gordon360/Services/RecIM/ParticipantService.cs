@@ -65,9 +65,9 @@ namespace Gordon360.Services.RecIM
             return account;
         }
 
-        public ParticipantExtendedViewModel GetParticipantByUsername(string username, string? roleType = null)
+        public ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null)
         {
-            ParticipantExtendedViewModel participant = _context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
+            ParticipantExtendedViewModel? participant = _context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
             if (participant is null) return null;
 
             participant.Role = roleType;
