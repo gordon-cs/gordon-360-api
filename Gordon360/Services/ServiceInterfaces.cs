@@ -395,7 +395,7 @@ namespace Gordon360.Services
             bool GetParticipantIsCustom(string username);
             IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
-            ParticipantExtendedViewModel GetParticipantByUsername(string username, string? roleType = null);
+            ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null);
             AccountViewModel GetUnaffiliatedAccountByUsername(string username);
             IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
             Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4);
