@@ -125,7 +125,7 @@ namespace Gordon360.Controllers.RecIM
         }
 
         /// <summary>
-        /// Gets all series winners
+        /// Updates team record manually (mitigates potential bugs)
         /// </summary>
         /// <param name="seriesID"></param>
         /// <param name="update">Updated team record</param>
