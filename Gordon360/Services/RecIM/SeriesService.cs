@@ -1693,7 +1693,10 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID)
         {
-            return _context.Match.Include(m => m.MatchBracket).Where(m => m.SeriesID == seriesID).Select(m => (MatchBracketViewModel) m.MatchBracket);
+            return _context.Match
+                .Include(m => m.MatchBracket)
+                .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
+                .Select(m => (MatchBracketViewModel) m.MatchBracket);
         }
 
         public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)
