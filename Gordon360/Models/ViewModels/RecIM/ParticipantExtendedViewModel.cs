@@ -32,6 +32,8 @@ namespace Gordon360.Models.ViewModels.RecIM
 
         public static implicit operator ParticipantExtendedViewModel(ParticipantView p)
         {
+            if (p is null) return null; 
+
             return new ParticipantExtendedViewModel
             {
                 Username = p.Username,

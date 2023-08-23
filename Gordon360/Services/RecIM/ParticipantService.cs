@@ -70,6 +70,8 @@ namespace Gordon360.Services.RecIM
         public ParticipantExtendedViewModel GetParticipantByUsername(string username, string? roleType = null)
         {
             ParticipantExtendedViewModel participant = _context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
+            if (participant is null) return null;
+
             participant.Role = roleType;
             return participant;
         }
