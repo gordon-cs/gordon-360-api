@@ -478,6 +478,10 @@ namespace Gordon360.Services.RecIM
                     //set everyone 
                     foreach (var team in teams)
                         seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount--;
+                } else
+                {
+                    foreach (var team in teams)
+                        seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).TieCount--;
                 }
             }
 
@@ -499,6 +503,10 @@ namespace Gordon360.Services.RecIM
                     //set everyone 
                     foreach (var team in teams)
                         seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount++;
+                } else
+                {
+                    foreach (var team in teams)
+                        seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).TieCount++;
                 }
             }
 
