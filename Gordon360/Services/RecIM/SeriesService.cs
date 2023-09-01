@@ -1,15 +1,17 @@
-﻿using Gordon360.Exceptions;
-using Gordon360.Extensions.System;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Static.Names;
+using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Extensions.System;
+using Gordon360.Static.Names;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services.RecIM;
 
@@ -60,6 +62,8 @@ public class SeriesService : ISeriesService
                     EndDate = s.EndDate.SpecifyUtc(),
                     Type = s.Type.Description,
                     Status = s.Status.Description,
+                    Points = s.Points,
+                    WinnerID = s.WinnerID,
                     ActivityID = s.ActivityID,
                     Match = _matchService.GetMatchesBySeriesID(s.ID),
                     TeamStanding = _context.SeriesTeam
@@ -72,12 +76,10 @@ public class SeriesService : ISeriesService
                             Name = st.Team.Name,
                             WinCount = st.WinCount,
                             LossCount = st.LossCount,
-                            TieCount = _context.MatchTeam
-                                    .Where(mt => mt.TeamID == st.TeamID && mt.Match.SeriesID == s.ID && mt.Match.StatusID == 6)
-                                    .Count() - st.WinCount - st.LossCount,
+                            TieCount = st.TieCount,
                             SportsmanshipRating = _context.MatchTeam
                                     .Where(mt => mt.TeamID == st.TeamID && mt.Match.StatusID == 6)
-                                    .Average(mt => mt.SportsmanshipScore)
+                                    .Average(mt => mt.SportsmanshipScore) 
                         }).OrderByDescending(st => st.WinCount).AsEnumerable(),
                     Schedule = s.Schedule
                 });
@@ -113,10 +115,10 @@ public class SeriesService : ISeriesService
         var series = newSeries.ToSeries(activityInheritiedSeriesScheduleID);
         series.SeriesSurface.Add(
             new SeriesSurface
-            {
-                SeriesID = series.ID,
-                SurfaceID = 1
-            }
+                {
+                    SeriesID = series.ID,
+                    SurfaceID = 1
+                }
         );
 
         await _context.Series.AddAsync(series);
@@ -152,7 +154,7 @@ public class SeriesService : ISeriesService
     public SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID)
     {
         int scheduleID = _context.Series.Find(seriesID)?.ScheduleID ?? 0;
-        SeriesScheduleExtendedViewModel res = _context.SeriesSchedule.Find(scheduleID);
+        SeriesScheduleExtendedViewModel res =  _context.SeriesSchedule.Find(scheduleID);
         res.SurfaceIDs = _context.SeriesSurface.Where(ss => ss.SeriesID == seriesID).Select(s => s.SurfaceID);
         return res;
     }
@@ -239,6 +241,46 @@ public class SeriesService : ISeriesService
         return schedule;
     }
 
+    public IEnumerable<AffiliationPointsViewModel> GetSeriesWinners(int seriesID)
+    {
+        return _context.AffiliationPoints
+            .Where(ap => ap.SeriesID == seriesID)
+            .Select(ap => (AffiliationPointsViewModel)ap)
+            .AsEnumerable();
+    }
+
+    public async Task HandleAdditionalSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)
+    {
+        if (_context.AffiliationPoints.Any(ap => ap.TeamID == vm.TeamID && ap.SeriesID == vm.SeriesID) && vm.Points is null)
+            await RemoveSeriesWinnersAsync(vm);
+        else
+            await AddAdditionalSeriesWinnerAsync(vm);
+    }
+
+    private async Task AddAdditionalSeriesWinnerAsync(AffiliationPointsUploadViewModel vm)
+    {
+        string? affiliation = _context.Team
+                    .FirstOrDefault(t => t.ID == vm.TeamID)?
+                    .Affiliation;
+
+        if (affiliation is string a)
+            await _affiliationService.AddPointsToAffilliationAsync(a,
+                new AffiliationPointsUploadViewModel
+                {
+                    TeamID = vm.TeamID,
+                    SeriesID = vm.SeriesID,
+                    Points = vm.Points
+                });
+    }
+
+    public async Task RemoveSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)
+    {
+        var res = _context.AffiliationPoints
+            .Where(ap => ap.SeriesID == vm.SeriesID && ap.TeamID == vm.TeamID);
+        _context.AffiliationPoints.RemoveRange(res);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
     {
         var series = _context.Series
@@ -246,7 +288,7 @@ public class SeriesService : ISeriesService
             .FirstOrDefault(s => s.ID == seriesID);
 
         var seriesTeams = series.SeriesTeam;
-
+        
         //if the series is deleted, throw exception
         if (series.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Series has been deleted" };
 
@@ -259,7 +301,7 @@ public class SeriesService : ISeriesService
 
         // add or subtract points to halls/affiliations logic
 
-        if (series.StatusID == 2 && update.StatusID == 3) //in-progress -> completed
+        if (series.StatusID == 2 && update.StatusID == 3 ) //in-progress -> completed
         {
             var calculatedWinner = _context.SeriesTeamView
                 .Where(st => st.SeriesID == seriesID)
@@ -270,19 +312,13 @@ public class SeriesService : ISeriesService
             if (calculatedWinner is SeriesTeamView w)
             {
                 series.WinnerID = w.TeamID;
-
-                string? affiliation = _context.Team
-                    .FirstOrDefault(t => t.ID == w.TeamID)?
-                    .Affiliation;
-
-                if (affiliation is string a)
-                    await _affiliationService.AddPointsToAffilliationAsync(a,
-                        new AffiliationPointsUpdateViewModel
-                        {
-                            TeamID = w.TeamID,
-                            SeriesID = seriesID,
-                            Points = series.Points
-                        });
+                await AddAdditionalSeriesWinnerAsync(
+                    new AffiliationPointsUploadViewModel
+                    {
+                        TeamID = w.TeamID,
+                        SeriesID = seriesID,
+                        Points = series.Points
+                    });
             }
 
         }
@@ -292,7 +328,7 @@ public class SeriesService : ISeriesService
             var seriesAffiliationPoints = _context.AffiliationPoints.Where(ap => ap.SeriesID == seriesID);
             _context.AffiliationPoints.RemoveRange(seriesAffiliationPoints);
         }
-
+        
         series.StatusID = update.StatusID ?? series.StatusID;
 
 
@@ -308,7 +344,7 @@ public class SeriesService : ISeriesService
                     if (_context.MatchTeam.Where(mt => mt.Match.SeriesID == seriesID && mt.Match.StatusID != 0).Any(mt => mt.TeamID == team.TeamID))
                         throw new UnprocessibleEntity { ExceptionMessage = $"Team {team.ID} is already in a Match in this Series and cannot be removed." };
                     _context.SeriesTeam.Remove(team);
-                }
+                } 
                 else
                     updatedSeriesTeams.Remove(team.TeamID);
             }
@@ -323,7 +359,7 @@ public class SeriesService : ISeriesService
                         LossCount = 0
                     });
         }
-
+        
         await _context.SaveChangesAsync();
         return series;
     }
@@ -395,7 +431,7 @@ public class SeriesService : ISeriesService
             //deletematch
             match.StatusID = 0;
         }
-
+        
         await _context.SaveChangesAsync();
         return series;
     }
@@ -427,7 +463,7 @@ public class SeriesService : ISeriesService
             "SE" => await ScheduleSingleElimination(seriesID),
             "DE" => await ScheduleDoubleElimination(seriesID),
             "L" => await ScheduleLadderAsync(seriesID, request),
-            _ => null
+        _ => null
         };
     }
 
@@ -449,8 +485,8 @@ public class SeriesService : ISeriesService
             "RR" => ScheduleRoundRobinEst(seriesID, request),
             "SE" => ScheduleSingleEliminationEst(seriesID),
             "DE" => ScheduleDoubleEliminationEst(seriesID),
-            "L" => ScheduleLadderEst(seriesID, request),
-            _ => null
+            "L" =>  ScheduleLadderEst(seriesID, request),
+        _ => null
         };
     }
 
@@ -550,7 +586,7 @@ public class SeriesService : ISeriesService
             .Select(st => st.TeamID)
             .ToList();
 
-        int numCycles = request.RoundRobinMatchCapacity ?? teams.Count + 1 - teams.Count % 2;
+        int numCycles = request.RoundRobinMatchCapacity ?? teams.Count + 1 - teams.Count%2;
         //algorithm requires odd number of teams
         if (teams.Count() % 2 == 0)
             teams.Add(-1);//-1 is not a valid true team ID thus will act as dummy team
@@ -1047,7 +1083,7 @@ public class SeriesService : ISeriesService
                 {
                     StartTime = day,
                     SeriesID = series.ID,
-                    SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
+                    SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
                     TeamIDs = new List<int>().AsEnumerable() //no teams
                 });
                 createdMatches.Add(createdMatch);
@@ -1058,7 +1094,7 @@ public class SeriesService : ISeriesService
                     RoundNumber = roundNumber,
                     RoundOf = teamsInNextRound,
                     SeedIndex = i,
-                    IsLosers = false
+                    IsLosers = false 
                 };
                 await _context.MatchBracket.AddAsync(matchBracketPlacement);
                 await _context.SaveChangesAsync();
@@ -1103,7 +1139,7 @@ public class SeriesService : ISeriesService
                 {
                     StartTime = day,
                     SeriesID = series.ID,
-                    SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
+                    SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
                     TeamIDs = new List<int>().AsEnumerable() //no teams
                 });
                 createdMatches.Add(createdMatch);
@@ -1146,7 +1182,7 @@ public class SeriesService : ISeriesService
             {
                 StartTime = day,
                 SeriesID = series.ID,
-                SurfaceID = availableSurfaces[surfaceIndex].SurfaceID,
+                SurfaceID = availableSurfaces[surfaceIndex].SurfaceID, 
                 TeamIDs = new List<int>().AsEnumerable() //no teams
             });
             createdMatches.Add(createdMatch);
@@ -1265,7 +1301,7 @@ public class SeriesService : ISeriesService
             Name = series.Name,
             EndDate = day,
             GamesCreated = createdMatches
-        };
+        }; 
     }
 
     private async Task<IEnumerable<MatchViewModel>> ScheduleSingleElimination(int seriesID)
@@ -1278,7 +1314,7 @@ public class SeriesService : ISeriesService
             .Include(s => s.Team)
             .Where(st => st.SeriesID == seriesID && st.Team.StatusID != 0)
             .OrderByDescending(st => st.WinCount);
-
+           
 
         // seriesschedule casts start and end time to utc
         SeriesScheduleViewModel schedule = series.Schedule;
@@ -1493,7 +1529,7 @@ public class SeriesService : ISeriesService
         var byeTeams = new List<int>();
         // bye logic
         // Play-off round needs to be calculated to ensure that the first round is in a power of 2
-        while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0)))
+        while (!(((numTeams + numByes) != 0) && (((numTeams + numByes) & ((numTeams + numByes) - 1)) == 0))) 
         {
             if (teams.Last().ID != -1)
                 await UpdateSeriesTeamStatsAsync(new SeriesTeamPatchViewModel
@@ -1532,8 +1568,8 @@ public class SeriesService : ISeriesService
             fullBye.Add(new List<int> { teamID });
 
 
-        // Play-in matches, need to be created first in order for scheduling times
-        teamPairings.Reverse();
+       // Play-in matches, need to be created first in order for scheduling times
+       teamPairings.Reverse();
         var playInMatches = new List<int>();
         foreach (var teamPair in teamPairings)
         {
@@ -1608,7 +1644,7 @@ public class SeriesService : ISeriesService
 
         return new EliminationRound
         {
-            TeamsInNextRound = allMatches.Count() / 2,
+            TeamsInNextRound = allMatches.Count()/2,
             NumByeTeams = numByes,
             Match = matches
         };
@@ -1621,7 +1657,7 @@ public class SeriesService : ISeriesService
         var matchArr = matchesIDs.ToArray();
         var matchIndexes = new List<int> { 0 };
 
-        for (int i = 0; i < rounds; i++)
+        for(int i = 0; i < rounds; i++)
         {
             var temp = new List<int>();
             var newLength = matchIndexes.Count() * 2 - 1;
@@ -1634,7 +1670,7 @@ public class SeriesService : ISeriesService
         }
         var indexArr = matchIndexes.ToArray();
         int j = 0;
-        foreach (int i in indexArr)
+        foreach(int i in indexArr)
         {
             if (matchArr[i] != -1)
             {
@@ -1657,7 +1693,10 @@ public class SeriesService : ISeriesService
 
     public IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID)
     {
-        return _context.Match.Include(m => m.MatchBracket).Where(m => m.SeriesID == seriesID).Select(m => (MatchBracketViewModel)m.MatchBracket);
+        return _context.Match
+            .Include(m => m.MatchBracket)
+            .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
+            .Select(m => (MatchBracketViewModel) m.MatchBracket);
     }
 
     public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)

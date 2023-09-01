@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using System;
+using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM;
 
@@ -12,7 +13,6 @@ public class SeriesUploadViewModel
     public int TypeID { get; set; }
     public int? NumberOfTeamsAdmitted { get; set; }
     public int? ScheduleID { get; set; }
-    public int? WinnerID { get; set; }
     public int? Points { get; set; }
     public Series ToSeries(int activityInheritiedSeriesScheduleID = 0)
     {
@@ -25,7 +25,6 @@ public class SeriesUploadViewModel
             TypeID = this.TypeID,
             StatusID = 2, //default in-progress series
             ScheduleID = this.ScheduleID ?? activityInheritiedSeriesScheduleID, //updated when admin is ready to set up the schedule
-            WinnerID = this.WinnerID,
             Points = this.Points ?? 0
         };
     }

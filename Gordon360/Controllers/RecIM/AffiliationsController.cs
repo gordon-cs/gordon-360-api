@@ -1,10 +1,13 @@
-﻿using Gordon360.Authorization;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Gordon360.Controllers.RecIM;
 
@@ -79,7 +82,7 @@ public class AffiliationsController : GordonControllerBase
     [HttpPut]
     [Route("{affiliationName}/points")]
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_AFFILIATION)]
-    public async Task<ActionResult> AddPointsToAffilliation(string affiliationName, AffiliationPointsUpdateViewModel vm)
+    public async Task<ActionResult> AddPointsToAffilliation(string affiliationName, AffiliationPointsUploadViewModel vm)
     {
         var res = await _affiliationService.AddPointsToAffilliationAsync(affiliationName, vm);
         return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);

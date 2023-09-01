@@ -7,6 +7,7 @@ public class TeamUploadViewModel
     public string Name { get; set; }
     public int ActivityID { get; set; }
     public string? Logo { get; set; }
+    public string? Affiliation { get; set; }
     public Team ToTeam()
     {
         return new Team
@@ -15,6 +16,7 @@ public class TeamUploadViewModel
             StatusID = 1, //unconfirmed 
             ActivityID = this.ActivityID,
             Logo = this.Logo,
+            Affiliation = this.Affiliation,
         };
     }
 }

@@ -1,11 +1,13 @@
-﻿using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
+﻿using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Exceptions;
 
 
 namespace Gordon360.Services.RecIM;
@@ -20,18 +22,24 @@ public class AffiliationService : IAffiliationService
         _context = context;
     }
 
-    public async Task<string> AddPointsToAffilliationAsync(string affiliationName, AffiliationPointsUpdateViewModel vm)
+    public async Task<string> AddPointsToAffilliationAsync(string affiliationName, AffiliationPointsUploadViewModel vm)
     {
         var affiliation = _context.Affiliation.Find(affiliationName);
         if (affiliation is null) throw new ResourceNotFoundException();
 
-        _context.AffiliationPoints.Add(new AffiliationPoints
-        {
-            AffiliationName = affiliationName,
-            TeamID = vm.TeamID,
-            SeriesID = vm.SeriesID,
-            Points = vm.Points ?? 0,
-        });
+        var exist = _context.AffiliationPoints.FirstOrDefault(ap => ap.SeriesID == vm.SeriesID && ap.TeamID == vm.TeamID);
+
+        if (exist is not null) 
+            exist.Points = vm.Points ?? 0;
+        else
+            _context.AffiliationPoints.Add(new AffiliationPoints
+            {
+                AffiliationName = affiliationName,
+                TeamID = vm.TeamID,
+                SeriesID = vm.SeriesID,
+                Points = vm.Points ?? 0,
+            });
+
         await _context.SaveChangesAsync();
 
         return affiliationName;
@@ -69,7 +77,7 @@ public class AffiliationService : IAffiliationService
                      .Sum(),
                  Series = _context.AffiliationPoints
                       .Where(_ap => _ap.AffiliationName == a.Name)
-                      .Select(ap => (SeriesViewModel)ap.Series)
+                      .Select(ap => (SeriesViewModel) ap.Series)
                       .AsEnumerable()
              })
              .AsEnumerable();
@@ -90,7 +98,7 @@ public class AffiliationService : IAffiliationService
                      .Sum(),
             Series = _context.AffiliationPoints
                       .Where(_ap => _ap.AffiliationName == name)
-                      .Select(ap => (SeriesViewModel)ap.Series)
+                      .Select(ap => (SeriesViewModel) ap.Series)
                       .AsEnumerable()
         };
     }

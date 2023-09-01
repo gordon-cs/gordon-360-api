@@ -1,7 +1,8 @@
-﻿using Gordon360.Authorization;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
+using Gordon360.Authorization;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -101,7 +102,7 @@ public class SeriesController : GordonControllerBase
     [HttpPost]
     [Route("")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-    public async Task<ActionResult<SeriesViewModel>> CreateSeriesAsync(SeriesUploadViewModel newSeries, [FromQuery] int? referenceSeriesID)
+    public async Task<ActionResult<SeriesViewModel>> CreateSeriesAsync(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
     {
         var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
         return CreatedAtAction(nameof(GetSeriesByID), new { seriesID = series.ID }, series);
@@ -134,9 +135,34 @@ public class SeriesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult<TeamRecordViewModel>> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel update)
     {
-        var record = await _seriesService.UpdateSeriesTeamRecordAsync(seriesID, update);
+        var record = await _seriesService.UpdateSeriesTeamRecordAsync(seriesID ,update);
         return Ok(record);
+    }
 
+    /// <summary>
+    /// gets all series winners
+    /// </summary>
+    /// <param name="seriesID"></param>
+    [HttpGet]
+    [Route("{seriesID}/winners")]
+    public ActionResult<IEnumerable<AffiliationPointsViewModel>> GetSeriesWinners(int seriesID)
+    {
+        var res = _seriesService.GetSeriesWinners(seriesID);
+        return Ok(res);
+    }
+
+    /// <summary>
+    /// Adds/Removes additional winners to a series
+    /// </summary>
+    /// <param name="seriesID"></param>
+    /// <param name="vm"></param>
+    [HttpPut]
+    [Route("{seriesID}/winners")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
+    public async Task<ActionResult> UpdateSeriesWinnersAsync(int seriesID, AffiliationPointsUploadViewModel vm)
+    {
+        await _seriesService.HandleAdditionalSeriesWinnersAsync(vm);
+        return Ok();
     }
 
     /// <summary>
@@ -177,13 +203,20 @@ public class SeriesController : GordonControllerBase
     /// Gives last date and number of matches of which the Auto Scheduler will create matches until.
     /// </summary>
     /// <param name="seriesID"></param>
-    /// <param name="request">optional request data, used for additional options on autoscheduling</param>
+    /// <param name="RoundRobinMatchCapacity"></param>
+    /// <param name="NumberOfLadderMatches"></param>
     [HttpGet]
     [Route("{seriesID}/autoschedule")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-    public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(int seriesID, UploadScheduleRequest? request)
+    public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(
+        int seriesID, [FromQuery] int RoundRobinMatchCapacity,  [FromQuery] int NumberOfLadderMatches)
     {
-        var req = request ?? new UploadScheduleRequest();
+        var req = new UploadScheduleRequest()
+        {
+            RoundRobinMatchCapacity = RoundRobinMatchCapacity,
+            NumberOfLadderMatches = NumberOfLadderMatches,
+        };
+
         var estimate = _seriesService.GetScheduleMatchesEstimateAsync(seriesID, req);
         if (estimate is null)
         {
