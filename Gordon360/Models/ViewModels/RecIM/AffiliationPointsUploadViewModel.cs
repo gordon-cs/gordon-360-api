@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM
 {
-    public class AffiliationPointsUpdateViewModel
+    public class AffiliationPointsUploadViewModel
     {
         public int TeamID { get; set; }
         public int SeriesID { get; set; }

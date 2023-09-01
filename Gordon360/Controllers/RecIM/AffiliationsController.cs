@@ -82,7 +82,7 @@ namespace Gordon360.Controllers.RecIM
         [HttpPut]
         [Route("{affiliationName}/points")]
         [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_AFFILIATION)]
-        public async Task<ActionResult> AddPointsToAffilliation(string affiliationName,AffiliationPointsUpdateViewModel vm)
+        public async Task<ActionResult> AddPointsToAffilliation(string affiliationName, AffiliationPointsUploadViewModel vm)
         {
             var res = await _affiliationService.AddPointsToAffilliationAsync(affiliationName, vm);
             return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);

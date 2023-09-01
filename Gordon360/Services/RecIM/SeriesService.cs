@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services.RecIM
 {
@@ -61,6 +62,8 @@ namespace Gordon360.Services.RecIM
                         EndDate = s.EndDate.SpecifyUtc(),
                         Type = s.Type.Description,
                         Status = s.Status.Description,
+                        Points = s.Points,
+                        WinnerID = s.WinnerID,
                         ActivityID = s.ActivityID,
                         Match = _matchService.GetMatchesBySeriesID(s.ID),
                         TeamStanding = _context.SeriesTeam
@@ -73,9 +76,7 @@ namespace Gordon360.Services.RecIM
                                 Name = st.Team.Name,
                                 WinCount = st.WinCount,
                                 LossCount = st.LossCount,
-                                TieCount = _context.MatchTeam
-                                        .Where(mt => mt.TeamID == st.TeamID && mt.Match.SeriesID == s.ID && mt.Match.StatusID == 6)
-                                        .Count() - st.WinCount - st.LossCount,
+                                TieCount = st.TieCount,
                                 SportsmanshipRating = _context.MatchTeam
                                         .Where(mt => mt.TeamID == st.TeamID && mt.Match.StatusID == 6)
                                         .Average(mt => mt.SportsmanshipScore) 
@@ -240,6 +241,46 @@ namespace Gordon360.Services.RecIM
             return schedule;
         }
 
+        public IEnumerable<AffiliationPointsViewModel> GetSeriesWinners(int seriesID)
+        {
+            return _context.AffiliationPoints
+                .Where(ap => ap.SeriesID == seriesID)
+                .Select(ap => (AffiliationPointsViewModel)ap)
+                .AsEnumerable();
+        }
+
+        public async Task HandleAdditionalSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)
+        {
+            if (_context.AffiliationPoints.Any(ap => ap.TeamID == vm.TeamID && ap.SeriesID == vm.SeriesID) && vm.Points is null)
+                await RemoveSeriesWinnersAsync(vm);
+            else
+                await AddAdditionalSeriesWinnerAsync(vm);
+        }
+
+        private async Task AddAdditionalSeriesWinnerAsync(AffiliationPointsUploadViewModel vm)
+        {
+            string? affiliation = _context.Team
+                        .FirstOrDefault(t => t.ID == vm.TeamID)?
+                        .Affiliation;
+
+            if (affiliation is string a)
+                await _affiliationService.AddPointsToAffilliationAsync(a,
+                    new AffiliationPointsUploadViewModel
+                    {
+                        TeamID = vm.TeamID,
+                        SeriesID = vm.SeriesID,
+                        Points = vm.Points
+                    });
+        }
+
+        public async Task RemoveSeriesWinnersAsync(AffiliationPointsUploadViewModel vm)
+        {
+            var res = _context.AffiliationPoints
+                .Where(ap => ap.SeriesID == vm.SeriesID && ap.TeamID == vm.TeamID);
+            _context.AffiliationPoints.RemoveRange(res);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel update)
         {
             var series = _context.Series
@@ -271,19 +312,13 @@ namespace Gordon360.Services.RecIM
                 if (calculatedWinner is SeriesTeamView w)
                 {
                     series.WinnerID = w.TeamID;
-
-                    string? affiliation = _context.Team
-                        .FirstOrDefault(t => t.ID == w.TeamID)?
-                        .Affiliation;
-
-                    if (affiliation is string a)
-                        await _affiliationService.AddPointsToAffilliationAsync(a,
-                            new AffiliationPointsUpdateViewModel
-                            {
-                                TeamID = w.TeamID,
-                                SeriesID = seriesID,
-                                Points = series.Points
-                            });
+                    await AddAdditionalSeriesWinnerAsync(
+                        new AffiliationPointsUploadViewModel
+                        {
+                            TeamID = w.TeamID,
+                            SeriesID = seriesID,
+                            Points = series.Points
+                        });
                 }
 
             }
@@ -1658,7 +1693,10 @@ namespace Gordon360.Services.RecIM
 
         public IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID)
         {
-            return _context.Match.Include(m => m.MatchBracket).Where(m => m.SeriesID == seriesID).Select(m => (MatchBracketViewModel) m.MatchBracket);
+            return _context.Match
+                .Include(m => m.MatchBracket)
+                .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
+                .Select(m => (MatchBracketViewModel) m.MatchBracket);
         }
 
         public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)
