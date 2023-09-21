@@ -28,7 +28,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("")]
         [AllowAnonymous]
-        public ActionResult<ActivityInfoViewModel> Get()
+        public ActionResult<IEnumerable<ActivityInfoViewModel>> Get()
         {
             var all = _activityService.GetAll();
             return Ok(all);
@@ -106,49 +106,16 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Get all the activities that have not yet been closed out for the current session
+        /// Get all activities that have not yet been closed out for the current session
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Enumerable of ActivityInfo for each open activity in the current session</returns>
         [HttpGet]
         [Route("open")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetOpenActivitiesAsync()
+        public ActionResult<IEnumerable<ActivityInfoViewModel>> GetOpenActivities()
         {
             var sessionCode = Helpers.GetCurrentSession(_context);
 
-            var activity_codes = _activityService.GetOpenActivities(sessionCode);
-
-            var activities = new List<ActivityInfoViewModel>();
-
-            foreach (var code in activity_codes)
-            {
-                activities.Add(_activityService.Get(code));
-            }
-
-            return Ok(activities);
-        }
-
-        /// <summary>
-        /// Get all the activities that have not yet been closed out for the current session for 
-        /// which a given user is the group admin
-        /// </summary>
-        /// <param name="id">The id of the user who is group admin</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{id}/open")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetOpenActivitiesAsync(int id)
-        {
-            var sessionCode = Helpers.GetCurrentSession(_context);
-
-            var activity_codes = _activityService.GetOpenActivities(sessionCode, id);
-
-            var activities = new List<ActivityInfoViewModel>();
-
-            foreach (var code in activity_codes)
-            {
-                activities.Add(_activityService.Get(code));
-            }
+            var activities = _activityService.GetActivitiesByStatus(sessionCode, getOpen: true);
 
             return Ok(activities);
         }
@@ -156,47 +123,14 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Get all the activities that are already closed out for the current session
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Enumerable of ActivityInfo for each closed activity in the current session</returns>
         [HttpGet]
         [Route("closed")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetClosedActivitiesAsync()
+        public ActionResult<IEnumerable<ActivityInfoViewModel>> GetClosedActivities()
         {
             var sessionCode = Helpers.GetCurrentSession(_context);
 
-            var activity_codes = _activityService.GetClosedActivities(sessionCode);
-
-            var activities = new List<ActivityInfoViewModel>();
-
-            foreach (var code in activity_codes)
-            {
-                activities.Add(_activityService.Get(code));
-            }
-
-            return Ok(activities);
-        }
-
-        /// <summary>
-        /// Get all the activities that are already closed out for the current session for
-        /// which a given user is group admin
-        /// </summary>
-        /// <param name="id">The id of the user who is group admin</param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("{id}/closed")]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetClosedActivitiesAsync(int id)
-        {
-            var sessionCode = Helpers.GetCurrentSession(_context);
-
-            var activity_codes = _activityService.GetClosedActivities(sessionCode, id);
-
-            var activities = new List<ActivityInfoViewModel>();
-
-            foreach (var code in activity_codes)
-            {
-                activities.Add(_activityService.Get(code));
-            }
+            var activities = _activityService.GetActivitiesByStatus(sessionCode, getOpen: false);
 
             return Ok(activities);
         }

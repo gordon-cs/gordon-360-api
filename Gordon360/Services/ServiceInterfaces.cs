@@ -125,10 +125,7 @@ namespace Gordon360.Services
         Task<IEnumerable<string>> GetActivityTypesForSessionAsync(string sessionCode);
         IEnumerable<ActivityInfoViewModel> GetAll();
         bool IsOpen(string activityCode, string sessionCode);
-        IEnumerable<string> GetOpenActivities(string sess_cde);
-        IEnumerable<string> GetOpenActivities(string sess_cde, int gordonID);
-        IEnumerable<string> GetClosedActivities(string sess_cde);
-        IEnumerable<string> GetClosedActivities(string sess_cde, int gordonID);
+        IQueryable<ActivityInfoViewModel> GetActivitiesByStatus(string sess_cde, bool getOpen);
         ACT_INFO Update(string activityCode, InvolvementUpdateViewModel activity);
         void CloseOutActivityForSession(string activityCode, string sess_cde);
         void OpenActivityForSession(string activityCode, string sess_cde);
