@@ -12,6 +12,7 @@ using System;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Gordon360.Enums;
 
 namespace Gordon360.Services
 {
@@ -127,106 +128,33 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Gets a collection of all the current open activities, by finding which activities have 
-        /// memberships with an END_DTE that is null
+        /// Gets all activities for a session with an open status matching the `getOpen` param
+        /// An activity is closed if it has a non-null `END_DTE`, and open otherwise
         /// </summary>
-        /// <returns>The collection of activity codes for open activities</returns>
-        public IEnumerable<string> GetOpenActivities(string sess_cde)
+        /// <param name="sess_cde">The session code of the session to find activities for</param>
+        /// <param name="getOpen">Whether to get open or closed activites</param>
+        /// <returns>Collection of activities for the specified session with a status matching the `getOpen` param</returns>
+        public IQueryable<ActivityInfoViewModel> GetActivitiesByStatus(string sess_cde, bool getOpen)
         {
-            var query = from mem in _context.MEMBERSHIP.Where(m => m.END_DTE == null && m.PART_CDE != "GUEST" && m.SESS_CDE == sess_cde)
-                        group mem by mem.ACT_CDE into activities
-                        select activities;
-
-            // Convert the query result into a simple list of strings
-            List<string> activity_codes = new List<string>();
-            foreach (var a in query)
-            {
-                activity_codes.Add(a.Key.Trim());
-            }
-
-
-            return activity_codes;
-
-            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
+            // TODO: this works for all the activities that actually have members. But if an acivity has no members, it
             // will not show up as closed or open.
 
-        }
+            IQueryable<MEMBERSHIP> memberships = _context.MEMBERSHIP
+                .Where(m =>
+                    m.PART_CDE != Participation.Guest.GetCode()
+                    && m.SESS_CDE == sess_cde);
 
-        /// <summary>
-        /// Gets a collection of all the current open activities for which a given user is group admin, by finding which activities have 
-        /// memberships with an END_DTE that is null
-        /// </summary>
-        /// <returns>The collection of activity codes for open activities</returns>
-        public IEnumerable<string> GetOpenActivities(string sess_cde, int gordonID)
-        {
-            var query = from mem in _context.MEMBERSHIP.Where(m => m.END_DTE == null &&
-                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == gordonID && m.GRP_ADMIN == true)
-                        group mem by mem.ACT_CDE into activities
-                        select activities;
+            memberships = getOpen ? memberships.Where(m => m.END_DTE == null) : memberships.Where(m => m.END_DTE != null);
 
-            // Convert the query result into a simple list of strings
-            List<string> activity_codes = new List<string>();
-            foreach (var a in query)
-            {
-                activity_codes.Add(a.Key.Trim());
-            }
+            IQueryable<string> activityCodes = memberships
+                .GroupBy(m => m.ACT_CDE)
+                .Select(m => m.Key);
 
+            IQueryable<ActivityInfoViewModel> activities = _context.ACT_INFO
+                .Where(a => activityCodes.Contains(a.ACT_CDE))
+                .Select<ACT_INFO, ActivityInfoViewModel>(a => a);
 
-            return activity_codes;
-
-            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
-            // will not show up as closed or open.
-
-        }
-
-        /// <summary>
-        /// Gets a collection of all the current activities already closed out, by finding which activities have 
-        /// memberships with an END_DTE that is not null
-        /// </summary>
-        /// <returns>The collection of activity codes for open activities</returns>
-        public IEnumerable<string> GetClosedActivities(string sess_cde)
-        {
-            var query = from mem in _context.MEMBERSHIP.Where(m => m.END_DTE != null && m.PART_CDE != "GUEST" && m.SESS_CDE == sess_cde)
-                        group mem by mem.ACT_CDE into activities
-                        orderby activities.Key
-                        select activities;
-
-            List<string> activity_codes = new List<string>();
-
-            foreach (var a in query)
-            {
-                activity_codes.Add(a.Key.Trim());
-            }
-
-            return activity_codes;
-
-        }
-
-        /// <summary>
-        /// Gets a collection of all the current closed activities for which a given user is group admin, by finding which activities have 
-        /// memberships with an END_DTE that is not null
-        /// </summary>
-        /// <param name="gordonID">The user's id</param>
-        /// <param name="sess_cde">The session we want to get the closed activities for</param>
-        /// <returns>The collection of activity codes for open activities</returns>
-        public IEnumerable<string> GetClosedActivities(string sess_cde, int gordonID)
-        {
-            var query = _context.MEMBERSHIP.Where(m => m.END_DTE != null &&
-                m.SESS_CDE.Equals(sess_cde) && m.ID_NUM == gordonID && m.GRP_ADMIN == true);
-
-            // Convert the query result into a simple list of strings
-            List<string> activity_codes = new List<string>();
-            foreach (var a in query)
-            {
-                activity_codes.Add(a.ACT_CDE);
-            }
-
-
-            return activity_codes;
-
-            //TODO: this works for all the activities that actually have members. But if an acivity has no members, it
-            // will not show up as closed or open.
-
+            return activities;
         }
 
         /// <summary>
