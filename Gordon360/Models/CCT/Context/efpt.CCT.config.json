@@ -147,6 +147,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[Roommate]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Activity]",
          "ObjectType": 0
       },
