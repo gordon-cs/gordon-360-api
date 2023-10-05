@@ -88,6 +88,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<RequestView> RequestView { get; set; }
         public virtual DbSet<RoleType> RoleType { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
+        public virtual DbSet<Roommate> Roommate { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
         public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
         public virtual DbSet<Save_Rides> Save_Rides { get; set; }
@@ -687,6 +688,12 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.ROOM_TYPE).IsFixedLength();
 
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
+            });
+
+            modelBuilder.Entity<Roommate>(entity =>
+            {
+                entity.HasKey(e => new { e.ID, e.RoommateName })
+                    .HasName("PK__Roommate__A9AF9368B01FE07C");
             });
 
             modelBuilder.Entity<Save_Bookings>(entity =>
