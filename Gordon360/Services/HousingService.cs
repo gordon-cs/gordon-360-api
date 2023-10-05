@@ -9,8 +9,6 @@ using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
-using Gordon360.Models.webSQL.Context;
-using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
@@ -538,29 +536,6 @@ namespace Gordon360.Services
             application.DateSubmitted = DateTime.Now;
             _context.SaveChanges();
             return true;
-        }
-
-        /// <summary>
-        /// roommate imformation setting
-        /// </summary>
-        /// <param name="username"> The username for the user who complete the aplication form </param>
-        /// <param name="roommate_name"> The name of the selected roommate </param>
-        public async Task UpdateRoommateAsync(string username, string roommate_name)
-        {
-            var GordonID = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
-            if (GordonID == null)
-            {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
-            }
-            var newRoommate = new Roommate
-            {
-                ID = int.Parse(GordonID),
-                Name = username,
-                RoommateName = roommate_name
-            }; ;
-            await _context.Roommate.AddAsync(newRoommate);
-
-            _context.SaveChanges();
         }
     }
 }

@@ -8,7 +8,6 @@ using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
@@ -243,19 +242,6 @@ namespace Gordon360.Controllers
             {
                 return NotFound();
             }
-        }
-
-        /// <summary>
-        /// Update roommate information
-        /// </summary>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("housing_lottery/{roommate}")]
-        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateRoommate(string roommate)
-        {
-            var username = AuthUtils.GetUsername(User);
-            await _housingService.UpdateRoommateAsync(username, roommate);
-            return Ok();
         }
     }
 }

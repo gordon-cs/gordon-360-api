@@ -83,7 +83,6 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<RequestView> RequestView { get; set; }
         public virtual DbSet<RoleType> RoleType { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
-        public virtual DbSet<Roommate> Roommate { get; set; }
         public virtual DbSet<Rooms> Rooms { get; set; }
         public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
         public virtual DbSet<Save_Rides> Save_Rides { get; set; }
@@ -513,11 +512,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<Participant>(entity =>
             {
-                entity.Property(e => e.AllowEmails).HasDefaultValueSql("((1))");
-
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.SpecifiedGender).IsFixedLength();
             });
 
             modelBuilder.Entity<ParticipantActivity>(entity =>
@@ -627,12 +622,6 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.SESS_CDE).IsFixedLength();
             });
 
-            modelBuilder.Entity<Roommate>(entity =>
-            {
-                entity.HasKey(e => new { e.ID, e.RoommateName })
-                    .HasName("PK__Roommate__A9AF9368B01FE07C");
-            });
-
             modelBuilder.Entity<Save_Bookings>(entity =>
             {
                 entity.HasKey(e => new { e.ID, e.rideID });
@@ -673,11 +662,6 @@ namespace Gordon360.Models.CCT.Context
                     .HasForeignKey(d => d.TypeID)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Series_SeriesType");
-
-                entity.HasOne(d => d.Winner)
-                    .WithMany(p => p.Series)
-                    .HasForeignKey(d => d.WinnerID)
-                    .HasConstraintName("FK_Series_Team");
             });
 
             modelBuilder.Entity<SeriesSurface>(entity =>
