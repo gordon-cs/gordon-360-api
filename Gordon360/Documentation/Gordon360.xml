@@ -322,6 +322,12 @@
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
             <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.UpdateRoommate(System.String)">
+            <summary>
+            Update roommate information
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.JobsController.GetJobsAsync(System.DateTime,System.DateTime)">
             <summary>
             Get a user's active jobs
@@ -2010,6 +2016,13 @@
             </summary>
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateRoommateAsync(System.String,System.String)">
+            <summary>
+            roommate imformation setting
+            </summary>
+            <param name="username"> The username for the user who complete the aplication form </param>
+            <param name="roommate_name"> The name of the selected roommate </param>
         </member>
         <member name="T:Gordon360.Services.JobsService">
             <summary>

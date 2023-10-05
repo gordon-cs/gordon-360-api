@@ -308,6 +308,7 @@ namespace Gordon360.Services
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, List<ApartmentApplicantViewModel> newApartmentApplicants, List<ApartmentChoiceViewModel> newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
+        Task UpdateRoommateAsync(string username, string roommate_name);
     }
 
     public interface IAcademicCheckInService
