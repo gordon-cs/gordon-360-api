@@ -6,6 +6,7 @@ using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,105 +16,16 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class ScheduleController : ControllerBase
     {
-        private readonly CCTContext _context;
-
         private readonly IScheduleService _scheduleService;
 
-        public ScheduleController(CCTContext context)
+        public ScheduleController(IScheduleService scheduleService)
         {
-            _context = context;
-            _scheduleService = new ScheduleService(context);
+            _scheduleService = scheduleService;
         }
 
-        /// <summary>
-        ///  Gets all schedule objects for a user
-        /// </summary>
-        /// <returns>A IEnumerable of schedule objects</returns>
         [HttpGet]
-        [Route("")]
-        public ActionResult<ScheduleViewModel> Get()
-        {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            var groups = AuthUtils.GetGroups(User);
-
-            if (groups.Contains(AuthGroup.Student))
-            {
-                var result = _scheduleService.GetScheduleStudentAsync(authenticatedUserUsername);
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                return Ok(result);
-            }
-
-            else if (groups.Contains(AuthGroup.FacStaff))
-            {
-                var result = _scheduleService.GetScheduleFacultyAsync(authenticatedUserUsername);
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        /// <summary>
-        ///  Gets all schedule objects for a user
-        /// </summary>
-        /// <returns>A IEnumerable of schedule objects</returns>
-        [HttpGet]
-        [Route("{username}")]
-        public async Task<ActionResult<JArray>> GetAsync(string username, [FromQuery] string? sessionID)
-        {
-            //probably needs privacy stuff like ProfilesController and service
-            var viewerGroups = AuthUtils.GetGroups(User);
-
-
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-
-            var groups = AuthUtils.GetGroups(username);
-
-            IEnumerable<ScheduleViewModel>? scheduleResult = null;
-
-            if (groups.Contains(AuthGroup.Student))
-            {
-                if (authenticatedUserUsername == username)
-                {
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
-
-                }
-                else if (viewerGroups.Contains(AuthGroup.Police) || viewerGroups.Contains(AuthGroup.SiteAdmin))
-                {
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
-
-                }
-                else if (viewerGroups.Contains(AuthGroup.Advisors))
-                {
-                    scheduleResult = await _scheduleService.GetScheduleStudentAsync(username, sessionID);
-                }
-            }
-            else if (groups.Contains(AuthGroup.FacStaff))
-            {
-                scheduleResult = await _scheduleService.GetScheduleFacultyAsync(username, sessionID);
-            }
-            else
-            {
-                return NotFound();
-            }
-
-            JArray result = JArray.FromObject(scheduleResult);
-
-            foreach (JObject elem in result)
-            {
-                elem.Property("ID_NUM").Remove();
-            }
-
-            return Ok(result);
-        }
+        public async Task<ActionResult<IEnumerable<ScheduleViewModel>>> GetSchedulesAsync(string? username)
+        => Ok(await _scheduleService.GetSchedulesAsync(username ?? AuthUtils.GetUsername(User)));
 
         /// <summary>
         ///  Gets all session objects for a user
@@ -121,6 +33,7 @@ namespace Gordon360.Controllers
         /// <returns>A IEnumerable of session objects as well as the schedules</returns>
         [HttpGet]
         [Route("{username}/allcourses")]
+        [Obsolete("Use the basic get route instead")]
         public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
         {
             IEnumerable<CoursesBySessionViewModel> result = await _scheduleService.GetAllCoursesAsync(username);

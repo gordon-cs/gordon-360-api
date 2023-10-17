@@ -1291,18 +1291,6 @@
             <param name="value">New description</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.Get">
-            <summary>
-             Gets all schedule objects for a user
-            </summary>
-            <returns>A IEnumerable of schedule objects</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.GetAsync(System.String,System.String)">
-            <summary>
-             Gets all schedule objects for a user
-            </summary>
-            <returns>A IEnumerable of schedule objects</returns>
-        </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
             <summary>
              Gets all session objects for a user
@@ -2619,23 +2607,14 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudentAsync(System.String,System.String)">
-            <summary>
-            Fetch the schedule item whose id and session code is specified by the parameter
-            </summary>
-            <param name="username">The AD Username of the student</param>
-            <param name="sessionID">The selected session of the student</param>
-            <returns>StudentScheduleViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFacultyAsync(System.String,System.String)">
-            <summary>
-            Fetch the schedule item whose id and session code is specified by the parameter
-            </summary>
-            <param name="username">The AD Username of the instructor</param>
-            <param name="sessionID">The selected session of the instructor</param>
-            <returns>StudentScheduleViewModel if found, null if not found</returns>
-        </member>
         <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesAsync(System.String)">
+            <summary>
+            Fetch the session item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetSchedulesAsync(System.String)">
             <summary>
             Fetch the session item whose id specified by the parameter
             </summary>

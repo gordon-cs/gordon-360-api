@@ -97,6 +97,7 @@ builder.Services.AddScoped<IAdministratorService, AdministratorService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<ServerUtils, ServerUtils>();
 builder.Services.AddHostedService<EventCacheRefreshService>();
 builder.Services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
