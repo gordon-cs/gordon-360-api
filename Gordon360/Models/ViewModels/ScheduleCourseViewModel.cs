@@ -16,6 +16,7 @@ public record ScheduleCourseViewModel
     public DateOnly? BeginDate { get; set; }
     public DateOnly? EndDate { get; set; }
     public string YearTermCode { get; set; }
+    public Subterm? Subterm { get; set; }
 
 
     public static implicit operator ScheduleCourseViewModel(UserCourses course)
@@ -67,6 +68,9 @@ public record ScheduleCourseViewModel
             BeginDate = course.BEGIN_DATE is DateTime BeginDate ? DateOnly.FromDateTime(BeginDate) : null,
             EndDate = course.END_DATE is DateTime EndDate ? DateOnly.FromDateTime(EndDate) : null,
             YearTermCode = course.YR_CDE + course.TRM_CDE,
+            Subterm = course.SUBTERM_DESC is string desc && course.SUBTERM_SORT_ORDER is int sortOrder? new Subterm(desc, sortOrder) : null,
         };
     }
 }
+
+public record Subterm(string Description, int SortOrder);

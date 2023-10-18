@@ -26,6 +26,10 @@ namespace Gordon360.Models.CCT
         [StringLength(2)]
         [Unicode(false)]
         public string TRM_CDE { get; set; }
+        [StringLength(30)]
+        [Unicode(false)]
+        public string SUBTERM_DESC { get; set; }
+        public int? SUBTERM_SORT_ORDER { get; set; }
         [Required]
         [StringLength(30)]
         [Unicode(false)]

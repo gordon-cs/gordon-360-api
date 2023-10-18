@@ -834,6 +834,8 @@ namespace Gordon360.Models.CCT.Context
 
                 entity.Property(e => e.SATURDAY_CDE).IsFixedLength();
 
+                entity.Property(e => e.SUBTERM_DESC).IsFixedLength();
+
                 entity.Property(e => e.SUNDAY_CDE).IsFixedLength();
 
                 entity.Property(e => e.THURSDAY_CDE).IsFixedLength();
