@@ -2480,12 +2480,12 @@
             <param name="username">The AD Username of the user</param>
             <returns>CoursesBySessionViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetSchedulesAsync(System.String)">
+        <member name="M:Gordon360.Services.ScheduleService.GetUserSchedules(System.String)">
             <summary>
-            Fetch the session item whose id specified by the parameter
+            Get schedules for the specified user.
             </summary>
             <param name="username">The AD Username of the user</param>
-            <returns>CoursesBySessionViewModel if found, null if not found</returns>
+            <returns>Enumerable of schedules in which the user either attended or taught courses.</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>

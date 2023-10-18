@@ -1,4 +1,6 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Authorization;
+using Gordon360.Enums;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -66,4 +68,11 @@ public class ScheduleService : IScheduleService
 
         return coursesBySession.Where(cbs => cbs.Courses.Any()).OrderByDescending(cbs => cbs.Session.SessionCode);
     }
+
+    public bool CanReadStudentSchedules(string username)
+    {
+        var groups = AuthUtils.GetGroups(username);
+        return groups.Contains(AuthGroup.Advisors);
+    }
+
 }

@@ -21,7 +21,6 @@ namespace Gordon360.Static.Names
         public const string HOUSING = "Info related to housing";
         public const string HOUSING_ADMIN = "A Housing Admin Resource";
         public const string ERROR_LOG = "The error log resource";
-        public const string MYSCHEDULE = "A custom schedule resource";
         public const string Save_Rides = "A ride resource";
         public const string SCHEDULE = "A course schedule resource";
         public const string NEWS = "A student news resource";

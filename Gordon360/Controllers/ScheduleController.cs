@@ -1,11 +1,10 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Enums;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers;
@@ -21,10 +20,11 @@ public class ScheduleController : ControllerBase
     }
 
     [HttpGet]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.SCHEDULE)]
     public ActionResult<IEnumerable<ScheduleViewModel>> GetSchedules(string? username)
     {
         username ??= AuthUtils.GetUsername(User);
-        return Ok(_scheduleService.GetUserSchedules(username ));
+        return Ok(_scheduleService.GetUserSchedules(username));
     }
 
     /// <summary>
@@ -48,8 +48,5 @@ public class ScheduleController : ControllerBase
     [HttpGet]
     [Route("canreadstudent")]
     public ActionResult<bool> GetCanReadStudentSchedules()
-    {
-        var groups = AuthUtils.GetGroups(User);
-        return groups.Contains(AuthGroup.Advisors);
-    }
+    => Ok(_scheduleService.CanReadStudentSchedules(AuthUtils.GetUsername(User)));
 }

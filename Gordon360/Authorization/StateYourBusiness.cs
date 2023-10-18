@@ -188,6 +188,33 @@ namespace Gordon360.Authorization
                     }
                 case Resource.NEWS:
                     return true;
+                case Resource.SCHEDULE:
+                    {
+                        if (context.ActionArguments.TryGetValue("username", out object? usernameObject)
+                            && usernameObject is string requestedUsername)
+                        {
+                            if (requestedUsername.EqualsIgnoreCase(user_name))
+                            {
+                                return true;
+                            }
+
+                            if (AuthUtils.GetGroups(requestedUsername).Any(g => g == AuthGroup.FacStaff))
+                            {
+                                // Anyone can view Faculty/Staff schedules
+                                return true;
+                            }
+                            else
+                            {
+                                IScheduleService scheduleService = new ScheduleService(_CCTContext);
+                                return scheduleService.CanReadStudentSchedules(user_name);
+                            }
+                        }
+                        else
+                        {
+                            // if no valid username was provided, requester is given their own schedule, which is always allowed
+                            return true;
+                        }
+                    }
                 default: return false;
 
             }
@@ -223,7 +250,7 @@ namespace Gordon360.Authorization
                         }
 
                         // Only members can read a specific activity's memberships
-                        if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object)  && involvementCode_object is string involvementCode)
+                        if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object) && involvementCode_object is string involvementCode)
                         {
                             if (context.ActionArguments.TryGetValue("sessionCode", out object? sessionCode_object) && sessionCode_object is string sessionCode)
                             {
@@ -507,17 +534,17 @@ namespace Gordon360.Authorization
                 case Resource.NEWS:
                     return true;
                 case Resource.RECIM_PARTICIPANT_ADMIN:
-                     //fallthrough
+                //fallthrough
                 case Resource.RECIM_AFFILIATION:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_ACTIVITY:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SERIES:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_MATCH:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SURFACE:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SPORT:
                     {
                         return _recimParticipantService.IsAdmin(user_name);
@@ -733,15 +760,15 @@ namespace Gordon360.Authorization
                         return participant_username.EqualsIgnoreCase(user_name);
                     return false;
                 case Resource.RECIM_PARTICIPANT_ADMIN:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_ACTIVITY:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_AFFILIATION:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SERIES:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SURFACE:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SPORT:
                     {
                         return _recimParticipantService.IsAdmin(user_name);
@@ -749,7 +776,7 @@ namespace Gordon360.Authorization
 
                 case Resource.RECIM_TEAM:
                     {
-                        if(context.ActionArguments.TryGetValue("teamID",out object? teamID_object) && teamID_object is int teamID)
+                        if (context.ActionArguments.TryGetValue("teamID", out object? teamID_object) && teamID_object is int teamID)
                         {
                             return _recimTeamService.IsTeamCaptain(user_name, teamID) || _recimParticipantService.IsAdmin(user_name);
                         }
@@ -893,17 +920,17 @@ namespace Gordon360.Authorization
                         return false;
                     }
                 case Resource.RECIM_ACTIVITY:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_AFFILIATION:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SERIES:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SPORT:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_TEAM:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_SURFACE:
-                    //fallthrough
+                //fallthrough
                 case Resource.RECIM_MATCH:
                     return _recimParticipantService.IsAdmin(user_name);
                 default: return false;

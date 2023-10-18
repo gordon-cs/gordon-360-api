@@ -235,6 +235,7 @@ namespace Gordon360.Services
     {
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
         IEnumerable<ScheduleViewModel> GetUserSchedules(string username);
+        bool CanReadStudentSchedules(string username);
     }
 
     public interface ISaveService
