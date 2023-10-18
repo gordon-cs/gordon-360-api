@@ -239,22 +239,6 @@ namespace Gordon360.Services
         Task<IEnumerable<ScheduleViewModel>> GetSchedulesAsync(string username);
     }
 
-    public interface IScheduleControlService
-    {
-        Task UpdateSchedulePrivacyAsync(string username, string value);
-        Task UpdateDescriptionAsync(string username, string value);
-        Task UpdateModifiedTimeStampAsync(string username, DateTime value);
-    }
-
-    public interface IMyScheduleService
-    {
-        MYSCHEDULE GetForID(string eventID, string username);
-        IEnumerable<MYSCHEDULE> GetAllForUser(string username);
-        MYSCHEDULE Add(MYSCHEDULE myschedule);
-        MYSCHEDULE Update(MYSCHEDULE myschedule);
-        MYSCHEDULE Delete(string eventID, string username);
-    }
-
     public interface ISaveService
     {
         IEnumerable<UPCOMING_RIDESResult> GetUpcoming(string gordon_id);

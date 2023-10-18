@@ -463,41 +463,6 @@
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
             <returns>The deleted membership as a MembershipView object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Get">
-            <summary>
-             Gets all custom events for a user
-            </summary>
-            <returns>A IEnumerable of custom events</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.GetByEventId(System.String)">
-            <summary>
-             Gets specific custom event for a user
-            </summary>
-            <returns>The requested custom event</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Get(System.String)">
-            <summary>
-             Gets all myschedule objects for a user
-            </summary>
-            <returns>A IEnumerable of myschedule objects</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Post(Gordon360.Models.CCT.MYSCHEDULE)">
-            <summary>Create a new myschedule to be added to database</summary>
-            <param name="mySchedule">The myschedule item containing all required and relevant information</param>
-            <returns>Created schedule</returns>
-            <remarks>Posts a new myschedule to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Delete(System.String)">
-            <summary>Delete an existing myschedule item</summary>
-            <param name="eventID">The identifier for the myschedule to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Put(Gordon360.Models.CCT.MYSCHEDULE)">
-            <summary>Update the existing myschedule in database</summary>
-            <param name="mySchedule">The updated myschedule item containing all required and relevant information</param>
-            <returns>Original schedule</returns>
-            <remarks>Put a myschedule to the server to be updated</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.NewsController.GetByID(System.Int32)">
             <summary>Gets a news item by id from the database</summary>
             <param name="newsID">The id of the news item to retrieve</param>
@@ -1259,37 +1224,6 @@
             <summary>Delete an existing booking item</summary>
             <param name="rideID">The identifier for the booking to be deleted</param>
             <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleControlController.Get">
-            <summary>
-            Get schedule information of logged in user
-            Info one gets: privacy, time last updated, description, and Gordon ID
-            @TODO: Use Service Layer
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleControlController.Get(System.String)">
-            <summary>
-            Get schedule information of specific user
-            Info one gets: privacy, time last updated, description, and Gordon ID
-            @TODO Use Service Layer
-            </summary>
-            <param name="username">username</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleControlController.UpdateSchedulePrivacy(System.String)">
-            <summary>
-            Update privacy of schedule
-            </summary>
-            <param name="value">Y or N</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleControlController.UpdateDescription(System.String)">
-            <summary>
-            Update schedule description
-            </summary>
-            <param name="value">New description</param>
-            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
             <summary>
@@ -2218,48 +2152,6 @@
             <param name="viewerUsername">username of viewer</param>
             <returns>The membership enumerable with private memberships removed</returns>
         </member>
-        <member name="T:Gordon360.Services.MyScheduleService">
-            <summary>
-            Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.GetForID(System.String,System.String)">
-            <summary>
-            Fetch the myschedule item whose id is specified by the parameter
-            </summary>
-            <param name="eventID">The myschedule id</param>
-            <param name="username">AD Username</param>
-            <returns>Myschedule if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.GetAllForUser(System.String)">
-            <summary>
-            Fetch all myschedule items belonging to the given user
-            </summary>
-            <param name="username">The AD Username</param>
-            <returns>Array of Myschedule if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.Add(Gordon360.Models.CCT.MYSCHEDULE)">
-            <summary>
-            Adds a new mySchedule record to storage.
-            </summary>
-            <param name="mySchedule">The membership to be added</param>
-            <returns>The newly added custom event</returns>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.Delete(System.String,System.String)">
-            <summary>
-            Delete the myschedule whose id is specified by the parameter.
-            </summary>
-            <param name="eventID">The myschedule id</param>
-            <param name="username">The gordon id</param>
-            <returns>The myschedule that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.Update(Gordon360.Models.CCT.MYSCHEDULE)">
-            <summary>
-            Update the myschedule item.
-            </summary>
-            <param name="sched">The schedule information</param>
-            <returns>The original schedule</returns>
-        </member>
         <member name="M:Gordon360.Services.NewsService.Get(System.Int32)">
             <summary>
             Gets a news item entity by id
@@ -2575,32 +2467,6 @@
             <param name="rideID">The myschedule id</param>
             <param name="gordon_id">The gordon id</param>
             <returns>The myschedule that was just deleted</returns>
-        </member>
-        <member name="T:Gordon360.Services.ScheduleControlService">
-            <summary>
-            Service Class that facilitates data transactions between the ScheduleControlController and the ScheduleControl part of the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleControlService.UpdateSchedulePrivacyAsync(System.String,System.String)">
-            <summary>
-            privacy setting of schedule.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleControlService.UpdateDescriptionAsync(System.String,System.String)">
-            <summary>
-            description of schedule.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="value">New description</param>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleControlService.UpdateModifiedTimeStampAsync(System.String,System.DateTime)">
-            <summary>
-            Update timestamp of modification in schedule.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="value">Modified Time</param>
         </member>
         <member name="T:Gordon360.Services.ScheduleService">
             <summary>
