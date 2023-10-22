@@ -83,6 +83,7 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<ParticipantTeam> ParticipantTeam { get; set; }
         public virtual DbSet<ParticipantView> ParticipantView { get; set; }
         public virtual DbSet<Police> Police { get; set; }
+        public virtual DbSet<PreferredHall> PreferredHall { get; set; }
         public virtual DbSet<PrivType> PrivType { get; set; }
         public virtual DbSet<REQUEST> REQUEST { get; set; }
         public virtual DbSet<RequestView> RequestView { get; set; }
@@ -650,6 +651,12 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<Police>(entity =>
             {
                 entity.ToView("Police");
+            });
+
+            modelBuilder.Entity<PreferredHall>(entity =>
+            {
+                entity.HasKey(e => new { e.ID, e.HallName })
+                    .HasName("PK__Preferre__DE422EBA353E1D19");
             });
 
             modelBuilder.Entity<REQUEST>(entity =>

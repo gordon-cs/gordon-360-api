@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT
 {
-    [Table("Roommate", Schema = "Housing")]
-    public partial class Roommate
+    [Table("PreferredHall", Schema = "Housing")]
+    public partial class PreferredHall
     {
         [Key]
         public int ID { get; set; }
@@ -17,9 +17,10 @@ namespace Gordon360.Models.CCT
         [StringLength(128)]
         [Unicode(false)]
         public string Username { get; set; }
+        public int Rank { get; set; }
         [Key]
         [StringLength(128)]
         [Unicode(false)]
-        public string RoommateName { get; set; }
+        public string HallName { get; set; }
     }
 }

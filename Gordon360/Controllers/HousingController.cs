@@ -250,11 +250,24 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut]
-        [Route("housing_lottery/{value}")]
+        [Route("housing_lottery/roommate/{value}")]
         public async Task<ActionResult<string>> UpdateRoommate(string value)
         {
             var username = AuthUtils.GetUsername(User);
             await _housingService.UpdateRoommateAsync(username, value);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Update preferred hall information
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("housing_lottery/hall/{rank}")]
+        public async Task<ActionResult<string>> UpdatePreferredHall(int rank, [FromBody] string hall)
+        {
+            var username = AuthUtils.GetUsername(User);
+            await _housingService.UpdateHallAsync(username, rank, hall);
             return Ok();
         }
     }

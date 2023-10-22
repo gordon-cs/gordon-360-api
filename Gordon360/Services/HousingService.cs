@@ -555,10 +555,35 @@ namespace Gordon360.Services
             var newRoommate = new Roommate
             {
                 ID = int.Parse(GordonID),
-                Name = username,
+                Username = username,
                 RoommateName = roommate_name
             }; ;
             await _context.Roommate.AddAsync(newRoommate);
+
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// roommate imformation setting
+        /// </summary>
+        /// <param name="username"> The username for the user who complete the aplication form </param>
+        /// <param name="rank"> The rank of the preferred hall </param>
+        /// <param name="hall"> The name of the preferred hall </param>
+        public async Task UpdateHallAsync(string username, int rank, string hall)
+        {
+            var GordonID = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
+            if (GordonID == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
+            }
+            var newHall = new PreferredHall
+            {
+                ID = int.Parse(GordonID),
+                Username = username,
+                Rank = rank,
+                HallName = hall,
+            }; ;
+            await _context.PreferredHall.AddAsync(newHall);
 
             _context.SaveChanges();
         }
