@@ -15,11 +15,12 @@ public record ScheduleCourseViewModel
     public TimeOnly? EndTime { get; set; }
     public DateOnly? BeginDate { get; set; }
     public DateOnly? EndDate { get; set; }
-    public string YearTermCode { get; set; }
-    public Subterm? Subterm { get; set; }
+    public string YearCode { get; set; }
+    public string TermCode { get; set; }
+    public string? SubTermCode { get; set; }
 
 
-    public static implicit operator ScheduleCourseViewModel(UserCourses course)
+    public static implicit operator ScheduleCourseViewModel(ScheduleCourses course)
     {
         List<char> meetingDays = new();
         if (course.MONDAY_CDE == "M")
@@ -63,14 +64,13 @@ public record ScheduleCourseViewModel
                 _ => null
             },
             MeetingDays = meetingDays,
-            BeginTime = course.BEGIN_TIME is TimeSpan BeginTime ? TimeOnly.FromTimeSpan(BeginTime) : null,
-            EndTime = course.END_TIME is TimeSpan EndTime ? TimeOnly.FromTimeSpan(EndTime) : null,
-            BeginDate = course.BEGIN_DATE is DateTime BeginDate ? DateOnly.FromDateTime(BeginDate) : null,
-            EndDate = course.END_DATE is DateTime EndDate ? DateOnly.FromDateTime(EndDate) : null,
-            YearTermCode = course.YR_CDE + course.TRM_CDE,
-            Subterm = course.SUBTERM_DESC is string desc && course.SUBTERM_SORT_ORDER is int sortOrder? new Subterm(desc, sortOrder) : null,
+            BeginTime = course.BeginTime is TimeSpan BeginTime ? TimeOnly.FromTimeSpan(BeginTime) : null,
+            EndTime = course.EndTime is TimeSpan EndTime ? TimeOnly.FromTimeSpan(EndTime) : null,
+            BeginDate = course.BeginDate is DateTime BeginDate ? DateOnly.FromDateTime(BeginDate) : null,
+            EndDate = course.EndDate is DateTime EndDate ? DateOnly.FromDateTime(EndDate) : null,
+            YearCode = course.YR_CDE,
+            TermCode = course.TRM_CDE,
+            SubTermCode = course.SUBTERM_CDE,
         };
     }
 }
-
-public record Subterm(string Description, int SortOrder);

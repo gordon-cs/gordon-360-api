@@ -372,6 +372,14 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[ScheduleCourses]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[ScheduleTerms]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[States]",
          "ObjectType": 3
       },

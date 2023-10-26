@@ -53,20 +53,21 @@ public class ScheduleService : IScheduleService
     /// <returns>Enumerable of schedules in which the user either attended or taught courses.</returns>
     public IEnumerable<ScheduleViewModel> GetUserSchedules(string username)
     {
-        IEnumerable<ScheduleCourseViewModel> courses = _context.UserCourses
+        IEnumerable<ScheduleCourseViewModel> courses = _context.ScheduleCourses
             .Where(x => x.Username == username)
-            .Select<UserCourses, ScheduleCourseViewModel>(c => c)
+            .Select<ScheduleCourses, ScheduleCourseViewModel>(c => c)
             .AsEnumerable();
 
-        var coursesBySession = _context.CM_SESSION_MSTR
+        // Todo: improve grouping so that top-level list is of full terms, and each term contains all courses, along with a list of subterms and the courses that vccur only in that subterm.
+        var coursesBySession = _context.ScheduleTerms
             .AsEnumerable()
             .GroupJoin(courses,
-                       s => s.YRTRM_CDE_4,
-                       c => c.YearTermCode,
-                       (session, courses) => new ScheduleViewModel((SessionViewModel)session, courses)
+                       s => s.YearCode + s.TermCode + s.SubTermCode,
+                       c => c.YearCode + c.TermCode + c.SubTermCode,
+                       (session, courses) => new ScheduleViewModel(session, courses)
             );
 
-        return coursesBySession.Where(cbs => cbs.Courses.Any()).OrderByDescending(cbs => cbs.Session.SessionCode);
+        return coursesBySession.Where(cbs => cbs.Courses.Any()).OrderByDescending(cbs => cbs.Session.Start);
     }
 
     public bool CanReadStudentSchedules(string username)
