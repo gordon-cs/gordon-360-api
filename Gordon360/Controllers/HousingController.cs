@@ -65,6 +65,25 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Get a list of the traditional halls
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("halls/traditionals")]
+        public ActionResult<string[]> GetTraditionalHalls()
+        {
+            var result = _housingService.GetAllTraditionalHalls();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
         /// Get apartment application ID number of currently logged in user if that user is on an existing application
         /// </summary>
         /// <returns></returns>

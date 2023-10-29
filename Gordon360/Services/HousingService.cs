@@ -71,6 +71,22 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Gets all names of apartment halls
+        /// </summary>
+        /// <returns> AN array of hall names </returns>
+        public string[] GetAllTraditionalHalls()
+        {
+
+            var hallsResult = _context.Housing_Halls.Where(h => h.Type == "Traditional").Select(h => h.Name);
+            if (hallsResult == null || !hallsResult.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The traditional halls could not be found." };
+            }
+
+            return hallsResult.ToArray();
+        }
+
+        /// <summary>
         /// Calls a stored procedure that tries to get the id of an the application that a given user is 
         /// applicant on for a given session
         /// </summary>

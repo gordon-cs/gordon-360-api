@@ -259,6 +259,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetTraditionalHalls">
+            <summary>
+            Get a list of the traditional halls
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetApplicationID">
             <summary>
             Get apartment application ID number of currently logged in user if that user is on an existing application
@@ -1988,6 +1994,12 @@
             <returns> Whether or not this was successful </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllApartmentHalls">
+            <summary>
+            Gets all names of apartment halls
+            </summary>
+            <returns> AN array of hall names </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllTraditionalHalls">
             <summary>
             Gets all names of apartment halls
             </summary>
