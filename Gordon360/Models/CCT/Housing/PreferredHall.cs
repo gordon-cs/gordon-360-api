@@ -17,8 +17,9 @@ namespace Gordon360.Models.CCT
         [StringLength(128)]
         [Unicode(false)]
         public string Username { get; set; }
-        public int Rank { get; set; }
         [Key]
+        public int Rank { get; set; }
+        [Required]
         [StringLength(128)]
         [Unicode(false)]
         public string HallName { get; set; }

@@ -596,14 +596,22 @@ namespace Gordon360.Services
             {
                 if (h != "")
                 {
-                    var newHall = new PreferredHall
+                    var myHall = _context.PreferredHall.FirstOrDefault(x => x.ID == int.Parse(GordonID) && x.Rank == rank);
+                    if (myHall is null) 
                     {
-                        ID = int.Parse(GordonID),
-                        Username = username,
-                        Rank = rank,
-                        HallName = h
-                    }; ;
-                    await _context.PreferredHall.AddAsync(newHall);
+                        var newHall = new PreferredHall
+                        {
+                            ID = int.Parse(GordonID),
+                            Username = username,
+                            Rank = rank,
+                            HallName = h
+                        }; ;
+                        await _context.PreferredHall.AddAsync(newHall);
+                    }
+                    else
+                    {
+                        myHall.HallName = h;
+                    }
                     rank++;
                 }
             }

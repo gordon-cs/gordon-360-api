@@ -655,8 +655,7 @@ namespace Gordon360.Models.CCT.Context
 
             modelBuilder.Entity<PreferredHall>(entity =>
             {
-                entity.HasKey(e => new { e.ID, e.HallName })
-                    .HasName("PK__Preferre__DE422EBA353E1D19");
+                entity.HasKey(e => new { e.ID, e.Rank });
             });
 
             modelBuilder.Entity<REQUEST>(entity =>
