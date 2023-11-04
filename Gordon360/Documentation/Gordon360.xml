@@ -318,7 +318,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.UpdatePreferredHall(System.Int32,System.String)">
+        <member name="M:Gordon360.Controllers.HousingController.UpdatePreferredHall(System.String[])">
             <summary>
             Update preferred hall information
             </summary>
@@ -2089,13 +2089,12 @@
             <param name="username"> The username for the user who complete the aplication form </param>
             <param name="roommate_name"> The name of the selected roommate </param>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdateHallAsync(System.String,System.Int32,System.String)">
+        <member name="M:Gordon360.Services.HousingService.UpdateHallAsync(System.String,System.String[])">
             <summary>
             roommate imformation setting
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="rank"> The rank of the preferred hall </param>
-            <param name="hall"> The name of the preferred hall </param>
+            <param name="hallList"> A list of the preferred halls </param>
         </member>
         <member name="T:Gordon360.Services.JobsService">
             <summary>
