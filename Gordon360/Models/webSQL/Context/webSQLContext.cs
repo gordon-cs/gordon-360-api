@@ -32,27 +32,13 @@ namespace Gordon360.Models.webSQL.Context
                 entity.Property(e => e.ID).HasComment("Unique sequntial ID");
 
                 entity.Property(e => e.Accountid).HasComment("From account table");
+
+                entity.Property(e => e.LastUpdated).HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<account>(entity =>
             {
-                entity.HasKey(e => e.account_id)
-                    .HasName("PK_account_1");
-
-                entity.HasIndex(e => e.AD_Username, "IX_account")
-                    .HasFillFactor(90);
-
-                entity.HasIndex(e => e.AD_Username, "IX_account_ad_username")
-                    .HasFillFactor(90);
-
-                entity.HasIndex(e => e.account_id, "PK_account")
-                    .IsUnique()
-                    .HasFillFactor(90);
-
                 entity.HasIndex(e => e.AD_Username, "ix_AD_Username_Includes")
-                    .HasFillFactor(100);
-
-                entity.HasIndex(e => e.AD_Username, "ix_AD_Username_Includes2")
                     .HasFillFactor(100);
 
                 entity.Property(e => e.AD_Username).HasComment("Active Directory Username");
@@ -63,6 +49,7 @@ namespace Gordon360.Models.webSQL.Context
                 entity.Property(e => e.account_id).ValueGeneratedNever();
             });
 
+            OnModelCreatingGeneratedProcedures(modelBuilder);
             OnModelCreatingPartial(modelBuilder);
         }
 
