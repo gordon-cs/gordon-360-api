@@ -591,27 +591,24 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
             }
+            var existHall = _context.PreferredHall.Where(x => x.ID == int.Parse(GordonID));
+            foreach (PreferredHall h in existHall)
+            {
+                _context.PreferredHall.Remove(h);
+            }
             var rank = 1;
             foreach (string h in hallList)
             {
                 if (h != "")
                 {
-                    var myHall = _context.PreferredHall.FirstOrDefault(x => x.ID == int.Parse(GordonID) && x.Rank == rank);
-                    if (myHall is null) 
+                    var newHall = new PreferredHall
                     {
-                        var newHall = new PreferredHall
-                        {
-                            ID = int.Parse(GordonID),
-                            Username = username,
-                            Rank = rank,
-                            HallName = h
-                        }; ;
-                        await _context.PreferredHall.AddAsync(newHall);
-                    }
-                    else
-                    {
-                        myHall.HallName = h;
-                    }
+                        ID = int.Parse(GordonID),
+                        Username = username,
+                        Rank = rank,
+                        HallName = h
+                    }; ;
+                    await _context.PreferredHall.AddAsync(newHall);
                     rank++;
                 }
             }
