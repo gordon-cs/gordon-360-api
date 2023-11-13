@@ -16,7 +16,7 @@ namespace Gordon360.Models.CCT
         [Required]
         [StringLength(128)]
         [Unicode(false)]
-        public string Name { get; set; }
+        public string Username { get; set; }
         [Key]
         [StringLength(128)]
         [Unicode(false)]

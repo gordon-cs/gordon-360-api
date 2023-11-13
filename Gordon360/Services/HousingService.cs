@@ -555,7 +555,7 @@ namespace Gordon360.Services
             var newRoommate = new Roommate
             {
                 ID = int.Parse(GordonID),
-                Name = username,
+                Username = username,
                 RoommateName = roommate_name
             }; ;
             await _context.Roommate.AddAsync(newRoommate);
