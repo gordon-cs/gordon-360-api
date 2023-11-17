@@ -15,21 +15,8 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class ProfileService : IProfileService
+public class ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
-    private readonly CCTContext _context;
-    private readonly IAccountService _accountService;
-    private readonly IConfiguration _config;
-    private readonly webSQLContext _webSQLContext;
-
-    public ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext)
-    {
-        _context = context;
-        _config = config;
-        _accountService = accountService;
-        _webSQLContext = webSQLContext;
-    }
-
     /// <summary>
     /// get student profile info
     /// </summary>
@@ -37,7 +24,7 @@ public class ProfileService : IProfileService
     /// <returns>StudentProfileViewModel if found, null if not found</returns>
     public StudentProfileViewModel? GetStudentProfileByUsername(string username)
     {
-        return _context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        return context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     /// <summary>
@@ -47,7 +34,7 @@ public class ProfileService : IProfileService
     /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
     public FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username)
     {
-        return _context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        return context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     /// <summary>
@@ -57,7 +44,7 @@ public class ProfileService : IProfileService
     /// <returns>AlumniProfileViewModel if found, null if not found</returns>
     public AlumniProfileViewModel? GetAlumniProfileByUsername(string username)
     {
-        return _context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        return context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     /// <summary>
@@ -68,11 +55,11 @@ public class ProfileService : IProfileService
     public MailboxViewModel GetMailboxCombination(string username)
     {
         var mailboxNumber =
-            _context.Student
+            context.Student
             .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
             .Mail_Location;
 
-        var combo = _context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
+        var combo = context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
 
         if (combo == null)
         {
@@ -89,7 +76,7 @@ public class ProfileService : IProfileService
     /// <returns>Date the user's date of birth</returns>
     public DateTime GetBirthdate(string username)
     {
-        var birthdate = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
+        var birthdate = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
 
         if (birthdate == null)
         {
@@ -113,10 +100,10 @@ public class ProfileService : IProfileService
     /// <returns></returns>
     public async Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username)
     {
-        var account = _accountService.GetAccountByUsername(username);
+        var account = accountService.GetAccountByUsername(username);
 
         // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
-        var advisorIDsEnumerable = await _context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.GordonID));
+        var advisorIDsEnumerable = await context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.GordonID));
         var advisorIDs = advisorIDsEnumerable.FirstOrDefault();
 
         if (advisorIDs == null)
@@ -130,7 +117,7 @@ public class ProfileService : IProfileService
         {
             if (!string.IsNullOrEmpty(advisorID))
             {
-                var advisor = _accountService.GetAccountByID(advisorID);
+                var advisor = accountService.GetAccountByID(advisorID);
                 resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
             }
         }
@@ -143,7 +130,7 @@ public class ProfileService : IProfileService
     /// <returns> Clifton strengths of the given user. </returns>
     public CliftonStrengthsViewModel? GetCliftonStrengths(int id)
     {
-        return _context.Clifton_Strengths.FirstOrDefault(c => c.ID_NUM == id);
+        return context.Clifton_Strengths.FirstOrDefault(c => c.ID_NUM == id);
     }
 
     /// <summary>
@@ -154,14 +141,14 @@ public class ProfileService : IProfileService
     /// <exception cref="ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
     public async Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id)
     {
-        var strengths = _context.Clifton_Strengths.FirstOrDefault(cs => cs.ID_NUM == id);
+        var strengths = context.Clifton_Strengths.FirstOrDefault(cs => cs.ID_NUM == id);
         if (strengths is null)
         {
             throw new ResourceNotFoundException { ExceptionMessage = "No Strengths found" };
         }
 
         strengths.Private = !strengths.Private;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return strengths.Private;
     }
@@ -171,7 +158,7 @@ public class ProfileService : IProfileService
     /// <returns> Emergency contact information of the given user. </returns>
     public IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username)
     {
-        var result = _context.EmergencyContact.Where(x => x.AD_Username == username).Select(x => (EmergencyContactViewModel)x);
+        var result = context.EmergencyContact.Where(x => x.AD_Username == username).Select(x => (EmergencyContactViewModel)x);
 
         if (result == null)
         {
@@ -188,9 +175,9 @@ public class ProfileService : IProfileService
     /// <returns>PhotoPathViewModel if found, null if not found</returns>
     public async Task<PhotoPathViewModel?> GetPhotoPathAsync(string username)
     {
-        var account = _accountService.GetAccountByUsername(username);
+        var account = accountService.GetAccountByUsername(username);
 
-        var photoInfoList = await _context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.GordonID));
+        var photoInfoList = await context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.GordonID));
         return photoInfoList.Select(p => new PhotoPathViewModel { Img_Name = p.Img_Name, Img_Path = p.Img_Path, Pref_Img_Name = p.Pref_Img_Name, Pref_Img_Path = p.Pref_Img_Path }).FirstOrDefault();
     }
 
@@ -201,7 +188,7 @@ public class ProfileService : IProfileService
     /// <returns>ProfileViewModel if found, null if not found</returns>
     public ProfileCustomViewModel? GetCustomUserInfo(string username)
     {
-        return _context.CUSTOM_PROFILE.Find(username);
+        return context.CUSTOM_PROFILE.Find(username);
     }
 
     /// <summary>
@@ -212,13 +199,13 @@ public class ProfileService : IProfileService
     /// <param name="name"></param>
     public async Task UpdateProfileImageAsync(string username, string? path, string? name)
     {
-        var account = _accountService.GetAccountByUsername(username);
+        var account = accountService.GetAccountByUsername(username);
 
-        await _context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.GordonID), path, name);
+        await context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.GordonID), path, name);
         // Update value in cached data
-        var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
-        var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
-        var alum = _context.Alumni.FirstOrDefault(x => x.ID == account.GordonID);
+        var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+        var facStaff = context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
+        var alum = context.Alumni.FirstOrDefault(x => x.ID == account.GordonID);
         if (student != null)
         {
             student.preferred_photo = (path == null ? 0 : 1);
@@ -242,11 +229,11 @@ public class ProfileService : IProfileService
     /// <param name="content"></param>
     public async Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content)
     {
-        var original = await _context.CUSTOM_PROFILE.FindAsync(username);
+        var original = await context.CUSTOM_PROFILE.FindAsync(username);
 
         if (original == null)
         {
-            await _context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = content.calendar, facebook = content.facebook, twitter = content.twitter, instagram = content.instagram, linkedin = content.linkedin, handshake = content.handshake, PlannedGradYear = content.PlannedGradYear });
+            await context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = content.calendar, facebook = content.facebook, twitter = content.twitter, instagram = content.instagram, linkedin = content.linkedin, handshake = content.handshake, PlannedGradYear = content.PlannedGradYear });
 
         }
         else
@@ -258,7 +245,7 @@ public class ProfileService : IProfileService
                 case "calendar":
                     original.calendar = content.calendar;
                     break;
-
+                    
                 case "facebook":
                     original.facebook = content.facebook;
                     break;
@@ -284,7 +271,7 @@ public class ProfileService : IProfileService
             }
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -294,16 +281,16 @@ public class ProfileService : IProfileService
     /// <param name="value">Y or N</param>
     public async Task UpdateMobilePrivacyAsync(string username, string value)
     {
-        var account = _accountService.GetAccountByUsername(username);
-        await _context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
+        var account = accountService.GetAccountByUsername(username);
+        await context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
         // Update value in cached data
-        var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+        var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
         if (student != null)
         {
             student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
         }
 
-        _context.SaveChanges();
+        context.SaveChanges();
     }
 
     /// <summary>
@@ -319,10 +306,10 @@ public class ProfileService : IProfileService
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         }
 
-        var result = await _context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, profile.MobilePhone);
+        var result = await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, profile.MobilePhone);
 
         // Update value in cached data
-        var student = _context.Student.FirstOrDefault(x => x.ID == profile.ID);
+        var student = context.Student.FirstOrDefault(x => x.ID == profile.ID);
         if (student != null)
         {
             student.MobilePhone = profile.MobilePhone;
@@ -345,10 +332,10 @@ public class ProfileService : IProfileService
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         }
-        var user = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+        var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
         user.Building = newBuilding;
         user.Room = newRoom;
-        await _webSQLContext.SaveChangesAsync();
+        await webSQLContext.SaveChangesAsync();
 
         return profile;
     }
@@ -366,10 +353,10 @@ public class ProfileService : IProfileService
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         }
-        var acccount = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
-        var user = _webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
+        var acccount = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+        var user = webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
         user.office_hours = newHours;
-        await _webSQLContext.SaveChangesAsync();
+        await webSQLContext.SaveChangesAsync();
 
         return profile;
     }
@@ -387,9 +374,9 @@ public class ProfileService : IProfileService
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         }
-        var user = _webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+        var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
         user.mail_server = newMail;
-        await _webSQLContext.SaveChangesAsync();
+        await webSQLContext.SaveChangesAsync();
 
         return profile;
     }
@@ -401,13 +388,13 @@ public class ProfileService : IProfileService
     /// <param name="value">Y or N</param>
     public async Task UpdateImagePrivacyAsync(string username, string value)
     {
-        var account = _accountService.GetAccountByUsername(username);
+        var account = accountService.GetAccountByUsername(username);
 
-        await _context.Procedures.UPDATE_SHOW_PICAsync(account.account_id, value);
+        await context.Procedures.UPDATE_SHOW_PICAsync(account.account_id, value);
         // Update value in cached data
-        var student = _context.Student.FirstOrDefault(x => x.ID == account.GordonID);
-        var facStaff = _context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
-        var alum = _context.Alumni.FirstOrDefault(x => x.ID == account.GordonID);
+        var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+        var facStaff = context.FacStaff.FirstOrDefault(x => x.ID == account.GordonID);
+        var alum = context.Alumni.FirstOrDefault(x => x.ID == account.GordonID);
         if (student != null)
         {
             student.show_pic = (value == "Y" ? 1 : 0);
@@ -421,7 +408,7 @@ public class ProfileService : IProfileService
             alum.show_pic = (value == "Y" ? 1 : 0);
         }
 
-        _context.SaveChanges();
+        context.SaveChanges();
     }
 
     public ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo)
@@ -459,13 +446,13 @@ public class ProfileService : IProfileService
 
     public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
     {
-        var account = _accountService.GetAccountByUsername(username);
+        var account = accountService.GetAccountByUsername(username);
 
-        string from_email = _config["Emails:Sender:Username"];
-        string to_email = _config["Emails:AlumniProfileUpdateRequestApprover"];
+        string from_email = config["Emails:Sender:Username"];
+        string to_email = config["Emails:AlumniProfileUpdateRequestApprover"];
         string messageBody = $"{account.FirstName} {account.LastName} ({account.GordonID}) has requested the following updates: \n\n";
 
-        var requestNumber = await _context.GetNextValueForSequence(Sequence.InformationChangeRequest);
+        var requestNumber = await context.GetNextValueForSequence(Sequence.InformationChangeRequest);
         foreach (var element in updatedFields)
         {
             var itemToSubmit = new Information_Change_Request
@@ -475,19 +462,19 @@ public class ProfileService : IProfileService
                 FieldName = element.Field,
                 FieldValue = element.Value
             };
-            _context.Information_Change_Request.Add(itemToSubmit);
+            context.Information_Change_Request.Add(itemToSubmit);
             messageBody += $"{element.Label} : {element.Value} \n\n";
         }
-        _context.SaveChanges();
+        context.SaveChanges();
 
         using var smtpClient = new SmtpClient()
         {
             Credentials = new NetworkCredential
             {
                 UserName = from_email,
-                Password = _config["Emails:Sender:Password"]
+                Password = config["Emails:Sender:Password"]
             },
-            Host = _config["SmtpHost"],
+            Host = config["SmtpHost"],
             EnableSsl = true,
             Port = 587,
         };
@@ -516,7 +503,7 @@ public class ProfileService : IProfileService
 
     public IEnumerable<string> GetMailStopsAsync()
     {
-        return _webSQLContext.Mailstops.Select(m => m.code)
+        return webSQLContext.Mailstops.Select(m => m.code)
                        .OrderBy(d => d);
     }
 }

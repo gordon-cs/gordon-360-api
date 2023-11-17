@@ -13,14 +13,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class MembershipsController : GordonControllerBase
+public class MembershipsController(IMembershipService membershipService) : GordonControllerBase
 {
-    private readonly IMembershipService _membershipService;
-
-    public MembershipsController(IMembershipService membershipService)
-    {
-        _membershipService = membershipService;
-    }
 
     /// <summary>
     /// Get all the memberships associated with a given activity
@@ -37,7 +31,7 @@ public class MembershipsController : GordonControllerBase
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        var memberships = _membershipService.GetMemberships(
+        var memberships = membershipService.GetMemberships(
             activityCode: involvementCode,
             username: username,
             sessionCode: sessionCode,
@@ -49,7 +43,7 @@ public class MembershipsController : GordonControllerBase
             && !(viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
             )
         {
-            memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
+            memberships = membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
         }
 
         return Ok(memberships);
@@ -68,7 +62,7 @@ public class MembershipsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.MEMBERSHIP)]
     public ActionResult<int> GetMembershipCount(string? activityCode = null, string? username = null, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
     {
-        var result = _membershipService
+        var result = membershipService
             .GetMemberships(
                 activityCode: activityCode,
                 username: username,
@@ -92,7 +86,7 @@ public class MembershipsController : GordonControllerBase
     [Obsolete("Use the new route at /api/memberships instead")]
     public ActionResult<IEnumerable<MembershipView>> GetMembershipsForActivityAndSession(string activityCode, string sessionCode)
     {
-        var result = _membershipService.GetMemberships(activityCode: activityCode, sessionCode: sessionCode);
+        var result = membershipService.GetMemberships(activityCode: activityCode, sessionCode: sessionCode);
 
         return Ok(result);
     }
@@ -108,7 +102,7 @@ public class MembershipsController : GordonControllerBase
     [Obsolete("Use the new route at /api/memberships instead")]
     public ActionResult<IEnumerable<MembershipView>> GetGroupAdminsForActivity(string activityCode, string sessionCode)
     {
-        var result = _membershipService.GetMemberships(
+        var result = membershipService.GetMemberships(
             activityCode: activityCode,
             sessionCode: sessionCode,
             participationTypes: new List<string> { Participation.GroupAdmin.GetCode() });
@@ -128,7 +122,7 @@ public class MembershipsController : GordonControllerBase
     [Obsolete("Use the new route at /api/memberships/count instead")]
     public ActionResult<int> GetActivitySubscribersCountForSession(string activityCode, string sessionCode)
     {
-        var result = _membershipService
+        var result = membershipService
             .GetMemberships(
                 activityCode: activityCode,
                 sessionCode: sessionCode,
@@ -151,7 +145,7 @@ public class MembershipsController : GordonControllerBase
     [Obsolete("Use the new route at /api/memberships/count instead")]
     public ActionResult<int> GetActivityMembersCountForSession(string activityCode, string sessionCode)
     {
-        var result = _membershipService
+        var result = membershipService
             .GetMemberships(
                 activityCode: activityCode,
                 sessionCode: sessionCode)
@@ -169,7 +163,7 @@ public class MembershipsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.MEMBERSHIP)]
     public async Task<ActionResult<MembershipView>> PostAsync([FromBody] MembershipUploadViewModel membershipUpload)
     {
-        var result = await _membershipService.AddAsync(membershipUpload);
+        var result = await membershipService.AddAsync(membershipUpload);
 
         if (result == null)
         {
@@ -190,7 +184,7 @@ public class MembershipsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
     public async Task<ActionResult<MembershipView>> PutAsync(int membershipID, [FromBody] MembershipUploadViewModel membership)
     {
-        var result = await _membershipService.UpdateAsync(membershipID, membership);
+        var result = await membershipService.UpdateAsync(membershipID, membership);
 
         return Ok(result);
     }
@@ -205,7 +199,7 @@ public class MembershipsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.MEMBERSHIP)]
     public async Task<ActionResult<MembershipView>> SetGroupAdminAsync(int membershipID, [FromBody] bool isGroupAdmin)
     {
-        var result = await _membershipService.SetGroupAdminAsync(membershipID, isGroupAdmin);
+        var result = await membershipService.SetGroupAdminAsync(membershipID, isGroupAdmin);
 
         return Ok(result);
     }
@@ -221,7 +215,7 @@ public class MembershipsController : GordonControllerBase
     public async Task<ActionResult<MembershipView>> SetPrivacyAsync(int membershipID, [FromBody] bool isPrivate)
     {
 
-        var updatedMembership = await _membershipService.SetPrivacyAsync(membershipID, isPrivate);
+        var updatedMembership = await membershipService.SetPrivacyAsync(membershipID, isPrivate);
         return Ok(updatedMembership);
     }
 
@@ -234,7 +228,7 @@ public class MembershipsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.MEMBERSHIP)]
     public ActionResult<MembershipView> Delete(int membershipID)
     {
-        var result = _membershipService.Delete(membershipID);
+        var result = membershipService.Delete(membershipID);
 
         return Ok(result);
     }

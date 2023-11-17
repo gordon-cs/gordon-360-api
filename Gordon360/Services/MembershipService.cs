@@ -1,7 +1,6 @@
-﻿using Gordon360.Enums;
+﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
@@ -10,24 +9,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Enums;
 
 namespace Gordon360.Services;
 
 /// <summary>
 /// Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
 /// </summary>
-public class MembershipService : IMembershipService
+public class MembershipService(CCTContext context, IAccountService accountService, IActivityService activityService) : IMembershipService
 {
-    private readonly CCTContext _context;
-    private readonly IAccountService _accountService;
-    private readonly IActivityService _activityService;
-
-    public MembershipService(CCTContext context, IAccountService accountService, IActivityService activityService)
-    {
-        _context = context;
-        _accountService = accountService;
-        _activityService = activityService;
-    }
 
     /// <summary>
     /// Fetches the memberships associated with the activity whose code is specified by the parameter.
@@ -44,13 +34,13 @@ public class MembershipService : IMembershipService
         List<string>? participationTypes = null
     )
     {
-        IQueryable<MembershipView> memberships = _context.MembershipView;
+        IQueryable<MembershipView> memberships = context.MembershipView;
         if (username is not null) memberships = memberships.Where(m => EF.Functions.Like(m.Username, username));
 
         if (activityCode is not null) memberships = memberships.Where(m => m.ActivityCode == activityCode);
 
         // Null sessionCode defaults to current session
-        sessionCode ??= Helpers.GetCurrentSession(_context);
+        sessionCode ??= Helpers.GetCurrentSession(context);
         // session code "*" means all sessions
         if (sessionCode != "*")
         {
@@ -76,7 +66,7 @@ public class MembershipService : IMembershipService
     /// <returns>The found membership as a MembershipView</returns>	
     public MembershipView GetSpecificMembership(int membershipID)
     {
-        var result = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
+        var result = context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipID);
 
         if (result == null)
         {
@@ -97,14 +87,14 @@ public class MembershipService : IMembershipService
         ValidateMembership(membershipUpload);
         IsPersonAlreadyInActivity(membershipUpload);
 
-        var sessionBeginDate = _context.CM_SESSION_MSTR
+        var sessionBeginDate = context.CM_SESSION_MSTR
             .Where(x => x.SESS_CDE.Equals(membershipUpload.Session))
             .FirstOrDefault()?.SESS_BEGN_DTE ?? DateTime.Now;
 
-        int gordonId = int.Parse(_accountService.GetAccountByUsername(membershipUpload.Username).GordonID);
+        int gordonId = int.Parse(accountService.GetAccountByUsername(membershipUpload.Username).GordonID);
 
         MEMBERSHIP m = membershipUpload.ToMembership(gordonId, sessionBeginDate);
-        var payload = await _context.MEMBERSHIP.AddAsync(m);
+        var payload = await context.MEMBERSHIP.AddAsync(m);
 
         if (payload?.Entity == null)
         {
@@ -112,7 +102,7 @@ public class MembershipService : IMembershipService
         }
         else
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return GetMembershipViewById(payload.Entity.MEMBERSHIP_ID);
         }
     }
@@ -124,7 +114,7 @@ public class MembershipService : IMembershipService
     /// <returns>The membership that was just deleted as a MembershipView</returns>
     public MembershipView Delete(int membershipID)
     {
-        var result = _context.MEMBERSHIP.Find(membershipID);
+        var result = context.MEMBERSHIP.Find(membershipID);
 
         if (result == null)
         {
@@ -133,8 +123,8 @@ public class MembershipService : IMembershipService
 
         MembershipView toReturn = GetMembershipViewById(result.MEMBERSHIP_ID);
 
-        _context.MEMBERSHIP.Remove(result);
-        _context.SaveChanges();
+        context.MEMBERSHIP.Remove(result);
+        context.SaveChanges();
 
         return toReturn;
     }
@@ -147,7 +137,7 @@ public class MembershipService : IMembershipService
     /// <returns>The newly modified membership as a MembershipView object</returns>
     public async Task<MembershipView> UpdateAsync(int membershipID, MembershipUploadViewModel membership)
     {
-        var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
+        var original = await context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
         if (original == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
@@ -162,7 +152,7 @@ public class MembershipService : IMembershipService
             await SetGroupAdminAsync(membershipID, false);
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return GetMembershipViewById(original.MEMBERSHIP_ID);
 
@@ -175,7 +165,7 @@ public class MembershipService : IMembershipService
     /// <returns>The newly modified membership as a MembershipView object</returns>
     public async Task<MembershipView> SetGroupAdminAsync(int membershipID, bool isGroupAdmin)
     {
-        var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
+        var original = await context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
         if (original == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
@@ -186,7 +176,7 @@ public class MembershipService : IMembershipService
 
         original.GRP_ADMIN = isGroupAdmin;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return GetMembershipViewById(original.MEMBERSHIP_ID);
     }
@@ -199,7 +189,7 @@ public class MembershipService : IMembershipService
     /// <returns>The newly modified membership as a MembershipView object</returns>
     public async Task<MembershipView> SetPrivacyAsync(int membershipID, bool isPrivate)
     {
-        var original = await _context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
+        var original = await context.MEMBERSHIP.FirstOrDefaultAsync(m => m.MEMBERSHIP_ID == membershipID);
         if (original == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Membership was not found." };
@@ -207,7 +197,7 @@ public class MembershipService : IMembershipService
 
         original.PRIVACY = isPrivate;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return GetMembershipViewById(original.MEMBERSHIP_ID);
     }
@@ -220,28 +210,28 @@ public class MembershipService : IMembershipService
     /// <returns>True if the membership is valid. Throws an Exception if not. Exception is caught in an Exception Filter</returns>
     public bool ValidateMembership(MembershipUploadViewModel membership)
     {
-        var personExists = _accountService.GetAccountByUsername(membership.Username);
+        var personExists = accountService.GetAccountByUsername(membership.Username);
         if (personExists == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Person was not found." };
         }
-        var participationExists = _context.PART_DEF.Any(x => x.PART_CDE.Trim() == membership.Participation);
+        var participationExists = context.PART_DEF.Any(x => x.PART_CDE.Trim() == membership.Participation);
         if (!participationExists)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Participation was not found." };
         }
-        var sessionExists = _context.CM_SESSION_MSTR.Any(x => x.SESS_CDE.Trim() == membership.Session);
+        var sessionExists = context.CM_SESSION_MSTR.Any(x => x.SESS_CDE.Trim() == membership.Session);
         if (!sessionExists)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
         }
-        var activityExists = _context.ACT_INFO.Any(x => x.ACT_CDE.Trim() == membership.Activity);
+        var activityExists = context.ACT_INFO.Any(x => x.ACT_CDE.Trim() == membership.Activity);
         if (!activityExists)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
         }
 
-        if (!_context.InvolvementOffering.Any(i => i.SessionCode == membership.Session && i.ActivityCode.Trim() == membership.Activity))
+        if (!context.InvolvementOffering.Any(i => i.SessionCode == membership.Session && i.ActivityCode.Trim() == membership.Activity))
         {
             throw new BadInputException() { ExceptionMessage = "The Activity is not available for this session." };
         }
@@ -251,7 +241,7 @@ public class MembershipService : IMembershipService
 
     public bool IsPersonAlreadyInActivity(MembershipUploadViewModel membershipRequest)
     {
-        var personAlreadyInActivity = _context.MembershipView.Any(x => x.SessionCode == membershipRequest.Session &&
+        var personAlreadyInActivity = context.MembershipView.Any(x => x.SessionCode == membershipRequest.Session &&
             x.ActivityCode == membershipRequest.Activity && x.Username == membershipRequest.Username);
 
         if (personAlreadyInActivity)
@@ -269,7 +259,7 @@ public class MembershipService : IMembershipService
     /// <returns>true if student is a Group Admin, else false</returns>	
     public bool IsGroupAdmin(string username)
     {
-        return _context.MembershipView.Any(membership => membership.Username == username && membership.GroupAdmin == true);
+        return context.MembershipView.Any(membership => membership.Username == username && membership.GroupAdmin == true);
     }
 
     /// <summary>	
@@ -279,7 +269,7 @@ public class MembershipService : IMembershipService
     /// <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
     public MembershipView GetMembershipViewById(int membershipId)
     {
-        var foundMembership = _context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipId);
+        var foundMembership = context.MembershipView.FirstOrDefault(m => m.MembershipID == membershipId);
 
         if (foundMembership == null)
         {
@@ -298,7 +288,7 @@ public class MembershipService : IMembershipService
     public IEnumerable<MembershipView> RemovePrivateMemberships(IEnumerable<MembershipView> memberships, string viewerUsername)
         => memberships.Where(m =>
             {
-                var act = _activityService.Get(m.ActivityCode);
+                var act = activityService.Get(m.ActivityCode);
                 var isPublic = !(act.Privacy == true || m.Privacy == true);
                 if (isPublic)
                 {

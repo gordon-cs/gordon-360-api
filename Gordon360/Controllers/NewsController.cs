@@ -11,14 +11,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class NewsController : GordonControllerBase
+public class NewsController(INewsService newsService) : GordonControllerBase
 {
-    private readonly INewsService _newsService;
-
-    public NewsController(INewsService newsService)
-    {
-        _newsService = newsService;
-    }
 
     /// <summary>Gets a news item by id from the database</summary>
     /// <param name="newsID">The id of the news item to retrieve</param>
@@ -30,7 +24,7 @@ public class NewsController : GordonControllerBase
     public ActionResult<StudentNewsViewModel> GetByID(int newsID)
     {
         // StateYourBusiness verifies that user is authenticated
-        var result = (StudentNewsViewModel)_newsService.Get(newsID);
+        var result = (StudentNewsViewModel)newsService.Get(newsID);
         if (result == null)
         {
             return NotFound();
@@ -48,7 +42,7 @@ public class NewsController : GordonControllerBase
     [Route("{newsID}/image")]
     public ActionResult<string> GetImage(int newsID)
     {
-        var result = (StudentNewsViewModel)_newsService.Get(newsID);
+        var result = (StudentNewsViewModel)newsService.Get(newsID);
         if (result == null)
         {
             return NotFound();
@@ -64,7 +58,7 @@ public class NewsController : GordonControllerBase
     [Route("not-expired")]
     public async Task<ActionResult<IOrderedEnumerable<StudentNewsViewModel>>> GetNotExpiredAsync()
     {
-        var result = await _newsService.GetNewsNotExpiredAsync();
+        var result = await newsService.GetNewsNotExpiredAsync();
         if (result == null)
         {
             return NotFound();
@@ -80,7 +74,7 @@ public class NewsController : GordonControllerBase
     [Route("new")]
     public async Task<ActionResult<IEnumerable<StudentNewsViewModel>>> GetNewAsync()
     {
-        var result = await _newsService.GetNewsNewAsync();
+        var result = await newsService.GetNewsNewAsync();
         if (result == null)
         {
             return NotFound();
@@ -94,7 +88,7 @@ public class NewsController : GordonControllerBase
     [Route("categories")]
     public ActionResult<IEnumerable<StudentNewsCategoryViewModel>> GetCategories()
     {
-        var result = _newsService.GetNewsCategories();
+        var result = newsService.GetNewsCategories();
         if (result == null)
         {
             return NotFound();
@@ -107,7 +101,7 @@ public class NewsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.NEWS)]
     public ActionResult<IEnumerable<StudentNewsViewModel>> GetNewsUnapproved()
     {
-        var result = _newsService.GetNewsUnapproved();
+        var result = newsService.GetNewsUnapproved();
         return Ok(result);
     }
 
@@ -123,14 +117,14 @@ public class NewsController : GordonControllerBase
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
         // Call appropriate service
-        var result = await _newsService.GetNewsPersonalUnapprovedAsync(authenticatedUserUsername);
+        var result = await newsService.GetNewsPersonalUnapprovedAsync(authenticatedUserUsername);
         if (result == null)
         {
             return NotFound();
         }
         return Ok(result);
     }
-
+  
     /** Create a new news item to be added to the database
      * @TODO: Remove redundant username/id from this and service
      * @TODO: fix documentation comments
@@ -152,7 +146,7 @@ public class NewsController : GordonControllerBase
         };
 
         // Call appropriate service
-        var result = _newsService.SubmitNews(newsItem, authenticatedUserUsername);
+        var result = newsService.SubmitNews(newsItem, authenticatedUserUsername);
         if (result == null)
         {
             return NotFound();
@@ -173,7 +167,7 @@ public class NewsController : GordonControllerBase
         // StateYourBusiness verifies that user is authenticated
         // Delete permission should be allowed only to authors of the news item
         // News item must not have already expired
-        var result = _newsService.DeleteNews(newsID);
+        var result = newsService.DeleteNews(newsID);
         // Shouldn't be necessary
         if (result == null)
         {
@@ -196,7 +190,7 @@ public class NewsController : GordonControllerBase
     public ActionResult<StudentNewsViewModel> EditPosting(int newsID, [FromBody] StudentNewsUploadViewModel studentNewsEdit)
     {
         // StateYourBusiness verifies that user is authenticated
-        var result = _newsService.EditPosting(newsID, studentNewsEdit);
+        var result = newsService.EditPosting(newsID, studentNewsEdit);
         return Ok(result);
     }
 
@@ -212,7 +206,7 @@ public class NewsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS)]
     public ActionResult<StudentNewsViewModel> EditPostingImage(int newsID, [FromBody] string newImageData)
     {
-        var result = _newsService.EditImage(newsID, newImageData);
+        var result = newsService.EditImage(newsID, newImageData);
         return Ok(result);
     }
 
@@ -228,7 +222,7 @@ public class NewsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.NEWS_APPROVAL)]
     public ActionResult<StudentNewsViewModel> UpdateAcceptedStatus(int newsID, [FromBody] bool newsStatusAccepted)
     {
-        var result = _newsService.AlterPostAcceptStatus(newsID, newsStatusAccepted);
+        var result = newsService.AlterPostAcceptStatus(newsID, newsStatusAccepted);
         return Ok(result);
     }
 }

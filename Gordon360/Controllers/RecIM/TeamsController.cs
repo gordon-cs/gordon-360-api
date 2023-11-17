@@ -9,18 +9,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM;
 
 [Route("api/recim/[controller]")]
-public class TeamsController : GordonControllerBase
+public class TeamsController(ITeamService teamService, IActivityService activityService, IParticipantService participantService) : GordonControllerBase
 {
-    private readonly ITeamService _teamService;
-    private readonly IActivityService _activityService;
-    private readonly IParticipantService _participantService;
-
-    public TeamsController(ITeamService teamService, IActivityService activityService, IParticipantService participantService)
-    {
-        _teamService = teamService;
-        _activityService = activityService;
-        _participantService = participantService;
-    }
 
     ///<summary>
     ///Get all team objects stored in rec-im
@@ -31,7 +21,7 @@ public class TeamsController : GordonControllerBase
     [Route("")]
     public ActionResult<TeamExtendedViewModel> GetTeams([FromQuery] bool active)
     {
-        var team = _teamService.GetTeams(active);
+        var team = teamService.GetTeams(active);
         return Ok(team);
     }
 
@@ -44,7 +34,7 @@ public class TeamsController : GordonControllerBase
     [Route("{teamID}")]
     public ActionResult<TeamExtendedViewModel> GetTeamByID(int teamID)
     {
-        var team = _teamService.GetTeamByID(teamID);
+        var team = teamService.GetTeamByID(teamID);
 
         if (team == null)
         {
@@ -62,7 +52,7 @@ public class TeamsController : GordonControllerBase
     [Route("lookup")]
     public ActionResult<IEnumerable<LookupViewModel>> GetTeamTypes(string type)
     {
-        var res = _teamService.GetTeamLookup(type);
+        var res = teamService.GetTeamLookup(type);
         if (res is not null)
         {
             return Ok(res);
@@ -80,15 +70,15 @@ public class TeamsController : GordonControllerBase
     public async Task<ActionResult<TeamViewModel>> PostTeamAsync(TeamUploadViewModel newTeam)
     {
         var username = AuthUtils.GetUsername(User);
-        var activity = _activityService.GetActivityByID(newTeam.ActivityID);
+        var activity = activityService.GetActivityByID(newTeam.ActivityID);
         if (activity is null)
             return NotFound($"This activity does not exist");
-
+       
         //redudant check for API as countermeasure against postman navigation around UI check, admins can make any number of teams
-        if (_teamService.HasUserJoined(newTeam.ActivityID, username) && !_participantService.IsAdmin(username))
+        if (teamService.HasUserJoined(newTeam.ActivityID, username) && !participantService.IsAdmin(username))
             return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
-
-        if (_activityService.ActivityRegistrationClosed(newTeam.ActivityID) && !_participantService.IsAdmin(username))
+        
+        if(activityService.ActivityRegistrationClosed(newTeam.ActivityID) && !participantService.IsAdmin(username))
             return UnprocessableEntity("Activity Registration has closed.");
 
         /* temporarily deprecated
@@ -96,7 +86,7 @@ public class TeamsController : GordonControllerBase
             return UnprocessableEntity("Activity capacity has been reached. Try again later.");
         */
 
-        var team = await _teamService.PostTeamAsync(newTeam, username);
+        var team = await teamService.PostTeamAsync(newTeam, username);
         // future error handling
         // (cannot implement at the moment as we only have 4 developer accs)
         if (team is null)
@@ -120,10 +110,10 @@ public class TeamsController : GordonControllerBase
     public async Task<ActionResult<ParticipantTeamViewModel>> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
     {
         var inviterUsername = AuthUtils.GetUsername(User);
-        var activityID = _teamService.GetTeamActivityID(teamID);
-        if (!_teamService.HasUserJoined(activityID, participant.Username) || _participantService.IsAdmin(inviterUsername))
+        var activityID = teamService.GetTeamActivityID(teamID);
+        if (!teamService.HasUserJoined(activityID, participant.Username) || participantService.IsAdmin(inviterUsername))
         {
-            var participantTeam = await _teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
+            var participantTeam = await teamService.AddParticipantToTeamAsync(teamID, participant, inviterUsername);
             return Ok(participantTeam);
         }
 
@@ -142,7 +132,7 @@ public class TeamsController : GordonControllerBase
     public async Task<ActionResult<ParticipantTeamViewModel>> UpdateParticipantTeamAsync(int teamID, ParticipantTeamUploadViewModel participant)
     {
         participant.RoleTypeID = participant.RoleTypeID ?? 3;
-        var participantTeam = await _teamService.UpdateParticipantRoleAsync(teamID, participant);
+        var participantTeam = await teamService.UpdateParticipantRoleAsync(teamID, participant);
         return Ok(participantTeam);
     }
 
@@ -156,7 +146,7 @@ public class TeamsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_TEAM)]
     public async Task<ActionResult> DeleteTeamAsync(int teamID)
     {
-        var res = await _teamService.DeleteTeamCascadeAsync(teamID);
+        var res = await teamService.DeleteTeamCascadeAsync(teamID);
         return Ok(res);
     }
 
@@ -171,13 +161,13 @@ public class TeamsController : GordonControllerBase
     public async Task<ActionResult> DeleteTeamParticipantAsync(int teamID, string username)
     {
         var user_name = AuthUtils.GetUsername(User);
-        var participantTeam = _teamService.GetParticipantTeam(teamID, username);
+        var participantTeam = teamService.GetParticipantTeam(teamID, username);
         if (participantTeam is null)
             return NotFound("The user is not part of the team.");
         if (user_name != participantTeam.ParticipantUsername)
             return Forbid($"You are not permitted to reject invitations for another participant.");
 
-        var res = await _teamService.DeleteParticipantTeamAsync(teamID, username);
+        var res = await teamService.DeleteParticipantTeamAsync(teamID, username);
         return Ok(res);
     }
 
@@ -192,10 +182,9 @@ public class TeamsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_TEAM)]
     public async Task<ActionResult<TeamViewModel>> UpdateTeamInfoAsync(int teamID, TeamPatchViewModel team)
     {
-        var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
+        var updatedTeam = await teamService.UpdateTeamAsync(teamID, team);
         return CreatedAtAction(nameof(GetTeamByID), new { teamID = updatedTeam.ID }, updatedTeam);
-        ;
-    }
+;       }
 
     /// <summary>
     /// Get all team invites of the user
@@ -207,7 +196,7 @@ public class TeamsController : GordonControllerBase
     {
         var username = AuthUtils.GetUsername(User);
 
-        var teamInvites = _teamService.GetTeamInvitesByParticipantUsername(username);
+        var teamInvites = teamService.GetTeamInvitesByParticipantUsername(username);
         return Ok(teamInvites);
     }
 
@@ -221,7 +210,7 @@ public class TeamsController : GordonControllerBase
     [Route("{teamID}/participants/{username}/attendance")]
     public ActionResult<int> NumberOfGamesParticipatedByParticipant(int teamID, string username)
     {
-        var res = _teamService.ParticipantAttendanceCount(teamID, username);
+        var res = teamService.ParticipantAttendanceCount(teamID, username);
         return Ok(res);
     }
     /// <summary>
@@ -232,25 +221,25 @@ public class TeamsController : GordonControllerBase
     /// <returns>The accepted TeamInviteViewModel</returns>
     [HttpPatch]
     [Route("{teamID}/invite/status")]
-    public async Task<ActionResult<ParticipantTeamViewModel?>> HandleTeamInviteAsync(int teamID, [FromBody] string response)
+    public async Task<ActionResult<ParticipantTeamViewModel?>> HandleTeamInviteAsync(int teamID, [FromBody]string response)
     {
         var username = AuthUtils.GetUsername(User);
-        var invite = _teamService.GetParticipantTeam(teamID, username);
+        var invite = teamService.GetParticipantTeam(teamID, username);
 
         if (invite is null)
             return NotFound("You were not invited by this team.");
         if (username != invite.ParticipantUsername)
             return Forbid($"You are not permitted to accept invitations for another participant.");
-
+        
         switch (response)
         {
             case "accepted":
-                var joinedParticipantTeam = await _teamService.UpdateParticipantRoleAsync(invite.TeamID,
+                var joinedParticipantTeam = await teamService.UpdateParticipantRoleAsync(invite.TeamID,
                     new ParticipantTeamUploadViewModel { Username = username, RoleTypeID = 3 }
                     );
                 return Ok(joinedParticipantTeam);
             case "rejected":
-                var res = await _teamService.DeleteParticipantTeamAsync(invite.TeamID, username);
+                var res = await teamService.DeleteParticipantTeamAsync(invite.TeamID, username);
                 return Ok(res);
             default:
                 return BadRequest("Request does not specify valid invite action");

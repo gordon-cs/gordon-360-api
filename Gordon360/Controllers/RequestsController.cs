@@ -1,23 +1,18 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class RequestsController : GordonControllerBase
+public class RequestsController(IMembershipRequestService membershipRequestService) : GordonControllerBase
 {
-    public IMembershipRequestService _membershipRequestService;
-
-    public RequestsController(IMembershipRequestService membershipRequestService)
-    {
-        _membershipRequestService = membershipRequestService;
-    }
+    public IMembershipRequestService _membershipRequestService = membershipRequestService;
 
     /// <summary>
     /// Gets all Membership Request Objects

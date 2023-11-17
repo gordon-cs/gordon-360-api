@@ -7,14 +7,8 @@ using System.Collections.Generic;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class AddressesController : GordonControllerBase
+public class AddressesController(IAddressesService addressesService) : GordonControllerBase
 {
-    private readonly IAddressesService _addressesService;
-
-    public AddressesController(IAddressesService addressesService)
-    {
-        _addressesService = addressesService;
-    }
 
     /// <summary>
     /// Pulls all states available from Jenzabar States Table
@@ -24,7 +18,7 @@ public class AddressesController : GordonControllerBase
     [Route("states")]
     public ActionResult<IEnumerable<States>> GetAllStates()
     {
-        var result = _addressesService.GetAllStates();
+        var result = addressesService.GetAllStates();
 
         return Ok(result);
     }
@@ -37,7 +31,7 @@ public class AddressesController : GordonControllerBase
     [Route("countries")]
     public ActionResult<IEnumerable<CountryViewModel>> GetAllCountries()
     {
-        var result = _addressesService.GetAllCountries();
+        var result = addressesService.GetAllCountries();
 
         return Ok(result);
     }

@@ -1,48 +1,35 @@
-﻿using Gordon360.Exceptions;
-using Gordon360.Extensions.System;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Utilities;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Gordon360.Extensions.System;
 
 
 namespace Gordon360.Services.RecIM;
 
-public class ActivityService : IActivityService
+public class ActivityService(CCTContext context, ISeriesService seriesService, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : IActivityService
 {
-    private readonly CCTContext _context;
-    private readonly ISeriesService _seriesService;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly ServerUtils _serverUtils;
-
-    public ActivityService(CCTContext context, ISeriesService seriesService, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
-    {
-        _context = context;
-        _seriesService = seriesService;
-        _webHostEnvironment = webHostEnvironment;
-        _serverUtils = serverUtils;
-    }
-
     public IEnumerable<LookupViewModel>? GetActivityLookup(string type)
     {
         return type switch
         {
-            "status" => _context.ActivityStatus.Where(query => query.ID != 0)
+            "status" => context.ActivityStatus.Where(query => query.ID != 0)
                             .Select(s => new LookupViewModel
                             {
                                 ID = s.ID,
                                 Description = s.Description
                             })
                             .AsEnumerable(),
-            "activity" => _context.ActivityType.Where(query => query.ID != 0)
+            "activity" => context.ActivityType.Where(query => query.ID != 0)
                             .Select(a => new LookupViewModel
                             {
                                 ID = a.ID,
@@ -56,7 +43,7 @@ public class ActivityService : IActivityService
 
     public IEnumerable<ActivityExtendedViewModel> GetActivities()
     {
-        var activities = _context.Activity.Where(a => a.StatusID != 0)
+        var activities = context.Activity.Where(a => a.StatusID != 0)
             .Include(a => a.Series)
                 .ThenInclude(a => a.Type)
             .Include(a => a.Series)
@@ -94,7 +81,7 @@ public class ActivityService : IActivityService
 
     public ActivityExtendedViewModel? GetActivityByID(int activityID)
     {
-        var activity = _context.Activity.Where(a => a.ID == activityID && a.StatusID != 0)
+        var activity = context.Activity.Where(a => a.ID == activityID && a.StatusID != 0)
                         .Select(a => new ActivityExtendedViewModel
                         {
                             ID = a.ID,
@@ -113,23 +100,22 @@ public class ActivityService : IActivityService
                             Type = a.Type.Description,
                             StartDate = a.StartDate.SpecifyUtc(),
                             EndDate = a.EndDate.SpecifyUtc(),
-                            Series = _seriesService.GetSeriesByActivityID(a.ID), // more expensive route with more data compared to implicit cast of GetActivities()
+                            Series = seriesService.GetSeriesByActivityID(a.ID), // more expensive route with more data compared to implicit cast of GetActivities()
                             Team = a.Team.Where(t => t.StatusID != 0)
                                 .Select(t => new TeamExtendedViewModel
                                 {
                                     ID = t.ID,
                                     Name = t.Name,
                                     Status = t.Status.Description,
-                                    Activity = new ActivityExtendedViewModel
-                                    {
-                                        ID = t.ActivityID,
+                                    Activity = new ActivityExtendedViewModel {
+                                        ID = t.ActivityID, 
                                         Name = a.Name
                                     },
                                     Logo = t.Logo,
-                                    TeamRecord = _context.SeriesTeam
+                                    TeamRecord = context.SeriesTeam
                                         .Include(st => st.Team)
                                         .Where(st => st.TeamID == t.ID)
-                                        .Select(st => (TeamRecordViewModel)st)
+                                        .Select(st => (TeamRecordViewModel) st)
                                 }),
                             SeriesScheduleID = a.SeriesScheduleID,
                         })
@@ -139,7 +125,7 @@ public class ActivityService : IActivityService
 
     public async Task<ActivityViewModel> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
     {
-        var activity = _context.Activity.Find(activityID);
+        var activity = context.Activity.Find(activityID);
         if (activity.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Activity has been deleted" };
 
         activity.Name = updatedActivity.Name ?? activity.Name;
@@ -156,7 +142,7 @@ public class ActivityService : IActivityService
         activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
         activity.SeriesScheduleID = updatedActivity.SeriesScheduleID ?? activity.SeriesScheduleID;
 
-
+    
         if (updatedActivity.Logo != null)
         {
             // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
@@ -164,7 +150,7 @@ public class ActivityService : IActivityService
 
             string? imagePath = null;
             // remove old
-            if (activity.Logo is not null && updatedActivity.Logo.Image is null)
+            if(activity.Logo is not null && updatedActivity.Logo.Image is null)
             {
                 imagePath = GetImagePath(Path.GetFileName(activity.Logo));
                 ImageUtils.DeleteImage(imagePath);
@@ -182,7 +168,7 @@ public class ActivityService : IActivityService
             }
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return activity;
     }
 
@@ -190,8 +176,8 @@ public class ActivityService : IActivityService
     {
         var activity = newActivity.ToActivity();
 
-        await _context.Activity.AddAsync(activity);
-        await _context.SaveChangesAsync();
+        await context.Activity.AddAsync(activity);
+        await context.SaveChangesAsync();
 
         return activity;
     }
@@ -205,23 +191,23 @@ public class ActivityService : IActivityService
             PrivTypeID = privTypeID,
             IsFreeAgent = isFreeAgent,
         };
-        await _context.ParticipantActivity.AddAsync(participantActivity);
-        await _context.SaveChangesAsync();
+        await context.ParticipantActivity.AddAsync(participantActivity);
+        await context.SaveChangesAsync();
 
         return participantActivity;
     }
 
     public bool IsReferee(string username, int activityID)
     {
-        return _context.ParticipantActivity.Where(pa => pa.PrivTypeID != 0).Any(pa =>
-            pa.ParticipantUsername == username
-            && pa.ActivityID == activityID
+        return context.ParticipantActivity.Where(pa => pa.PrivTypeID != 0).Any(pa =>
+            pa.ParticipantUsername == username 
+            && pa.ActivityID == activityID 
             && pa.PrivTypeID == 2); // PrivType: 2 => Referee
     }
 
     public bool ActivityTeamCapacityReached(int activityID)
     {
-        var activity = _context.Activity.Find(activityID);
+        var activity = context.Activity.Find(activityID);
 
         //if the activity is deleted, throw exception
         if (activity.StatusID == 0) throw new UnprocessibleEntity { ExceptionMessage = "Activity has been deleted" };
@@ -234,14 +220,14 @@ public class ActivityService : IActivityService
 
     public bool ActivityRegistrationClosed(int activityID)
     {
-        var a = _context.Activity.Find(activityID);
+        var a = context.Activity.Find(activityID);
         return !(DateTime.UtcNow > a.RegistrationStart.SpecifyUtc()
                     && DateTime.UtcNow < a.RegistrationEnd.SpecifyUtc());
     }
 
     public async Task<ActivityViewModel> DeleteActivityCascade(int activityID)
     {
-        var activity = _context.Activity
+        var activity = context.Activity
             .Include(a => a.ParticipantActivity)
             .Include(a => a.Team)
             .Include(a => a.Series)
@@ -262,17 +248,17 @@ public class ActivityService : IActivityService
 
 
         // delete teams
-
+        
         foreach (var team in activityTeams)
         {
             team.StatusID = 0;
-            var participantTeams = _context.ParticipantTeam.Where(pt => pt.TeamID == team.ID).ToList();
+            var participantTeams = context.ParticipantTeam.Where(pt => pt.TeamID == team.ID).ToList();
             foreach (var participantTeam in participantTeams)
             {
                 participantTeam.RoleTypeID = 0;
             }
         }
-
+        
         // delete series
         foreach (var series in activitySeries)
         {
@@ -290,17 +276,17 @@ public class ActivityService : IActivityService
             series.StatusID = 0;
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return activity;
     }
     private string GetImagePath(string filename)
     {
-        return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "recim", "activity", filename);
+        return Path.Combine(webHostEnvironment.ContentRootPath, "browseable", "uploads", "recim", "activity", filename);
     }
 
     private string GetImageURL(string filename)
     {
-        var serverAddress = _serverUtils.GetAddress();
+        var serverAddress = serverUtils.GetAddress();
         if (serverAddress is not string) throw new Exception("Could not upload Rec-IM Activity Image: Server Address is null");
 
         if (serverAddress.Contains("localhost"))

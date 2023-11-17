@@ -11,14 +11,8 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service class to facilitate data transactions between the Controller and the database model.
 /// </summary>
-public class SessionService : ISessionService
+public class SessionService(CCTContext context) : ISessionService
 {
-    private CCTContext _context;
-
-    public SessionService(CCTContext context)
-    {
-        _context = context;
-    }
 
     /// <summary>
     /// Get the session record whose sesssion code matches the parameter.
@@ -27,7 +21,7 @@ public class SessionService : ISessionService
     /// <returns>A SessionViewModel if found, null if not found.</returns>
     public SessionViewModel Get(string sessionCode)
     {
-        var query = _context.CM_SESSION_MSTR.Where(s => s.SESS_CDE == sessionCode).FirstOrDefault();
+        var query = context.CM_SESSION_MSTR.Where(s => s.SESS_CDE == sessionCode).FirstOrDefault();
         if (query == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Session was not found." };
@@ -37,7 +31,7 @@ public class SessionService : ISessionService
 
     public SessionViewModel GetCurrentSession()
     {
-        return _context.CM_SESSION_MSTR.Where(s => DateTime.Now > s.SESS_BEGN_DTE).OrderByDescending(s => s.SESS_BEGN_DTE).First();
+        return context.CM_SESSION_MSTR.Where(s => DateTime.Now > s.SESS_BEGN_DTE).OrderByDescending(s => s.SESS_BEGN_DTE).First();
     }
 
     // Return the days left in the semester, and the total days in the current session
@@ -68,7 +62,7 @@ public class SessionService : ISessionService
     /// <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
     public IEnumerable<SessionViewModel> GetAll()
     {
-        return _context.CM_SESSION_MSTR.Select<CM_SESSION_MSTR, SessionViewModel>(s => s);
+        return context.CM_SESSION_MSTR.Select<CM_SESSION_MSTR, SessionViewModel>(s => s);
     }
 
 

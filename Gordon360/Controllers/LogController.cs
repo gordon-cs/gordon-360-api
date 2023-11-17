@@ -8,14 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class LogController : GordonControllerBase
+public class LogController(IErrorLogService errorLogService) : GordonControllerBase
 {
-    private readonly IErrorLogService _errorLogService;
-
-    public LogController(IErrorLogService errorLogService)
-    {
-        _errorLogService = errorLogService;
-    }
 
     /// <summary>Create a new error log item to be added to database</summary>
     /// <param name="error_message">The error message containing all required and relevant information</param>
@@ -32,7 +26,7 @@ public class LogController : GordonControllerBase
             throw new BadInputException();
         }
 
-        var result = _errorLogService.Log(error_message);
+        var result = errorLogService.Log(error_message);
 
         return Created("error log", result);
     }

@@ -1,6 +1,6 @@
-﻿using Gordon360.Exceptions;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 using System;
 
 namespace Gordon360.Services;
@@ -8,14 +8,8 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
 /// </summary>
-public class ErrorLogService : IErrorLogService
+public class ErrorLogService(CCTContext context) : IErrorLogService
 {
-    private CCTContext _context;
-
-    public ErrorLogService(CCTContext context)
-    {
-        _context = context;
-    }
 
     /// <summary>
     /// Adds a new error log to storage.
@@ -26,13 +20,13 @@ public class ErrorLogService : IErrorLogService
     {
 
         // The Add() method returns the added error_log.
-        var payload = _context.ERROR_LOG.Add(error_log);
+        var payload = context.ERROR_LOG.Add(error_log);
 
         if (payload == null)
         {
             throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the error_log. Perhaps the error is a duplicate." };
         }
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return error_log;
 
@@ -59,13 +53,13 @@ public class ErrorLogService : IErrorLogService
         };
 
         // The Add() method returns the added error_log.
-        var payload = _context.ERROR_LOG.Add(error_log);
+        var payload = context.ERROR_LOG.Add(error_log);
 
         if (payload == null)
         {
             throw new ResourceCreationException() { ExceptionMessage = "There was an error creating the error_log. Perhaps the error is a duplicate." };
         }
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return error_log;
 

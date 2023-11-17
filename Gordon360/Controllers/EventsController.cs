@@ -1,22 +1,18 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class EventsController : GordonControllerBase
+public class EventsController(IEventService eventService) : GordonControllerBase
 {
-    private readonly IEventService _eventService;
-
-    public EventsController(IEventService eventService)
-    {
-        _eventService = eventService;
-    }
-
     [HttpGet]
     [Route("attended/{term}")]
     public ActionResult<IEnumerable<AttendedEventViewModel>> GetEventsByTerm(string term)
@@ -24,7 +20,7 @@ public class EventsController : GordonControllerBase
         //get token data from context, username is the username of current logged in person
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-        var result = _eventService.GetEventsForStudentByTerm(authenticatedUserUsername, term);
+        var result = eventService.GetEventsForStudentByTerm(authenticatedUserUsername, term);
 
         if (result == null)
         {
@@ -42,7 +38,7 @@ public class EventsController : GordonControllerBase
     [Route("")]
     public ActionResult<IEnumerable<EventViewModel>> GetAllEvents()
     {
-        var result = _eventService.GetAllEvents();
+        var result = eventService.GetAllEvents();
 
         if (result == null)
         {
@@ -57,7 +53,7 @@ public class EventsController : GordonControllerBase
     [Route("claw")]
     public ActionResult<IEnumerable<EventViewModel>> GetAllChapelEvents()
     {
-        var result = _eventService.GetCLAWEvents();
+        var result = eventService.GetCLAWEvents();
 
         if (result == null)
         {
@@ -73,7 +69,7 @@ public class EventsController : GordonControllerBase
     [Route("public")]
     public ActionResult<IEnumerable<EventViewModel>> GetAllPublicEvents()
     {
-        var result = _eventService.GetPublicEvents();
+        var result = eventService.GetPublicEvents();
 
         if (result == null)
         {

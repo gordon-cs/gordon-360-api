@@ -83,29 +83,9 @@ builder.Services.AddDbContext<CCTContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("webSQL"))
 );
 
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IActivityService, ActivityService>();
-builder.Services.AddScoped<IEventService, EventService>();
-builder.Services.AddScoped<IErrorLogService, ErrorLogService>();
-builder.Services.AddScoped<IProfileService, ProfileService>();
-builder.Services.AddScoped<IAddressesService, AddressesService>();
-builder.Services.AddScoped<IMembershipService, MembershipService>();
-builder.Services.AddScoped<IMembershipRequestService, MembershipRequestService>();
-builder.Services.AddScoped<IAdministratorService, AdministratorService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<INewsService, NewsService>();
-builder.Services.AddScoped<ISessionService, SessionService>();
-builder.Services.AddScoped<ServerUtils, ServerUtils>();
+builder.Services.Add360Services();
 builder.Services.AddHostedService<EventCacheRefreshService>();
-builder.Services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
-builder.Services.AddScoped<RecIM.ISeriesService, RecIM.SeriesService>();
-builder.Services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
-builder.Services.AddScoped<RecIM.ITeamService, RecIM.TeamService>();
-builder.Services.AddScoped<RecIM.IParticipantService, RecIM.ParticipantService>();
-builder.Services.AddScoped<RecIM.ISportService, RecIM.SportService>();
-builder.Services.AddScoped<RecIM.IRecIMService, RecIM.RecIMService>();
-builder.Services.AddScoped<RecIM.IAffiliationService, RecIM.AffiliationService>();
-
+builder.Services.AddScoped<ServerUtils, ServerUtils>();
 
 builder.Services.AddMemoryCache();
 

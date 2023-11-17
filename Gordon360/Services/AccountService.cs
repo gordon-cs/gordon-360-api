@@ -1,15 +1,15 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Enums;
-using Gordon360.Exceptions;
-using Gordon360.Extensions.System;
-using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Names;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Extensions.System;
+using Gordon360.Enums;
+using System;
 
 namespace Gordon360.Services;
 
@@ -17,14 +17,8 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
 /// </summary>
-public class AccountService : IAccountService
+public class AccountService(CCTContext context) : IAccountService
 {
-    private readonly CCTContext _context;
-
-    public AccountService(CCTContext context)
-    {
-        _context = context;
-    }
 
     /// <summary>
     /// Fetches a single account record whose id matches the id provided as an argument
@@ -34,7 +28,7 @@ public class AccountService : IAccountService
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public AccountViewModel GetAccountByID(string id)
     {
-        var account = _context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
+        var account = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
         if (account == null)
         {
             // Custom Exception is thrown that will be cauth in the controller Exception filter.
@@ -51,7 +45,7 @@ public class AccountService : IAccountService
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
     public IEnumerable<AccountViewModel> GetAll()
     {
-        return (IEnumerable<AccountViewModel>)_context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
+        return (IEnumerable<AccountViewModel>)context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
     }
 
     /// <summary>
@@ -61,7 +55,7 @@ public class AccountService : IAccountService
     /// <returns>the first account object which matches the email</returns>
     public AccountViewModel GetAccountByEmail(string email)
     {
-        var account = _context.ACCOUNT.FirstOrDefault(x => x.email == email);
+        var account = context.ACCOUNT.FirstOrDefault(x => x.email == email);
         if (account == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
@@ -77,7 +71,7 @@ public class AccountService : IAccountService
     /// <returns>the student account information</returns>
     public AccountViewModel GetAccountByUsername(string username)
     {
-        var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+        var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
         if (account == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
@@ -192,7 +186,7 @@ public class AccountService : IAccountService
         if (building is not null) accounts = accounts.Where(a => a.BuildingDescription.StartsWithIgnoreCase(building));
         if (involvement is not null)
         {
-            var members = _context.MembershipView.Where(mv => mv.ActivityDescription == involvement && mv.Privacy != true);
+            var members = context.MembershipView.Where(mv => mv.ActivityDescription == involvement && mv.Privacy != true);
             accounts = accounts.Join(members, a => a.AD_Username, mv => mv.Username, (a, mv) => a).Distinct();
         }
 
@@ -213,7 +207,7 @@ public class AccountService : IAccountService
             // Only students and FacStaff are authorized to search for students
             && (authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
         {
-            students = _context.Student;
+            students = context.Student;
         }
 
         // Only Faculy and Staff can see Private students
@@ -225,13 +219,13 @@ public class AccountService : IAccountService
         IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
         if (accountTypes.Contains("facstaff"))
         {
-            facstaff = _context.FacStaff.Where(fs => fs.ActiveAccount == true);
+            facstaff = context.FacStaff.Where(fs => fs.ActiveAccount == true);
         }
 
         IEnumerable<Alumni> alumni = Enumerable.Empty<Alumni>();
         if (accountTypes.Contains("alumni"))
         {
-            alumni = _context.Alumni.Where(a => a.ShareName != "N");
+            alumni = context.Alumni.Where(a => a.ShareName != "N");
         }
 
         // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
@@ -253,7 +247,7 @@ public class AccountService : IAccountService
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync()
     {
 
-        var basicInfo = await _context.Procedures.ALL_BASIC_INFOAsync();
+        var basicInfo = await context.Procedures.ALL_BASIC_INFOAsync();
         return basicInfo.Select(
             b => new BasicInfoViewModel
             {
@@ -270,7 +264,7 @@ public class AccountService : IAccountService
     /// <returns>BasicInfoViewModel of all accounts except alumni</returns>
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
     {
-        var basicInfo = await _context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();
+        var basicInfo = await context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();
         return basicInfo.Select(
             b => new BasicInfoViewModel
             {

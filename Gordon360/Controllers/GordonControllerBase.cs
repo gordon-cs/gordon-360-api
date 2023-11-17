@@ -23,6 +23,4 @@ namespace Gordon360.Controllers;
 [ApiController]
 [Authorize]
 [CustomExceptionFilter]
-public class GordonControllerBase : ControllerBase
-{
-}
+public class GordonControllerBase : ControllerBase {}

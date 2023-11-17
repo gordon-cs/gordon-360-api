@@ -1,50 +1,38 @@
 ﻿using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Utilities;
-using Microsoft.AspNetCore.Hosting;
+using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
-
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Gordon360.Services.RecIM;
 
-public class SportService : ISportService
+public class SportService(CCTContext context, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : ISportService
 {
-    private readonly CCTContext _context;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly ServerUtils _serverUtils;
-
-    public SportService(CCTContext context, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
-    {
-        _context = context;
-        _webHostEnvironment = webHostEnvironment;
-        _serverUtils = serverUtils;
-    }
-
     public SportViewModel GetSportByID(int sportID)
     {
-        return _context.Sport.Find(sportID);
+        return context.Sport.Find(sportID);
     }
 
     public async Task<SportViewModel> DeleteSportAsync(int sportID)
     {
-        var sport = _context.Sport.Find(sportID);
-        var activities = _context.Activity.Where(a => a.SportID == sportID);
+        var sport = context.Sport.Find(sportID);
+        var activities = context.Activity.Where(a => a.SportID == sportID);
         foreach (var activity in activities)
             activity.SportID = 0;
-        _context.Sport.Remove(sport);
-        await _context.SaveChangesAsync();
+        context.Sport.Remove(sport);
+        await context.SaveChangesAsync();
         return sport;
     }
 
     public IEnumerable<SportViewModel> GetSports()
     {
-        return _context.Sport.Select(s => (SportViewModel)s).AsEnumerable();
+        return context.Sport.Select(s => (SportViewModel)s).AsEnumerable();
     }
 
     public async Task<SportViewModel> PostSportAsync(SportUploadViewModel newSport)
@@ -57,14 +45,14 @@ public class SportService : ISportService
             Logo = newSport.Logo
         };
 
-        await _context.Sport.AddAsync(sport);
-        await _context.SaveChangesAsync();
+        await context.Sport.AddAsync(sport);
+        await context.SaveChangesAsync();
         return sport;
     }
 
     public async Task<SportViewModel> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport)
     {
-        var sport = _context.Sport.Find(sportID);
+        var sport = context.Sport.Find(sportID);
         sport.Name = updatedSport.Name ?? sport.Name;
         sport.Description = updatedSport.Description ?? sport.Description;
         sport.Rules = updatedSport.Rules ?? sport.Rules;
@@ -96,18 +84,18 @@ public class SportService : ISportService
         }
 
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return sport;
     }
     private string GetImagePath(string filename)
     {
-        return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "recim", "ruleset", filename);
+        return Path.Combine(webHostEnvironment.ContentRootPath, "browseable", "uploads", "recim", "ruleset", filename);
     }
 
     private string GetImageURL(string filename)
     {
-        var serverAddress = _serverUtils.GetAddress();
+        var serverAddress = serverUtils.GetAddress();
         if (serverAddress is not string) throw new Exception("Could not upload Rec-IM Ruleset Image: Server Address is null");
 
         if (serverAddress.Contains("localhost"))

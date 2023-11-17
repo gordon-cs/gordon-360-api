@@ -6,14 +6,8 @@ using System.Linq;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class AdvancedSearchController : GordonControllerBase
+public class AdvancedSearchController(CCTContext context) : GordonControllerBase
 {
-    private readonly CCTContext _context;
-
-    public AdvancedSearchController(CCTContext context)
-    {
-        _context = context;
-    }
 
     /// <summary>
     /// Return a list majors.
@@ -23,7 +17,7 @@ public class AdvancedSearchController : GordonControllerBase
     [Route("majors")]
     public ActionResult<IEnumerable<string>> GetMajors()
     {
-        var majors = _context.Majors.OrderBy(m => m.MajorDescription)
+        var majors = context.Majors.OrderBy(m => m.MajorDescription)
                              .Select(m => m.MajorDescription)
                              .Distinct();
         return Ok(majors);
@@ -37,7 +31,7 @@ public class AdvancedSearchController : GordonControllerBase
     [Route("minors")]
     public ActionResult<IEnumerable<string>> GetMinors()
     {
-        var minors = _context.Student.Select(s => s.Minor1Description)
+        var minors = context.Student.Select(s => s.Minor1Description)
                               .Distinct()
                               .Where(s => s != null);
         return Ok(minors);
@@ -51,7 +45,7 @@ public class AdvancedSearchController : GordonControllerBase
     [Route("halls")]
     public ActionResult<IEnumerable<string>> GetHalls()
     {
-        var halls = _context.Student.Select(s => s.BuildingDescription)
+        var halls = context.Student.Select(s => s.BuildingDescription)
                               .Distinct()
                               .Where(b => b != null)
                               .OrderBy(b => b);
@@ -68,9 +62,9 @@ public class AdvancedSearchController : GordonControllerBase
     [Route("states")]
     public ActionResult<IEnumerable<string>> DEPRECATED_GetStates()
     {
-        var studentStates = _context.Student.Select(s => s.HomeState).AsEnumerable();
-        var facStaffStates = _context.FacStaff.Select(fs => fs.HomeState).AsEnumerable();
-        var alumniStates = _context.Alumni.Select(a => a.HomeState).AsEnumerable();
+        var studentStates = context.Student.Select(s => s.HomeState).AsEnumerable();
+        var facStaffStates = context.FacStaff.Select(fs => fs.HomeState).AsEnumerable();
+        var alumniStates = context.Alumni.Select(a => a.HomeState).AsEnumerable();
 
         var states = studentStates
                               .Union(facStaffStates)
@@ -92,9 +86,9 @@ public class AdvancedSearchController : GordonControllerBase
     [Route("countries")]
     public ActionResult<IEnumerable<string>> DEPREACTED_GetCountries()
     {
-        var studentCountries = _context.Student.Select(s => s.Country).AsEnumerable();
-        var facstaffCountries = _context.FacStaff.Select(fs => fs.Country).AsEnumerable();
-        var alumniCountries = _context.Alumni.Select(a => a.Country).AsEnumerable();
+        var studentCountries = context.Student.Select(s => s.Country).AsEnumerable();
+        var facstaffCountries = context.FacStaff.Select(fs => fs.Country).AsEnumerable();
+        var alumniCountries = context.Alumni.Select(a => a.Country).AsEnumerable();
 
         var countries = studentCountries
                               .Union(facstaffCountries)
@@ -113,7 +107,7 @@ public class AdvancedSearchController : GordonControllerBase
     [Route("departments")]
     public ActionResult<IEnumerable<string>> GetDepartments()
     {
-        var departments = _context.FacStaff.Select(fs => fs.OnCampusDepartment)
+        var departments = context.FacStaff.Select(fs => fs.OnCampusDepartment)
                                .Distinct()
                                .Where(d => d != null)
                                .OrderBy(d => d);
@@ -129,7 +123,7 @@ public class AdvancedSearchController : GordonControllerBase
     [Route("buildings")]
     public ActionResult<IEnumerable<string>> GetBuildings()
     {
-        var buildings = _context.FacStaff.Select(fs => fs.BuildingDescription)
+        var buildings = context.FacStaff.Select(fs => fs.BuildingDescription)
                                .Distinct()
                                .Where(d => d != null)
                                .OrderBy(d => d);
@@ -144,7 +138,7 @@ public class AdvancedSearchController : GordonControllerBase
     [Route("involvements")]
     public ActionResult<IEnumerable<string>> GetInvolvements()
     {
-        var involvements = _context.MembershipView.Select(m => m.ActivityDescription)
+        var involvements = context.MembershipView.Select(m => m.ActivityDescription)
                                .Distinct()
                                .Where(d => d != null)
                                .OrderBy(d => d);

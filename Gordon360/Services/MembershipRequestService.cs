@@ -1,9 +1,9 @@
-﻿using Gordon360.Exceptions;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
-using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
+using Gordon360.Static.Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +14,8 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service class to facilitate data transactions between the MembershipRequestController and the database
 /// </summary>
-public class MembershipRequestService : IMembershipRequestService
+public class MembershipRequestService(CCTContext context, IMembershipService membershipService, IAccountService accountService) : IMembershipRequestService
 {
-    private CCTContext _context;
-    private IMembershipService _membershipService;
-    private IAccountService _accountService;
-
-    public MembershipRequestService(CCTContext context, IMembershipService membershipService, IAccountService accountService)
-    {
-        _context = context;
-        _membershipService = membershipService;
-        _accountService = accountService;
-    }
 
     /// <summary>
     /// Generate a new request to join an activity at a participation level higher than 'Guest'
@@ -35,20 +25,20 @@ public class MembershipRequestService : IMembershipRequestService
     public async Task<RequestView> AddAsync(RequestUploadViewModel membershipRequestUpload)
     {
 
-        MembershipUploadViewModel m = (MembershipUploadViewModel)membershipRequestUpload;
+        MembershipUploadViewModel m = (MembershipUploadViewModel) membershipRequestUpload;
         // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
-        _membershipService.ValidateMembership(m);
-        _membershipService.IsPersonAlreadyInActivity(m);
+        membershipService.ValidateMembership(m);
+        membershipService.IsPersonAlreadyInActivity(m);
         if (RequestAlreadyExists(membershipRequestUpload))
         {
             throw new ResourceCreationException() { ExceptionMessage = "A request already exists with this activity, session, and user." };
         }
 
-        var request = (REQUEST)membershipRequestUpload;
-        request.ID_NUM = int.Parse(_accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID);
+        var request = (REQUEST) membershipRequestUpload;
+        request.ID_NUM = int.Parse(accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID);
 
-        var addedMembershipRequest = _context.REQUEST.Add(request);
-        await _context.SaveChangesAsync();
+        var addedMembershipRequest = context.REQUEST.Add(request);
+        await context.SaveChangesAsync();
 
         return Get(addedMembershipRequest.Entity.REQUEST_ID);
 
@@ -56,9 +46,9 @@ public class MembershipRequestService : IMembershipRequestService
 
     private bool RequestAlreadyExists(RequestUploadViewModel requestUpload)
     {
-        var account = _accountService.GetAccountByUsername(requestUpload.Username);
+        var account =accountService.GetAccountByUsername(requestUpload.Username);
         var g_id = Int32.Parse(account.GordonID);
-        return _context.REQUEST.Any(r =>
+        return context.REQUEST.Any(r => 
             r.STATUS == Request_Status.PENDING
             && r.ACT_CDE == requestUpload.Activity
             && r.SESS_CDE == requestUpload.Session
@@ -73,7 +63,7 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>The approved request as a RequestView</returns>
     public async Task<RequestView> ApproveAsync(int requestID)
     {
-        var request = await _context.REQUEST.FindAsync(requestID);
+        var request = await context.REQUEST.FindAsync(requestID);
         if (request == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
@@ -81,19 +71,19 @@ public class MembershipRequestService : IMembershipRequestService
 
         if (request.STATUS == Request_Status.APPROVED)
         {
-            throw new BadInputException() { ExceptionMessage = "The request has already been approved." };
+            throw new BadInputException() { ExceptionMessage = "The request has already been approved."};
         }
 
-        var username = _accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
+        var username = accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
         MembershipUploadViewModel newMembership = MembershipUploadViewModel.FromRequest(request, username);
 
-        var createdMembership = await _membershipService.AddAsync(newMembership);
+        var createdMembership = await membershipService.AddAsync(newMembership);
 
         if (createdMembership == null)
             throw new ResourceCreationException();
 
         request.STATUS = Request_Status.APPROVED;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return Get(request.REQUEST_ID);
 
@@ -106,7 +96,7 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>A RequestView object of the denied request</returns>
     public async Task<RequestView> DenyAsync(int requestID)
     {
-        var request = await _context.REQUEST.FindAsync(requestID);
+        var request = await context.REQUEST.FindAsync(requestID);
 
         if (request == null)
         {
@@ -124,7 +114,7 @@ public class MembershipRequestService : IMembershipRequestService
         }
 
         request.STATUS = Request_Status.DENIED;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return Get(request.REQUEST_ID);
     }
@@ -136,7 +126,7 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>A RequestView object of the now pending request</returns>
     public async Task<RequestView> SetPendingAsync(int requestID)
     {
-        var request = await _context.REQUEST.FindAsync(requestID);
+        var request = await context.REQUEST.FindAsync(requestID);
 
         if (request == null)
         {
@@ -154,7 +144,7 @@ public class MembershipRequestService : IMembershipRequestService
         }
 
         request.STATUS = Request_Status.PENDING;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return Get(request.REQUEST_ID);
     }
@@ -166,7 +156,7 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>A copy of the deleted request as a RequestView</returns>
     public async Task<RequestView> DeleteAsync(int requestID)
     {
-        var request = await _context.REQUEST.FindAsync(requestID);
+        var request = await context.REQUEST.FindAsync(requestID);
         if (request == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Request was not found." };
@@ -174,8 +164,8 @@ public class MembershipRequestService : IMembershipRequestService
 
         RequestView rv = Get(request.REQUEST_ID);
 
-        _context.REQUEST.Remove(request);
-        await _context.SaveChangesAsync();
+        context.REQUEST.Remove(request);
+        await context.SaveChangesAsync();
 
         return rv;
     }
@@ -187,9 +177,9 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>The matching RequestView</returns>
     public RequestView Get(int requestID)
     {
-        RequestView? query = _context.RequestView.FirstOrDefault(rv => rv.RequestID == requestID);
+        RequestView? query = context.RequestView.FirstOrDefault(rv => rv.RequestID == requestID);
 
-        if (query is not RequestView request) throw new ResourceNotFoundException() { ExceptionMessage = "The request was not found" };
+        if (query is not RequestView request) throw new ResourceNotFoundException() { ExceptionMessage = "The request was not found"};
 
         return request;
     }
@@ -200,7 +190,7 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
     public IEnumerable<RequestView> GetAll()
     {
-        return _context.RequestView;
+        return context.RequestView;
     }
 
     /// <summary>
@@ -212,13 +202,13 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
     public IEnumerable<RequestView> GetMembershipRequests(string activityCode, string? sessionCode = null, string? requestStatus = null)
     {
-        if (!_context.ACT_INFO.Any(a => a.ACT_CDE == activityCode))
+        if (!context.ACT_INFO.Any(a => a.ACT_CDE == activityCode))
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The activity could not be found." };
         }
 
-        sessionCode ??= Helpers.GetCurrentSession(_context);
-        var requests = _context.RequestView.Where(r => r.ActivityCode == activityCode && r.SessionCode == sessionCode);
+        sessionCode ??= Helpers.GetCurrentSession(context);
+        var requests = context.RequestView.Where(r => r.ActivityCode == activityCode && r.SessionCode == sessionCode);
         if (requestStatus != null)
         {
             requests = requests.Where(r => r.Status == requestStatus);
@@ -233,7 +223,7 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
     public IEnumerable<RequestView> GetMembershipRequestsByUsername(string username)
     {
-        return _context.RequestView.Where(r => r.Username == username);
+        return context.RequestView.Where(r => r.Username == username);
     }
 
     /// <summary>
@@ -244,14 +234,14 @@ public class MembershipRequestService : IMembershipRequestService
     /// <returns>A RequestView object of the updated request</returns>
     public async Task<RequestView?> UpdateAsync(int requestID, RequestUploadViewModel membershipRequest)
     {
-        var original = await _context.REQUEST.FindAsync(requestID);
+        var original = await context.REQUEST.FindAsync(requestID);
         if (original == null)
         {
             throw new ResourceNotFoundException { ExceptionMessage = "The Request was not found." };
         }
 
         // The validate function throws ResourceNotFoundException where needed. The exceptions are caught in my CustomExceptionFilter
-        _membershipService.ValidateMembership((MembershipUploadViewModel)membershipRequest);
+        membershipService.ValidateMembership((MembershipUploadViewModel) membershipRequest);
 
         // Only a few fields should be able to be changed through an update.
         original.SESS_CDE = membershipRequest.Session;
@@ -259,7 +249,7 @@ public class MembershipRequestService : IMembershipRequestService
         original.DATE_SENT = membershipRequest.DateSent;
         original.PART_CDE = membershipRequest.Participation;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return Get(original.REQUEST_ID);
     }

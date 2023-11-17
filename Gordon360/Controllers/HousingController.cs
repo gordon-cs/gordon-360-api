@@ -10,22 +10,8 @@ using System.Security.Claims;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class HousingController : GordonControllerBase
+public class HousingController(CCTContext context, IProfileService profileService, IHousingService housingService, IAccountService accountService, IAdministratorService administratorService) : GordonControllerBase
 {
-    private readonly IHousingService _housingService;
-    private readonly IAccountService _accountService;
-    private readonly IAdministratorService _administratorService;
-    private readonly IProfileService _profileService;
-    private readonly CCTContext _context;
-
-    public HousingController(CCTContext context, IProfileService profileService)
-    {
-        _context = context;
-        _housingService = new HousingService(context);
-        _accountService = new AccountService(context);
-        _administratorService = new AdministratorService(context, _accountService);
-        _profileService = profileService;
-    }
 
     /// <summary>
     /// Delete an application (and consequently all rows that reference it)
@@ -37,7 +23,7 @@ public class HousingController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING)]
     public ActionResult<bool> DeleteApplication(int applicationID)
     {
-        bool result = _housingService.DeleteApplication(applicationID);
+        bool result = housingService.DeleteApplication(applicationID);
         return Ok(result);
     }
 
@@ -50,7 +36,7 @@ public class HousingController : GordonControllerBase
     [Route("halls/apartments")]
     public ActionResult<string[]> GetApartmentHalls()
     {
-        var result = _housingService.GetAllApartmentHalls();
+        var result = housingService.GetAllApartmentHalls();
         if (result != null)
         {
             return Ok(result);
@@ -71,9 +57,9 @@ public class HousingController : GordonControllerBase
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-        string sessionID = Helpers.GetCurrentSession(_context);
+        string sessionID = Helpers.GetCurrentSession(context);
 
-        int? result = _housingService.GetApplicationID(authenticatedUserUsername, sessionID);
+        int? result = housingService.GetApplicationID(authenticatedUserUsername, sessionID);
         if (result != null)
         {
             return Ok(result);
@@ -93,9 +79,9 @@ public class HousingController : GordonControllerBase
     [Route("apartment/{username}")]
     public ActionResult<int?> GetUserApplicationID(string username)
     {
-        string sessionID = Helpers.GetCurrentSession(_context);
+        string sessionID = Helpers.GetCurrentSession(context);
 
-        int? result = _housingService.GetApplicationID(username, sessionID);
+        int? result = housingService.GetApplicationID(username, sessionID);
         if (result != null)
         {
             return Ok(result);
@@ -115,7 +101,7 @@ public class HousingController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
     public ActionResult<int> SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
     {
-        string sessionID = Helpers.GetCurrentSession(_context);
+        string sessionID = Helpers.GetCurrentSession(context);
 
         string editorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 
@@ -124,11 +110,11 @@ public class HousingController : GordonControllerBase
         {
             if (applicant.Profile == null)
             {
-                applicant.Profile = _profileService.GetStudentProfileByUsername(applicant.Username);
+                applicant.Profile = profileService.GetStudentProfileByUsername(applicant.Username);
             }
         }
 
-        int result = _housingService.SaveApplication(sessionID, editorUsername, apartmentApplicants, applicationDetails.ApartmentChoices);
+        int result = housingService.SaveApplication(sessionID, editorUsername, apartmentApplicants, applicationDetails.ApartmentChoices);
 
         return Created("Status of application saving: ", result);
     }
@@ -144,7 +130,7 @@ public class HousingController : GordonControllerBase
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-        string sessionID = Helpers.GetCurrentSession(_context);
+        string sessionID = Helpers.GetCurrentSession(context);
 
         string newEditorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 
@@ -153,11 +139,11 @@ public class HousingController : GordonControllerBase
         {
             if (applicant.Profile == null)
             {
-                applicant.Profile = _profileService.GetStudentProfileByUsername(applicant.Username);
+                applicant.Profile = profileService.GetStudentProfileByUsername(applicant.Username);
             }
         }
 
-        int result = _housingService.EditApplication(authenticatedUserUsername, sessionID, applicationID, newEditorUsername, newApartmentApplicants, applicationDetails.ApartmentChoices);
+        int result = housingService.EditApplication(authenticatedUserUsername, sessionID, applicationID, newEditorUsername, newApartmentApplicants, applicationDetails.ApartmentChoices);
 
         return Created("Status of application saving: ", result);
     }
@@ -175,7 +161,7 @@ public class HousingController : GordonControllerBase
 
         string newEditorUsername = applicationDetails.EditorProfile?.AD_Username ?? applicationDetails.EditorUsername;
 
-        bool result = _housingService.ChangeApplicationEditor(authenticatedUserUsername, applicationID, newEditorUsername);
+        bool result = housingService.ChangeApplicationEditor(authenticatedUserUsername, applicationID, newEditorUsername);
 
         return Ok(result);
     }
@@ -190,7 +176,7 @@ public class HousingController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
     public ActionResult<bool> ChangeApplicationDateSubmitted(int applicationID)
     {
-        bool result = _housingService.ChangeApplicationDateSubmitted(applicationID);
+        bool result = housingService.ChangeApplicationDateSubmitted(applicationID);
         return Ok(result);
     }
 
@@ -205,11 +191,11 @@ public class HousingController : GordonControllerBase
         //get token data from context, username is the username of current logged in person
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-        var siteAdmin = _administratorService.GetByUsername(authenticatedUserUsername);
-        var isHousingAdmin = _housingService.CheckIfHousingAdmin(authenticatedUserUsername);
+        var siteAdmin = administratorService.GetByUsername(authenticatedUserUsername);
+        var isHousingAdmin = housingService.CheckIfHousingAdmin(authenticatedUserUsername);
         bool isAdmin = siteAdmin != null || isHousingAdmin;
 
-        ApartmentApplicationViewModel result = _housingService.GetApartmentApplication(applicationID, isAdmin);
+        ApartmentApplicationViewModel result = housingService.GetApartmentApplication(applicationID, isAdmin);
         if (result != null)
         {
             return Ok(result);
@@ -230,8 +216,8 @@ public class HousingController : GordonControllerBase
         //get token data from context, username is the username of current logged in person
         var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-
-        ApartmentApplicationViewModel[] result = _housingService.GetAllApartmentApplication();
+        
+        ApartmentApplicationViewModel[] result = housingService.GetAllApartmentApplication();
         if (result != null)
         {
             return Ok(result);
