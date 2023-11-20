@@ -288,10 +288,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[ADVISOR_EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[ADVISOR_SEPARATE]",
          "ObjectType": 1
       },
@@ -304,95 +300,7 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[ALL_MEMBERSHIPS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[ALL_REQUESTS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CANCEL_RIDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CHECK_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[COURSES_FOR_PROFESSOR]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_BOOKING]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_MESSAGE_ROOM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_MYSCHEDULE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CREATE_RIDE]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[CREATE_SOCIAL_LINKS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[CURRENT_SESSION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_AA_APARTMENT_CHOICE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_AA_APPLICANT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_AA_APPLICATION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_BOOKING]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_BOOKINGS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_CLOCK_IN]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_MYSCHEDULE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_NEWS_ITEM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_RIDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_USER_CONNECTION_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DELETE_USER_ROOM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[DINING_INFO_BY_STUDENT_ID]",
          "ObjectType": 1
       },
       {
@@ -400,15 +308,7 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[FINALIZATION_GET_FINALIZATION_STATUS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[FINALIZATION_GETDEMOGRAPHIC]",
          "ObjectType": 1
       },
       {
@@ -428,191 +328,7 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[GET_AA_APARTMENT_CHOICES_BY_APP_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APARTMENT_HALLS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPID_BY_NAME_AND_DATE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPID_BY_STU_ID_AND_SESS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPLICANTS_BY_APPID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPLICANTS_DETAILS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPLICATIONS_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_APPLICATIONS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_CURRENT_APP_IDS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_CURRENT_APPLICATIONS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_AA_EDITOR_BY_APPID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_CONNECTION_IDS_BY_ID_LIST]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_CONNECTION_IDS_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_MESSAGES_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_ROOMS_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ALL_USERS_BY_ROOM_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_BIRTH_DATE_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_HEALTH_CHECK_QUESTION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_LATEST_ROOM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_ROOM_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GET_SINGLE_MESSAGE_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[GRP_ADMIN_EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_AA_APARTMENT_CHOICE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_AA_APPLICANT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_AA_APPLICATION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_HEALTH_QUESTION]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_MESSAGE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_NEWS_ITEM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_USER_CONNECTION_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_USER_ROOMS]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_USER]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[LEADER_EMAILS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[LEADER_MEMBERSHIPS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[MEMBERSHIPS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[MEMBERSHIPS_PER_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[MYSCHEDULE_BY_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[NEWS_CATEGORIES]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[NEWS_NEW]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[NEWS_NOT_EXPIRED]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[NEWS_PERSONAL_UNAPPROVED]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[PHOTO_INFO_PER_USER_NAME]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[REQUEST_PER_REQUEST_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[REQUESTS_PER_ACT_CDE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[REQUESTS_PER_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[RIDERS_BY_RIDE_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[STUDENT_COURSES_BY_ID_NUM_AND_SESS_CDE]",
          "ObjectType": 1
       },
       {
@@ -620,59 +336,11 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[TRUNCATE_AA_ALL_APPLICATION_TABLES]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPCOMING_RIDES_BY_STUDENT_ID]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPCOMING_RIDES]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APARTMENT_CHOICES]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APPLICANT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APPLICATION_DATEMODIFIED]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APPLICATION_DATESUBMITTED]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_AA_APPLICATION_EDITOR]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_ACT_INFO]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[UPDATE_CELL_PHONE]",
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[UPDATE_DESCRIPTION]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[UPDATE_EMRGCONTACT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_MYSCHEDULE]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_NEWS_ITEM]",
          "ObjectType": 1
       },
       {
@@ -684,23 +352,7 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[UPDATE_ROOM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_SCHEDULE_PRIVACY]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[UPDATE_SHOW_PIC]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[UPDATE_TIMESTAMP]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[VALID_DRIVES_BY_ID]",
          "ObjectType": 1
       },
       {
