@@ -2,49 +2,43 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Gordon360.Models.MyGordon;
+using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.MyGordon.Context
+namespace Gordon360.Models.MyGordon.Context;
+
+public partial class MyGordonContext : DbContext
 {
-    public partial class MyGordonContext : DbContext
+    public MyGordonContext(DbContextOptions<MyGordonContext> options)
+        : base(options)
     {
-        public MyGordonContext(DbContextOptions<MyGordonContext> options)
-            : base(options)
-        {
-        }
-
-        public virtual DbSet<StudentNews> StudentNews { get; set; }
-        public virtual DbSet<StudentNewsCategory> StudentNewsCategory { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<StudentNews>(entity =>
-            {
-                entity.Property(e => e.Accepted).HasDefaultValueSql("(0)");
-
-                entity.Property(e => e.Entered).HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.Sent).HasDefaultValueSql("(0)");
-
-                entity.Property(e => e.thisPastMailing).HasDefaultValueSql("(0)");
-
-                entity.HasOne(d => d.category)
-                    .WithMany(p => p.StudentNews)
-                    .HasForeignKey(d => d.categoryID)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_StudentNews_StudentNewsCategory");
-            });
-
-            modelBuilder.Entity<StudentNewsCategory>(entity =>
-            {
-                entity.Property(e => e.SortOrder).HasDefaultValueSql("(999)");
-            });
-
-            OnModelCreatingPartial(modelBuilder);
-        }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
+
+    public virtual DbSet<StudentNews> StudentNews { get; set; }
+
+    public virtual DbSet<StudentNewsCategory> StudentNewsCategory { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<StudentNews>(entity =>
+        {
+            entity.Property(e => e.Accepted).HasDefaultValue(false);
+            entity.Property(e => e.Entered).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Sent).HasDefaultValue(false);
+            entity.Property(e => e.thisPastMailing).HasDefaultValue(false);
+
+            entity.HasOne(d => d.category).WithMany(p => p.StudentNews)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_StudentNews_StudentNewsCategory");
+        });
+
+        modelBuilder.Entity<StudentNewsCategory>(entity =>
+        {
+            entity.Property(e => e.SortOrder).HasDefaultValue(999);
+        });
+
+        OnModelCreatingPartial(modelBuilder);
+    }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

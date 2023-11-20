@@ -6,24 +6,20 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.MyGordon
+namespace Gordon360.Models.MyGordon;
+
+public partial class StudentNewsCategory
 {
-    public partial class StudentNewsCategory
-    {
-        public StudentNewsCategory()
-        {
-            StudentNews = new HashSet<StudentNews>();
-        }
+    [Key]
+    public int categoryID { get; set; }
 
-        [Key]
-        public int categoryID { get; set; }
-        [Required]
-        [StringLength(30)]
-        [Unicode(false)]
-        public string categoryName { get; set; }
-        public int? SortOrder { get; set; }
+    [Required]
+    [StringLength(30)]
+    [Unicode(false)]
+    public string categoryName { get; set; }
 
-        [InverseProperty("category")]
-        public virtual ICollection<StudentNews> StudentNews { get; set; }
-    }
+    public int? SortOrder { get; set; }
+
+    [InverseProperty("category")]
+    public virtual ICollection<StudentNews> StudentNews { get; set; } = new List<StudentNews>();
 }
