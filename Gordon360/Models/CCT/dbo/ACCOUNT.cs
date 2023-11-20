@@ -56,8 +56,6 @@ public partial class ACCOUNT
 
     public int ReadOnly { get; set; }
 
-    public int is_police { get; set; }
-
     public int? Chapel_Required { get; set; }
 
     [Required]
