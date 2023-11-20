@@ -75,7 +75,6 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<GET_LATEST_ROOMResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_ROOM_BY_IDResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GET_SINGLE_MESSAGE_BY_IDResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<GET_TIMESHEETS_CLOCK_IN_OUTResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<GRP_ADMIN_EMAILS_PER_ACT_CDEResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<INSERT_NEWS_ITEMResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<INSTRUCTOR_COURSES_BY_ID_NUM_AND_SESS_CDEResult>().HasNoKey().ToView(null);
@@ -1894,32 +1893,6 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<GET_TIMESHEETS_CLOCK_IN_OUTResult>> GET_TIMESHEETS_CLOCK_IN_OUTAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ID_NUM",
-                    Value = ID_NUM ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<GET_TIMESHEETS_CLOCK_IN_OUTResult>("EXEC @returnValue = [dbo].[GET_TIMESHEETS_CLOCK_IN_OUT] @ID_NUM", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
         public virtual async Task<List<GRP_ADMIN_EMAILS_PER_ACT_CDEResult>> GRP_ADMIN_EMAILS_PER_ACT_CDEAsync(string ACT_CDE, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
@@ -2254,38 +2227,6 @@ namespace Gordon360.Models.CCT.Context
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<INSERT_NEWS_ITEMResult>("EXEC @returnValue = [dbo].[INSERT_NEWS_ITEM] @Username, @CategoryID, @Subject, @Body", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<int> INSERT_TIMESHEETS_CLOCK_IN_OUTAsync(int? ID_NUM, bool? State, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ID_NUM",
-                    Value = ID_NUM ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "State",
-                    Value = State ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Bit,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[INSERT_TIMESHEETS_CLOCK_IN_OUT] @ID_NUM, @State", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

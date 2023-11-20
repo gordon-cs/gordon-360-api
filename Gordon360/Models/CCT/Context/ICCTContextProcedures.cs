@@ -69,7 +69,6 @@ namespace Gordon360.Models.CCT.Context
         Task<List<GET_LATEST_ROOMResult>> GET_LATEST_ROOMAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_ROOM_BY_IDResult>> GET_ROOM_BY_IDAsync(int? room_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GET_SINGLE_MESSAGE_BY_IDResult>> GET_SINGLE_MESSAGE_BY_IDAsync(int? room_id, string message_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<GET_TIMESHEETS_CLOCK_IN_OUTResult>> GET_TIMESHEETS_CLOCK_IN_OUTAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<GRP_ADMIN_EMAILS_PER_ACT_CDEResult>> GRP_ADMIN_EMAILS_PER_ACT_CDEAsync(string ACT_CDE, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> INSERT_AA_APARTMENT_CHOICEAsync(int? APPLICATION_ID, int? RANKING, string HALL_NAME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> INSERT_AA_APPLICANTAsync(int? APPLICATION_ID, string USERNAME, string APRT_PROGRAM, string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -77,7 +76,6 @@ namespace Gordon360.Models.CCT.Context
         Task<int> INSERT_HEALTH_QUESTIONAsync(string Question, string YesPrompt, string NoPrompt, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> INSERT_MESSAGEAsync(string _id, string room_id, string text, DateTime? createdAt, string user_id, byte[] image, byte[] video, byte[] audio, bool? system, bool? sent, bool? received, bool? pending, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<INSERT_NEWS_ITEMResult>> INSERT_NEWS_ITEMAsync(string Username, int? CategoryID, string Subject, string Body, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<int> INSERT_TIMESHEETS_CLOCK_IN_OUTAsync(int? ID_NUM, bool? State, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> INSERT_USERAsync(string _id, string name, byte[] avatar, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> INSERT_USER_CONNECTION_IDAsync(string user_id, string connection_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> INSERT_USER_ROOMSAsync(string user_id, string _id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

@@ -620,10 +620,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[GET_TIMESHEETS_CLOCK_IN_OUT]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[GRP_ADMIN_EMAILS_PER_ACT_CDE]",
          "ObjectType": 1
       },
@@ -649,10 +645,6 @@
       },
       {
          "Name": "[dbo].[INSERT_NEWS_ITEM]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[INSERT_TIMESHEETS_CLOCK_IN_OUT]",
          "ObjectType": 1
       },
       {
