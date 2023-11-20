@@ -3236,33 +3236,6 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<int> Update_Health_Status_Upon_Form_CompletionAsync(string ResponderEmail, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ResponderEmail",
-                    Size = 256,
-                    Value = ResponderEmail ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.VarChar,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[Update_Health_Status_Upon_Form_Completion] @ResponderEmail", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
         public virtual async Task<int> UPDATE_MYSCHEDULEAsync(string EVENTID, string GORDONID, string LOCATION, string DESCRIPTION, string MON_CDE, string TUE_CDE, string WED_CDE, string THU_CDE, string FRI_CDE, string SAT_CDE, string SUN_CDE, int? IS_ALLDAY, TimeSpan? BEGINTIME, TimeSpan? ENDTIME, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter

@@ -4,13 +4,10 @@ using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static Gordon360.Controllers.WellnessController;
-using static Gordon360.Services.MembershipService;
 using RecIMActivityViewModel = Gordon360.Models.ViewModels.RecIM.ActivityViewModel;
 
 // <summary>
@@ -94,13 +91,6 @@ namespace Gordon360.Services
         ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
         ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts);
 
-    }
-
-    public interface IWellnessService
-    {
-        WellnessViewModel GetStatus(string username);
-        WellnessQuestionViewModel GetQuestion();
-        WellnessViewModel PostStatus(WellnessStatusColor status, string username);
     }
 
     public interface IActivityService

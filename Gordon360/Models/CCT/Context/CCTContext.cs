@@ -72,12 +72,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Graduation> Graduation { get; set; }
 
-    public virtual DbSet<Health_Question> Health_Question { get; set; }
-
-    public virtual DbSet<Health_Status> Health_Status { get; set; }
-
-    public virtual DbSet<Health_Status_CTRL> Health_Status_CTRL { get; set; }
-
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
 
     public virtual DbSet<Housing_Applications> Housing_Applications { get; set; }
@@ -396,15 +390,6 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Graduation>(entity =>
         {
             entity.ToView("Graduation");
-        });
-
-        modelBuilder.Entity<Health_Status>(entity =>
-        {
-            entity.HasKey(e => new { e.Created, e.ID_Num }).HasName("PK__Health_S__6CC83B6815B808A2");
-
-            entity.HasOne(d => d.HealthStatus).WithMany(p => p.Health_Status)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Health_Status_HealthStatus_CTRL");
         });
 
         modelBuilder.Entity<Housing_Applicants>(entity =>

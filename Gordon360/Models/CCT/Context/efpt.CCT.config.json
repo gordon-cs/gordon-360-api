@@ -40,18 +40,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Health_Question]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Health_Status]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Health_Status_CTRL]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Housing_Applicants]",
          "ObjectType": 0
       },
@@ -773,10 +761,6 @@
       },
       {
          "Name": "[dbo].[UPDATE_EMRGCONTACT]",
-         "ObjectType": 1
-      },
-      {
-         "Name": "[dbo].[Update_Health_Status_Upon_Form_Completion]",
          "ObjectType": 1
       },
       {

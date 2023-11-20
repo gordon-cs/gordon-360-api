@@ -1174,33 +1174,6 @@
             </summary>
             <returns>A VP Json</returns>
         </member>
-        <member name="T:Gordon360.Controllers.WellnessController.WellnessStatusColor">
-            <summary>
-            Enum representing three possible wellness statuses.
-            GREEN - Healthy, no known contact/symptoms
-            YELLOW - Symptomatic or cautionary hold
-            RED - Quarantine/Isolation
-            </summary>
-        </member>
-        <member name="M:Gordon360.Controllers.WellnessController.Get">
-            <summary>
-             Gets wellness status of current user
-            </summary>
-            <returns>A WellnessViewModel representing the most recent status of the user</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.WellnessController.GetQuestion">
-            <summary>
-             Gets question for wellness check from the back end
-            </summary>
-            <returns>A WellnessQuestionViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.WellnessController.Post(Gordon360.Controllers.WellnessController.WellnessStatusColor)">
-            <summary>
-             Stores the user's wellness status
-            </summary>
-            <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
-            <returns>The status that was stored in the database</returns>
-        </member>
         <member name="F:Gordon360.Enums.Participation.GroupAdmin">
             <summary>
             NOTE: Group admin is not strictly a participation type. 
@@ -2339,34 +2312,6 @@
             </summary>
             <param name="username">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
-            <summary>
-            Get the status of the user by id
-            </summary>
-            <param name = "username" > AD Username of the user to get the status of</param>
-            <returns> The status of the user, a WellnessViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.PostStatus(Gordon360.Controllers.WellnessController.WellnessStatusColor,System.String)">
-            <summary>
-            Stores wellness Status in database.
-            </summary>
-            <param name="username">AD Username of the user to post the status for</param>
-            <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
-            <returns>Status that was successfully recorded</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.GetQuestion">
-            <summary>
-            gets the question for the wellness check from the back end
-            </summary>
-            <returns>A WellnessQuestionViewModel including the text of the question and the disclaimers for positive and negative answers.</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.ExpirationDate(System.DateTime)">
-            <summary>
-            Creates an expiration date for a check in at the current time
-            </summary>
-            <param name="currentTime">The time of the check in</param>
-            <returns>When the check in should expire (the next 5AM).</returns>
         </member>
         <member name="T:Gordon360.Static.Methods.Helpers">
             <summary>
