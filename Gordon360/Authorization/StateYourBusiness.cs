@@ -416,12 +416,6 @@ namespace Gordon360.Authorization
         {
             switch (resource)
             {
-                case Resource.SHIFT:
-                    {
-                        if (user_groups.Contains(AuthGroup.Student))
-                            return true;
-                        return false;
-                    }
                 case Resource.CLIFTON_STRENGTHS:
                     {
                         return user_groups.Contains(AuthGroup.SiteAdmin);
@@ -529,12 +523,6 @@ namespace Gordon360.Authorization
         {
             switch (resource)
             {
-                case Resource.SHIFT:
-                    {
-                        if (user_groups.Contains(AuthGroup.Student))
-                            return true;
-                        return false;
-                    }
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
@@ -778,10 +766,6 @@ namespace Gordon360.Authorization
         {
             switch (resource)
             {
-                case Resource.SHIFT:
-                    if (user_groups.Contains(AuthGroup.Student))
-                        return true;
-                    return false;
                 case Resource.MEMBERSHIP:
                     {
                         // User is admin
