@@ -436,7 +436,7 @@ namespace Gordon360.Services.RecIM
             await _context.SaveChangesAsync();
             if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
             {
-                if (_context.Participant.Find(participant.Username).AllowEmails ?? true)
+                if (_context.Participant.Find(participant.Username)?.AllowEmails ?? true)
                     SendInviteEmail(teamID, participant.Username, inviterUsername, isCustom);
             }
             return participantTeam;
