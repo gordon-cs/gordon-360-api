@@ -6,21 +6,25 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+public partial class Message_Rooms
 {
-    public partial class Message_Rooms
-    {
-        [Key]
-        public int room_id { get; set; }
-        [Required]
-        [StringLength(72)]
-        [Unicode(false)]
-        public string name { get; set; }
-        public bool group { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime createdAt { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime lastUpdated { get; set; }
-        public byte[] roomImage { get; set; }
-    }
+    [Key]
+    public int room_id { get; set; }
+
+    [Required]
+    [StringLength(72)]
+    [Unicode(false)]
+    public string name { get; set; }
+
+    public bool group { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime createdAt { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime lastUpdated { get; set; }
+
+    public byte[] roomImage { get; set; }
 }

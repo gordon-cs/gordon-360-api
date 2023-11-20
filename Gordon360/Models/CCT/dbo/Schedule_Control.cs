@@ -6,19 +6,21 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+public partial class Schedule_Control
 {
-    public partial class Schedule_Control
-    {
-        public int IsSchedulePrivate { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? ModifiedTimeStamp { get; set; }
-        [StringLength(4096)]
-        [Unicode(false)]
-        public string Description { get; set; }
-        [Key]
-        [StringLength(10)]
-        [Unicode(false)]
-        public string gordon_id { get; set; }
-    }
+    public int IsSchedulePrivate { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? ModifiedTimeStamp { get; set; }
+
+    [StringLength(4096)]
+    [Unicode(false)]
+    public string Description { get; set; }
+
+    [Key]
+    [StringLength(10)]
+    [Unicode(false)]
+    public string gordon_id { get; set; }
 }

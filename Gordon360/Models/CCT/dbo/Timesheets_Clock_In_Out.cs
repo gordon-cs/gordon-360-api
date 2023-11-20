@@ -6,14 +6,15 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Timesheets_Clock_In_Out
 {
-    [Keyless]
-    public partial class Timesheets_Clock_In_Out
-    {
-        public int ID_Num { get; set; }
-        public bool? CurrentState { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? Timestamp { get; set; }
-    }
+    public int ID_Num { get; set; }
+
+    public bool? CurrentState { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? Timestamp { get; set; }
 }

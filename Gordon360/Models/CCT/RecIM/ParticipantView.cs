@@ -6,31 +6,40 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class ParticipantView
 {
-    [Keyless]
-    public partial class ParticipantView
-    {
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Username { get; set; }
-        public bool IsAdmin { get; set; }
-        public int ID { get; set; }
-        [Required]
-        [StringLength(1)]
-        [Unicode(false)]
-        public string SpecifiedGender { get; set; }
-        public bool AllowEmails { get; set; }
-        public bool IsCustom { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Email { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string FirstName { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string LastName { get; set; }
-    }
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Username { get; set; }
+
+    public bool IsAdmin { get; set; }
+
+    public int ID { get; set; }
+
+    [Required]
+    [StringLength(1)]
+    [Unicode(false)]
+    public string SpecifiedGender { get; set; }
+
+    public bool AllowEmails { get; set; }
+
+    public bool IsCustom { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Email { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string FirstName { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string LastName { get; set; }
+
+    public int CurrentStatus { get; set; }
 }

@@ -6,13 +6,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Birthdays
 {
-    [Keyless]
-    public partial class Birthdays
-    {
-        public int ID_NUM { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? BIRTH_DTE { get; set; }
-    }
+    public int ID_NUM { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? BIRTH_DTE { get; set; }
 }

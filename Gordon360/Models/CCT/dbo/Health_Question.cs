@@ -6,21 +6,23 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Health_Question
 {
-    [Keyless]
-    public partial class Health_Question
-    {
-        [Required]
-        [Unicode(false)]
-        public string Question { get; set; }
-        [Required]
-        [Unicode(false)]
-        public string YesPrompt { get; set; }
-        [Required]
-        [Unicode(false)]
-        public string NoPrompt { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? Timestamp { get; set; }
-    }
+    [Required]
+    [Unicode(false)]
+    public string Question { get; set; }
+
+    [Required]
+    [Unicode(false)]
+    public string YesPrompt { get; set; }
+
+    [Required]
+    [Unicode(false)]
+    public string NoPrompt { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? Timestamp { get; set; }
 }

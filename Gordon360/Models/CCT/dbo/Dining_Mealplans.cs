@@ -6,21 +6,23 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Dining_Mealplans
 {
-    [Keyless]
-    public partial class Dining_Mealplans
-    {
-        [StringLength(150)]
-        [Unicode(false)]
-        public string Meal_Plan_Description { get; set; }
-        [StringLength(10)]
-        [Unicode(false)]
-        public string Meal_Plan_Type { get; set; }
-        [Required]
-        [StringLength(6)]
-        [Unicode(false)]
-        public string Meal_Plan_ID { get; set; }
-        public int? Meal_Plan_Initial_Balance { get; set; }
-    }
+    [StringLength(150)]
+    [Unicode(false)]
+    public string Meal_Plan_Description { get; set; }
+
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Meal_Plan_Type { get; set; }
+
+    [Required]
+    [StringLength(6)]
+    [Unicode(false)]
+    public string Meal_Plan_ID { get; set; }
+
+    public int? Meal_Plan_Initial_Balance { get; set; }
 }

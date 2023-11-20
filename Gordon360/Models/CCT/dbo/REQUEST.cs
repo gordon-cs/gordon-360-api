@@ -6,33 +6,39 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+public partial class REQUEST
 {
-    public partial class REQUEST
-    {
-        [Key]
-        public int REQUEST_ID { get; set; }
-        [Required]
-        [StringLength(8)]
-        [Unicode(false)]
-        public string SESS_CDE { get; set; }
-        [Required]
-        [StringLength(8)]
-        [Unicode(false)]
-        public string ACT_CDE { get; set; }
-        public int ID_NUM { get; set; }
-        [Required]
-        [StringLength(5)]
-        [Unicode(false)]
-        public string PART_CDE { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime DATE_SENT { get; set; }
-        [StringLength(45)]
-        [Unicode(false)]
-        public string COMMENT_TXT { get; set; }
-        [Required]
-        [StringLength(20)]
-        [Unicode(false)]
-        public string STATUS { get; set; }
-    }
+    [Key]
+    public int REQUEST_ID { get; set; }
+
+    [Required]
+    [StringLength(8)]
+    [Unicode(false)]
+    public string SESS_CDE { get; set; }
+
+    [Required]
+    [StringLength(8)]
+    [Unicode(false)]
+    public string ACT_CDE { get; set; }
+
+    public int ID_NUM { get; set; }
+
+    [Required]
+    [StringLength(5)]
+    [Unicode(false)]
+    public string PART_CDE { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime DATE_SENT { get; set; }
+
+    [StringLength(45)]
+    [Unicode(false)]
+    public string COMMENT_TXT { get; set; }
+
+    [Required]
+    [StringLength(20)]
+    [Unicode(false)]
+    public string STATUS { get; set; }
 }

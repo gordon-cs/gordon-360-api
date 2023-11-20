@@ -6,17 +6,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Buildings
 {
-    [Keyless]
-    public partial class Buildings
-    {
-        [Required]
-        [StringLength(5)]
-        [Unicode(false)]
-        public string BLDG_CDE { get; set; }
-        [StringLength(45)]
-        [Unicode(false)]
-        public string BUILDING_DESC { get; set; }
-    }
+    [Required]
+    [StringLength(5)]
+    [Unicode(false)]
+    public string BLDG_CDE { get; set; }
+
+    [StringLength(45)]
+    [Unicode(false)]
+    public string BUILDING_DESC { get; set; }
 }

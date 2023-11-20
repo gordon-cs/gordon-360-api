@@ -6,19 +6,20 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class AccountPhotoURL
 {
-    [Keyless]
-    public partial class AccountPhotoURL
-    {
-        [StringLength(10)]
-        [Unicode(false)]
-        public string Gordonid { get; set; }
-        [StringLength(86)]
-        [Unicode(false)]
-        public string PhotoURL { get; set; }
-        [StringLength(86)]
-        [Unicode(false)]
-        public string PrefPhotoURL { get; set; }
-    }
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Gordonid { get; set; }
+
+    [StringLength(86)]
+    [Unicode(false)]
+    public string PhotoURL { get; set; }
+
+    [StringLength(86)]
+    [Unicode(false)]
+    public string PrefPhotoURL { get; set; }
 }

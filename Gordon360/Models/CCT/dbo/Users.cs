@@ -6,19 +6,20 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Users
 {
-    [Keyless]
-    public partial class Users
-    {
-        [Required]
-        [StringLength(72)]
-        [Unicode(false)]
-        public string _id { get; set; }
-        [Required]
-        [StringLength(72)]
-        [Unicode(false)]
-        public string name { get; set; }
-        public byte[] avatar { get; set; }
-    }
+    [Required]
+    [StringLength(72)]
+    [Unicode(false)]
+    public string _id { get; set; }
+
+    [Required]
+    [StringLength(72)]
+    [Unicode(false)]
+    public string name { get; set; }
+
+    public byte[] avatar { get; set; }
 }

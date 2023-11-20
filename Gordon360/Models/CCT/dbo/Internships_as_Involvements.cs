@@ -6,33 +6,39 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Internships_as_Involvements
 {
-    [Keyless]
-    public partial class Internships_as_Involvements
-    {
-        [Required]
-        [StringLength(6)]
-        [Unicode(false)]
-        public string ACT_CDE { get; set; }
-        public int ID_NUM { get; set; }
-        [Required]
-        [StringLength(4)]
-        [Unicode(false)]
-        public string YR_CDE { get; set; }
-        [Required]
-        [StringLength(2)]
-        [Unicode(false)]
-        public string TRM_CDE { get; set; }
-        [StringLength(8)]
-        [Unicode(false)]
-        public string SESS_CDE { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? BEGIN_DTE { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? END_DTE { get; set; }
-        [StringLength(8000)]
-        [Unicode(false)]
-        public string COMMENT_TXT { get; set; }
-    }
+    [Required]
+    [StringLength(6)]
+    [Unicode(false)]
+    public string ACT_CDE { get; set; }
+
+    public int ID_NUM { get; set; }
+
+    [Required]
+    [StringLength(4)]
+    [Unicode(false)]
+    public string YR_CDE { get; set; }
+
+    [Required]
+    [StringLength(2)]
+    [Unicode(false)]
+    public string TRM_CDE { get; set; }
+
+    [StringLength(8)]
+    [Unicode(false)]
+    public string SESS_CDE { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? BEGIN_DTE { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? END_DTE { get; set; }
+
+    [StringLength(8000)]
+    [Unicode(false)]
+    public string COMMENT_TXT { get; set; }
 }

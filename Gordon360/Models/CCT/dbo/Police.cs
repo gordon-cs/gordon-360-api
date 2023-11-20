@@ -6,11 +6,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Police
 {
-    [Keyless]
-    public partial class Police
-    {
-        public int? ID_NUM { get; set; }
-    }
+    public int? ID_NUM { get; set; }
 }

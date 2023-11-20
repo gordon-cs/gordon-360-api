@@ -6,52 +6,64 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Index("ACT_CDE", "SESS_CDE", "PART_CDE", "ID_NUM", Name = "IX_JNZB_ACTIVITIES", IsUnique = true)]
+public partial class JNZB_ACTIVITIES
 {
-    [Index("ACT_CDE", "SESS_CDE", "PART_CDE", "ID_NUM", Name = "IX_JNZB_ACTIVITIES", IsUnique = true)]
-    public partial class JNZB_ACTIVITIES
-    {
-        [Key]
-        public int ENTRY_ID { get; set; }
-        [Required]
-        [StringLength(8)]
-        [Unicode(false)]
-        public string SESS_CDE { get; set; }
-        [Required]
-        [StringLength(8)]
-        [Unicode(false)]
-        public string ACT_CDE { get; set; }
-        public int ID_NUM { get; set; }
-        [Required]
-        [StringLength(5)]
-        [Unicode(false)]
-        public string PART_CDE { get; set; }
-        [Required]
-        [StringLength(1)]
-        [Unicode(false)]
-        public string MEMBERSHIP_STS { get; set; }
-        [Required]
-        [StringLength(1)]
-        [Unicode(false)]
-        public string TRACK_MTG_ATTEND { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? BEGIN_DTE { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? END_DTE { get; set; }
-        [StringLength(45)]
-        [Unicode(false)]
-        public string COMMENT_TXT { get; set; }
-        [Required]
-        [StringLength(1)]
-        [Unicode(false)]
-        public string INCL_PROFILE_RPT { get; set; }
-        [StringLength(15)]
-        [Unicode(false)]
-        public string USER_NAME { get; set; }
-        [StringLength(30)]
-        [Unicode(false)]
-        public string JOB_NAME { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? JOB_TIME { get; set; }
-    }
+    [Key]
+    public int ENTRY_ID { get; set; }
+
+    [Required]
+    [StringLength(8)]
+    [Unicode(false)]
+    public string SESS_CDE { get; set; }
+
+    [Required]
+    [StringLength(8)]
+    [Unicode(false)]
+    public string ACT_CDE { get; set; }
+
+    public int ID_NUM { get; set; }
+
+    [Required]
+    [StringLength(5)]
+    [Unicode(false)]
+    public string PART_CDE { get; set; }
+
+    [Required]
+    [StringLength(1)]
+    [Unicode(false)]
+    public string MEMBERSHIP_STS { get; set; }
+
+    [Required]
+    [StringLength(1)]
+    [Unicode(false)]
+    public string TRACK_MTG_ATTEND { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? BEGIN_DTE { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? END_DTE { get; set; }
+
+    [StringLength(45)]
+    [Unicode(false)]
+    public string COMMENT_TXT { get; set; }
+
+    [Required]
+    [StringLength(1)]
+    [Unicode(false)]
+    public string INCL_PROFILE_RPT { get; set; }
+
+    [StringLength(15)]
+    [Unicode(false)]
+    public string USER_NAME { get; set; }
+
+    [StringLength(30)]
+    [Unicode(false)]
+    public string JOB_NAME { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? JOB_TIME { get; set; }
 }

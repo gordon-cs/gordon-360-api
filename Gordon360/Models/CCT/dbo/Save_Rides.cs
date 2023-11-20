@@ -6,39 +6,40 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+public partial class Save_Rides
 {
-    public partial class Save_Rides
-    {
-        public Save_Rides()
-        {
-            Save_Bookings = new HashSet<Save_Bookings>();
-        }
+    [Key]
+    [StringLength(10)]
+    [Unicode(false)]
+    public string rideID { get; set; }
 
-        [Key]
-        [StringLength(10)]
-        [Unicode(false)]
-        public string rideID { get; set; }
-        [Required]
-        [StringLength(72)]
-        [Unicode(false)]
-        public string destination { get; set; }
-        [Required]
-        [StringLength(72)]
-        [Unicode(false)]
-        public string meetingPoint { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime startTime { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime endTime { get; set; }
-        public int capacity { get; set; }
-        [Required]
-        [StringLength(500)]
-        [Unicode(false)]
-        public string notes { get; set; }
-        public byte canceled { get; set; }
+    [Required]
+    [StringLength(72)]
+    [Unicode(false)]
+    public string destination { get; set; }
 
-        [InverseProperty("ride")]
-        public virtual ICollection<Save_Bookings> Save_Bookings { get; set; }
-    }
+    [Required]
+    [StringLength(72)]
+    [Unicode(false)]
+    public string meetingPoint { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime startTime { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime endTime { get; set; }
+
+    public int capacity { get; set; }
+
+    [Required]
+    [StringLength(500)]
+    [Unicode(false)]
+    public string notes { get; set; }
+
+    public byte canceled { get; set; }
+
+    [InverseProperty("ride")]
+    public virtual ICollection<Save_Bookings> Save_Bookings { get; set; } = new List<Save_Bookings>();
 }

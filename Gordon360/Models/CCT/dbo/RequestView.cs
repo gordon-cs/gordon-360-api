@@ -6,51 +6,63 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class RequestView
 {
-    [Keyless]
-    public partial class RequestView
-    {
-        public int RequestID { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime DateSent { get; set; }
-        [StringLength(8)]
-        [Unicode(false)]
-        public string ActivityCode { get; set; }
-        [Required]
-        [StringLength(45)]
-        [Unicode(false)]
-        public string ActivityDescription { get; set; }
-        [Unicode(false)]
-        public string ActivityImagePath { get; set; }
-        [StringLength(8)]
-        [Unicode(false)]
-        public string SessionCode { get; set; }
-        [StringLength(1000)]
-        [Unicode(false)]
-        public string SessionDescription { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Username { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string FirstName { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string LastName { get; set; }
-        [StringLength(5)]
-        [Unicode(false)]
-        public string Participation { get; set; }
-        [Required]
-        [StringLength(45)]
-        [Unicode(false)]
-        public string ParticipationDescription { get; set; }
-        [StringLength(45)]
-        [Unicode(false)]
-        public string Description { get; set; }
-        [Required]
-        [StringLength(20)]
-        [Unicode(false)]
-        public string Status { get; set; }
-    }
+    public int RequestID { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime DateSent { get; set; }
+
+    [StringLength(8)]
+    [Unicode(false)]
+    public string ActivityCode { get; set; }
+
+    [Required]
+    [StringLength(45)]
+    [Unicode(false)]
+    public string ActivityDescription { get; set; }
+
+    [Unicode(false)]
+    public string ActivityImagePath { get; set; }
+
+    [StringLength(8)]
+    [Unicode(false)]
+    public string SessionCode { get; set; }
+
+    [StringLength(1000)]
+    [Unicode(false)]
+    public string SessionDescription { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Username { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string FirstName { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string LastName { get; set; }
+
+    [StringLength(5)]
+    [Unicode(false)]
+    public string Participation { get; set; }
+
+    [Required]
+    [StringLength(45)]
+    [Unicode(false)]
+    public string ParticipationDescription { get; set; }
+
+    [StringLength(45)]
+    [Unicode(false)]
+    public string Description { get; set; }
+
+    [Required]
+    [StringLength(20)]
+    [Unicode(false)]
+    public string Status { get; set; }
 }
