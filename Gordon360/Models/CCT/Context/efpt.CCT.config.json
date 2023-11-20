@@ -60,43 +60,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[JNZB_ACTIVITIES]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[MEMBERSHIP]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Message_Rooms]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Messages]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[MYSCHEDULE]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[REQUEST]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Rooms]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Save_Bookings]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Save_Rides]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Schedule_Control]",
          "ObjectType": 0
       },
       {
@@ -105,22 +73,6 @@
       },
       {
          "Name": "[dbo].[StudentNewsExpiration]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Timesheets_Clock_In_Out]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[User_Connection_Ids]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[User_Rooms]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Users]",
          "ObjectType": 0
       },
       {
@@ -260,14 +212,6 @@
          "ObjectType": 3
       },
       {
-         "Name": "[dbo].[Birthdays]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Buildings]",
-         "ObjectType": 3
-      },
-      {
          "Name": "[dbo].[ChapelEvent]",
          "ObjectType": 3
       },
@@ -277,26 +221,6 @@
       },
       {
          "Name": "[dbo].[Countries]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Meal_Choice_Desc]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Meal_Plan_Change_History]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Meal_Plan_Id_Mapping]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Mealplans]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Dining_Student_Meal_Choice]",
          "ObjectType": 3
       },
       {
@@ -312,19 +236,7 @@
          "ObjectType": 3
       },
       {
-         "Name": "[dbo].[Graduation]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[Internships_as_Involvements]",
-         "ObjectType": 3
-      },
-      {
          "Name": "[dbo].[InvolvementOffering]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[JENZ_ACT_CLUB_DEF]",
          "ObjectType": 3
       },
       {
@@ -348,15 +260,7 @@
          "ObjectType": 3
       },
       {
-         "Name": "[dbo].[Police]",
-         "ObjectType": 3
-      },
-      {
          "Name": "[dbo].[RequestView]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[RoomAssign]",
          "ObjectType": 3
       },
       {

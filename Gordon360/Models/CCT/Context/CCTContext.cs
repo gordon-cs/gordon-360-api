@@ -34,10 +34,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Alumni> Alumni { get; set; }
 
-    public virtual DbSet<Birthdays> Birthdays { get; set; }
-
-    public virtual DbSet<Buildings> Buildings { get; set; }
-
     public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
 
     public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
@@ -54,23 +50,11 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<DiningInfo> DiningInfo { get; set; }
 
-    public virtual DbSet<Dining_Meal_Choice_Desc> Dining_Meal_Choice_Desc { get; set; }
-
-    public virtual DbSet<Dining_Meal_Plan_Change_History> Dining_Meal_Plan_Change_History { get; set; }
-
-    public virtual DbSet<Dining_Meal_Plan_Id_Mapping> Dining_Meal_Plan_Id_Mapping { get; set; }
-
-    public virtual DbSet<Dining_Mealplans> Dining_Mealplans { get; set; }
-
-    public virtual DbSet<Dining_Student_Meal_Choice> Dining_Student_Meal_Choice { get; set; }
-
     public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
 
     public virtual DbSet<EmergencyContact> EmergencyContact { get; set; }
 
     public virtual DbSet<FacStaff> FacStaff { get; set; }
-
-    public virtual DbSet<Graduation> Graduation { get; set; }
 
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
 
@@ -82,17 +66,9 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Information_Change_Request> Information_Change_Request { get; set; }
 
-    public virtual DbSet<Internships_as_Involvements> Internships_as_Involvements { get; set; }
-
     public virtual DbSet<InvolvementOffering> InvolvementOffering { get; set; }
 
-    public virtual DbSet<JENZ_ACT_CLUB_DEF> JENZ_ACT_CLUB_DEF { get; set; }
-
-    public virtual DbSet<JNZB_ACTIVITIES> JNZB_ACTIVITIES { get; set; }
-
     public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
-
-    public virtual DbSet<MYSCHEDULE> MYSCHEDULE { get; set; }
 
     public virtual DbSet<Mailboxes> Mailboxes { get; set; }
 
@@ -112,10 +88,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<MembershipView> MembershipView { get; set; }
 
-    public virtual DbSet<Message_Rooms> Message_Rooms { get; set; }
-
-    public virtual DbSet<Messages> Messages { get; set; }
-
     public virtual DbSet<Minors> Minors { get; set; }
 
     public virtual DbSet<PART_DEF> PART_DEF { get; set; }
@@ -134,8 +106,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
 
-    public virtual DbSet<Police> Police { get; set; }
-
     public virtual DbSet<PrivType> PrivType { get; set; }
 
     public virtual DbSet<REQUEST> REQUEST { get; set; }
@@ -143,16 +113,6 @@ public partial class CCTContext : DbContext
     public virtual DbSet<RequestView> RequestView { get; set; }
 
     public virtual DbSet<RoleType> RoleType { get; set; }
-
-    public virtual DbSet<RoomAssign> RoomAssign { get; set; }
-
-    public virtual DbSet<Rooms> Rooms { get; set; }
-
-    public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
-
-    public virtual DbSet<Save_Rides> Save_Rides { get; set; }
-
-    public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
 
     public virtual DbSet<Series> Series { get; set; }
 
@@ -186,15 +146,7 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<TeamStatus> TeamStatus { get; set; }
 
-    public virtual DbSet<Timesheets_Clock_In_Out> Timesheets_Clock_In_Out { get; set; }
-
     public virtual DbSet<UserCourses> UserCourses { get; set; }
-
-    public virtual DbSet<User_Connection_Ids> User_Connection_Ids { get; set; }
-
-    public virtual DbSet<User_Rooms> User_Rooms { get; set; }
-
-    public virtual DbSet<Users> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -269,19 +221,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.grad_student).IsFixedLength();
         });
 
-        modelBuilder.Entity<Birthdays>(entity =>
-        {
-            entity.ToView("Birthdays");
-        });
-
-        modelBuilder.Entity<Buildings>(entity =>
-        {
-            entity.ToView("Buildings");
-
-            entity.Property(e => e.BLDG_CDE).IsFixedLength();
-            entity.Property(e => e.BUILDING_DESC).IsFixedLength();
-        });
-
         modelBuilder.Entity<CM_SESSION_MSTR>(entity =>
         {
             entity.ToView("CM_SESSION_MSTR");
@@ -327,39 +266,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.SessionCode).IsFixedLength();
         });
 
-        modelBuilder.Entity<Dining_Meal_Choice_Desc>(entity =>
-        {
-            entity.ToView("Dining_Meal_Choice_Desc");
-
-            entity.Property(e => e.Meal_Choice_Desc).IsFixedLength();
-            entity.Property(e => e.Meal_Choice_Id).IsFixedLength();
-        });
-
-        modelBuilder.Entity<Dining_Meal_Plan_Change_History>(entity =>
-        {
-            entity.ToView("Dining_Meal_Plan_Change_History");
-
-            entity.Property(e => e.OLD_PLAN_DESC).IsFixedLength();
-        });
-
-        modelBuilder.Entity<Dining_Meal_Plan_Id_Mapping>(entity =>
-        {
-            entity.ToView("Dining_Meal_Plan_Id_Mapping");
-        });
-
-        modelBuilder.Entity<Dining_Mealplans>(entity =>
-        {
-            entity.ToView("Dining_Mealplans");
-        });
-
-        modelBuilder.Entity<Dining_Student_Meal_Choice>(entity =>
-        {
-            entity.ToView("Dining_Student_Meal_Choice");
-
-            entity.Property(e => e.MEAL_CHOICE_ID).IsFixedLength();
-            entity.Property(e => e.SESS_CDE).IsFixedLength();
-        });
-
         modelBuilder.Entity<EmergencyContact>(entity =>
         {
             entity.ToView("EmergencyContact");
@@ -387,11 +293,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.BuildingDescription).IsFixedLength();
         });
 
-        modelBuilder.Entity<Graduation>(entity =>
-        {
-            entity.ToView("Graduation");
-        });
-
         modelBuilder.Entity<Housing_Applicants>(entity =>
         {
             entity.Property(e => e.SESS_CDE).IsFixedLength();
@@ -404,15 +305,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.TimeStamp).HasDefaultValueSql("(getdate())");
         });
 
-        modelBuilder.Entity<Internships_as_Involvements>(entity =>
-        {
-            entity.ToView("Internships_as_Involvements");
-
-            entity.Property(e => e.SESS_CDE).IsFixedLength();
-            entity.Property(e => e.TRM_CDE).IsFixedLength();
-            entity.Property(e => e.YR_CDE).IsFixedLength();
-        });
-
         modelBuilder.Entity<InvolvementOffering>(entity =>
         {
             entity.ToView("InvolvementOffering");
@@ -422,28 +314,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.ActivityType).IsFixedLength();
             entity.Property(e => e.ActivityTypeDescription).IsFixedLength();
             entity.Property(e => e.SessionCode).IsFixedLength();
-        });
-
-        modelBuilder.Entity<JENZ_ACT_CLUB_DEF>(entity =>
-        {
-            entity.ToView("JENZ_ACT_CLUB_DEF");
-
-            entity.Property(e => e.ACT_CDE).IsFixedLength();
-            entity.Property(e => e.ACT_DESC).IsFixedLength();
-            entity.Property(e => e.ACT_TYPE).IsFixedLength();
-            entity.Property(e => e.ACT_TYPE_DESC).IsFixedLength();
-        });
-
-        modelBuilder.Entity<JNZB_ACTIVITIES>(entity =>
-        {
-            entity.Property(e => e.ACT_CDE).IsFixedLength();
-            entity.Property(e => e.INCL_PROFILE_RPT).IsFixedLength();
-            entity.Property(e => e.JOB_NAME).IsFixedLength();
-            entity.Property(e => e.MEMBERSHIP_STS).IsFixedLength();
-            entity.Property(e => e.PART_CDE).IsFixedLength();
-            entity.Property(e => e.SESS_CDE).IsFixedLength();
-            entity.Property(e => e.TRACK_MTG_ATTEND).IsFixedLength();
-            entity.Property(e => e.USER_NAME).IsFixedLength();
         });
 
         modelBuilder.Entity<MEMBERSHIP>(entity =>
@@ -529,11 +399,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.ActivityDescription).IsFixedLength();
         });
 
-        modelBuilder.Entity<Message_Rooms>(entity =>
-        {
-            entity.HasKey(e => e.room_id).HasName("PK__Message___19675A8A3E781488");
-        });
-
         modelBuilder.Entity<Minors>(entity =>
         {
             entity.ToView("Minors");
@@ -613,11 +478,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
-        modelBuilder.Entity<Police>(entity =>
-        {
-            entity.ToView("Police");
-        });
-
         modelBuilder.Entity<REQUEST>(entity =>
         {
             entity.HasKey(e => e.REQUEST_ID).HasName("PK_Request");
@@ -633,28 +493,6 @@ public partial class CCTContext : DbContext
 
             entity.Property(e => e.ActivityDescription).IsFixedLength();
             entity.Property(e => e.ParticipationDescription).IsFixedLength();
-        });
-
-        modelBuilder.Entity<RoomAssign>(entity =>
-        {
-            entity.ToView("RoomAssign");
-
-            entity.Property(e => e.BLDG_CDE).IsFixedLength();
-            entity.Property(e => e.BLDG_LOC_CDE).IsFixedLength();
-            entity.Property(e => e.ROOM_ASSIGN_STS).IsFixedLength();
-            entity.Property(e => e.ROOM_CDE).IsFixedLength();
-            entity.Property(e => e.ROOM_TYPE).IsFixedLength();
-            entity.Property(e => e.SESS_CDE).IsFixedLength();
-        });
-
-        modelBuilder.Entity<Save_Bookings>(entity =>
-        {
-            entity.HasOne(d => d.ride).WithMany(p => p.Save_Bookings).HasConstraintName("FK_booking_rides");
-        });
-
-        modelBuilder.Entity<Schedule_Control>(entity =>
-        {
-            entity.Property(e => e.IsSchedulePrivate).HasDefaultValue(1);
         });
 
         modelBuilder.Entity<Series>(entity =>
