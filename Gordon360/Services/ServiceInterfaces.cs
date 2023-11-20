@@ -103,21 +103,6 @@ namespace Gordon360.Services
         WellnessViewModel PostStatus(WellnessStatusColor status, string username);
     }
 
-    public interface IDirectMessageService
-    {
-        CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId);
-        bool SendMessage(SendTextViewModel textInfo, string user_id);
-        bool StoreUserRooms(String userId, String roomId);
-        bool StoreUserConnectionIds(String userId, String connectionId);
-        bool DeleteUserConnectionIds(String connectionId);
-        List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds);
-        IEnumerable<MessageViewModel> GetMessages(string roomId);
-        IEnumerable<GroupViewModel> GetRooms(string userId);
-        List<Object> GetRoomById(string userId);
-        MessageViewModel GetSingleMessage(string messageID, string roomID);
-        object GetSingleRoom(int roomId);
-    }
-
     public interface IActivityService
     {
         ActivityInfoViewModel Get(string activityCode);
