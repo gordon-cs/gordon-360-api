@@ -836,11 +836,9 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "SQLTrain1.CCT",
-   "UncountableWords": null,
+   "UiHint": "sqltrain1.CCT.dbo",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
-   "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseFluentApiOnly": false,
    "UseHandleBars": false,
@@ -848,12 +846,13 @@
    "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
    "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": true,
-   "UseSchemaNamespaces": false,
    "UseSpatial": false,
    "UseT4": false
 }
