@@ -294,6 +294,7 @@ namespace Gordon360.Services
         bool CheckIfHousingAdmin(string username);
         bool DeleteApplication(int applicationID);
         string[] GetAllApartmentHalls();
+        string[] GetAllTraditionalHalls();
         string GetEditorUsername(int applicationID);
         int? GetApplicationID(string username, string sess_cde);
         ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false);
@@ -303,6 +304,7 @@ namespace Gordon360.Services
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
         Task UpdateRoommateAsync(string username, string roommate_name);
+        Task UpdateHallAsync(string username, string[] hallList);
     }
 
     public interface IAcademicCheckInService

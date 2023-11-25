@@ -259,6 +259,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetTraditionalHalls">
+            <summary>
+            Get a list of the traditional halls
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetApplicationID">
             <summary>
             Get apartment application ID number of currently logged in user if that user is on an existing application
@@ -309,6 +315,12 @@
         <member name="M:Gordon360.Controllers.HousingController.UpdateRoommate(System.String)">
             <summary>
             Update roommate information
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.UpdatePreferredHall(System.String[])">
+            <summary>
+            Update preferred hall information
             </summary>
             <returns></returns>
         </member>
@@ -1987,6 +1999,12 @@
             </summary>
             <returns> AN array of hall names </returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllTraditionalHalls">
+            <summary>
+            Gets all names of apartment halls
+            </summary>
+            <returns> AN array of hall names </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.GetApplicationID(System.String,System.String)">
             <summary>
             Calls a stored procedure that tries to get the id of an the application that a given user is 
@@ -2066,10 +2084,17 @@
         </member>
         <member name="M:Gordon360.Services.HousingService.UpdateRoommateAsync(System.String,System.String)">
             <summary>
-            roommate imformation setting
+            update roommate imformation
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
             <param name="roommate_name"> The name of the selected roommate </param>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateHallAsync(System.String,System.String[])">
+            <summary>
+            update the information of preferred halls
+            </summary>
+            <param name="username"> The username for the user who complete the aplication form </param>
+            <param name="hallList"> A list of the preferred halls </param>
         </member>
         <member name="T:Gordon360.Services.JobsService">
             <summary>

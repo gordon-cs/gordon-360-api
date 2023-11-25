@@ -65,6 +65,25 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Get a list of the traditional halls
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("halls/traditionals")]
+        public ActionResult<string[]> GetTraditionalHalls()
+        {
+            var result = _housingService.GetAllTraditionalHalls();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <summary>
         /// Get apartment application ID number of currently logged in user if that user is on an existing application
         /// </summary>
         /// <returns></returns>
@@ -250,11 +269,24 @@ namespace Gordon360.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut]
-        [Route("housing_lottery/{roommate}")]
-        public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateRoommate(string roommate)
+        [Route("housing_lottery/roommate/{value}")]
+        public async Task<ActionResult<string>> UpdateRoommate(string value)
         {
             var username = AuthUtils.GetUsername(User);
-            await _housingService.UpdateRoommateAsync(username, roommate);
+            await _housingService.UpdateRoommateAsync(username, value);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Update preferred hall information
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("housing_lottery/hall")]
+        public async Task<ActionResult<string>> UpdatePreferredHall([FromBody] string[] hallList)
+        {
+            var username = AuthUtils.GetUsername(User);
+            await _housingService.UpdateHallAsync(username, hallList);
             return Ok();
         }
     }

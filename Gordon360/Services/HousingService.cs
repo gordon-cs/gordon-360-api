@@ -71,6 +71,22 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Gets all names of apartment halls
+        /// </summary>
+        /// <returns> AN array of hall names </returns>
+        public string[] GetAllTraditionalHalls()
+        {
+
+            var hallsResult = _context.Housing_Halls.Where(h => h.Type == "Traditional").Select(h => h.Name);
+            if (hallsResult == null || !hallsResult.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The traditional halls could not be found." };
+            }
+
+            return hallsResult.ToArray();
+        }
+
+        /// <summary>
         /// Calls a stored procedure that tries to get the id of an the application that a given user is 
         /// applicant on for a given session
         /// </summary>
@@ -541,7 +557,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// roommate imformation setting
+        /// update roommate imformation
         /// </summary>
         /// <param name="username"> The username for the user who complete the aplication form </param>
         /// <param name="roommate_name"> The name of the selected roommate </param>
@@ -560,6 +576,42 @@ namespace Gordon360.Services
             }; ;
             await _context.Roommate.AddAsync(newRoommate);
 
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// update the information of preferred halls
+        /// </summary>
+        /// <param name="username"> The username for the user who complete the aplication form </param>
+        /// <param name="hallList"> A list of the preferred halls </param>
+        public async Task UpdateHallAsync(string username, string[] hallList)
+        {
+            var GordonID = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
+            if (GordonID == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
+            }
+            var existHall = _context.PreferredHall.Where(x => x.ID == int.Parse(GordonID));
+            foreach (PreferredHall h in existHall)
+            {
+                _context.PreferredHall.Remove(h);
+            }
+            var rank = 1;
+            foreach (string h in hallList)
+            {
+                if (h != "")
+                {
+                    var newHall = new PreferredHall
+                    {
+                        ID = int.Parse(GordonID),
+                        Username = username,
+                        Rank = rank,
+                        HallName = h
+                    }; ;
+                    await _context.PreferredHall.AddAsync(newHall);
+                    rank++;
+                }
+            }
             _context.SaveChanges();
         }
     }
