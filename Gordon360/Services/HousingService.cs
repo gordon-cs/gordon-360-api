@@ -557,7 +557,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// roommate imformation setting
+        /// update roommate imformation
         /// </summary>
         /// <param name="username"> The username for the user who complete the aplication form </param>
         /// <param name="roommate_name"> The name of the selected roommate </param>
@@ -580,7 +580,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// roommate imformation setting
+        /// update the information of preferred halls
         /// </summary>
         /// <param name="username"> The username for the user who complete the aplication form </param>
         /// <param name="hallList"> A list of the preferred halls </param>
