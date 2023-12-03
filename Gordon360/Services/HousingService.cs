@@ -11,6 +11,11 @@ using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Models.webSQL.Context;
 using System.Threading.Tasks;
+using Gordon360.Models.webSQL.Models;
+using Microsoft.Graph;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Data;
+using Newtonsoft.Json;
 
 namespace Gordon360.Services
 {
@@ -560,22 +565,50 @@ namespace Gordon360.Services
         /// update roommate imformation
         /// </summary>
         /// <param name="username"> The username for the user who complete the aplication form </param>
-        /// <param name="roommate_name"> The name of the selected roommate </param>
-        public async Task UpdateRoommateAsync(string username, string roommate_name)
+        /// <param name="applicantion_id"> The ID of this application </param>
+        /// <param name="emailList"> A list of applicants' emails </param>
+        public async Task UpdateRoommateAsync(string username, string applicantion_id, string[] emailList)
         {
             var GordonID = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
             if (GordonID == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
             }
-            var newRoommate = new Roommate
+            var existApplicant = _context.Applicant.Where(x => x.ApplicationID == applicantion_id);
+            var existMaxYear = _context.Year.Where(x => x.ApplicationID == applicantion_id);
+            foreach (Applicant a in existApplicant)
             {
-                ID = int.Parse(GordonID),
-                Username = username,
-                RoommateName = roommate_name
-            }; ;
-            await _context.Roommate.AddAsync(newRoommate);
+                _context.Applicant.Remove(a);
+            }
+            foreach (Year y in existMaxYear)
+            {
+                _context.Year.Remove(y);
+            }
+            List<string> yearList = new List<string>();
+            foreach (string e in emailList)
+            {
+                if (e != "")
+                {
+                    var newApplicant = new Applicant
+                    {
+                        ApplicationID = applicantion_id,
+                        Applicant1 = e
+                    }; ;
+                    await _context.Applicant.AddAsync(newApplicant);
 
+                    var student = _context.Student.FirstOrDefault(x => x.Email == e);
+                    if (student != null)
+                    {
+                        yearList.Add(student.Class);
+                    }
+                }
+            }
+            var newMaxYear = new Year
+            {
+                ApplicationID = applicantion_id,
+                Year1 = yearList.Max()
+            }; ;
+            await _context.Year.AddAsync(newMaxYear);
             _context.SaveChanges();
         }
 
@@ -583,15 +616,16 @@ namespace Gordon360.Services
         /// update the information of preferred halls
         /// </summary>
         /// <param name="username"> The username for the user who complete the aplication form </param>
+        /// <param name="applicantion_id"> The ID of this application </param>
         /// <param name="hallList"> A list of the preferred halls </param>
-        public async Task UpdateHallAsync(string username, string[] hallList)
+        public async Task UpdateHallAsync(string username, string applicantion_id, string[] hallList)
         {
             var GordonID = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
             if (GordonID == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
             }
-            var existHall = _context.PreferredHall.Where(x => x.ID == int.Parse(GordonID));
+            var existHall = _context.PreferredHall.Where(x => x.ApplicationID == applicantion_id);
             foreach (PreferredHall h in existHall)
             {
                 _context.PreferredHall.Remove(h);
@@ -603,8 +637,7 @@ namespace Gordon360.Services
                 {
                     var newHall = new PreferredHall
                     {
-                        ID = int.Parse(GordonID),
-                        Username = username,
+                        ApplicationID = applicantion_id,
                         Rank = rank,
                         HallName = h
                     }; ;
@@ -613,6 +646,104 @@ namespace Gordon360.Services
                 }
             }
             _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// update the information of preferred halls
+        /// </summary>
+        /// <param name="username"> The username for the user who complete the aplication form </param>
+        /// <param name="applicantion_id"> The ID of this application </param>
+        /// <param name="preferenceList"> A list of the preference </param>
+        public async Task UpdatePreferenceAsync(string username, string applicantion_id, string[] preferenceList)
+        {
+            var GordonID = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
+            if (GordonID == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
+            }
+            var existPreference = _context.Preference.Where(x => x.ApplicationID == applicantion_id);
+            foreach (Preference p in existPreference)
+            {
+                _context.Preference.Remove(p);
+            }
+            foreach (string p in preferenceList)
+            {
+                if (p != "")
+                {
+                    var newPreference = new Preference
+                    {
+                        ApplicationID = applicantion_id,
+                        Preference1 = p
+                    }; ;
+                    await _context.Preference.AddAsync(newPreference);
+                    await _context.Preference.AddAsync(newPreference);
+                }
+            }
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Gets an array of preferences
+        /// </summary>
+        /// <returns> An array of preferences </returns>
+        public string GetAllPreference()
+        {
+
+            var result = _context.Preference;
+            if (result == null || !result.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The preference could not be found." };
+            }
+            string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
+            return jsonArray;
+        }
+
+        /// <summary>
+        ///Gets an array of preferred halls
+        /// </summary>
+        /// <returns> AN array of preferred halls </returns>
+        public string GetAllPreferredHall()
+        {
+
+            var result = _context.PreferredHall;
+            if (result == null || !result.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The preference could not be found." };
+            }
+            string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
+            return jsonArray;
+        }
+
+        /// <summary>
+        ///Gets an array of applicants
+        /// </summary>
+        /// <returns> AN array of applicants </returns>
+        public string GetAllApplicant()
+        {
+
+            var result = _context.Applicant;
+            if (result == null || !result.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The preference could not be found." };
+            }
+            string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
+            return jsonArray;
+        }
+
+        /// <summary>
+        ///Gets an array of school years
+        /// </summary>
+        /// <returns> AN array of school years </returns>
+        public string GetAllSchoolYear()
+        {
+
+            var result = _context.Year;
+            if (result == null || !result.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The preference could not be found." };
+            }
+            string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
+            return jsonArray;
         }
     }
 }

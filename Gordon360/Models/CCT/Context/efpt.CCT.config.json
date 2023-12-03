@@ -96,10 +96,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Rooms]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Save_Bookings]",
          "ObjectType": 0
       },
@@ -136,11 +132,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[Applicant]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Preference]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[Housing].[PreferredHall]",
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[Roommate]",
+         "Name": "[Housing].[Year]",
          "ObjectType": 0
       },
       {

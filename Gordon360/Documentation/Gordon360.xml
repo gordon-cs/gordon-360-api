@@ -312,15 +312,45 @@
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
             <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.UpdateRoommate(System.String)">
+        <member name="M:Gordon360.Controllers.HousingController.UpdateRoommate(System.String,System.String[])">
             <summary>
             Update roommate information
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.UpdatePreferredHall(System.String[])">
+        <member name="M:Gordon360.Controllers.HousingController.UpdatePreferredHall(System.String,System.String[])">
             <summary>
             Update preferred hall information
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.UpdatePreference(System.String,System.String[])">
+            <summary>
+            Update preferred hall information
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllPreference">
+            <summary>
+            Get an array of preferences
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllPreferredHall">
+            <summary>
+            Get an array of preferred halls
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllApplicant">
+            <summary>
+            Get an array of applicant
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllSchoolYear">
+            <summary>
+            Get an array of school years
             </summary>
             <returns></returns>
         </member>
@@ -2082,19 +2112,53 @@
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdateRoommateAsync(System.String,System.String)">
+        <member name="M:Gordon360.Services.HousingService.UpdateRoommateAsync(System.String,System.String,System.String[])">
             <summary>
             update roommate imformation
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="roommate_name"> The name of the selected roommate </param>
+            <param name="applicantion_id"> The ID of this application </param>
+            <param name="emailList"> A list of applicants' emails </param>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdateHallAsync(System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.UpdateHallAsync(System.String,System.String,System.String[])">
             <summary>
             update the information of preferred halls
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
+            <param name="applicantion_id"> The ID of this application </param>
             <param name="hallList"> A list of the preferred halls </param>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.UpdatePreferenceAsync(System.String,System.String,System.String[])">
+            <summary>
+            update the information of preferred halls
+            </summary>
+            <param name="username"> The username for the user who complete the aplication form </param>
+            <param name="applicantion_id"> The ID of this application </param>
+            <param name="preferenceList"> A list of the preference </param>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllPreference">
+            <summary>
+            Gets an array of preferences
+            </summary>
+            <returns> An array of preferences </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllPreferredHall">
+             <summary>
+            Gets an array of preferred halls
+             </summary>
+             <returns> AN array of preferred halls </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApplicant">
+             <summary>
+            Gets an array of applicants
+             </summary>
+             <returns> AN array of applicants </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllSchoolYear">
+             <summary>
+            Gets an array of school years
+             </summary>
+             <returns> AN array of school years </returns>
         </member>
         <member name="T:Gordon360.Services.JobsService">
             <summary>
