@@ -692,7 +692,7 @@ namespace Gordon360.Services
             var result = _context.Preference;
             if (result == null || !result.Any())
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The preference could not be found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The preferences could not be found." };
             }
             string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
             return jsonArray;
@@ -708,7 +708,7 @@ namespace Gordon360.Services
             var result = _context.PreferredHall;
             if (result == null || !result.Any())
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The preference could not be found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The preferred halls could not be found." };
             }
             string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
             return jsonArray;
@@ -724,7 +724,7 @@ namespace Gordon360.Services
             var result = _context.Applicant;
             if (result == null || !result.Any())
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The preference could not be found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
             }
             string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
             return jsonArray;
@@ -740,7 +740,7 @@ namespace Gordon360.Services
             var result = _context.Year;
             if (result == null || !result.Any())
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The preference could not be found." };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The school years could not be found." };
             }
             string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
             return jsonArray;
