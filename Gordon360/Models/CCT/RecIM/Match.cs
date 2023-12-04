@@ -6,39 +6,41 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("Match", Schema = "RecIM")]
+public partial class Match
 {
-    [Table("Match", Schema = "RecIM")]
-    public partial class Match
-    {
-        public Match()
-        {
-            MatchParticipant = new HashSet<MatchParticipant>();
-            MatchTeam = new HashSet<MatchTeam>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        public int SeriesID { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime StartTime { get; set; }
-        public int SurfaceID { get; set; }
-        public int StatusID { get; set; }
+    public int SeriesID { get; set; }
 
-        [ForeignKey("SeriesID")]
-        [InverseProperty("Match")]
-        public virtual Series Series { get; set; }
-        [ForeignKey("StatusID")]
-        [InverseProperty("Match")]
-        public virtual MatchStatus Status { get; set; }
-        [ForeignKey("SurfaceID")]
-        [InverseProperty("Match")]
-        public virtual Surface Surface { get; set; }
-        [InverseProperty("Match")]
-        public virtual MatchBracket MatchBracket { get; set; }
-        [InverseProperty("Match")]
-        public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }
-        [InverseProperty("Match")]
-        public virtual ICollection<MatchTeam> MatchTeam { get; set; }
-    }
+    [Column(TypeName = "datetime")]
+    public DateTime StartTime { get; set; }
+
+    public int SurfaceID { get; set; }
+
+    public int StatusID { get; set; }
+
+    [InverseProperty("Match")]
+    public virtual MatchBracket MatchBracket { get; set; }
+
+    [InverseProperty("Match")]
+    public virtual ICollection<MatchParticipant> MatchParticipant { get; set; } = new List<MatchParticipant>();
+
+    [InverseProperty("Match")]
+    public virtual ICollection<MatchTeam> MatchTeam { get; set; } = new List<MatchTeam>();
+
+    [ForeignKey("SeriesID")]
+    [InverseProperty("Match")]
+    public virtual Series Series { get; set; }
+
+    [ForeignKey("StatusID")]
+    [InverseProperty("Match")]
+    public virtual MatchStatus Status { get; set; }
+
+    [ForeignKey("SurfaceID")]
+    [InverseProperty("Match")]
+    public virtual Surface Surface { get; set; }
 }

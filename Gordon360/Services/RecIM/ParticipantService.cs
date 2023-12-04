@@ -183,7 +183,7 @@ namespace Gordon360.Services.RecIM
                                                  Description = pstatus.Description
                                              }
                                             ).FirstOrDefault().Description,
-                                   AllowEmails = new_ps.AllowEmails ?? true,
+                                   AllowEmails = new_ps.AllowEmails,
                                    Email = new_ps.Email,
                                    SpecifiedGender = new_ps.SpecifiedGender,
                                    IsCustom = new_ps.IsCustom,
@@ -284,7 +284,7 @@ namespace Gordon360.Services.RecIM
                 Username = participant.Username,
                 IsAdmin = participant.IsAdmin,
                 IsCustom = participant.IsCustom,
-                AllowEmails = participant.AllowEmails ?? true, //due to SQL having a default value, EFCore thinks that AllowEmails is nullable. It isn't.
+                AllowEmails = participant.AllowEmails,
                 SpecifiedGender = participant.SpecifiedGender
             };
         }
@@ -314,7 +314,7 @@ namespace Gordon360.Services.RecIM
                 Username = participant.Username,
                 IsAdmin = participant.IsAdmin,
                 IsCustom = participant.IsCustom,
-                AllowEmails = participant.AllowEmails ?? true, //due to SQL having a default value, EFCore thinks that AllowEmails is nullable. It isn't.
+                AllowEmails = participant.AllowEmails,
                 SpecifiedGender = participant.SpecifiedGender
             };
         }

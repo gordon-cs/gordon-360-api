@@ -6,35 +6,33 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("Sport", Schema = "RecIM")]
+public partial class Sport
 {
-    [Table("Sport", Schema = "RecIM")]
-    public partial class Sport
-    {
-        public Sport()
-        {
-            Activity = new HashSet<Activity>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(64)]
-        [Unicode(false)]
-        public string Name { get; set; }
-        [Required]
-        [StringLength(128)]
-        [Unicode(false)]
-        public string Description { get; set; }
-        [Required]
-        [StringLength(512)]
-        [Unicode(false)]
-        public string Rules { get; set; }
-        [StringLength(128)]
-        [Unicode(false)]
-        public string Logo { get; set; }
+    [Required]
+    [StringLength(64)]
+    [Unicode(false)]
+    public string Name { get; set; }
 
-        [InverseProperty("Sport")]
-        public virtual ICollection<Activity> Activity { get; set; }
-    }
+    [Required]
+    [StringLength(128)]
+    [Unicode(false)]
+    public string Description { get; set; }
+
+    [Required]
+    [StringLength(512)]
+    [Unicode(false)]
+    public string Rules { get; set; }
+
+    [StringLength(128)]
+    [Unicode(false)]
+    public string Logo { get; set; }
+
+    [InverseProperty("Sport")]
+    public virtual ICollection<Activity> Activity { get; set; } = new List<Activity>();
 }

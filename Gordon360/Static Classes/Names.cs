@@ -21,13 +21,9 @@ namespace Gordon360.Static.Names
         public const string HOUSING = "Info related to housing";
         public const string HOUSING_ADMIN = "A Housing Admin Resource";
         public const string ERROR_LOG = "The error log resource";
-        public const string MYSCHEDULE = "A custom schedule resource";
-        public const string Save_Rides = "A ride resource";
-        public const string SCHEDULE = "A course schedule resource";
         public const string NEWS = "A student news resource";
         public const string NEWS_APPROVAL = "The approval of a student news resource";
         public const string CHECKIN = "Info relating to a student's Academic Check-In";
-        public const string SHIFT = "A shift that a student has worked";
         public const string CLIFTON_STRENGTHS = "A student's uploaded clifton strengthsfinder results";
         public const string RECIM = "A general or admin RecIM resource";
         public const string RECIM_ACTIVITY = "A RecIM activity resource";
@@ -69,18 +65,6 @@ namespace Gordon360.Static.Names
         public const string ADD = "Creating a resource";
         public const string UPDATE = "Updating a resource";
         public const string DELETE = "Deleting a resource";
-    }
-
-
-    public static class Position
-    {
-        public const string STUDENT = "student";
-        public const string FACSTAFF = "facstaff";
-        public const string ALUMNI = "alumni";
-        public const string SUPERADMIN = "god";      // TODO: change in database to something more reverent
-        public const string POLICE = "gordon police";
-        public const string READONLY = "readonly";
-        public const string DEFAULT = "default";
     }
 
     public static class Activity_Roles

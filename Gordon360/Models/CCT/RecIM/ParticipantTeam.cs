@@ -6,37 +6,38 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("ParticipantTeam", Schema = "RecIM")]
+public partial class ParticipantTeam
 {
-    [Table("ParticipantTeam", Schema = "RecIM")]
-    public partial class ParticipantTeam
-    {
-        public ParticipantTeam()
-        {
-            Statistic = new HashSet<Statistic>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        public int TeamID { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string ParticipantUsername { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime SignDate { get; set; }
-        public int RoleTypeID { get; set; }
+    public int TeamID { get; set; }
 
-        [ForeignKey("ParticipantUsername")]
-        [InverseProperty("ParticipantTeam")]
-        public virtual Participant ParticipantUsernameNavigation { get; set; }
-        [ForeignKey("RoleTypeID")]
-        [InverseProperty("ParticipantTeam")]
-        public virtual RoleType RoleType { get; set; }
-        [ForeignKey("TeamID")]
-        [InverseProperty("ParticipantTeam")]
-        public virtual Team Team { get; set; }
-        [InverseProperty("ParticipantTeam")]
-        public virtual ICollection<Statistic> Statistic { get; set; }
-    }
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string ParticipantUsername { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime SignDate { get; set; }
+
+    public int RoleTypeID { get; set; }
+
+    [ForeignKey("ParticipantUsername")]
+    [InverseProperty("ParticipantTeam")]
+    public virtual Participant ParticipantUsernameNavigation { get; set; }
+
+    [ForeignKey("RoleTypeID")]
+    [InverseProperty("ParticipantTeam")]
+    public virtual RoleType RoleType { get; set; }
+
+    [InverseProperty("ParticipantTeam")]
+    public virtual ICollection<Statistic> Statistic { get; set; } = new List<Statistic>();
+
+    [ForeignKey("TeamID")]
+    [InverseProperty("ParticipantTeam")]
+    public virtual Team Team { get; set; }
 }
