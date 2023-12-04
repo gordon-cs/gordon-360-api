@@ -8,18 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[PrimaryKey("ApplicationID", "Rank")]
-[Table("PreferredHall", Schema = "Housing")]
-public partial class PreferredHall
+[PrimaryKey("ApplicationID", "Preference1")]
+[Table("Preference", Schema = "Housing")]
+public partial class Preference
 {
     [Key]
     public string ApplicationID { get; set; }
 
     [Key]
-    public int Rank { get; set; }
-
-    [Required]
+    [Column("Preference")]
     [StringLength(255)]
     [Unicode(false)]
-    public string HallName { get; set; }
+    public string Preference1 { get; set; }
 }
