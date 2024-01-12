@@ -1,10 +1,11 @@
 ﻿using Gordon360.Models.CCT;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Gordon360.Models.ViewModels;
 
-public record ScheduleCourseViewModel
+public partial record ScheduleCourseViewModel
 {
     public string Code { get; set; }
     public string Title { get; set; }
@@ -54,7 +55,7 @@ public record ScheduleCourseViewModel
 
         return new ScheduleCourseViewModel()
         {
-            Code = course.CRS_CDE.Trim(),
+            Code = RepeatedSpacesRegex().Replace(course.CRS_CDE.Trim(), " "),
             Title = course.CRS_TITLE.Trim(),
             Role = course.Role,
             Location = (course.BLDG_CDE, course.ROOM_CDE) switch
@@ -73,4 +74,7 @@ public record ScheduleCourseViewModel
             SubTermCode = course.SUBTERM_CDE,
         };
     }
+
+    [GeneratedRegex("\\s+")]
+    private static partial Regex RepeatedSpacesRegex();
 }
