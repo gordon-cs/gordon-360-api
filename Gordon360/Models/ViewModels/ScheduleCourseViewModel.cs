@@ -7,17 +7,17 @@ namespace Gordon360.Models.ViewModels;
 
 public partial record ScheduleCourseViewModel
 {
-    public string Code { get; set; }
-    public string Title { get; set; }
-    public string Role { get; set; }
+    public required string Code { get; set; }
+    public required string Title { get; set; }
+    public required string Role { get; set; }
     public string? Location { get; set; }
-    public List<char> MeetingDays { get; set; }
+    public required List<char> MeetingDays { get; set; }
     public TimeOnly? BeginTime { get; set; }
     public TimeOnly? EndTime { get; set; }
     public DateOnly? BeginDate { get; set; }
     public DateOnly? EndDate { get; set; }
-    public string YearCode { get; set; }
-    public string TermCode { get; set; }
+    public required string YearCode { get; set; }
+    public required string TermCode { get; set; }
     public string? SubTermCode { get; set; }
 
 
@@ -65,10 +65,10 @@ public partial record ScheduleCourseViewModel
                 _ => null
             },
             MeetingDays = meetingDays,
-            BeginTime = course.BeginTime is TimeSpan BeginTime ? TimeOnly.FromTimeSpan(BeginTime) : null,
-            EndTime = course.EndTime is TimeSpan EndTime ? TimeOnly.FromTimeSpan(EndTime) : null,
-            BeginDate = course.BeginDate is DateTime BeginDate ? DateOnly.FromDateTime(BeginDate) : null,
-            EndDate = course.EndDate is DateTime EndDate ? DateOnly.FromDateTime(EndDate) : null,
+            BeginTime = course.BeginTime,
+            EndTime = course.EndTime,
+            BeginDate = course.BeginDate,
+            EndDate = course.EndDate,
             YearCode = course.YR_CDE,
             TermCode = course.TRM_CDE,
             SubTermCode = course.SUBTERM_CDE,

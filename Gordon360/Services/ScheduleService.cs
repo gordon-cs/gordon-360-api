@@ -14,26 +14,19 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
 /// </summary>
-public class ScheduleService : IScheduleService
+public class ScheduleService(CCTContext context) : IScheduleService
 {
-    private readonly CCTContext _context;
-    private readonly ISessionService _sessionService;
-
-    public ScheduleService(CCTContext context)
-    {
-        _context = context;
-        _sessionService = new SessionService(context);
-    }
+    private readonly ISessionService _sessionService = new SessionService(context);
 
     /// <summary>
     /// Fetch the session item whose id specified by the parameter
     /// </summary>
     /// <param name="username">The AD Username of the user</param>
     /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
-    [Obsolete("Use GetSchedulesAsync instead")]
+    [Obsolete("Use GetUserSchedules instead")]
     public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await _context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
+        List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
 
         IEnumerable<SessionViewModel> sessions = _sessionService.GetAll();
         IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
@@ -53,13 +46,13 @@ public class ScheduleService : IScheduleService
     /// <returns>Enumerable of schedules in which the user either attended or taught courses.</returns>
     public IEnumerable<ScheduleViewModel> GetUserSchedules(string username)
     {
-        IEnumerable<ScheduleCourseViewModel> courses = _context.ScheduleCourses
+        IEnumerable<ScheduleCourseViewModel> courses = context.ScheduleCourses
             .Where(x => x.Username == username)
             .Select<ScheduleCourses, ScheduleCourseViewModel>(c => c)
             .AsEnumerable();
 
         // Todo: improve grouping so that top-level list is of full terms, and each term contains all courses, along with a list of subterms and the courses that vccur only in that subterm.
-        var coursesBySession = _context.ScheduleTerms
+        var coursesBySession = context.ScheduleTerms
             .AsEnumerable()
             .GroupJoin(courses,
                        s => s.YearCode + s.TermCode + s.SubTermCode,

@@ -10,21 +10,14 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ScheduleController : ControllerBase
+public class ScheduleController(IScheduleService scheduleService) : ControllerBase
 {
-    private readonly IScheduleService _scheduleService;
-
-    public ScheduleController(IScheduleService scheduleService)
-    {
-        _scheduleService = scheduleService;
-    }
-
     [HttpGet]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.SCHEDULE)]
     public ActionResult<IEnumerable<ScheduleViewModel>> GetSchedules(string? username)
     {
         username ??= AuthUtils.GetUsername(User);
-        return Ok(_scheduleService.GetUserSchedules(username));
+        return Ok(scheduleService.GetUserSchedules(username));
     }
 
     /// <summary>
@@ -36,7 +29,7 @@ public class ScheduleController : ControllerBase
     [Obsolete("Use the basic get route instead")]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
-        IEnumerable<CoursesBySessionViewModel> result = await _scheduleService.GetAllCoursesAsync(username);
+        IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
         return Ok(result);
 
     }
@@ -48,5 +41,5 @@ public class ScheduleController : ControllerBase
     [HttpGet]
     [Route("canreadstudent")]
     public ActionResult<bool> GetCanReadStudentSchedules()
-    => Ok(_scheduleService.CanReadStudentSchedules(AuthUtils.GetUsername(User)));
+    => Ok(scheduleService.CanReadStudentSchedules(AuthUtils.GetUsername(User)));
 }

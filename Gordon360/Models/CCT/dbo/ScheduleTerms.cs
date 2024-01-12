@@ -20,10 +20,8 @@ namespace Gordon360.Models.CCT
         [StringLength(1000)]
         [Unicode(false)]
         public string Description { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime? TermBeginDate { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime? TermEndDate { get; set; }
+        public DateOnly? TermBeginDate { get; set; }
+        public DateOnly? TermEndDate { get; set; }
         [StringLength(2)]
         [Unicode(false)]
         public string SubTermCode { get; set; }

@@ -840,7 +840,7 @@
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
-   "UseDateOnlyTimeOnly": false,
+   "UseDateOnlyTimeOnly": true,
    "UseDbContextSplitting": false,
    "UseFluentApiOnly": false,
    "UseHandleBars": false,

@@ -64,11 +64,9 @@ namespace Gordon360.Models.CCT
         [StringLength(1)]
         [Unicode(false)]
         public string SUNDAY_CDE { get; set; }
-        public TimeSpan? BeginTime { get; set; }
-        public TimeSpan? EndTime { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime? BeginDate { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime? EndDate { get; set; }
+        public TimeOnly? BeginTime { get; set; }
+        public TimeOnly? EndTime { get; set; }
+        public DateOnly? BeginDate { get; set; }
+        public DateOnly? EndDate { get; set; }
     }
 }

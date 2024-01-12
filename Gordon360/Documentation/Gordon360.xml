@@ -2473,6 +2473,11 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesAsync(System.String)">
             <summary>
             Fetch the session item whose id specified by the parameter

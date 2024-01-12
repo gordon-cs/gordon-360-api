@@ -20,8 +20,8 @@ namespace Gordon360.Models.ViewModels
         public string THURSDAY_CDE { get; set; }
         public string FRIDAY_CDE { get; set; }
         public string SATURDAY_CDE { get; set; }
-        public TimeSpan? BEGIN_TIME { get; set; }
-        public TimeSpan? END_TIME { get; set; }
+        public TimeOnly? BEGIN_TIME { get; set; }
+        public TimeOnly? END_TIME { get; set; }
         public string Role { get; set; }
         public static implicit operator UserCoursesViewModel(UserCourses course)
         {

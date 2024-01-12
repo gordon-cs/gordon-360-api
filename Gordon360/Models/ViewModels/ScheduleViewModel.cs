@@ -12,8 +12,8 @@ public record ScheduleViewModel
             Year: session.YearCode,
             TermCode: session.TermCode,
             Description: session.Description,
-            Start: session.TermBeginDate is DateTime begin ? DateOnly.FromDateTime(begin) : null,
-            End: session.TermEndDate is DateTime end ? DateOnly.FromDateTime(end) : null,
+            Start: session.TermBeginDate,
+            End: session.TermEndDate,
             Subterm: session.SubTermCode is not null ? new Subterm(Code: session.SubTermCode,
                                                                    SortOrder: session.SubTermSortOrder,
                                                                    Description: session.SubTermDescription) : null);
