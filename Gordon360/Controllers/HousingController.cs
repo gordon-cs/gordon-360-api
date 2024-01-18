@@ -314,7 +314,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("housing_lottery/all_preference")]
-        public ActionResult<string[]> GetAllPreference()
+        public ActionResult<Preference[]> GetAllPreference()
         {
             var viewerGroups = AuthUtils.GetGroups(User);
             if (viewerGroups.Contains(AuthGroup.HousingAdmin))
@@ -335,7 +335,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("housing_lottery/all_preferred_hall")]
-        public ActionResult<string[]> GetAllPreferredHall()
+        public ActionResult<PreferredHall[]> GetAllPreferredHall()
         {
             var viewerGroups = AuthUtils.GetGroups(User);
             if (viewerGroups.Contains(AuthGroup.HousingAdmin))
@@ -356,7 +356,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("housing_lottery/all_applicant")]
-        public ActionResult<string[]> GetAllApplicant()
+        public ActionResult<Applicant[]> GetAllApplicant()
         {
             var viewerGroups = AuthUtils.GetGroups(User);
             if (viewerGroups.Contains(AuthGroup.HousingAdmin))
@@ -377,7 +377,7 @@ namespace Gordon360.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("housing_lottery/all_school_year")]
-        public ActionResult<string[]> GetAllSchoolYear()
+        public ActionResult<Year[]> GetAllSchoolYear()
         {
             var viewerGroups = AuthUtils.GetGroups(User);
             if (viewerGroups.Contains(AuthGroup.HousingAdmin))

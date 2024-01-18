@@ -686,7 +686,7 @@ namespace Gordon360.Services
         /// Gets an array of preferences
         /// </summary>
         /// <returns> An array of preferences </returns>
-        public string GetAllPreference()
+        public Preference[] GetAllPreference()
         {
 
             var result = _context.Preference;
@@ -694,15 +694,14 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The preferences could not be found." };
             }
-            string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
-            return jsonArray;
+            return result.ToArray();
         }
 
         /// <summary>
         ///Gets an array of preferred halls
         /// </summary>
         /// <returns> AN array of preferred halls </returns>
-        public string GetAllPreferredHall()
+        public PreferredHall[] GetAllPreferredHall()
         {
 
             var result = _context.PreferredHall;
@@ -710,15 +709,14 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The preferred halls could not be found." };
             }
-            string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
-            return jsonArray;
+            return result.ToArray();
         }
 
         /// <summary>
         ///Gets an array of applicants
         /// </summary>
         /// <returns> AN array of applicants </returns>
-        public string GetAllApplicant()
+        public Applicant[] GetAllApplicant()
         {
 
             var result = _context.Applicant;
@@ -726,15 +724,14 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
             }
-            string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
-            return jsonArray;
+            return result.ToArray();
         }
 
         /// <summary>
         ///Gets an array of school years
         /// </summary>
         /// <returns> AN array of school years </returns>
-        public string GetAllSchoolYear()
+        public Year[] GetAllSchoolYear()
         {
 
             var result = _context.Year;
@@ -742,8 +739,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The school years could not be found." };
             }
-            string jsonArray = JsonConvert.SerializeObject(result, Formatting.Indented);
-            return jsonArray;
+            return result.ToArray();
         }
     }
 }

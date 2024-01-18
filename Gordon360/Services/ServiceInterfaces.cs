@@ -295,10 +295,10 @@ namespace Gordon360.Services
         bool DeleteApplication(int applicationID);
         string[] GetAllApartmentHalls();
         string[] GetAllTraditionalHalls();
-        string GetAllPreference();
-        string GetAllPreferredHall();
-        string GetAllApplicant();
-        string GetAllSchoolYear();
+        Preference[] GetAllPreference();
+        PreferredHall[] GetAllPreferredHall();
+        Applicant[] GetAllApplicant();
+        Year[] GetAllSchoolYear();
         string GetEditorUsername(int applicationID);
         int? GetApplicationID(string username, string sess_cde);
         ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false);
