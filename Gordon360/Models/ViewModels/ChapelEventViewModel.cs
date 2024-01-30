@@ -1,30 +1,27 @@
 ﻿using Gordon360.Models.CCT;
 using System;
 
-namespace Gordon360.Models.ViewModels
+namespace Gordon360.Models.ViewModels;
+
+public class ChapelEventViewModel
 {
-    public class ChapelEventViewModel
+    public string LiveID { get; set; }
+    public int? Required { get; set; }
+    public DateTime? CHDate { get; set; }
+    public DateTime? CHTime { get; set; }
+    public string CHTermCD { get; set; }
+
+    public static implicit operator ChapelEventViewModel(ChapelEvent a)
     {
-        public string LiveID { get; set; }
-        public int? Required { get; set; }
-        public DateTime? CHDate { get; set; }
-        public DateTime? CHTime { get; set; }
-        public string CHTermCD { get; set; }
-
-        public static implicit operator ChapelEventViewModel(ChapelEvent a)
+        ChapelEventViewModel vm = new ChapelEventViewModel
         {
-            ChapelEventViewModel vm = new ChapelEventViewModel
-            {
-                LiveID = a.LiveID.ToString().Trim(),
-                Required = a.Required,
-                CHDate = a.CHDate,
-                CHTime = a.CHTime,
-                CHTermCD = a.CHTermCD.Trim()
-            };
+            LiveID = a.LiveID.ToString().Trim(),
+            Required = a.Required,
+            CHDate = a.CHDate,
+            CHTime = a.CHTime,
+            CHTermCD = a.CHTermCD.Trim()
+        };
 
-            return vm;
-        }
+        return vm;
     }
-
-
 }

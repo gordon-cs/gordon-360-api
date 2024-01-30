@@ -1,37 +1,34 @@
 ﻿using Gordon360.Models.CCT;
 
-namespace Gordon360.Models.ViewModels
+namespace Gordon360.Models.ViewModels;
+
+public class ActivityInfoViewModel
 {
-    public class ActivityInfoViewModel
+    public string ActivityCode { get; set; }
+    public string ActivityDescription { get; set; }
+    public string ActivityImagePath { get; set; }
+    public string ActivityBlurb { get; set; }
+    public string ActivityURL { get; set; }
+    public string ActivityType { get; set; }
+    public string ActivityTypeDescription { get; set; }
+    public bool? Privacy { get; set; }
+    public string ActivityJoinInfo { get; set; }
+
+    public static implicit operator ActivityInfoViewModel(ACT_INFO info)
     {
-        public string ActivityCode { get; set; }
-        public string ActivityDescription { get; set; }
-        public string ActivityImagePath { get; set; }
-        public string ActivityBlurb { get; set; }
-        public string ActivityURL { get; set; }
-        public string ActivityType { get; set; }
-        public string ActivityTypeDescription { get; set; }
-        public bool? Privacy { get; set; }
-        public string ActivityJoinInfo { get; set; }
-
-        public static implicit operator ActivityInfoViewModel(ACT_INFO info)
+        ActivityInfoViewModel vm = new ActivityInfoViewModel
         {
-            ActivityInfoViewModel vm = new ActivityInfoViewModel
-            {
-                ActivityCode = info.ACT_CDE.Trim(),
-                ActivityDescription = info.ACT_DESC.Trim() ?? "",
-                ActivityBlurb = info.ACT_BLURB ?? "",
-                ActivityURL = info.ACT_URL ?? "",
-                ActivityImagePath = info.ACT_IMG_PATH ?? "",
-                ActivityType = info.ACT_TYPE ?? "",
-                Privacy = info.PRIVACY ?? false,
-                ActivityTypeDescription = info.ACT_TYPE_DESC.Trim() ?? "",
-                ActivityJoinInfo = info.ACT_JOIN_INFO ?? ""
-            };
+            ActivityCode = info.ACT_CDE.Trim(),
+            ActivityDescription = info.ACT_DESC.Trim() ?? "",
+            ActivityBlurb = info.ACT_BLURB ?? "",
+            ActivityURL = info.ACT_URL ?? "",
+            ActivityImagePath = info.ACT_IMG_PATH ?? "",
+            ActivityType = info.ACT_TYPE ?? "",
+            Privacy = info.PRIVACY ?? false,
+            ActivityTypeDescription = info.ACT_TYPE_DESC.Trim() ?? "",
+            ActivityJoinInfo = info.ACT_JOIN_INFO ?? ""
+        };
 
-            return vm;
-        }
+        return vm;
     }
-
-
 }

@@ -5,35 +5,34 @@ using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace Gordon360.Controllers
+namespace Gordon360.Controllers;
+
+[Route("api/[controller]")]
+public class StudentEmploymentController : GordonControllerBase
 {
-    [Route("api/[controller]")]
-    public class StudentEmploymentController : GordonControllerBase
+    //declare services we are going to use.
+    private readonly IStudentEmploymentService _studentEmploymentService;
+
+    public StudentEmploymentController(CCTContext context)
     {
-        //declare services we are going to use.
-        private readonly IStudentEmploymentService _studentEmploymentService;
+        _studentEmploymentService = new StudentEmploymentService(context);
+    }
 
-        public StudentEmploymentController(CCTContext context)
+    /// <summary>
+    ///  Gets student employment information about the user
+    /// </summary>
+    /// <returns>A Student Employment Json</returns>
+    [HttpGet]
+    [Route("")]
+    public async Task<ActionResult<StudentEmploymentViewModel>> GetAsync()
+    {
+        var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+        var result = await _studentEmploymentService.GetEmploymentAsync(authenticatedUserUsername);
+        if (result == null)
         {
-            _studentEmploymentService = new StudentEmploymentService(context);
+            return NotFound();
         }
-
-        /// <summary>
-        ///  Gets student employment information about the user
-        /// </summary>
-        /// <returns>A Student Employment Json</returns>
-        [HttpGet]
-        [Route("")]
-        public async Task<ActionResult<StudentEmploymentViewModel>> GetAsync()
-        {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-
-            var result = await _studentEmploymentService.GetEmploymentAsync(authenticatedUserUsername);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return Ok(result);
-        }
+        return Ok(result);
     }
 }

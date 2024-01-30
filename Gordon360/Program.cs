@@ -1,7 +1,7 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.webSQL.Context;
-using RecIM = Gordon360.Services.RecIM;
 using Gordon360.Services;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Builder;
@@ -11,10 +11,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Identity.Web;
-using System.IO;
 using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using RecIM = Gordon360.Services.RecIM;
 
 var builder = WebApplication.CreateBuilder(args);
 
