@@ -1,6 +1,4 @@
-﻿using System.Drawing.Text;
-
-namespace Gordon360.Models.ViewModels.RecIM;
+﻿namespace Gordon360.Models.ViewModels.RecIM;
 
 public class TeamPatchViewModel
 {

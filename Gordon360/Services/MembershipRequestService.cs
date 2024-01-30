@@ -1,9 +1,9 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
-using Gordon360.Static.Names;
 using Gordon360.Static.Methods;
+using Gordon360.Static.Names;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ public class MembershipRequestService : IMembershipRequestService
     public async Task<RequestView> AddAsync(RequestUploadViewModel membershipRequestUpload)
     {
 
-        MembershipUploadViewModel m = (MembershipUploadViewModel) membershipRequestUpload;
+        MembershipUploadViewModel m = (MembershipUploadViewModel)membershipRequestUpload;
         // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
         _membershipService.ValidateMembership(m);
         _membershipService.IsPersonAlreadyInActivity(m);
@@ -44,7 +44,7 @@ public class MembershipRequestService : IMembershipRequestService
             throw new ResourceCreationException() { ExceptionMessage = "A request already exists with this activity, session, and user." };
         }
 
-        var request = (REQUEST) membershipRequestUpload;
+        var request = (REQUEST)membershipRequestUpload;
         request.ID_NUM = int.Parse(_accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID);
 
         var addedMembershipRequest = _context.REQUEST.Add(request);
@@ -56,9 +56,9 @@ public class MembershipRequestService : IMembershipRequestService
 
     private bool RequestAlreadyExists(RequestUploadViewModel requestUpload)
     {
-        var account =_accountService.GetAccountByUsername(requestUpload.Username);
+        var account = _accountService.GetAccountByUsername(requestUpload.Username);
         var g_id = Int32.Parse(account.GordonID);
-        return _context.REQUEST.Any(r => 
+        return _context.REQUEST.Any(r =>
             r.STATUS == Request_Status.PENDING
             && r.ACT_CDE == requestUpload.Activity
             && r.SESS_CDE == requestUpload.Session
@@ -81,7 +81,7 @@ public class MembershipRequestService : IMembershipRequestService
 
         if (request.STATUS == Request_Status.APPROVED)
         {
-            throw new BadInputException() { ExceptionMessage = "The request has already been approved."};
+            throw new BadInputException() { ExceptionMessage = "The request has already been approved." };
         }
 
         var username = _accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
@@ -189,7 +189,7 @@ public class MembershipRequestService : IMembershipRequestService
     {
         RequestView? query = _context.RequestView.FirstOrDefault(rv => rv.RequestID == requestID);
 
-        if (query is not RequestView request) throw new ResourceNotFoundException() { ExceptionMessage = "The request was not found"};
+        if (query is not RequestView request) throw new ResourceNotFoundException() { ExceptionMessage = "The request was not found" };
 
         return request;
     }
@@ -251,7 +251,7 @@ public class MembershipRequestService : IMembershipRequestService
         }
 
         // The validate function throws ResourceNotFoundException where needed. The exceptions are caught in my CustomExceptionFilter
-        _membershipService.ValidateMembership((MembershipUploadViewModel) membershipRequest);
+        _membershipService.ValidateMembership((MembershipUploadViewModel)membershipRequest);
 
         // Only a few fields should be able to be changed through an update.
         original.SESS_CDE = membershipRequest.Session;

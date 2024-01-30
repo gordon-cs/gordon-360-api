@@ -1,7 +1,4 @@
-﻿using Gordon360.Models.CCT;
-using Microsoft.Graph;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace Gordon360.Models.ViewModels.RecIM;
 

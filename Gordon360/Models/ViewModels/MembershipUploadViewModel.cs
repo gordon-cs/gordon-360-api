@@ -1,5 +1,5 @@
-﻿using System;
 ﻿using Gordon360.Models.CCT;
+using System;
 
 namespace Gordon360.Models.ViewModels;
 

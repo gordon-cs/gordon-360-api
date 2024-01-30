@@ -13,22 +13,22 @@ public record MembershipHistoryViewModel(string ActivityCode,
 {
     public static MembershipHistoryViewModel FromMembershipGroup(IGrouping<string, MembershipView> membershipGroup)
     {
-            var first = membershipGroup.First();
+        var first = membershipGroup.First();
 
-            var sessions = membershipGroup.Aggregate(
-                Enumerable.Empty<MembershipHistorySessionViewModel>(),
-                (sessions, membership) => sessions.Append(new MembershipHistorySessionViewModel(
-                    membership.MembershipID,
-                    membership.SessionCode,
-                    membership.Participation)));
+        var sessions = membershipGroup.Aggregate(
+            Enumerable.Empty<MembershipHistorySessionViewModel>(),
+            (sessions, membership) => sessions.Append(new MembershipHistorySessionViewModel(
+                membership.MembershipID,
+                membership.SessionCode,
+                membership.Participation)));
 
-            return new MembershipHistoryViewModel(
-                ActivityCode: membershipGroup.Key,
-                ActivityDescription: first.ActivityDescription,
-                ActivityImagePath: first.ActivityImagePath,
-                Sessions: sessions,
-                LatestDate: membershipGroup.Max(m => m.EndDate ?? m.StartDate)
-            );
+        return new MembershipHistoryViewModel(
+            ActivityCode: membershipGroup.Key,
+            ActivityDescription: first.ActivityDescription,
+            ActivityImagePath: first.ActivityImagePath,
+            Sessions: sessions,
+            LatestDate: membershipGroup.Max(m => m.EndDate ?? m.StartDate)
+        );
     }
 }
 

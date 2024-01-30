@@ -11,7 +11,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
 /// </summary>
-	/// 
+/// 
 public class AcademicCheckInService : IAcademicCheckInService
 {
     private readonly CCTContext _context;

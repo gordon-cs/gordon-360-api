@@ -1,20 +1,20 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Enums;
+using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Services.RecIM;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Models.ViewModels;
-using Gordon360.Extensions.System;
-using Gordon360.Enums;
 
 
 namespace Gordon360.Authorization;
@@ -223,7 +223,7 @@ public class StateYourBusiness : ActionFilterAttribute
                     }
 
                     // Only members can read a specific activity's memberships
-                    if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object)  && involvementCode_object is string involvementCode)
+                    if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object) && involvementCode_object is string involvementCode)
                     {
                         if (context.ActionArguments.TryGetValue("sessionCode", out object? sessionCode_object) && sessionCode_object is string sessionCode)
                         {
@@ -501,17 +501,17 @@ public class StateYourBusiness : ActionFilterAttribute
             case Resource.NEWS:
                 return true;
             case Resource.RECIM_PARTICIPANT_ADMIN:
-                 //fallthrough
+            //fallthrough
             case Resource.RECIM_AFFILIATION:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_ACTIVITY:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SERIES:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_MATCH:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SURFACE:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SPORT:
                 {
                     return _recimParticipantService.IsAdmin(user_name);
@@ -683,7 +683,7 @@ public class StateYourBusiness : ActionFilterAttribute
                 }
             case Resource.EMERGENCY_CONTACT:
                 {
-                    return context.ActionArguments["username"] is string emergency_contact_username 
+                    return context.ActionArguments["username"] is string emergency_contact_username
                         && emergency_contact_username.EqualsIgnoreCase(user_name);
                 }
 
@@ -721,15 +721,15 @@ public class StateYourBusiness : ActionFilterAttribute
                     return participant_username.EqualsIgnoreCase(user_name);
                 return false;
             case Resource.RECIM_PARTICIPANT_ADMIN:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_ACTIVITY:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_AFFILIATION:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SERIES:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SURFACE:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SPORT:
                 {
                     return _recimParticipantService.IsAdmin(user_name);
@@ -737,7 +737,7 @@ public class StateYourBusiness : ActionFilterAttribute
 
             case Resource.RECIM_TEAM:
                 {
-                    if(context.ActionArguments.TryGetValue("teamID",out object? teamID_object) && teamID_object is int teamID)
+                    if (context.ActionArguments.TryGetValue("teamID", out object? teamID_object) && teamID_object is int teamID)
                     {
                         return _recimTeamService.IsTeamCaptain(user_name, teamID) || _recimParticipantService.IsAdmin(user_name);
                     }
@@ -877,17 +877,17 @@ public class StateYourBusiness : ActionFilterAttribute
                     return false;
                 }
             case Resource.RECIM_ACTIVITY:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_AFFILIATION:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SERIES:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SPORT:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_TEAM:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_SURFACE:
-                //fallthrough
+            //fallthrough
             case Resource.RECIM_MATCH:
                 return _recimParticipantService.IsAdmin(user_name);
             default: return false;

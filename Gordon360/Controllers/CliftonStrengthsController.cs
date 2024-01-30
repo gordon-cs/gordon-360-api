@@ -1,14 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
+using Gordon360.Authorization;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
-using Gordon360.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using Gordon360.Models.CCT;
-using Gordon360.Exceptions;
 
 namespace Gordon360.Controllers;
 
@@ -38,7 +37,8 @@ public class CliftonStrengthsController : GordonControllerBase
             }
             catch (ResourceNotFoundException e)
             {
-                return new CliftonStrengthsUploadResultViewModel() {
+                return new CliftonStrengthsUploadResultViewModel()
+                {
                     Email = cs.Email,
                     AccessCode = cs.AccessCode,
                     UploadResult = "Not Found"
@@ -72,7 +72,7 @@ public class CliftonStrengthsController : GordonControllerBase
                         THEME_3 = cs.Themes[2],
                         THEME_4 = cs.Themes[3],
                         THEME_5 = cs.Themes[4],
-                    DTE_COMPLETED = cs.DateCompleted,
+                        DTE_COMPLETED = cs.DateCompleted,
                         EMAIL = cs.Email,
                         Private = false
                     }).State.ToString();
@@ -84,7 +84,8 @@ public class CliftonStrengthsController : GordonControllerBase
                 rowState = "Failed";
             }
 
-            return new CliftonStrengthsUploadResultViewModel() {
+            return new CliftonStrengthsUploadResultViewModel()
+            {
                 Email = cs.Email,
                 AccessCode = cs.AccessCode,
                 UploadResult = rowState

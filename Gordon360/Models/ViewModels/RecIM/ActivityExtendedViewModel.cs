@@ -33,7 +33,7 @@ public class ActivityExtendedViewModel
         //redundant check in case admins forget to mark activity completed
         //or if we are looking for an end date automatically via Series.EndDate
         bool completed = !a.Completed
-            ? DateTime.UtcNow > (a.EndDate ?? DateTime.MaxValue) 
+            ? DateTime.UtcNow > (a.EndDate ?? DateTime.MaxValue)
             : a.Completed;
         return new ActivityExtendedViewModel
         {

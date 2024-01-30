@@ -1,14 +1,14 @@
-using Gordon360.Models.CCT.Context;
+using Gordon360.Authorization;
+using Gordon360.Enums;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Gordon360.Static.Methods;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gordon360.Authorization;
-using Gordon360.Enums;
-using Gordon360.Static.Methods;
-using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services;
 

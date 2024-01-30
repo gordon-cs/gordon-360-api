@@ -1,19 +1,14 @@
 ﻿using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Models.CCT.Context;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.ViewModels.RecIM;
+using Gordon360.Utilities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Utilities;
-using Microsoft.AspNetCore.Hosting;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using System.Diagnostics;
-using Microsoft.Graph;
 
 
 namespace Gordon360.Services.RecIM;
@@ -40,7 +35,7 @@ public class SportService : ISportService
     {
         var sport = _context.Sport.Find(sportID);
         var activities = _context.Activity.Where(a => a.SportID == sportID);
-        foreach(var activity in activities)
+        foreach (var activity in activities)
             activity.SportID = 0;
         _context.Sport.Remove(sport);
         await _context.SaveChangesAsync();

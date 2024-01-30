@@ -15,5 +15,6 @@ public record CoursesBySessionViewModel(
         SessionDescription: session.SessionDescription,
         SessionBeginDate: session.SessionBeginDate,
         SessionEndDate: session.SessionEndDate,
-        AllCourses: courses) { }
+        AllCourses: courses)
+    { }
 }

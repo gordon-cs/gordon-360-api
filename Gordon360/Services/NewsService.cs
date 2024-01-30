@@ -1,7 +1,7 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Models.MyGordon.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon;
+using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services;
 
@@ -70,14 +69,14 @@ public class NewsService : INewsService
     public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
     {
         var news = (from sn in _context.StudentNews
-                     join snc in _context.StudentNewsCategory
-                     on sn.categoryID equals snc.categoryID
-                     where sn.Accepted == true
-                     && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
-                     && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
-                     orderby snc.SortOrder
-                     select StudentNewsViewModel.From(sn, snc));
-                     
+                    join snc in _context.StudentNewsCategory
+                    on sn.categoryID equals snc.categoryID
+                    where sn.Accepted == true
+                    && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
+                    && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
+                    orderby snc.SortOrder
+                    select StudentNewsViewModel.From(sn, snc));
+
         return news;
     }
 
@@ -131,16 +130,16 @@ public class NewsService : INewsService
         }
 
         var news = (from sn in _context.StudentNews
-                     join snc in _context.StudentNewsCategory
-                     on sn.categoryID equals snc.categoryID
-                     where sn.Accepted != true
-                     && (sn.ADUN == username)
-                     && ((sn.ManualExpirationDate == null
-                           && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
-                       || (sn.ManualExpirationDate != null
-                       && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
+                    join snc in _context.StudentNewsCategory
+                    on sn.categoryID equals snc.categoryID
+                    where sn.Accepted != true
+                    && (sn.ADUN == username)
+                    && ((sn.ManualExpirationDate == null
+                          && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                      || (sn.ManualExpirationDate != null
+                      && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
                     orderby sn.SNID descending
-                     select StudentNewsViewModel.From(sn, snc)); 
+                    select StudentNewsViewModel.From(sn, snc));
         return news;
     }
 
@@ -176,7 +175,7 @@ public class NewsService : INewsService
 
             // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
             var (extension, format, data) = ImageUtils.GetImageFormat(itemToSubmit.Image);
-            
+
             // Use a unique alphanumeric GUID string as the file name
             var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
             var imagePath = GetImagePath(filename);

@@ -1,23 +1,22 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Enums;
+using Gordon360.Extensions.System;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.webSQL.Context;
 using Gordon360.Services;
-using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using Gordon360.Models.webSQL.Context;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Controllers;
 
@@ -99,7 +98,7 @@ public class ProfilesController : GordonControllerBase
             // If this student is also in Alumni AuthGroup, then s/he can see alumni's
             // public profile; if not, return null.
             alumni = (_alumni == null) ? null :
-                     viewerGroups.Contains(AuthGroup.Alumni) ? 
+                     viewerGroups.Contains(AuthGroup.Alumni) ?
                          (PublicAlumniProfileViewModel)_alumni : null;
         }
         else if (viewerGroups.Contains(AuthGroup.Alumni))
@@ -148,7 +147,7 @@ public class ProfilesController : GordonControllerBase
         {
             return Ok(Array.Empty<string>());
         }
-        
+
         var authenticatedUserName = AuthUtils.GetUsername(User);
         return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
             ? Ok(strengths.Themes)
@@ -170,7 +169,7 @@ public class ProfilesController : GordonControllerBase
         {
             return Ok(null);
         }
-        
+
         var authenticatedUserName = AuthUtils.GetUsername(User);
         return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
             ? Ok(strengths)
@@ -428,7 +427,7 @@ public class ProfilesController : GordonControllerBase
     /// <returns></returns>
     [HttpPut]
     [Route("{type}")]
-    public async Task<ActionResult> UpdateCustomProfile(string type,[FromBody] CUSTOM_PROFILE value)
+    public async Task<ActionResult> UpdateCustomProfile(string type, [FromBody] CUSTOM_PROFILE value)
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
@@ -472,7 +471,7 @@ public class ProfilesController : GordonControllerBase
     /// <returns></returns>
     [HttpPut]
     [Route("office_hours")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody]string value)
+    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody] string value)
     {
         var username = AuthUtils.GetUsername(User);
         var result = await _profileService.UpdateOfficeHoursAsync(username, value);
@@ -486,7 +485,7 @@ public class ProfilesController : GordonControllerBase
     /// <returns></returns>
     [HttpPut]
     [Route("mailstop")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody]string value)
+    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody] string value)
     {
         var username = AuthUtils.GetUsername(User);
         var result = await _profileService.UpdateMailStopAsync(username, value);

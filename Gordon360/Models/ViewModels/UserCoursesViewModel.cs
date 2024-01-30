@@ -1,9 +1,5 @@
 ﻿using Gordon360.Models.CCT;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Graph;
 using System;
-using System.Linq;
-using System.Runtime.Serialization.Formatters;
 
 namespace Gordon360.Models.ViewModels;
 

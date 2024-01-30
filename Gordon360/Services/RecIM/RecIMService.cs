@@ -1,15 +1,10 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.Extensions.Configuration;
 using System;
-using Gordon360.Exceptions;
-using Microsoft.Graph;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Gordon360.Models.ViewModels;
+using System.Linq;
 
 namespace Gordon360.Services.RecIM;
 
@@ -38,14 +33,14 @@ public class RecIMService : IRecIMService
             .Where(a => a.RegistrationStart > start && a.RegistrationEnd < end)
             .Select(a =>
             new ActivityReportViewModel
-                {
-                    NumberOfParticipants = _context.ParticipantTeam.
+            {
+                NumberOfParticipants = _context.ParticipantTeam.
                         Where(pt => pt.Team.ActivityID == a.ID && pt.Team.StatusID != 0 && pt.RoleTypeID != 0)
                         .Count(),
-                    Activity = a
-                });
+                Activity = a
+            });
 
-        var newParticipants =  _context.ParticipantStatusHistory
+        var newParticipants = _context.ParticipantStatusHistory
             .Where(p => p.StatusID == 4 && p.StartDate > start)
                 .Select(p => p.ParticipantUsername)
             .Distinct()
@@ -54,7 +49,7 @@ public class RecIMService : IRecIMService
                 UserAccount = _participantService.GetUnaffiliatedAccountByUsername(username),
                 NumberOfActivitiesParticipated =
                     _context.ParticipantTeam
-                    .Where(pt => 
+                    .Where(pt =>
                         pt.ParticipantUsername == username
                         && pt.RoleTypeID != 0
                         && pt.RoleTypeID != 2

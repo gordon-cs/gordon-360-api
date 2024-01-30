@@ -1,17 +1,17 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Exceptions;
+using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Threading.Tasks;
+using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Gordon360.Extensions.System;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 
 namespace Gordon360.Services.RecIM;
@@ -120,15 +120,16 @@ public class ActivityService : IActivityService
                                     ID = t.ID,
                                     Name = t.Name,
                                     Status = t.Status.Description,
-                                    Activity = new ActivityExtendedViewModel {
-                                        ID = t.ActivityID, 
+                                    Activity = new ActivityExtendedViewModel
+                                    {
+                                        ID = t.ActivityID,
                                         Name = a.Name
                                     },
                                     Logo = t.Logo,
                                     TeamRecord = _context.SeriesTeam
                                         .Include(st => st.Team)
                                         .Where(st => st.TeamID == t.ID)
-                                        .Select(st => (TeamRecordViewModel) st)
+                                        .Select(st => (TeamRecordViewModel)st)
                                 }),
                             SeriesScheduleID = a.SeriesScheduleID,
                         })
@@ -155,7 +156,7 @@ public class ActivityService : IActivityService
         activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
         activity.SeriesScheduleID = updatedActivity.SeriesScheduleID ?? activity.SeriesScheduleID;
 
-    
+
         if (updatedActivity.Logo != null)
         {
             // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
@@ -163,7 +164,7 @@ public class ActivityService : IActivityService
 
             string? imagePath = null;
             // remove old
-            if(activity.Logo is not null && updatedActivity.Logo.Image is null)
+            if (activity.Logo is not null && updatedActivity.Logo.Image is null)
             {
                 imagePath = GetImagePath(Path.GetFileName(activity.Logo));
                 ImageUtils.DeleteImage(imagePath);
@@ -213,8 +214,8 @@ public class ActivityService : IActivityService
     public bool IsReferee(string username, int activityID)
     {
         return _context.ParticipantActivity.Where(pa => pa.PrivTypeID != 0).Any(pa =>
-            pa.ParticipantUsername == username 
-            && pa.ActivityID == activityID 
+            pa.ParticipantUsername == username
+            && pa.ActivityID == activityID
             && pa.PrivTypeID == 2); // PrivType: 2 => Referee
     }
 
@@ -261,7 +262,7 @@ public class ActivityService : IActivityService
 
 
         // delete teams
-        
+
         foreach (var team in activityTeams)
         {
             team.StatusID = 0;
@@ -271,7 +272,7 @@ public class ActivityService : IActivityService
                 participantTeam.RoleTypeID = 0;
             }
         }
-        
+
         // delete series
         foreach (var series in activitySeries)
         {

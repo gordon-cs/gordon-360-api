@@ -3,10 +3,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services;
 using Gordon360.Services.RecIM;
-using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
-using Gordon360.Utilities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -124,7 +121,7 @@ public class ParticipantsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
     public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAdminStatusAsync(string username, [FromBody] bool isAdmin)
     {
-        var participant = await _participantService.SetParticipantAdminStatusAsync(username,isAdmin);
+        var participant = await _participantService.SetParticipantAdminStatusAsync(username, isAdmin);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
     }
 

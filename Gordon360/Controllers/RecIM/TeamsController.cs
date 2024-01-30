@@ -1,9 +1,7 @@
 using Gordon360.Authorization;
-using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
 using Gordon360.Static.Names;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -85,12 +83,12 @@ public class TeamsController : GordonControllerBase
         var activity = _activityService.GetActivityByID(newTeam.ActivityID);
         if (activity is null)
             return NotFound($"This activity does not exist");
-       
+
         //redudant check for API as countermeasure against postman navigation around UI check, admins can make any number of teams
         if (_teamService.HasUserJoined(newTeam.ActivityID, username) && !_participantService.IsAdmin(username))
             return UnprocessableEntity($"Participant {username} already is a part of a team in this activity");
-        
-        if(_activityService.ActivityRegistrationClosed(newTeam.ActivityID) && !_participantService.IsAdmin(username))
+
+        if (_activityService.ActivityRegistrationClosed(newTeam.ActivityID) && !_participantService.IsAdmin(username))
             return UnprocessableEntity("Activity Registration has closed.");
 
         /* temporarily deprecated
@@ -196,7 +194,8 @@ public class TeamsController : GordonControllerBase
     {
         var updatedTeam = await _teamService.UpdateTeamAsync(teamID, team);
         return CreatedAtAction(nameof(GetTeamByID), new { teamID = updatedTeam.ID }, updatedTeam);
-;       }
+        ;
+    }
 
     /// <summary>
     /// Get all team invites of the user
@@ -233,7 +232,7 @@ public class TeamsController : GordonControllerBase
     /// <returns>The accepted TeamInviteViewModel</returns>
     [HttpPatch]
     [Route("{teamID}/invite/status")]
-    public async Task<ActionResult<ParticipantTeamViewModel?>> HandleTeamInviteAsync(int teamID, [FromBody]string response)
+    public async Task<ActionResult<ParticipantTeamViewModel?>> HandleTeamInviteAsync(int teamID, [FromBody] string response)
     {
         var username = AuthUtils.GetUsername(User);
         var invite = _teamService.GetParticipantTeam(teamID, username);
@@ -242,7 +241,7 @@ public class TeamsController : GordonControllerBase
             return NotFound("You were not invited by this team.");
         if (username != invite.ParticipantUsername)
             return Forbid($"You are not permitted to accept invitations for another participant.");
-        
+
         switch (response)
         {
             case "accepted":

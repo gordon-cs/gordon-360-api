@@ -1,8 +1,7 @@
-﻿using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Authorization;
+using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Services.RecIM;
-using Gordon360.Authorization;
 using Gordon360.Static.Names;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -102,7 +101,7 @@ public class SeriesController : GordonControllerBase
     [HttpPost]
     [Route("")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-    public async Task<ActionResult<SeriesViewModel>> CreateSeriesAsync(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
+    public async Task<ActionResult<SeriesViewModel>> CreateSeriesAsync(SeriesUploadViewModel newSeries, [FromQuery] int? referenceSeriesID)
     {
         var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
         return CreatedAtAction(nameof(GetSeriesByID), new { seriesID = series.ID }, series);
@@ -135,7 +134,7 @@ public class SeriesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult<TeamRecordViewModel>> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel update)
     {
-        var record = await _seriesService.UpdateSeriesTeamRecordAsync(seriesID ,update);
+        var record = await _seriesService.UpdateSeriesTeamRecordAsync(seriesID, update);
         return Ok(record);
     }
 
@@ -209,7 +208,7 @@ public class SeriesController : GordonControllerBase
     [Route("{seriesID}/autoschedule")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(
-        int seriesID, [FromQuery] int RoundRobinMatchCapacity,  [FromQuery] int NumberOfLadderMatches)
+        int seriesID, [FromQuery] int RoundRobinMatchCapacity, [FromQuery] int NumberOfLadderMatches)
     {
         var req = new UploadScheduleRequest()
         {

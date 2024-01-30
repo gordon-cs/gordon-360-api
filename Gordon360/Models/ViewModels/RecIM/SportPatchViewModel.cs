@@ -1,8 +1,4 @@
-﻿using Gordon360.Models.CCT;
-using System;
-using System.Collections.Generic;
-
-namespace Gordon360.Models.ViewModels.RecIM;
+﻿namespace Gordon360.Models.ViewModels.RecIM;
 
 public class SportPatchViewModel
 {

@@ -1,5 +1,4 @@
-﻿using Gordon360.Services;
-using System;
+﻿using System;
 
 namespace Gordon360.Models.CCT;
 

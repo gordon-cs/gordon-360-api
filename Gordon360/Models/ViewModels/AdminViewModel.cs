@@ -22,7 +22,8 @@ public partial class AdminViewModel
 
     public ADMIN ToAdmin(int GordonID)
     {
-        return new ADMIN() {
+        return new ADMIN()
+        {
             USER_NAME = Username,
             EMAIL = Email,
             SUPER_ADMIN = IsSuperAdmin,

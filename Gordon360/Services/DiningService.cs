@@ -1,5 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;

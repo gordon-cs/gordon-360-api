@@ -1,9 +1,6 @@
 ﻿using Gordon360.Extensions.System;
 using Gordon360.Models.CCT;
-using Gordon360.Static.Methods;
-using Microsoft.Graph;
 using System;
-using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM;
 

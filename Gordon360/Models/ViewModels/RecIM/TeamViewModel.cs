@@ -1,6 +1,4 @@
 ﻿using Gordon360.Models.CCT;
-using System;
-using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels.RecIM;
 
@@ -16,9 +14,9 @@ public class TeamViewModel
     {
         return new TeamViewModel
         {
-            ID = t.ID, 
-            Name = t.Name, 
-            StatusID = t.StatusID,  
+            ID = t.ID,
+            Name = t.Name,
+            StatusID = t.StatusID,
             ActivityID = t.ActivityID,
             Logo = t.Logo,
             Affiliation = t.Affiliation

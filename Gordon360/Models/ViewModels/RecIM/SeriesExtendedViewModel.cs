@@ -1,7 +1,7 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Extensions.System;
+using Gordon360.Models.CCT;
 using System;
 using System.Collections.Generic;
-using Gordon360.Extensions.System;
 
 
 namespace Gordon360.Models.ViewModels.RecIM;
