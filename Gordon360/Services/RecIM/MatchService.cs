@@ -13,23 +13,11 @@ using Match = Gordon360.Models.CCT.Match;
 
 namespace Gordon360.Services.RecIM;
 
-public class MatchService : IMatchService
+public class MatchService(CCTContext context, IParticipantService participantService) : IMatchService
 {
-    private readonly CCTContext _context;
-    private readonly IAccountService _accountService;
-    private readonly IParticipantService _participantService;
-
-
-    public MatchService(CCTContext context, IAccountService accountService, IParticipantService participantService)
-    {
-        _context = context;
-        _accountService = accountService;
-        _participantService = participantService;
-    }
-
     public MatchViewModel GetSimpleMatchViewByID(int matchID)
     {
-        var res = _context.Match.Find(matchID);
+        var res = context.Match.Find(matchID);
         return res;
     }
 
@@ -38,14 +26,14 @@ public class MatchService : IMatchService
     {
         return type switch
         {
-            "status" => _context.MatchStatus.Where(query => query.ID != 0)
+            "status" => context.MatchStatus.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
                         Description = s.Description
                     })
                     .AsEnumerable(),
-            "teamstatus" => _context.MatchTeamStatus.Where(query => query.ID != 0)
+            "teamstatus" => context.MatchTeamStatus.Where(query => query.ID != 0)
                     .Select(s => new LookupViewModel
                     {
                         ID = s.ID,
@@ -63,7 +51,7 @@ public class MatchService : IMatchService
     /// </summary>
     public MatchExtendedViewModel GetMatchForTeamByMatchID(int matchID)
     {
-        var match = _context.MatchTeam
+        var match = context.MatchTeam
             .Where(mt => mt.MatchID == matchID && mt.StatusID != 0)
             .Include(mt => mt.Status)
             .Include(mt => mt.Match)
@@ -92,7 +80,7 @@ public class MatchService : IMatchService
                         Logo = _mt.Team.Logo
                     })
                     .AsEnumerable(),
-                Series = _context.Series
+                Series = context.Series
                     .Include(s => s.SeriesTeam)
                         .ThenInclude(s => s.Team)
                     .Where(s => s.ID == mt.Match.SeriesID)
@@ -116,10 +104,10 @@ public class MatchService : IMatchService
 
     public MatchExtendedViewModel GetMatchByID(int matchID)
     {
-        var teamCount = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.StatusID != 0).Count();
+        var teamCount = context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.StatusID != 0).Count();
         if (teamCount > 2)
         {
-            var multiTeamMatch = _context.Match
+            var multiTeamMatch = context.Match
             .Where(m => m.ID == matchID && m.StatusID != 0)
             .Select(m => new MatchExtendedViewModel
             {
@@ -143,7 +131,7 @@ public class MatchService : IMatchService
                         Username = mp.ParticipantUsername
                     }).AsEnumerable(),
 
-                Series = _context.Series
+                Series = context.Series
                     .Where(s => s.ID == m.SeriesID)
                     .Select(s => new SeriesExtendedViewModel
                     {
@@ -178,12 +166,12 @@ public class MatchService : IMatchService
                         Status = mt.Status.Description,
                         Participant = mt.Team.ParticipantTeam
                             .Where(pt => !new int[] { 0, 1, 2 }.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
-                            .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
+                            .Select(pt => participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                     })
             }).FirstOrDefault();
             return multiTeamMatch;
         }
-        var twoTeamMatch = _context.Match
+        var twoTeamMatch = context.Match
             .Where(m => m.ID == matchID && m.StatusID != 0)
             .Select(m => new MatchExtendedViewModel
             {
@@ -206,8 +194,8 @@ public class MatchService : IMatchService
                     {
                         Username = mp.ParticipantUsername
                     }).AsEnumerable(),
-
-                Series = _context.Series
+                
+                Series = context.Series
                     .Where(s => s.ID == m.SeriesID)
                     .Select(s => new SeriesExtendedViewModel
                     {
@@ -232,7 +220,7 @@ public class MatchService : IMatchService
                     Name = m.Series.Activity.Name
                 },
                 Team = m.MatchTeam
-                    .Where(mt => mt.StatusID != 0)
+                    .Where(mt => mt.StatusID != 0 )
                     .Select(mt => new TeamExtendedViewModel
                     {
                         ID = mt.TeamID,
@@ -240,13 +228,13 @@ public class MatchService : IMatchService
                         Logo = mt.Team.Logo,
                         Status = mt.Status.Description,
                         Participant = mt.Team.ParticipantTeam
-                            .Where(pt => !new int[] { 0, 1, 2 }.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
-                            .Select(pt => _participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
-                        MatchHistory = _context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && _mt.Match.StatusID == 6)
+                            .Where(pt => !new int[] {0,1,2}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
+                            .Select(pt => participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
+                        MatchHistory = context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && _mt.Match.StatusID == 6)
                             .OrderByDescending(mt => mt.Match.StartTime)
                             .Take(5)
                             .Join(
-                                _context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
+                                context.MatchTeam.Where(o_mt => o_mt.TeamID != mt.TeamID),
                                 own_mt => own_mt.MatchID,
                                 other_mt => other_mt.MatchID,
                                 (own_mt, other_mt) => new TeamMatchHistoryViewModel
@@ -266,7 +254,7 @@ public class MatchService : IMatchService
                                 }
                             ),
 
-                        TeamRecord = _context.SeriesTeam.Where(st => st.TeamID == mt.TeamID).Select(
+                        TeamRecord = context.SeriesTeam.Where(st => st.TeamID == mt.TeamID).Select( 
                             st => new TeamRecordViewModel()
                             {
                                 SeriesID = st.SeriesID,
@@ -283,7 +271,7 @@ public class MatchService : IMatchService
 
     public IEnumerable<MatchExtendedViewModel> GetMatchesBySeriesID(int seriesID)
     {
-        var matches = _context.Match
+        var matches = context.Match
             .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
             .Include(m => m.MatchTeam)
                 .ThenInclude(m => m.Match)
@@ -302,7 +290,7 @@ public class MatchService : IMatchService
                 {
                     ID = mt.TeamID,
                     Name = mt.Team.Name,
-                    TeamRecord = _context.SeriesTeam
+                    TeamRecord = context.SeriesTeam
                         .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
                         .Select(st => new TeamRecordViewModel
                         {
@@ -317,31 +305,31 @@ public class MatchService : IMatchService
     public async Task<SurfaceViewModel> PostSurfaceAsync(SurfaceUploadViewModel newSurface)
     {
         var surface = newSurface.ToSurface();
-        await _context.Surface.AddAsync(surface);
-        await _context.SaveChangesAsync();
+        await context.Surface.AddAsync(surface);
+        await context.SaveChangesAsync();
 
         return surface;
     }
 
     public async Task<SurfaceViewModel> UpdateSurfaceAsync(int surfaceID, SurfaceUploadViewModel updatedSurface)
     {
-        var surface = _context.Surface.Find(surfaceID);
+        var surface = context.Surface.Find(surfaceID);
         //inherit description if possible
         surface.Name = updatedSurface.Name ?? surface.Name ?? surface.Description ?? updatedSurface.Description;
         surface.Description = updatedSurface.Description ?? surface.Description ?? surface.Name ?? updatedSurface.Name;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return surface;
     }
 
     public IEnumerable<SurfaceViewModel> GetSurfaces()
     {
-        return _context.Surface.Where(s => s.ID != 0).Select(s => (SurfaceViewModel)s);
+        return context.Surface.Where(s => s.ID != 0).Select(s => (SurfaceViewModel)s);
     }
 
     public async Task DeleteSurfaceAsync(int surfaceID)
     {
-        var surface = _context.Surface
+        var surface = context.Surface
             .Include(s => s.Match)
             .Include(s => s.SeriesSurface)
             .FirstOrDefault(s => s.ID == surfaceID);
@@ -355,8 +343,8 @@ public class MatchService : IMatchService
         foreach (var ss in seriesSurfaces)
             ss.SurfaceID = 0;
 
-        _context.Surface.Remove(surface);
-        await _context.SaveChangesAsync();
+        context.Surface.Remove(surface);
+        await context.SaveChangesAsync();
     }
 
     public async Task<MatchViewModel> PostMatchAsync(MatchUploadViewModel newMatch)
@@ -368,14 +356,14 @@ public class MatchService : IMatchService
             SurfaceID = newMatch.SurfaceID ?? 1, //TBD surface id
             StatusID = 1 //default unconfirmed
         }; ;
-        await _context.Match.AddAsync(match);
-        await _context.SaveChangesAsync();
+        await context.Match.AddAsync(match);
+        await context.SaveChangesAsync();
         foreach (var teamID in newMatch.TeamIDs)
         {
             if (teamID != -1) // do not create team mappings for fake teams
                 await CreateMatchTeamMappingAsync(teamID, match.ID);
         }
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return match;
     }
 
@@ -389,24 +377,24 @@ public class MatchService : IMatchService
             Score = 0,
             SportsmanshipScore = 5 //default max
         };
-        await _context.MatchTeam.AddAsync(matchTeam);
+        await context.MatchTeam.AddAsync(matchTeam);
     }
 
     public async Task<MatchTeamViewModel> UpdateTeamStatsAsync(int matchID, MatchStatsPatchViewModel vm)
     {
 
-        var teamstats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
-        var match = _context.Match.Find(matchID);
+        var teamstats = context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID == vm.TeamID);
+        var match = context.Match.Find(matchID);
 
         if (match.SeriesID == 6) throw new UnprocessibleEntity() { ExceptionMessage = "Stats cannot be updated for a completed match" };
 
         teamstats.Score = vm.Score ?? teamstats.Score;
         teamstats.SportsmanshipScore = vm.SportsmanshipScore ?? teamstats.SportsmanshipScore;
 
-        if (teamstats.StatusID == 4 && vm.StatusID != 4) //forfeit -> non forfeit
+        if (teamstats.StatusID == 4 && vm.StatusID != 4 ) //forfeit -> non forfeit
         {
-            var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
-            var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+            var opposingTeams = context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
+            var seriesRecords = context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
             var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
             if (match.StatusID == 4 || match.StatusID != 6) //if forfeited or not completed 
             {
@@ -415,7 +403,7 @@ public class MatchService : IMatchService
                 {
                     match.StatusID = 2; // confirmed
                     var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
-                    var opposingStats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID);
+                    var opposingStats = context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID);
                     opposingStats.Score = 0; // reset scores
                     opposingRecord.WinCount--;
                 }
@@ -424,23 +412,23 @@ public class MatchService : IMatchService
 
         if (teamstats.StatusID != 4 && vm.StatusID == 4) //non forfeit -> forfeit
         {
-            var opposingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
+            var opposingTeams = context.MatchTeam.Where(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID).ToList();
             // if there is only 1 opponent and they've already forfeited. Throw exception
             if (opposingTeams.Count == 1 && opposingTeams.First().StatusID == 4) throw new UnprocessibleEntity() { ExceptionMessage = "Both teams cannot forfeit." };
 
             if (match.StatusID != 4 && match.StatusID != 6) //not already set to forfeited or completed
             {
-                var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+                var seriesRecords = context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
                 teamstats.Score = 0; //remove team score of forfeit
                 var ownRecord = seriesRecords.FirstOrDefault(st => st.TeamID == vm.TeamID);
-
+                
                 ownRecord.LossCount++;
                 if (opposingTeams.Count == 1) // if NOT a ladder match/only has 1 opponent (we can gift the win)
                 {
                     // forfeit match if there is only 1 other team
                     match.StatusID = 4; //forfeited
                     var opposingRecord = seriesRecords.FirstOrDefault(st => st.TeamID == opposingTeams[0].TeamID);
-                    var opposingStats = _context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID);
+                    var opposingStats = context.MatchTeam.FirstOrDefault(mt => mt.MatchID == matchID && mt.TeamID != vm.TeamID);
                     opposingRecord.WinCount++;
                     opposingStats.Score = 1;
                 }
@@ -449,23 +437,23 @@ public class MatchService : IMatchService
 
         teamstats.StatusID = vm.StatusID ?? teamstats.StatusID;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return teamstats;
 
     }
 
     public async Task<MatchViewModel> UpdateMatchAsync(int matchID, MatchPatchViewModel vm)
     {
-        var match = _context.Match.Find(matchID);
+        var match = context.Match.Find(matchID);
 
         if (match.StatusID == 4 || vm.StatusID == 4) throw new UnprocessibleEntity() { ExceptionMessage = "Please resolve the 'Forfeit' status within the Team's own status " };
 
         if (match.StatusID == 6 && vm.StatusID != 6) //completed -> not completed
         {
-            var teams = _context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
+            var teams = context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
                 .OrderByDescending(mt => mt.SportsmanshipScore)
                 .ThenByDescending(mt => mt.Score);
-            var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+            var seriesRecords = context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
 
             // not tie
             if (teams.First().Score - teams.Last().Score != 0)
@@ -478,8 +466,7 @@ public class MatchService : IMatchService
                 //set everyone 
                 foreach (var team in teams)
                     seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount--;
-            }
-            else
+            } else
             {
                 foreach (var team in teams)
                     seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).TieCount--;
@@ -488,10 +475,10 @@ public class MatchService : IMatchService
 
         if (match.StatusID != 6 && vm.StatusID == 6) //not completed -> completed
         {
-            var teams = _context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
+            var teams = context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
                 .OrderByDescending(mt => mt.SportsmanshipScore)
                 .ThenByDescending(mt => mt.Score);
-            var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+            var seriesRecords = context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
 
             // not tie
             if (teams.First().Score - teams.Last().Score != 0)
@@ -504,8 +491,7 @@ public class MatchService : IMatchService
                 //set everyone 
                 foreach (var team in teams)
                     seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).LossCount++;
-            }
-            else
+            } else
             {
                 foreach (var team in teams)
                     seriesRecords.FirstOrDefault(st => st.TeamID == team.TeamID).TieCount++;
@@ -519,10 +505,10 @@ public class MatchService : IMatchService
         if (vm.TeamIDs is not null && match.StatusID != 6) //make sure that completed matches cant have their team list updated
         {
             List<int> updatedTeams = vm.TeamIDs.ToList();
-            var removedTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && !updatedTeams.Any(t_id => mt.TeamID == t_id));
-            _context.MatchTeam.RemoveRange(removedTeams);
+            var removedTeams = context.MatchTeam.Where(mt => mt.MatchID == matchID && !updatedTeams.Any(t_id => mt.TeamID == t_id));
+            context.MatchTeam.RemoveRange(removedTeams);
 
-            var existingTeams = _context.MatchTeam.Where(mt => mt.MatchID == matchID && updatedTeams.Any(t_id => mt.TeamID == t_id));
+            var existingTeams = context.MatchTeam.Where(mt => mt.MatchID == matchID && updatedTeams.Any(t_id => mt.TeamID == t_id));
             var teamsToAdd = updatedTeams.Where(id => !existingTeams.Any(t => t.TeamID == id));
             foreach (int id in teamsToAdd)
             {
@@ -530,19 +516,19 @@ public class MatchService : IMatchService
             }
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return match;
     }
 
     public IEnumerable<ParticipantAttendanceViewModel> GetMatchAttendance(int matchID)
     {
-        var match = _context.Match.Include(m => m.MatchTeam).FirstOrDefault(m => m.ID == matchID);
+        var match = context.Match.Include(m => m.MatchTeam).FirstOrDefault(m => m.ID == matchID);
         var res = new List<ParticipantAttendanceViewModel>();
         if (match is null) return res;
 
-        foreach (MatchTeam mt in match.MatchTeam)
+        foreach(MatchTeam mt in match.MatchTeam)
         {
-            var attendance = _context.MatchParticipant
+            var attendance = context.MatchParticipant
                 .Where(mp => mp.TeamID == mt.TeamID && mp.MatchID == mt.MatchID)
                 .Select(a => (MatchAttendance)a);
 
@@ -558,10 +544,10 @@ public class MatchService : IMatchService
 
     public async Task<MatchAttendance> AddParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
     {
-        var teamID = attendee.TeamID ?? _context.MatchTeam
+        var teamID = attendee.TeamID ?? context.MatchTeam
             .Where(mt => mt.MatchID == matchID)
             .Join(
-                _context.ParticipantTeam.Where(pt => pt.ParticipantUsername == attendee.Username),
+                context.ParticipantTeam.Where(pt => pt.ParticipantUsername == attendee.Username),
                 mt => mt.TeamID,
                 pt => pt.TeamID,
                 (mt, pt) => mt
@@ -570,7 +556,7 @@ public class MatchService : IMatchService
 
         if (teamID is int t_id)
         {
-            var attemptFind = _context.MatchParticipant
+            var attemptFind = context.MatchParticipant
                 .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
 
             if (attemptFind is not null) return attemptFind;
@@ -581,8 +567,8 @@ public class MatchService : IMatchService
                 MatchID = matchID,
                 TeamID = t_id
             };
-            await _context.MatchParticipant.AddAsync(newAttendee);
-            await _context.SaveChangesAsync();
+            await context.MatchParticipant.AddAsync(newAttendee);
+            await context.SaveChangesAsync();
 
             return newAttendee;
         }
@@ -592,38 +578,38 @@ public class MatchService : IMatchService
 
     public async Task DeleteParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
     {
-        var teamID = attendee.TeamID ?? _context.MatchTeam
+        var teamID = attendee.TeamID ?? context.MatchTeam
             .Where(mt => mt.MatchID == matchID)
             .Join(
-                _context.ParticipantTeam.Where(pt => pt.ParticipantUsername == attendee.Username),
+                context.ParticipantTeam.Where(pt => pt.ParticipantUsername == attendee.Username),
                 mt => mt.TeamID,
                 pt => pt.TeamID,
                 (mt, pt) => mt
             ).FirstOrDefault()?.TeamID;
 
-        var res = _context.MatchParticipant
+        var res = context.MatchParticipant
             .FirstOrDefault(mp => mp.ParticipantUsername == attendee.Username && mp.TeamID == teamID && mp.MatchID == matchID);
 
         if (teamID is null || res is null) throw new ResourceNotFoundException() { ExceptionMessage = "Participant was not found in a team in this match" };
 
-        _context.MatchParticipant.Remove(res);
-        await _context.SaveChangesAsync();
+        context.MatchParticipant.Remove(res);
+        await context.SaveChangesAsync();
     }
 
 
     public async Task<MatchViewModel> DeleteMatchCascadeAsync(int matchID)
     {
         //deletematch
-        var match = _context.Match
+        var match = context.Match
             .Include(m => m.MatchTeam)
             .FirstOrDefault(m => m.ID == matchID);
 
         if (match.StatusID == 6) //deleting a completed match needs to reset the win/loss record
         {
-            var teams = _context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
+            var teams = context.MatchTeam.Where(mt => mt.MatchID == matchID) //secondary sort by sportsmanship score (tiebreakers)
                 .OrderByDescending(mt => mt.SportsmanshipScore)
                 .ThenByDescending(mt => mt.Score);
-            var seriesRecords = _context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
+            var seriesRecords = context.SeriesTeam.Where(st => st.SeriesID == match.SeriesID);
 
             // not tie
             if (teams.First().Score - teams.Last().Score != 0)
@@ -643,15 +629,15 @@ public class MatchService : IMatchService
         //delete matchteam
         foreach (var mt in match.MatchTeam)
             mt.StatusID = 0; //deleted status
-
-        await _context.SaveChangesAsync();
+        
+        await context.SaveChangesAsync();
         return match;
     }
 
     public IEnumerable<MatchExtendedViewModel> GetAllMatches()
     {
-        var matches = _context.Match
-             .Where(m => m.StatusID != 0 && m.StatusID != 4 && m.StatusID != 6)
+        var matches = context.Match
+             .Where(m => m.StatusID != 0 && m.StatusID != 4 && m.StatusID !=6)
              .Include(m => m.MatchTeam)
                  .ThenInclude(m => m.Match)
              .Include(m => m.MatchTeam)
@@ -670,7 +656,7 @@ public class MatchService : IMatchService
                  {
                      ID = mt.TeamID,
                      Name = mt.Team.Name,
-                     TeamRecord = _context.SeriesTeam
+                     TeamRecord = context.SeriesTeam
                          .Where(st => st.SeriesID == m.SeriesID && st.TeamID == mt.TeamID)
                          .Select(st => new TeamRecordViewModel
                          {

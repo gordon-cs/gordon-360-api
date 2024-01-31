@@ -1,15 +1,13 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Enums;
-using Gordon360.Extensions.System;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Models.webSQL.Context;
 using Gordon360.Services;
+using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -17,26 +15,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ProfilesController : GordonControllerBase
+public class ProfilesController(IProfileService profileService,
+                                IAccountService accountService,
+                                IMembershipService membershipService,
+                                IConfiguration config) : GordonControllerBase
 {
-    private readonly IProfileService _profileService;
-    private readonly IAccountService _accountService;
-    private readonly IMembershipService _membershipService;
-    private readonly IConfiguration _config;
-    private readonly webSQLContext _webSQLContext;
-
-    public ProfilesController(IProfileService profileService, IAccountService accountService, IMembershipService membershipService, IConfiguration config, webSQLContext webSQLContext)
-    {
-        _profileService = profileService;
-        _accountService = accountService;
-        _membershipService = membershipService;
-        _config = config;
-        _webSQLContext = webSQLContext;
-    }
 
     /// <summary>Get profile info of currently logged in user</summary>
     /// <returns></returns>
@@ -46,17 +34,17 @@ public class ProfilesController : GordonControllerBase
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-        var student = _profileService.GetStudentProfileByUsername(authenticatedUserUsername);
-        var faculty = _profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
-        var alumni = _profileService.GetAlumniProfileByUsername(authenticatedUserUsername);
-        var customInfo = _profileService.GetCustomUserInfo(authenticatedUserUsername);
+        var student = profileService.GetStudentProfileByUsername(authenticatedUserUsername);
+        var faculty = profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
+        var alumni = profileService.GetAlumniProfileByUsername(authenticatedUserUsername);
+        var customInfo = profileService.GetCustomUserInfo(authenticatedUserUsername);
 
         if (student is null && alumni is null && faculty is null)
         {
             return Ok(null);
         }
 
-        var profile = _profileService.ComposeProfile(student, alumni, faculty, customInfo);
+        var profile = profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
     }
@@ -70,10 +58,10 @@ public class ProfilesController : GordonControllerBase
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        var _student = _profileService.GetStudentProfileByUsername(username);
-        var _faculty = _profileService.GetFacultyStaffProfileByUsername(username);
-        var _alumni = _profileService.GetAlumniProfileByUsername(username);
-        var _customInfo = _profileService.GetCustomUserInfo(username);
+        var _student = profileService.GetStudentProfileByUsername(username);
+        var _faculty = profileService.GetFacultyStaffProfileByUsername(username);
+        var _alumni = profileService.GetAlumniProfileByUsername(username);
+        var _customInfo = profileService.GetCustomUserInfo(username);
 
         object? student = null;
         object? faculty = null;
@@ -113,7 +101,7 @@ public class ProfilesController : GordonControllerBase
             return Ok(null);
         }
 
-        var profile = _profileService.ComposeProfile(student, alumni, faculty, _customInfo);
+        var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 
         return Ok(profile);
     }
@@ -128,7 +116,7 @@ public class ProfilesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADVISOR)]
     public async Task<ActionResult<IEnumerable<AdvisorViewModel>>> GetAdvisorsAsync(string username)
     {
-        var advisors = await _profileService.GetAdvisorsAsync(username);
+        var advisors = await profileService.GetAdvisorsAsync(username);
 
         return Ok(advisors);
     }
@@ -141,8 +129,8 @@ public class ProfilesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
     public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
     {
-        var id = _accountService.GetAccountByUsername(username).GordonID;
-        var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+        var id = accountService.GetAccountByUsername(username).GordonID;
+        var strengths = profileService.GetCliftonStrengths(int.Parse(id));
         if (strengths is null)
         {
             return Ok(Array.Empty<string>());
@@ -163,8 +151,8 @@ public class ProfilesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
     public ActionResult<CliftonStrengthsViewModel?> GetCliftonStrengths(string username)
     {
-        var id = _accountService.GetAccountByUsername(username).GordonID;
-        var strengths = _profileService.GetCliftonStrengths(int.Parse(id));
+        var id = accountService.GetAccountByUsername(username).GordonID;
+        var strengths = profileService.GetCliftonStrengths(int.Parse(id));
         if (strengths is null)
         {
             return Ok(null);
@@ -183,8 +171,8 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult<bool>> ToggleCliftonStrengthsPrivacyAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = _accountService.GetAccountByUsername(username).GordonID;
-        var privacy = await _profileService.ToggleCliftonStrengthsPrivacyAsync(int.Parse(id));
+        var id = accountService.GetAccountByUsername(username).GordonID;
+        var privacy = await profileService.ToggleCliftonStrengthsPrivacyAsync(int.Parse(id));
 
         return Ok(privacy);
     }
@@ -199,7 +187,7 @@ public class ProfilesController : GordonControllerBase
     {
         try
         {
-            var emrg = _profileService.GetEmergencyContact(username);
+            var emrg = profileService.GetEmergencyContact(username);
             return Ok(emrg);
         }
         catch (Exception e)
@@ -217,7 +205,7 @@ public class ProfilesController : GordonControllerBase
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = _profileService.GetMailboxCombination(username);
+        var result = profileService.GetMailboxCombination(username);
         return Ok(result);
     }
 
@@ -229,7 +217,7 @@ public class ProfilesController : GordonControllerBase
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = _profileService.GetBirthdate(username);
+        var result = profileService.GetBirthdate(username);
         return Ok(result);
     }
 
@@ -240,13 +228,13 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult<JObject>> GetMyImgAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var photoModel = await _profileService.GetPhotoPathAsync(username);
+        var photoModel = await profileService.GetPhotoPathAsync(username);
         JObject result = new JObject();
 
         if (photoModel == null) //There is no preferred or ID image
         {
-            var unapprovedFileName = username + "_" + _accountService.GetAccountByUsername(username).account_id;
-            var unapprovedFilePath = _config["DEFAULT_ID_SUBMISSION_PATH"];
+            var unapprovedFileName = username + "_" + accountService.GetAccountByUsername(username).account_id;
+            var unapprovedFilePath = config["DEFAULT_ID_SUBMISSION_PATH"];
             string extension = "";
             foreach (var file in Directory.GetFiles(unapprovedFilePath, unapprovedFileName + ".*"))
             {
@@ -257,11 +245,11 @@ public class ProfilesController : GordonControllerBase
             return Ok(result);
         }
 
-        string prefImgPath = _config["PREFERRED_IMAGE_PATH"] + photoModel.Pref_Img_Name;
+        string prefImgPath = config["PREFERRED_IMAGE_PATH"] + photoModel.Pref_Img_Name;
 
         if (string.IsNullOrEmpty(photoModel.Pref_Img_Name) || !System.IO.File.Exists(prefImgPath)) //check file existence for prefferred image.
         {
-            var defaultImgPath = _config["DEFAULT_IMAGE_PATH"] + photoModel.Img_Name;
+            var defaultImgPath = config["DEFAULT_IMAGE_PATH"] + photoModel.Img_Name;
             result.Add("def", await GetProfileImageOrDefault(defaultImgPath));
             return Ok(result);
         }
@@ -278,18 +266,18 @@ public class ProfilesController : GordonControllerBase
     [Route("image/{username}")]
     public async Task<ActionResult<JObject>> GetImgAsync(string username)
     {
-        var photoInfo = await _profileService.GetPhotoPathAsync(username);
+        var photoInfo = await profileService.GetPhotoPathAsync(username);
         JObject result = new JObject();
 
         //return default image if no photo info found for this user.
         if (photoInfo == null)
         {
-            result.Add("def", await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]));
+            result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
             return Ok(result);
         }
 
-        var preferredImagePath = string.IsNullOrEmpty(photoInfo.Pref_Img_Name) ? null : _config["PREFERRED_IMAGE_PATH"] + photoInfo.Pref_Img_Name;
-        var defaultImagePath = _config["DEFAULT_IMAGE_PATH"] + photoInfo.Img_Name;
+        var preferredImagePath = string.IsNullOrEmpty(photoInfo.Pref_Img_Name) ? null : config["PREFERRED_IMAGE_PATH"] + photoInfo.Pref_Img_Name;
+        var defaultImagePath = config["DEFAULT_IMAGE_PATH"] + photoInfo.Img_Name;
 
         var viewerGroups = AuthUtils.GetGroups(User);
         if (viewerGroups.Contains(AuthGroup.FacStaff))
@@ -305,7 +293,7 @@ public class ProfilesController : GordonControllerBase
         else
         if (viewerGroups.Contains(AuthGroup.Student))
         {
-            if (_accountService.GetAccountByUsername(username).show_pic == 1)
+            if (accountService.GetAccountByUsername(username).show_pic == 1)
             {
                 if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
                 {
@@ -318,7 +306,7 @@ public class ProfilesController : GordonControllerBase
             }
             else
             {
-                result.Add("def", await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]));
+                result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
             }
             return Ok(result);
         }
@@ -337,8 +325,8 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult> PostImageAsync([FromForm] IFormFile image)
     {
         var username = AuthUtils.GetUsername(User);
-        var account = _accountService.GetAccountByUsername(username);
-        var pathInfo = await _profileService.GetPhotoPathAsync(username);
+        var account = accountService.GetAccountByUsername(username);
+        var pathInfo = await profileService.GetPhotoPathAsync(username);
 
         if (pathInfo == null) // can't upload image if there is no record for this user in the database
             return NotFound("No photo record was found for this user.");
@@ -356,11 +344,11 @@ public class ProfilesController : GordonControllerBase
             System.IO.File.Delete(oldFile);
         }
 
-        var filePath = Path.Combine(_config["PREFERRED_IMAGE_PATH"], fileName);
+        var filePath = Path.Combine(config["PREFERRED_IMAGE_PATH"], fileName);
 
         ImageUtils.UploadImageAsync(filePath, image);
 
-        await _profileService.UpdateProfileImageAsync(username, _config["DATABASE_IMAGE_PATH"], fileName);
+        await profileService.UpdateProfileImageAsync(username, config["DATABASE_IMAGE_PATH"], fileName);
 
         return Ok();
     }
@@ -379,8 +367,8 @@ public class ProfilesController : GordonControllerBase
         }
 
         var username = AuthUtils.GetUsername(User);
-        var root = _config["DEFAULT_ID_SUBMISSION_PATH"];
-        var account = _accountService.GetAccountByUsername(username);
+        var root = config["DEFAULT_ID_SUBMISSION_PATH"];
+        var account = accountService.GetAccountByUsername(username);
 
         //delete old image file if it exists.
         DirectoryInfo di = new DirectoryInfo(root);
@@ -408,14 +396,14 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult> ResetImage()
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
-        var photoInfo = await _profileService.GetPhotoPathAsync(authenticatedUserUsername);
+        var photoInfo = await profileService.GetPhotoPathAsync(authenticatedUserUsername);
 
         if (!string.IsNullOrEmpty(photoInfo?.Pref_Img_Name))
         {
-            System.IO.File.Delete(Path.Combine(_config["PREFERRED_IMAGE_PATH"], photoInfo.Pref_Img_Name));
+            System.IO.File.Delete(Path.Combine(config["PREFERRED_IMAGE_PATH"], photoInfo.Pref_Img_Name));
         }
 
-        await _profileService.UpdateProfileImageAsync(authenticatedUserUsername, null, null);
+        await profileService.UpdateProfileImageAsync(authenticatedUserUsername, null, null);
         return Ok();
     }
 
@@ -431,7 +419,7 @@ public class ProfilesController : GordonControllerBase
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-        await _profileService.UpdateCustomProfileAsync(authenticatedUserUsername, type, value);
+        await profileService.UpdateCustomProfileAsync(authenticatedUserUsername, type, value);
 
         return Ok();
     }
@@ -446,7 +434,7 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult<StudentProfileViewModel>> UpdateMobilePhoneNumber(string value)
     {
         var username = AuthUtils.GetUsername(User);
-        var result = await _profileService.UpdateMobilePhoneNumberAsync(username, value);
+        var result = await profileService.UpdateMobilePhoneNumberAsync(username, value);
 
         return Ok(result);
     }
@@ -460,7 +448,7 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
     {
         var username = AuthUtils.GetUsername(User);
-        var result = await _profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingDescription, officeLocation.RoomNumber);
+        var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingDescription, officeLocation.RoomNumber);
         return Ok(result);
     }
 
@@ -474,7 +462,7 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody] string value)
     {
         var username = AuthUtils.GetUsername(User);
-        var result = await _profileService.UpdateOfficeHoursAsync(username, value);
+        var result = await profileService.UpdateOfficeHoursAsync(username, value);
         return Ok(result);
     }
 
@@ -488,7 +476,7 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody] string value)
     {
         var username = AuthUtils.GetUsername(User);
-        var result = await _profileService.UpdateMailStopAsync(username, value);
+        var result = await profileService.UpdateMailStopAsync(username, value);
         return Ok(result);
     }
 
@@ -502,7 +490,7 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult> UpdateMobilePrivacyAsync(string value)
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
-        await _profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
+        await profileService.UpdateMobilePrivacyAsync(authenticatedUserUsername, value);
 
         return Ok();
     }
@@ -517,7 +505,7 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult> UpdateImagePrivacyAsync(string value)
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
-        await _profileService.UpdateImagePrivacyAsync(authenticatedUserUsername, value);
+        await profileService.UpdateImagePrivacyAsync(authenticatedUserUsername, value);
 
         return Ok();
     }
@@ -533,7 +521,7 @@ public class ProfilesController : GordonControllerBase
     public async Task<ActionResult> RequestUpdate(ProfileFieldViewModel[] updatedFields)
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
-        await _profileService.InformationChangeRequest(authenticatedUserUsername, updatedFields);
+        await profileService.InformationChangeRequest(authenticatedUserUsername, updatedFields);
         return Ok();
     }
 
@@ -559,7 +547,7 @@ public class ProfilesController : GordonControllerBase
         catch (FileNotFoundException)
         {
             // The 360 default profile image path is a URL, so we have to download it over an HTTP connection
-            return await ImageUtils.DownloadImageFromURL(_config["DEFAULT_PROFILE_IMAGE_PATH"]);
+            return await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]);
         }
     }
 
@@ -576,7 +564,7 @@ public class ProfilesController : GordonControllerBase
     [Obsolete("Use /api/memberships with username query param instead")]
     public ActionResult<List<MembershipView>> GetMembershipsByUser(string username, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
     {
-        var memberships = _membershipService.GetMemberships(
+        var memberships = membershipService.GetMemberships(
             username: username,
             sessionCode: sessionCode,
             participationTypes: participationTypes);
@@ -593,7 +581,7 @@ public class ProfilesController : GordonControllerBase
             return Ok(memberships);
         }
 
-        var visibleMemberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
+        var visibleMemberships = membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
 
         return Ok(visibleMemberships);
     }
@@ -607,7 +595,7 @@ public class ProfilesController : GordonControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<MembershipHistoryViewModel>> GetMembershipHistory(string username)
     {
-        var memberships = _membershipService
+        var memberships = membershipService
             .GetMemberships(username: username, sessionCode: "*")
             .Where(m => m.Participation != Participation.Guest.GetCode());
 
@@ -620,7 +608,7 @@ public class ProfilesController : GordonControllerBase
             || viewerGroups.Contains(AuthGroup.Police)
             ))
         {
-            memberships = _membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
+            memberships = membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
         }
 
         var membershipHistories = memberships.GroupBy(m => m.ActivityCode).Select(group => MembershipHistoryViewModel.FromMembershipGroup(group));
@@ -636,7 +624,7 @@ public class ProfilesController : GordonControllerBase
     [Route("mailstops")]
     public ActionResult<IEnumerable<string>> GetMailStops()
     {
-        var mail_stops = _profileService.GetMailStopsAsync();
+        var mail_stops = profileService.GetMailStopsAsync();
         return Ok(mail_stops);
     }
 }

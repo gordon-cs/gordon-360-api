@@ -9,16 +9,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM;
 
 [Route("api/recim/[controller]")]
-public class MatchesController : GordonControllerBase
+public class MatchesController(IMatchService matchService, ITeamService teamService) : GordonControllerBase
 {
-    private readonly IMatchService _matchService;
-    private readonly ITeamService _teamService;
-
-    public MatchesController(IMatchService matchService, ITeamService teamService)
-    {
-        _matchService = matchService;
-        _teamService = teamService;
-    }
 
     /// <summary>
     /// Get all matches
@@ -28,7 +20,7 @@ public class MatchesController : GordonControllerBase
     [Route("")]
     public ActionResult<MatchExtendedViewModel> GetMatches()
     {
-        var matches = _matchService.GetAllMatches();
+        var matches = matchService.GetAllMatches();
         return Ok(matches);
     }
 
@@ -41,7 +33,7 @@ public class MatchesController : GordonControllerBase
     [Route("{matchID}/attendance")]
     public ActionResult<IEnumerable<ParticipantAttendanceViewModel>> GetMatchAttendanceByMatchID(int matchID)
     {
-        var res = _matchService.GetMatchAttendance(matchID);
+        var res = matchService.GetMatchAttendance(matchID);
         return Ok(res);
     }
 
@@ -54,7 +46,7 @@ public class MatchesController : GordonControllerBase
     [Route("{matchID}")]
     public ActionResult<MatchExtendedViewModel> GetMatchByID(int matchID)
     {
-        var match = _matchService.GetMatchByID(matchID);
+        var match = matchService.GetMatchByID(matchID);
         return Ok(match);
     }
 
@@ -67,7 +59,7 @@ public class MatchesController : GordonControllerBase
     [Route("lookup")]
     public ActionResult<IEnumerable<LookupViewModel>> GetMatchTypes(string type)
     {
-        var res = _matchService.GetMatchLookup(type);
+        var res = matchService.GetMatchLookup(type);
         if (res is not null)
         {
             return Ok(res);
@@ -83,7 +75,7 @@ public class MatchesController : GordonControllerBase
     [Route("surfaces")]
     public ActionResult<IEnumerable<SurfaceViewModel>> GetSurfaces()
     {
-        return Ok(_matchService.GetSurfaces());
+        return Ok(matchService.GetSurfaces());
     }
 
     /// <summary>
@@ -97,7 +89,7 @@ public class MatchesController : GordonControllerBase
     public async Task<ActionResult<SurfaceViewModel>> PostSurfaceAsync(SurfaceUploadViewModel newSurface)
     {
         if (newSurface.Name is null && newSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
-        var res = await _matchService.PostSurfaceAsync(newSurface);
+        var res = await matchService.PostSurfaceAsync(newSurface);
         return CreatedAtAction(nameof(GetSurfaces), new { surfaceID = res.ID }, res);
     }
 
@@ -115,7 +107,7 @@ public class MatchesController : GordonControllerBase
         if (surfaceID == 1) //default to be decided surface
             return UnprocessableEntity("Default surface cannot be modified or deleted");
         if (updatedSurface.Name is null && updatedSurface.Description is null) return BadRequest("Surface has to have name or description filled out");
-        var res = await _matchService.UpdateSurfaceAsync(surfaceID, updatedSurface);
+        var res = await matchService.UpdateSurfaceAsync(surfaceID, updatedSurface);
         return CreatedAtAction(nameof(GetSurfaces), new { surfaceID = res.ID }, res);
     }
 
@@ -132,7 +124,7 @@ public class MatchesController : GordonControllerBase
     {
         if (surfaceID == 1) //default to be decided surface
             return UnprocessableEntity("Default surface cannot be modified or deleted");
-        await _matchService.DeleteSurfaceAsync(surfaceID);
+        await matchService.DeleteSurfaceAsync(surfaceID);
         return NoContent();
     }
 
@@ -147,7 +139,7 @@ public class MatchesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
     public async Task<ActionResult<MatchTeamViewModel>> UpdateStatsAsync(int matchID, MatchStatsPatchViewModel updatedMatch)
     {
-        var stats = await _matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
+        var stats = await matchService.UpdateTeamStatsAsync(matchID, updatedMatch);
         return Ok(stats);
     }
 
@@ -162,7 +154,7 @@ public class MatchesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
     public async Task<ActionResult<MatchViewModel>> UpdateMatchAsync(int matchID, MatchPatchViewModel updatedMatch)
     {
-        var match = await _matchService.UpdateMatchAsync(matchID, updatedMatch);
+        var match = await matchService.UpdateMatchAsync(matchID, updatedMatch);
         return CreatedAtAction(nameof(GetMatchByID), new { matchID = match.ID }, match);
     }
 
@@ -176,7 +168,7 @@ public class MatchesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
     public async Task<ActionResult<MatchViewModel>> CreateMatchAsync(MatchUploadViewModel newMatch)
     {
-        var match = await _matchService.PostMatchAsync(newMatch);
+        var match = await matchService.PostMatchAsync(newMatch);
         return CreatedAtAction(nameof(GetMatchByID), new { matchID = match.ID }, match);
     }
 
@@ -190,7 +182,7 @@ public class MatchesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
     public async Task<ActionResult> DeleteMatchCascadeAsync(int matchID)
     {
-        var res = await _matchService.DeleteMatchCascadeAsync(matchID);
+        var res = await matchService.DeleteMatchCascadeAsync(matchID);
         return Ok(res);
     }
 
@@ -207,7 +199,7 @@ public class MatchesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_MATCH)]
     public async Task<ActionResult<IEnumerable<MatchAttendance>>> PutParticipantAttendanceAsync(int matchID, ParticipantAttendanceViewModel teamAttendanceList)
     {
-        var attendance = await _teamService.PutParticipantAttendanceAsync(matchID, teamAttendanceList);
+        var attendance = await teamService.PutParticipantAttendanceAsync(matchID, teamAttendanceList);
         return CreatedAtAction(nameof(GetMatchAttendanceByMatchID), new { matchID = matchID }, attendance);
     }
 
@@ -223,7 +215,7 @@ public class MatchesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_MATCH)]
     public async Task<ActionResult<IEnumerable<MatchAttendance>>> AddParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
     {
-        var attendance = await _matchService.AddParticipantAttendanceAsync(matchID, attendee);
+        var attendance = await matchService.AddParticipantAttendanceAsync(matchID, attendee);
         return Ok(attendance);
     }
 
@@ -238,7 +230,7 @@ public class MatchesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_MATCH)]
     public async Task<ActionResult<IEnumerable<MatchAttendance>>> DeleteParticipantAttendanceAsync(int matchID, MatchAttendance attendee)
     {
-        await _matchService.DeleteParticipantAttendanceAsync(matchID, attendee);
+        await matchService.DeleteParticipantAttendanceAsync(matchID, attendee);
         return NoContent();
     }
 }

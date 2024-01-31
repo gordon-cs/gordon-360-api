@@ -1,24 +1,18 @@
-﻿using Gordon360.Models.ViewModels;
-using Gordon360.Static_Classes;
+﻿using Gordon360.Static_Classes;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Threading;
+using System;
+using System.Diagnostics;
+using Gordon360.Models.ViewModels;
+using System.Collections.Generic;
 
 namespace Gordon360.Services;
 
-public class EventCacheRefreshService : IHostedService, IDisposable
+public class EventCacheRefreshService(IMemoryCache cache) : IHostedService, IDisposable
 {
-    private readonly IMemoryCache _cache;
     private Timer? _timer = null;
-
-    public EventCacheRefreshService(IMemoryCache cache)
-    {
-        _cache = cache;
-    }
 
     public Task StartAsync(CancellationToken stoppingToken)
     {
@@ -39,7 +33,7 @@ public class EventCacheRefreshService : IHostedService, IDisposable
         {
             Debug.WriteLine(ex.Message);
         }
-        _cache.Set(CacheKeys.Events, events);
+        cache.Set(CacheKeys.Events, events);
     }
 
     public Task StopAsync(CancellationToken stoppingToken)

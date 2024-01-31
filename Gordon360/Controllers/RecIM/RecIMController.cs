@@ -8,13 +8,8 @@ using System;
 namespace Gordon360.Controllers.RecIM;
 
 [Route("api/recim/admin")]
-public class RecIMAdminController : GordonControllerBase
+public class RecIMAdminController(IRecIMService recimService) : GordonControllerBase
 {
-    private readonly IRecIMService _recimService;
-    public RecIMAdminController(IRecIMService recimService)
-    {
-        _recimService = recimService;
-    }
 
     /// <summary>
     /// Rec-IM Reporting:
@@ -34,7 +29,7 @@ public class RecIMAdminController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.RECIM)]
     public ActionResult<RecIMGeneralReportViewModel> GetReport(DateTime startTime, DateTime endTime)
     {
-        var res = _recimService.GetReport(startTime, endTime);
+        var res = recimService.GetReport(startTime, endTime);
         return Ok(res);
     }
 

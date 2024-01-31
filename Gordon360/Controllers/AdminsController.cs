@@ -1,4 +1,6 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT.Context;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
@@ -8,14 +10,8 @@ using System.Collections.Generic;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class AdminsController : GordonControllerBase
+public class AdminsController(IAdministratorService adminService) : GordonControllerBase
 {
-    private readonly IAdministratorService _adminService;
-
-    public AdminsController(IAdministratorService adminService)
-    {
-        _adminService = adminService;
-    }
 
     /// <summary>
     /// Get all admins
@@ -32,7 +28,7 @@ public class AdminsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADMIN)]
     public ActionResult<IEnumerable<AdminViewModel?>> GetAll()
     {
-        var result = _adminService.GetAll();
+        var result = adminService.GetAll();
         return Ok(result);
     }
 
@@ -46,7 +42,7 @@ public class AdminsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.ADMIN)]
     public ActionResult<AdminViewModel> Post([FromBody] AdminViewModel admin)
     {
-        var result = _adminService.Add(admin);
+        var result = adminService.Add(admin);
 
         if (result == null)
         {
@@ -65,7 +61,7 @@ public class AdminsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.ADMIN)]
     public ActionResult<AdminViewModel> Delete(string username)
     {
-        var result = _adminService.Delete(username);
+        var result = adminService.Delete(username);
 
         if (result == null)
         {

@@ -9,14 +9,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM;
 
 [Route("api/recim/[controller]")]
-public class ActivitiesController : GordonControllerBase
+public class ActivitiesController(IActivityService activityService) : GordonControllerBase
 {
-    private readonly IActivityService _activityService;
-
-    public ActivitiesController(IActivityService activityService)
-    {
-        _activityService = activityService;
-    }
 
     ///<summary>Gets a list of all Activities by parameter </summary>
     ///<param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
@@ -26,15 +20,15 @@ public class ActivitiesController : GordonControllerBase
     [HttpGet]
     [Route("")]
     public ActionResult<IEnumerable<ActivityExtendedViewModel>> GetActivities([FromQuery] bool? active)
-    {
-        if (active is bool isActive)
+    {   
+        if ( active is bool isActive)
         {
             bool completed = !isActive;
-            var res = _activityService.GetActivitiesByCompletion(completed);
+            var res = activityService.GetActivitiesByCompletion(completed);
             return Ok(res);
 
         }
-        var result = _activityService.GetActivities();
+        var result = activityService.GetActivities();
         return Ok(result);
     }
 
@@ -47,7 +41,7 @@ public class ActivitiesController : GordonControllerBase
     [Route("{activityID}")]
     public ActionResult<ActivityExtendedViewModel> GetActivityByID(int activityID)
     {
-        var result = _activityService.GetActivityByID(activityID);
+        var result = activityService.GetActivityByID(activityID);
         return Ok(result);
     }
 
@@ -60,7 +54,7 @@ public class ActivitiesController : GordonControllerBase
     [Route("{activityID}/registerable")]
     public ActionResult<bool> GetActivityRegistrationStatus(int activityID)
     {
-        var result = !_activityService.ActivityRegistrationClosed(activityID);
+        var result = !activityService.ActivityRegistrationClosed(activityID);
         return Ok(result);
     }
 
@@ -68,7 +62,7 @@ public class ActivitiesController : GordonControllerBase
     [Route("lookup")]
     public ActionResult<IEnumerable<LookupViewModel>> GetActivityTypes(string type)
     {
-        var res = _activityService.GetActivityLookup(type);
+        var res = activityService.GetActivityLookup(type);
         if (res is not null)
         {
             return Ok(res);
@@ -86,7 +80,7 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_ACTIVITY)]
     public async Task<ActionResult<ActivityViewModel>> CreateActivityAsync(ActivityUploadViewModel newActivity)
     {
-        var activity = await _activityService.PostActivityAsync(newActivity);
+        var activity = await activityService.PostActivityAsync(newActivity);
         return CreatedAtAction(nameof(GetActivityByID), new { activityID = activity.ID }, activity);
     }
 
@@ -101,7 +95,7 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_ACTIVITY)]
     public async Task<ActionResult<ActivityViewModel>> UpdateActivityAsync(int activityID, ActivityPatchViewModel updatedActivity)
     {
-        var activity = await _activityService.UpdateActivityAsync(activityID, updatedActivity);
+        var activity = await activityService.UpdateActivityAsync(activityID, updatedActivity);
         return CreatedAtAction(nameof(GetActivityByID), new { activityID = activity.ID }, activity);
     }
 
@@ -115,7 +109,7 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_ACTIVITY)]
     public async Task<ActionResult> DeleteActivityCascadeAsync(int activityID)
     {
-        var res = await _activityService.DeleteActivityCascade(activityID);
+        var res = await activityService.DeleteActivityCascade(activityID);
         return Ok(res);
     }
 }

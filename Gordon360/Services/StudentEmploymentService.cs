@@ -1,5 +1,5 @@
-using Gordon360.Exceptions;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -8,16 +8,8 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class StudentEmploymentService : IStudentEmploymentService
+public class StudentEmploymentService(CCTContext context, IAccountService accountService) : IStudentEmploymentService
 {
-    private readonly CCTContext _context;
-    private readonly IAccountService _accountService;
-
-    public StudentEmploymentService(CCTContext context)
-    {
-        _context = context;
-        _accountService = new AccountService(context);
-    }
 
     /// <summary>
     /// get Student Employment records of given user
@@ -26,9 +18,9 @@ public class StudentEmploymentService : IStudentEmploymentService
     /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
     public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmploymentAsync(string username)
     {
-        var account = _accountService.GetAccountByUsername(username);
+        var account = accountService.GetAccountByUsername(username);
 
-        var result = await _context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(account.GordonID));
+        var result = await context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(account.GordonID));
         if (result == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };

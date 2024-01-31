@@ -9,14 +9,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM;
 
 [Route("api/recim/[controller]")]
-public class SeriesController : GordonControllerBase
+public class SeriesController(ISeriesService seriesService) : GordonControllerBase
 {
-    private readonly ISeriesService _seriesService;
-
-    public SeriesController(ISeriesService seriesService)
-    {
-        _seriesService = seriesService;
-    }
 
     /// <summary>
     /// Queries all Series with an optional active tag
@@ -27,7 +21,7 @@ public class SeriesController : GordonControllerBase
     [Route("")]
     public ActionResult<IEnumerable<SeriesExtendedViewModel>> GetSeries([FromQuery] bool active)
     {
-        var result = _seriesService.GetSeries(active);
+        var result = seriesService.GetSeries(active);
         return Ok(result);
     }
 
@@ -40,7 +34,7 @@ public class SeriesController : GordonControllerBase
     [Route("{seriesID}")]
     public ActionResult<SeriesExtendedViewModel> GetSeriesByID(int seriesID)
     {
-        var result = _seriesService.GetSeriesByID(seriesID);
+        var result = seriesService.GetSeriesByID(seriesID);
         return Ok(result);
     }
 
@@ -54,7 +48,7 @@ public class SeriesController : GordonControllerBase
     [Route("lookup")]
     public ActionResult<IEnumerable<LookupViewModel>> GetSeriesTypes(string type)
     {
-        var res = _seriesService.GetSeriesLookup(type);
+        var res = seriesService.GetSeriesLookup(type);
         if (res is not null)
         {
             return Ok(res);
@@ -71,7 +65,7 @@ public class SeriesController : GordonControllerBase
     [Route("{seriesID}/schedule")]
     public ActionResult<SeriesScheduleExtendedViewModel> GetSeriesScheduleByID(int seriesID)
     {
-        var res = _seriesService.GetSeriesScheduleByID(seriesID);
+        var res = seriesService.GetSeriesScheduleByID(seriesID);
         if (res is null) return NotFound();
         return Ok(res);
     }
@@ -88,7 +82,7 @@ public class SeriesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult<SeriesViewModel>> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel updatedSeries)
     {
-        var series = await _seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
+        var series = await seriesService.UpdateSeriesAsync(seriesID, updatedSeries);
         return CreatedAtAction(nameof(GetSeriesByID), new { seriesID = series.ID }, series);
     }
 
@@ -101,9 +95,9 @@ public class SeriesController : GordonControllerBase
     [HttpPost]
     [Route("")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
-    public async Task<ActionResult<SeriesViewModel>> CreateSeriesAsync(SeriesUploadViewModel newSeries, [FromQuery] int? referenceSeriesID)
+    public async Task<ActionResult<SeriesViewModel>> CreateSeriesAsync(SeriesUploadViewModel newSeries, [FromQuery]int? referenceSeriesID)
     {
-        var series = await _seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
+        var series = await seriesService.PostSeriesAsync(newSeries, referenceSeriesID);
         return CreatedAtAction(nameof(GetSeriesByID), new { seriesID = series.ID }, series);
     }
 
@@ -118,7 +112,7 @@ public class SeriesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult<SeriesScheduleViewModel>> CreateSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule)
     {
-        var schedule = await _seriesService.PutSeriesScheduleAsync(seriesSchedule);
+        var schedule = await seriesService.PutSeriesScheduleAsync(seriesSchedule);
         return Ok(schedule);
 
     }
@@ -134,7 +128,7 @@ public class SeriesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult<TeamRecordViewModel>> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel update)
     {
-        var record = await _seriesService.UpdateSeriesTeamRecordAsync(seriesID, update);
+        var record = await seriesService.UpdateSeriesTeamRecordAsync(seriesID ,update);
         return Ok(record);
     }
 
@@ -146,7 +140,7 @@ public class SeriesController : GordonControllerBase
     [Route("{seriesID}/winners")]
     public ActionResult<IEnumerable<AffiliationPointsViewModel>> GetSeriesWinners(int seriesID)
     {
-        var res = _seriesService.GetSeriesWinners(seriesID);
+        var res = seriesService.GetSeriesWinners(seriesID);
         return Ok(res);
     }
 
@@ -160,7 +154,7 @@ public class SeriesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult> UpdateSeriesWinnersAsync(int seriesID, AffiliationPointsUploadViewModel vm)
     {
-        await _seriesService.HandleAdditionalSeriesWinnersAsync(vm);
+        await seriesService.HandleAdditionalSeriesWinnersAsync(vm);
         return Ok();
     }
 
@@ -174,7 +168,7 @@ public class SeriesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult> DeleteSeriesCascadeAsync(int seriesID)
     {
-        var res = await _seriesService.DeleteSeriesCascadeAsync(seriesID);
+        var res = await seriesService.DeleteSeriesCascadeAsync(seriesID);
         return Ok(res);
     }
 
@@ -190,7 +184,7 @@ public class SeriesController : GordonControllerBase
     public async Task<ActionResult<IEnumerable<MatchViewModel>>> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest? request)
     {
         var req = request ?? new UploadScheduleRequest();
-        var createdMatches = await _seriesService.ScheduleMatchesAsync(seriesID, req);
+        var createdMatches = await seriesService.ScheduleMatchesAsync(seriesID, req);
         if (createdMatches is null)
         {
             return BadRequest();
@@ -208,7 +202,7 @@ public class SeriesController : GordonControllerBase
     [Route("{seriesID}/autoschedule")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SERIES)]
     public async Task<ActionResult<SeriesAutoSchedulerEstimateViewModel>> GetAutoScheduleEstimate(
-        int seriesID, [FromQuery] int RoundRobinMatchCapacity, [FromQuery] int NumberOfLadderMatches)
+        int seriesID, [FromQuery] int RoundRobinMatchCapacity,  [FromQuery] int NumberOfLadderMatches)
     {
         var req = new UploadScheduleRequest()
         {
@@ -216,7 +210,7 @@ public class SeriesController : GordonControllerBase
             NumberOfLadderMatches = NumberOfLadderMatches,
         };
 
-        var estimate = _seriesService.GetScheduleMatchesEstimateAsync(seriesID, req);
+        var estimate = seriesService.GetScheduleMatchesEstimateAsync(seriesID, req);
         if (estimate is null)
         {
             return BadRequest();
@@ -232,7 +226,7 @@ public class SeriesController : GordonControllerBase
     [Route("{seriesID}/bracket")]
     public ActionResult<IEnumerable<MatchBracketViewModel>> GetBracket(int seriesID)
     {
-        var res = _seriesService.GetSeriesBracketInformation(seriesID);
+        var res = seriesService.GetSeriesBracketInformation(seriesID);
         return Ok(res);
     }
 }

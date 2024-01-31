@@ -7,14 +7,8 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class VictoryPromiseService : IVictoryPromiseService
+public class VictoryPromiseService(CCTContext context) : IVictoryPromiseService
 {
-    private readonly CCTContext _context;
-
-    public VictoryPromiseService(CCTContext context)
-    {
-        _context = context;
-    }
 
     /// <summary>
     /// get victory promise scores
@@ -23,13 +17,13 @@ public class VictoryPromiseService : IVictoryPromiseService
     /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
     public async Task<IEnumerable<VictoryPromiseViewModel>> GetVPScoresAsync(string username)
     {
-        var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+        var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
         if (account == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
         }
 
-        var result = await _context.Procedures.VICTORY_PROMISE_BY_STUDENT_IDAsync(int.Parse(account.gordon_id));
+        var result = await context.Procedures.VICTORY_PROMISE_BY_STUDENT_IDAsync(int.Parse(account.gordon_id));
         if (result == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };

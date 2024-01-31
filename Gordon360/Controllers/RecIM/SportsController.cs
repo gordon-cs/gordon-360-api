@@ -9,14 +9,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM;
 
 [Route("api/recim/[controller]")]
-public class SportsController : GordonControllerBase
+public class SportsController(ISportService sportService) : GordonControllerBase
 {
-    private readonly ISportService _sportService;
-
-    public SportsController(ISportService sportService)
-    {
-        _sportService = sportService;
-    }
     /// <summary>
     /// Fetches all Sports in the RecIM database
     /// </summary>
@@ -25,7 +19,7 @@ public class SportsController : GordonControllerBase
     [Route("")]
     public ActionResult<IEnumerable<SportViewModel>> GetSports()
     {
-        var res = _sportService.GetSports();
+        var res = sportService.GetSports();
         return Ok(res);
     }
     /// <summary>
@@ -37,7 +31,7 @@ public class SportsController : GordonControllerBase
     [Route("{sportID}")]
     public ActionResult<SportViewModel> GetSportByID(int sportID)
     {
-        var res = _sportService.GetSportByID(sportID);
+        var res = sportService.GetSportByID(sportID);
         return Ok(res);
     }
     /// <summary>
@@ -52,7 +46,7 @@ public class SportsController : GordonControllerBase
     public async Task<ActionResult<SportViewModel>> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport)
     {
         if (sportID == 0) return UnprocessableEntity("Default sport cannot be modified");
-        var sport = await _sportService.UpdateSportAsync(sportID, updatedSport);
+        var sport = await sportService.UpdateSportAsync(sportID,updatedSport);
         return CreatedAtAction(nameof(GetSportByID), new { sportID = sport.ID }, sport);
     }
 
@@ -67,7 +61,7 @@ public class SportsController : GordonControllerBase
     public async Task<ActionResult<SportViewModel>> DeleteSportAsync(int sportID)
     {
         if (sportID == 0) return UnprocessableEntity("Default sport cannot be modified");
-        var res = await _sportService.DeleteSportAsync(sportID);
+        var res = await sportService.DeleteSportAsync(sportID);
         return Ok(res);
     }
     /// <summary>
@@ -80,7 +74,7 @@ public class SportsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_SPORT)]
     public async Task<ActionResult<SportViewModel>> CreateSportAsync(SportUploadViewModel newSport)
     {
-        var sport = await _sportService.PostSportAsync(newSport);
+        var sport = await sportService.PostSportAsync(newSport);
         return CreatedAtAction(nameof(GetSportByID), new { sportID = sport.ID }, sport);
     }
 

@@ -1,25 +1,19 @@
-using Gordon360.Authorization;
-using Gordon360.Enums;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
-using Gordon360.Static.Methods;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Gordon360.Authorization;
+using Gordon360.Enums;
+using Gordon360.Static.Methods;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services;
 
-public class HousingService : IHousingService
+public class HousingService(CCTContext context) : IHousingService
 {
-    private CCTContext _context;
-
-    public HousingService(CCTContext context)
-    {
-        _context = context;
-    }
 
     /// <summary>
     /// Calls a stored procedure that returns a row in the staff whitelist which has the given user id,
@@ -42,8 +36,8 @@ public class HousingService : IHousingService
     {
         try
         {
-            var result = _context.Housing_Applications.Remove(new Housing_Applications { HousingAppID = applicationID });
-            _context.SaveChanges();
+            var result = context.Housing_Applications.Remove(new Housing_Applications { HousingAppID = applicationID });
+            context.SaveChanges();
             return true;
         }
         catch
@@ -59,7 +53,7 @@ public class HousingService : IHousingService
     public string[] GetAllApartmentHalls()
     {
 
-        var hallsResult = _context.Housing_Halls.Where(h => h.Type == "Apartment").Select(h => h.Name);
+        var hallsResult = context.Housing_Halls.Where(h => h.Type == "Apartment").Select(h => h.Name);
         if (hallsResult == null || !hallsResult.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The apartment halls could not be found." };
@@ -80,7 +74,7 @@ public class HousingService : IHousingService
     /// </returns>
     public int? GetApplicationID(string username, string sess_cde)
     {
-        return _context.Housing_Applicants.Where(a => a.Username == username && a.SESS_CDE == sess_cde).Select(a => a.HousingAppID).FirstOrDefault();
+        return context.Housing_Applicants.Where(a => a.Username == username && a.SESS_CDE == sess_cde).Select(a => a.HousingAppID).FirstOrDefault();
     }
 
     /// <summary>
@@ -93,7 +87,7 @@ public class HousingService : IHousingService
     /// </returns>
     public string GetEditorUsername(int applicationID)
     {
-        return _context.Housing_Applications.Where(a => a.HousingAppID == applicationID).Select(a => a.EditorUsername).FirstOrDefault();
+        return context.Housing_Applications.Where(a => a.HousingAppID == applicationID).Select(a => a.EditorUsername).FirstOrDefault();
     }
 
     /// <summary>
@@ -119,9 +113,9 @@ public class HousingService : IHousingService
 
         // Save the application editor and time
         // If an existing application was not found for this editor, then insert a new application entry in the database
-        var newAppResult = _context.Housing_Applications.Add(new Housing_Applications { DateModified = DateTime.Now, EditorUsername = editorUsername });
+        var newAppResult = context.Housing_Applications.Add(new Housing_Applications { DateModified = DateTime.Now, EditorUsername = editorUsername });
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         if (newAppResult?.Entity == null || newAppResult?.Entity?.HousingAppID == 0)
         {
@@ -134,26 +128,26 @@ public class HousingService : IHousingService
         // Save applicant
         foreach (ApartmentApplicantViewModel applicant in apartmentApplicants)
         {
-            var applicantResult = _context.Housing_Applicants.Add(new Housing_Applicants { HousingAppID = applicationID, Username = applicant.Username, AprtProgram = applicant.OffCampusProgram ?? "", AprtProgramCredit = false, SESS_CDE = sess_cde });
+            var applicantResult = context.Housing_Applicants.Add(new Housing_Applicants { HousingAppID = applicationID, Username = applicant.Username, AprtProgram = applicant.OffCampusProgram ?? "", AprtProgramCredit = false, SESS_CDE = sess_cde });
             if (applicantResult == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = $"Applicant {applicant.Username} could not be saved." };
             }
         }
-        _context.SaveChanges();
+        context.SaveChanges();
 
         // Save hall information
         foreach (ApartmentChoiceViewModel choice in apartmentChoices)
         {
             var newHallChoice = new Housing_HallChoices { HousingAppID = applicationID, HallName = choice.HallName, Ranking = choice.HallRank };
-            var apartmentChoiceResult = _context.Housing_HallChoices.Add(newHallChoice);
+            var apartmentChoiceResult = context.Housing_HallChoices.Add(newHallChoice);
             if (apartmentChoiceResult == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "The apartment preference could not be saved." };
             }
         }
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return applicationID;
     }
@@ -175,7 +169,7 @@ public class HousingService : IHousingService
     /// <returns>Returns the application ID number if all the queries succeeded</returns>
     public int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, List<ApartmentApplicantViewModel> newApartmentApplicants, List<ApartmentChoiceViewModel> newApartmentChoices)
     {
-        var editorUsername = _context.Housing_Applications.Find(applicationID)?.EditorUsername;
+        var editorUsername = context.Housing_Applications.Find(applicationID)?.EditorUsername;
         if (string.IsNullOrEmpty(editorUsername))
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
@@ -190,7 +184,7 @@ public class HousingService : IHousingService
 
         // Update applicant information
         // Get the IDs of the applicants that are already stored in the database for this application
-        var existingApplicantResult = _context.Housing_Applicants.Where(a => a.HousingAppID == applicationID);
+        var existingApplicantResult = context.Housing_Applicants.Where(a => a.HousingAppID == applicationID);
         if (existingApplicantResult == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
@@ -238,7 +232,7 @@ public class HousingService : IHousingService
         // Insert new applicants that are not yet in the database
         foreach (ApartmentApplicantViewModel applicant in applicantsToAdd)
         {
-            var applicantResult = _context.Housing_Applicants.Add(new Housing_Applicants
+            var applicantResult = context.Housing_Applicants.Add(new Housing_Applicants
             {
                 HousingAppID = applicationID,
                 Username = applicant.Username,
@@ -254,7 +248,7 @@ public class HousingService : IHousingService
         // Update the info of applicants from the frontend that are already in the database
         foreach (ApartmentApplicantViewModel applicant in applicantsToUpdate)
         {
-            var applicantResult = _context.Housing_Applicants.Find(applicationID, applicant.Username);
+            var applicantResult = context.Housing_Applicants.Find(applicationID, applicant.Username);
             if (applicantResult == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = $"Applicant {applicant.Username} could not be updated." };
@@ -268,7 +262,7 @@ public class HousingService : IHousingService
         // Remove applicants from the database that were remove from the frontend
         foreach (ApartmentApplicantViewModel applicant in applicantsToRemove)
         {
-            var applicantResult = _context.Housing_Applicants.Remove(new Housing_Applicants { HousingAppID = applicationID, Username = applicant.Username });
+            var applicantResult = context.Housing_Applicants.Remove(new Housing_Applicants { HousingAppID = applicationID, Username = applicant.Username });
             if (applicantResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = $"Applicant {applicant.Username} could not be removed." };
@@ -280,7 +274,7 @@ public class HousingService : IHousingService
 
 
         // Get the apartment preferences that are already stored in the database for this application
-        var existingApartmentChoiceResult = _context.Housing_HallChoices.Where(c => c.HousingAppID == applicationID);
+        var existingApartmentChoiceResult = context.Housing_HallChoices.Where(c => c.HousingAppID == applicationID);
         if (existingApartmentChoiceResult == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The hall information could not be found." };
@@ -329,7 +323,7 @@ public class HousingService : IHousingService
         // Insert new apartment choices that are not yet in the database
         foreach (ApartmentChoiceViewModel apartmentChoice in apartmentChoicesToAdd)
         {
-            var apartmentChoiceResult = _context.Housing_HallChoices.Add(new Housing_HallChoices { HousingAppID = applicationID, HallName = apartmentChoice.HallName, Ranking = apartmentChoice.HallRank });
+            var apartmentChoiceResult = context.Housing_HallChoices.Add(new Housing_HallChoices { HousingAppID = applicationID, HallName = apartmentChoice.HallName, Ranking = apartmentChoice.HallRank });
             if (apartmentChoiceResult == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = $"Apartment choice with ID {applicationID} and hall name {apartmentChoice.HallName} could not be inserted." };
@@ -339,7 +333,7 @@ public class HousingService : IHousingService
         // Update the info of apartment choices from the frontend that are already in the database
         foreach (ApartmentChoiceViewModel apartmentChoice in apartmentChoicesToUpdate)
         {
-            var apartmentChoiceResult = _context.Housing_HallChoices.FirstOrDefault(c => c.HousingAppID == applicationID && c.HallName == apartmentChoice.HallName);
+            var apartmentChoiceResult = context.Housing_HallChoices.FirstOrDefault(c => c.HousingAppID == applicationID && c.HallName == apartmentChoice.HallName);
             if (apartmentChoiceResult == null)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "Apartment choice with ID " + applicationID + " and hall name " + apartmentChoice.HallName + " could not be updated." };
@@ -353,19 +347,19 @@ public class HousingService : IHousingService
         // Remove apartment choices from the database that were removed from the frontend
         foreach (ApartmentChoiceViewModel apartmentChoice in apartmentChoicesToRemove)
         {
-            var apartmentChoiceResult = _context.Housing_HallChoices.FirstOrDefault(c => c.HousingAppID == applicationID && c.HallName == apartmentChoice.HallName);
+            var apartmentChoiceResult = context.Housing_HallChoices.FirstOrDefault(c => c.HousingAppID == applicationID && c.HallName == apartmentChoice.HallName);
             if (apartmentChoiceResult == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "Apartment choice with ID " + applicationID + " and hall name " + apartmentChoice.HallName + " could not be removed." };
             }
             else
             {
-                _context.Housing_HallChoices.Remove(apartmentChoiceResult);
+                context.Housing_HallChoices.Remove(apartmentChoiceResult);
             }
         }
 
         // Update the date modified (and application editor if necessary)
-        var result = _context.Housing_Applications.Find(applicationID);
+        var result = context.Housing_Applications.Find(applicationID);
         if (result == null)
         {
             throw new ResourceCreationException() { ExceptionMessage = "The application could not be updated." };
@@ -379,7 +373,7 @@ public class HousingService : IHousingService
             }
         }
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return applicationID;
     }
@@ -391,7 +385,7 @@ public class HousingService : IHousingService
     /// <returns>Whether or not all the queries succeeded</returns>
     public bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername)
     {
-        var application = _context.Housing_Applications.Find(applicationID);
+        var application = context.Housing_Applications.Find(applicationID);
         if (application == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
@@ -406,7 +400,7 @@ public class HousingService : IHousingService
 
         application.EditorUsername = newEditorUsername;
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return true;
     }
@@ -416,7 +410,7 @@ public class HousingService : IHousingService
     /// <returns>Apartment Application formatted for display in the UI</returns>
     public ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false)
     {
-        var applicationDBModel = _context.Housing_Applications.Find(applicationID);
+        var applicationDBModel = context.Housing_Applications.Find(applicationID);
         if (applicationDBModel == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The application could not be found." };
@@ -425,7 +419,7 @@ public class HousingService : IHousingService
         // Assign the values from the database to the custom view model for the frontend
         ApartmentApplicationViewModel application = applicationDBModel; //implicit conversion
 
-        var editorProfile = (StudentProfileViewModel?)_context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == application.EditorUsername.ToLower());
+        var editorProfile = (StudentProfileViewModel?)context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == application.EditorUsername.ToLower());
         if (editorProfile == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The student information about the editor of this application could not be found." };
@@ -433,14 +427,14 @@ public class HousingService : IHousingService
         application.EditorProfile = editorProfile;
 
         // Get the applicants for this application
-        application.Applicants = _context.Housing_Applicants
+        application.Applicants = context.Housing_Applicants
             .Where(a => a.HousingAppID == applicationID)
             .OrderBy(a => a.Username)
             .Select<Housing_Applicants, ApartmentApplicantViewModel>(a => a)
             .AsEnumerable()
             .Select(a =>
             {
-                var profile = _context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == a.Username.ToLower());
+                var profile = context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == a.Username.ToLower());
                 if (profile is not null)
                 {
                     a.Profile = (StudentProfileViewModel)profile!;
@@ -457,7 +451,7 @@ public class HousingService : IHousingService
             application.Applicants = application.Applicants
             .Select(applicant =>
             {
-                applicant.BirthDate = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username.ToLower() == applicant.Username.ToLower())?.Birth_Date;
+                applicant.BirthDate = context.ACCOUNT.FirstOrDefault(x => x.AD_Username.ToLower() == applicant.Username.ToLower())?.Birth_Date;
 
                 // The probation data is already in the database, we just need to write a stored procedure to get it
                 // applicantModel.Probation = ... // TBD
@@ -494,7 +488,7 @@ public class HousingService : IHousingService
 
 
         // Get the apartment choices for this application
-        application.ApartmentChoices = _context.Housing_HallChoices
+        application.ApartmentChoices = context.Housing_HallChoices
             .Where(c => c.HousingAppID == applicationID)
             .OrderBy(c => c.Ranking)
             .ThenBy(c => c.HallName)
@@ -507,8 +501,8 @@ public class HousingService : IHousingService
     /// <returns>Array of ApartmentApplicationViewModels</returns>
     public ApartmentApplicationViewModel[] GetAllApartmentApplication()
     {
-        var applications = _context.Housing_Applications.Include(a => a.Housing_Applicants).AsEnumerable();
-        var currentSession = Helpers.GetCurrentSession(_context);
+        var applications = context.Housing_Applications.Include(a => a.Housing_Applicants).AsEnumerable();
+        var currentSession = Helpers.GetCurrentSession(context);
 
         // TO DO: Refactor Housing App so that the application itself is connected
         //    to a session rather than the applicants!
@@ -526,7 +520,7 @@ public class HousingService : IHousingService
     /// <returns>Returns whether the query succeeded</returns>
     public bool ChangeApplicationDateSubmitted(int applicationID)
     {
-        var application = _context.Housing_Applications.Find(applicationID);
+        var application = context.Housing_Applications.Find(applicationID);
 
         if (application == null)
         {
@@ -534,7 +528,7 @@ public class HousingService : IHousingService
         }
 
         application.DateSubmitted = DateTime.Now;
-        _context.SaveChanges();
+        context.SaveChanges();
         return true;
     }
 }

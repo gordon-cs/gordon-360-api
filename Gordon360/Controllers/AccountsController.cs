@@ -5,26 +5,20 @@ using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class AccountsController : GordonControllerBase
+public class AccountsController(IAccountService accountService) : GordonControllerBase
 {
-    private readonly IAccountService _accountService;
-
-    public AccountsController(IAccountService accountService)
-    {
-        _accountService = accountService;
-    }
-
     [HttpGet]
     [Route("email/{email}")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public ActionResult<AccountViewModel> GetByAccountEmail(string email)
     {
-        var result = _accountService.GetAccountByEmail(email);
+        var result = accountService.GetAccountByEmail(email);
 
         if (result == null)
         {
@@ -39,7 +33,7 @@ public class AccountsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public ActionResult<AccountViewModel> GetByAccountUsername(string username)
     {
-        var result = _accountService.GetAccountByUsername(username);
+        var result = accountService.GetAccountByUsername(username);
 
         if (result == null)
         {
@@ -58,9 +52,9 @@ public class AccountsController : GordonControllerBase
     [Route("search/{searchString}")]
     public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchAsync(string searchString)
     {
-        var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
+        var accounts = await accountService.GetAllBasicInfoExceptAlumniAsync();
 
-        var searchResults = _accountService.Search(searchString, accounts);
+        var searchResults = accountService.Search(searchString, accounts);
 
         return Ok(searchResults);
     }
@@ -75,9 +69,9 @@ public class AccountsController : GordonControllerBase
     [Route("search/{firstName}/{lastName}")]
     public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchWithSpaceAsync(string firstName, string lastName)
     {
-        var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
+        var accounts = await accountService.GetAllBasicInfoExceptAlumniAsync();
 
-        var searchResults = _accountService.Search(firstName, lastName, accounts);
+        var searchResults = accountService.Search(firstName, lastName, accounts);
 
 
         return Ok(searchResults);
@@ -126,9 +120,9 @@ public class AccountsController : GordonControllerBase
     {
         IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
-        var accounts = _accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
+        var accounts = accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
 
-        var searchResults = _accountService.AdvancedSearch(
+        var searchResults = accountService.AdvancedSearch(
             accounts,
             firstname,
             lastname,

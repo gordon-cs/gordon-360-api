@@ -9,21 +9,14 @@ using System.Collections.Generic;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class EmailsController : GordonControllerBase
+public class EmailsController(IEmailService emailService) : GordonControllerBase
 {
-    private readonly IEmailService _emailService;
-
-    public EmailsController(IEmailService emailService)
-    {
-        _emailService = emailService;
-    }
-
     [HttpGet]
     [Route("involvement/{activityCode}")]
     [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
     public ActionResult<IEnumerable<EmailViewModel>> GetEmailsForActivity(string activityCode, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
     {
-        var result = _emailService.GetEmailsForActivity(activityCode, sessionCode, participationTypes);
+        var result = emailService.GetEmailsForActivity(activityCode, sessionCode, participationTypes);
 
         return Ok(result);
     }
@@ -34,7 +27,7 @@ public class EmailsController : GordonControllerBase
     [Obsolete("Use the new route that accepts a list of participation types instead")]
     public ActionResult<IEnumerable<EmailViewModel>> DEPRECATED_GetEmailsForActivity(string activityCode, string? sessionCode, string? participationType)
     {
-        var result = _emailService.GetEmailsForActivity(activityCode, sessionCode, new List<string> { participationType ?? "" });
+        var result = emailService.GetEmailsForActivity(activityCode, sessionCode, new List<string> { participationType ?? "" });
 
         return Ok(result);
     }
@@ -44,7 +37,7 @@ public class EmailsController : GordonControllerBase
     public ActionResult SendEmails([FromBody] EmailContentViewModel email)
     {
         var to_emails = email.ToAddress.Split(',');
-        _emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content, email.Password);
+        emailService.SendEmails(to_emails, email.FromAddress, email.Subject, email.Content, email.Password);
         return Ok();
     }
 
@@ -53,7 +46,7 @@ public class EmailsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
     public ActionResult SendEmailToActivity(string id, string session, [FromBody] EmailContentViewModel email)
     {
-        _emailService.SendEmailToActivity(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
+        emailService.SendEmailToActivity(id, session, email.FromAddress, email.Subject, email.Content, email.Password);
 
         return Ok();
     }

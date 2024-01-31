@@ -11,14 +11,9 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
 /// </summary>
-/// 
-public class AcademicCheckInService : IAcademicCheckInService
+	/// 
+public class AcademicCheckInService(CCTContext context) : IAcademicCheckInService
 {
-    private readonly CCTContext _context;
-    public AcademicCheckInService(CCTContext context)
-    {
-        _context = context;
-    }
 
 
     /// <summary> Stores the emergency contact information of a particular user </summary>
@@ -29,7 +24,7 @@ public class AcademicCheckInService : IAcademicCheckInService
     {
         var splitUsername = username.Split('.');
 
-        var result = await _context.Procedures.UPDATE_EMRGCONTACTAsync(
+        var result = await context.Procedures.UPDATE_EMRGCONTACTAsync(
             int.Parse(id),
             data.SEQ_NUMBER,
             data.LastName,
@@ -81,7 +76,7 @@ public class AcademicCheckInService : IAcademicCheckInService
     /// <returns> The stored data </returns>
     public async Task<AcademicCheckInViewModel> PutCellPhoneAsync(string id, AcademicCheckInViewModel data)
     {
-        var result = await _context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, data.NoPhone);
+        var result = await context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, data.NoPhone);
         if (result == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
@@ -95,7 +90,7 @@ public class AcademicCheckInService : IAcademicCheckInService
     /// <returns> The stored data </returns>
     public async Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data)
     {
-        var result = await _context.Procedures.FINALIZATION_UPDATEDEMOGRAPHICAsync(id, data.Race, data.Ethnicity);
+        var result = await context.Procedures.FINALIZATION_UPDATEDEMOGRAPHICAsync(id, data.Race, data.Ethnicity);
         if (result == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
@@ -108,7 +103,7 @@ public class AcademicCheckInService : IAcademicCheckInService
     /// <returns> The stored data </returns>
     public async Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(string id)
     {
-        var result = await _context.Procedures.FINALIZATION_GETHOLDSBYIDAsync(int.Parse(id));
+        var result = await context.Procedures.FINALIZATION_GETHOLDSBYIDAsync(int.Parse(id));
 
         if (result == null)
         {
@@ -135,7 +130,7 @@ public class AcademicCheckInService : IAcademicCheckInService
     /// <param name="id"> The id of the user who is to be marked as checked in </param>
     public async Task SetStatusAsync(string id)
     {
-        var result = await _context.Procedures.FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDAsync(id);
+        var result = await context.Procedures.FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDAsync(id);
 
         if (result == null)
         {
@@ -147,7 +142,7 @@ public class AcademicCheckInService : IAcademicCheckInService
     /// <param name="id"> The id of the user for which the data is to be found for </param>
     public async Task<bool> GetStatusAsync(string id)
     {
-        var result = await _context.Procedures.FINALIZATION_GET_FINALIZATION_STATUSAsync(int.Parse(id));
+        var result = await context.Procedures.FINALIZATION_GET_FINALIZATION_STATUSAsync(int.Parse(id));
 
         if (result.Count() == 0)
         {

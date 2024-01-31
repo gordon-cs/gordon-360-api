@@ -1,5 +1,5 @@
-﻿using Gordon360.Exceptions;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -21,8 +21,6 @@ namespace Gordon360.Services;
 /// </summary>
 public class DiningService : IDiningService
 {
-    private readonly IConfiguration _config;
-
     private CCTContext _context;
     private static string issuerID;
     private static string applicationId;
@@ -34,10 +32,9 @@ public class DiningService : IDiningService
     public DiningService(CCTContext context, IConfiguration config)
     {
         _context = context;
-        _config = config;
-        issuerID = _config["BonAppetit:IssuerID"];
-        applicationId = _config["BonAppetit:ApplicationID"];
-        secret = _config["BonAppetit:Secret"];
+        issuerID = config["BonAppetit:IssuerID"];
+        applicationId = config["BonAppetit:ApplicationID"];
+        secret = config["BonAppetit:Secret"];
     }
 
     private static string getTimestamp()

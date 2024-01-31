@@ -1,9 +1,10 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -11,16 +12,9 @@ using System.Collections.Generic;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ContentManagementController : GordonControllerBase
+public class ContentManagementController(CCTContext context, IWebHostEnvironment webHostEnvironment) : GordonControllerBase
 {
-    private readonly IContentManagementService _contentManagementService;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-
-    public ContentManagementController(CCTContext context, IWebHostEnvironment webHostEnvironment)
-    {
-        _contentManagementService = new ContentManagementService(context);
-        _webHostEnvironment = webHostEnvironment;
-    }
+    private readonly IContentManagementService _contentManagementService = new ContentManagementService(context);
 
     /// <summary>Get all the banner slides for the dashboard banner</summary>
     /// <returns>A list of all the slides for the banner</returns>
@@ -46,7 +40,7 @@ public class ContentManagementController : GordonControllerBase
     public ActionResult<Slider_Images> PostBannerSlide(BannerSlidePostViewModel slide)
     {
         var serverURL = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
-        var result = _contentManagementService.AddBannerSlide(slide, serverURL, _webHostEnvironment.ContentRootPath);
+        var result = _contentManagementService.AddBannerSlide(slide, serverURL, webHostEnvironment.ContentRootPath);
         if (result == null)
         {
             return NotFound();

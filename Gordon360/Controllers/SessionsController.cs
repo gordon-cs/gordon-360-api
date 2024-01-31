@@ -1,5 +1,4 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Models.ViewModels;
+﻿using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,14 +7,8 @@ using System.Collections.Generic;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class SessionsController : GordonControllerBase
+public class SessionsController(ISessionService sessionService) : GordonControllerBase
 {
-    private readonly ISessionService _sessionService;
-
-    public SessionsController(CCTContext context)
-    {
-        _sessionService = new SessionService(context);
-    }
 
     /// <summary>Get a list of all sessions</summary>
     /// <returns>All sessions within the database</returns>
@@ -26,7 +19,7 @@ public class SessionsController : GordonControllerBase
     [AllowAnonymous]
     public ActionResult<IEnumerable<SessionViewModel>> Get()
     {
-        var all = _sessionService.GetAll();
+        var all = sessionService.GetAll();
         return Ok(all);
     }
 
@@ -40,7 +33,7 @@ public class SessionsController : GordonControllerBase
     [AllowAnonymous]
     public ActionResult<SessionViewModel> Get(string id)
     {
-        var result = _sessionService.Get(id);
+        var result = sessionService.Get(id);
 
         if (result == null)
         {
@@ -59,7 +52,7 @@ public class SessionsController : GordonControllerBase
     [AllowAnonymous]
     public ActionResult<SessionViewModel> GetCurrentSession()
     {
-        var currentSession = _sessionService.GetCurrentSession();
+        var currentSession = sessionService.GetCurrentSession();
         if (currentSession == null)
         {
             return NotFound();
@@ -77,7 +70,7 @@ public class SessionsController : GordonControllerBase
     [AllowAnonymous]
     public ActionResult<double[]> GetDaysLeftInSemester()
     {
-        var days = _sessionService.GetDaysLeft();
+        var days = sessionService.GetDaysLeft();
         if (days[1] == 0 && days[2] == 0 || days == null)
         {
             return NotFound();

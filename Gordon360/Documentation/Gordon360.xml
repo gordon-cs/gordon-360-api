@@ -1332,6 +1332,12 @@
             </summary>
             
         </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
+            </summary>
+            
+        </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.PutEmergencyContactAsync(Gordon360.Models.ViewModels.EmergencyContactViewModel,System.String,System.String)">
             <summary> Stores the emergency contact information of a particular user </summary>
             <param name="data"> The object that stores the contact info </param>
@@ -1378,6 +1384,11 @@
             <returns> The formatted number </returns>
         </member>
         <member name="T:Gordon360.Services.AccountService">
+            <summary>
+            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>
@@ -1453,6 +1464,13 @@
             <returns>BasicInfoViewModel of all accounts except alumni</returns>
         </member>
         <member name="T:Gordon360.Services.ActivityService">
+            <summary>
+            Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
+            ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
+            Activity Info and ACtivity may be talked about interchangeably.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
             ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
@@ -1554,6 +1572,11 @@
             Service class to facilitate interacting with the Admin table.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.AdministratorService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IAccountService)">
+            <summary>
+            Service class to facilitate interacting with the Admin table.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.AdministratorService.GetAll">
             <summary>
             Fetches all the administrators from the database
@@ -1589,6 +1612,11 @@
             <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
         <member name="T:Gordon360.Services.ContentManagementService">
+            <summary>
+            Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
@@ -1643,6 +1671,11 @@
             Service class to facilitate getting emails for members of an activity.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.EmailService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IMembershipService,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Service class to facilitate getting emails for members of an activity.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get a list of the emails for all members in the activity during the current session.
@@ -1680,6 +1713,11 @@
             Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.ErrorLogService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.ErrorLogService.Add(Gordon360.Models.CCT.ERROR_LOG)">
             <summary>
             Adds a new error log to storage.
@@ -1695,6 +1733,11 @@
             <returns>The newly added error_log object</returns>
         </member>
         <member name="T:Gordon360.Services.EventService">
+            <summary>
+            Service that allows for event control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService)">
             <summary>
             Service that allows for event control
             </summary>
@@ -1843,6 +1886,11 @@
             Service class to facilitate data transactions between the MembershipRequestController and the database
             </summary>
         </member>
+        <member name="M:Gordon360.Services.MembershipRequestService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IMembershipService,Gordon360.Services.IAccountService)">
+            <summary>
+            Service class to facilitate data transactions between the MembershipRequestController and the database
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.MembershipRequestService.AddAsync(Gordon360.Models.CCT.RequestUploadViewModel)">
             <summary>
             Generate a new request to join an activity at a participation level higher than 'Guest'
@@ -1916,6 +1964,11 @@
             <returns>A RequestView object of the updated request</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipService">
+            <summary>
+            Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IAccountService,Gordon360.Services.IActivityService)">
             <summary>
             Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
             </summary>
@@ -2274,6 +2327,11 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService)">
+            <summary>
+            Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesAsync(System.String)">
             <summary>
             Fetch the session item whose id specified by the parameter
@@ -2281,7 +2339,19 @@
             <param name="username">The AD Username of the user</param>
             <returns>CoursesBySessionViewModel if found, null if not found</returns>
         </member>
+        <member name="M:Gordon360.Services.ServicesExtensions.Add360Services(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Add our Gordon 360 Services as scoped services to the dependency injection container.
+            </summary>
+            <param name="services">Service container</param>
+            <returns>The service container that has our services added.</returns>
+        </member>
         <member name="T:Gordon360.Services.SessionService">
+            <summary>
+            Service class to facilitate data transactions between the Controller and the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.SessionService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
             Service class to facilitate data transactions between the Controller and the database model.
             </summary>

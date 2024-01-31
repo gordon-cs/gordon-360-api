@@ -1,41 +1,32 @@
-﻿using Gordon360.Extensions.System;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
-using Gordon360.Models.ViewModels;
-using Gordon360.Models.ViewModels.RecIM;
+﻿using Gordon360.Models.CCT;
 using Gordon360.Static.Names;
-using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.ViewModels.RecIM;
+using Gordon360.Models.CCT.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Extensions.System;
+using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Services.RecIM;
 
-public class ParticipantService : IParticipantService
+public class ParticipantService(CCTContext context) : IParticipantService
 {
-    private readonly CCTContext _context;
-    private readonly IAccountService _accountService;
-
-    public ParticipantService(CCTContext context, IAccountService accountService)
-    {
-        _accountService = accountService;
-        _context = context;
-    }
-
     public IEnumerable<LookupViewModel>? GetParticipantLookup(string type)
     {
         return type switch
         {
-            "status" => _context.ParticipantStatus.Where(query => query.ID != 0)
+            "status" => context.ParticipantStatus.Where(query => query.ID != 0)
                         .Select(s => new LookupViewModel
                         {
                             ID = s.ID,
                             Description = s.Description
                         })
                         .AsEnumerable(),
-            "activitypriv" => _context.ParticipantStatus.Where(query => query.ID != 0)
+            "activitypriv" => context.ParticipantStatus.Where(query => query.ID != 0)
                         .Select(s => new LookupViewModel
                         {
                             ID = s.ID,
@@ -53,7 +44,7 @@ public class ParticipantService : IParticipantService
     /// <returns>account information</returns>
     public AccountViewModel GetUnaffiliatedAccountByUsername(string username)
     {
-        var account = _context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+        var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
         if (account == null)
         {
             return new AccountViewModel()
@@ -67,11 +58,11 @@ public class ParticipantService : IParticipantService
 
     public ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null)
     {
-        ParticipantExtendedViewModel? participant = _context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
+        ParticipantExtendedViewModel? participant = context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
         if (participant is null) return null;
 
         participant.Role = roleType;
-        participant.Status = _context.ParticipantStatusHistory
+        participant.Status = context.ParticipantStatusHistory
             .Where(psh => psh.ParticipantUsername == username)
             .OrderByDescending(psh => psh.ID)
             .Select(psh => psh.Status.Description)
@@ -89,17 +80,17 @@ public class ParticipantService : IParticipantService
             EndDate = notificationVM.EndDate,
             DispatchDate = DateTime.UtcNow
         };
-        await _context.ParticipantNotification.AddAsync(newNotification);
-        await _context.SaveChangesAsync();
+        await context.ParticipantNotification.AddAsync(newNotification);
+        await context.SaveChangesAsync();
         return newNotification;
     }
 
     public IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username)
     {
-        var status = _context.ParticipantStatusHistory
+        var status = context.ParticipantStatusHistory
                         .Where(psh => psh.ParticipantUsername == username)
                         .OrderByDescending(psh => psh.ID)
-                            .Join(_context.ParticipantStatus,
+                            .Join(context.ParticipantStatus,
                                 psh => psh.StatusID,
                                 ps => ps.ID,
                                 (psh, ps) => new ParticipantStatusExtendedViewModel
@@ -114,26 +105,26 @@ public class ParticipantService : IParticipantService
 
     public IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username)
     {
-        var teams = _context.ParticipantTeam
-                 .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)
-                     .Join(_context.Team.Where(t => t.StatusID != 0),
-                         pt => pt.TeamID,
-                         t => t.ID,
-                         (pt, t) => new TeamExtendedViewModel
-                         {
-                             ID = t.ID,
-                             Activity = _context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
-                             Name = t.Name,
-                             Status = _context.TeamStatus
-                                         .FirstOrDefault(ts => ts.ID == t.StatusID)
-                                         .Description,
-                             Logo = t.Logo,
-                             TeamRecord = _context.SeriesTeam
-                                 .Include(st => st.Team)
-                                 .Where(st => st.TeamID == t.ID)
-                                 .Select(st => (TeamRecordViewModel)st)
-
-                         });
+               var teams = context.ParticipantTeam
+                        .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2 )
+                            .Join(context.Team.Where(t => t.StatusID != 0),
+                                pt => pt.TeamID,
+                                t => t.ID,
+                                (pt, t) => new TeamExtendedViewModel
+                                {
+                                    ID = t.ID,
+                                    Activity = context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
+                                    Name = t.Name,
+                                    Status = context.TeamStatus
+                                                .FirstOrDefault(ts => ts.ID == t.StatusID)
+                                                .Description,
+                                    Logo = t.Logo,
+                                    TeamRecord = context.SeriesTeam
+                                        .Include(st => st.Team)
+                                        .Where(st => st.TeamID == t.ID)
+                                        .Select(st => (TeamRecordViewModel)st)
+                                
+                                });
         return teams;
     }
 
@@ -141,8 +132,8 @@ public class ParticipantService : IParticipantService
     {
         // This is Participant left join CustomParticipant left join Student
         //  left join FacStaff to get each participant's firstname and lastname
-        var participants = from new_ps in (from p in ((from p in _context.Participant
-                                                       join cp in _context.CustomParticipant on p.Username equals cp.Username into cpp_join
+        var participants = from new_ps in (from p in ((from p in context.Participant
+                                                       join cp in context.CustomParticipant on p.Username equals cp.Username into cpp_join
                                                        from cpp in cpp_join.DefaultIfEmpty()
                                                        select new
                                                        {
@@ -155,7 +146,7 @@ public class ParticipantService : IParticipantService
                                                            FirstName = cpp.FirstName,
                                                            LastName = cpp.LastName,
                                                        }))
-                                           join s in _context.Student on p.Username equals s.AD_Username into ps_join
+                                           join s in context.Student on p.Username equals s.AD_Username into ps_join
                                            from ps in ps_join.DefaultIfEmpty()
                                            select new
                                            {
@@ -168,14 +159,14 @@ public class ParticipantService : IParticipantService
                                                FirstName = p.FirstName ?? ps.FirstName,
                                                LastName = p.LastName ?? ps.LastName,
                                            })
-                           join fs in _context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
+                           join fs in context.FacStaff on new_ps.Username equals fs.AD_Username into psfs_join
                            from psfs in psfs_join.DefaultIfEmpty()
                            select new ParticipantExtendedViewModel
                            {
                                Username = new_ps.Username,
                                IsAdmin = new_ps.IsAdmin,
-                               Status = (from psh in _context.ParticipantStatusHistory
-                                         join pstatus in _context.ParticipantStatus on psh.StatusID equals pstatus.ID
+                               Status = (from psh in context.ParticipantStatusHistory
+                                         join pstatus in context.ParticipantStatus on psh.StatusID equals pstatus.ID
                                          where psh.ParticipantUsername == new_ps.Username
                                          orderby psh.ID descending
                                          select new
@@ -196,8 +187,8 @@ public class ParticipantService : IParticipantService
 
     public IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo()
     {
-        var customParticipants = from p in _context.Participant
-                                 join cp in _context.CustomParticipant on p.Username equals cp.Username
+        var customParticipants = from p in context.Participant
+                                 join cp in context.CustomParticipant on p.Username equals cp.Username
                                  where p.IsCustom == true
                                  select new BasicInfoViewModel
                                  {
@@ -212,7 +203,7 @@ public class ParticipantService : IParticipantService
 
     public bool GetParticipantIsCustom(string username)
     {
-        var isCustom = (from p in _context.Participant
+        var isCustom = (from p in context.Participant
                         where p.Username == username
                         select p.IsCustom).Single();
         return isCustom;
@@ -221,24 +212,24 @@ public class ParticipantService : IParticipantService
     public async Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID)
     {
         // Find gender
-        string user_gender =
-            _context.Student.FirstOrDefault(s => s.AD_Username == username)?.Gender ??
-            _context.FacStaff.FirstOrDefault(fs => fs.AD_Username == username)?.Gender ??
+        string user_gender = 
+            context.Student.FirstOrDefault(s => s.AD_Username == username)?.Gender ?? 
+            context.FacStaff.FirstOrDefault(fs => fs.AD_Username == username)?.Gender ?? 
             "U";
 
-        await _context.Participant.AddAsync(new Participant
+        await context.Participant.AddAsync(new Participant
         {
             Username = username,
             SpecifiedGender = user_gender,
         });
-        await _context.ParticipantStatusHistory.AddAsync(new ParticipantStatusHistory
+        await context.ParticipantStatusHistory.AddAsync(new ParticipantStatusHistory
         {
             ParticipantUsername = username,
             StatusID = statusID ?? 4, //default to cleared
             StartDate = DateTime.UtcNow,
             //No defined end date for creation
         });
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         var participant = GetParticipantByUsername(username);
         return participant;
     }
@@ -247,38 +238,38 @@ public class ParticipantService : IParticipantService
     {
         var newUsername = GetCustomUnqiueUsername(username);
 
-        await _context.Participant.AddAsync(new Participant
+        await context.Participant.AddAsync(new Participant
         {
             Username = newUsername,
             SpecifiedGender = newCustomParticipant.SpecifiedGender,
             IsCustom = true,
             AllowEmails = newCustomParticipant.AllowEmails,
-
+            
         });
-        await _context.CustomParticipant.AddAsync(new CustomParticipant
+        await context.CustomParticipant.AddAsync(new CustomParticipant
         {
             Username = newUsername,
             Email = newCustomParticipant.Email,
             FirstName = newCustomParticipant.FirstName,
             LastName = newCustomParticipant.LastName,
         });
-        await _context.ParticipantStatusHistory.AddAsync(new ParticipantStatusHistory
+        await context.ParticipantStatusHistory.AddAsync(new ParticipantStatusHistory
         {
             ParticipantUsername = newUsername,
             StatusID = 4, //default to cleared
             StartDate = DateTime.UtcNow,
             //No defined end date for creation
         });
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         var participant = GetParticipantByUsername(newUsername);
         return participant;
     }
 
     public async Task<ParticipantExtendedViewModel> SetParticipantAdminStatusAsync(string username, bool isAdmin)
     {
-        var participant = _context.Participant.Find(username);
+        var participant = context.Participant.Find(username);
         participant.IsAdmin = isAdmin;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return new ParticipantExtendedViewModel
         {
             Username = participant.Username,
@@ -291,8 +282,8 @@ public class ParticipantService : IParticipantService
 
     public async Task<ParticipantExtendedViewModel> UpdateCustomParticipantAsync(string username, CustomParticipantPatchViewModel updatedParticipant)
     {
-        var participant = _context.Participant.First((p) => p.Username == username && p.IsCustom == true);
-        var customParticipant = _context.CustomParticipant.First((p) => p.Username == username);
+        var participant = context.Participant.First((p) => p.Username == username && p.IsCustom == true);
+        var customParticipant = context.CustomParticipant.First((p) => p.Username == username);
 
         customParticipant.FirstName = updatedParticipant.FirstName ?? customParticipant.FirstName;
         customParticipant.LastName = updatedParticipant.LastName ?? customParticipant.LastName;
@@ -300,15 +291,15 @@ public class ParticipantService : IParticipantService
         participant.AllowEmails = updatedParticipant.AllowEmails ?? participant.AllowEmails;
         customParticipant.Email = updatedParticipant.Email ?? customParticipant.Email;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return GetParticipantByUsername(username);
     }
 
     public async Task<ParticipantExtendedViewModel> UpdateParticipantAllowEmailsAsync(string username, bool allowEmails)
     {
-        var participant = _context.Participant.Find(username);
+        var participant = context.Participant.Find(username);
         participant.AllowEmails = allowEmails;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return new ParticipantExtendedViewModel
         {
             Username = participant.Username,
@@ -321,8 +312,8 @@ public class ParticipantService : IParticipantService
 
 
     public async Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant)
-    {
-        var participantActivity = _context.ParticipantActivity
+    {           
+        var participantActivity = context.ParticipantActivity
                                     .FirstOrDefault(pa => pa.ParticipantUsername == username
                                         && pa.ActivityID == updatedParticipant.ActivityID);
 
@@ -330,14 +321,14 @@ public class ParticipantService : IParticipantService
         participantActivity.IsFreeAgent = updatedParticipant.IsFreeAgent ?? participantActivity.IsFreeAgent;
 
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return participantActivity;
     }
 
     public async Task<ParticipantStatusHistoryViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus)
     {
         // End previous status
-        var prevStatus = _context.ParticipantStatusHistory
+        var prevStatus = context.ParticipantStatusHistory
                            .Where(psh => psh.ParticipantUsername == username)
                            .OrderByDescending(psh => psh.ID)
                            .FirstOrDefault();
@@ -350,18 +341,18 @@ public class ParticipantService : IParticipantService
             StartDate = DateTime.UtcNow,
             EndDate = participantStatus.EndDate
         };
-        await _context.ParticipantStatusHistory.AddAsync(status);
-        await _context.SaveChangesAsync();
+        await context.ParticipantStatusHistory.AddAsync(status);
+        await context.SaveChangesAsync();
         return status;
     }
 
     public bool IsParticipant(string username)
     {
-        if (_context.Participant.FirstOrDefault(p => p.Username == username) is null)
+        if (context.Participant.FirstOrDefault(p => p.Username == username) is null)
         {
             return false;
         }
-        var isPending = _context.ParticipantStatusHistory
+        var isPending = context.ParticipantStatusHistory
                 .Where(psh => psh.ParticipantUsername == username)
                 .OrderByDescending(psh => psh.ID)
                 .FirstOrDefault()
@@ -373,7 +364,7 @@ public class ParticipantService : IParticipantService
 
     public bool IsAdmin(string username)
     {
-        return _context.Participant.Any(p => p.Username == username && p.IsAdmin == true);
+        return context.Participant.Any(p => p.Username == username && p.IsAdmin == true);
     }
 
     private string GetCustomUnqiueUsername(string username)
@@ -381,7 +372,7 @@ public class ParticipantService : IParticipantService
         var customSuffix = RecIM_Resources.CUSTOM_PARTICIPANT_USERNAME_SUFFIX;
         var newUsername = username;
         var index = 2;
-        while (_context.Participant.Any((p) => p.Username == newUsername + customSuffix && p.IsCustom == true))
+        while (context.Participant.Any((p) => p.Username == newUsername + customSuffix && p.IsCustom == true))
         {
             newUsername = username + index.ToString();
             index++;

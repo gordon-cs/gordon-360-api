@@ -1,18 +1,18 @@
-﻿using Gordon360.Enums;
+﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using System;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using Gordon360.Enums;
 
 namespace Gordon360.Services;
 
@@ -21,20 +21,11 @@ namespace Gordon360.Services;
 /// ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
 /// Activity Info and ACtivity may be talked about interchangeably.
 /// </summary>
-public class ActivityService : IActivityService
+public class ActivityService(CCTContext context,
+                             IConfiguration config,
+                             IWebHostEnvironment webHostEnvironment,
+                             ServerUtils serverUtils) : IActivityService
 {
-    private readonly CCTContext _context;
-    private readonly IConfiguration _config;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly ServerUtils _serverUtils;
-
-    public ActivityService(CCTContext context, IConfiguration config, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
-    {
-        _context = context;
-        _config = config;
-        _webHostEnvironment = webHostEnvironment;
-        _serverUtils = serverUtils;
-    }
     /// <summary>
     /// Fetches a single activity record whose id matches the id provided as an argument
     /// </summary>
@@ -42,7 +33,7 @@ public class ActivityService : IActivityService
     /// <returns>ActivityViewModel if found, null if not found</returns>
     public ActivityInfoViewModel Get(string activityCode)
     {
-        var query = _context.ACT_INFO.Find(activityCode);
+        var query = context.ACT_INFO.Find(activityCode);
         if (query == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Activity was not found." };
@@ -58,14 +49,14 @@ public class ActivityService : IActivityService
     /// <returns>ActivityViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
     public async Task<IEnumerable<ActivityInfoViewModel>> GetActivitiesForSessionAsync(string sessionCode)
     {
-        var query = await _context.Procedures.ACTIVE_CLUBS_PER_SESS_IDAsync(sessionCode);
+        var query = await context.Procedures.ACTIVE_CLUBS_PER_SESS_IDAsync(sessionCode);
         if (query == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };
         }
 
         // Transform the ActivityViewModel (ACT_CLUB_DEF) into ActivityInfoViewModel
-        return query.Join(_context.ACT_INFO, act => act.ACT_CDE, actInfo => actInfo.ACT_CDE, (act, actInfo) => new ActivityInfoViewModel
+        return query.Join(context.ACT_INFO, act => act.ACT_CDE, actInfo => actInfo.ACT_CDE, (act, actInfo) => new ActivityInfoViewModel
         {
             ActivityCode = act.ACT_CDE.Trim(),
             ActivityDescription = act.ACT_DESC ?? "",
@@ -86,7 +77,7 @@ public class ActivityService : IActivityService
     public async Task<IEnumerable<string>> GetActivityTypesForSessionAsync(string sessionCode)
     {
         // Stored procedure returns column ACT_TYPE_DESC
-        var query = await _context.Procedures.DISTINCT_ACT_TYPEAsync(sessionCode);
+        var query = await context.Procedures.DISTINCT_ACT_TYPEAsync(sessionCode);
         if (query == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "No Activities for this session was not found." };
@@ -103,7 +94,7 @@ public class ActivityService : IActivityService
     /// <returns>ActivityViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
     public IEnumerable<ActivityInfoViewModel> GetAll()
     {
-        var query = _context.ACT_INFO;
+        var query = context.ACT_INFO;
         var result = query.Select<ACT_INFO, ActivityInfoViewModel>(x => x);
         return result;
     }
@@ -120,7 +111,7 @@ public class ActivityService : IActivityService
     public bool IsOpen(string activityCode, string sessionCode)
     {
         // Check to see if there are any memberships where END_DTE is not null
-        if (_context.MEMBERSHIP.Where(m => m.ACT_CDE.Equals(activityCode) && m.SESS_CDE.Equals(sessionCode) && m.PART_CDE != "GUEST" && m.END_DTE != null).Any())
+        if (context.MEMBERSHIP.Where(m => m.ACT_CDE.Equals(activityCode) && m.SESS_CDE.Equals(sessionCode) && m.PART_CDE != "GUEST" && m.END_DTE != null).Any())
         {
             return false;
         }
@@ -139,7 +130,7 @@ public class ActivityService : IActivityService
         // TODO: this works for all the activities that actually have members. But if an acivity has no members, it
         // will not show up as closed or open.
 
-        IQueryable<MEMBERSHIP> memberships = _context.MEMBERSHIP
+        IQueryable<MEMBERSHIP> memberships = context.MEMBERSHIP
             .Where(m =>
                 m.PART_CDE != Participation.Guest.GetCode()
                 && m.SESS_CDE == sess_cde);
@@ -150,7 +141,7 @@ public class ActivityService : IActivityService
             .GroupBy(m => m.ACT_CDE)
             .Select(m => m.Key);
 
-        IQueryable<ActivityInfoViewModel> activities = _context.ACT_INFO
+        IQueryable<ActivityInfoViewModel> activities = context.ACT_INFO
             .Where(a => activityCodes.Contains(a.ACT_CDE))
             .Select<ACT_INFO, ActivityInfoViewModel>(a => a);
 
@@ -165,7 +156,7 @@ public class ActivityService : IActivityService
     /// <returns>The updated activity info resource</returns>
     public ACT_INFO Update(string activityCode, InvolvementUpdateViewModel involvement)
     {
-        var original = _context.ACT_INFO.Find(activityCode);
+        var original = context.ACT_INFO.Find(activityCode);
 
         if (original == null)
         {
@@ -177,7 +168,7 @@ public class ActivityService : IActivityService
         original.ACT_URL = involvement.Url;
         original.ACT_JOIN_INFO = involvement.JoinInfo;
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return original;
     }
@@ -189,21 +180,21 @@ public class ActivityService : IActivityService
     /// <param name="sess_cde">The session code for the session where the activity is being closed</param>
     public void CloseOutActivityForSession(string activityCode, string sess_cde)
     {
-        var memberships = _context.MEMBERSHIP.Where(x => x.ACT_CDE == activityCode && x.SESS_CDE == sess_cde);
+        var memberships = context.MEMBERSHIP.Where(x => x.ACT_CDE == activityCode && x.SESS_CDE == sess_cde);
 
         if (!memberships.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "No members found for this activity in this session." };
         }
 
-        var session = _context.CM_SESSION_MSTR.Where(x => x.SESS_CDE == sess_cde).FirstOrDefault();
+        var session = context.CM_SESSION_MSTR.Where(x => x.SESS_CDE == sess_cde).FirstOrDefault();
 
         foreach (var mem in memberships)
         {
             mem.END_DTE = session.SESS_END_DTE;
         }
 
-        _context.SaveChanges();
+        context.SaveChanges();
     }
 
     /// <summary>
@@ -213,7 +204,7 @@ public class ActivityService : IActivityService
     /// <param name="sess_cde">The session code for the session where the activity is being closed</param>
     public void OpenActivityForSession(string activityCode, string sess_cde)
     {
-        var memberships = _context.MEMBERSHIP.Where(x => x.ACT_CDE == activityCode && x.SESS_CDE == sess_cde);
+        var memberships = context.MEMBERSHIP.Where(x => x.ACT_CDE == activityCode && x.SESS_CDE == sess_cde);
 
         if (!memberships.Any())
         {
@@ -224,7 +215,7 @@ public class ActivityService : IActivityService
             mem.END_DTE = null;
         }
 
-        _context.SaveChanges();
+        context.SaveChanges();
     }
 
     /// <summary>
@@ -238,9 +229,9 @@ public class ActivityService : IActivityService
         // Put current DateTime in filename so the browser knows it's a new file and refreshes cache
         var filename = $"canvasImage_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.png";
         var involvement_code = involvement.ACT_CDE.Trim();
-        var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement_code, filename);
+        var imagePath = Path.Combine(webHostEnvironment.ContentRootPath, "browseable", "uploads", involvement_code, filename);
 
-        var serverAddress = _serverUtils.GetAddress();
+        var serverAddress = serverUtils.GetAddress();
         if (serverAddress is not string) throw new Exception("Could not upload Involvement Image: Server Address is null");
 
         var url = $"{serverAddress}browseable/uploads/{involvement_code}/{filename}";
@@ -257,7 +248,7 @@ public class ActivityService : IActivityService
         ImageUtils.UploadImageAsync(imagePath, image);
 
         involvement.ACT_IMG_PATH = url;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return involvement;
     }
@@ -268,15 +259,15 @@ public class ActivityService : IActivityService
     /// <param name="activityCode">The activity code</param>
     public void ResetActivityImage(string activityCode)
     {
-        var original = _context.ACT_INFO.Find(activityCode);
+        var original = context.ACT_INFO.Find(activityCode);
 
         if (original == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The Activity Info was not found." };
         }
 
-        original.ACT_IMG_PATH = _config["DEFAULT_ACTIVITY_IMAGE_PATH"];
-        _context.SaveChanges();
+        original.ACT_IMG_PATH = config["DEFAULT_ACTIVITY_IMAGE_PATH"];
+        context.SaveChanges();
     }
 
     /// <summary>
@@ -286,7 +277,7 @@ public class ActivityService : IActivityService
     /// <param name="isPrivate">activity private or not</param>
     public void TogglePrivacy(string activityCode, bool isPrivate)
     {
-        var original = _context.ACT_INFO.Find(activityCode);
+        var original = context.ACT_INFO.Find(activityCode);
 
         if (original == null)
         {
@@ -295,7 +286,7 @@ public class ActivityService : IActivityService
 
         original.PRIVACY = isPrivate;
 
-        _context.SaveChanges();
+        context.SaveChanges();
     }
 
 

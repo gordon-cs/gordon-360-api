@@ -1,4 +1,5 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
@@ -13,23 +14,14 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ActivitiesController : GordonControllerBase
+public class ActivitiesController(CCTContext context, IActivityService activityService) : GordonControllerBase
 {
-    private readonly IActivityService _activityService;
-    private readonly CCTContext _context;
-
-    public ActivitiesController(CCTContext context, IActivityService activityService)
-    {
-        _context = context;
-        _activityService = activityService;
-    }
-
     [HttpGet]
     [Route("")]
     [AllowAnonymous]
     public ActionResult<IEnumerable<ActivityInfoViewModel>> Get()
     {
-        var all = _activityService.GetAll();
+        var all = activityService.GetAll();
         return Ok(all);
     }
 
@@ -38,7 +30,7 @@ public class ActivitiesController : GordonControllerBase
     [AllowAnonymous]
     public ActionResult<ActivityInfoViewModel> Get(string id)
     {
-        var result = _activityService.Get(id);
+        var result = activityService.Get(id);
 
         if (result == null)
         {
@@ -57,7 +49,7 @@ public class ActivitiesController : GordonControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<ActivityInfoViewModel>>> GetActivitiesForSessionAsync(string id)
     {
-        var result = await _activityService.GetActivitiesForSessionAsync(id);
+        var result = await activityService.GetActivitiesForSessionAsync(id);
 
         if (result == null)
         {
@@ -77,7 +69,7 @@ public class ActivitiesController : GordonControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<string>>> GetActivityTypesForSessionAsync(string id)
     {
-        var result = await _activityService.GetActivityTypesForSessionAsync(id);
+        var result = await activityService.GetActivityTypesForSessionAsync(id);
 
         if (result == null)
         {
@@ -99,7 +91,7 @@ public class ActivitiesController : GordonControllerBase
     [AllowAnonymous]
     public ActionResult<bool> GetActivityStatus(string sessionCode, string id)
     {
-        var result = _activityService.IsOpen(id, sessionCode) ? "OPEN" : "CLOSED";
+        var result = activityService.IsOpen(id, sessionCode) ? "OPEN" : "CLOSED";
 
         return Ok(result);
     }
@@ -112,9 +104,9 @@ public class ActivitiesController : GordonControllerBase
     [Route("open")]
     public ActionResult<IEnumerable<ActivityInfoViewModel>> GetOpenActivities()
     {
-        var sessionCode = Helpers.GetCurrentSession(_context);
+        var sessionCode = Helpers.GetCurrentSession(context);
 
-        var activities = _activityService.GetActivitiesByStatus(sessionCode, getOpen: true);
+        var activities = activityService.GetActivitiesByStatus(sessionCode, getOpen: true);
 
         return Ok(activities);
     }
@@ -127,9 +119,9 @@ public class ActivitiesController : GordonControllerBase
     [Route("closed")]
     public ActionResult<IEnumerable<ActivityInfoViewModel>> GetClosedActivities()
     {
-        var sessionCode = Helpers.GetCurrentSession(_context);
+        var sessionCode = Helpers.GetCurrentSession(context);
 
-        var activities = _activityService.GetActivitiesByStatus(sessionCode, getOpen: false);
+        var activities = activityService.GetActivitiesByStatus(sessionCode, getOpen: false);
 
         return Ok(activities);
     }
@@ -144,7 +136,7 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
     public ActionResult<ActivityInfoViewModel> Put(string involvement_code, InvolvementUpdateViewModel involvement)
     {
-        var result = _activityService.Update(involvement_code, involvement);
+        var result = activityService.Update(involvement_code, involvement);
 
         if (result == null)
         {
@@ -159,7 +151,7 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
     public ActionResult CloseSession(string id, string sess_cde)
     {
-        _activityService.CloseOutActivityForSession(id, sess_cde);
+        activityService.CloseOutActivityForSession(id, sess_cde);
 
         return Ok();
     }
@@ -169,7 +161,7 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_STATUS)]
     public ActionResult OpenSession(string id, string sess_cde)
     {
-        _activityService.OpenActivityForSession(id, sess_cde);
+        activityService.OpenActivityForSession(id, sess_cde);
 
         return Ok();
     }
@@ -185,14 +177,14 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
     public async Task<ActionResult<ActivityInfoViewModel>> PostImageAsync(string involvement_code, [FromForm] IFormFile image)
     {
-        var involvement = await _context.ACT_INFO.FindAsync(involvement_code);
+        var involvement = await context.ACT_INFO.FindAsync(involvement_code);
         if (involvement is null)
         {
             return NotFound("Involvement not found");
         }
 
-        ActivityInfoViewModel updatedInvolvement = await _activityService.UpdateActivityImageAsync(involvement, image);
-
+        ActivityInfoViewModel updatedInvolvement = await activityService.UpdateActivityImageAsync(involvement, image);
+        
         return Ok(updatedInvolvement);
     }
 
@@ -206,7 +198,7 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
     public ActionResult ResetImage(string involvement_code)
     {
-        _activityService.ResetActivityImage(involvement_code);
+        activityService.ResetActivityImage(involvement_code);
 
         return Ok();
     }
@@ -220,7 +212,7 @@ public class ActivitiesController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.ACTIVITY_INFO)]
     public ActionResult TogglePrivacy(string involvement_code, bool p)
     {
-        _activityService.TogglePrivacy(involvement_code, p);
+        activityService.TogglePrivacy(involvement_code, p);
         return Ok();
     }
 

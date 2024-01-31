@@ -12,18 +12,8 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service class to facilitate getting emails for members of an activity.
 /// </summary>
-public class EmailService : IEmailService
+public class EmailService(CCTContext context, IMembershipService membershipService, IConfiguration config) : IEmailService
 {
-    private readonly CCTContext _context;
-    private readonly IMembershipService _membershipService;
-    private readonly IConfiguration _config;
-
-    public EmailService(CCTContext context, IMembershipService membershipService, IConfiguration config)
-    {
-        _context = context;
-        _membershipService = membershipService;
-        _config = config;
-    }
 
     /// <summary>
     /// Get a list of the emails for all members in the activity during the current session.
@@ -34,14 +24,14 @@ public class EmailService : IEmailService
     /// <returns>A list of emails (along with first and last name) associated with that activity</returns>
     public IEnumerable<EmailViewModel> GetEmailsForActivity(string activityCode, string? sessionCode = null, List<string>? participationTypes = null)
     {
-        sessionCode ??= Helpers.GetCurrentSession(_context);
+        sessionCode ??= Helpers.GetCurrentSession(context);
 
-        var memberships = _membershipService.GetMemberships(
+        var memberships = membershipService.GetMemberships(
             activityCode: activityCode,
             sessionCode: sessionCode,
             participationTypes: participationTypes);
 
-        return memberships.Join(_context.ACCOUNT, m => m.Username, a => a.AD_Username, (m, a) => new EmailViewModel
+        return memberships.Join(context.ACCOUNT, m => m.Username, a => a.AD_Username, (m, a) => new EmailViewModel
         {
             Email = a.email,
             FirstName = a.firstname,
@@ -68,7 +58,7 @@ public class EmailService : IEmailService
             Password = password
         };
         smtp.Credentials = credential;
-        smtp.Host = _config["SmtpHost"];
+        smtp.Host = config["SmtpHost"];
         smtp.Port = 587;
         smtp.EnableSsl = true;
 
@@ -109,7 +99,7 @@ public class EmailService : IEmailService
         using var smtp = new SmtpClient
         {
             Credentials = credential,
-            Host = _config["SmtpHost"],
+            Host = config["SmtpHost"],
             Port = 587,
             EnableSsl = true,
         };

@@ -13,16 +13,8 @@ namespace Gordon360.Controllers.Api;
 [Route("api/checkIn")]
 [Authorize]
 [CustomExceptionFilter]
-public class AcademicCheckInController : ControllerBase
+public class AcademicCheckInController(IAcademicCheckInService academicCheckInService, IAccountService accountService) : ControllerBase
 {
-    private readonly IAcademicCheckInService _checkInService;
-    private readonly IAccountService _accountService;
-
-    public AcademicCheckInController(CCTContext context)
-    {
-        _checkInService = new AcademicCheckInService(context);
-        _accountService = new AccountService(context);
-    }
 
     /// <summary>Set emergency contacts for student</summary>
     /// <param name="data"> The contact data to be stored </param>
@@ -32,11 +24,11 @@ public class AcademicCheckInController : ControllerBase
     public async Task<ActionResult<EmergencyContactViewModel>> PutEmergencyContactAsync([FromBody] EmergencyContactViewModel data)
     {
         var username = AuthUtils.GetUsername(User);
-        var id = _accountService.GetAccountByUsername(username).GordonID;
+        var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            var result = await _checkInService.PutEmergencyContactAsync(data, id, username);
+            var result = await academicCheckInService.PutEmergencyContactAsync(data, id, username);
             return Created("Emergency Contact", result);
         }
         catch (System.Exception e)
@@ -57,11 +49,11 @@ public class AcademicCheckInController : ControllerBase
     public async Task<ActionResult<AcademicCheckInViewModel>> PutCellPhoneAsync([FromBody] AcademicCheckInViewModel data)
     {
         var username = AuthUtils.GetUsername(User);
-        var id = _accountService.GetAccountByUsername(username).GordonID;
+        var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            var result = await _checkInService.PutCellPhoneAsync(id, data);
+            var result = await academicCheckInService.PutCellPhoneAsync(id, data);
             return Ok(result);
         }
         catch (System.Exception e)
@@ -80,11 +72,11 @@ public class AcademicCheckInController : ControllerBase
     public async Task<ActionResult<AcademicCheckInViewModel>> PutDemographicAsync([FromBody] AcademicCheckInViewModel data)
     {
         var username = AuthUtils.GetUsername(User);
-        var id = _accountService.GetAccountByUsername(username).GordonID;
+        var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            var result = await _checkInService.PutDemographicAsync(id, data);
+            var result = await academicCheckInService.PutDemographicAsync(id, data);
             return Ok(result);
         }
         catch (System.Exception e)
@@ -102,11 +94,11 @@ public class AcademicCheckInController : ControllerBase
     public async Task<ActionResult<AcademicCheckInViewModel>> GetHoldsAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = _accountService.GetAccountByUsername(username).GordonID;
+        var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            var result = (await _checkInService.GetHoldsAsync(id)).First();
+            var result = (await academicCheckInService.GetHoldsAsync(id)).First();
             return Ok(result);
         }
         catch (System.Exception e)
@@ -124,11 +116,11 @@ public class AcademicCheckInController : ControllerBase
     public async Task<ActionResult> SetStatusAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = _accountService.GetAccountByUsername(username).GordonID;
+        var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            await _checkInService.SetStatusAsync(id);
+            await academicCheckInService.SetStatusAsync(id);
             return Ok();
         }
         catch (System.Exception e)
@@ -145,11 +137,11 @@ public class AcademicCheckInController : ControllerBase
     public async Task<ActionResult<AcademicCheckInViewModel>> GetStatusAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = _accountService.GetAccountByUsername(username).GordonID;
+        var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            var result = await _checkInService.GetStatusAsync(id);
+            var result = await academicCheckInService.GetStatusAsync(id);
             return Ok(result);
         }
         catch (System.Exception e)

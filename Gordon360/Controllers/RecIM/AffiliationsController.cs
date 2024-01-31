@@ -9,14 +9,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM;
 
 [Route("api/recim/[controller]")]
-public class AffiliationsController : GordonControllerBase
+public class AffiliationsController(IAffiliationService affiliationService) : GordonControllerBase
 {
-    private readonly IAffiliationService _affiliationService;
-
-    public AffiliationsController(IAffiliationService affiliationService)
-    {
-        _affiliationService = affiliationService;
-    }
 
     /// <summary>
     /// Gets all stored affiliations/halls/clubs with associated
@@ -26,7 +20,7 @@ public class AffiliationsController : GordonControllerBase
     [Route("")]
     public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAllAffiliationDetails()
     {
-        return Ok(_affiliationService.GetAllAffiliationDetails());
+        return Ok(affiliationService.GetAllAffiliationDetails());
     }
 
     /// <summary>
@@ -37,7 +31,7 @@ public class AffiliationsController : GordonControllerBase
     [Route("{affiliationName}")]
     public ActionResult<IEnumerable<AffiliationExtendedViewModel>> GetAffiliationDetailsByName(string affiliationName)
     {
-        return Ok(_affiliationService.GetAffiliationDetailsByName(affiliationName));
+        return Ok(affiliationService.GetAffiliationDetailsByName(affiliationName));
     }
 
     /// <summary>
@@ -50,7 +44,7 @@ public class AffiliationsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_AFFILIATION)]
     public async Task<ActionResult> CreateAffiliation([FromBody] string affiliationName)
     {
-        var res = await _affiliationService.CreateAffiliation(affiliationName);
+        var res = await affiliationService.CreateAffiliation(affiliationName);
         return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
     }
 
@@ -65,7 +59,7 @@ public class AffiliationsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_AFFILIATION)]
     public async Task<ActionResult> UpdateAffiliation(string affiliationName, AffiliationPatchViewModel update)
     {
-        var res = await _affiliationService.UpdateAffiliationAsync(affiliationName, update);
+        var res = await affiliationService.UpdateAffiliationAsync(affiliationName, update);
         return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
     }
 
@@ -81,7 +75,7 @@ public class AffiliationsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_AFFILIATION)]
     public async Task<ActionResult> AddPointsToAffilliation(string affiliationName, AffiliationPointsUploadViewModel vm)
     {
-        var res = await _affiliationService.AddPointsToAffilliationAsync(affiliationName, vm);
+        var res = await affiliationService.AddPointsToAffilliationAsync(affiliationName, vm);
         return CreatedAtAction(nameof(GetAffiliationDetailsByName), new { affiliationName = res }, res);
     }
 
@@ -94,7 +88,7 @@ public class AffiliationsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.RECIM_AFFILIATION)]
     public async Task<ActionResult> DeleteAffiliation(string affiliationName)
     {
-        await _affiliationService.DeleteAffiliationAsync(affiliationName);
+        await affiliationService.DeleteAffiliationAsync(affiliationName);
         return Ok();
     }
 }

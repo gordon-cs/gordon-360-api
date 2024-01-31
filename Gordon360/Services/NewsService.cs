@@ -1,7 +1,7 @@
-﻿using Gordon360.Exceptions;
-using Gordon360.Models.CCT.Context;
-using Gordon360.Models.MyGordon;
+﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
+using Gordon360.Exceptions;
+using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
@@ -14,20 +14,8 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class NewsService : INewsService
+public class NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : INewsService
 {
-    private readonly MyGordonContext _context;
-    private readonly CCTContext _contextCCT;
-    private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly ServerUtils _serverUtils;
-
-    public NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils)
-    {
-        _context = context;
-        _contextCCT = contextCCT;
-        _webHostEnvironment = webHostEnvironment;
-        _serverUtils = serverUtils;
-    }
 
     /// <summary>
     /// Gets a news item entity by id
@@ -39,7 +27,7 @@ public class NewsService : INewsService
     /// <returns>The news item</returns>
     public StudentNews Get(int newsID)
     {
-        var newsItem = _context.StudentNews.Find(newsID);
+        var newsItem = context.StudentNews.Find(newsID);
         // Thrown exceptions will be converted to HTTP Responses by the CustomExceptionFilter
         if (newsItem == null)
         {
@@ -52,8 +40,8 @@ public class NewsService : INewsService
     public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNotExpiredAsync()
     {
 
-        var news = (from sn in _context.StudentNews
-                    join snc in _context.StudentNewsCategory
+        var news = (from sn in context.StudentNews
+                    join snc in context.StudentNewsCategory
                     on sn.categoryID equals snc.categoryID
                     where sn.Accepted == true
                     && ((sn.ManualExpirationDate == null
@@ -68,27 +56,27 @@ public class NewsService : INewsService
 
     public async Task<IEnumerable<StudentNewsViewModel>> GetNewsNewAsync()
     {
-        var news = (from sn in _context.StudentNews
-                    join snc in _context.StudentNewsCategory
-                    on sn.categoryID equals snc.categoryID
-                    where sn.Accepted == true
-                    && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
-                    && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
-                    orderby snc.SortOrder
-                    select StudentNewsViewModel.From(sn, snc));
-
+        var news = (from sn in context.StudentNews
+                     join snc in context.StudentNewsCategory
+                     on sn.categoryID equals snc.categoryID
+                     where sn.Accepted == true
+                     && (EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 1)
+                     && (sn.ManualExpirationDate == null || (DateTime.Today).Date < ((DateTime)sn.Entered).Date)
+                     orderby snc.SortOrder
+                     select StudentNewsViewModel.From(sn, snc));
+                     
         return news;
     }
 
     public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
     {
-        return _context.StudentNewsCategory.OrderBy(c => c.SortOrder).Select<StudentNewsCategory, StudentNewsCategoryViewModel>(c => c);
+        return context.StudentNewsCategory.OrderBy(c => c.SortOrder).Select<StudentNewsCategory, StudentNewsCategoryViewModel>(c => c);
     }
 
     public IEnumerable<StudentNewsViewModel> GetNewsUnapproved()
     {
-        var news = (from sn in _context.StudentNews
-                    join snc in _context.StudentNewsCategory
+        var news = (from sn in context.StudentNews
+                    join snc in context.StudentNewsCategory
                     on sn.categoryID equals snc.categoryID
                     where sn.Accepted == false
                     && ((sn.ManualExpirationDate == null
@@ -123,23 +111,23 @@ public class NewsService : INewsService
     public async Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapprovedAsync(string username)
     {
         // Verify account
-        var account = await _contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);
+        var account = await contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);
         if (account == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
         }
 
-        var news = (from sn in _context.StudentNews
-                    join snc in _context.StudentNewsCategory
-                    on sn.categoryID equals snc.categoryID
-                    where sn.Accepted != true
-                    && (sn.ADUN == username)
-                    && ((sn.ManualExpirationDate == null
-                          && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
-                      || (sn.ManualExpirationDate != null
-                      && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
+        var news = (from sn in context.StudentNews
+                     join snc in context.StudentNewsCategory
+                     on sn.categoryID equals snc.categoryID
+                     where sn.Accepted != true
+                     && (sn.ADUN == username)
+                     && ((sn.ManualExpirationDate == null
+                           && EF.Functions.DateDiffDay(sn.Entered ?? DateTime.Today, DateTime.Today) < 14)
+                       || (sn.ManualExpirationDate != null
+                       && (sn.ManualExpirationDate ?? DateTime.Today).Date >= (DateTime.Today).Date))
                     orderby sn.SNID descending
-                    select StudentNewsViewModel.From(sn, snc));
+                     select StudentNewsViewModel.From(sn, snc)); 
         return news;
     }
 
@@ -169,13 +157,13 @@ public class NewsService : INewsService
             Entered = DateTime.Now
         };
 
-        _context.StudentNews.Add(itemToSubmit);
+        context.StudentNews.Add(itemToSubmit);
         if (itemToSubmit.Image != null)
         {
 
             // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
             var (extension, format, data) = ImageUtils.GetImageFormat(itemToSubmit.Image);
-
+            
             // Use a unique alphanumeric GUID string as the file name
             var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
             var imagePath = GetImagePath(filename);
@@ -187,7 +175,7 @@ public class NewsService : INewsService
         }
 
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return itemToSubmit;
     }
@@ -214,8 +202,8 @@ public class NewsService : INewsService
 
             ImageUtils.DeleteImage(imagePath);
         }
-        _context.StudentNews.Remove(newsItem);
-        _context.SaveChanges();
+        context.StudentNews.Remove(newsItem);
+        context.SaveChanges();
         return newsItem;
     }
 
@@ -247,7 +235,7 @@ public class NewsService : INewsService
         newsItem.Subject = newData.Subject;
         newsItem.Body = newData.Body;
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return newsItem;
     }
@@ -305,7 +293,7 @@ public class NewsService : INewsService
             newsItem.Image = null;
         }
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return newsItem;
     }
@@ -326,19 +314,19 @@ public class NewsService : INewsService
 
         newsItem.Accepted = accepted;
 
-        _context.SaveChanges();
+        context.SaveChanges();
 
         return newsItem;
     }
 
     private string GetImagePath(string filename)
     {
-        return Path.Combine(_webHostEnvironment.ContentRootPath, "browseable", "uploads", "news", filename);
+        return Path.Combine(webHostEnvironment.ContentRootPath, "browseable", "uploads", "news", filename);
     }
 
     private string GetImageURL(string filename)
     {
-        var serverAddress = _serverUtils.GetAddress();
+        var serverAddress = serverUtils.GetAddress();
         if (serverAddress is not string) throw new Exception("Could not upload Student News Image: Server Address is null");
 
         if (serverAddress.Contains("localhost"))
@@ -432,7 +420,7 @@ public class NewsService : INewsService
     private bool VerifyAccount(string username)
     {
         // Verify account
-        var account = _contextCCT.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+        var account = contextCCT.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
         if (account == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };

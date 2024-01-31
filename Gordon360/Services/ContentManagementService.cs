@@ -1,5 +1,5 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utilities;
 using System.Collections.Generic;
@@ -11,23 +11,15 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
 /// </summary>
-public class ContentManagementService : IContentManagementService
+public class ContentManagementService(CCTContext context) : IContentManagementService
 {
-    private CCTContext _context;
-
     private readonly string SlideUploadPath = "browseable/slider";
-
-
-    public ContentManagementService(CCTContext context)
-    {
-        _context = context;
-    }
 
     /// <summary>
     /// Retrieve all banner slides from the database
     /// </summary>
     /// <returns>An IEnumerable of the slides in the database</returns>
-    public IEnumerable<Slider_Images> GetBannerSlides() => _context.Slider_Images.AsEnumerable();
+    public IEnumerable<Slider_Images> GetBannerSlides() => context.Slider_Images.AsEnumerable();
 
     /// <summary>
     /// Inserts a banner slide in the database and uploads the image to the local slider folder
@@ -55,8 +47,8 @@ public class ContentManagementService : IContentManagementService
             Width = 1500,
             Height = 600
         };
-        _context.Slider_Images.Add(entry);
-        _context.SaveChanges();
+        context.Slider_Images.Add(entry);
+        context.SaveChanges();
         return entry;
     }
 
@@ -66,10 +58,10 @@ public class ContentManagementService : IContentManagementService
     /// <returns>The deleted slide</returns>
     public Slider_Images DeleteBannerSlide(int slideID)
     {
-        var slide = _context.Slider_Images.Find(slideID);
+        var slide = context.Slider_Images.Find(slideID);
         ImageUtils.DeleteImage(slide.Path);
-        _context.Slider_Images.Remove(slide);
-        _context.SaveChanges();
+        context.Slider_Images.Remove(slide);
+        context.SaveChanges();
         return slide;
     }
 }

@@ -12,22 +12,13 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.RecIM;
 
 [Route("api/recim/[controller]")]
-public class ParticipantsController : GordonControllerBase
+public class ParticipantsController(IParticipantService participantService, IAccountService accountService) : GordonControllerBase
 {
-    private readonly IParticipantService _participantService;
-    private readonly IAccountService _accountService;
-
-    public ParticipantsController(IParticipantService participantService, IAccountService accountService)
-    {
-        _participantService = participantService;
-        _accountService = accountService;
-    }
-
     [HttpGet]
     [Route("")]
     public ActionResult<IEnumerable<ParticipantExtendedViewModel>> GetParticipants()
     {
-        var res = _participantService.GetParticipants();
+        var res = participantService.GetParticipants();
         return Ok(res);
     }
 
@@ -35,7 +26,7 @@ public class ParticipantsController : GordonControllerBase
     [Route("{username}/statushistory")]
     public ActionResult<IEnumerable<ParticipantStatusExtendedViewModel>> GetParticipantStatushistory(string username)
     {
-        var res = _participantService.GetParticipantStatusHistory(username);
+        var res = participantService.GetParticipantStatusHistory(username);
         return Ok(res);
     }
 
@@ -43,7 +34,7 @@ public class ParticipantsController : GordonControllerBase
     [Route("{username}")]
     public ActionResult<ParticipantExtendedViewModel> GetParticipantByUsername(string username)
     {
-        var res = _participantService.GetParticipantByUsername(username);
+        var res = participantService.GetParticipantByUsername(username);
         return Ok(res);
     }
 
@@ -51,7 +42,7 @@ public class ParticipantsController : GordonControllerBase
     [Route("{username}/teams")]
     public ActionResult<IEnumerable<TeamExtendedViewModel>> GetParticipantTeams(string username)
     {
-        var res = _participantService.GetParticipantTeams(username);
+        var res = participantService.GetParticipantTeams(username);
         return Ok(res);
     }
 
@@ -59,7 +50,7 @@ public class ParticipantsController : GordonControllerBase
     [Route("lookup")]
     public ActionResult<IEnumerable<LookupViewModel>> GetParticipantTypes(string type)
     {
-        var res = _participantService.GetParticipantLookup(type);
+        var res = participantService.GetParticipantLookup(type);
         if (res is not null)
         {
             return Ok(res);
@@ -72,16 +63,16 @@ public class ParticipantsController : GordonControllerBase
     public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchAsync(string searchString)
     {
         var username = AuthUtils.GetUsername(User);
-        var isAdmin = _participantService.IsAdmin(username);
+        var isAdmin = participantService.IsAdmin(username);
 
-        var accounts = await _accountService.GetAllBasicInfoExceptAlumniAsync();
+        var accounts = await accountService.GetAllBasicInfoExceptAlumniAsync();
         if (isAdmin)
         {
-            var customAccounts = _participantService.GetAllCustomParticipantsBasicInfo();
+            var customAccounts = participantService.GetAllCustomParticipantsBasicInfo();
             accounts = accounts.Union(customAccounts);
         }
 
-        var searchResults = _accountService.Search(searchString, accounts);
+        var searchResults = accountService.Search(searchString, accounts);
 
         return Ok(searchResults);
     }
@@ -90,7 +81,7 @@ public class ParticipantsController : GordonControllerBase
     [Route("{username}")]
     public async Task<ActionResult<ParticipantExtendedViewModel>> AddParticipantAsync(string username)
     {
-        var participant = await _participantService.PostParticipantAsync(username);
+        var participant = await participantService.PostParticipantAsync(username);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
     }
 
@@ -99,7 +90,7 @@ public class ParticipantsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
     public async Task<ActionResult<ParticipantExtendedViewModel>> AddCustomParticipantAsync(string username, [FromBody] CustomParticipantViewModel newCustomParticipant)
     {
-        var participant = await _participantService.PostCustomParticipantAsync(username, newCustomParticipant);
+        var participant = await participantService.PostCustomParticipantAsync(username, newCustomParticipant);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
     }
 
@@ -108,11 +99,11 @@ public class ParticipantsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
     public async Task<ActionResult<ParticipantExtendedViewModel>> SetCustomParticipantAsync(string username, [FromBody] CustomParticipantPatchViewModel updatedCustomParticipant)
     {
-        var isCustom = _participantService.GetParticipantIsCustom(username);
+        var isCustom = participantService.GetParticipantIsCustom(username);
         if (!isCustom)
             return UnprocessableEntity("This is not a custom participant");
 
-        var participant = await _participantService.UpdateCustomParticipantAsync(username, updatedCustomParticipant);
+        var participant = await participantService.UpdateCustomParticipantAsync(username, updatedCustomParticipant);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username, isCustom = participant.IsCustom }, participant);
     }
 
@@ -121,7 +112,7 @@ public class ParticipantsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
     public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAdminStatusAsync(string username, [FromBody] bool isAdmin)
     {
-        var participant = await _participantService.SetParticipantAdminStatusAsync(username, isAdmin);
+        var participant = await participantService.SetParticipantAdminStatusAsync(username,isAdmin);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
     }
 
@@ -130,7 +121,7 @@ public class ParticipantsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT)]
     public async Task<ActionResult<ParticipantExtendedViewModel>> SetParticipantAllowEmailsAsync(string username, [FromBody] bool allowEmails)
     {
-        var participant = await _participantService.UpdateParticipantAllowEmailsAsync(username, allowEmails);
+        var participant = await participantService.UpdateParticipantAllowEmailsAsync(username, allowEmails);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.Username }, participant);
     }
 
@@ -139,7 +130,7 @@ public class ParticipantsController : GordonControllerBase
     [Route("{username}/notifications")]
     public async Task<ActionResult<ParticipantNotificationViewModel>> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM)
     {
-        var notification = await _participantService.SendParticipantNotificationAsync(username, notificationVM);
+        var notification = await participantService.SendParticipantNotificationAsync(username, notificationVM);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { participantUsername = notification.ParticipantUsername }, notification);
     }
 
@@ -150,7 +141,7 @@ public class ParticipantsController : GordonControllerBase
     public async Task<ActionResult> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipantActivity)
     {
 
-        var participant = await _participantService.UpdateParticipantActivityAsync(username, updatedParticipantActivity);
+        var participant = await participantService.UpdateParticipantActivityAsync(username, updatedParticipantActivity);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { username = participant.ParticipantUsername }, participant);
     }
 
@@ -159,7 +150,7 @@ public class ParticipantsController : GordonControllerBase
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.RECIM_PARTICIPANT_ADMIN)]
     public async Task<ActionResult<ParticipantStatusHistoryViewModel>> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel updatedParticipant)
     {
-        var status = await _participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
+        var status = await participantService.UpdateParticipantStatusAsync(username, updatedParticipant);
         return CreatedAtAction(nameof(GetParticipantByUsername), new { username = status.ParticipantUsername }, status);
     }
 }

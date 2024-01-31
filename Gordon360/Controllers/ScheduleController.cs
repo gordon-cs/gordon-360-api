@@ -1,6 +1,5 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Enums;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +10,8 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ScheduleController : ControllerBase
+public class ScheduleController(IScheduleService scheduleService) : ControllerBase
 {
-
-    private readonly IScheduleService _scheduleService;
-
-    public ScheduleController(CCTContext context)
-    {
-        _scheduleService = new ScheduleService(context);
-    }
 
     /// <summary>
     ///  Gets all session objects for a user
@@ -29,7 +21,7 @@ public class ScheduleController : ControllerBase
     [Route("{username}/allcourses")]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
-        IEnumerable<CoursesBySessionViewModel> result = await _scheduleService.GetAllCoursesAsync(username);
+        IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
         return Ok(result);
 
     }
