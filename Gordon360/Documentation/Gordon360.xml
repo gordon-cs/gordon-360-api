@@ -330,6 +330,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.UpdateDueDateAsync(System.String)">
+            <summary>
+            Update due date of housing application
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetAllPreference">
             <summary>
             Get an array of preferences
@@ -351,6 +357,12 @@
         <member name="M:Gordon360.Controllers.HousingController.GetAllSchoolYear">
             <summary>
             Get an array of school years
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetDueDate">
+            <summary>
+            Get due date of housing application
             </summary>
             <returns></returns>
         </member>
@@ -2136,6 +2148,12 @@
             <param name="applicantion_id"> The ID of this application </param>
             <param name="preferenceList"> A list of the preference </param>
         </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateDueDateAsync(System.String)">
+            <summary>
+            update the information of due date
+            </summary>
+            <param name="dueDate"> The due date of the application </param>
+        </member>
         <member name="M:Gordon360.Services.HousingService.GetAllPreference">
             <summary>
             Gets an array of preferences
@@ -2159,6 +2177,12 @@
             Gets an array of school years
              </summary>
              <returns> AN array of school years </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetDueDate">
+            <summary>
+            Gets the due date of housing application
+            </summary>
+            <returns> The due date of housing application </returns>
         </member>
         <member name="T:Gordon360.Services.JobsService">
             <summary>

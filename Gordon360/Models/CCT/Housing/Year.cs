@@ -13,6 +13,8 @@ namespace Gordon360.Models.CCT;
 public partial class Year
 {
     [Key]
+    [StringLength(255)]
+    [Unicode(false)]
     public string ApplicationID { get; set; }
 
     [Key]

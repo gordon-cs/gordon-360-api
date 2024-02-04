@@ -683,6 +683,25 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// update the information of due date
+        /// </summary>
+        /// <param name="dueDate"> The due date of the application </param>
+        public async Task UpdateDueDateAsync(string dueDate)
+        {
+            var existDueDate = _context.DueDate.FirstOrDefault();
+            if (existDueDate != null)
+            {
+                _context.DueDate.Remove(existDueDate);
+            }
+            var newDueDate = new DueDate
+            {
+                DueDate1 = dueDate
+            }; ;
+            await _context.DueDate.AddAsync(newDueDate);
+            _context.SaveChanges();
+        }
+
+        /// <summary>
         /// Gets an array of preferences
         /// </summary>
         /// <returns> An array of preferences </returns>
@@ -740,6 +759,16 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The school years could not be found." };
             }
             return result.ToArray();
+        }
+
+        /// <summary>
+        /// Gets the due date of housing application
+        /// </summary>
+        /// <returns> The due date of housing application </returns>
+        public string GetDueDate()
+        {
+            var result = _context.DueDate.FirstOrDefault().DueDate1;
+            return result;
         }
     }
 }

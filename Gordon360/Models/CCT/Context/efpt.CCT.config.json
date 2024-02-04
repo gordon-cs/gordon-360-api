@@ -136,6 +136,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[DueDate]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[Housing].[Preference]",
          "ObjectType": 0
       },
