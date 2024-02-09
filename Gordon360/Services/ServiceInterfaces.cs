@@ -299,6 +299,7 @@ namespace Gordon360.Services
         PreferredHall[] GetAllPreferredHall();
         Applicant[] GetAllApplicant();
         Year[] GetAllSchoolYear();
+        string GetDueDate();
         string GetEditorUsername(int applicationID);
         int? GetApplicationID(string username, string sess_cde);
         ApartmentApplicationViewModel GetApartmentApplication(int applicationID, bool isAdmin = false);
@@ -310,6 +311,7 @@ namespace Gordon360.Services
         Task UpdateRoommateAsync(string username, string applicantion_id, string[] emailList);
         Task UpdateHallAsync(string username, string applicantion_id, string[] hallList);
         Task UpdatePreferenceAsync(string username, string applicantion_id, string[] preferenceList);
+        Task UpdateDueDateAsync(string dueDate);
     }
 
     public interface IAcademicCheckInService

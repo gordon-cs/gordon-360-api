@@ -309,6 +309,23 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Update due date of housing application
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("housing_lottery/due_date/")]
+        public async Task<ActionResult<string>> UpdateDueDateAsync([FromBody] string dueDate)
+        {
+            var viewerGroups = AuthUtils.GetGroups(User);
+            if (viewerGroups.Contains(AuthGroup.HousingAdmin))
+            {
+                await _housingService.UpdateDueDateAsync(dueDate);
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        /// <summary>
         /// Get an array of preferences
         /// </summary>
         /// <returns></returns>
@@ -390,6 +407,18 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
             return Ok(null);
+        }
+
+        /// <summary>
+        /// Get due date of housing application
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("housing_lottery/get_due_date/")]
+        public ActionResult<string> GetDueDate()
+        {
+            var result = _housingService.GetDueDate();
+            return Ok(result);
         }
     }
 }

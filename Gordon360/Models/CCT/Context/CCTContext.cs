@@ -45,6 +45,7 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Dining_Meal_Plan_Id_Mapping> Dining_Meal_Plan_Id_Mapping { get; set; }
     public virtual DbSet<Dining_Mealplans> Dining_Mealplans { get; set; }
     public virtual DbSet<Dining_Student_Meal_Choice> Dining_Student_Meal_Choice { get; set; }
+    public virtual DbSet<DueDate> DueDate { get; set; }
     public virtual DbSet<ERROR_LOG> ERROR_LOG { get; set; }
     public virtual DbSet<EmergencyContact> EmergencyContact { get; set; }
     public virtual DbSet<FacStaff> FacStaff { get; set; }
