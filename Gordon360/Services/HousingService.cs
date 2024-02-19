@@ -574,6 +574,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
             }
+            string gender = _context.Student.FirstOrDefault(a => a.ID == GordonID).Gender;
             var existApplicant = _context.Applicant.Where(x => x.ApplicationID == applicantion_id);
             var existMaxYear = _context.Year.Where(x => x.ApplicationID == applicantion_id);
             foreach (Applicant a in existApplicant)
@@ -589,18 +590,22 @@ namespace Gordon360.Services
             {
                 if (e != "")
                 {
+                    var student = _context.Student.FirstOrDefault(x => x.Email == e);
+                    if (student != null)
+                    {
+                        if (gender != student.Gender)
+                        {
+                            throw new BadInputException() { ExceptionMessage = "The applicants are not of the same gender." };
+                        }
+                        gender = student.Gender;
+                        yearList.Add(student.Class);
+                    }
                     var newApplicant = new Applicant
                     {
                         ApplicationID = applicantion_id,
                         Applicant1 = e
                     }; ;
                     await _context.Applicant.AddAsync(newApplicant);
-
-                    var student = _context.Student.FirstOrDefault(x => x.Email == e);
-                    if (student != null)
-                    {
-                        yearList.Add(student.Class);
-                    }
                 }
             }
             var newMaxYear = new Year
