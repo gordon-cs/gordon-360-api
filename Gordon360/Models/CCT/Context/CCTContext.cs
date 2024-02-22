@@ -18,8 +18,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<ACT_INFO> ACT_INFO { get; set; }
 
-    public virtual DbSet<ADMIN> ADMIN { get; set; }
-
     public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
 
     public virtual DbSet<Activity> Activity { get; set; }
@@ -163,11 +161,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.ACT_DESC).IsFixedLength();
             entity.Property(e => e.ACT_TYPE).IsFixedLength();
             entity.Property(e => e.ACT_TYPE_DESC).IsFixedLength();
-        });
-
-        modelBuilder.Entity<ADMIN>(entity =>
-        {
-            entity.HasKey(e => e.ADMIN_ID).HasName("PK_Admin");
         });
 
         modelBuilder.Entity<AccountPhotoURL>(entity =>

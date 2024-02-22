@@ -1,16 +1,18 @@
 using Gordon360.Authorization;
+using Gordon360.Enums;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Security.Claims;
 
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class HousingController(CCTContext context, IProfileService profileService, IHousingService housingService, IAccountService accountService, IAdministratorService administratorService) : GordonControllerBase
+public class HousingController(CCTContext context, IProfileService profileService, IHousingService housingService) : GordonControllerBase
 {
 
     /// <summary>
@@ -190,10 +192,10 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         //get token data from context, username is the username of current logged in person
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
+        var authGroups = AuthUtils.GetGroups(User);
 
-        var siteAdmin = administratorService.GetByUsername(authenticatedUserUsername);
         var isHousingAdmin = housingService.CheckIfHousingAdmin(authenticatedUserUsername);
-        bool isAdmin = siteAdmin != null || isHousingAdmin;
+        bool isAdmin = authGroups.Contains(AuthGroup.SiteAdmin) || isHousingAdmin;
 
         ApartmentApplicationViewModel result = housingService.GetApartmentApplication(applicationID, isAdmin);
         if (result != null)

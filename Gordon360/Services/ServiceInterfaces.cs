@@ -123,14 +123,6 @@ namespace Gordon360.Services
         IEnumerable<ActivityInfoViewModel> GetAll();
     }
 
-    public interface IAdministratorService
-    {
-        IEnumerable<AdminViewModel?> GetAll();
-        AdminViewModel? GetByUsername(string username);
-        AdminViewModel Add(AdminViewModel admin);
-        AdminViewModel Delete(string username);
-    }
-
     public interface IEmailService
     {
         IEnumerable<EmailViewModel> GetEmailsForActivity(string activityCode, string? sessionCode = null, List<string>? participationTypes = null);
