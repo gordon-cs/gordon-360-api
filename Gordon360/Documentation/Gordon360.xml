@@ -1209,6 +1209,18 @@
             <param name="timeZoneID">String timezoneinfo location</param>
             <returns>Converted DateTime with kind UTC</returns>
         </member>
+        <member name="T:Gordon360.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:Gordon360.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gordon360.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Gordon360.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="P:Gordon360.Models.Gordon360.Clifton_Strengths.Private">
             <summary>
             Whether the user wants their strengths to be private (not shown to other users)
