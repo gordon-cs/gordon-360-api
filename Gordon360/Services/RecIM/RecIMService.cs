@@ -1,5 +1,5 @@
 ﻿using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using System;
 using Gordon360.Exceptions;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Gordon360.Services.RecIM;
 
-public class RecIMService(CCTContext context, IParticipantService participantSerivce) : IRecIMService
+public class RecIMService(Gordon360Context context, IParticipantService participantSerivce) : IRecIMService
 {
     public RecIMGeneralReportViewModel GetReport(DateTime start, DateTime end)
     {

@@ -1,5 +1,5 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Models.CCT;
+﻿using Gordon360.Models.Gordon360.Context;
+using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels;
 using Gordon360.Utilities;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
 /// </summary>
-public class ContentManagementService(CCTContext context) : IContentManagementService
+public class ContentManagementService(Gordon360Context context) : IContentManagementService
 {
     private readonly string SlideUploadPath = "browseable/slider";
 

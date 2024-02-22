@@ -1,7 +1,7 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels.RecIM;
 using Gordon360.Exceptions;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM;
 
-public class TeamService(CCTContext context,
+public class TeamService(Gordon360Context context,
                          IEmailService emailService,
                          IConfiguration config,
                          IParticipantService participantSerivce,

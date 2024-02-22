@@ -1,4 +1,4 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +12,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service class to facilitate getting emails for members of an activity.
 /// </summary>
-public class EmailService(CCTContext context, IMembershipService membershipService, IConfiguration config) : IEmailService
+public class EmailService(Gordon360Context context, IMembershipService membershipService, IConfiguration config) : IEmailService
 {
 
     /// <summary>

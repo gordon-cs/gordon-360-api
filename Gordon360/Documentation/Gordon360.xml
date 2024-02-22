@@ -148,28 +148,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdminsController.GetAll">
-            <summary>
-            Get all admins
-            </summary>
-            <returns>
-            A list of all admins
-            </returns>
-            <remarks>
-            Server makes call to the database and returns all admins
-            </remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Post(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>Create a new admin to be added to database</summary>
-            <param name="admin">The admin item containing all required and relevant information</param>
-            <returns></returns>
-            <remarks>Posts a new admin to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Delete(System.String)">
-            <summary>Delete an existing admin</summary>
-            <param name="username">The username of the user to demote</param>
-            <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetMajors">
             <summary>
             Return a list majors.
@@ -534,7 +512,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateCustomProfile(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateCustomProfile(System.String,Gordon360.Models.Gordon360.CUSTOM_PROFILE)">
             <summary>
             Update CUSTOM_PROFILE component
             </summary>
@@ -585,7 +563,7 @@
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.RequestUpdate(Gordon360.Models.ViewModels.ProfileFieldViewModel[])">
             <summary>
-            Posts fields into CCT.dbo.Information_Change_Request 
+            Posts fields into Gordon360.dbo.Information_Change_Request 
             Sends Alumni Profile Update Email to "devrequest@gordon.edu"
             </summary>
             <param name="updatedFields">Object with Field's Name and Field's Value, unused Field's Label</param>
@@ -650,7 +628,7 @@
         </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.CreateActivityAsync(Gordon360.Models.ViewModels.RecIM.ActivityUploadViewModel)">
             <summary>
-            Posts Activity into CCT.RecIM.Activity
+            Posts Activity into Gordon360.RecIM.Activity
             </summary>
             <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
             <returns>Posted Activity</returns>
@@ -1090,14 +1068,14 @@
             </summary>
             <returns>All membership requests associated with the current user</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RequestsController.PostAsync(Gordon360.Models.CCT.RequestUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RequestsController.PostAsync(Gordon360.Models.Gordon360.RequestUploadViewModel)">
             <summary>
             Creates a new membership request
             </summary>
             <param name="membershipRequest">The request to be added</param>
             <returns>The added request if successful. HTTP error message if not.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.RequestsController.PutAsync(System.Int32,Gordon360.Models.CCT.RequestUploadViewModel)">
+        <member name="M:Gordon360.Controllers.RequestsController.PutAsync(System.Int32,Gordon360.Models.Gordon360.RequestUploadViewModel)">
             <summary>
             Updates a membership request
             </summary>
@@ -1231,7 +1209,7 @@
             <param name="timeZoneID">String timezoneinfo location</param>
             <returns>Converted DateTime with kind UTC</returns>
         </member>
-        <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
+        <member name="P:Gordon360.Models.Gordon360.Clifton_Strengths.Private">
             <summary>
             Whether the user wants their strengths to be private (not shown to other users)
             </summary>
@@ -1332,7 +1310,7 @@
             </summary>
             
         </member>
-        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context)">
             <summary>
             Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
             </summary>
@@ -1388,7 +1366,7 @@
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.AccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.AccountService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context)">
             <summary>
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>
@@ -1470,7 +1448,7 @@
             Activity Info and ACtivity may be talked about interchangeably.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
+        <member name="M:Gordon360.Services.ActivityService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
             ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
@@ -1546,7 +1524,7 @@
             <param name="activityCode">The activity code for the activity that will be closed</param>
             <param name="sess_cde">The session code for the session where the activity is being closed</param>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.UpdateActivityImageAsync(Gordon360.Models.CCT.ACT_INFO,Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:Gordon360.Services.ActivityService.UpdateActivityImageAsync(Gordon360.Models.Gordon360.ACT_INFO,Microsoft.AspNetCore.Http.IFormFile)">
             <summary>
             Updates the image for the spcefied involvement
             </summary>
@@ -1567,56 +1545,12 @@
             <param name="activityCode">The activity code</param>
             <param name="isPrivate">activity private or not</param>
         </member>
-        <member name="T:Gordon360.Services.AdministratorService">
-            <summary>
-            Service class to facilitate interacting with the Admin table.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IAccountService)">
-            <summary>
-            Service class to facilitate interacting with the Admin table.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.GetAll">
-            <summary>
-            Fetches all the administrators from the database
-            </summary>
-            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.GetByUsername(System.String)">
-            <summary>
-            Fetches a specific admin from the database
-            </summary>
-            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Add(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>
-            Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-            we do it here by using the validateAdmin() method.
-            </summary>
-            <param name="adminView">The admin to be added</param>
-            <returns>The newly added Admin object</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Delete(System.String)">
-            <summary>
-            Delete the admin whose id is specified by the parameter.
-            </summary>
-            <param name="username">The username of the admin to demote</param>
-            <returns>The admin that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.validateAdmin(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>
-            Helper method to Validate an admin
-            </summary>
-            <param name="admin">The admin to validate</param>
-            <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
-        </member>
         <member name="T:Gordon360.Services.ContentManagementService">
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ContentManagementService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.ContentManagementService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context)">
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
@@ -1671,7 +1605,7 @@
             Service class to facilitate getting emails for members of an activity.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EmailService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IMembershipService,Microsoft.Extensions.Configuration.IConfiguration)">
+        <member name="M:Gordon360.Services.EmailService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context,Gordon360.Services.IMembershipService,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Service class to facilitate getting emails for members of an activity.
             </summary>
@@ -1713,12 +1647,12 @@
             Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ErrorLogService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.ErrorLogService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context)">
             <summary>
             Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ErrorLogService.Add(Gordon360.Models.CCT.ERROR_LOG)">
+        <member name="M:Gordon360.Services.ErrorLogService.Add(Gordon360.Models.Gordon360.ERROR_LOG)">
             <summary>
             Adds a new error log to storage.
             </summary>
@@ -1737,7 +1671,7 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService)">
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService)">
             <summary>
             Service that allows for event control
             </summary>
@@ -1886,12 +1820,12 @@
             Service class to facilitate data transactions between the MembershipRequestController and the database
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MembershipRequestService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IMembershipService,Gordon360.Services.IAccountService)">
+        <member name="M:Gordon360.Services.MembershipRequestService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context,Gordon360.Services.IMembershipService,Gordon360.Services.IAccountService)">
             <summary>
             Service class to facilitate data transactions between the MembershipRequestController and the database
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MembershipRequestService.AddAsync(Gordon360.Models.CCT.RequestUploadViewModel)">
+        <member name="M:Gordon360.Services.MembershipRequestService.AddAsync(Gordon360.Models.Gordon360.RequestUploadViewModel)">
             <summary>
             Generate a new request to join an activity at a participation level higher than 'Guest'
             </summary>
@@ -1955,7 +1889,7 @@
             <param name="username">The AD Username of the user</param>
             <returns>A RequestView IEnumerable. If no records are found, returns an empty IEnumerable.</returns>
         </member>
-        <member name="M:Gordon360.Services.MembershipRequestService.UpdateAsync(System.Int32,Gordon360.Models.CCT.RequestUploadViewModel)">
+        <member name="M:Gordon360.Services.MembershipRequestService.UpdateAsync(System.Int32,Gordon360.Models.Gordon360.RequestUploadViewModel)">
             <summary>
             Update an existing membership request object
             </summary>
@@ -1968,7 +1902,7 @@
             Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MembershipService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IAccountService,Gordon360.Services.IActivityService)">
+        <member name="M:Gordon360.Services.MembershipService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context,Gordon360.Services.IAccountService,Gordon360.Services.IActivityService)">
             <summary>
             Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
             </summary>
@@ -2050,7 +1984,7 @@
             <param name="membershipId">The MEMBERSHIP to match on MembershipID</param>	
             <returns>The found MembershipView object corresponding to the MEMBERSHIP by ID</returns>	
         </member>
-        <member name="M:Gordon360.Services.MembershipService.RemovePrivateMemberships(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.MembershipView},System.String)">
+        <member name="M:Gordon360.Services.MembershipService.RemovePrivateMemberships(System.Collections.Generic.IEnumerable{Gordon360.Models.Gordon360.MembershipView},System.String)">
             <summary>
             Filters out memberships that are private with respect to the given viewer
             </summary>
@@ -2227,7 +2161,7 @@
             <param name="path"></param>
             <param name="name"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateCustomProfileAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateCustomProfileAsync(System.String,System.String,Gordon360.Models.Gordon360.CUSTOM_PROFILE)">
             <summary>
             Sets the component of the Custom_profile.
             </summary>
@@ -2311,7 +2245,7 @@
             Losers of the play in do not count for the double elimination bracket.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.CCT.SeriesTeam},System.Boolean)">
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleElimRoundAsync(System.Collections.Generic.IEnumerable{Gordon360.Models.Gordon360.SeriesTeam},System.Boolean)">
             <summary>
             Goal of this function is to generate a single elimination round.
             On the first possible round, this would imply handling teams with byes to ensure
@@ -2327,7 +2261,7 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService)">
+        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context,Gordon360.Services.ISessionService)">
             <summary>
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
@@ -2351,7 +2285,7 @@
             Service class to facilitate data transactions between the Controller and the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.SessionService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.SessionService.#ctor(Gordon360.Models.Gordon360.Context.Gordon360Context)">
             <summary>
             Service class to facilitate data transactions between the Controller and the database model.
             </summary>
@@ -2388,7 +2322,7 @@
             Service class for methods that are shared between all services.
             </summary>
         </member>
-        <member name="M:Gordon360.Static.Methods.Helpers.GetCurrentSession(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Static.Methods.Helpers.GetCurrentSession(Gordon360.Models.Gordon360.Context.Gordon360Context)">
             <summary>
             Helper method that gets the current session we are in.
             </summary>

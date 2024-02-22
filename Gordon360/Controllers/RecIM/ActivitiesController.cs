@@ -71,7 +71,7 @@ public class ActivitiesController(IActivityService activityService) : GordonCont
     }
 
     /// <summary>
-    /// Posts Activity into CCT.RecIM.Activity
+    /// Posts Activity into Gordon360.RecIM.Activity
     /// </summary>
     /// <param name="newActivity">CreateActivityViewModel object with appropriate values</param>
     /// <returns>Posted Activity</returns>

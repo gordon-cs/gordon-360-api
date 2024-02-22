@@ -1,6 +1,6 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Enums;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Extensions.System;
@@ -511,7 +511,7 @@ public class ProfilesController(IProfileService profileService,
     }
 
     /// <summary>
-    /// Posts fields into CCT.dbo.Information_Change_Request 
+    /// Posts fields into Gordon360.dbo.Information_Change_Request 
     /// Sends Alumni Profile Update Email to "devrequest@gordon.edu"
     /// </summary>
     /// <param name="updatedFields">Object with Field's Name and Field's Value, unused Field's Label</param>

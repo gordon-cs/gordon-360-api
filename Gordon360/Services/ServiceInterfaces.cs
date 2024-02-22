@@ -1,5 +1,5 @@
 ﻿using Gordon360.Enums;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;

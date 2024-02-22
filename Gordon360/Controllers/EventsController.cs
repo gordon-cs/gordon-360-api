@@ -1,5 +1,5 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;

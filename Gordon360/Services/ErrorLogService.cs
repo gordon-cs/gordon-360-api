@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 using System;
 
 namespace Gordon360.Services;
@@ -8,7 +8,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
 /// </summary>
-public class ErrorLogService(CCTContext context) : IErrorLogService
+public class ErrorLogService(Gordon360Context context) : IErrorLogService
 {
 
     /// <summary>

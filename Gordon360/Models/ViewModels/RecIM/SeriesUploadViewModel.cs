@@ -1,4 +1,4 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Models.Gordon360;
 using System;
 
 namespace Gordon360.Models.ViewModels.RecIM;

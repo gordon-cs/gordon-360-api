@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Gordon360.Models.CCT;
+namespace Gordon360.Models.Gordon360;
 
 public partial class RequestUploadViewModel
 {

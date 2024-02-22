@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Gordon360.Services.RecIM;
 
-public class SportService(CCTContext context, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : ISportService
+public class SportService(Gordon360Context context, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : ISportService
 {
     public SportViewModel GetSportByID(int sportID)
     {

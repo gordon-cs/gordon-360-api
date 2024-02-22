@@ -1,4 +1,4 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static_Classes;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
@@ -21,7 +21,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service that allows for event control
 /// </summary>
-public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService) : IEventService
+public class EventService(Gordon360Context context, IMemoryCache cache, IAccountService accountService) : IEventService
 {
 
     /**

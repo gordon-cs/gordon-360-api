@@ -1,7 +1,7 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Models.Gordon360;
 using Gordon360.Static.Names;
 using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Services.RecIM;
 
-public class ParticipantService(CCTContext context) : IParticipantService
+public class ParticipantService(Gordon360Context context) : IParticipantService
 {
     public IEnumerable<LookupViewModel>? GetParticipantLookup(string type)
     {

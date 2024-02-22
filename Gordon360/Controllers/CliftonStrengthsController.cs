@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
@@ -7,13 +7,13 @@ using Gordon360.Authorization;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 using Gordon360.Exceptions;
 
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class CliftonStrengthsController(CCTContext context, IAccountService accountService) : GordonControllerBase
+public class CliftonStrengthsController(Gordon360Context context, IAccountService accountService) : GordonControllerBase
 {
     [HttpPost]
     [Route("")]

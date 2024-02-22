@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Data;
@@ -21,7 +21,7 @@ namespace Gordon360.Services;
 /// ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
 /// Activity Info and ACtivity may be talked about interchangeably.
 /// </summary>
-public class ActivityService(CCTContext context,
+public class ActivityService(Gordon360Context context,
                              IConfiguration config,
                              IWebHostEnvironment webHostEnvironment,
                              ServerUtils serverUtils) : IActivityService

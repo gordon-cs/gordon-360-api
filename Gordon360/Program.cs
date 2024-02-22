@@ -1,5 +1,5 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.webSQL.Context;
 using Gordon360.Services;
@@ -75,8 +75,8 @@ builder.Services.AddCors(p => p.AddPolicy(name: corsPolicy, corsBuilder =>
     corsBuilder.WithOrigins(builder.Configuration.GetValue<string>("AllowedOrigin")).AllowAnyMethod().AllowAnyHeader();
 }));
 
-builder.Services.AddDbContext<CCTContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CCT"))
+builder.Services.AddDbContext<Gordon360Context>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Gordon360"))
 ).AddDbContext<MyGordonContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyGordon"))
 ).AddDbContext<webSQLContext>(options =>

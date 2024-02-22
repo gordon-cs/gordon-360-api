@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -16,7 +16,7 @@ using Gordon360.Extensions.System;
 
 namespace Gordon360.Services.RecIM;
 
-public class ActivityService(CCTContext context, ISeriesService seriesService, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : IActivityService
+public class ActivityService(Gordon360Context context, ISeriesService seriesService, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : IActivityService
 {
     public IEnumerable<LookupViewModel>? GetActivityLookup(string type)
     {

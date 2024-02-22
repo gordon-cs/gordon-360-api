@@ -1,5 +1,5 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class DiningController(CCTContext context, IDiningService diningService, IAccountService accountService) : GordonControllerBase
+public class DiningController(Gordon360Context context, IDiningService diningService, IAccountService accountService) : GordonControllerBase
 {
     private const string FACSTAFF_MEALPLAN_ID = "7295";
 

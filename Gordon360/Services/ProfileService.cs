@@ -1,6 +1,6 @@
 ﻿using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
+public class ProfileService(Gordon360Context context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
     /// <summary>
     /// get student profile info

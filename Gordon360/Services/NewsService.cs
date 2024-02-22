@@ -1,4 +1,4 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.MyGordon;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class NewsService(MyGordonContext context, CCTContext contextCCT, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : INewsService
+public class NewsService(MyGordonContext context, Gordon360Context contextGordon360, IWebHostEnvironment webHostEnvironment, ServerUtils serverUtils) : INewsService
 {
 
     /// <summary>
@@ -111,7 +111,7 @@ public class NewsService(MyGordonContext context, CCTContext contextCCT, IWebHos
     public async Task<IEnumerable<StudentNewsViewModel>> GetNewsPersonalUnapprovedAsync(string username)
     {
         // Verify account
-        var account = await contextCCT.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);
+        var account = await contextGordon360.ACCOUNT.FirstOrDefaultAsync(x => x.AD_Username == username);
         if (account == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };
@@ -420,7 +420,7 @@ public class NewsService(MyGordonContext context, CCTContext contextCCT, IWebHos
     private bool VerifyAccount(string username)
     {
         // Verify account
-        var account = contextCCT.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+        var account = contextGordon360.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
         if (account == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found." };

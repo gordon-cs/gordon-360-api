@@ -1,4 +1,4 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360.Context;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Linq;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class AdvancedSearchController(CCTContext context) : GordonControllerBase
+public class AdvancedSearchController(Gordon360Context context) : GordonControllerBase
 {
 
     /// <summary>

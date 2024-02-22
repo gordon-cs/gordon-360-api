@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT;
+﻿using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels.RecIM;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +13,7 @@ using Gordon360.Static.Names;
 
 namespace Gordon360.Services.RecIM;
 
-public class SeriesService(CCTContext context, IMatchService matchService, IAffiliationService affiliationService) : ISeriesService
+public class SeriesService(Gordon360Context context, IMatchService matchService, IAffiliationService affiliationService) : ISeriesService
 {
     public IEnumerable<LookupViewModel>? GetSeriesLookup(string type)
     {

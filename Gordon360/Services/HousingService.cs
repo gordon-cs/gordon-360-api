@@ -1,6 +1,6 @@
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services;
 
-public class HousingService(CCTContext context) : IHousingService
+public class HousingService(Gordon360Context context) : IHousingService
 {
 
     /// <summary>

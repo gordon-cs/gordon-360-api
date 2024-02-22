@@ -1,6 +1,6 @@
 ﻿using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service class to facilitate data transactions between the Controller and the database model.
 /// </summary>
-public class SessionService(CCTContext context) : ISessionService
+public class SessionService(Gordon360Context context) : ISessionService
 {
 
     /// <summary>

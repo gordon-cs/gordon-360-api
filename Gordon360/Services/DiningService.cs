@@ -1,4 +1,4 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
@@ -21,7 +21,7 @@ namespace Gordon360.Services;
 /// </summary>
 public class DiningService : IDiningService
 {
-    private CCTContext _context;
+    private Gordon360Context _context;
     private static string issuerID;
     private static string applicationId;
     private static string secret;
@@ -29,7 +29,7 @@ public class DiningService : IDiningService
     //private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
     //private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
 
-    public DiningService(CCTContext context, IConfiguration config)
+    public DiningService(Gordon360Context context, IConfiguration config)
     {
         _context = context;
         issuerID = config["BonAppetit:IssuerID"];

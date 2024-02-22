@@ -1,7 +1,7 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Names;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
 /// </summary>
-public class AccountService(CCTContext context) : IAccountService
+public class AccountService(Gordon360Context context) : IAccountService
 {
 
     /// <summary>

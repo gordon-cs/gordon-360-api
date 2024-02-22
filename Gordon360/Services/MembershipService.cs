@@ -1,6 +1,6 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360.Context;
 using Gordon360.Exceptions;
-using Gordon360.Models.CCT;
+using Gordon360.Models.Gordon360;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
 /// </summary>
-public class MembershipService(CCTContext context, IAccountService accountService, IActivityService activityService) : IMembershipService
+public class MembershipService(Gordon360Context context, IAccountService accountService, IActivityService activityService) : IMembershipService
 {
 
     /// <summary>

@@ -1,5 +1,5 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Gordon360;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using Gordon360.Exceptions;
 
 namespace Gordon360.Services.RecIM;
 
-public class AffiliationService(CCTContext context) : IAffiliationService
+public class AffiliationService(Gordon360Context context) : IAffiliationService
 {
     public async Task<string> AddPointsToAffilliationAsync(string affiliationName, AffiliationPointsUploadViewModel vm)
     {

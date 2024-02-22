@@ -1,6 +1,6 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ActivitiesController(CCTContext context, IActivityService activityService) : GordonControllerBase
+public class ActivitiesController(Gordon360Context context, IActivityService activityService) : GordonControllerBase
 {
     [HttpGet]
     [Route("")]

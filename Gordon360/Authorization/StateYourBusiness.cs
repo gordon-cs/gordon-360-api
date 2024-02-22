@@ -1,7 +1,7 @@
 ﻿using Gordon360.Enums;
 using Gordon360.Extensions.System;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Services.RecIM;
@@ -41,7 +41,7 @@ public class StateYourBusiness : ActionFilterAttribute
     public string operation { get; set; }
 
     private ActionExecutingContext context;
-    private CCTContext _CCTContext;
+    private Gordon360Context _Gordon360Context;
     private IMembershipService _membershipService;
     private IMembershipRequestService _membershipRequestService;
     private INewsService _newsService;
@@ -64,7 +64,7 @@ public class StateYourBusiness : ActionFilterAttribute
         _membershipService = context.HttpContext.RequestServices.GetRequiredService<IMembershipService>();
         _membershipRequestService = context.HttpContext.RequestServices.GetRequiredService<IMembershipRequestService>();
         _newsService = context.HttpContext.RequestServices.GetRequiredService<INewsService>();
-        _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
+        _Gordon360Context = context.HttpContext.RequestServices.GetService<Gordon360Context>();
 
         // set RecIM services
         _recimParticipantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
@@ -177,8 +177,8 @@ public class StateYourBusiness : ActionFilterAttribute
             case Resource.HOUSING:
                 {
                     // The members of the apartment application can only read their application
-                    var sess_cde = Helpers.GetCurrentSession(_CCTContext);
-                    HousingService housingService = new HousingService(_CCTContext);
+                    var sess_cde = Helpers.GetCurrentSession(_Gordon360Context);
+                    HousingService housingService = new HousingService(_Gordon360Context);
                     int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                     if (context.ActionArguments["applicationID"] is int requestedApplicationID && applicationID is not null)
                     {
@@ -483,8 +483,8 @@ public class StateYourBusiness : ActionFilterAttribute
                     // The user must be a student and not a member of an existing application
                     if (user_groups.Contains(AuthGroup.Student))
                     {
-                        var sess_cde = Helpers.GetCurrentSession(_CCTContext);
-                        var housingService = new HousingService(_CCTContext);
+                        var sess_cde = Helpers.GetCurrentSession(_Gordon360Context);
+                        var housingService = new HousingService(_Gordon360Context);
                         int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         if (!applicationID.HasValue || applicationID == 0)
                         {
@@ -605,14 +605,14 @@ public class StateYourBusiness : ActionFilterAttribute
                 {
                     // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                     // If the user is a student, then the user must be on an application and be an editor to update the application
-                    HousingService housingService = new HousingService(_CCTContext);
+                    HousingService housingService = new HousingService(_Gordon360Context);
                     if (user_groups.Contains(AuthGroup.HousingAdmin))
                     {
                         return true;
                     }
                     else if (user_groups.Contains(AuthGroup.Student))
                     {
-                        var sess_cde = Helpers.GetCurrentSession(_CCTContext);
+                        var sess_cde = Helpers.GetCurrentSession(_Gordon360Context);
                         int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         if (context.ActionArguments["applicationID"] is int requestedApplicationID
                             && applicationID is not null
@@ -752,7 +752,7 @@ public class StateYourBusiness : ActionFilterAttribute
                         if (_recimParticipantService.IsAdmin(user_name)) return true;
 
                         //if ref
-                        var activityID = _CCTContext.Match.Find(matchID).Series.ActivityID;
+                        var activityID = _Gordon360Context.Match.Find(matchID).Series.ActivityID;
                         return _recimActivityService.IsReferee(user_name, activityID);
                     }
                     return false;
@@ -822,14 +822,14 @@ public class StateYourBusiness : ActionFilterAttribute
                 {
                     // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                     // If the user is a student, then the user must be on an application and be an editor to update the application
-                    HousingService housingService = new HousingService(_CCTContext);
+                    HousingService housingService = new HousingService(_Gordon360Context);
                     if (user_groups.Contains(AuthGroup.HousingAdmin))
                     {
                         return true;
                     }
                     else if (user_groups.Contains(AuthGroup.Student))
                     {
-                        var sess_cde = Helpers.GetCurrentSession(_CCTContext);
+                        var sess_cde = Helpers.GetCurrentSession(_Gordon360Context);
                         int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         if (context.ActionArguments["applicationID"] is int requestedApplicationID && applicationID is not null && applicationID.Value == requestedApplicationID)
                         {

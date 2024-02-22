@@ -1,7 +1,7 @@
 ﻿using Gordon360.Exceptions;
 using Gordon360.Extensions.System;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,11 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Match = Gordon360.Models.CCT.Match;
+using Match = Gordon360.Models.Gordon360.Match;
 
 namespace Gordon360.Services.RecIM;
 
-public class MatchService(CCTContext context, IParticipantService participantService) : IMatchService
+public class MatchService(Gordon360Context context, IParticipantService participantService) : IMatchService
 {
     public MatchViewModel GetSimpleMatchViewByID(int matchID)
     {

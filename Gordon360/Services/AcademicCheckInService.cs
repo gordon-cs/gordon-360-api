@@ -1,5 +1,5 @@
 using Gordon360.Exceptions;
-using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Gordon360.Context;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace Gordon360.Services;
 /// Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
 /// </summary>
 	/// 
-public class AcademicCheckInService(CCTContext context) : IAcademicCheckInService
+public class AcademicCheckInService(Gordon360Context context) : IAcademicCheckInService
 {
 
 
