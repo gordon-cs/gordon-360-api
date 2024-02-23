@@ -6,40 +6,47 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.webSQL.Models
+namespace Gordon360.Models.webSQL.Models;
+
+[Index("Accountid", Name = "IX_photos_Accountid")]
+[Index("Gordonid", Name = "IX_photos_Gordonid")]
+public partial class Photo
 {
-    [Index("Accountid", Name = "IX_photos_Accountid")]
-    [Index("Gordonid", Name = "IX_photos_Gordonid")]
-    public partial class Photo
-    {
-        /// <summary>
-        /// Unique sequntial ID
-        /// </summary>
-        [Key]
-        public int ID { get; set; }
-        /// <summary>
-        /// From account table
-        /// </summary>
-        public int Accountid { get; set; }
-        [StringLength(10)]
-        [Unicode(false)]
-        public string Gordonid { get; set; }
-        [StringLength(20)]
-        [Unicode(false)]
-        public string Barcodeid { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime LastUpdated { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string File_path { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string File_name { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string Pref_file_path { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string Pref_file_name { get; set; }
-    }
+    /// <summary>
+    /// Unique sequntial ID
+    /// </summary>
+    [Key]
+    public int ID { get; set; }
+
+    /// <summary>
+    /// From account table
+    /// </summary>
+    public int Accountid { get; set; }
+
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Gordonid { get; set; }
+
+    [StringLength(20)]
+    [Unicode(false)]
+    public string Barcodeid { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime LastUpdated { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string File_path { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string File_name { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Pref_file_path { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Pref_file_name { get; set; }
 }

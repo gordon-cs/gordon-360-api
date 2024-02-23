@@ -2,57 +2,66 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Gordon360.Models.webSQL.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.webSQL.Context
+namespace Gordon360.Models.webSQL.Context;
+
+public partial class webSQLContext : DbContext
 {
-    public partial class webSQLContext : DbContext
+    public webSQLContext(DbContextOptions<webSQLContext> options)
+        : base(options)
     {
-        public webSQLContext()
-        {
-        }
-
-        public webSQLContext(DbContextOptions<webSQLContext> options)
-            : base(options)
-        {
-        }
-
-        public virtual DbSet<GlobalSetting> GlobalSettings { get; set; }
-        public virtual DbSet<Mailstop> Mailstops { get; set; }
-        public virtual DbSet<Photo> Photos { get; set; }
-        public virtual DbSet<account> accounts { get; set; }
-        public virtual DbSet<account_profile> account_profiles { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Photo>(entity =>
-            {
-                entity.Property(e => e.ID).HasComment("Unique sequntial ID");
-
-                entity.Property(e => e.Accountid).HasComment("From account table");
-
-                entity.Property(e => e.LastUpdated).HasDefaultValueSql("(getdate())");
-            });
-
-            modelBuilder.Entity<account>(entity =>
-            {
-                entity.HasIndex(e => e.AD_Username, "ix_AD_Username_Includes")
-                    .HasFillFactor(100);
-
-                entity.Property(e => e.AD_Username).HasComment("Active Directory Username");
-            });
-
-            modelBuilder.Entity<account_profile>(entity =>
-            {
-                entity.Property(e => e.account_id).ValueGeneratedNever();
-            });
-
-            OnModelCreatingGeneratedProcedures(modelBuilder);
-            OnModelCreatingPartial(modelBuilder);
-        }
-
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
+
+    public virtual DbSet<GlobalSetting> GlobalSettings { get; set; }
+
+    public virtual DbSet<Mailstop> Mailstops { get; set; }
+
+    public virtual DbSet<Photo> Photos { get; set; }
+
+    public virtual DbSet<account> accounts { get; set; }
+
+    public virtual DbSet<account_profile> account_profiles { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Mailstop>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK_mailstops");
+        });
+
+        modelBuilder.Entity<Photo>(entity =>
+        {
+            entity.Property(e => e.ID).HasComment("Unique sequntial ID");
+            entity.Property(e => e.Accountid).HasComment("From account table");
+            entity.Property(e => e.LastUpdated).HasDefaultValueSql("(getdate())");
+        });
+
+        modelBuilder.Entity<account>(entity =>
+        {
+            entity.ToTable("account", tb =>
+                {
+                    tb.HasTrigger("tr_DeleteAccount_Profile");
+                    tb.HasTrigger("tr_InsertAccount_Profile");
+                    tb.HasTrigger("tr_account_building_room_modified");
+                    tb.HasTrigger("tr_account_hashkeys");
+                    tb.HasTrigger("tr_account_mail_server_modified");
+                });
+
+            entity.HasIndex(e => e.AD_Username, "ix_AD_Username_Includes").HasFillFactor(100);
+
+            entity.Property(e => e.AD_Username).HasComment("Active Directory Username");
+        });
+
+        modelBuilder.Entity<account_profile>(entity =>
+        {
+            entity.Property(e => e.account_id).ValueGeneratedNever();
+        });
+
+        OnModelCreatingGeneratedProcedures(modelBuilder);
+        OnModelCreatingPartial(modelBuilder);
+    }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
