@@ -245,7 +245,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 case "calendar":
                     original.calendar = content.calendar;
                     break;
-                    
+
                 case "facebook":
                     original.facebook = content.facebook;
                     break;
@@ -327,12 +327,8 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
     {
-        var profile = GetFacultyStaffProfileByUsername(username);
-        if (profile == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
-        }
-        var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The webSQL account was not found" };
         user.Building = newBuilding;
         user.Room = newRoom;
         await webSQLContext.SaveChangesAsync();

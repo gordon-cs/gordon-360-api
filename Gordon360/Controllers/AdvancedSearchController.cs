@@ -1,7 +1,11 @@
 ﻿using Gordon360.Models.CCT.Context;
+using Gordon360.Models.ViewModels;
+using Gordon360.Models.webSQL.Context;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers;
 
@@ -116,9 +120,22 @@ public class AdvancedSearchController(CCTContext context) : GordonControllerBase
 
 
     /// <summary>
-    /// Return a list buildings.
+    /// Return a list of buildings.
     /// </summary>
     /// <returns> All buildings</returns>
+    [HttpGet]
+    [Route("building")]
+    public async Task<ActionResult<IEnumerable<BuildingViewModel>>> GetBuildingsAsync([FromServices] webSQLContext webSQLContext)
+    {
+        var buildings = await webSQLContext.Procedures.account_list_buildingsAsync();
+        return Ok(buildings.Select(b => new BuildingViewModel(b.BLDG_CDE, b.BUILDING_DESC)));
+    }
+
+    /// <summary>
+    /// Return a list of buildings.
+    /// </summary>
+    /// <returns> All buildings</returns>
+    [Obsolete("Use GetBuildingsAsync that gives structured building data")]
     [HttpGet]
     [Route("buildings")]
     public ActionResult<IEnumerable<string>> GetBuildings()

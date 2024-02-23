@@ -448,7 +448,7 @@ public class ProfilesController(IProfileService profileService,
     public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
     {
         var username = AuthUtils.GetUsername(User);
-        var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingDescription, officeLocation.RoomNumber);
+        var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingCode, officeLocation.RoomNumber);
         return Ok(result);
     }
 
