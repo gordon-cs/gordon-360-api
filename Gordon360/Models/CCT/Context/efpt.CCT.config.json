@@ -20,10 +20,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ADMIN]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Clifton_Strengths]",
          "ObjectType": 0
       },
@@ -360,7 +356,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "SQLTrain1.CCT",
+   "UiHint": "sqltrain1.CCT.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
@@ -378,6 +374,7 @@
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
    "UseSchemaFolders": true,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
