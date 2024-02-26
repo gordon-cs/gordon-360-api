@@ -74,7 +74,6 @@ public class PublicStudentProfileViewModel
             Minor1Description = stu.Minor1Description ?? "",
             Minor2Description = stu.Minor2Description ?? "",
             Minor3Description = stu.Minor3Description ?? ""
-
         };
         if (vm.IsMobilePhonePrivate)
         {
@@ -86,7 +85,7 @@ public class PublicStudentProfileViewModel
             vm.HomeState = "";
             vm.HomeCountry = "";
             vm.Country = "";
-            vm.OnOffCampus = "P";
+            vm.OnOffCampus = "P"; //Private, as parsed by front end service user.js
             vm.Hall = "";
         }
         if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
