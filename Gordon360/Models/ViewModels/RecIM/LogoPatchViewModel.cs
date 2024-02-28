@@ -1,8 +1,7 @@
 ﻿
-namespace Gordon360.Models.ViewModels.RecIM
+namespace Gordon360.Models.ViewModels.RecIM;
+
+public class LogoPatchViewModel
 {
-    public class LogoPatchViewModel
-    {
-        public string Image { get; set; }
-    }
+    public string Image { get; set; }
 }

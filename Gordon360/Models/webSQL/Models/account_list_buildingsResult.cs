@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Gordon360.Models.StudentTimesheets
+namespace Gordon360.Models.webSQL.Models
 {
-    public partial class student_timesheets_select_end_datetimesResult
+    public partial class account_list_buildingsResult
     {
-        public DateTime shift_end_datetime { get; set; }
+        public string BLDG_CDE { get; set; }
+        public string BUILDING_DESC { get; set; }
     }
 }

@@ -6,28 +6,31 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
-{
-    [Table("ParticipantNotification", Schema = "RecIM")]
-    public partial class ParticipantNotification
-    {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string ParticipantUsername { get; set; }
-        [Required]
-        [StringLength(256)]
-        [Unicode(false)]
-        public string Message { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime EndDate { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime DispatchDate { get; set; }
+namespace Gordon360.Models.CCT;
 
-        [ForeignKey("ParticipantUsername")]
-        [InverseProperty("ParticipantNotification")]
-        public virtual Participant ParticipantUsernameNavigation { get; set; }
-    }
+[Table("ParticipantNotification", Schema = "RecIM")]
+public partial class ParticipantNotification
+{
+    [Key]
+    public int ID { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string ParticipantUsername { get; set; }
+
+    [Required]
+    [StringLength(256)]
+    [Unicode(false)]
+    public string Message { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime EndDate { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime DispatchDate { get; set; }
+
+    [ForeignKey("ParticipantUsername")]
+    [InverseProperty("ParticipantNotification")]
+    public virtual Participant ParticipantUsernameNavigation { get; set; }
 }

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Gordon360.Models.StudentTimesheets.Context
+namespace Gordon360.Models.webSQL.Context
 {
     public static class DbContextExtensions
     {

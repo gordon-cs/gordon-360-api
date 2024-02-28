@@ -6,23 +6,26 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Mailboxes
 {
-    [Keyless]
-    public partial class Mailboxes
-    {
-        public int BoxId { get; set; }
-        [Required]
-        [StringLength(32)]
-        [Unicode(false)]
-        public string BoxNo { get; set; }
-        [StringLength(16)]
-        [Unicode(false)]
-        public string Combination { get; set; }
-        [Required]
-        [StringLength(32)]
-        [Unicode(false)]
-        public string Type { get; set; }
-        public int? HolderAccountId { get; set; }
-    }
+    public int BoxId { get; set; }
+
+    [Required]
+    [StringLength(32)]
+    [Unicode(false)]
+    public string BoxNo { get; set; }
+
+    [StringLength(16)]
+    [Unicode(false)]
+    public string Combination { get; set; }
+
+    [Required]
+    [StringLength(32)]
+    [Unicode(false)]
+    public string Type { get; set; }
+
+    public int? HolderAccountId { get; set; }
 }

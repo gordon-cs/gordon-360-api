@@ -6,16 +6,16 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class Minors
 {
-    [Keyless]
-    public partial class Minors
-    {
-        [StringLength(5)]
-        [Unicode(false)]
-        public string MinorCode { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string MinorDescription { get; set; }
-    }
+    [StringLength(5)]
+    [Unicode(false)]
+    public string MinorCode { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string MinorDescription { get; set; }
 }

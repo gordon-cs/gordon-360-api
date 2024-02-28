@@ -6,28 +6,34 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+public partial class CUSTOM_PROFILE
 {
-    public partial class CUSTOM_PROFILE
-    {
-        [Key]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string username { get; set; }
-        [Unicode(false)]
-        public string facebook { get; set; }
-        [Unicode(false)]
-        public string twitter { get; set; }
-        [Unicode(false)]
-        public string instagram { get; set; }
-        [Unicode(false)]
-        public string linkedin { get; set; }
-        [Unicode(false)]
-        public string handshake { get; set; }
-        [Unicode(false)]
-        public string calendar { get; set; }
-        [StringLength(4)]
-        [Unicode(false)]
-        public string PlannedGradYear { get; set; }
-    }
+    [Key]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string username { get; set; }
+
+    [Unicode(false)]
+    public string facebook { get; set; }
+
+    [Unicode(false)]
+    public string twitter { get; set; }
+
+    [Unicode(false)]
+    public string instagram { get; set; }
+
+    [Unicode(false)]
+    public string linkedin { get; set; }
+
+    [Unicode(false)]
+    public string handshake { get; set; }
+
+    [Unicode(false)]
+    public string calendar { get; set; }
+
+    [StringLength(4)]
+    [Unicode(false)]
+    public string PlannedGradYear { get; set; }
 }

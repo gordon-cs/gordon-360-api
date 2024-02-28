@@ -1,7 +1,6 @@
-﻿namespace Gordon360.Models.ViewModels
+﻿namespace Gordon360.Models.ViewModels;
+
+public class HousingAdminViewModel
 {
-    public class HousingAdminViewModel
-    {
-        public string AdminID { get; set; }
-    }
+    public string AdminID { get; set; }
 }

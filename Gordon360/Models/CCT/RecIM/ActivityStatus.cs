@@ -6,24 +6,19 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("ActivityStatus", Schema = "RecIM")]
+public partial class ActivityStatus
 {
-    [Table("ActivityStatus", Schema = "RecIM")]
-    public partial class ActivityStatus
-    {
-        public ActivityStatus()
-        {
-            Activity = new HashSet<Activity>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(256)]
-        [Unicode(false)]
-        public string Description { get; set; }
+    [Required]
+    [StringLength(256)]
+    [Unicode(false)]
+    public string Description { get; set; }
 
-        [InverseProperty("Status")]
-        public virtual ICollection<Activity> Activity { get; set; }
-    }
+    [InverseProperty("Status")]
+    public virtual ICollection<Activity> Activity { get; set; } = new List<Activity>();
 }

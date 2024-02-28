@@ -6,24 +6,19 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("PrivType", Schema = "RecIM")]
+public partial class PrivType
 {
-    [Table("PrivType", Schema = "RecIM")]
-    public partial class PrivType
-    {
-        public PrivType()
-        {
-            ParticipantActivity = new HashSet<ParticipantActivity>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(256)]
-        [Unicode(false)]
-        public string Description { get; set; }
+    [Required]
+    [StringLength(256)]
+    [Unicode(false)]
+    public string Description { get; set; }
 
-        [InverseProperty("PrivType")]
-        public virtual ICollection<ParticipantActivity> ParticipantActivity { get; set; }
-    }
+    [InverseProperty("PrivType")]
+    public virtual ICollection<ParticipantActivity> ParticipantActivity { get; set; } = new List<ParticipantActivity>();
 }
