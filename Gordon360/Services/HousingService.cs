@@ -717,6 +717,18 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Gets an array of preferences of this user
+        /// </summary>
+        /// <returns> An array of preferences </returns>
+        public Preference[] GetOnePreference(string username)
+        {
+            var email = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
+            var applicationID = _context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+            var preference = _context.Preference.Where(a => a.ApplicationID == applicationID);
+            return preference.ToArray();
+        }
+
+        /// <summary>
         ///Gets an array of preferred halls
         /// </summary>
         /// <returns> AN array of preferred halls </returns>
@@ -732,6 +744,18 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Gets an array of preferred hall of the user
+        /// </summary>
+        /// <returns> An array of preferences </returns>
+        public PreferredHall[] GetUserPreferredHall(string username)
+        {
+            var email = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
+            var applicationID = _context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+            var preferredHall = _context.PreferredHall.Where(a => a.ApplicationID == applicationID);
+            return preferredHall.ToArray();
+        }
+
+        /// <summary>
         ///Gets an array of applicants
         /// </summary>
         /// <returns> AN array of applicants </returns>
@@ -744,6 +768,18 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
             }
             return result.ToArray();
+        }
+
+        /// <summary>
+        /// Gets an array of preferences
+        /// </summary>
+        /// <returns> An array of preferences </returns>
+        public Applicant[] GetUserRoommate(string username)
+        {
+            var email = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
+            var applicationID = _context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+            var applicant = _context.Applicant.Where(a => a.ApplicationID == applicationID);
+            return applicant.ToArray();
         }
 
         /// <summary>

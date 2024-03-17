@@ -347,6 +347,23 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Get an array of preferences
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("lottery/user_preference/")]
+        public ActionResult<Preference[]> GetOnePreference()
+        {
+            var username = AuthUtils.GetUsername(User);
+            var result = _housingService.GetOnePreference(username);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound();
+        }
+
+        /// <summary>
         /// Get an array of preferred halls
         /// </summary>
         /// <returns></returns>
@@ -368,6 +385,23 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Get the preferred halls of a particular user
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("lottery/user_preferred_hall/")]
+        public ActionResult<Preference[]> GetUserPreferredHall()
+        {
+            var username = AuthUtils.GetUsername(User);
+            var result = _housingService.GetUserPreferredHall(username);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound();
+        }
+
+        /// <summary>
         /// Get an array of applicant
         /// </summary>
         /// <returns></returns>
@@ -386,6 +420,23 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
             return Ok(null);
+        }
+
+        /// <summary>
+        /// Get the roommates of a particular user
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("lottery/user_roommate/")]
+        public ActionResult<Applicant[]> GetUserRoommate()
+        {
+            var username = AuthUtils.GetUsername(User);
+            var result = _housingService.GetUserRoommate(username);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return NotFound();
         }
 
         /// <summary>

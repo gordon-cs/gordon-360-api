@@ -342,15 +342,33 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetOnePreference">
+            <summary>
+            Get an array of preferences
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetAllPreferredHall">
             <summary>
             Get an array of preferred halls
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetUserPreferredHall">
+            <summary>
+            Get the preferred halls of a particular user
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetAllApplicant">
             <summary>
             Get an array of applicant
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetUserRoommate">
+            <summary>
+            Get the roommates of a particular user
             </summary>
             <returns></returns>
         </member>
@@ -2160,17 +2178,35 @@
             </summary>
             <returns> An array of preferences </returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetOnePreference(System.String)">
+            <summary>
+            Gets an array of preferences of this user
+            </summary>
+            <returns> An array of preferences </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.GetAllPreferredHall">
              <summary>
             Gets an array of preferred halls
              </summary>
              <returns> AN array of preferred halls </returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetUserPreferredHall(System.String)">
+            <summary>
+            Gets an array of preferred hall of the user
+            </summary>
+            <returns> An array of preferences </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.GetAllApplicant">
              <summary>
             Gets an array of applicants
              </summary>
              <returns> AN array of applicants </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetUserRoommate(System.String)">
+            <summary>
+            Gets an array of preferences
+            </summary>
+            <returns> An array of preferences </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllSchoolYear">
              <summary>
@@ -2767,6 +2803,13 @@
             </summary>
             <param name="username">The AD Username of the user</param>
             <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ServicesExtensions.Add360Services(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Add our Gordon 360 Services as scoped services to the dependency injection container.
+            </summary>
+            <param name="services">Service container</param>
+            <returns>The service container that has our services added.</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
             <summary>
