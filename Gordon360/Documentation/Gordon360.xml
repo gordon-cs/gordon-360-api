@@ -342,7 +342,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetOnePreference">
+        <member name="M:Gordon360.Controllers.HousingController.GetUserPreference">
             <summary>
             Get an array of preferences
             </summary>
@@ -2178,7 +2178,7 @@
             </summary>
             <returns> An array of preferences </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetOnePreference(System.String)">
+        <member name="M:Gordon360.Services.HousingService.GetUserPreference(System.String)">
             <summary>
             Gets an array of preferences of this user
             </summary>

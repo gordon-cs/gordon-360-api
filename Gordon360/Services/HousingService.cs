@@ -720,7 +720,7 @@ namespace Gordon360.Services
         /// Gets an array of preferences of this user
         /// </summary>
         /// <returns> An array of preferences </returns>
-        public Preference[] GetOnePreference(string username)
+        public Preference[] GetUserPreference(string username)
         {
             var email = _context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
             var applicationID = _context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;

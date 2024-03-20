@@ -296,7 +296,7 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update preferred hall information
+        /// Update preference information
         /// </summary>
         /// <returns></returns>
         [HttpPut]
@@ -347,15 +347,15 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Get an array of preferences
+        /// Get the preferences of a particular user
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [Route("lottery/user_preference/")]
-        public ActionResult<Preference[]> GetOnePreference()
+        public ActionResult<Preference[]> GetUserPreference()
         {
             var username = AuthUtils.GetUsername(User);
-            var result = _housingService.GetOnePreference(username);
+            var result = _housingService.GetUserPreference(username);
             if (result != null)
             {
                 return Ok(result);

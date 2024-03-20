@@ -296,7 +296,7 @@ namespace Gordon360.Services
         string[] GetAllApartmentHalls();
         string[] GetAllTraditionalHalls();
         Preference[] GetAllPreference();
-        Preference[] GetOnePreference(string username);
+        Preference[] GetUserPreference(string username);
         PreferredHall[] GetAllPreferredHall();
         PreferredHall[] GetUserPreferredHall(string username);
         Applicant[] GetAllApplicant();
