@@ -2,20 +2,19 @@
 using System;
 using System.Linq;
 
-namespace Gordon360.Static.Methods
+namespace Gordon360.Static.Methods;
+
+/// <summary>
+/// Service class for methods that are shared between all services.
+/// </summary>
+public static class Helpers
 {
     /// <summary>
-    /// Service class for methods that are shared between all services.
+    /// Helper method that gets the current session we are in.
     /// </summary>
-    public static class Helpers
+    /// <returns>The session code of the current session</returns>
+    public static string GetCurrentSession(CCTContext context)
     {
-        /// <summary>
-        /// Helper method that gets the current session we are in.
-        /// </summary>
-        /// <returns>The session code of the current session</returns>
-        public static string GetCurrentSession(CCTContext context)
-        {
-            return context.CM_SESSION_MSTR.Where(s => DateTime.Now > s.SESS_BEGN_DTE).OrderByDescending(s => s.SESS_BEGN_DTE).Select(s => s.SESS_CDE).First();
-        }
+        return context.CM_SESSION_MSTR.Where(s => DateTime.Now > s.SESS_BEGN_DTE).OrderByDescending(s => s.SESS_BEGN_DTE).Select(s => s.SESS_CDE).First();
     }
 }

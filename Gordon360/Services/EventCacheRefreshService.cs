@@ -5,54 +5,46 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using System.Diagnostics;
-using System.Collections;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 
-namespace Gordon360.Services
+namespace Gordon360.Services;
+
+public class EventCacheRefreshService(IMemoryCache cache) : IHostedService, IDisposable
 {
-    public class EventCacheRefreshService : IHostedService, IDisposable
+    private Timer? _timer = null;
+
+    public Task StartAsync(CancellationToken stoppingToken)
     {
-        private readonly IMemoryCache _cache;
-        private Timer? _timer = null;
+        _timer = new Timer(UpdateEventsCacheAsync, null, TimeSpan.Zero,
+            TimeSpan.FromMinutes(10));
 
-        public EventCacheRefreshService(IMemoryCache cache)
+        return Task.CompletedTask;
+    }
+
+    private async void UpdateEventsCacheAsync(object? state)
+    {
+        IEnumerable<EventViewModel>? events = null;
+        try
         {
-            _cache = cache;
+            events = await EventService.FetchEventsAsync();
         }
-
-        public Task StartAsync(CancellationToken stoppingToken)
+        catch (Exception ex)
         {
-            _timer = new Timer(UpdateEventsCacheAsync, null, TimeSpan.Zero,
-                TimeSpan.FromMinutes(10));
-
-            return Task.CompletedTask;
+            Debug.WriteLine(ex.Message);
         }
+        cache.Set(CacheKeys.Events, events);
+    }
 
-        private async void UpdateEventsCacheAsync(object? state)
-        {
-            IEnumerable<EventViewModel>? events = null;
-            try
-            {
-                events = await EventService.FetchEventsAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            _cache.Set(CacheKeys.Events, events);
-        }
+    public Task StopAsync(CancellationToken stoppingToken)
+    {
+        _timer?.Change(Timeout.Infinite, 0);
 
-        public Task StopAsync(CancellationToken stoppingToken)
-        {
-            _timer?.Change(Timeout.Infinite, 0);
+        return Task.CompletedTask;
+    }
 
-            return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            _timer?.Dispose();
-        }
+    public void Dispose()
+    {
+        _timer?.Dispose();
     }
 }

@@ -6,27 +6,25 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("Housing_Applications", Schema = "dbo")]
+public partial class Housing_Applications
 {
-    public partial class Housing_Applications
-    {
-        public Housing_Applications()
-        {
-            Housing_Applicants = new HashSet<Housing_Applicants>();
-        }
+    [Key]
+    public int HousingAppID { get; set; }
 
-        [Key]
-        public int HousingAppID { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? DateSubmitted { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime DateModified { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string EditorUsername { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? DateSubmitted { get; set; }
 
-        [InverseProperty("HousingApp")]
-        public virtual ICollection<Housing_Applicants> Housing_Applicants { get; set; }
-    }
+    [Column(TypeName = "datetime")]
+    public DateTime DateModified { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string EditorUsername { get; set; }
+
+    [InverseProperty("HousingApp")]
+    public virtual ICollection<Housing_Applicants> Housing_Applicants { get; set; } = new List<Housing_Applicants>();
 }

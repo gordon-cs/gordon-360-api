@@ -6,21 +6,25 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("ADMIN", Schema = "dbo")]
+public partial class ADMIN
 {
-    public partial class ADMIN
-    {
-        [Key]
-        public int ADMIN_ID { get; set; }
-        public int ID_NUM { get; set; }
-        [Required]
-        [StringLength(20)]
-        [Unicode(false)]
-        public string USER_NAME { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string EMAIL { get; set; }
-        public bool SUPER_ADMIN { get; set; }
-    }
+    [Key]
+    public int ADMIN_ID { get; set; }
+
+    public int ID_NUM { get; set; }
+
+    [Required]
+    [StringLength(20)]
+    [Unicode(false)]
+    public string USER_NAME { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string EMAIL { get; set; }
+
+    public bool SUPER_ADMIN { get; set; }
 }
