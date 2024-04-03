@@ -1,23 +1,22 @@
-﻿using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Hosting.Server;
+﻿using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using System.Linq;
 
-namespace Gordon360.Utilities
+namespace Gordon360.Utilities;
+
+public class ServerUtils
 {
-    public class ServerUtils
+    private readonly IServer _server;
+
+    public ServerUtils(IServer server)
     {
-        private readonly IServer _server;
+        _server = server;
+    }
 
-        public ServerUtils(IServer server)
-        {
-            _server = server;
-        }
-
-        public string? GetAddress()
-        {
-            var addresses = _server.Features.Get<IServerAddressesFeature>()?.Addresses;
-            var serverAddress = addresses?.FirstOrDefault(a => a.StartsWith("https")) ?? addresses?.FirstOrDefault();
-            return serverAddress;
-        }
+    public string? GetAddress()
+    {
+        var addresses = _server.Features.Get<IServerAddressesFeature>()?.Addresses;
+        var serverAddress = addresses?.FirstOrDefault(a => a.StartsWith("https")) ?? addresses?.FirstOrDefault();
+        return serverAddress;
     }
 }

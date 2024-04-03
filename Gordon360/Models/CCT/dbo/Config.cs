@@ -6,19 +6,21 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("Config", Schema = "dbo")]
+public partial class Config
 {
-    public partial class Config
-    {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Key { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Value { get; set; }
-    }
+    [Key]
+    public int ID { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Key { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Value { get; set; }
 }

@@ -6,20 +6,23 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
-{
-    [Table("MatchBracket", Schema = "RecIM")]
-    public partial class MatchBracket
-    {
-        [Key]
-        public int MatchID { get; set; }
-        public int RoundNumber { get; set; }
-        public int RoundOf { get; set; }
-        public int SeedIndex { get; set; }
-        public bool IsLosers { get; set; }
+namespace Gordon360.Models.CCT;
 
-        [ForeignKey("MatchID")]
-        [InverseProperty("MatchBracket")]
-        public virtual Match Match { get; set; }
-    }
+[Table("MatchBracket", Schema = "RecIM")]
+public partial class MatchBracket
+{
+    [Key]
+    public int MatchID { get; set; }
+
+    public int RoundNumber { get; set; }
+
+    public int RoundOf { get; set; }
+
+    public int SeedIndex { get; set; }
+
+    public bool IsLosers { get; set; }
+
+    [ForeignKey("MatchID")]
+    [InverseProperty("MatchBracket")]
+    public virtual Match Match { get; set; }
 }

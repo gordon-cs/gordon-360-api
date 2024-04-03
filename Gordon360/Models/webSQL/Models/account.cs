@@ -6,28 +6,31 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.webSQL.Models
+namespace Gordon360.Models.webSQL.Models;
+
+[Table("account")]
+[Index("mail_server", Name = "IX_account_mail_server")]
+public partial class account
 {
-    [Table("account")]
-    [Index("mail_server", Name = "IX_account_mail_server")]
-    public partial class account
-    {
-        [Key]
-        public int account_id { get; set; }
-        [StringLength(20)]
-        [Unicode(false)]
-        public string mail_server { get; set; }
-        /// <summary>
-        /// Active Directory Username
-        /// </summary>
-        [StringLength(50)]
-        [Unicode(false)]
-        public string AD_Username { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Building { get; set; }
-        [StringLength(10)]
-        [Unicode(false)]
-        public string Room { get; set; }
-    }
+    [Key]
+    public int account_id { get; set; }
+
+    [StringLength(20)]
+    [Unicode(false)]
+    public string mail_server { get; set; }
+
+    /// <summary>
+    /// Active Directory Username
+    /// </summary>
+    [StringLength(50)]
+    [Unicode(false)]
+    public string AD_Username { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Building { get; set; }
+
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Room { get; set; }
 }

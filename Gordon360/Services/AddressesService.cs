@@ -5,19 +5,11 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Gordon360.Services
+namespace Gordon360.Services;
+
+public class AddressesService(CCTContext context) : IAddressesService
 {
-    public class AddressesService : IAddressesService
-    {
-        private readonly CCTContext _context;
+    public IEnumerable<States> GetAllStates() => context.States.AsEnumerable();
 
-        public AddressesService(CCTContext context)
-        {
-            _context = context;
-        }
-
-        public IEnumerable<States> GetAllStates() => _context.States.AsEnumerable();
-
-        public IEnumerable<CountryViewModel> GetAllCountries() => _context.Countries.Select<Countries, CountryViewModel>(c => c);
-    }
+    public IEnumerable<CountryViewModel> GetAllCountries() => context.Countries.Select<Countries, CountryViewModel>(c => c);
 }

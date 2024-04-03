@@ -1,41 +1,33 @@
 ﻿using Gordon360.Authorization;
-using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Gordon360.Controllers
+namespace Gordon360.Controllers;
+
+[Route("api/[controller]")]
+public class VictoryPromiseController(IVictoryPromiseService victoryPromiseService) : ControllerBase
 {
-    [Route("api/[controller]")]
-    public class VictoryPromiseController : ControllerBase
+
+    /// <summary>
+    ///  Gets current victory promise scores
+    /// </summary>
+    /// <returns>A VP Json</returns>
+    [HttpGet]
+    [Route("")]
+    public async Task<ActionResult<IEnumerable<VictoryPromiseViewModel>>> Get()
     {
-        private readonly IVictoryPromiseService _victoryPromiseService;
+        var username = AuthUtils.GetUsername(User);
 
-        public VictoryPromiseController(CCTContext context)
+        var result = await victoryPromiseService.GetVPScoresAsync(username);
+
+        if (result == null)
         {
-            _victoryPromiseService = new VictoryPromiseService(context);
+            return NotFound();
         }
 
-        /// <summary>
-        ///  Gets current victory promise scores
-        /// </summary>
-        /// <returns>A VP Json</returns>
-        [HttpGet]
-        [Route("")]
-        public async Task<ActionResult<IEnumerable<VictoryPromiseViewModel>>> Get()
-        {
-            var username = AuthUtils.GetUsername(User);
-
-            var result = await _victoryPromiseService.GetVPScoresAsync(username);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
+        return Ok(result);
     }
 }
