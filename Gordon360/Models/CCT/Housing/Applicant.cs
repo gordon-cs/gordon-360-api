@@ -8,19 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("Housing_HallChoices", Schema = "dbo")]
-[Index("HousingAppID", Name = "IX_Housing_HallChoices")]
-public partial class Housing_HallChoices
+[PrimaryKey("ApplicationID", "Applicant1")]
+[Table("Applicant", Schema = "Housing")]
+public partial class Applicant
 {
     [Key]
-    public int HallChoiceID { get; set; }
-
-    public int HousingAppID { get; set; }
-
-    public int Ranking { get; set; }
-
-    [Required]
-    [StringLength(15)]
+    [StringLength(255)]
     [Unicode(false)]
-    public string HallName { get; set; }
+    public string ApplicationID { get; set; }
+
+    [Key]
+    [Column("Applicant")]
+    [StringLength(255)]
+    [Unicode(false)]
+    public string Applicant1 { get; set; }
 }

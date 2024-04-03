@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
+[Table("Information_Change_Request", Schema = "dbo")]
 public partial class Information_Change_Request
 {
     [Key]

@@ -72,7 +72,23 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[StudentNewsExpiration]",
+         "Name": "[Housing].[Applicant]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[DueDate]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Preference]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[PreferredHall]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Year]",
          "ObjectType": 0
       },
       {
@@ -360,11 +376,9 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "SQLTrain1.CCT",
-   "UncountableWords": null,
+   "UiHint": "sqltrain1.CCT.dbo",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
-   "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
    "UseFluentApiOnly": false,
@@ -373,13 +387,13 @@
    "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
    "UseNoDefaultConstructor": false,
    "UseNoNavigations": false,
    "UseNoObjectFilter": false,
    "UseNodaTime": false,
    "UseNullableReferences": false,
    "UseSchemaFolders": true,
-   "UseSchemaNamespaces": false,
    "UseSpatial": false,
    "UseT4": false
 }

@@ -8,29 +8,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("Slider_Images", Schema = "dbo")]
-public partial class Slider_Images
+[PrimaryKey("ApplicationID", "Rank")]
+[Table("PreferredHall", Schema = "Housing")]
+public partial class PreferredHall
 {
     [Key]
-    public int ID { get; set; }
-
-    [Required]
-    [StringLength(150)]
+    [StringLength(255)]
     [Unicode(false)]
-    public string Path { get; set; }
+    public string ApplicationID { get; set; }
+
+    [Key]
+    public int Rank { get; set; }
 
     [Required]
     [StringLength(255)]
     [Unicode(false)]
-    public string Title { get; set; }
-
-    [StringLength(500)]
-    [Unicode(false)]
-    public string LinkURL { get; set; }
-
-    public int Width { get; set; }
-
-    public int Height { get; set; }
-
-    public int SortOrder { get; set; }
+    public string HallName { get; set; }
 }

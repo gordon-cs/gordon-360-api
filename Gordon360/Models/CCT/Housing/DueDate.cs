@@ -8,11 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-public partial class StudentNewsExpiration
+[Table("DueDate", Schema = "Housing")]
+public partial class DueDate
 {
     [Key]
-    public int SNID { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? ManualExpirationDate { get; set; }
+    [Column("DueDate")]
+    [StringLength(255)]
+    [Unicode(false)]
+    public string DueDate1 { get; set; }
 }

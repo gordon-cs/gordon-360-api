@@ -9,6 +9,13 @@ using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.webSQL.Context;
+using System.Threading.Tasks;
+using Gordon360.Models.webSQL.Models;
+using Microsoft.Graph;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Data;
+using Newtonsoft.Json;
 
 namespace Gordon360.Services;
 
@@ -61,6 +68,22 @@ public class HousingService(CCTContext context) : IHousingService
 
         return hallsResult.ToArray();
     }
+
+        /// <summary>
+        /// Gets all names of apartment halls
+        /// </summary>
+        /// <returns> AN array of hall names </returns>
+        public string[] GetAllTraditionalHalls()
+        {
+
+            var hallsResult = context.Housing_Halls.Where(h => h.Type == "Traditional").Select(h => h.Name);
+            if (hallsResult == null || !hallsResult.Any())
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The traditional halls could not be found." };
+            }
+
+            return hallsResult.ToArray();
+        }
 
     /// <summary>
     /// Calls a stored procedure that tries to get the id of an the application that a given user is 
@@ -530,5 +553,251 @@ public class HousingService(CCTContext context) : IHousingService
         application.DateSubmitted = DateTime.Now;
         context.SaveChanges();
         return true;
+    }
+
+    /// <summary>
+    /// update roommate imformation
+    /// </summary>
+    /// <param name="username"> The username for the user who complete the aplication form </param>
+    /// <param name="applicantion_id"> The ID of this application </param>
+    /// <param name="emailList"> A list of applicants' emails </param>
+    public async Task UpdateRoommateAsync(string username, string applicantion_id, string[] emailList)
+    {
+        var GordonID = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
+        if (GordonID == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
+        }
+        var existApplicant = context.Applicant.Where(x => x.ApplicationID == applicantion_id);
+        var existMaxYear = context.Year.Where(x => x.ApplicationID == applicantion_id);
+        foreach (Applicant a in existApplicant)
+        {
+            context.Applicant.Remove(a);
+        }
+        foreach (Year y in existMaxYear)
+        {
+            context.Year.Remove(y);
+        }
+        List<string> yearList = new List<string>();
+        foreach (string e in emailList)
+        {
+            if (e != "")
+            {
+                var newApplicant = new Applicant
+                {
+                    ApplicationID = applicantion_id,
+                    Applicant1 = e
+                }; ;
+                await context.Applicant.AddAsync(newApplicant);
+
+                var student = context.Student.FirstOrDefault(x => x.Email == e);
+                if (student != null)
+                {
+                    yearList.Add(student.Class);
+                }
+            }
+        }
+        var newMaxYear = new Year
+        {
+            ApplicationID = applicantion_id,
+            Year1 = yearList.Max()
+        }; ;
+        await context.Year.AddAsync(newMaxYear);
+        context.SaveChanges();
+    }
+
+    /// <summary>
+    /// update the information of preferred halls
+    /// </summary>
+    /// <param name="username"> The username for the user who complete the aplication form </param>
+    /// <param name="applicantion_id"> The ID of this application </param>
+    /// <param name="hallList"> A list of the preferred halls </param>
+    public async Task UpdateHallAsync(string username, string applicantion_id, string[] hallList)
+    {
+        var GordonID = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
+        if (GordonID == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
+        }
+        var existHall = context.PreferredHall.Where(x => x.ApplicationID == applicantion_id);
+        foreach (PreferredHall h in existHall)
+        {
+            context.PreferredHall.Remove(h);
+        }
+        var rank = 1;
+        foreach (string h in hallList)
+        {
+            if (h != "")
+            {
+                var newHall = new PreferredHall
+                {
+                    ApplicationID = applicantion_id,
+                    Rank = rank,
+                    HallName = h
+                }; ;
+                await context.PreferredHall.AddAsync(newHall);
+                rank++;
+            }
+        }
+        context.SaveChanges();
+    }
+
+    /// <summary>
+    /// update the information of preferred halls
+    /// </summary>
+    /// <param name="username"> The username for the user who complete the aplication form </param>
+    /// <param name="applicantion_id"> The ID of this application </param>
+    /// <param name="preferenceList"> A list of the preference </param>
+    public async Task UpdatePreferenceAsync(string username, string applicantion_id, string[] preferenceList)
+    {
+        var GordonID = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
+        if (GordonID == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
+        }
+        var existPreference = context.Preference.Where(x => x.ApplicationID == applicantion_id);
+        foreach (Preference p in existPreference)
+        {
+            context.Preference.Remove(p);
+        }
+        foreach (string p in preferenceList)
+        {
+            if (p != "")
+            {
+                var newPreference = new Preference
+                {
+                    ApplicationID = applicantion_id,
+                    Preference1 = p
+                }; ;
+                await context.Preference.AddAsync(newPreference);
+                await context.Preference.AddAsync(newPreference);
+            }
+        }
+        context.SaveChanges();
+    }
+
+    /// <summary>
+    /// update the information of due date
+    /// </summary>
+    /// <param name="dueDate"> The due date of the application </param>
+    public async Task UpdateDueDateAsync(string dueDate)
+    {
+        var existDueDate = context.DueDate.FirstOrDefault();
+        if (existDueDate != null)
+        {
+            context.DueDate.Remove(existDueDate);
+        }
+        var newDueDate = new DueDate
+        {
+            DueDate1 = dueDate
+        }; ;
+        await context.DueDate.AddAsync(newDueDate);
+        context.SaveChanges();
+    }
+
+    /// <summary>
+    /// Gets an array of preferences
+    /// </summary>
+    /// <returns> An array of preferences </returns>
+    public Preference[] GetAllPreference()
+    {
+
+        var result = context.Preference;
+        if (result == null || !result.Any())
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The preferences could not be found." };
+        }
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Gets an array of preferences of this user
+    /// </summary>
+    /// <returns> An array of preferences </returns>
+    public Preference[] GetUserPreference(string username)
+    {
+        var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
+        var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+        var preference = context.Preference.Where(a => a.ApplicationID == applicationID);
+        return preference.ToArray();
+    }
+
+    /// <summary>
+    ///Gets an array of preferred halls
+    /// </summary>
+    /// <returns> AN array of preferred halls </returns>
+    public PreferredHall[] GetAllPreferredHall()
+    {
+
+        var result = context.PreferredHall;
+        if (result == null || !result.Any())
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The preferred halls could not be found." };
+        }
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Gets an array of preferred hall of the user
+    /// </summary>
+    /// <returns> An array of preferences </returns>
+    public PreferredHall[] GetUserPreferredHall(string username)
+    {
+        var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
+        var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+        var preferredHall = context.PreferredHall.Where(a => a.ApplicationID == applicationID);
+        return preferredHall.ToArray();
+    }
+
+    /// <summary>
+    ///Gets an array of applicants
+    /// </summary>
+    /// <returns> AN array of applicants </returns>
+    public Applicant[] GetAllApplicant()
+    {
+
+        var result = context.Applicant;
+        if (result == null || !result.Any())
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
+        }
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Gets an array of preferences
+    /// </summary>
+    /// <returns> An array of preferences </returns>
+    public Applicant[] GetUserRoommate(string username)
+    {
+        var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
+        var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+        var applicant = context.Applicant.Where(a => a.ApplicationID == applicationID);
+        return applicant.ToArray();
+    }
+
+    /// <summary>
+    ///Gets an array of school years
+    /// </summary>
+    /// <returns> AN array of school years </returns>
+    public Year[] GetAllSchoolYear()
+    {
+
+        var result = context.Year;
+        if (result == null || !result.Any())
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The school years could not be found." };
+        }
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Gets the due date of housing application
+    /// </summary>
+    /// <returns> The due date of housing application </returns>
+    public string GetDueDate()
+    {
+        var result = context.DueDate.FirstOrDefault().DueDate1;
+        return result;
     }
 }
