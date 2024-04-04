@@ -22,4 +22,6 @@ public partial class Preference
     [StringLength(255)]
     [Unicode(false)]
     public string Preference1 { get; set; }
+
+    public int RowID { get; set; }
 }

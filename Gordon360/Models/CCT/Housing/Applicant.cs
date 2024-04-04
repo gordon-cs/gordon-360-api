@@ -22,4 +22,6 @@ public partial class Applicant
     [StringLength(255)]
     [Unicode(false)]
     public string Applicant1 { get; set; }
+
+    public int RowID { get; set; }
 }

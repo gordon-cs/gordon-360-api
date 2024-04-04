@@ -24,4 +24,6 @@ public partial class PreferredHall
     [StringLength(255)]
     [Unicode(false)]
     public string HallName { get; set; }
+
+    public int RowID { get; set; }
 }

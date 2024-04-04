@@ -224,6 +224,11 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.grad_student).IsFixedLength();
         });
 
+        modelBuilder.Entity<Applicant>(entity =>
+        {
+            entity.Property(e => e.RowID).ValueGeneratedOnAdd();
+        });
+
         modelBuilder.Entity<CM_SESSION_MSTR>(entity =>
         {
             entity.ToView("CM_SESSION_MSTR", "dbo");
@@ -479,6 +484,16 @@ public partial class CCTContext : DbContext
             entity.ToView("ParticipantView", "RecIM");
 
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
+        });
+
+        modelBuilder.Entity<Preference>(entity =>
+        {
+            entity.Property(e => e.RowID).ValueGeneratedOnAdd();
+        });
+
+        modelBuilder.Entity<PreferredHall>(entity =>
+        {
+            entity.Property(e => e.RowID).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<REQUEST>(entity =>

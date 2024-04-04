@@ -217,12 +217,12 @@ namespace Gordon360.Services
         bool DeleteApplication(int applicationID);
         string[] GetAllApartmentHalls();
         string[] GetAllTraditionalHalls();
-        Preference[] GetAllPreference();
-        Preference[] GetUserPreference(string username);
-        PreferredHall[] GetAllPreferredHall();
-        PreferredHall[] GetUserPreferredHall(string username);
-        Applicant[] GetAllApplicant();
-        Applicant[] GetUserRoommate(string username);
+        IEnumerable<HousingPreferenceViewModel> GetAllPreference();
+        IEnumerable<HousingPreferenceViewModel> GetUserPreference(string username);
+        IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHall();
+        IEnumerable<HousingPreferredHallViewModel> GetUserPreferredHall(string username);
+        IEnumerable<HousingApplicantViewModel> GetAllApplicant();
+        IEnumerable<HousingApplicantViewModel> GetUserRoommate(string username);
         Year[] GetAllSchoolYear();
         string GetDueDate();
         string GetEditorUsername(int applicationID);

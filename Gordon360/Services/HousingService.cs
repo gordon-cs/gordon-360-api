@@ -699,10 +699,10 @@ public class HousingService(CCTContext context) : IHousingService
     /// Gets an array of preferences
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public Preference[] GetAllPreference()
+    public IEnumerable<HousingPreferenceViewModel> GetAllPreference()
     {
 
-        var result = context.Preference;
+        var result = context.Preference.Select(ph => (HousingPreferenceViewModel)ph);
         if (result == null || !result.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The preferences could not be found." };
@@ -714,11 +714,11 @@ public class HousingService(CCTContext context) : IHousingService
     /// Gets an array of preferences of this user
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public Preference[] GetUserPreference(string username)
+    public IEnumerable<HousingPreferenceViewModel> GetUserPreference(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
         var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
-        var preference = context.Preference.Where(a => a.ApplicationID == applicationID);
+        var preference = context.Preference.Where(a => a.ApplicationID == applicationID).Select(ph => (HousingPreferenceViewModel)ph);
         return preference.ToArray();
     }
 
@@ -726,10 +726,10 @@ public class HousingService(CCTContext context) : IHousingService
     ///Gets an array of preferred halls
     /// </summary>
     /// <returns> AN array of preferred halls </returns>
-    public PreferredHall[] GetAllPreferredHall()
+    public IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHall()
     {
 
-        var result = context.PreferredHall;
+        var result = context.PreferredHall.Select(ph => (HousingPreferredHallViewModel)ph);
         if (result == null || !result.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The preferred halls could not be found." };
@@ -741,11 +741,11 @@ public class HousingService(CCTContext context) : IHousingService
     /// Gets an array of preferred hall of the user
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public PreferredHall[] GetUserPreferredHall(string username)
+    public IEnumerable<HousingPreferredHallViewModel> GetUserPreferredHall(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
         var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
-        var preferredHall = context.PreferredHall.Where(a => a.ApplicationID == applicationID);
+        var preferredHall = context.PreferredHall.Where(a => a.ApplicationID == applicationID).Select(ph => (HousingPreferredHallViewModel)ph);
         return preferredHall.ToArray();
     }
 
@@ -753,10 +753,10 @@ public class HousingService(CCTContext context) : IHousingService
     ///Gets an array of applicants
     /// </summary>
     /// <returns> AN array of applicants </returns>
-    public Applicant[] GetAllApplicant()
+    public IEnumerable<HousingApplicantViewModel>  GetAllApplicant()
     {
 
-        var result = context.Applicant;
+        var result = context.Applicant.Select(a => (HousingApplicantViewModel) a);
         if (result == null || !result.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
@@ -768,11 +768,11 @@ public class HousingService(CCTContext context) : IHousingService
     /// Gets an array of preferences
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public Applicant[] GetUserRoommate(string username)
+    public IEnumerable<HousingApplicantViewModel> GetUserRoommate(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
         var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
-        var applicant = context.Applicant.Where(a => a.ApplicationID == applicationID);
+        var applicant = context.Applicant.Where(a => a.ApplicationID == applicationID).Select(a => (HousingApplicantViewModel)a);
         return applicant.ToArray();
     }
 
