@@ -684,6 +684,23 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Remove the particular user from the current application by setting her/his active flag to 0
+    /// </summary>
+    /// <returns> Whether or not this was successful </returns>
+    public bool RemoveUser(string username)
+    {
+        var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
+        var existActiveApplicant = context.Applicant.FirstOrDefault(x => (x.Applicant1 == email) && (x.Active == 1));
+        if (existActiveApplicant == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
+        }
+        existActiveApplicant.Active = 0;
+        context.SaveChanges();
+        return true;
+    }
+
+    /// <summary>
     /// Gets an array of preferences
     /// </summary>
     /// <returns> An array of preferences </returns>

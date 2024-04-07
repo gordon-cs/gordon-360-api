@@ -320,6 +320,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.RemoveUser">
+            <summary>
+            Remove "myself" from the current application
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetAllPreference">
             <summary>
             Get an array of preferences
@@ -1934,6 +1940,12 @@
             update the information of due date
             </summary>
             <param name="dueDate"> The due date of the application </param>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RemoveUser(System.String)">
+            <summary>
+            Remove the particular user from the current application by setting her/his active flag to 0
+            </summary>
+            <returns> Whether or not this was successful </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllPreference">
             <summary>
