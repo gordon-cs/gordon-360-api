@@ -12,6 +12,8 @@ namespace Gordon360.Models.CCT;
 [Table("Applicant", Schema = "Housing")]
 public partial class Applicant
 {
+    public int RowID { get; set; }
+
     [Key]
     [StringLength(255)]
     [Unicode(false)]
@@ -23,5 +25,5 @@ public partial class Applicant
     [Unicode(false)]
     public string Applicant1 { get; set; }
 
-    public int RowID { get; set; }
+    public int Active { get; set; }
 }
