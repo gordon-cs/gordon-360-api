@@ -12,6 +12,8 @@ namespace Gordon360.Models.CCT;
 [Table("PreferredHall", Schema = "Housing")]
 public partial class PreferredHall
 {
+    public int RowID { get; set; }
+
     [Key]
     [StringLength(255)]
     [Unicode(false)]

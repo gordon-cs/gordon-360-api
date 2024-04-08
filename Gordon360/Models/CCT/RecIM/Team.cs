@@ -6,56 +6,58 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("Team", Schema = "RecIM")]
+public partial class Team
 {
-    [Table("Team", Schema = "RecIM")]
-    public partial class Team
-    {
-        public Team()
-        {
-            AffiliationPoints = new HashSet<AffiliationPoints>();
-            MatchParticipant = new HashSet<MatchParticipant>();
-            MatchTeam = new HashSet<MatchTeam>();
-            ParticipantTeam = new HashSet<ParticipantTeam>();
-            Series = new HashSet<Series>();
-            SeriesTeam = new HashSet<SeriesTeam>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(64)]
-        [Unicode(false)]
-        public string Name { get; set; }
-        public int StatusID { get; set; }
-        public int ActivityID { get; set; }
-        [StringLength(128)]
-        [Unicode(false)]
-        public string Logo { get; set; }
-        [StringLength(50)]
-        [Unicode(false)]
-        public string Affiliation { get; set; }
+    [Required]
+    [StringLength(64)]
+    [Unicode(false)]
+    public string Name { get; set; }
 
-        [ForeignKey("ActivityID")]
-        [InverseProperty("Team")]
-        public virtual Activity Activity { get; set; }
-        [ForeignKey("Affiliation")]
-        [InverseProperty("Team")]
-        public virtual Affiliation AffiliationNavigation { get; set; }
-        [ForeignKey("StatusID")]
-        [InverseProperty("Team")]
-        public virtual TeamStatus Status { get; set; }
-        [InverseProperty("Team")]
-        public virtual ICollection<AffiliationPoints> AffiliationPoints { get; set; }
-        [InverseProperty("Team")]
-        public virtual ICollection<MatchParticipant> MatchParticipant { get; set; }
-        [InverseProperty("Team")]
-        public virtual ICollection<MatchTeam> MatchTeam { get; set; }
-        [InverseProperty("Team")]
-        public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; }
-        [InverseProperty("Winner")]
-        public virtual ICollection<Series> Series { get; set; }
-        [InverseProperty("Team")]
-        public virtual ICollection<SeriesTeam> SeriesTeam { get; set; }
-    }
+    public int StatusID { get; set; }
+
+    public int ActivityID { get; set; }
+
+    [StringLength(128)]
+    [Unicode(false)]
+    public string Logo { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Affiliation { get; set; }
+
+    [ForeignKey("ActivityID")]
+    [InverseProperty("Team")]
+    public virtual Activity Activity { get; set; }
+
+    [ForeignKey("Affiliation")]
+    [InverseProperty("Team")]
+    public virtual Affiliation AffiliationNavigation { get; set; }
+
+    [InverseProperty("Team")]
+    public virtual ICollection<AffiliationPoints> AffiliationPoints { get; set; } = new List<AffiliationPoints>();
+
+    [InverseProperty("Team")]
+    public virtual ICollection<MatchParticipant> MatchParticipant { get; set; } = new List<MatchParticipant>();
+
+    [InverseProperty("Team")]
+    public virtual ICollection<MatchTeam> MatchTeam { get; set; } = new List<MatchTeam>();
+
+    [InverseProperty("Team")]
+    public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; } = new List<ParticipantTeam>();
+
+    [InverseProperty("Winner")]
+    public virtual ICollection<Series> Series { get; set; } = new List<Series>();
+
+    [InverseProperty("Team")]
+    public virtual ICollection<SeriesTeam> SeriesTeam { get; set; } = new List<SeriesTeam>();
+
+    [ForeignKey("StatusID")]
+    [InverseProperty("Team")]
+    public virtual TeamStatus Status { get; set; }
 }

@@ -6,24 +6,19 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("RoleType", Schema = "RecIM")]
+public partial class RoleType
 {
-    [Table("RoleType", Schema = "RecIM")]
-    public partial class RoleType
-    {
-        public RoleType()
-        {
-            ParticipantTeam = new HashSet<ParticipantTeam>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(256)]
-        [Unicode(false)]
-        public string Description { get; set; }
+    [Required]
+    [StringLength(256)]
+    [Unicode(false)]
+    public string Description { get; set; }
 
-        [InverseProperty("RoleType")]
-        public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; }
-    }
+    [InverseProperty("RoleType")]
+    public virtual ICollection<ParticipantTeam> ParticipantTeam { get; set; } = new List<ParticipantTeam>();
 }

@@ -1,21 +1,20 @@
 ﻿using Gordon360.Models.CCT;
 
-namespace Gordon360.Models.ViewModels
+namespace Gordon360.Models.ViewModels;
+
+public class ParticipationViewModel
 {
-    public class ParticipationViewModel
+    public string ParticipationCode { get; set; }
+    public string ParticipationDescription { get; set; }
+
+    public static implicit operator ParticipationViewModel(PART_DEF p)
     {
-        public string ParticipationCode { get; set; }
-        public string ParticipationDescription { get; set; }
-
-        public static implicit operator ParticipationViewModel(PART_DEF p)
+        ParticipationViewModel vm = new ParticipationViewModel
         {
-            ParticipationViewModel vm = new ParticipationViewModel
-            {
-                ParticipationCode = p.PART_CDE.Trim(),
-                ParticipationDescription = p.PART_DESC.Trim()
-            };
+            ParticipationCode = p.PART_CDE.Trim(),
+            ParticipationDescription = p.PART_DESC.Trim()
+        };
 
-            return vm;
-        }
+        return vm;
     }
 }

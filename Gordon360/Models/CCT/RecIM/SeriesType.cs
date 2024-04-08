@@ -6,28 +6,24 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("SeriesType", Schema = "RecIM")]
+public partial class SeriesType
 {
-    [Table("SeriesType", Schema = "RecIM")]
-    public partial class SeriesType
-    {
-        public SeriesType()
-        {
-            Series = new HashSet<Series>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(256)]
-        [Unicode(false)]
-        public string Description { get; set; }
-        [Required]
-        [StringLength(4)]
-        [Unicode(false)]
-        public string TypeCode { get; set; }
+    [Required]
+    [StringLength(256)]
+    [Unicode(false)]
+    public string Description { get; set; }
 
-        [InverseProperty("Type")]
-        public virtual ICollection<Series> Series { get; set; }
-    }
+    [Required]
+    [StringLength(4)]
+    [Unicode(false)]
+    public string TypeCode { get; set; }
+
+    [InverseProperty("Type")]
+    public virtual ICollection<Series> Series { get; set; } = new List<Series>();
 }

@@ -148,28 +148,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdminsController.GetAll">
-            <summary>
-            Get all admins
-            </summary>
-            <returns>
-            A list of all admins
-            </returns>
-            <remarks>
-            Server makes call to the database and returns all admins
-            </remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Post(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>Create a new admin to be added to database</summary>
-            <param name="admin">The admin item containing all required and relevant information</param>
-            <returns></returns>
-            <remarks>Posts a new admin to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Delete(System.String)">
-            <summary>Delete an existing admin</summary>
-            <param name="username">The username of the user to demote</param>
-            <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetMajors">
             <summary>
             Return a list majors.
@@ -210,9 +188,15 @@
             </summary>
             <returns> All departments</returns>
         </member>
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetBuildingsAsync(Gordon360.Models.webSQL.Context.webSQLContext)">
+            <summary>
+            Return a list of buildings.
+            </summary>
+            <returns> All buildings</returns>
+        </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetBuildings">
             <summary>
-            Return a list buildings.
+            Return a list of buildings.
             </summary>
             <returns> All buildings</returns>
         </member>
@@ -326,7 +310,7 @@
         </member>
         <member name="M:Gordon360.Controllers.HousingController.UpdatePreference(System.String,System.String[])">
             <summary>
-            Update preferred hall information
+            Update preference information
             </summary>
             <returns></returns>
         </member>
@@ -344,7 +328,7 @@
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetUserPreference">
             <summary>
-            Get an array of preferences
+            Get the preferences of a particular user
             </summary>
             <returns></returns>
         </member>
@@ -383,72 +367,6 @@
             Get due date of housing application
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.GetJobsAsync(System.DateTime,System.DateTime)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <param name="shiftStart">The datetime that the shift started</param>
-            <param name="shiftEnd">The datetime that the shift ended</param>
-            <returns>The user's active jobs</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.GetSavedShiftsForUser">
-            <summary>
-            Get a user's saved shifts
-            </summary>
-            <returns>The user's saved shifts</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.SaveShiftForUserAsync(Gordon360.Models.ViewModels.ShiftViewModel)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <param name="shiftDetails"></param>
-            <returns>The result of saving a shift</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.EditShiftForUser(Gordon360.Models.ViewModels.ShiftViewModel)">
-            <summary>
-            Edit a shift
-            <param name="shiftDetails">The details that will be changed</param>
-            </summary>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.DeleteShiftForUser(System.Int32)">
-            <summary>
-            Get a user's active jobs
-            </summary>
-            <returns>The result of deleting the shift</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.SubmitShiftsForUser(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.ShiftToSubmitViewModel})">
-            <summary>
-            Submit shifts
-            </summary>
-            <returns>The result of submitting the shifts</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.GetSupervisorNameAsync(System.Int32)">
-            <summary>
-            Gets the name of a supervisor based on their ID number
-            </summary>
-            <returns>The name of the supervisor</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.ClockInAsync(System.Boolean)">
-            <summary>
-             sends the current clock in status to the back end
-             true if user is clocked in and false if clocked out
-            </summary>
-            <param name="state">detail to be saved in the back end, true if user just clocked in</param>
-            <returns>returns confirmation that the answer was recorded </returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.ClockOutAsync">
-            <summary>
-             gets the the clock in status from the back end
-             true if user is clocked in and false if clocked out
-            </summary>
-            <returns>ClockInViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.JobsController.DeleteClockInAsync">
-            <summary>
-            deletes the last clocked in status of a user
-            </summary>
-            <returns>returns confirmation that clock in status was deleted</returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
@@ -540,41 +458,6 @@
             <param name="membershipID">The identifier for the membership to be deleted</param>
             <remarks>Calls the server to make a call and remove the given membership from the database</remarks>
             <returns>The deleted membership as a MembershipView object</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Get">
-            <summary>
-             Gets all custom events for a user
-            </summary>
-            <returns>A IEnumerable of custom events</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.GetByEventId(System.String)">
-            <summary>
-             Gets specific custom event for a user
-            </summary>
-            <returns>The requested custom event</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Get(System.String)">
-            <summary>
-             Gets all myschedule objects for a user
-            </summary>
-            <returns>A IEnumerable of myschedule objects</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Post(Gordon360.Models.CCT.MYSCHEDULE)">
-            <summary>Create a new myschedule to be added to database</summary>
-            <param name="mySchedule">The myschedule item containing all required and relevant information</param>
-            <returns>Created schedule</returns>
-            <remarks>Posts a new myschedule to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Delete(System.String)">
-            <summary>Delete an existing myschedule item</summary>
-            <param name="eventID">The identifier for the myschedule to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given myschedule from the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.MyScheduleController.Put(Gordon360.Models.CCT.MYSCHEDULE)">
-            <summary>Update the existing myschedule in database</summary>
-            <param name="mySchedule">The updated myschedule item containing all required and relevant information</param>
-            <returns>Original schedule</returns>
-            <remarks>Put a myschedule to the server to be updated</remarks>
         </member>
         <member name="M:Gordon360.Controllers.NewsController.GetByID(System.Int32)">
             <summary>Gets a news item by id from the database</summary>
@@ -1299,88 +1182,6 @@
             <param name="membershipRequestID">The id of the membership request to delete</param>
             <returns>The deleted request as a RequestView</returns>
         </member>
-        <member name="M:Gordon360.Controllers.SaveController.GetUpcomingRides">
-            <summary>
-             Gets all upcoming ride objects
-            </summary>
-            <returns>A IEnumerable of rides objects</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.SaveController.GetUpcomingRidesForUser">
-            <summary>
-             Gets all upcoming ride objects for a user
-            </summary>
-            <returns>A IEnumerable of rides objects</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.SaveController.PostRide(Gordon360.Models.CCT.Save_Rides)">
-            <summary>
-             Create new ride object for a user
-            </summary>
-            <returns>Successfully posted ride object</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.SaveController.CancelRideAsync(System.String)">
-            <summary>Cancel an existing ride item</summary>
-            <param name="rideID">The identifier for the ride to be cancel</param>
-            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.SaveController.DeleteRideAsync(System.String)">
-            <summary>Delete an existing ride item</summary>
-            <param name="rideID">The identifier for the ride to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given ride from the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.SaveController.PostBooking(Gordon360.Models.CCT.Save_Bookings)">
-            <summary>
-             Create new booking object for a user
-            </summary>
-            <returns>Successfully posted booking object</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.SaveController.DeleteBooking(System.String)">
-            <summary>Delete an existing booking item</summary>
-            <param name="rideID">The identifier for the booking to be deleted</param>
-            <remarks>Calls the server to make a call and remove the given booking from the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleControlController.Get">
-            <summary>
-            Get schedule information of logged in user
-            Info one gets: privacy, time last updated, description, and Gordon ID
-            @TODO: Use Service Layer
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleControlController.Get(System.String)">
-            <summary>
-            Get schedule information of specific user
-            Info one gets: privacy, time last updated, description, and Gordon ID
-            @TODO Use Service Layer
-            </summary>
-            <param name="username">username</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleControlController.UpdateSchedulePrivacy(System.String)">
-            <summary>
-            Update privacy of schedule
-            </summary>
-            <param name="value">Y or N</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleControlController.UpdateDescription(System.String)">
-            <summary>
-            Update schedule description
-            </summary>
-            <param name="value">New description</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.Get">
-            <summary>
-             Gets all schedule objects for a user
-            </summary>
-            <returns>A IEnumerable of schedule objects</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.GetAsync(System.String,System.String)">
-            <summary>
-             Gets all schedule objects for a user
-            </summary>
-            <returns>A IEnumerable of schedule objects</returns>
-        </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
             <summary>
              Gets all session objects for a user
@@ -1434,33 +1235,6 @@
              Gets current victory promise scores
             </summary>
             <returns>A VP Json</returns>
-        </member>
-        <member name="T:Gordon360.Controllers.WellnessController.WellnessStatusColor">
-            <summary>
-            Enum representing three possible wellness statuses.
-            GREEN - Healthy, no known contact/symptoms
-            YELLOW - Symptomatic or cautionary hold
-            RED - Quarantine/Isolation
-            </summary>
-        </member>
-        <member name="M:Gordon360.Controllers.WellnessController.Get">
-            <summary>
-             Gets wellness status of current user
-            </summary>
-            <returns>A WellnessViewModel representing the most recent status of the user</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.WellnessController.GetQuestion">
-            <summary>
-             Gets question for wellness check from the back end
-            </summary>
-            <returns>A WellnessQuestionViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.WellnessController.Post(Gordon360.Controllers.WellnessController.WellnessStatusColor)">
-            <summary>
-             Stores the user's wellness status
-            </summary>
-            <param name="status">The current status of the user to post, of type WellnessStatusColor</param>
-            <returns>The status that was stored in the database</returns>
         </member>
         <member name="F:Gordon360.Enums.Participation.GroupAdmin">
             <summary>
@@ -1522,16 +1296,6 @@
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>
             Whether the user wants their strengths to be private (not shown to other users)
-            </summary>
-        </member>
-        <member name="P:Gordon360.Models.StudentTimesheets.student_timesheets.ID_NUM">
-            <summary>
-            Gordon ID Number
-            </summary>
-        </member>
-        <member name="P:Gordon360.Models.StudentTimesheets.student_timesheets.eml">
-            <summary>
-            a job&apos;s unique id number
             </summary>
         </member>
         <member name="M:Gordon360.Models.ViewModels.BasicInfoViewModel.MatchSearch(System.String)">
@@ -1630,6 +1394,12 @@
             </summary>
             
         </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
+            </summary>
+            
+        </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.PutEmergencyContactAsync(Gordon360.Models.ViewModels.EmergencyContactViewModel,System.String,System.String)">
             <summary> Stores the emergency contact information of a particular user </summary>
             <param name="data"> The object that stores the contact info </param>
@@ -1676,6 +1446,11 @@
             <returns> The formatted number </returns>
         </member>
         <member name="T:Gordon360.Services.AccountService">
+            <summary>
+            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>
@@ -1751,6 +1526,13 @@
             <returns>BasicInfoViewModel of all accounts except alumni</returns>
         </member>
         <member name="T:Gordon360.Services.ActivityService">
+            <summary>
+            Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
+            ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
+            Activity Info and ACtivity may be talked about interchangeably.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ActivityService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
             ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
@@ -1847,46 +1629,12 @@
             <param name="activityCode">The activity code</param>
             <param name="isPrivate">activity private or not</param>
         </member>
-        <member name="T:Gordon360.Services.AdministratorService">
-            <summary>
-            Service class to facilitate interacting with the Admin table.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.GetAll">
-            <summary>
-            Fetches all the administrators from the database
-            </summary>
-            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.GetByUsername(System.String)">
-            <summary>
-            Fetches a specific admin from the database
-            </summary>
-            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Add(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>
-            Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-            we do it here by using the validateAdmin() method.
-            </summary>
-            <param name="adminView">The admin to be added</param>
-            <returns>The newly added Admin object</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Delete(System.String)">
-            <summary>
-            Delete the admin whose id is specified by the parameter.
-            </summary>
-            <param name="username">The username of the admin to demote</param>
-            <returns>The admin that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.validateAdmin(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>
-            Helper method to Validate an admin
-            </summary>
-            <param name="admin">The admin to validate</param>
-            <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
-        </member>
         <member name="T:Gordon360.Services.ContentManagementService">
+            <summary>
+            Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.ContentManagementService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
             </summary>
@@ -1941,6 +1689,11 @@
             Service class to facilitate getting emails for members of an activity.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.EmailService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IMembershipService,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Service class to facilitate getting emails for members of an activity.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.EmailService.GetEmailsForActivity(System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get a list of the emails for all members in the activity during the current session.
@@ -1978,6 +1731,11 @@
             Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.ErrorLogService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Service Class that facilitates data transactions between the ErrorLogController and the ERROR_LOG database model.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.ErrorLogService.Add(Gordon360.Models.CCT.ERROR_LOG)">
             <summary>
             Adds a new error log to storage.
@@ -1993,6 +1751,11 @@
             <returns>The newly added error_log object</returns>
         </member>
         <member name="T:Gordon360.Services.EventService">
+            <summary>
+            Service that allows for event control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService)">
             <summary>
             Service that allows for event control
             </summary>
@@ -2220,12 +1983,12 @@
             </summary>
             <returns> The due date of housing application </returns>
         </member>
-        <member name="T:Gordon360.Services.JobsService">
+        <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
-            Service Class that facilitates data transactions between the JobsController and the student_timesheets + paid_shifts database model.
+            Service class to facilitate data transactions between the MembershipRequestController and the database
             </summary>
         </member>
-        <member name="T:Gordon360.Services.MembershipRequestService">
+        <member name="M:Gordon360.Services.MembershipRequestService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IMembershipService,Gordon360.Services.IAccountService)">
             <summary>
             Service class to facilitate data transactions between the MembershipRequestController and the database
             </summary>
@@ -2303,6 +2066,11 @@
             <returns>A RequestView object of the updated request</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipService">
+            <summary>
+            Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MembershipService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IAccountService,Gordon360.Services.IActivityService)">
             <summary>
             Service Class that facilitates data transactions between the MembershipsController and the Membership database model.
             </summary>
@@ -2391,48 +2159,6 @@
             <param name="memberships">Enumerable of memberships to filter</param>
             <param name="viewerUsername">username of viewer</param>
             <returns>The membership enumerable with private memberships removed</returns>
-        </member>
-        <member name="T:Gordon360.Services.MyScheduleService">
-            <summary>
-            Service Class that facilitates data transactions between the MySchedulesController and the MySchedule part of the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.GetForID(System.String,System.String)">
-            <summary>
-            Fetch the myschedule item whose id is specified by the parameter
-            </summary>
-            <param name="eventID">The myschedule id</param>
-            <param name="username">AD Username</param>
-            <returns>Myschedule if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.GetAllForUser(System.String)">
-            <summary>
-            Fetch all myschedule items belonging to the given user
-            </summary>
-            <param name="username">The AD Username</param>
-            <returns>Array of Myschedule if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.Add(Gordon360.Models.CCT.MYSCHEDULE)">
-            <summary>
-            Adds a new mySchedule record to storage.
-            </summary>
-            <param name="mySchedule">The membership to be added</param>
-            <returns>The newly added custom event</returns>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.Delete(System.String,System.String)">
-            <summary>
-            Delete the myschedule whose id is specified by the parameter.
-            </summary>
-            <param name="eventID">The myschedule id</param>
-            <param name="username">The gordon id</param>
-            <returns>The myschedule that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.MyScheduleService.Update(Gordon360.Models.CCT.MYSCHEDULE)">
-            <summary>
-            Update the myschedule item.
-            </summary>
-            <param name="sched">The schedule information</param>
-            <returns>The original schedule</returns>
         </member>
         <member name="M:Gordon360.Services.NewsService.Get(System.Int32)">
             <summary>
@@ -2698,104 +2424,15 @@
             </summary>
             <returns>Matches created as well as number of teams in the next round</returns>
         </member>
-        <member name="M:Gordon360.Services.SaveService.GetUpcoming(System.String)">
-            <summary>
-            Fetch all upcoming ride items
-            </summary>
-            <returns> IEnumerable of ride items if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.SaveService.GetUpcomingForUser(System.String)">
-            <summary>
-            Fetch the ride items a user is part of
-            </summary>
-            <param name="gordon_id">The ride id</param>
-            <returns> ride items if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.SaveService.AddRideAsync(Gordon360.Models.CCT.Save_Rides,System.String)">
-            <summary>
-            Adds a new ride record to storage.
-            </summary>
-            <param name="newRide">The Save_Rides object to be added</param>
-            <param name="gordon_id">The gordon_id of the user creating the ride</param>
-            <returns>The newly added custom event</returns>
-        </member>
-        <member name="M:Gordon360.Services.SaveService.DeleteRideAsync(System.String,System.String)">
-            <summary>
-            Delete the ride whose id is specified by the parameter.
-            </summary>
-            <param name="rideID">The myschedule id</param>
-            <param name="gordon_id">The gordon id</param>
-            <returns>The myschedule that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.SaveService.CancelRideAsync(System.String,System.String)">
-            <summary>
-            Cancel the ride whose id is specified by the parameter.
-            </summary>
-            <param name="rideID">The ride id</param>
-            <param name="gordon_id">The gordon id</param>
-            <returns>The ride that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.SaveService.AddBookingAsync(Gordon360.Models.CCT.Save_Bookings)">
-            <summary>
-            Adds a new booking record to storage.
-            </summary>
-            <param name="newBooking">The Save_Bookings object to be added</param>
-            <returns>The newly added custom event</returns>
-        </member>
-        <member name="M:Gordon360.Services.SaveService.DeleteBookingAsync(System.String,System.String)">
-            <summary>
-            Delete the booking whose ids are specified by the parameter.
-            </summary>
-            <param name="rideID">The myschedule id</param>
-            <param name="gordon_id">The gordon id</param>
-            <returns>The myschedule that was just deleted</returns>
-        </member>
-        <member name="T:Gordon360.Services.ScheduleControlService">
-            <summary>
-            Service Class that facilitates data transactions between the ScheduleControlController and the ScheduleControl part of the database model.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleControlService.UpdateSchedulePrivacyAsync(System.String,System.String)">
-            <summary>
-            privacy setting of schedule.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleControlService.UpdateDescriptionAsync(System.String,System.String)">
-            <summary>
-            description of schedule.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="value">New description</param>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleControlService.UpdateModifiedTimeStampAsync(System.String,System.DateTime)">
-            <summary>
-            Update timestamp of modification in schedule.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="value">Modified Time</param>
-        </member>
         <member name="T:Gordon360.Services.ScheduleService">
             <summary>
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetScheduleStudentAsync(System.String,System.String)">
+        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService)">
             <summary>
-            Fetch the schedule item whose id and session code is specified by the parameter
+            Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
-            <param name="username">The AD Username of the student</param>
-            <param name="sessionID">The selected session of the student</param>
-            <returns>StudentScheduleViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetScheduleFacultyAsync(System.String,System.String)">
-            <summary>
-            Fetch the schedule item whose id and session code is specified by the parameter
-            </summary>
-            <param name="username">The AD Username of the instructor</param>
-            <param name="sessionID">The selected session of the instructor</param>
-            <returns>StudentScheduleViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesAsync(System.String)">
             <summary>
@@ -2812,6 +2449,11 @@
             <returns>The service container that has our services added.</returns>
         </member>
         <member name="T:Gordon360.Services.SessionService">
+            <summary>
+            Service class to facilitate data transactions between the Controller and the database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.SessionService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
             Service class to facilitate data transactions between the Controller and the database model.
             </summary>
@@ -2842,34 +2484,6 @@
             </summary>
             <param name="username">id</param>
             <returns>VictoryPromiseViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.GetStatus(System.String)">
-            <summary>
-            Get the status of the user by id
-            </summary>
-            <param name = "username" > AD Username of the user to get the status of</param>
-            <returns> The status of the user, a WellnessViewModel</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.PostStatus(Gordon360.Controllers.WellnessController.WellnessStatusColor,System.String)">
-            <summary>
-            Stores wellness Status in database.
-            </summary>
-            <param name="username">AD Username of the user to post the status for</param>
-            <param name="status"> Status that is being posted, one of the WellnessStatusColors </param>
-            <returns>Status that was successfully recorded</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.GetQuestion">
-            <summary>
-            gets the question for the wellness check from the back end
-            </summary>
-            <returns>A WellnessQuestionViewModel including the text of the question and the disclaimers for positive and negative answers.</returns>
-        </member>
-        <member name="M:Gordon360.Services.WellnessService.ExpirationDate(System.DateTime)">
-            <summary>
-            Creates an expiration date for a check in at the current time
-            </summary>
-            <param name="currentTime">The time of the check in</param>
-            <returns>When the check in should expire (the next 5AM).</returns>
         </member>
         <member name="T:Gordon360.Static.Methods.Helpers">
             <summary>

@@ -6,13 +6,14 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("StudentNewsExpiration", Schema = "dbo")]
+public partial class StudentNewsExpiration
 {
-    public partial class StudentNewsExpiration
-    {
-        [Key]
-        public int SNID { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? ManualExpirationDate { get; set; }
-    }
+    [Key]
+    public int SNID { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? ManualExpirationDate { get; set; }
 }

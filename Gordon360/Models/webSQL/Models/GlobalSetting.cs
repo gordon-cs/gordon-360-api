@@ -6,17 +6,18 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.webSQL.Models
+namespace Gordon360.Models.webSQL.Models;
+
+public partial class GlobalSetting
 {
-    public partial class GlobalSetting
-    {
-        [Key]
-        [StringLength(20)]
-        [Unicode(false)]
-        public string Flag { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? StartDt { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? EndDt { get; set; }
-    }
+    [Key]
+    [StringLength(20)]
+    [Unicode(false)]
+    public string Flag { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? StartDt { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? EndDt { get; set; }
 }
