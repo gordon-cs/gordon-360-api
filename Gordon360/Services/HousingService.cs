@@ -570,7 +570,7 @@ public class HousingService(CCTContext context) : IHousingService
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
         }
-        string gender = _context.Student.FirstOrDefault(a => a.ID == GordonID).Gender;
+        string gender = context.Student.FirstOrDefault(a => a.ID == GordonID).Gender;
         List<string> yearList = new List<string>();
         foreach (string e in emailList)
         {
