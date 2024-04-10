@@ -1916,23 +1916,23 @@
             update roommate imformation
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="applicantion_id"> The ID of this application </param>
+            <param name="application_id"> The ID of this application </param>
             <param name="emailList"> A list of applicants' emails </param>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdateHallAsync(System.String,System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.UpdateHall(System.String,System.String,System.String[])">
             <summary>
             update the information of preferred halls
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="applicantion_id"> The ID of this application </param>
+            <param name="application_id"> The ID of this application </param>
             <param name="hallList"> A list of the preferred halls </param>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdatePreferenceAsync(System.String,System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.UpdatePreference(System.String,System.String,System.String[])">
             <summary>
             update the information of preferred halls
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="applicantion_id"> The ID of this application </param>
+            <param name="application_id"> The ID of this application </param>
             <param name="preferenceList"> A list of the preference </param>
         </member>
         <member name="M:Gordon360.Services.HousingService.UpdateDueDateAsync(System.String)">
