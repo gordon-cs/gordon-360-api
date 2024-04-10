@@ -15,7 +15,6 @@ public static class ServicesExtensions
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IAddressesService, AddressesService>();
-        services.AddScoped<IAdministratorService, AdministratorService>();
         services.AddScoped<IContentManagementService, ContentManagementService>();
         services.AddScoped<IDiningService, DiningService>();
         services.AddScoped<IEmailService, EmailService>();

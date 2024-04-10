@@ -6,27 +6,30 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class InvolvementOffering
 {
-    [Keyless]
-    public partial class InvolvementOffering
-    {
-        [Required]
-        [StringLength(8)]
-        [Unicode(false)]
-        public string ActivityCode { get; set; }
-        [StringLength(45)]
-        [Unicode(false)]
-        public string ActivityDescription { get; set; }
-        [StringLength(3)]
-        [Unicode(false)]
-        public string ActivityType { get; set; }
-        [StringLength(60)]
-        [Unicode(false)]
-        public string ActivityTypeDescription { get; set; }
-        [Required]
-        [StringLength(8)]
-        [Unicode(false)]
-        public string SessionCode { get; set; }
-    }
+    [Required]
+    [StringLength(8)]
+    [Unicode(false)]
+    public string ActivityCode { get; set; }
+
+    [StringLength(45)]
+    [Unicode(false)]
+    public string ActivityDescription { get; set; }
+
+    [StringLength(3)]
+    [Unicode(false)]
+    public string ActivityType { get; set; }
+
+    [StringLength(60)]
+    [Unicode(false)]
+    public string ActivityTypeDescription { get; set; }
+
+    [Required]
+    [StringLength(8)]
+    [Unicode(false)]
+    public string SessionCode { get; set; }
 }

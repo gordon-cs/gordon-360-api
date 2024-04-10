@@ -6,31 +6,27 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Table("Surface", Schema = "RecIM")]
+public partial class Surface
 {
-    [Table("Surface", Schema = "RecIM")]
-    public partial class Surface
-    {
-        public Surface()
-        {
-            Match = new HashSet<Match>();
-            SeriesSurface = new HashSet<SeriesSurface>();
-        }
+    [Key]
+    public int ID { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(64)]
-        [Unicode(false)]
-        public string Name { get; set; }
-        [Required]
-        [StringLength(256)]
-        [Unicode(false)]
-        public string Description { get; set; }
+    [Required]
+    [StringLength(64)]
+    [Unicode(false)]
+    public string Name { get; set; }
 
-        [InverseProperty("Surface")]
-        public virtual ICollection<Match> Match { get; set; }
-        [InverseProperty("Surface")]
-        public virtual ICollection<SeriesSurface> SeriesSurface { get; set; }
-    }
+    [Required]
+    [StringLength(256)]
+    [Unicode(false)]
+    public string Description { get; set; }
+
+    [InverseProperty("Surface")]
+    public virtual ICollection<Match> Match { get; set; } = new List<Match>();
+
+    [InverseProperty("Surface")]
+    public virtual ICollection<SeriesSurface> SeriesSurface { get; set; } = new List<SeriesSurface>();
 }

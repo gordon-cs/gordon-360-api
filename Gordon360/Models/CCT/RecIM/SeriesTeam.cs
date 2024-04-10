@@ -6,24 +6,29 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
-{
-    [Table("SeriesTeam", Schema = "RecIM")]
-    public partial class SeriesTeam
-    {
-        [Key]
-        public int ID { get; set; }
-        public int TeamID { get; set; }
-        public int SeriesID { get; set; }
-        public int WinCount { get; set; }
-        public int LossCount { get; set; }
-        public int TieCount { get; set; }
+namespace Gordon360.Models.CCT;
 
-        [ForeignKey("SeriesID")]
-        [InverseProperty("SeriesTeam")]
-        public virtual Series Series { get; set; }
-        [ForeignKey("TeamID")]
-        [InverseProperty("SeriesTeam")]
-        public virtual Team Team { get; set; }
-    }
+[Table("SeriesTeam", Schema = "RecIM")]
+public partial class SeriesTeam
+{
+    [Key]
+    public int ID { get; set; }
+
+    public int TeamID { get; set; }
+
+    public int SeriesID { get; set; }
+
+    public int WinCount { get; set; }
+
+    public int LossCount { get; set; }
+
+    public int TieCount { get; set; }
+
+    [ForeignKey("SeriesID")]
+    [InverseProperty("SeriesTeam")]
+    public virtual Series Series { get; set; }
+
+    [ForeignKey("TeamID")]
+    [InverseProperty("SeriesTeam")]
+    public virtual Team Team { get; set; }
 }
