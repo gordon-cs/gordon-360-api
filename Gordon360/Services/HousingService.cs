@@ -570,6 +570,7 @@ public class HousingService(CCTContext context) : IHousingService
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
         }
+        string gender = context.Student.FirstOrDefault(a => a.ID == GordonID).Gender;
         List<string> yearList = new List<string>();
         foreach (string e in emailList)
         {
@@ -580,6 +581,16 @@ public class HousingService(CCTContext context) : IHousingService
                 {
                     existActiveApplicant.Active = 0;
                 }
+                var student = context.Student.FirstOrDefault(x => x.Email == e);
+                if (student != null)
+                {
+                    if (gender != student.Gender)
+                    {
+                        throw new BadInputException() { ExceptionMessage = "The applicants are not of the same gender." };
+                    }
+                    gender = student.Gender;
+                    yearList.Add(student.Class);
+                }
                 var newApplicant = new Applicant
                 {
                     ApplicationID = applicantion_id,
@@ -587,12 +598,6 @@ public class HousingService(CCTContext context) : IHousingService
                     Active = 1
                 }; ;
                 await context.Applicant.AddAsync(newApplicant);
-
-                var student = context.Student.FirstOrDefault(x => x.Email == e);
-                if (student != null)
-                {
-                    yearList.Add(student.Class);
-                }
             }
         }
         var newMaxYear = new Year
