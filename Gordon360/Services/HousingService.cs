@@ -16,6 +16,8 @@ using Microsoft.Graph;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Data;
 using Newtonsoft.Json;
+using System.Security.Cryptography.Xml;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Gordon360.Services;
 
@@ -568,25 +570,21 @@ public class HousingService(CCTContext context) : IHousingService
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
         }
-        var existApplicant = context.Applicant.Where(x => x.ApplicationID == applicantion_id);
-        var existMaxYear = context.Year.Where(x => x.ApplicationID == applicantion_id);
-        foreach (Applicant a in existApplicant)
-        {
-            context.Applicant.Remove(a);
-        }
-        foreach (Year y in existMaxYear)
-        {
-            context.Year.Remove(y);
-        }
         List<string> yearList = new List<string>();
         foreach (string e in emailList)
         {
             if (e != "")
             {
+                var existActiveApplicant = context.Applicant.FirstOrDefault(x => (x.Applicant1 == e) && (x.Active == 1));
+                if (existActiveApplicant != null)
+                {
+                    existActiveApplicant.Active = 0;
+                }
                 var newApplicant = new Applicant
                 {
                     ApplicationID = applicantion_id,
-                    Applicant1 = e
+                    Applicant1 = e,
+                    Active = 1
                 }; ;
                 await context.Applicant.AddAsync(newApplicant);
 
@@ -619,11 +617,6 @@ public class HousingService(CCTContext context) : IHousingService
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
         }
-        var existHall = context.PreferredHall.Where(x => x.ApplicationID == applicantion_id);
-        foreach (PreferredHall h in existHall)
-        {
-            context.PreferredHall.Remove(h);
-        }
         var rank = 1;
         foreach (string h in hallList)
         {
@@ -654,11 +647,6 @@ public class HousingService(CCTContext context) : IHousingService
         if (GordonID == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
-        }
-        var existPreference = context.Preference.Where(x => x.ApplicationID == applicantion_id);
-        foreach (Preference p in existPreference)
-        {
-            context.Preference.Remove(p);
         }
         foreach (string p in preferenceList)
         {
@@ -696,13 +684,36 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Remove the particular user from the current application by setting her/his active flag to 0
+    /// </summary>
+    /// <returns> Whether or not this was successful </returns>
+    public bool RemoveUser(string username)
+    {
+        var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
+        var existActiveApplicant = context.Applicant.FirstOrDefault(x => (x.Applicant1 == email) && (x.Active == 1));
+        if (existActiveApplicant == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
+        }
+        existActiveApplicant.Active = 0;
+        context.SaveChanges();
+        return true;
+    }
+
+    /// <summary>
     /// Gets an array of preferences
     /// </summary>
     /// <returns> An array of preferences </returns>
     public IEnumerable<HousingPreferenceViewModel> GetAllPreference()
     {
+        var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
-        var result = context.Preference.Select(ph => (HousingPreferenceViewModel)ph);
+        var result = context.Preference
+        .Join(activeApplicants, p => p.ApplicationID, a => a.ApplicationID, (p, a) => new HousingPreferenceViewModel
+        {
+            ApplicationID = p.ApplicationID,
+            Preference1 = p.Preference1,
+        }).Distinct();
         if (result == null || !result.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The preferences could not be found." };
@@ -717,7 +728,7 @@ public class HousingService(CCTContext context) : IHousingService
     public IEnumerable<HousingPreferenceViewModel> GetUserPreference(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
-        var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+        var applicationID = context.Applicant.FirstOrDefault(a => (a.Applicant1 == email) && (a.Active == 1))?.ApplicationID;
         var preference = context.Preference.Where(a => a.ApplicationID == applicationID).Select(ph => (HousingPreferenceViewModel)ph);
         return preference.ToArray();
     }
@@ -728,8 +739,15 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns> AN array of preferred halls </returns>
     public IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHall()
     {
+        var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
-        var result = context.PreferredHall.Select(ph => (HousingPreferredHallViewModel)ph);
+        var result = context.PreferredHall
+        .Join(activeApplicants, ph => ph.ApplicationID, a => a.ApplicationID, (ph, a) => new HousingPreferredHallViewModel
+        {
+            ApplicationID = ph.ApplicationID,
+            Rank = ph.Rank,
+            HallName = ph.HallName,
+        }).Distinct();
         if (result == null || !result.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The preferred halls could not be found." };
@@ -744,7 +762,7 @@ public class HousingService(CCTContext context) : IHousingService
     public IEnumerable<HousingPreferredHallViewModel> GetUserPreferredHall(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
-        var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+        var applicationID = context.Applicant.FirstOrDefault(a => (a.Applicant1 == email) && (a.Active == 1))?.ApplicationID;
         var preferredHall = context.PreferredHall.Where(a => a.ApplicationID == applicationID).Select(ph => (HousingPreferredHallViewModel)ph);
         return preferredHall.ToArray();
     }
@@ -755,8 +773,7 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns> AN array of applicants </returns>
     public IEnumerable<HousingApplicantViewModel>  GetAllApplicant()
     {
-
-        var result = context.Applicant.Select(a => (HousingApplicantViewModel) a);
+        var result = context.Applicant.Where(a => a.Active == 1).Select(a => (HousingApplicantViewModel) a);
         if (result == null || !result.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
@@ -771,7 +788,7 @@ public class HousingService(CCTContext context) : IHousingService
     public IEnumerable<HousingApplicantViewModel> GetUserRoommate(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
-        var applicationID = context.Applicant.FirstOrDefault(a => a.Applicant1 == email)?.ApplicationID;
+        var applicationID = context.Applicant.FirstOrDefault(a => (a.Applicant1 == email) && (a.Active == 1))?.ApplicationID;
         var applicant = context.Applicant.Where(a => a.ApplicationID == applicationID).Select(a => (HousingApplicantViewModel)a);
         return applicant.ToArray();
     }

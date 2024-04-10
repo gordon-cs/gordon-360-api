@@ -312,6 +312,19 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Remove "myself" from the current application
+    /// </summary>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("lottery/remove_user")]
+    public ActionResult<bool> RemoveUser()
+    {
+        var username = AuthUtils.GetUsername(User);
+        bool result = housingService.RemoveUser(username);
+        return Ok(result);
+    }
+
+    /// <summary>
     /// Get an array of preferences
     /// </summary>
     /// <returns></returns>

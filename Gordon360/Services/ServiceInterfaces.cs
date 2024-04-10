@@ -217,6 +217,7 @@ namespace Gordon360.Services
         bool DeleteApplication(int applicationID);
         string[] GetAllApartmentHalls();
         string[] GetAllTraditionalHalls();
+        bool RemoveUser(string username);
         IEnumerable<HousingPreferenceViewModel> GetAllPreference();
         IEnumerable<HousingPreferenceViewModel> GetUserPreference(string username);
         IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHall();
