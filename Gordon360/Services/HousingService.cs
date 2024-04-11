@@ -18,6 +18,7 @@ using System.Data;
 using Newtonsoft.Json;
 using System.Security.Cryptography.Xml;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.Identity.Client;
 
 namespace Gordon360.Services;
 
@@ -587,14 +588,15 @@ public class HousingService(CCTContext context, IAccountService accountService) 
                     existActiveApplicant.Active = 0;
                 }
                 var student = context.Student.FirstOrDefault(x => x.Email == e);
-                if (student != null)
+                if (student == null)
                 {
-                    if (gender != student.Gender)
-                    {
-                        throw new BadInputException() { ExceptionMessage = "The applicants are not of the same gender." };
-                    }
-                    gender = student.Gender;
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The applicant cannot be found." };
                 }
+                if (gender != student.Gender)
+                {
+                    throw new BadInputException() { ExceptionMessage = "The applicants are not of the same gender." };
+                }
+                gender = student.Gender;
                 var newApplicant = new Applicant
                 {
                     ApplicationID = application_id,
@@ -613,7 +615,7 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// <param name="username"> The username for the user who complete the aplication form </param>
     /// <param name="application_id"> The ID of this application </param>
     /// <param name="hallList"> A list of the preferred halls </param>
-    public void UpdateHall(string username, string application_id, string[] hallList)
+    public void UpdatePreferredHall(string username, string application_id, string[] hallList)
     {
         var hallPreferences = hallList.Select((hall, index) => new PreferredHall { ApplicationID = application_id, Rank = index + 1, HallName = hall });
         context.PreferredHall.AddRange(hallPreferences);
@@ -639,17 +641,10 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// <param name="dueDate"> The due date of the application </param>
     public async Task UpdateDueDateAsync(string dueDate)
     {
-        var existDueDate = context.DueDate.FirstOrDefault();
-        if (existDueDate != null)
-        {
-            context.DueDate.Remove(existDueDate);
-        }
-        var newDueDate = new DueDate
-        {
-            DueDate1 = dueDate
-        }; ;
-        await context.DueDate.AddAsync(newDueDate);
-        context.SaveChanges();
+        // This code here is not working correctly. It cannot save the changes.
+        var myDueDate = context.Config.FirstOrDefault(d => d.Key == "housing_lottery_due_date");
+        myDueDate.Value = dueDate;
+        await context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -673,7 +668,7 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// Gets an array of preferences
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public IEnumerable<HousingPreferenceViewModel> GetAllPreference()
+    public IEnumerable<HousingPreferenceViewModel> GetAllPreferences()
     {
         var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
@@ -706,7 +701,7 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     ///Gets an array of preferred halls
     /// </summary>
     /// <returns> AN array of preferred halls </returns>
-    public IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHall()
+    public IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHalls()
     {
         var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
@@ -740,7 +735,7 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     ///Gets an array of applicants
     /// </summary>
     /// <returns> AN array of applicants </returns>
-    public IEnumerable<HousingApplicantViewModel>  GetAllApplicant()
+    public IEnumerable<HousingApplicantViewModel>  GetAllApplicants()
     {
         var result = context.Applicant.Where(a => a.Active == 1).Select(a => (HousingApplicantViewModel) a);
         if (result == null || !result.Any())

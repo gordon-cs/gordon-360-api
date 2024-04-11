@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
+// ApplicationID: random 8-character string using as lottery number
+// Applicant1: preference of the applicant(s) in this application
+// The preferences are morning-bird/night-owl, quiet/loud.
 [PrimaryKey("ApplicationID", "Preference1")]
 [Table("Preference", Schema = "Housing")]
 public partial class Preference

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
+// ApplicationID: random 8-character string using as lottery number
+// Applicant1: preferred hall of the applicant(s) in this application
 [PrimaryKey("ApplicationID", "Rank")]
 [Table("PreferredHall", Schema = "Housing")]
 public partial class PreferredHall

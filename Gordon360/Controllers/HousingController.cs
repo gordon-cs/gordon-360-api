@@ -260,7 +260,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("lottery/roommate/{application_id}")]
+    [Route("lottery/{application_id}/roommate")]
     public async Task<ActionResult> UpdateRoommate(string application_id, string[] emailList)
     {
         var username = AuthUtils.GetUsername(User);
@@ -273,11 +273,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("lottery/hall/{application_id}")]
+    [Route("lottery/{application_id}/hall")]
     public ActionResult UpdatePreferredHall(string application_id, string[] hallList)
     {
         var username = AuthUtils.GetUsername(User);
-        housingService.UpdateHall(username, application_id, hallList);
+        housingService.UpdatePreferredHall(username, application_id, hallList);
         return Ok();
     }
 
@@ -286,7 +286,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("lottery/preference/{application_id}")]
+    [Route("lottery/{application_id}/preference")]
     public ActionResult UpdatePreference(string application_id, string[] preferenceList)
     {
         var username = AuthUtils.GetUsername(User);
@@ -330,7 +330,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns></returns>
     [HttpGet]
     [Route("lottery/preference")]
-    public ActionResult<Preference[]> GetAllPreference()
+    public ActionResult<Preference[]> GetAllPreferences()
     {
         var viewerGroups = AuthUtils.GetGroups(User);
         if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
@@ -338,7 +338,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return Unauthorized();
         }
 
-        var result = housingService.GetAllPreference();
+        var result = housingService.GetAllPreferences();
         return Ok(result);
     }
 
@@ -365,7 +365,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns></returns>
     [HttpGet]
     [Route("lottery/preferred_hall")]
-    public ActionResult<PreferredHall[]> GetAllPreferredHall()
+    public ActionResult<PreferredHall[]> GetAllPreferredHalls()
     {
         var viewerGroups = AuthUtils.GetGroups(User);
         if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
@@ -373,7 +373,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return Unauthorized();
         }
 
-        var result = housingService.GetAllPreferredHall();
+        var result = housingService.GetAllPreferredHalls();
         return Ok(result);
     }
 
@@ -400,7 +400,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns></returns>
     [HttpGet]
     [Route("lottery/applicant")]
-    public ActionResult<Applicant[]> GetAllApplicant()
+    public ActionResult<Applicant[]> GetAllApplicants()
     {
         var viewerGroups = AuthUtils.GetGroups(User);
         if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
@@ -408,7 +408,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return Unauthorized();
         }
 
-        var result = housingService.GetAllApplicant();
+        var result = housingService.GetAllApplicants();
         return Ok(result);
     }
 

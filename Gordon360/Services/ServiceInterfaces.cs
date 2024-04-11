@@ -218,11 +218,11 @@ namespace Gordon360.Services
         string[] GetAllApartmentHalls();
         string[] GetAllTraditionalHalls();
         bool RemoveUser(string username);
-        IEnumerable<HousingPreferenceViewModel> GetAllPreference();
+        IEnumerable<HousingPreferenceViewModel> GetAllPreferences();
         IEnumerable<HousingPreferenceViewModel> GetUserPreference(string username);
-        IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHall();
+        IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHalls();
         IEnumerable<HousingPreferredHallViewModel> GetUserPreferredHall(string username);
-        IEnumerable<HousingApplicantViewModel> GetAllApplicant();
+        IEnumerable<HousingApplicantViewModel> GetAllApplicants();
         IEnumerable<HousingApplicantViewModel> GetUserRoommate(string username);
         Year[] GetAllSchoolYear();
         string GetDueDate();
@@ -235,7 +235,7 @@ namespace Gordon360.Services
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
         Task UpdateRoommateAsync(string username, string application_id, string[] emailList);
-        void UpdateHall(string username, string application_id, string[] hallList);
+        void UpdatePreferredHall(string username, string application_id, string[] hallList);
         void UpdatePreference(string username, string application_id, string[] preferenceList);
         Task UpdateDueDateAsync(string dueDate);
     }
