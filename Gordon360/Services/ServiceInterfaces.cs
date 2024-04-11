@@ -218,11 +218,11 @@ namespace Gordon360.Services
         string[] GetAllApartmentHalls();
         string[] GetAllTraditionalHalls();
         bool RemoveUser(string username);
-        IEnumerable<HousingPreferenceViewModel> GetAllPreference();
+        IEnumerable<HousingPreferenceViewModel> GetAllPreferences();
         IEnumerable<HousingPreferenceViewModel> GetUserPreference(string username);
-        IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHall();
+        IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHalls();
         IEnumerable<HousingPreferredHallViewModel> GetUserPreferredHall(string username);
-        IEnumerable<HousingApplicantViewModel> GetAllApplicant();
+        IEnumerable<HousingApplicantViewModel> GetAllApplicants();
         IEnumerable<HousingApplicantViewModel> GetUserRoommate(string username);
         Year[] GetAllSchoolYear();
         string GetDueDate();
@@ -234,9 +234,9 @@ namespace Gordon360.Services
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, List<ApartmentApplicantViewModel> newApartmentApplicants, List<ApartmentChoiceViewModel> newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
-        Task UpdateRoommateAsync(string username, string applicantion_id, string[] emailList);
-        Task UpdateHallAsync(string username, string applicantion_id, string[] hallList);
-        Task UpdatePreferenceAsync(string username, string applicantion_id, string[] preferenceList);
+        Task UpdateRoommateAsync(string username, string application_id, string[] emailList);
+        void UpdatePreferredHall(string username, string application_id, string[] hallList);
+        void UpdatePreference(string username, string application_id, string[] preferenceList);
         Task UpdateDueDateAsync(string dueDate);
     }
 

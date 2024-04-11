@@ -326,7 +326,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetAllPreference">
+        <member name="M:Gordon360.Controllers.HousingController.GetAllPreferences">
             <summary>
             Get an array of preferences
             </summary>
@@ -338,7 +338,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetAllPreferredHall">
+        <member name="M:Gordon360.Controllers.HousingController.GetAllPreferredHalls">
             <summary>
             Get an array of preferred halls
             </summary>
@@ -350,7 +350,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetAllApplicant">
+        <member name="M:Gordon360.Controllers.HousingController.GetAllApplicants">
             <summary>
             Get an array of applicant
             </summary>
@@ -1916,23 +1916,23 @@
             update roommate imformation
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="applicantion_id"> The ID of this application </param>
+            <param name="application_id"> The ID of this application </param>
             <param name="emailList"> A list of applicants' emails </param>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdateHallAsync(System.String,System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.UpdatePreferredHall(System.String,System.String,System.String[])">
             <summary>
             update the information of preferred halls
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="applicantion_id"> The ID of this application </param>
+            <param name="application_id"> The ID of this application </param>
             <param name="hallList"> A list of the preferred halls </param>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdatePreferenceAsync(System.String,System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.UpdatePreference(System.String,System.String,System.String[])">
             <summary>
             update the information of preferred halls
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="applicantion_id"> The ID of this application </param>
+            <param name="application_id"> The ID of this application </param>
             <param name="preferenceList"> A list of the preference </param>
         </member>
         <member name="M:Gordon360.Services.HousingService.UpdateDueDateAsync(System.String)">
@@ -1947,7 +1947,7 @@
             </summary>
             <returns> Whether or not this was successful </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetAllPreference">
+        <member name="M:Gordon360.Services.HousingService.GetAllPreferences">
             <summary>
             Gets an array of preferences
             </summary>
@@ -1959,7 +1959,7 @@
             </summary>
             <returns> An array of preferences </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetAllPreferredHall">
+        <member name="M:Gordon360.Services.HousingService.GetAllPreferredHalls">
              <summary>
             Gets an array of preferred halls
              </summary>
@@ -1971,7 +1971,7 @@
             </summary>
             <returns> An array of preferences </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetAllApplicant">
+        <member name="M:Gordon360.Services.HousingService.GetAllApplicants">
              <summary>
             Gets an array of applicants
              </summary>

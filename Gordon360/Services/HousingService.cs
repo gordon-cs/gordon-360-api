@@ -18,10 +18,11 @@ using System.Data;
 using Newtonsoft.Json;
 using System.Security.Cryptography.Xml;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.Identity.Client;
 
 namespace Gordon360.Services;
 
-public class HousingService(CCTContext context) : IHousingService
+public class HousingService(CCTContext context, IAccountService accountService) : IHousingService
 {
 
     /// <summary>
@@ -561,17 +562,22 @@ public class HousingService(CCTContext context) : IHousingService
     /// update roommate imformation
     /// </summary>
     /// <param name="username"> The username for the user who complete the aplication form </param>
-    /// <param name="applicantion_id"> The ID of this application </param>
+    /// <param name="application_id"> The ID of this application </param>
     /// <param name="emailList"> A list of applicants' emails </param>
-    public async Task UpdateRoommateAsync(string username, string applicantion_id, string[] emailList)
+    public async Task UpdateRoommateAsync(string username, string application_id, string[] emailList)
     {
-        var GordonID = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
-        if (GordonID == null)
+        var account = accountService.GetAccountByUsername(username);
+        string gender = context.Student.FirstOrDefault(a => a.ID == account.GordonID).Gender;
+
+        var maxYear = context.Student
+            .Where(s => emailList.Contains(s.Email))
+            .Select(s => s.Class).Max();
+        await context.Year.AddAsync(new Year
         {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
-        }
-        string gender = context.Student.FirstOrDefault(a => a.ID == GordonID).Gender;
-        List<string> yearList = new List<string>();
+            ApplicationID = application_id,
+            Year1 = maxYear
+        });
+
         foreach (string e in emailList)
         {
             if (e != "")
@@ -582,30 +588,24 @@ public class HousingService(CCTContext context) : IHousingService
                     existActiveApplicant.Active = 0;
                 }
                 var student = context.Student.FirstOrDefault(x => x.Email == e);
-                if (student != null)
+                if (student == null)
                 {
-                    if (gender != student.Gender)
-                    {
-                        throw new BadInputException() { ExceptionMessage = "The applicants are not of the same gender." };
-                    }
-                    gender = student.Gender;
-                    yearList.Add(student.Class);
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The applicant cannot be found." };
                 }
+                if (gender != student.Gender)
+                {
+                    throw new BadInputException() { ExceptionMessage = "The applicants are not of the same gender." };
+                }
+                gender = student.Gender;
                 var newApplicant = new Applicant
                 {
-                    ApplicationID = applicantion_id,
+                    ApplicationID = application_id,
                     Applicant1 = e,
                     Active = 1
                 }; ;
                 await context.Applicant.AddAsync(newApplicant);
             }
         }
-        var newMaxYear = new Year
-        {
-            ApplicationID = applicantion_id,
-            Year1 = yearList.Max()
-        }; ;
-        await context.Year.AddAsync(newMaxYear);
         context.SaveChanges();
     }
 
@@ -613,30 +613,12 @@ public class HousingService(CCTContext context) : IHousingService
     /// update the information of preferred halls
     /// </summary>
     /// <param name="username"> The username for the user who complete the aplication form </param>
-    /// <param name="applicantion_id"> The ID of this application </param>
+    /// <param name="application_id"> The ID of this application </param>
     /// <param name="hallList"> A list of the preferred halls </param>
-    public async Task UpdateHallAsync(string username, string applicantion_id, string[] hallList)
+    public void UpdatePreferredHall(string username, string application_id, string[] hallList)
     {
-        var GordonID = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
-        if (GordonID == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
-        }
-        var rank = 1;
-        foreach (string h in hallList)
-        {
-            if (h != "")
-            {
-                var newHall = new PreferredHall
-                {
-                    ApplicationID = applicantion_id,
-                    Rank = rank,
-                    HallName = h
-                }; ;
-                await context.PreferredHall.AddAsync(newHall);
-                rank++;
-            }
-        }
+        var hallPreferences = hallList.Select((hall, index) => new PreferredHall { ApplicationID = application_id, Rank = index + 1, HallName = hall });
+        context.PreferredHall.AddRange(hallPreferences);
         context.SaveChanges();
     }
 
@@ -644,28 +626,12 @@ public class HousingService(CCTContext context) : IHousingService
     /// update the information of preferred halls
     /// </summary>
     /// <param name="username"> The username for the user who complete the aplication form </param>
-    /// <param name="applicantion_id"> The ID of this application </param>
+    /// <param name="application_id"> The ID of this application </param>
     /// <param name="preferenceList"> A list of the preference </param>
-    public async Task UpdatePreferenceAsync(string username, string applicantion_id, string[] preferenceList)
+    public void UpdatePreference(string username, string application_id, string[] preferenceList)
     {
-        var GordonID = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.gordon_id;
-        if (GordonID == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
-        }
-        foreach (string p in preferenceList)
-        {
-            if (p != "")
-            {
-                var newPreference = new Preference
-                {
-                    ApplicationID = applicantion_id,
-                    Preference1 = p
-                }; ;
-                await context.Preference.AddAsync(newPreference);
-                await context.Preference.AddAsync(newPreference);
-            }
-        }
+        var preferences = preferenceList.Select((preference) => new Preference { ApplicationID = application_id, Preference1 = preference });
+        context.Preference.AddRange(preferences);
         context.SaveChanges();
     }
 
@@ -675,17 +641,10 @@ public class HousingService(CCTContext context) : IHousingService
     /// <param name="dueDate"> The due date of the application </param>
     public async Task UpdateDueDateAsync(string dueDate)
     {
-        var existDueDate = context.DueDate.FirstOrDefault();
-        if (existDueDate != null)
-        {
-            context.DueDate.Remove(existDueDate);
-        }
-        var newDueDate = new DueDate
-        {
-            DueDate1 = dueDate
-        }; ;
-        await context.DueDate.AddAsync(newDueDate);
-        context.SaveChanges();
+        // This code here is not working correctly. It cannot save the changes.
+        var myDueDate = context.Config.FirstOrDefault(d => d.Key == "housing_lottery_due_date");
+        myDueDate.Value = dueDate;
+        await context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -709,7 +668,7 @@ public class HousingService(CCTContext context) : IHousingService
     /// Gets an array of preferences
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public IEnumerable<HousingPreferenceViewModel> GetAllPreference()
+    public IEnumerable<HousingPreferenceViewModel> GetAllPreferences()
     {
         var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
@@ -742,7 +701,7 @@ public class HousingService(CCTContext context) : IHousingService
     ///Gets an array of preferred halls
     /// </summary>
     /// <returns> AN array of preferred halls </returns>
-    public IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHall()
+    public IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHalls()
     {
         var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
@@ -776,7 +735,7 @@ public class HousingService(CCTContext context) : IHousingService
     ///Gets an array of applicants
     /// </summary>
     /// <returns> AN array of applicants </returns>
-    public IEnumerable<HousingApplicantViewModel>  GetAllApplicant()
+    public IEnumerable<HousingApplicantViewModel>  GetAllApplicants()
     {
         var result = context.Applicant.Where(a => a.Active == 1).Select(a => (HousingApplicantViewModel) a);
         if (result == null || !result.Any())

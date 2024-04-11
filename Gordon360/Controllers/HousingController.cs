@@ -260,11 +260,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("housing_lottery/roommate/{applicantion_id}")]
-    public async Task<ActionResult<string>> UpdateRoommate(string applicantion_id, [FromBody] string[] emailList)
+    [Route("lottery/{application_id}/roommate")]
+    public async Task<ActionResult> UpdateRoommate(string application_id, string[] emailList)
     {
         var username = AuthUtils.GetUsername(User);
-        await housingService.UpdateRoommateAsync(username, applicantion_id, emailList);
+        await housingService.UpdateRoommateAsync(username, application_id, emailList);
         return Ok();
     }
 
@@ -273,11 +273,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("housing_lottery/hall/{applicantion_id}")]
-    public async Task<ActionResult<string>> UpdatePreferredHall(string applicantion_id, [FromBody] string[] hallList)
+    [Route("lottery/{application_id}/hall")]
+    public ActionResult UpdatePreferredHall(string application_id, string[] hallList)
     {
         var username = AuthUtils.GetUsername(User);
-        await housingService.UpdateHallAsync(username, applicantion_id, hallList);
+        housingService.UpdatePreferredHall(username, application_id, hallList);
         return Ok();
     }
 
@@ -286,11 +286,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("housing_lottery/preference/{applicantion_id}")]
-    public async Task<ActionResult<string>> UpdatePreference(string applicantion_id, [FromBody] string[] preferenceList)
+    [Route("lottery/{application_id}/preference")]
+    public ActionResult UpdatePreference(string application_id, string[] preferenceList)
     {
         var username = AuthUtils.GetUsername(User);
-        await housingService.UpdatePreferenceAsync(username, applicantion_id, preferenceList);
+        housingService.UpdatePreference(username, application_id, preferenceList);
         return Ok();
     }
 
@@ -299,16 +299,16 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("housing_lottery/due_date/")]
-    public async Task<ActionResult<string>> UpdateDueDateAsync([FromBody] string dueDate)
+    [Route("lottery/due_date/{dueDate}")]
+    public async Task<ActionResult> UpdateDueDateAsync(string dueDate)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
-        if (viewerGroups.Contains(AuthGroup.HousingAdmin))
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
         {
-            await housingService.UpdateDueDateAsync(dueDate);
-            return Ok();
+            return Unauthorized();
         }
-        return BadRequest();
+        await housingService.UpdateDueDateAsync(dueDate);
+        return Ok();
     }
 
     /// <summary>
@@ -329,20 +329,17 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Route("housing_lottery/all_preference")]
-    public ActionResult<Preference[]> GetAllPreference()
+    [Route("lottery/preference")]
+    public ActionResult<Preference[]> GetAllPreferences()
     {
         var viewerGroups = AuthUtils.GetGroups(User);
-        if (viewerGroups.Contains(AuthGroup.HousingAdmin))
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
         {
-            var result = housingService.GetAllPreference();
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return NotFound();
+            return Unauthorized();
         }
-        return Ok(null);
+
+        var result = housingService.GetAllPreferences();
+        return Ok(result);
     }
 
     /// <summary>
@@ -355,11 +352,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         var username = AuthUtils.GetUsername(User);
         var result = housingService.GetUserPreference(username);
-        if (result != null)
+        if (result == null)
         {
-            return Ok(result);
+            return NotFound();
         }
-        return NotFound();
+        return Ok(result);
     }
 
     /// <summary>
@@ -367,20 +364,17 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Route("housing_lottery/all_preferred_hall")]
-    public ActionResult<PreferredHall[]> GetAllPreferredHall()
+    [Route("lottery/preferred_hall")]
+    public ActionResult<PreferredHall[]> GetAllPreferredHalls()
     {
         var viewerGroups = AuthUtils.GetGroups(User);
-        if (viewerGroups.Contains(AuthGroup.HousingAdmin))
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
         {
-            var result = housingService.GetAllPreferredHall();
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return NotFound();
+            return Unauthorized();
         }
-        return Ok(null);
+
+        var result = housingService.GetAllPreferredHalls();
+        return Ok(result);
     }
 
     /// <summary>
@@ -393,11 +387,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         var username = AuthUtils.GetUsername(User);
         var result = housingService.GetUserPreferredHall(username);
-        if (result != null)
+        if (result == null)
         {
-            return Ok(result);
+            return NotFound();
         }
-        return NotFound();
+        return Ok(result);
     }
 
     /// <summary>
@@ -405,20 +399,17 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Route("housing_lottery/all_applicant")]
-    public ActionResult<Applicant[]> GetAllApplicant()
+    [Route("lottery/applicant")]
+    public ActionResult<Applicant[]> GetAllApplicants()
     {
         var viewerGroups = AuthUtils.GetGroups(User);
-        if (viewerGroups.Contains(AuthGroup.HousingAdmin))
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
         {
-            var result = housingService.GetAllApplicant();
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return NotFound();
+            return Unauthorized();
         }
-        return Ok(null);
+
+        var result = housingService.GetAllApplicants();
+        return Ok(result);
     }
 
     /// <summary>
@@ -431,11 +422,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         var username = AuthUtils.GetUsername(User);
         var result = housingService.GetUserRoommate(username);
-        if (result != null)
+        if (result == null)
         {
-            return Ok(result);
+            return NotFound();
         }
-        return NotFound();
+        return Ok(result);
     }
 
     /// <summary>
@@ -443,20 +434,17 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Route("housing_lottery/all_school_year")]
+    [Route("lottery/school_year")]
     public ActionResult<Year[]> GetAllSchoolYear()
     {
         var viewerGroups = AuthUtils.GetGroups(User);
-        if (viewerGroups.Contains(AuthGroup.HousingAdmin))
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
         {
-            var result = housingService.GetAllSchoolYear();
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            return NotFound();
+            return Unauthorized();
         }
-        return Ok(null);
+
+        var result = housingService.GetAllSchoolYear();
+        return Ok(result);
     }
 
     /// <summary>
@@ -464,7 +452,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    [Route("housing_lottery/get_due_date/")]
+    [Route("lottery/due_date/")]
     public ActionResult<string> GetDueDate()
     {
         var result = housingService.GetDueDate();

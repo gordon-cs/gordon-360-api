@@ -42,6 +42,7 @@ public class StateYourBusiness : ActionFilterAttribute
 
     private ActionExecutingContext context;
     private CCTContext _CCTContext;
+    private IAccountService _accountService;
     private IMembershipService _membershipService;
     private IMembershipRequestService _membershipRequestService;
     private INewsService _newsService;
@@ -178,7 +179,7 @@ public class StateYourBusiness : ActionFilterAttribute
                 {
                     // The members of the apartment application can only read their application
                     var sess_cde = Helpers.GetCurrentSession(_CCTContext);
-                    HousingService housingService = new HousingService(_CCTContext);
+                    HousingService housingService = new HousingService(_CCTContext, _accountService);
                     int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                     if (context.ActionArguments["applicationID"] is int requestedApplicationID && applicationID is not null)
                     {
@@ -484,7 +485,7 @@ public class StateYourBusiness : ActionFilterAttribute
                     if (user_groups.Contains(AuthGroup.Student))
                     {
                         var sess_cde = Helpers.GetCurrentSession(_CCTContext);
-                        var housingService = new HousingService(_CCTContext);
+                        var housingService = new HousingService(_CCTContext, _accountService);
                         int? applicationID = housingService.GetApplicationID(user_name, sess_cde);
                         if (!applicationID.HasValue || applicationID == 0)
                         {
@@ -605,7 +606,7 @@ public class StateYourBusiness : ActionFilterAttribute
                 {
                     // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                     // If the user is a student, then the user must be on an application and be an editor to update the application
-                    HousingService housingService = new HousingService(_CCTContext);
+                    HousingService housingService = new HousingService(_CCTContext, _accountService);
                     if (user_groups.Contains(AuthGroup.HousingAdmin))
                     {
                         return true;
@@ -822,7 +823,7 @@ public class StateYourBusiness : ActionFilterAttribute
                 {
                     // The housing admins can update the application information (i.e. probation, offcampus program, etc.)
                     // If the user is a student, then the user must be on an application and be an editor to update the application
-                    HousingService housingService = new HousingService(_CCTContext);
+                    HousingService housingService = new HousingService(_CCTContext, _accountService);
                     if (user_groups.Contains(AuthGroup.HousingAdmin))
                     {
                         return true;
