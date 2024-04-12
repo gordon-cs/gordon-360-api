@@ -148,28 +148,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdminsController.GetAll">
-            <summary>
-            Get all admins
-            </summary>
-            <returns>
-            A list of all admins
-            </returns>
-            <remarks>
-            Server makes call to the database and returns all admins
-            </remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Post(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>Create a new admin to be added to database</summary>
-            <param name="admin">The admin item containing all required and relevant information</param>
-            <returns></returns>
-            <remarks>Posts a new admin to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Delete(System.String)">
-            <summary>Delete an existing admin</summary>
-            <param name="username">The username of the user to demote</param>
-            <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetMajors">
             <summary>
             Return a list majors.
@@ -1476,7 +1454,7 @@
             Activity Info and ACtivity may be talked about interchangeably.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
+        <member name="M:Gordon360.Services.ActivityService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{Gordon360.Services.ActivityService},Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
             ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)
@@ -1572,50 +1550,6 @@
             </summary>
             <param name="activityCode">The activity code</param>
             <param name="isPrivate">activity private or not</param>
-        </member>
-        <member name="T:Gordon360.Services.AdministratorService">
-            <summary>
-            Service class to facilitate interacting with the Admin table.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IAccountService)">
-            <summary>
-            Service class to facilitate interacting with the Admin table.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.GetAll">
-            <summary>
-            Fetches all the administrators from the database
-            </summary>
-            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.GetByUsername(System.String)">
-            <summary>
-            Fetches a specific admin from the database
-            </summary>
-            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Add(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>
-            Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-            we do it here by using the validateAdmin() method.
-            </summary>
-            <param name="adminView">The admin to be added</param>
-            <returns>The newly added Admin object</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Delete(System.String)">
-            <summary>
-            Delete the admin whose id is specified by the parameter.
-            </summary>
-            <param name="username">The username of the admin to demote</param>
-            <returns>The admin that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.validateAdmin(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>
-            Helper method to Validate an admin
-            </summary>
-            <param name="admin">The admin to validate</param>
-            <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
         </member>
         <member name="T:Gordon360.Services.ContentManagementService">
             <summary>
