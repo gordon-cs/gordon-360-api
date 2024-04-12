@@ -1454,7 +1454,7 @@
             Activity Info and ACtivity may be talked about interchangeably.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ActivityService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.Extensions.Logging.ILogger{Gordon360.Services.ActivityService},Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
+        <member name="M:Gordon360.Services.ActivityService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
             <summary>
             Service Class that facilitates data transactions between the ActivitiesController and the ACT_INFO database model.
             ACT_INFO is basically a copy of the ACT_CLUB_DEF domain model in TmsEPrd but with extra fields that we want to store (activity image, blurb etc...)

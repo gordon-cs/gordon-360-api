@@ -29,10 +29,7 @@ try
     builder.Services.AddSerilog((services, lc) => lc
         .ReadFrom.Configuration(builder.Configuration)
         .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-        .WriteTo.Console()
-        .WriteTo.File(new CompactJsonFormatter(), "./Logs/info.json", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 14, rollOnFileSizeLimit: true)
-        .WriteTo.File(new CompactJsonFormatter(), "./Logs/error.json", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error, rollingInterval: RollingInterval.Day));
+        .Enrich.FromLogContext());
 
     builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAd");
 
