@@ -224,7 +224,7 @@ namespace Gordon360.Services
         IEnumerable<HousingPreferredHallViewModel> GetUserPreferredHall(string username);
         IEnumerable<HousingApplicantViewModel> GetAllApplicants();
         IEnumerable<HousingApplicantViewModel> GetUserRoommate(string username);
-        Year[] GetAllSchoolYear();
+        IEnumerable<HousingYearViewModel> GetAllSchoolYear();
         string GetDueDate();
         string GetEditorUsername(int applicationID);
         int? GetApplicationID(string username, string sess_cde);

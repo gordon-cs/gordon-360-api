@@ -19,6 +19,9 @@ using Newtonsoft.Json;
 using System.Security.Cryptography.Xml;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.Identity.Client;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics;
+using Microsoft.VisualBasic;
 
 namespace Gordon360.Services;
 
@@ -569,15 +572,6 @@ public class HousingService(CCTContext context, IAccountService accountService) 
         var account = accountService.GetAccountByUsername(username);
         string gender = context.Student.FirstOrDefault(a => a.ID == account.GordonID).Gender;
 
-        var maxYear = context.Student
-            .Where(s => emailList.Contains(s.Email))
-            .Select(s => s.Class).Max();
-        await context.Year.AddAsync(new Year
-        {
-            ApplicationID = application_id,
-            Year1 = maxYear
-        });
-
         foreach (string e in emailList)
         {
             if (e != "")
@@ -642,9 +636,9 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     public async Task UpdateDueDateAsync(string dueDate)
     {
         // This code here is not working correctly. It cannot save the changes.
-        var myDueDate = context.Config.FirstOrDefault(d => d.Key == "housing_lottery_due_date");
-        myDueDate.Value = dueDate;
-        await context.SaveChangesAsync();
+        context.Config
+        .Where(c => c.Key == "housing_lottery_due_date")
+        .ExecuteUpdate(setters => setters.SetProperty(d => d.Value, d => dueDate));
     }
 
     /// <summary>
@@ -761,15 +755,19 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     ///Gets an array of school years
     /// </summary>
     /// <returns> AN array of school years </returns>
-    public Year[] GetAllSchoolYear()
+    public IEnumerable<HousingYearViewModel> GetAllSchoolYear()
     {
+        var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
-        var result = context.Year;
-        if (result == null || !result.Any())
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The school years could not be found." };
-        }
-        return result.ToArray();
+        var result = context.Student
+        .Join(activeApplicants, s => s.Email, a => a.Applicant1, (s, a) => new
+        { 
+            a.ApplicationID,
+            s.Class
+        })
+        .GroupBy(hy => hy.ApplicationID).Select(g => new HousingYearViewModel(g.Key, g.Max(row => row.Class)));
+
+        return result;
     }
 
     /// <summary>
@@ -778,7 +776,7 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// <returns> The due date of housing application </returns>
     public string GetDueDate()
     {
-        var result = context.DueDate.FirstOrDefault().DueDate1;
+        var result = context.Config.FirstOrDefault(c => c.Key == "housing_lottery_due_date").Value;
         return result;
     }
 }
