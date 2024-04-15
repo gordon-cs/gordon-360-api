@@ -260,11 +260,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("lottery/{application_id}/roommate")]
-    public async Task<ActionResult> UpdateRoommate(string application_id, string[] emailList)
+    [Route("lottery/{applicationID}/roommate")]
+    public async Task<ActionResult> UpdateRoommate(string applicationID, string[] emailList)
     {
         var username = AuthUtils.GetUsername(User);
-        await housingService.UpdateRoommateAsync(username, application_id, emailList);
+        await housingService.UpdateRoommateAsync(username, applicationID, emailList);
         return Ok();
     }
 
@@ -273,11 +273,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("lottery/{application_id}/hall")]
-    public ActionResult UpdatePreferredHall(string application_id, string[] hallList)
+    [Route("lottery/{applicationID}/hall")]
+    public ActionResult AddPreferredHall(string applicationID, string[] hallList)
     {
         var username = AuthUtils.GetUsername(User);
-        housingService.UpdatePreferredHall(username, application_id, hallList);
+        housingService.AddPreferredHall(username, applicationID, hallList);
         return Ok();
     }
 
@@ -286,11 +286,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("lottery/{application_id}/preference")]
-    public ActionResult UpdatePreference(string application_id, string[] preferenceList)
+    [Route("lottery/{applicationID}/preference")]
+    public ActionResult AddPreference(string applicationID, string[] preferenceList)
     {
         var username = AuthUtils.GetUsername(User);
-        housingService.UpdatePreference(username, application_id, preferenceList);
+        housingService.AddPreference(username, applicationID, preferenceList);
         return Ok();
     }
 
@@ -348,10 +348,10 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns></returns>
     [HttpGet]
     [Route("lottery/user_preference/")]
-    public ActionResult<Preference[]> GetUserPreference()
+    public ActionResult<Preference[]> GetUserPreferences()
     {
         var username = AuthUtils.GetUsername(User);
-        var result = housingService.GetUserPreference(username);
+        var result = housingService.GetUserPreferences(username);
         if (result == null)
         {
             return NotFound();
@@ -383,10 +383,10 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns></returns>
     [HttpGet]
     [Route("lottery/user_preferred_hall/")]
-    public ActionResult<Preference[]> GetUserPreferredHall()
+    public ActionResult<Preference[]> GetUserPreferredHalls()
     {
         var username = AuthUtils.GetUsername(User);
-        var result = housingService.GetUserPreferredHall(username);
+        var result = housingService.GetUserPreferredHalls(username);
         if (result == null)
         {
             return NotFound();
@@ -418,10 +418,10 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns></returns>
     [HttpGet]
     [Route("lottery/user_roommate/")]
-    public ActionResult<Applicant[]> GetUserRoommate()
+    public ActionResult<Applicant[]> GetUserRoommates()
     {
         var username = AuthUtils.GetUsername(User);
-        var result = housingService.GetUserRoommate(username);
+        var result = housingService.GetUserRoommates(username);
         if (result == null)
         {
             return NotFound();

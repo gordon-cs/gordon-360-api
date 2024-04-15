@@ -302,13 +302,13 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.UpdatePreferredHall(System.String,System.String[])">
+        <member name="M:Gordon360.Controllers.HousingController.AddPreferredHall(System.String,System.String[])">
             <summary>
             Update preferred hall information
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.UpdatePreference(System.String,System.String[])">
+        <member name="M:Gordon360.Controllers.HousingController.AddPreference(System.String,System.String[])">
             <summary>
             Update preference information
             </summary>
@@ -332,7 +332,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetUserPreference">
+        <member name="M:Gordon360.Controllers.HousingController.GetUserPreferences">
             <summary>
             Get the preferences of a particular user
             </summary>
@@ -344,7 +344,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetUserPreferredHall">
+        <member name="M:Gordon360.Controllers.HousingController.GetUserPreferredHalls">
             <summary>
             Get the preferred halls of a particular user
             </summary>
@@ -356,7 +356,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetUserRoommate">
+        <member name="M:Gordon360.Controllers.HousingController.GetUserRoommates">
             <summary>
             Get the roommates of a particular user
             </summary>
@@ -1916,23 +1916,23 @@
             update roommate imformation
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="application_id"> The ID of this application </param>
+            <param name="applicationID"> The ID of this application </param>
             <param name="emailList"> A list of applicants' emails </param>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdatePreferredHall(System.String,System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.AddPreferredHall(System.String,System.String,System.String[])">
             <summary>
             update the information of preferred halls
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="application_id"> The ID of this application </param>
+            <param name="applicationID"> The ID of this application </param>
             <param name="hallList"> A list of the preferred halls </param>
         </member>
-        <member name="M:Gordon360.Services.HousingService.UpdatePreference(System.String,System.String,System.String[])">
+        <member name="M:Gordon360.Services.HousingService.AddPreference(System.String,System.String,System.String[])">
             <summary>
             update the information of preferred halls
             </summary>
             <param name="username"> The username for the user who complete the aplication form </param>
-            <param name="application_id"> The ID of this application </param>
+            <param name="applicationID"> The ID of this application </param>
             <param name="preferenceList"> A list of the preference </param>
         </member>
         <member name="M:Gordon360.Services.HousingService.UpdateDueDateAsync(System.String)">
@@ -1953,7 +1953,7 @@
             </summary>
             <returns> An array of preferences </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetUserPreference(System.String)">
+        <member name="M:Gordon360.Services.HousingService.GetUserPreferences(System.String)">
             <summary>
             Gets an array of preferences of this user
             </summary>
@@ -1965,7 +1965,7 @@
              </summary>
              <returns> AN array of preferred halls </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetUserPreferredHall(System.String)">
+        <member name="M:Gordon360.Services.HousingService.GetUserPreferredHalls(System.String)">
             <summary>
             Gets an array of preferred hall of the user
             </summary>
@@ -1977,7 +1977,7 @@
              </summary>
              <returns> AN array of applicants </returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetUserRoommate(System.String)">
+        <member name="M:Gordon360.Services.HousingService.GetUserRoommates(System.String)">
             <summary>
             Gets an array of preferences
             </summary>

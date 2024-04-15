@@ -10,7 +10,7 @@ namespace Gordon360.Models.CCT;
 
 // ApplicationID: random 8-character string using as lottery number
 // Applicant1: email of the applicant
-[PrimaryKey("ApplicationID", "Applicant1")]
+[PrimaryKey("ApplicationID", "Email")]
 [Table("Applicant", Schema = "Housing")]
 public partial class Applicant
 {
@@ -22,10 +22,9 @@ public partial class Applicant
     public string ApplicationID { get; set; }
 
     [Key]
-    [Column("Applicant")]
     [StringLength(255)]
     [Unicode(false)]
-    public string Applicant1 { get; set; }
+    public string Email { get; set; }
 
     public int Active { get; set; }
 }

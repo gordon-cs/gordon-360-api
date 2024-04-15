@@ -565,9 +565,9 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// update roommate imformation
     /// </summary>
     /// <param name="username"> The username for the user who complete the aplication form </param>
-    /// <param name="application_id"> The ID of this application </param>
+    /// <param name="applicationID"> The ID of this application </param>
     /// <param name="emailList"> A list of applicants' emails </param>
-    public async Task UpdateRoommateAsync(string username, string application_id, string[] emailList)
+    public async Task UpdateRoommateAsync(string username, string applicationID, string[] emailList)
     {
         var account = accountService.GetAccountByUsername(username);
         string gender = context.Student.FirstOrDefault(a => a.ID == account.GordonID).Gender;
@@ -576,10 +576,10 @@ public class HousingService(CCTContext context, IAccountService accountService) 
         {
             if (e != "")
             {
-                var existActiveApplicant = context.Applicant.FirstOrDefault(x => (x.Applicant1 == e) && (x.Active == 1));
-                if (existActiveApplicant != null)
+                var existingActiveApplicant = context.Applicant.FirstOrDefault(x => (x.Email == e) && (x.Active == 1));
+                if (existingActiveApplicant != null)
                 {
-                    existActiveApplicant.Active = 0;
+                    existingActiveApplicant.Active = 0;
                 }
                 var student = context.Student.FirstOrDefault(x => x.Email == e);
                 if (student == null)
@@ -593,8 +593,8 @@ public class HousingService(CCTContext context, IAccountService accountService) 
                 gender = student.Gender;
                 var newApplicant = new Applicant
                 {
-                    ApplicationID = application_id,
-                    Applicant1 = e,
+                    ApplicationID = applicationID,
+                    Email = e,
                     Active = 1
                 }; ;
                 await context.Applicant.AddAsync(newApplicant);
@@ -607,11 +607,11 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// update the information of preferred halls
     /// </summary>
     /// <param name="username"> The username for the user who complete the aplication form </param>
-    /// <param name="application_id"> The ID of this application </param>
+    /// <param name="applicationID"> The ID of this application </param>
     /// <param name="hallList"> A list of the preferred halls </param>
-    public void UpdatePreferredHall(string username, string application_id, string[] hallList)
+    public void AddPreferredHall(string username, string applicationID, string[] hallList)
     {
-        var hallPreferences = hallList.Select((hall, index) => new PreferredHall { ApplicationID = application_id, Rank = index + 1, HallName = hall });
+        var hallPreferences = hallList.Select((hall, index) => new PreferredHall { ApplicationID = applicationID, Rank = index + 1, HallName = hall });
         context.PreferredHall.AddRange(hallPreferences);
         context.SaveChanges();
     }
@@ -620,11 +620,11 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// update the information of preferred halls
     /// </summary>
     /// <param name="username"> The username for the user who complete the aplication form </param>
-    /// <param name="application_id"> The ID of this application </param>
+    /// <param name="applicationID"> The ID of this application </param>
     /// <param name="preferenceList"> A list of the preference </param>
-    public void UpdatePreference(string username, string application_id, string[] preferenceList)
+    public void AddPreference(string username, string applicationID, string[] preferenceList)
     {
-        var preferences = preferenceList.Select((preference) => new Preference { ApplicationID = application_id, Preference1 = preference });
+        var preferences = preferenceList.Select((preference) => new Preference { ApplicationID = applicationID, Preference1 = preference });
         context.Preference.AddRange(preferences);
         context.SaveChanges();
     }
@@ -647,13 +647,13 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// <returns> Whether or not this was successful </returns>
     public bool RemoveUser(string username)
     {
-        var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
-        var existActiveApplicant = context.Applicant.FirstOrDefault(x => (x.Applicant1 == email) && (x.Active == 1));
-        if (existActiveApplicant == null)
+        var email = accountService.GetAccountByUsername(username).Email;
+        var existingActiveApplicant = context.Applicant.FirstOrDefault(x => (x.Email == email) && (x.Active == 1));
+        if (existingActiveApplicant == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicant could not be found" };
         }
-        existActiveApplicant.Active = 0;
+        existingActiveApplicant.Active = 0;
         context.SaveChanges();
         return true;
     }
@@ -662,12 +662,12 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// Gets an array of preferences
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public IEnumerable<HousingPreferenceViewModel> GetAllPreferences()
+    public IEnumerable<Preference> GetAllPreferences()
     {
         var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
         var result = context.Preference
-        .Join(activeApplicants, p => p.ApplicationID, a => a.ApplicationID, (p, a) => new HousingPreferenceViewModel
+        .Join(activeApplicants, p => p.ApplicationID, a => a.ApplicationID, (p, a) => new Preference
         {
             ApplicationID = p.ApplicationID,
             Preference1 = p.Preference1,
@@ -683,11 +683,11 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// Gets an array of preferences of this user
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public IEnumerable<HousingPreferenceViewModel> GetUserPreference(string username)
+    public IEnumerable<Preference> GetUserPreferences(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
-        var applicationID = context.Applicant.FirstOrDefault(a => (a.Applicant1 == email) && (a.Active == 1))?.ApplicationID;
-        var preference = context.Preference.Where(a => a.ApplicationID == applicationID).Select(ph => (HousingPreferenceViewModel)ph);
+        var applicationID = context.Applicant.FirstOrDefault(a => (a.Email == email) && (a.Active == 1))?.ApplicationID;
+        var preference = context.Preference.Where(a => a.ApplicationID == applicationID).Select(ph => (Preference)ph);
         return preference.ToArray();
     }
 
@@ -695,12 +695,12 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     ///Gets an array of preferred halls
     /// </summary>
     /// <returns> AN array of preferred halls </returns>
-    public IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHalls()
+    public IEnumerable<PreferredHall> GetAllPreferredHalls()
     {
         var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
         var result = context.PreferredHall
-        .Join(activeApplicants, ph => ph.ApplicationID, a => a.ApplicationID, (ph, a) => new HousingPreferredHallViewModel
+        .Join(activeApplicants, ph => ph.ApplicationID, a => a.ApplicationID, (ph, a) => new PreferredHall
         {
             ApplicationID = ph.ApplicationID,
             Rank = ph.Rank,
@@ -717,11 +717,11 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// Gets an array of preferred hall of the user
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public IEnumerable<HousingPreferredHallViewModel> GetUserPreferredHall(string username)
+    public IEnumerable<PreferredHall> GetUserPreferredHalls(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
-        var applicationID = context.Applicant.FirstOrDefault(a => (a.Applicant1 == email) && (a.Active == 1))?.ApplicationID;
-        var preferredHall = context.PreferredHall.Where(a => a.ApplicationID == applicationID).Select(ph => (HousingPreferredHallViewModel)ph);
+        var applicationID = context.Applicant.FirstOrDefault(a => (a.Email == email) && (a.Active == 1))?.ApplicationID;
+        var preferredHall = context.PreferredHall.Where(a => a.ApplicationID == applicationID).Select(ph => (PreferredHall)ph);
         return preferredHall.ToArray();
     }
 
@@ -729,9 +729,9 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     ///Gets an array of applicants
     /// </summary>
     /// <returns> AN array of applicants </returns>
-    public IEnumerable<HousingApplicantViewModel>  GetAllApplicants()
+    public IEnumerable<Applicant>  GetAllApplicants()
     {
-        var result = context.Applicant.Where(a => a.Active == 1).Select(a => (HousingApplicantViewModel) a);
+        var result = context.Applicant.Where(a => a.Active == 1).Select(a => (Applicant) a);
         if (result == null || !result.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The applicants could not be found." };
@@ -743,11 +743,11 @@ public class HousingService(CCTContext context, IAccountService accountService) 
     /// Gets an array of preferences
     /// </summary>
     /// <returns> An array of preferences </returns>
-    public IEnumerable<HousingApplicantViewModel> GetUserRoommate(string username)
+    public IEnumerable<Applicant> GetUserRoommates(string username)
     {
         var email = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.email;
-        var applicationID = context.Applicant.FirstOrDefault(a => (a.Applicant1 == email) && (a.Active == 1))?.ApplicationID;
-        var applicant = context.Applicant.Where(a => a.ApplicationID == applicationID).Select(a => (HousingApplicantViewModel)a);
+        var applicationID = context.Applicant.FirstOrDefault(a => (a.Email == email) && (a.Active == 1))?.ApplicationID;
+        var applicant = context.Applicant.Where(a => a.ApplicationID == applicationID).Select(a => (Applicant)a);
         return applicant.ToArray();
     }
 
@@ -760,7 +760,7 @@ public class HousingService(CCTContext context, IAccountService accountService) 
         var activeApplicants = context.Applicant.Where(a => a.Active == 1);
 
         var result = context.Student
-        .Join(activeApplicants, s => s.Email, a => a.Applicant1, (s, a) => new
+        .Join(activeApplicants, s => s.Email, a => a.Email, (s, a) => new
         { 
             a.ApplicationID,
             s.Class

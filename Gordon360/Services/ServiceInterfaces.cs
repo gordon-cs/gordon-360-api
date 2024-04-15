@@ -218,12 +218,12 @@ namespace Gordon360.Services
         string[] GetAllApartmentHalls();
         string[] GetAllTraditionalHalls();
         bool RemoveUser(string username);
-        IEnumerable<HousingPreferenceViewModel> GetAllPreferences();
-        IEnumerable<HousingPreferenceViewModel> GetUserPreference(string username);
-        IEnumerable<HousingPreferredHallViewModel> GetAllPreferredHalls();
-        IEnumerable<HousingPreferredHallViewModel> GetUserPreferredHall(string username);
-        IEnumerable<HousingApplicantViewModel> GetAllApplicants();
-        IEnumerable<HousingApplicantViewModel> GetUserRoommate(string username);
+        IEnumerable<Preference> GetAllPreferences();
+        IEnumerable<Preference> GetUserPreferences(string username);
+        IEnumerable<PreferredHall> GetAllPreferredHalls();
+        IEnumerable<PreferredHall> GetUserPreferredHalls(string username);
+        IEnumerable<Applicant> GetAllApplicants();
+        IEnumerable<Applicant> GetUserRoommates(string username);
         IEnumerable<HousingYearViewModel> GetAllSchoolYear();
         string GetDueDate();
         string GetEditorUsername(int applicationID);
@@ -234,9 +234,9 @@ namespace Gordon360.Services
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, List<ApartmentApplicantViewModel> newApartmentApplicants, List<ApartmentChoiceViewModel> newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
-        Task UpdateRoommateAsync(string username, string application_id, string[] emailList);
-        void UpdatePreferredHall(string username, string application_id, string[] hallList);
-        void UpdatePreference(string username, string application_id, string[] preferenceList);
+        Task UpdateRoommateAsync(string username, string applicationID, string[] emailList);
+        void AddPreferredHall(string username, string applicationID, string[] hallList);
+        void AddPreference(string username, string applicationID, string[] preferenceList);
         Task UpdateDueDateAsync(string dueDate);
     }
 
