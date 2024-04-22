@@ -299,8 +299,8 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("lottery/due_date/{dueDate}")]
-    public async Task<ActionResult> UpdateDueDateAsync(string dueDate)
+    [Route("lottery/due_date")]
+    public async Task<ActionResult> UpdateDueDateAsync([FromBody] string dueDate)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
         if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
