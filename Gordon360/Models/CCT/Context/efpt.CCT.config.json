@@ -72,6 +72,26 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[Applicant]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[DueDate]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Preference]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[PreferredHall]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Year]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Activity]",
          "ObjectType": 0
       },
@@ -360,7 +380,6 @@
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
-   "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
    "UseFluentApiOnly": false,
@@ -369,6 +388,7 @@
    "UseInflector": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
    "UseNoDefaultConstructor": false,
    "UseNoNavigations": false,
    "UseNoObjectFilter": false,
@@ -376,7 +396,6 @@
    "UseNullableReferences": false,
    "UsePrefixNavigationNaming": false,
    "UseSchemaFolders": true,
-   "UseSchemaNamespaces": false,
    "UseSpatial": false,
    "UseT4": false
 }

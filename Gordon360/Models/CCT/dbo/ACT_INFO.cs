@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
+[Table("ACT_INFO", Schema = "dbo")]
 public partial class ACT_INFO
 {
     [Key]

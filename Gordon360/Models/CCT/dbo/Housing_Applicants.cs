@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT;
 
 [PrimaryKey("HousingAppID", "Username")]
+[Table("Housing_Applicants", Schema = "dbo")]
 public partial class Housing_Applicants
 {
     [Key]

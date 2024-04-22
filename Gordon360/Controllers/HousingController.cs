@@ -1,5 +1,6 @@
 using Gordon360.Authorization;
 using Gordon360.Enums;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
@@ -8,6 +9,11 @@ using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.Xml;
+using System.Collections.Generic;
 
 namespace Gordon360.Controllers;
 
@@ -39,6 +45,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
     public ActionResult<string[]> GetApartmentHalls()
     {
         var result = housingService.GetAllApartmentHalls();
+        if (result != null)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
+    /// <summary>
+    /// Get a list of the traditional halls
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("halls/traditionals")]
+    public ActionResult<string[]> GetTraditionalHalls()
+    {
+        var result = housingService.GetAllTraditionalHalls();
         if (result != null)
         {
             return Ok(result);
@@ -228,5 +253,209 @@ public class HousingController(CCTContext context, IProfileService profileServic
         {
             return NotFound();
         }
+    }
+
+    /// <summary>
+    /// Update roommate information
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("lottery/{applicationID}/roommate")]
+    public async Task<ActionResult> UpdateRoommate(string applicationID, string[] emailList)
+    {
+        var username = AuthUtils.GetUsername(User);
+        await housingService.UpdateRoommateAsync(username, applicationID, emailList);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Update preferred hall information
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("lottery/{applicationID}/hall")]
+    public ActionResult AddPreferredHall(string applicationID, string[] hallList)
+    {
+        var username = AuthUtils.GetUsername(User);
+        housingService.AddPreferredHall(username, applicationID, hallList);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Update preference information
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("lottery/{applicationID}/preference")]
+    public ActionResult AddPreference(string applicationID, string[] preferenceList)
+    {
+        var username = AuthUtils.GetUsername(User);
+        housingService.AddPreference(username, applicationID, preferenceList);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Update due date of housing application
+    /// </summary>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("lottery/due_date")]
+    public async Task<ActionResult> UpdateDueDateAsync([FromBody] string dueDate)
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
+        {
+            return Unauthorized();
+        }
+        await housingService.UpdateDueDateAsync(dueDate);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Remove "myself" from the current application
+    /// </summary>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("lottery/remove_user")]
+    public ActionResult<bool> RemoveUser()
+    {
+        var username = AuthUtils.GetUsername(User);
+        bool result = housingService.RemoveUser(username);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get an array of preferences
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("lottery/preference")]
+    public ActionResult<Preference[]> GetAllPreferences()
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
+        {
+            return Unauthorized();
+        }
+
+        var result = housingService.GetAllPreferences();
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get the preferences of a particular user
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("lottery/user_preference/")]
+    public ActionResult<Preference[]> GetUserPreferences()
+    {
+        var username = AuthUtils.GetUsername(User);
+        var result = housingService.GetUserPreferences(username);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get an array of preferred halls
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("lottery/preferred_hall")]
+    public ActionResult<PreferredHall[]> GetAllPreferredHalls()
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
+        {
+            return Unauthorized();
+        }
+
+        var result = housingService.GetAllPreferredHalls();
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get the preferred halls of a particular user
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("lottery/user_preferred_hall/")]
+    public ActionResult<Preference[]> GetUserPreferredHalls()
+    {
+        var username = AuthUtils.GetUsername(User);
+        var result = housingService.GetUserPreferredHalls(username);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get an array of applicant
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("lottery/applicant")]
+    public ActionResult<Applicant[]> GetAllApplicants()
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
+        {
+            return Unauthorized();
+        }
+
+        var result = housingService.GetAllApplicants();
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get the roommates of a particular user
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("lottery/user_roommate/")]
+    public ActionResult<Applicant[]> GetUserRoommates()
+    {
+        var username = AuthUtils.GetUsername(User);
+        var result = housingService.GetUserRoommates(username);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get an array of school years
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("lottery/school_year")]
+    public ActionResult<Year[]> GetAllSchoolYear()
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+        if (!viewerGroups.Contains(AuthGroup.HousingAdmin))
+        {
+            return Unauthorized();
+        }
+
+        var result = housingService.GetAllSchoolYear();
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get due date of housing application
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("lottery/due_date/")]
+    public ActionResult<string> GetDueDate()
+    {
+        var result = housingService.GetDueDate();
+        return Ok(result);
     }
 }

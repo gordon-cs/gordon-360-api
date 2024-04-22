@@ -148,28 +148,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdminsController.GetAll">
-            <summary>
-            Get all admins
-            </summary>
-            <returns>
-            A list of all admins
-            </returns>
-            <remarks>
-            Server makes call to the database and returns all admins
-            </remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Post(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>Create a new admin to be added to database</summary>
-            <param name="admin">The admin item containing all required and relevant information</param>
-            <returns></returns>
-            <remarks>Posts a new admin to the server to be added into the database</remarks>
-        </member>
-        <member name="M:Gordon360.Controllers.AdminsController.Delete(System.String)">
-            <summary>Delete an existing admin</summary>
-            <param name="username">The username of the user to demote</param>
-            <remarks>Calls the server to make a call and remove the given admin from the database</remarks>
-        </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetMajors">
             <summary>
             Return a list majors.
@@ -265,6 +243,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetTraditionalHalls">
+            <summary>
+            Get a list of the traditional halls
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetApplicationID">
             <summary>
             Get apartment application ID number of currently logged in user if that user is on an existing application
@@ -311,6 +295,84 @@
         <member name="M:Gordon360.Controllers.HousingController.GetAllApartmentApplication">
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
             <returns>Object of type ApartmentApplicationViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.UpdateRoommate(System.String,System.String[])">
+            <summary>
+            Update roommate information
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.AddPreferredHall(System.String,System.String[])">
+            <summary>
+            Update preferred hall information
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.AddPreference(System.String,System.String[])">
+            <summary>
+            Update preference information
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.UpdateDueDateAsync(System.String)">
+            <summary>
+            Update due date of housing application
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.RemoveUser">
+            <summary>
+            Remove "myself" from the current application
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllPreferences">
+            <summary>
+            Get an array of preferences
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetUserPreferences">
+            <summary>
+            Get the preferences of a particular user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllPreferredHalls">
+            <summary>
+            Get an array of preferred halls
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetUserPreferredHalls">
+            <summary>
+            Get the preferred halls of a particular user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllApplicants">
+            <summary>
+            Get an array of applicant
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetUserRoommates">
+            <summary>
+            Get the roommates of a particular user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllSchoolYear">
+            <summary>
+            Get an array of school years
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetDueDate">
+            <summary>
+            Get due date of housing application
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
@@ -1573,50 +1635,6 @@
             <param name="activityCode">The activity code</param>
             <param name="isPrivate">activity private or not</param>
         </member>
-        <member name="T:Gordon360.Services.AdministratorService">
-            <summary>
-            Service class to facilitate interacting with the Admin table.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IAccountService)">
-            <summary>
-            Service class to facilitate interacting with the Admin table.
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.GetAll">
-            <summary>
-            Fetches all the administrators from the database
-            </summary>
-            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.GetByUsername(System.String)">
-            <summary>
-            Fetches a specific admin from the database
-            </summary>
-            <returns>Returns a list of administrators. If no administrators were found, an empty list is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Add(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>
-            Adds a new Administrator record to storage. Since we can't establish foreign key constraints and relationships on the database side,
-            we do it here by using the validateAdmin() method.
-            </summary>
-            <param name="adminView">The admin to be added</param>
-            <returns>The newly added Admin object</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.Delete(System.String)">
-            <summary>
-            Delete the admin whose id is specified by the parameter.
-            </summary>
-            <param name="username">The username of the admin to demote</param>
-            <returns>The admin that was just deleted</returns>
-        </member>
-        <member name="M:Gordon360.Services.AdministratorService.validateAdmin(Gordon360.Models.ViewModels.AdminViewModel)">
-            <summary>
-            Helper method to Validate an admin
-            </summary>
-            <param name="admin">The admin to validate</param>
-            <returns>True if the admin is valid. Throws ResourceNotFoundException if not. Exception is cauth in an Exception Filter</returns>
-        </member>
         <member name="T:Gordon360.Services.ContentManagementService">
             <summary>
             Service class that facilitates data (specifically, site content) passing between the ContentManagementController and the database model.
@@ -1810,6 +1828,12 @@
             </summary>
             <returns> AN array of hall names </returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllTraditionalHalls">
+            <summary>
+            Gets all names of apartment halls
+            </summary>
+            <returns> AN array of hall names </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.GetApplicationID(System.String,System.String)">
             <summary>
             Calls a stored procedure that tries to get the id of an the application that a given user is 
@@ -1886,6 +1910,90 @@
             </summary>
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateRoommateAsync(System.String,System.String,System.String[])">
+            <summary>
+            update roommate imformation
+            </summary>
+            <param name="username"> The username for the user who complete the aplication form </param>
+            <param name="applicationID"> The ID of this application </param>
+            <param name="emailList"> A list of applicants' emails </param>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AddPreferredHall(System.String,System.String,System.String[])">
+            <summary>
+            update the information of preferred halls
+            </summary>
+            <param name="username"> The username for the user who complete the aplication form </param>
+            <param name="applicationID"> The ID of this application </param>
+            <param name="hallList"> A list of the preferred halls </param>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AddPreference(System.String,System.String,System.String[])">
+            <summary>
+            update the information of preferred halls
+            </summary>
+            <param name="username"> The username for the user who complete the aplication form </param>
+            <param name="applicationID"> The ID of this application </param>
+            <param name="preferenceList"> A list of the preference </param>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateDueDateAsync(System.String)">
+            <summary>
+            update the information of due date
+            </summary>
+            <param name="dueDate"> The due date of the application </param>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RemoveUser(System.String)">
+            <summary>
+            Remove the particular user from the current application by setting her/his active flag to 0
+            </summary>
+            <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllPreferences">
+            <summary>
+            Gets an array of preferences
+            </summary>
+            <returns> An array of preferences </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetUserPreferences(System.String)">
+            <summary>
+            Gets an array of preferences of this user
+            </summary>
+            <returns> An array of preferences </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllPreferredHalls">
+             <summary>
+            Gets an array of preferred halls
+             </summary>
+             <returns> AN array of preferred halls </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetUserPreferredHalls(System.String)">
+            <summary>
+            Gets an array of preferred hall of the user
+            </summary>
+            <returns> An array of preferences </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllApplicants">
+             <summary>
+            Gets an array of applicants
+             </summary>
+             <returns> AN array of applicants </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetUserRoommates(System.String)">
+            <summary>
+            Gets an array of preferences
+            </summary>
+            <returns> An array of preferences </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllSchoolYear">
+             <summary>
+            Gets an array of school years
+             </summary>
+             <returns> AN array of school years </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetDueDate">
+            <summary>
+            Gets the due date of housing application
+            </summary>
+            <returns> The due date of housing application </returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>

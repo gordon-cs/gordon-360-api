@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
+[Table("ERROR_LOG", Schema = "dbo")]
 public partial class ERROR_LOG
 {
     [Key]
