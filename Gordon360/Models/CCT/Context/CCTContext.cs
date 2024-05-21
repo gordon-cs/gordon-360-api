@@ -861,45 +861,46 @@ namespace Gordon360.Models.CCT.Context
             modelBuilder.Entity<UserPrivacy_Visibility_Groups>(entity =>
             {
                 entity.Property(e => e.ID).ValueGeneratedOnAdd();
-            modelBuilder.Entity<UserCourses>(entity =>
-            {
-                entity.ToView("UserCourses");
+                modelBuilder.Entity<UserCourses>(entity =>
+                {
+                    entity.ToView("UserCourses");
 
-                entity.Property(e => e.BLDG_CDE).IsFixedLength();
+                    entity.Property(e => e.BLDG_CDE).IsFixedLength();
 
-                entity.Property(e => e.CRS_CDE).IsFixedLength();
+                    entity.Property(e => e.CRS_CDE).IsFixedLength();
 
-                entity.Property(e => e.CRS_TITLE).IsFixedLength();
+                    entity.Property(e => e.CRS_TITLE).IsFixedLength();
 
-                entity.Property(e => e.DROP_FLAG).IsFixedLength();
+                    entity.Property(e => e.DROP_FLAG).IsFixedLength();
 
-                entity.Property(e => e.FRIDAY_CDE).IsFixedLength();
+                    entity.Property(e => e.FRIDAY_CDE).IsFixedLength();
 
-                entity.Property(e => e.LOC_CDE).IsFixedLength();
+                    entity.Property(e => e.LOC_CDE).IsFixedLength();
 
-                entity.Property(e => e.MONDAY_CDE).IsFixedLength();
+                    entity.Property(e => e.MONDAY_CDE).IsFixedLength();
 
-                entity.Property(e => e.ROOM_CDE).IsFixedLength();
+                    entity.Property(e => e.ROOM_CDE).IsFixedLength();
 
-                entity.Property(e => e.SATURDAY_CDE).IsFixedLength();
+                    entity.Property(e => e.SATURDAY_CDE).IsFixedLength();
 
-                entity.Property(e => e.SUNDAY_CDE).IsFixedLength();
+                    entity.Property(e => e.SUNDAY_CDE).IsFixedLength();
 
-                entity.Property(e => e.THURSDAY_CDE).IsFixedLength();
+                    entity.Property(e => e.THURSDAY_CDE).IsFixedLength();
 
-                entity.Property(e => e.TRM_CDE).IsFixedLength();
+                    entity.Property(e => e.TRM_CDE).IsFixedLength();
 
-                entity.Property(e => e.TUESDAY_CDE).IsFixedLength();
+                    entity.Property(e => e.TUESDAY_CDE).IsFixedLength();
 
-                entity.Property(e => e.WEDNESDAY_CDE).IsFixedLength();
+                    entity.Property(e => e.WEDNESDAY_CDE).IsFixedLength();
 
-                entity.Property(e => e.YR_CDE).IsFixedLength();
+                    entity.Property(e => e.YR_CDE).IsFixedLength();
+                });
+
+                modelBuilder.HasSequence("Information_Change_Request_Seq");
+
+                OnModelCreatingGeneratedProcedures(modelBuilder);
+                OnModelCreatingPartial(modelBuilder);
             });
-
-            modelBuilder.HasSequence("Information_Change_Request_Seq");
-
-            OnModelCreatingGeneratedProcedures(modelBuilder);
-            OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
