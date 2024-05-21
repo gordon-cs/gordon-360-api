@@ -55,11 +55,11 @@ namespace Gordon360.Authorization
         private IConfiguration _config;
 
         //RecIM services
-        private IParticipantService _participantService;
-        private Services.RecIM.IActivityService _activityService;
-        private ISeriesService _seriesService;
-        private ITeamService _teamService;
-        private IMatchService _matchService;
+        private IParticipantService _recimParticipantService;
+        private Services.RecIM.IActivityService _recimActivityService;
+        private ISeriesService _recimSeriesService;
+        private ITeamService _recimTeamService;
+        private IMatchService _recimMatchService;
 
         // User position at the college and their id.
         private IEnumerable<AuthGroup> user_groups { get; set; }
@@ -80,11 +80,11 @@ namespace Gordon360.Authorization
             _MyGordonContext = context.HttpContext.RequestServices.GetService<MyGordonContext>();
 
             // set RecIM services
-            _participantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
-            _matchService = context.HttpContext.RequestServices.GetRequiredService<IMatchService>();
-            _teamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
-            _seriesService = context.HttpContext.RequestServices.GetRequiredService<ISeriesService>();
-            _activityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
+            _recimParticipantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
+            _recimMatchService = context.HttpContext.RequestServices.GetRequiredService<IMatchService>();
+            _recimTeamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
+            _recimSeriesService = context.HttpContext.RequestServices.GetRequiredService<ISeriesService>();
+            _recimActivityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
 
             user_name = AuthUtils.GetUsername(authenticatedUser);
             user_groups = AuthUtils.GetGroups(authenticatedUser);
@@ -239,12 +239,23 @@ namespace Gordon360.Authorization
                         }
 
                         // Only members can read a specific activity's memberships
-                        if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object) && involvementCode_object is string involvementCode)
+                        if (context.ActionArguments.TryGetValue("involvementCode", out object? involvementCode_object)  && involvementCode_object is string involvementCode)
                         {
-                            var activityMembers = _membershipService.GetMemberships(activityCode: involvementCode, username: user_name);
-                            var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetCode());
-                            return is_personAMember;
+                            if (context.ActionArguments.TryGetValue("sessionCode", out object? sessionCode_object) && sessionCode_object is string sessionCode)
+                            {
+                                var activityMembers = _membershipService.GetMemberships(activityCode: involvementCode, username: user_name, sessionCode: sessionCode);
+                                var is_personAMember = activityMembers.Any(x => x.Participation != "GUEST");
+                                return is_personAMember;
+
+                            }
+                            else
+                            {
+                                var activityMembers = _membershipService.GetMemberships(activityCode: involvementCode, username: user_name, sessionCode: "*");
+                                var is_personAMember = activityMembers.Any(x => x.Participation != "GUEST");
+                                return is_personAMember;
+                            }
                         }
+
 
                         return false;
                     }
@@ -399,6 +410,8 @@ namespace Gordon360.Authorization
                     }
                 case Resource.NEWS:
                     return user_groups.Contains(AuthGroup.NewsAdmin);
+                case Resource.RECIM:
+                    return _recimParticipantService.IsAdmin(user_name);
                 default: return false;
             }
         }
@@ -509,6 +522,10 @@ namespace Gordon360.Authorization
                     return true;
                 case Resource.NEWS:
                     return true;
+                case Resource.RECIM_PARTICIPANT_ADMIN:
+                     //fallthrough
+                case Resource.RECIM_AFFILIATION:
+                    //fallthrough
                 case Resource.RECIM_ACTIVITY:
                     //fallthrough
                 case Resource.RECIM_SERIES:
@@ -519,7 +536,7 @@ namespace Gordon360.Authorization
                     //fallthrough
                 case Resource.RECIM_SPORT:
                     {
-                        return _participantService.IsAdmin(user_name);
+                        return _recimParticipantService.IsAdmin(user_name);
                     }
                 default: return false;
             }
@@ -641,8 +658,8 @@ namespace Gordon360.Authorization
                         if (user_groups.Contains(AuthGroup.SiteAdmin))
                             return true;
 
-                        if (context.ActionArguments["username"] is string username)
-                            return username.EqualsIgnoreCase(user_name);
+                        if (context.ActionArguments["username"] is string profile_username)
+                            return profile_username.EqualsIgnoreCase(user_name);
 
                         return false;
                     }
@@ -698,7 +715,8 @@ namespace Gordon360.Authorization
                     }
                 case Resource.EMERGENCY_CONTACT:
                     {
-                        return context.ActionArguments["username"] is string username && username.EqualsIgnoreCase(user_name);
+                        return context.ActionArguments["username"] is string emergency_contact_username 
+                            && emergency_contact_username.EqualsIgnoreCase(user_name);
                     }
 
                 case Resource.NEWS:
@@ -731,8 +749,14 @@ namespace Gordon360.Authorization
                     }
 
                 case Resource.RECIM_PARTICIPANT:
-                    //fallthrough 
+                    if (context.ActionArguments["username"] is string participant_username)
+                        return participant_username.EqualsIgnoreCase(user_name);
+                    return false;
+                case Resource.RECIM_PARTICIPANT_ADMIN:
+                    //fallthrough
                 case Resource.RECIM_ACTIVITY:
+                    //fallthrough
+                case Resource.RECIM_AFFILIATION:
                     //fallthrough
                 case Resource.RECIM_SERIES:
                     //fallthrough
@@ -740,14 +764,14 @@ namespace Gordon360.Authorization
                     //fallthrough
                 case Resource.RECIM_SPORT:
                     {
-                        return _participantService.IsAdmin(user_name);
+                        return _recimParticipantService.IsAdmin(user_name);
                     }
 
                 case Resource.RECIM_TEAM:
                     {
                         if(context.ActionArguments.TryGetValue("teamID",out object? teamID_object) && teamID_object is int teamID)
                         {
-                            return _teamService.IsTeamCaptain(user_name, teamID) || _participantService.IsAdmin(user_name);
+                            return _recimTeamService.IsTeamCaptain(user_name, teamID) || _recimParticipantService.IsAdmin(user_name);
                         }
                         return false;
                     }
@@ -757,14 +781,16 @@ namespace Gordon360.Authorization
                         if (context.ActionArguments.TryGetValue("matchID", out object? matchID_Object) && matchID_Object is int matchID)
                         {
                             // if admin
-                            if (_participantService.IsAdmin(user_name)) return true;
+                            if (_recimParticipantService.IsAdmin(user_name)) return true;
 
                             //if ref
                             var activityID = _CCTContext.Match.Find(matchID).Series.ActivityID;
-                            return _activityService.IsReferee(user_name, activityID);
+                            return _recimActivityService.IsReferee(user_name, activityID);
                         }
                         return false;
                     }
+                case Resource.RECIM_SUPER_ADMIN:
+                    return user_groups.Contains(AuthGroup.RecIMSuperAdmin);
                 default: return false;
             }
         }
@@ -888,6 +914,8 @@ namespace Gordon360.Authorization
                     }
                 case Resource.RECIM_ACTIVITY:
                     //fallthrough
+                case Resource.RECIM_AFFILIATION:
+                    //fallthrough
                 case Resource.RECIM_SERIES:
                     //fallthrough
                 case Resource.RECIM_SPORT:
@@ -897,7 +925,7 @@ namespace Gordon360.Authorization
                 case Resource.RECIM_SURFACE:
                     //fallthrough
                 case Resource.RECIM_MATCH:
-                    return _participantService.IsAdmin(user_name);
+                    return _recimParticipantService.IsAdmin(user_name);
                 default: return false;
             }
         }

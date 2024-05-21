@@ -18,6 +18,8 @@ namespace Gordon360.Models.ViewModels.RecIM
         public IEnumerable<MatchExtendedViewModel> Match { get; set; }
         public IEnumerable<TeamRecordViewModel> TeamStanding { get; set; }
         public SeriesScheduleViewModel? Schedule { get; set; }
+        public int? WinnerID { get; set; }
+        public int? Points { get; set; }
 
         public static implicit operator SeriesExtendedViewModel(Series s)
         {
@@ -31,6 +33,8 @@ namespace Gordon360.Models.ViewModels.RecIM
                 Type = s.Type.Description,
                 Status = s.Status.Description,
                 Schedule = s.Schedule,
+                WinnerID = s.WinnerID,
+                Points = s.Points,
             };
         }
     }

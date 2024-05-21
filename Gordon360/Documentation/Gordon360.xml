@@ -663,12 +663,12 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateLinkAsync(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateCustomProfile(System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
-            Update the profile social media links
+            Update CUSTOM_PROFILE component
             </summary>
-            <param name="type">The type of social media</param>
-            <param name="path">The path of the links</param>
+            <param name="type">The type of component</param>
+            <param name="value">The value to change the component to</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePhoneNumber(System.String)">
@@ -2407,13 +2407,13 @@
             <param name="path"></param>
             <param name="name"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateProfileLinkAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+        <member name="M:Gordon360.Services.ProfileService.UpdateCustomProfileAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
             <summary>
-            Sets the path for the profile links.
+            Sets the component of the Custom_profile.
             </summary>
             <param name="username">The username</param>
             <param name="type"></param>
-            <param name="links"></param>
+            <param name="content"></param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.ToPublicFacultyStaffProfileViewModel(System.String,System.String,Gordon360.Models.ViewModels.FacultyStaffProfileViewModel)">
             <summary>

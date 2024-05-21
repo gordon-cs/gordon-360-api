@@ -10,7 +10,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Hosting;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Extensions.System;
 
@@ -88,16 +87,9 @@ namespace Gordon360.Services.RecIM
                 });
             return activities;
         }
-        public IEnumerable<ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time)
+        public IEnumerable<ActivityExtendedViewModel> GetActivitiesByCompletion(bool isCompleted)
         {
-            if (time is null)
-            {
-                return GetActivities().Where(a => !a.Completed);
-            }
-            else
-            {
-                return GetActivities().Where(a => a.RegistrationEnd.SpecifyUtc() > time);
-            }
+            return GetActivities().Where(a => a.Completed == isCompleted);
         }
 
         public ActivityExtendedViewModel? GetActivityByID(int activityID)
@@ -163,39 +155,30 @@ namespace Gordon360.Services.RecIM
             activity.EndDate = updatedActivity.EndDate ?? activity.EndDate;
             activity.SeriesScheduleID = updatedActivity.SeriesScheduleID ?? activity.SeriesScheduleID;
 
+        
             if (updatedActivity.Logo != null)
             {
                 // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(updatedActivity.Logo);
+                var (extension, format, data) = ImageUtils.GetImageFormat(updatedActivity.Logo.Image);
 
                 string? imagePath = null;
-                // If old image exists, overwrite it with new image at same path
-                if (activity.Logo != null)
+                // remove old
+                if(activity.Logo is not null && updatedActivity.Logo.Image is null)
                 {
                     imagePath = GetImagePath(Path.GetFileName(activity.Logo));
+                    ImageUtils.DeleteImage(imagePath);
+                    activity.Logo = updatedActivity.Logo.Image;
                 }
-                // Otherwise, upload new image and save url to db
-                else
+
+                if (updatedActivity.Logo.Image is not null)
                 {
                     // Use a unique alphanumeric GUID string as the file name
                     var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
                     imagePath = GetImagePath(filename);
                     var url = GetImageURL(filename);
                     activity.Logo = url;
+                    ImageUtils.UploadImage(imagePath, data, format);
                 }
-
-                ImageUtils.UploadImage(imagePath, data, format);
-            }
-
-            //If the image property is null, it means that either the user
-            //chose to remove the previous image or that there was no previous
-            //image (DeleteImage is designed to handle this).
-            else if (activity.Logo != null)
-            {
-                var imagePath = GetImagePath(Path.GetFileName(activity.Logo));
-
-                ImageUtils.DeleteImage(imagePath);
-                activity.Logo = updatedActivity.Logo; //null
             }
 
             await _context.SaveChangesAsync();
@@ -205,21 +188,6 @@ namespace Gordon360.Services.RecIM
         public async Task<ActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity)
         {
             var activity = newActivity.ToActivity();
-            
-            if (activity.Logo != null)
-            {
-                // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
-                var (extension, format, data) = ImageUtils.GetImageFormat(activity.Logo);
-
-                // Use a unique alphanumeric GUID string as the file name
-                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                var imagePath = GetImagePath(filename);
-                var url = GetImageURL(filename);
-
-                ImageUtils.UploadImage(imagePath, data, format);
-
-                activity.Logo = url;
-            }
 
             await _context.Activity.AddAsync(activity);
             await _context.SaveChangesAsync();

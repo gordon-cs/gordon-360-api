@@ -32,15 +32,16 @@ namespace Gordon360.Controllers
         private readonly webSQLContext _webSQLContext;
         private readonly CCTContext _context;
 
+        /// <summary>constructor of ProfilesController</summary>
         public ProfilesController(IProfileService profileService, IAccountService accountService, 
-                                  IMembershipService membershipService, IConfiguration config, CCTContext context, webSQLContext webSQLContext)
+                                  IMembershipService membershipService, IConfiguration config, webSQLContext webSQLContext, CCTContext context)
         {
             _profileService = profileService;
             _accountService = accountService;
             _membershipService = membershipService;
             _config = config;
-            _context = context;
             _webSQLContext = webSQLContext;
+            _context = context;
         }
 
         /// <summary>Get profile info of currently logged in user</summary>
@@ -442,18 +443,18 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update the profile social media links
+        /// Update CUSTOM_PROFILE component
         /// </summary>
-        /// <param name="type">The type of social media</param>
-        /// <param name="path">The path of the links</param>
+        /// <param name="type">The type of component</param>
+        /// <param name="value">The value to change the component to</param>
         /// <returns></returns>
         [HttpPut]
         [Route("{type}")]
-        public async Task<ActionResult> UpdateLinkAsync(string type, CUSTOM_PROFILE path)
+        public async Task<ActionResult> UpdateCustomProfile(string type,[FromBody] CUSTOM_PROFILE value)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            await _profileService.UpdateProfileLinkAsync(authenticatedUserUsername, type, path);
+            await _profileService.UpdateCustomProfileAsync(authenticatedUserUsername, type, value);
 
             return Ok();
         }
