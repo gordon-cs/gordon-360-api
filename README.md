@@ -51,7 +51,7 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 - Before you can run the project, you need to configure it:
 
-  - **Copy the `appsettings.Development.json` file.** This file contains environment variables used to configure the application for local development. On the VM, it can be found in the folder `C:\360ConfigFiles`. Copy it to the same folder as the default `appsettings.json` file in the project. To find that folder in Visual Studio, look in the solution explorer on the right and open the `Gordon360` folder.  Right-click on `appsettings.json` and select "Open Folder in File Explorer".
+  - **Copy the `appsettings.Development.json` file.** This file contains environment variables used to configure the application for local development. On the VM, it can be found in the folder `C:\360ConfigFiles`. Copy it to the same folder as the default `appsettings.json` file in the project. To find that folder in Visual Studio, look in the solution explorer on the right and open the `Gordon360` folder.  Right-click on `appsettings.json` and select "Open Containing Folder".
 
   - **Set non-SSL an SSL port numbers.** The front-end (UI) code connects with the back-end (API) through two ports. These should be chosen to be different than the ports used by the Production and Train servers, and should also be different than ports used by other developers. Follow any instructions given to you about choosing port numbers. To set them in Visual Studio, use the solution explorer on the right and open `Gordon360 > Properties > launchSettings.json`.
   
