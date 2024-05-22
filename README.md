@@ -45,7 +45,7 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 - Open the project in Visual Studio (*Note:* **not** Visual Studio *Code*, but Visual Studio 2022 or later):
 
-  - Look for the desktop app Visual Studio, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microasoft of account. Your Gordon email will work for this. 
+  - Look for the desktop app Visual Studio, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microsoft account. Your Gordon email will work for this. 
 
   - If this is your first time on a development virtual machine, you will need to clone this repository. In Visual Studio, select the "Clone a repository" option from right-hand side of the start window (or go to `File > Clone Repository`). Select GitHub from the "Browse a repository" section. Find the `gordon-cs/gordon-360-api` repository (you may need to sign in to GitHub). Select `Clone`. This will clone the repository from GitHub and open it in Visual Studio.
 
