@@ -41,13 +41,13 @@ When the API receives an HTTP Request, it is routed to the Controller method wit
 
 ### Preliminary setup
 
-- There is a dedicated development virtual machine to work on this project. Follow [these instructions](docs/RemoteDesktopToVM.md##How-to-connect-to-a-CPS-Server-virtual-machine) to set up and connect to the virtual machine using your Gordon account.
+- There are two dedicated development virtual machines you can use to work on this project. Follow [these instructions](docs/RemoteDesktopToVM.md##How-to-connect-to-a-CPS-Server-virtual-machine) to set up and connect to one of the virtual machine using your Gordon account.
 
 - Open the project in Visual Studio (*Note:* **not** Visual Studio *Code*, but Visual Studio 2022 or later):
 
   - Look for the desktop app Visual Studio, which has a purple Visual Studio icon. You might have to search for it through the start menu. You will have to log in to a Microasoft of account. Your Gordon email will work for this. 
 
-  - If this is your first time on the virtual machine, you will need to clone this repository. In Visual Studio, select the "Clone a repository" option from right-hand side of the start window (or go to `File > Clone Repository`). Select GitHub from the "Browse a repository" section. Find the `gordon-cs/gordon-360-api` repository (you may need to sign in to GitHub). Select `Clone`. This will clone the repository from GitHub and open it in Visual Studio.
+  - If this is your first time on a development virtual machine, you will need to clone this repository. In Visual Studio, select the "Clone a repository" option from right-hand side of the start window (or go to `File > Clone Repository`). Select GitHub from the "Browse a repository" section. Find the `gordon-cs/gordon-360-api` repository (you may need to sign in to GitHub). Select `Clone`. This will clone the repository from GitHub and open it in Visual Studio.
 
 - Before you can run the project, you need to configure it:
 
