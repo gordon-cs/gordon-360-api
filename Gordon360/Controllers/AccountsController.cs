@@ -4,6 +4,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -118,6 +119,8 @@ public class AccountsController(IAccountService accountService) : GordonControll
         string? building,
         string? involvement)
     {
+        Log.Information("Advanced People Search with params {Params}", HttpContext.Request.Query);
+
         IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
         var accounts = accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
