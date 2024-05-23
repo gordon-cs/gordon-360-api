@@ -635,7 +635,11 @@ public class StateYourBusiness : ActionFilterAttribute
 
                     return false;
                 }
-
+            case Resource.PROFILE_PRIVACY:
+                {
+                    // current implementation only allows for facstaff implementation. 
+                    return user_groups.Contains(AuthGroup.FacStaff);
+                }
             case Resource.ACTIVITY_INFO:
                 {
                     // User is admin

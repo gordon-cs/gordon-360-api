@@ -7,11 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services;
 
@@ -273,6 +275,111 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 
         await context.SaveChangesAsync();
     }
+
+
+    /// <summary>
+    /// convert original fac/staff profile to public fac/staff profile based on individual privacy settings
+    /// </summary>
+    /// <param name="username">username of the fac/staff being searched</param>
+    /// <param name="currentUserType">personnel type of the logged-in user (fac, stu, alu)</param>
+    /// <param name="fac">original profile of the fac/staff being searched</param>
+    /// <returns>public profile of the fac/staff based on individual privacy settings</returns>
+    public PublicFacultyStaffProfileViewModel ToPublicFacultyStaffProfileViewModel
+        (string username, string currentUserType, FacultyStaffProfileViewModel fac)
+    {
+        PublicFacultyStaffProfileViewModel publicFac = (PublicFacultyStaffProfileViewModel)fac;
+        var account = accountService.GetAccountByUsername(username);
+
+        // select all privacy settings
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+        // get type of viewmodel for reflection property setting
+        Type fs_vm = new PublicFacultyStaffProfileViewModel().GetType();
+
+        foreach (UserPrivacy_Settings row in privacy)
+        {
+            if (row.Visibility == "Private" || (row.Visibility == "FacStaff" && currentUserType != "fac"))
+            {
+                fs_vm.GetProperty(row.Field).SetValue(publicFac, "Private as requested.");
+            }
+        }
+
+        return publicFac;
+    }
+
+    /// <summary>
+    /// convert original student profile to public student profile based on individual privacy settings
+    /// </summary>
+    /// <param name="username">username of the student being searched</param>
+    /// <param name="currentUserType">personnel type of the logged-in user</param>
+    /// <param name="stu">original profile of the student being searched</param>
+    /// <returns>public profile of the student based on individual privacy settings</returns>
+    public PublicStudentProfileViewModel ToPublicStudentProfileViewModel
+        (string username, string currentUserType, StudentProfileViewModel stu)
+    {
+        PublicStudentProfileViewModel publicStu = (PublicStudentProfileViewModel)stu;
+        var account = accountService.GetAccountByUsername(username);
+
+        // select all privacy settings
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+        // get type of viewmodel for reflection property setting
+        Type s_vm = new PublicStudentProfileViewModel().GetType();
+
+        foreach (UserPrivacy_Settings row in privacy)
+        {
+            if (row.Visibility == "Private" || (row.Visibility == "FacStaff" && currentUserType != "fac"))
+            {
+                s_vm.GetProperty(row.Field).SetValue(publicStu, "Private as requested.");
+            }
+        }
+
+        return publicStu;
+    }
+
+    /// <summary>
+    /// get privacy setting for particular user
+    /// </summary>
+    /// <param name="username">AD username</param>
+    /// <returns>all privacy setting of the particular user</returns>
+    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username)
+    {
+        var account = accountService.GetAccountByUsername(username);
+
+        // select all privacy settings
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID).Select(up_s => (UserPrivacyViewModel)up_s);
+
+        return privacy;
+    }
+
+    /// <summary>
+    /// privacy setting of some piece of personal data for user.
+    /// </summary>
+    /// <param name="username">AD Username</param>
+    /// <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
+    public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy)
+    {
+        var account = accountService.GetAccountByUsername(username);
+        foreach (string subField in facultyStaffPrivacy.Field)
+        {
+            var facStaff = context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Field == subField);
+            if (facStaff is null)
+            {
+                var privacy = new UserPrivacy_Settings
+                {
+                    gordon_id = account.GordonID,
+                    Field = subField,
+                    Visibility = facultyStaffPrivacy.VisibilityGroup
+                }; ;
+                await context.UserPrivacy_Settings.AddAsync(privacy);
+            }
+            else
+            {
+                facStaff.Visibility = facultyStaffPrivacy.VisibilityGroup;
+            }
+        }
+
+        context.SaveChanges();
+    }
+
 
     /// <summary>
     /// privacy setting of mobile phone.

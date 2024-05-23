@@ -72,6 +72,18 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[UserPrivacy_Fields]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserPrivacy_Settings]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserPrivacy_Visibility_Groups]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Activity]",
          "ObjectType": 0
       },
