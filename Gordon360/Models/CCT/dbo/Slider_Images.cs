@@ -6,26 +6,30 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+public partial class Slider_Images
 {
-    [Table("Slider_Images", Schema = "dbo")]
-    public partial class Slider_Images
-    {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        [StringLength(150)]
-        [Unicode(false)]
-        public string Path { get; set; }
-        [Required]
-        [StringLength(255)]
-        [Unicode(false)]
-        public string Title { get; set; }
-        [StringLength(500)]
-        [Unicode(false)]
-        public string LinkURL { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public int SortOrder { get; set; }
-    }
+    [Key]
+    public int ID { get; set; }
+
+    [Required]
+    [StringLength(150)]
+    [Unicode(false)]
+    public string Path { get; set; }
+
+    [Required]
+    [StringLength(255)]
+    [Unicode(false)]
+    public string Title { get; set; }
+
+    [StringLength(500)]
+    [Unicode(false)]
+    public string LinkURL { get; set; }
+
+    public int Width { get; set; }
+
+    public int Height { get; set; }
+
+    public int SortOrder { get; set; }
 }

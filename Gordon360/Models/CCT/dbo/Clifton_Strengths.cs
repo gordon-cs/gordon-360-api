@@ -6,41 +6,49 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[PrimaryKey("ID_NUM", "ACCESS_CODE")]
+public partial class Clifton_Strengths
 {
-    [Table("Clifton_Strengths", Schema = "dbo")]
-    public partial class Clifton_Strengths
-    {
-        [Key]
-        public int ID_NUM { get; set; }
-        [Key]
-        [StringLength(25)]
-        [Unicode(false)]
-        public string ACCESS_CODE { get; set; }
-        [Required]
-        [StringLength(200)]
-        [Unicode(false)]
-        public string EMAIL { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? DTE_COMPLETED { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string THEME_1 { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string THEME_2 { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string THEME_3 { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string THEME_4 { get; set; }
-        [StringLength(100)]
-        [Unicode(false)]
-        public string THEME_5 { get; set; }
-        /// <summary>
-        /// Whether the user wants their strengths to be private (not shown to other users)
-        /// </summary>
-        public bool Private { get; set; }
-    }
+    [Key]
+    public int ID_NUM { get; set; }
+
+    [Key]
+    [StringLength(25)]
+    [Unicode(false)]
+    public string ACCESS_CODE { get; set; }
+
+    [Required]
+    [StringLength(200)]
+    [Unicode(false)]
+    public string EMAIL { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? DTE_COMPLETED { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string THEME_1 { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string THEME_2 { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string THEME_3 { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string THEME_4 { get; set; }
+
+    [StringLength(100)]
+    [Unicode(false)]
+    public string THEME_5 { get; set; }
+
+    /// <summary>
+    /// Whether the user wants their strengths to be private (not shown to other users)
+    /// </summary>
+    public bool Private { get; set; }
 }

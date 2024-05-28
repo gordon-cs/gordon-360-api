@@ -4,13 +4,10 @@ using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static Gordon360.Controllers.WellnessController;
-using static Gordon360.Services.MembershipService;
 using RecIMActivityViewModel = Gordon360.Models.ViewModels.RecIM.ActivityViewModel;
 
 // <summary>
@@ -33,13 +30,17 @@ namespace Gordon360.Services
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
-        Task UpdateProfileLinkAsync(string username, string type, CUSTOM_PROFILE path);
+        Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content);
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
+        Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
+        Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
+        Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail);
         Task UpdateMobilePrivacyAsync(string username, string value);
         Task UpdateImagePrivacyAsync(string username, string value);
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
+        IEnumerable<string> GetMailStopsAsync();
     }
 
     public interface IAddressesService
@@ -76,35 +77,20 @@ namespace Gordon360.Services
             string? minor,
             string? hall,
             string? classType,
+            string? preferredClassYear,
+            int? initialYear,
+            int? finalYear,
             string? homeCity,
             string? state,
             string? country,
             string? department,
-            string? building);
+            string? building,
+            string? involvement);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
-    }
+        ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
+        ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts);
 
-    public interface IWellnessService
-    {
-        WellnessViewModel GetStatus(string username);
-        WellnessQuestionViewModel GetQuestion();
-        WellnessViewModel PostStatus(WellnessStatusColor status, string username);
-    }
-
-    public interface IDirectMessageService
-    {
-        CreateGroupViewModel CreateGroup(String name, bool group, string image, List<String> usernames, SendTextViewModel initialMessage, string userId);
-        bool SendMessage(SendTextViewModel textInfo, string user_id);
-        bool StoreUserRooms(String userId, String roomId);
-        bool StoreUserConnectionIds(String userId, String connectionId);
-        bool DeleteUserConnectionIds(String connectionId);
-        List<IEnumerable<ConnectionIdViewModel>> GetUserConnectionIds(List<String> userIds);
-        IEnumerable<MessageViewModel> GetMessages(string roomId);
-        IEnumerable<GroupViewModel> GetRooms(string userId);
-        List<Object> GetRoomById(string userId);
-        MessageViewModel GetSingleMessage(string messageID, string roomID);
-        object GetSingleRoom(int roomId);
     }
 
     public interface IActivityService
@@ -114,10 +100,7 @@ namespace Gordon360.Services
         Task<IEnumerable<string>> GetActivityTypesForSessionAsync(string sessionCode);
         IEnumerable<ActivityInfoViewModel> GetAll();
         bool IsOpen(string activityCode, string sessionCode);
-        IEnumerable<string> GetOpenActivities(string sess_cde);
-        IEnumerable<string> GetOpenActivities(string sess_cde, int gordonID);
-        IEnumerable<string> GetClosedActivities(string sess_cde);
-        IEnumerable<string> GetClosedActivities(string sess_cde, int gordonID);
+        IQueryable<ActivityInfoViewModel> GetActivitiesByStatus(string sess_cde, bool getOpen);
         ACT_INFO Update(string activityCode, InvolvementUpdateViewModel activity);
         void CloseOutActivityForSession(string activityCode, string sess_cde);
         void OpenActivityForSession(string activityCode, string sess_cde);
@@ -138,14 +121,6 @@ namespace Gordon360.Services
     {
         ActivityInfoViewModel Get(string username);
         IEnumerable<ActivityInfoViewModel> GetAll();
-    }
-
-    public interface IAdministratorService
-    {
-        IEnumerable<AdminViewModel?> GetAll();
-        AdminViewModel? GetByUsername(string username);
-        AdminViewModel Add(AdminViewModel admin);
-        AdminViewModel Delete(string username);
     }
 
     public interface IEmailService
@@ -190,22 +165,6 @@ namespace Gordon360.Services
         IEnumerable<MembershipView> RemovePrivateMemberships(IEnumerable<MembershipView> memberships, string viewerUsername);
     }
 
-    public interface IJobsService
-    {
-        IEnumerable<StudentTimesheetsViewModel> getSavedShiftsForUser(int ID_NUM);
-        Task SaveShiftForUserAsync(int studentID, int jobID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string shiftNotes, string lastChangedBy);
-        StudentTimesheetsViewModel EditShift(int rowID, DateTime shiftStart, DateTime shiftEnd, string hoursWorked, string username);
-        void DeleteShiftForUser(int rowID, int studentID);
-        Task SubmitShiftForUserAsync(int studentID, int jobID, DateTime shiftEnd, int submittedTo, string lastChangedBy);
-        Task<IEnumerable<SupervisorViewModel>> GetsupervisorNameForJobAsync(int supervisorID);
-        Task<IEnumerable<ActiveJobViewModel>> GetActiveJobsAsync(DateTime shiftStart, DateTime shiftEnd, int studentID);
-        Task<IEnumerable<OverlappingShiftIdViewModel>> EditShiftOverlapCheckAsync(int studentID, DateTime shiftStart, DateTime shiftEnd, int rowID);
-        Task<IEnumerable<OverlappingShiftIdViewModel>> CheckForOverlappingShiftAsync(int studentID, DateTime shiftStart, DateTime shiftEnd);
-        Task<IEnumerable<ClockInViewModel>> ClockOutAsync(string id);
-        Task<ClockInViewModel> ClockInAsync(bool state, string id);
-        Task<ClockInViewModel> DeleteClockInAsync(string id);
-    }
-
     public interface IParticipationService
     {
         ParticipationViewModel Get(string id);
@@ -227,35 +186,7 @@ namespace Gordon360.Services
     }
     public interface IScheduleService
     {
-        Task<IEnumerable<ScheduleViewModel>> GetScheduleStudentAsync(string username);
-        Task<IEnumerable<ScheduleViewModel>> GetScheduleFacultyAsync(string username);
-    }
-
-    public interface IScheduleControlService
-    {
-        Task UpdateSchedulePrivacyAsync(string username, string value);
-        Task UpdateDescriptionAsync(string username, string value);
-        Task UpdateModifiedTimeStampAsync(string username, DateTime value);
-    }
-
-    public interface IMyScheduleService
-    {
-        MYSCHEDULE GetForID(string eventID, string username);
-        IEnumerable<MYSCHEDULE> GetAllForUser(string username);
-        MYSCHEDULE Add(MYSCHEDULE myschedule);
-        MYSCHEDULE Update(MYSCHEDULE myschedule);
-        MYSCHEDULE Delete(string eventID, string username);
-    }
-
-    public interface ISaveService
-    {
-        IEnumerable<UPCOMING_RIDESResult> GetUpcoming(string gordon_id);
-        IEnumerable<UPCOMING_RIDES_BY_STUDENT_IDResult> GetUpcomingForUser(string gordon_id);
-        Task<Save_Rides> AddRideAsync(Save_Rides newRide, string gordon_id);
-        Task<Save_Rides> DeleteRideAsync(string rideID, string gordon_id);
-        Task<int> CancelRideAsync(string rideID, string gordon_id);
-        Task<Save_Bookings> AddBookingAsync(Save_Bookings newBooking);
-        Task<Save_Bookings> DeleteBookingAsync(string rideID, string gordon_id);
+        Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
     }
 
     public interface IContentManagementService
@@ -307,12 +238,26 @@ namespace Gordon360.Services
 
     namespace RecIM
     {
+        public interface IRecIMService
+        {
+            RecIMGeneralReportViewModel GetReport(DateTime start, DateTime end);
+        }
+
+        public interface IAffiliationService
+        {
+            IEnumerable<AffiliationExtendedViewModel> GetAllAffiliationDetails();
+            AffiliationExtendedViewModel GetAffiliationDetailsByName(string name);
+            Task DeleteAffiliationAsync(string affiliationName);
+            Task<string> CreateAffiliation(string affiliationName);
+            Task<string> AddPointsToAffilliationAsync(string affiliationName, AffiliationPointsUploadViewModel vm);
+            Task<string> UpdateAffiliationAsync(string affiliationName, AffiliationPatchViewModel update);
+        }
         public interface IActivityService
         {
             IEnumerable<LookupViewModel>? GetActivityLookup(string type);
             IEnumerable<ActivityExtendedViewModel> GetActivities();
             ActivityExtendedViewModel? GetActivityByID(int activityID);
-            IEnumerable<ActivityExtendedViewModel> GetActivitiesByTime(DateTime? time);
+            IEnumerable<ActivityExtendedViewModel> GetActivitiesByCompletion(bool isActive);
             Task<RecIMActivityViewModel> UpdateActivityAsync(int activytID, ActivityPatchViewModel updatedActivity);
             Task<RecIMActivityViewModel> PostActivityAsync(ActivityUploadViewModel newActivity);
             Task<ParticipantActivityViewModel> AddParticipantActivityInvolvementAsync(string username, int activityID, int privTypeID, bool isFreeAgent);
@@ -329,10 +274,15 @@ namespace Gordon360.Services
             SeriesExtendedViewModel GetSeriesByID(int seriesID);
             Task<SeriesViewModel> PostSeriesAsync(SeriesUploadViewModel newSeries, int? referenceSeriesID);
             Task<SeriesViewModel> UpdateSeriesAsync(int seriesID, SeriesPatchViewModel series);
+            IEnumerable<AffiliationPointsViewModel> GetSeriesWinners(int seriesID);
+            Task HandleAdditionalSeriesWinnersAsync(AffiliationPointsUploadViewModel vm);
             Task<SeriesScheduleViewModel> PutSeriesScheduleAsync(SeriesScheduleUploadViewModel seriesSchedule);
             Task<SeriesViewModel> DeleteSeriesCascadeAsync(int seriesID);
             Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request);
-            SeriesScheduleViewModel GetSeriesScheduleByID(int seriesID);
+            SeriesAutoSchedulerEstimateViewModel GetScheduleMatchesEstimateAsync(int seriesID, UploadScheduleRequest request);
+            SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID);
+            IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID);
+            Task<TeamRecordViewModel> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel teamRecord);
         }
 
         public interface ITeamService
@@ -361,14 +311,20 @@ namespace Gordon360.Services
         {
             IEnumerable<LookupViewModel>? GetParticipantLookup(string type);
             IEnumerable<ParticipantExtendedViewModel> GetParticipants();
+            bool GetParticipantIsCustom(string username);
+            IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
-            ParticipantExtendedViewModel GetParticipantByUsername(string username);
+            ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null);
+            AccountViewModel GetUnaffiliatedAccountByUsername(string username);
             IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
             Task<ParticipantExtendedViewModel> PostParticipantAsync(string username, int? statusID = 4);
-            Task<ParticipantExtendedViewModel> UpdateParticipantAsync(string username, bool isAdmin);
+            Task<ParticipantExtendedViewModel> PostCustomParticipantAsync(string username, CustomParticipantViewModel newCustomParticipant);
+            Task<ParticipantExtendedViewModel> SetParticipantAdminStatusAsync(string username, bool isAdmin);
             Task<ParticipantNotificationViewModel> SendParticipantNotificationAsync(string username, ParticipantNotificationUploadViewModel notificationVM);
             Task<ParticipantActivityViewModel> UpdateParticipantActivityAsync(string username, ParticipantActivityPatchViewModel updatedParticipant);
             Task<ParticipantStatusHistoryViewModel> UpdateParticipantStatusAsync(string username, ParticipantStatusPatchViewModel participantStatus);
+            Task<ParticipantExtendedViewModel> UpdateParticipantAllowEmailsAsync(string username, bool allowEmails);
+            Task<ParticipantExtendedViewModel> UpdateCustomParticipantAsync(string username, CustomParticipantPatchViewModel updatedParticipant);
             bool IsParticipant(string username);
             bool IsAdmin(string username);
         }
@@ -377,12 +333,14 @@ namespace Gordon360.Services
         {
             IEnumerable<SportViewModel> GetSports();
             SportViewModel GetSportByID(int sportID);
+            Task<SportViewModel> DeleteSportAsync(int sportID);
             Task<SportViewModel> PostSportAsync(SportUploadViewModel newSport);
             Task<SportViewModel> UpdateSportAsync(int sportID, SportPatchViewModel updatedSport);
         }
 
         public interface IMatchService
         {
+            IEnumerable<MatchExtendedViewModel> GetAllMatches();
             MatchViewModel GetSimpleMatchViewByID(int matchID);
             IEnumerable<ParticipantAttendanceViewModel> GetMatchAttendance(int matchID);
             IEnumerable<LookupViewModel>? GetMatchLookup(string type);

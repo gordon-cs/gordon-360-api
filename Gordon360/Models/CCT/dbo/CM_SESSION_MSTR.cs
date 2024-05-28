@@ -6,31 +6,37 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class CM_SESSION_MSTR
 {
-    [Keyless]
-    public partial class CM_SESSION_MSTR
-    {
-        [Required]
-        [StringLength(8)]
-        [Unicode(false)]
-        public string SESS_CDE { get; set; }
-        [StringLength(1000)]
-        [Unicode(false)]
-        public string SESS_DESC { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? SESS_BEGN_DTE { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? SESS_END_DTE { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? WHEEL_BEGN_DTE { get; set; }
-        [Column(TypeName = "datetime")]
-        public DateTime? WHEEL_END_DTE { get; set; }
-        [StringLength(32)]
-        [Unicode(false)]
-        public string YRTRM_CDE_2 { get; set; }
-        [StringLength(32)]
-        [Unicode(false)]
-        public string YRTRM_CDE_4 { get; set; }
-    }
+    [Required]
+    [StringLength(8)]
+    [Unicode(false)]
+    public string SESS_CDE { get; set; }
+
+    [StringLength(1000)]
+    [Unicode(false)]
+    public string SESS_DESC { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? SESS_BEGN_DTE { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? SESS_END_DTE { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? WHEEL_BEGN_DTE { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? WHEEL_END_DTE { get; set; }
+
+    [StringLength(32)]
+    [Unicode(false)]
+    public string YRTRM_CDE_2 { get; set; }
+
+    [StringLength(32)]
+    [Unicode(false)]
+    public string YRTRM_CDE_4 { get; set; }
 }

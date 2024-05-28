@@ -6,17 +6,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Keyless]
+public partial class States
 {
-    [Keyless]
-    public partial class States
-    {
-        [Required]
-        [StringLength(63)]
-        [Unicode(false)]
-        public string Name { get; set; }
-        [StringLength(31)]
-        [Unicode(false)]
-        public string Abbreviation { get; set; }
-    }
+    [Required]
+    [StringLength(63)]
+    [Unicode(false)]
+    public string Name { get; set; }
+
+    [StringLength(31)]
+    [Unicode(false)]
+    public string Abbreviation { get; set; }
 }

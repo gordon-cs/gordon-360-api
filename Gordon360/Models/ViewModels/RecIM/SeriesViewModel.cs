@@ -2,34 +2,36 @@
 using Gordon360.Models.CCT;
 using System;
 
-namespace Gordon360.Models.ViewModels.RecIM
+namespace Gordon360.Models.ViewModels.RecIM;
+
+public class SeriesViewModel
 {
-    public class SeriesViewModel
+    public int ID { get; set; }
+    public string Name { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public int ActivityID { get; set; }
+    public int TypeID { get; set; }
+    public int StatusID { get; set; }
+    public int? ScheduleID { get; set; }
+    public int? WinnerID { get; set; }
+    public int? Points { get; set; }
+
+    public static implicit operator SeriesViewModel(Series s)
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public int ActivityID { get; set; }
-        public int TypeID { get; set; }
-        public int StatusID { get; set; }
-        public int? ScheduleID { get; set; }
-
-        public static implicit operator SeriesViewModel(Series s)
+        return new SeriesViewModel
         {
-            return new SeriesViewModel
-            {
-                ID = s.ID,
-                Name = s.Name,
-                StartDate = s.StartDate.SpecifyUtc(),
-                EndDate = s.EndDate.SpecifyUtc(),
-                ActivityID = s.ActivityID,
-                TypeID = s.TypeID,
-                StatusID = s.StatusID,
-                ScheduleID = s.ScheduleID
-            };
-        }
+            ID = s.ID,
+            Name = s.Name,
+            StartDate = s.StartDate.SpecifyUtc(),
+            EndDate = s.EndDate.SpecifyUtc(),
+            ActivityID = s.ActivityID,
+            TypeID = s.TypeID,
+            StatusID = s.StatusID,
+            ScheduleID = s.ScheduleID,
+            WinnerID = s.WinnerID,
+            Points = s.Points,
+        };
     }
-
-    
 }
+

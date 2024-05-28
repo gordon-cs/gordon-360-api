@@ -6,18 +6,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+public partial class Housing_Halls
 {
-    [Table("Housing_Halls", Schema = "dbo")]
-    public partial class Housing_Halls
-    {
-        [Key]
-        [StringLength(15)]
-        [Unicode(false)]
-        public string Name { get; set; }
-        [Required]
-        [StringLength(15)]
-        [Unicode(false)]
-        public string Type { get; set; }
-    }
+    [Key]
+    [StringLength(15)]
+    [Unicode(false)]
+    public string Name { get; set; }
+
+    [Required]
+    [StringLength(15)]
+    [Unicode(false)]
+    public string Type { get; set; }
 }

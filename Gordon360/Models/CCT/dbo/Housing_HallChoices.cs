@@ -6,18 +6,20 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gordon360.Models.CCT
+namespace Gordon360.Models.CCT;
+
+[Index("HousingAppID", Name = "IX_Housing_HallChoices")]
+public partial class Housing_HallChoices
 {
-    [Index("HousingAppID", Name = "IX_Housing_HallChoices")]
-    public partial class Housing_HallChoices
-    {
-        [Key]
-        public int HallChoiceID { get; set; }
-        public int HousingAppID { get; set; }
-        public int Ranking { get; set; }
-        [Required]
-        [StringLength(15)]
-        [Unicode(false)]
-        public string HallName { get; set; }
-    }
+    [Key]
+    public int HallChoiceID { get; set; }
+
+    public int HousingAppID { get; set; }
+
+    public int Ranking { get; set; }
+
+    [Required]
+    [StringLength(15)]
+    [Unicode(false)]
+    public string HallName { get; set; }
 }
