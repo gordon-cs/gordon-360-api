@@ -271,3 +271,6 @@ paket-files/
 # Environment Specific app settings
 appsettings.*.json
 secrets.config
+
+# Logs
+Gordon360/Logs/*

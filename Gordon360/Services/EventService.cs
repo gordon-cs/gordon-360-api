@@ -33,7 +33,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
      */
     private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
     
-    private IEnumerable<EventViewModel> Events => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events);
+    private IEnumerable<EventViewModel> Events => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events) ?? [];
 
     /// <summary>
     /// Access the memory stream created by the cached task and parse it into events
