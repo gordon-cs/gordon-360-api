@@ -379,5 +379,10 @@ public class ParticipantService(CCTContext context) : IParticipantService
         }
         return newUsername + customSuffix;
     }
+
+    public IEnumerable<MatchExtendedViewModel> GetParticipantMatches(string username)
+    {
+        throw new NotImplementedException();
+    }
 }
 
