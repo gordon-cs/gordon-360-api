@@ -505,7 +505,7 @@ public class ProfilesController(IProfileService profileService,
     /// </summary>
     /// <returns> All visibility groups (Public, FacStaff, Private)</returns>
     [HttpGet]
-    [Route("visibility_groups")]
+    [Route("visibility_group")]
     public ActionResult<IEnumerable<string>> GetVisibilityGroup()
     {
         var groups = context.UserPrivacy_Visibility_Groups.Select(up_v_g => up_v_g.Group)
