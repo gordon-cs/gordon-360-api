@@ -360,7 +360,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         var account = accountService.GetAccountByUsername(username);
         foreach (string subField in facultyStaffPrivacy.Field)
         {
-            var facStaff = context.UserPrivacy_Settings.FirstOrDefault(x => x.gordon_id == account.GordonID && x.Field == subField);
+            var facStaff = context.UserPrivacy_Settings.FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == subField);
             if (facStaff is null)
             {
                 var privacy = new UserPrivacy_Settings

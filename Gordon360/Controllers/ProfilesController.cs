@@ -131,7 +131,7 @@ public class ProfilesController(IProfileService profileService,
     /// All privacy settings of the given user.
     /// </returns>
     [HttpGet]
-    [Route("privacy_setting/{username}")]
+    [Route("{username}/privacy_setting")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
     public ActionResult<IEnumerable<UserPrivacyGetViewModel>> GetPrivacySettingAsync(string username)
     {
@@ -505,13 +505,12 @@ public class ProfilesController(IProfileService profileService,
     /// </summary>
     /// <returns> All visibility groups (Public, FacStaff, Private)</returns>
     [HttpGet]
-    [Route("visibility_group")]
+    [Route("visibility_groups")]
     public ActionResult<IEnumerable<string>> GetVisibilityGroup()
     {
         var groups = context.UserPrivacy_Visibility_Groups.Select(up_v_g => up_v_g.Group)
                                .Distinct()
-                               .Where(g => g != null)
-                               .OrderBy(g => g);
+                               .Where(g => g != null);
         return Ok(groups);
     }
 
