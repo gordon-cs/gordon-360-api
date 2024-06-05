@@ -175,7 +175,6 @@ public class ParticipantService(CCTContext context) : IParticipantService
                     }
                 );
         return matches;
-        //throw new NotImplementedException();
     }
 
     public IEnumerable<ParticipantExtendedViewModel> GetParticipants()
