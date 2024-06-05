@@ -136,11 +136,8 @@ public class ParticipantService(CCTContext context) : IParticipantService
                                         .Include(mt => mt.Match)
                                             .ThenInclude(m => m.Series)
                                                 .ThenInclude(s => s.Activity)
-                                        .Include(mt => mt.Match)
                                             .ThenInclude(m => m.MatchTeam)
                                                 .ThenInclude(mt => mt.Match)
-                                        .Include(mt => mt.Match)
-                                            .ThenInclude(m => m.MatchTeam)
                                                 .ThenInclude(mt => mt.Status),
                                                
                     pt => pt.TeamID,
