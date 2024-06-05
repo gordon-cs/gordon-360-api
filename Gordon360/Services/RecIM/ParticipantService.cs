@@ -133,14 +133,10 @@ public class ParticipantService(CCTContext context) : IParticipantService
         var matches = context.ParticipantTeam
             .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)
                 .Join(context.MatchTeam.Where(mt => mt.StatusID != 0 && mt.Match.StatusID != 0)
-                                        .Include(mt => mt.Match)
-                                            .ThenInclude(m => m.Series)
-                                                .ThenInclude(s => s.Activity)
-                                        .Include(mt => mt.Match)
-                                            .ThenInclude(m => m.MatchTeam)
+                                        .Include(mt => mt.Match.Series.Activity)
+                                        .Include(mt => mt.Match.MatchTeam)
                                                 .ThenInclude(mt => mt.Match)
-                                        .Include(mt => mt.Match)
-                                            .ThenInclude(m => m.MatchTeam)
+                                        .Include(mt => mt.Match.MatchTeam)
                                                 .ThenInclude(mt => mt.Status),
                                                
                     pt => pt.TeamID,
