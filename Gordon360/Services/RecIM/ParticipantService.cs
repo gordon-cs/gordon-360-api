@@ -105,27 +105,77 @@ public class ParticipantService(CCTContext context) : IParticipantService
 
     public IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username)
     {
-               var teams = context.ParticipantTeam
-                        .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2 )
-                            .Join(context.Team.Where(t => t.StatusID != 0),
-                                pt => pt.TeamID,
-                                t => t.ID,
-                                (pt, t) => new TeamExtendedViewModel
-                                {
-                                    ID = t.ID,
-                                    Activity = context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
-                                    Name = t.Name,
-                                    Status = context.TeamStatus
-                                                .FirstOrDefault(ts => ts.ID == t.StatusID)
-                                                .Description,
-                                    Logo = t.Logo,
-                                    TeamRecord = context.SeriesTeam
-                                        .Include(st => st.Team)
-                                        .Where(st => st.TeamID == t.ID)
-                                        .Select(st => (TeamRecordViewModel)st)
-                                
-                                });
+        var teams = context.ParticipantTeam
+                 .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)
+                     .Join(context.Team.Where(t => t.StatusID != 0),
+                         pt => pt.TeamID,
+                         t => t.ID,
+                         (pt, t) => new TeamExtendedViewModel
+                         {
+                             ID = t.ID,
+                             Activity = context.Activity.FirstOrDefault(a => a.ID == t.ActivityID),
+                             Name = t.Name,
+                             Status = context.TeamStatus
+                                         .FirstOrDefault(ts => ts.ID == t.StatusID)
+                                         .Description,
+                             Logo = t.Logo,
+                             TeamRecord = context.SeriesTeam
+                                 .Include(st => st.Team)
+                                 .Where(st => st.TeamID == t.ID)
+                                 .Select(st => (TeamRecordViewModel)st)
+
+                         });
         return teams;
+    }
+
+    public IEnumerable<MatchExtendedViewModel> GetParticipantMatches(string username)
+    {
+        var matches = context.ParticipantTeam
+            .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)
+                .Join(context.MatchTeam.Where(mt => mt.StatusID != 0)
+                                        .Include(mt => mt.Match)
+                                            .ThenInclude(m => m.Series)
+                                                .ThenInclude(s => s.Activity)
+                                        .Include(mt => mt.Match)
+                                            .ThenInclude(m => m.MatchTeam)
+                                                .ThenInclude(mt => mt.Match)
+                                        .Include(mt => mt.Match)
+                                            .ThenInclude(m => m.MatchTeam)
+                                                .ThenInclude(mt => mt.Status),
+                                               
+                    pt => pt.TeamID,
+                    mt => mt.TeamID,
+                    (pt, mt) => new MatchExtendedViewModel
+                    {
+                        ID = mt.Match.ID,
+                        Scores = mt.Match.MatchTeam
+                                    .Select(mt_ => (TeamMatchHistoryViewModel)mt_)
+                                    .AsEnumerable(),
+                        StartTime = mt.Match.StartTime,
+                        Surface = mt.Match.Surface.Name,
+                        Status = mt.Match.Status.Description,
+                        Activity = new ActivityExtendedViewModel 
+                            { 
+                                ID = mt.Match.Series.Activity.ID,
+                                Name = mt.Match.Series.Activity.Name
+                            },
+                        Team = mt.Match.MatchTeam.Where(mt_ => mt_.StatusID != 0)
+                            .Select(mt_ => new TeamExtendedViewModel
+                            {
+                                ID = mt_.TeamID,
+                                Name = mt_.Team.Name,
+                                TeamRecord = context.SeriesTeam
+                                    .Where(st => st.SeriesID == mt.Match.SeriesID && st.TeamID == mt_.TeamID)
+                                    .Select(st => new TeamRecordViewModel
+                                    {
+                                        WinCount = st.WinCount,
+                                        LossCount = st.LossCount
+                                    })
+                            })
+                    }
+                );
+        return matches;
+        //throw new NotImplementedException();
     }
 
     public IEnumerable<ParticipantExtendedViewModel> GetParticipants()
@@ -378,11 +428,6 @@ public class ParticipantService(CCTContext context) : IParticipantService
             index++;
         }
         return newUsername + customSuffix;
-    }
-
-    public IEnumerable<MatchExtendedViewModel> GetParticipantMatches(string username)
-    {
-        throw new NotImplementedException();
     }
 }
 
