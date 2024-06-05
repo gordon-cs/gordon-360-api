@@ -132,7 +132,7 @@ public class ParticipantService(CCTContext context) : IParticipantService
     {
         var matches = context.ParticipantTeam
             .Where(pt => pt.ParticipantUsername == username && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)
-                .Join(context.MatchTeam.Where(mt => mt.StatusID != 0)
+                .Join(context.MatchTeam.Where(mt => mt.StatusID != 0 && mt.Match.StatusID != 0)
                                         .Include(mt => mt.Match)
                                             .ThenInclude(m => m.Series)
                                                 .ThenInclude(s => s.Activity)
