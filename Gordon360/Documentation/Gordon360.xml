@@ -2125,7 +2125,7 @@
             get a user's birthday
             </summary>
             <param name="username">The username of the person to get the birthdate of</param>
-            <returns>Date the user's date of birth, if available, or a default time of 0 ticks.</returns>
+            <returns>Date the user's date of birth, if available, or a default of 1/1/1800.</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetAdvisorsAsync(System.String)">
             <summary>

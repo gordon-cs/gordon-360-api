@@ -73,14 +73,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// get a user's birthday
     /// </summary>
     /// <param name="username">The username of the person to get the birthdate of</param>
-    /// <returns>Date the user's date of birth, if available, or a default time of 0 ticks.</returns>
+    /// <returns>Date the user's date of birth, if available, or a default of 1/1/1800.</returns>
     public DateTime GetBirthdate(string username)
     {
         var birthdate = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
 
         if (birthdate == null)
         {
-            return new DateTime();  // Ignore missing birthday.
+            return new DateTime(1800, 1, 1);
         }
 
         try
