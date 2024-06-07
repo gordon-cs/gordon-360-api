@@ -80,7 +80,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 
         if (birthdate == null)
         {
-            return new DateTime(0L);  // Ignore missing birthday.
+            return new DateTime();  // Ignore missing birthday.
         }
 
         try
