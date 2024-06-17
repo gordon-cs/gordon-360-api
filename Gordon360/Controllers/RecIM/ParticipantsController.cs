@@ -30,6 +30,19 @@ public class ParticipantsController(IParticipantService participantService, IAcc
         return Ok(res);
     }
 
+    /// <summary>
+    /// Used primarily on the rec-im base page, fetches all future/upcoming matches for a participant
+    /// </summary>
+    /// <param name="username">participant username</param>
+    /// <returns>list of upcoming matches of given participant</returns>
+    [HttpGet]
+    [Route("{username}/matches")]
+    public ActionResult<IEnumerable<MatchExtendedViewModel>> GetParticipantMatches(string username)
+    {
+        var res = participantService.GetParticipantMatches(username);
+        return Ok(res);
+    }
+
     [HttpGet]
     [Route("{username}")]
     public ActionResult<ParticipantExtendedViewModel> GetParticipantByUsername(string username)

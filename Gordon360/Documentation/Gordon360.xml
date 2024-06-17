@@ -807,6 +807,13 @@
             <param name="attendee">object holding required username (optional teamID)</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.RecIM.ParticipantsController.GetParticipantMatches(System.String)">
+            <summary>
+            Used primarily on the rec-im base page, fetches all future/upcoming matches for a participant
+            </summary>
+            <param name="username">participant username</param>
+            <returns>list of upcoming matches of given participant</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.RecIMAdminController.GetReport(System.DateTime,System.DateTime)">
             <summary>
             Rec-IM Reporting:
