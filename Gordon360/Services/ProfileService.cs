@@ -330,6 +330,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             {
                 s_vm.GetProperty(row.Field).SetValue(publicStu, "Private as requested.");
             }
+            if (row.Field == "MobilePhone")
+            {
+                s_vm.GetProperty("IsMobilePhonePrivate").SetValue(publicStu, row.Visibility != "Public");
+            }
         }
 
         return publicStu;
