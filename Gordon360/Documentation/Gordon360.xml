@@ -2219,6 +2219,15 @@
             <param name="stu">original profile of the student being searched</param>
             <returns>public profile of the student based on individual privacy settings</returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.ToSanitizedStudentProfileViewModel(System.String,System.String,Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>
+            convert original student profile to sanitized student profile based on individual privacy settings
+            </summary>
+            <param name="username">username of the student being searched</param>
+            <param name="currentUserType">personnel type of the logged-in user</param>
+            <param name="stu">original profile of the student being searched</param>
+            <returns>public profile of the student based on individual privacy settings</returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetPrivacySettingAsync(System.String)">
             <summary>
             get privacy setting for particular user

@@ -340,6 +340,39 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
     /// <summary>
+    /// convert original student profile to sanitized student profile based on individual privacy settings
+    /// </summary>
+    /// <param name="username">username of the student being searched</param>
+    /// <param name="currentUserType">personnel type of the logged-in user</param>
+    /// <param name="stu">original profile of the student being searched</param>
+    /// <returns>public profile of the student based on individual privacy settings</returns>
+    public SanitizedStudentProfileViewModel ToSanitizedStudentProfileViewModel
+        (string username, string currentUserType, StudentProfileViewModel stu)
+    {
+        SanitizedStudentProfileViewModel sanitizedStu = (SanitizedStudentProfileViewModel)stu;
+        var account = accountService.GetAccountByUsername(username);
+
+        // select all privacy settings
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+        // get type of viewmodel for reflection property setting
+        Type s_vm = new SanitizedStudentProfileViewModel().GetType();
+
+        foreach (UserPrivacy_Settings row in privacy)
+        {
+            if (row.Visibility == "Private" || (row.Visibility == "FacStaff" && currentUserType != "fac"))
+            {
+                s_vm.GetProperty(row.Field).SetValue(sanitizedStu, "Private as requested.");
+            }
+            if (row.Field == "MobilePhone")
+            {
+                s_vm.GetProperty("IsMobilePhonePrivate").SetValue(sanitizedStu, row.Visibility != "Public");
+            }
+        }
+
+        return sanitizedStu;
+    }
+
+    /// <summary>
     /// get privacy setting for particular user
     /// </summary>
     /// <param name="username">AD username</param>

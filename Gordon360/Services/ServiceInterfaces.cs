@@ -39,6 +39,8 @@ namespace Gordon360.Services
             (string username, string currentUserType, FacultyStaffProfileViewModel fac);
         PublicStudentProfileViewModel ToPublicStudentProfileViewModel
             (string username, string currentUserType, StudentProfileViewModel stu);
+        SanitizedStudentProfileViewModel ToSanitizedStudentProfileViewModel
+            (string username, string currentUserType, StudentProfileViewModel stu);
         Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy);
         Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail);
         Task UpdateMobilePrivacyAsync(string username, string value);

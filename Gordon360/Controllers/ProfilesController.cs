@@ -77,7 +77,8 @@ public class ProfilesController(IProfileService profileService,
         }
         else if (viewerGroups.Contains(AuthGroup.FacStaff))
         {
-            student = _student;
+            student = _student == null ? null :
+                profileService.ToSanitizedStudentProfileViewModel(username, "fac", _student);
             faculty = _faculty == null ? null :
                 profileService.ToPublicFacultyStaffProfileViewModel(username, "fac", _faculty);
             alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
