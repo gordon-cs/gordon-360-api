@@ -331,6 +331,11 @@ namespace Gordon360.Services
         Task<bool> GetStatusAsync(string username);
     }
 
+    public interface IPosterService
+    {
+
+    }
+
     namespace RecIM
     {
         public interface IRecIMService
