@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services;
 
@@ -17,22 +18,31 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the PosterController and the Poster database model.
 /// </summary>
-public class PosterService(CCTContext context) : IPosterService
+public class PosterService(CCTContext context, SessionService sessionService, MembershipService membershipService) : IPosterService
 {
     public IEnumerable<PosterViewModel> GetPosters() {
-        return null;
+        return context.Poster.Include(p => p.Status).Select(p => (PosterViewModel)p);
     }
     public IEnumerable<PosterViewModel> GetCurrentPosters()
     {
-        return null;
+        return GetPosters().Where(p => p.ExpirationDate > DateTime.Now && p.Status == "Visible");
     }
-    public IEnumerable<PosterViewModel> GetPostersByUsername(string username)
+
+    //currently will only get posters if someone is signed up for a club, can be modified to include all posters but prioritize 
+    //personalized posters
+    public IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username)
     {
-        return null;
+        var currentSessionCode = sessionService.GetCurrentSession().SessionCode;
+        var currentMembershipCodes = membershipService.GetMemberships(username: username, sessionCode: currentSessionCode)
+            .Select(m => m.ActivityCode);
+
+        var res = GetCurrentPosters().Where(p => currentMembershipCodes.Contains(p.ClubCode));
+   
+        return res;
     }
     public IEnumerable<PosterViewModel> GetPostersByActivityCode(string activityCode)
     {
-        return null;
+        return GetPosters().Where(p => p.ClubCode == activityCode);
     }
     public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
     {
