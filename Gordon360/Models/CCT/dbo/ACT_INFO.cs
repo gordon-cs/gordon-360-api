@@ -41,4 +41,7 @@ public partial class ACT_INFO
 
     [Unicode(false)]
     public string ACT_JOIN_INFO { get; set; }
+
+    [InverseProperty("ACT_CDENavigation")]
+    public virtual ICollection<Posters> Posters { get; set; } = new List<Posters>();
 }
