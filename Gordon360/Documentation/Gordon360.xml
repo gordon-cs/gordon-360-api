@@ -75,6 +75,14 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.CreatePoster(Gordon360.Models.ViewModels.PosterUploadViewModel)">
+            <summary>
+            Creates a poster
+            </summary>
+            <param name="poster"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:Gordon360.Controllers.Api.PostersController.UpdatePoster(System.Int32)">
             <summary>
             Updates specified poster by ID
