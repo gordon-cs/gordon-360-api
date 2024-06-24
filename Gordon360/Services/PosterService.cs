@@ -19,6 +19,32 @@ namespace Gordon360.Services;
 /// </summary>
 public class PosterService(CCTContext context) : IPosterService
 {
+    public IEnumerable<PosterViewModel> GetPosters() {
+        return null;
+    }
+    public IEnumerable<PosterViewModel> GetCurrentPosters()
+    {
+        return null;
+    }
+    public IEnumerable<PosterViewModel> GetPostersByUsername(string username)
+    {
+        return null;
+    }
+    public IEnumerable<PosterViewModel> GetPostersByActivityCode(string activityCode)
+    {
+        return null;
+    }
+    public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
+    {
+        return null;
+    }
+    public async Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster)
+    {
+        return null;
+    }
+    public async Task<PosterViewModel> DeletePosterAsync(int posterID)
+    {
+        return null;
+    }
 
-   
 }
