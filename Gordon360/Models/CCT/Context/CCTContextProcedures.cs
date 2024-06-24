@@ -32,6 +32,23 @@ namespace Gordon360.Models.CCT.Context
         {
             return Procedures;
         }
+        protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ACTIVE_CLUBS_PER_SESS_IDResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<ADVISOR_SEPARATEResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<ALL_BASIC_INFOResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<ALL_BASIC_INFO_NOT_ALUMNIResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<DISTINCT_ACT_TYPEResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<FINALIZATION_GET_FINALIZATION_STATUSResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<FINALIZATION_GETHOLDSBYIDResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<FINALIZATION_UPDATECELLPHONEResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<FINALIZATION_UPDATEDEMOGRAPHICResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<PHOTO_INFO_PER_USER_NAMEResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<STUDENT_JOBS_PER_ID_NUMResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<UPDATE_CELL_PHONEResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<VICTORY_PROMISE_BY_STUDENT_IDResult>().HasNoKey().ToView(null);
+        }
     }
 
     public partial class CCTContextProcedures : ICCTContextProcedures
