@@ -5,6 +5,7 @@ namespace Gordon360.Models.ViewModels;
 
 public class PosterViewModel
 {
+    public int ID { get; set; }
     public string ClubCode { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
@@ -18,6 +19,7 @@ public class PosterViewModel
     {
         PosterViewModel vm = new PosterViewModel
         {
+            ID = p.ID,
             ClubCode = p.ACT_CDE.Trim(),
             Title = p.Title,
             Description = p.Description ?? "",
