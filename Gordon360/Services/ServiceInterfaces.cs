@@ -241,6 +241,7 @@ namespace Gordon360.Services
         IEnumerable<PosterViewModel> GetPosters();
         IEnumerable<PosterViewModel> GetCurrentPosters();
         IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username);
+        IEnumerable<string> GetPosterStatuses();
         IEnumerable<PosterViewModel> GetPostersByActivityCode(string activityCode);
         IEnumerable<PosterViewModel> GetPosterByID(int posterID);
         Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster);
