@@ -26,7 +26,8 @@ public class PostersController(IPosterService posterService) : ControllerBase
     [Route("")]
     public ActionResult<IEnumerable<PosterViewModel>> GetPosters()
     {
-        throw new NotImplementedException();
+        var res = posterService.GetPosters();
+        return Ok(res);
     }
 
     /// <summary>
@@ -38,7 +39,8 @@ public class PostersController(IPosterService posterService) : ControllerBase
     [Route("current")]
     public ActionResult<IEnumerable<PosterViewModel>> GetCurrentPosters()
     {
-        throw new NotImplementedException();
+        var res = posterService.GetCurrentPosters();
+        return Ok(res);
     }
 
     /// <summary>
@@ -51,7 +53,8 @@ public class PostersController(IPosterService posterService) : ControllerBase
     [Route("{username}")]
     public ActionResult<IEnumerable<PosterViewModel>> GetPersonalizedPosters(string username)
     {
-        throw new NotImplementedException();
+        var res = posterService.GetPersonalizedPostersByUsername(username);
+        return Ok(res);
     }
 
     /// <summary>
@@ -64,7 +67,8 @@ public class PostersController(IPosterService posterService) : ControllerBase
     [Route("activity/{activityCode}")]
     public ActionResult<IEnumerable<PosterViewModel>> GetActivityPosters(string activityCode)
     {
-        throw new NotImplementedException();
+        var res = posterService.GetPostersByActivityCode(activityCode);
+        return Ok(res);
     }
 
     /// <summary>
