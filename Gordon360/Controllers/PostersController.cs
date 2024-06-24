@@ -78,9 +78,10 @@ public class PostersController(IPosterService posterService) : ControllerBase
     /// <exception cref="NotImplementedException"></exception>
     [HttpGet]
     [Route("lookup")]
-    public ActionResult<IEnumerable<PosterViewModel>> GetPosterStatuses()
+    public ActionResult<IEnumerable<string>> GetPosterStatuses()
     {
-        throw new NotImplementedException();
+        var res = posterService.GetPosterStatuses();
+        return Ok(res);
     }
 
     /// <summary>
