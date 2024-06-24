@@ -59,6 +59,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Posters]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PosterStatus]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[REQUEST]",
          "ObjectType": 0
       },
