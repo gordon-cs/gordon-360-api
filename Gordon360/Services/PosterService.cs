@@ -44,6 +44,10 @@ public class PosterService(CCTContext context, SessionService sessionService, Me
     {
         return GetPosters().Where(p => p.ClubCode == activityCode);
     }
+    public IEnumerable<PosterViewModel> GetPosterByID(int posterID)
+    {
+        return GetPosters().Where(p => p.ID == posterID);
+    }
     public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
     {
         return null;
