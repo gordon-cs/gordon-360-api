@@ -2092,6 +2092,16 @@
             <param name="username">The AD Username of the student</param>
             <returns>true if account exists, ResourceNotFoundException if null</returns>
         </member>
+        <member name="T:Gordon360.Services.PosterService">
+            <summary>
+            Service Class that facilitates data transactions between the PosterController and the Poster database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.PosterService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Service Class that facilitates data transactions between the PosterController and the Poster database model.
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
             get student profile info

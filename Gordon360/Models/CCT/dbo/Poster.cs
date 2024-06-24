@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-public partial class Posters
+public partial class Poster
 {
     [Key]
     public int ID { get; set; }
@@ -43,10 +43,10 @@ public partial class Posters
     public int StatusID { get; set; }
 
     [ForeignKey("ACT_CDE")]
-    [InverseProperty("Posters")]
+    [InverseProperty("Poster")]
     public virtual ACT_INFO ACT_CDENavigation { get; set; }
 
     [ForeignKey("StatusID")]
-    [InverseProperty("Posters")]
+    [InverseProperty("Poster")]
     public virtual PosterStatus Status { get; set; }
 }
