@@ -2,7 +2,6 @@
    "CodeGenerationMode": 4,
    "ContextClassName": "CCTContext",
    "ContextNamespace": null,
-   "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
@@ -57,6 +56,14 @@
       },
       {
          "Name": "[dbo].[MEMBERSHIP]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Posters]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PosterStatus]",
          "ObjectType": 0
       },
       {
@@ -356,8 +363,9 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "sqltrain1.CCT.dbo",
+   "UiHint": null,
    "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDateOnlyTimeOnly": false,

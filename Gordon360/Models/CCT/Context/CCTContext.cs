@@ -104,6 +104,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
 
+    public virtual DbSet<PosterStatus> PosterStatus { get; set; }
+
+    public virtual DbSet<Posters> Posters { get; set; }
+
     public virtual DbSet<PrivType> PrivType { get; set; }
 
     public virtual DbSet<REQUEST> REQUEST { get; set; }
@@ -317,6 +321,7 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.JOB_NAME).IsFixedLength();
             entity.Property(e => e.PART_CDE).IsFixedLength();
             entity.Property(e => e.SESS_CDE).IsFixedLength();
+            entity.Property(e => e.USER_NAME).IsFixedLength();
         });
 
         modelBuilder.Entity<Mailboxes>(entity =>
@@ -471,6 +476,17 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
+        modelBuilder.Entity<Posters>(entity =>
+        {
+            entity.Property(e => e.ACT_CDE).IsFixedLength();
+
+            entity.HasOne(d => d.ACT_CDENavigation).WithMany(p => p.Posters).HasConstraintName("FK_Posters_ACT_INFO");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.Posters)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Posters_PosterStatus");
+        });
+
         modelBuilder.Entity<REQUEST>(entity =>
         {
             entity.HasKey(e => e.REQUEST_ID).HasName("PK_Request");
@@ -611,7 +627,6 @@ public partial class CCTContext : DbContext
         });
         modelBuilder.HasSequence("Information_Change_Request_Seq");
 
-        OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
     }
 
