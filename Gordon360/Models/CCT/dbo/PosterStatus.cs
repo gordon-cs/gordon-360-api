@@ -19,5 +19,5 @@ public partial class PosterStatus
     public string Status { get; set; }
 
     [InverseProperty("Status")]
-    public virtual ICollection<Posters> Posters { get; set; } = new List<Posters>();
+    public virtual ICollection<Poster> Poster { get; set; } = new List<Poster>();
 }
