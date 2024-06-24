@@ -23,6 +23,7 @@ public class PosterService(CCTContext context, SessionService sessionService, Me
     public IEnumerable<PosterViewModel> GetPosters() {
         return context.Poster.Include(p => p.Status).Select(p => (PosterViewModel)p);
     }
+
     public IEnumerable<PosterViewModel> GetCurrentPosters()
     {
         return GetPosters().Where(p => p.ExpirationDate > DateTime.Now && p.Status == "Visible");
@@ -40,18 +41,27 @@ public class PosterService(CCTContext context, SessionService sessionService, Me
    
         return res;
     }
+
+    public IEnumerable<string> GetPosterStatuses()
+    {
+        return context.PosterStatus.Select(ps => ps.Status).AsEnumerable();
+    }
+
     public IEnumerable<PosterViewModel> GetPostersByActivityCode(string activityCode)
     {
         return GetPosters().Where(p => p.ClubCode == activityCode);
     }
+
     public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
     {
         return null;
     }
+
     public async Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster)
     {
         return null;
     }
+
     public async Task<PosterViewModel> DeletePosterAsync(int posterID)
     {
         return null;
