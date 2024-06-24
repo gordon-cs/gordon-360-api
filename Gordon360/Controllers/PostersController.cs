@@ -80,6 +80,19 @@ public class PostersController(IPosterService posterService) : ControllerBase
     }
 
     /// <summary>
+    /// Creates a poster
+    /// </summary>
+    /// <param name="poster"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [HttpPost]
+    [Route("")]
+    public async Task<ActionResult<PosterViewModel>> CreatePoster(PosterUploadViewModel poster)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
     /// Updates specified poster by ID
     /// </summary>
     /// <param name="posterID"></param>
@@ -87,7 +100,7 @@ public class PostersController(IPosterService posterService) : ControllerBase
     /// <exception cref="NotImplementedException"></exception>
     [HttpPatch]
     [Route("{posterID}")]
-    public ActionResult<IEnumerable<PosterViewModel>> UpdatePoster(int posterID)
+    public async Task<ActionResult<PosterViewModel>> UpdatePoster(int posterID)
     {
         throw new NotImplementedException();
     }
@@ -100,7 +113,7 @@ public class PostersController(IPosterService posterService) : ControllerBase
     /// <exception cref="NotImplementedException"></exception>
     [HttpDelete]
     [Route("{posterID}")]
-    public ActionResult<IEnumerable<PosterViewModel>> DeletePoster(int posterID)
+    public async Task<ActionResult<PosterViewModel>> DeletePoster(int posterID)
     {
         throw new NotImplementedException();
     }
