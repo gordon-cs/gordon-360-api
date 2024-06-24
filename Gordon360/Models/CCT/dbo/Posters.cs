@@ -29,9 +29,10 @@ public partial class Posters
     [Required]
     [StringLength(64)]
     [Unicode(false)]
-    public string Image { get; set; }
+    public string ImagePath { get; set; }
 
-    [Column(TypeName = "datetime")]
+    public DateTime VisibleDate { get; set; }
+
     public DateTime ExpirationDate { get; set; }
 
     [Required]
