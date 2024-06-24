@@ -38,6 +38,59 @@
             <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
             <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetPosters">
+            <summary>
+            Gets available posters
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetCurrentPosters">
+            <summary>
+            Gets all non-expired posters
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetPersonalizedPosters(System.String)">
+            <summary>
+            Get personalized posters based on student's activities
+            </summary>
+            <param name="username"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetActivityPosters(System.String)">
+            <summary>
+            Get posters by activity code
+            </summary>
+            <param name="activityCode"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetPosterStatuses">
+            <summary>
+            Gets all poster statuses
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.UpdatePoster(System.Int32)">
+            <summary>
+            Updates specified poster by ID
+            </summary>
+            <param name="posterID"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.DeletePoster(System.Int32)">
+            <summary>
+            Delete specified poster by ID
+            </summary>
+            <param name="posterID"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
             Return a list of accounts matching some or all of <c>searchString</c>.
