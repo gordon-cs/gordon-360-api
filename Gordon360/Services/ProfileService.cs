@@ -48,11 +48,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
     /// <summary>
-    /// get mailbox combination
+    /// get mailbox information (contains box combination)
     /// </summary>
     /// <param name="username">The current user's username</param>
     /// <returns>MailboxViewModel with the combination</returns>
-    public MailboxViewModel GetMailboxCombination(string username)
+    public MailboxViewModel GetMailboxInformation(string username)
     {
         var mailboxNumber =
             context.Student

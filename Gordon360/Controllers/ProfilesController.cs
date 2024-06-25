@@ -200,12 +200,12 @@ public class ProfilesController(IProfileService profileService,
     /// <summary>Gets the mailbox information of currently logged in user</summary>
     /// <returns></returns>
     [HttpGet]
-    [Route("mailbox-combination")]
+    [Route("mailbox-information")]
     public ActionResult<MailboxViewModel> GetMailInfo()
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = profileService.GetMailboxCombination(username);
+        var result = profileService.GetMailboxInformation(username);
         return Ok(result);
     }
 
