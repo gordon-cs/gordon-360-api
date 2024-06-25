@@ -125,7 +125,6 @@ public class PostersController(IPosterService posterService) : ControllerBase
     {
             var poster = await posterService.UpdatePosterAsync(posterID, updatedPoster);
             return CreatedAtAction(nameof(GetPosterByID), new { posterID = poster.ID }, updatedPoster);
-
      }
 
     /// <summary>
@@ -138,7 +137,8 @@ public class PostersController(IPosterService posterService) : ControllerBase
     [Route("{posterID}")]
     public async Task<ActionResult<PosterViewModel>> DeletePoster(int posterID)
     {
-        throw new NotImplementedException();
+        var res = await posterService.DeletePosterAsync(posterID);
+        return Ok(res);
     }
 
 

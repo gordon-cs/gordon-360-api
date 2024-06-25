@@ -58,7 +58,12 @@ public class PosterService(CCTContext context, SessionService sessionService, Me
     }
     public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
     {
-        return null;
+        var poster = newPoster.ToPoster();
+
+        await context.Poster.AddAsync(poster);
+        await context.SaveChangesAsync();
+
+        return poster;
     }
 
     public async Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster)
