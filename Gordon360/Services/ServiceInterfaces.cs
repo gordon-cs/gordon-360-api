@@ -35,6 +35,8 @@ namespace Gordon360.Services
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
+        CombinedProfileViewModel ImposePrivacySettings
+            (string username, string currentUserType, ProfileViewModel profile);
         PublicFacultyStaffProfileViewModel ToPublicFacultyStaffProfileViewModel
             (string username, string currentUserType, FacultyStaffProfileViewModel fac);
         PublicStudentProfileViewModel ToPublicStudentProfileViewModel

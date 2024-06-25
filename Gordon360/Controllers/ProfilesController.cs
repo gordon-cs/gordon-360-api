@@ -78,16 +78,13 @@ public class ProfilesController(IProfileService profileService,
         else if (viewerGroups.Contains(AuthGroup.FacStaff))
         {
             student = _student;
-            faculty = _faculty == null ? null :
-                profileService.ToPublicFacultyStaffProfileViewModel(username, "fac", _faculty);
+            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
             alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
         }
         else if (viewerGroups.Contains(AuthGroup.Student))
         {
-            student = _student == null ? null :
-                        profileService.ToPublicStudentProfileViewModel(username, "stu", _student);
-            faculty = _faculty == null ? null :
-                        profileService.ToPublicFacultyStaffProfileViewModel(username, "stu", _faculty);
+            student = _student == null ? null : (PublicStudentProfileViewModel)_student;
+            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
             // If this student is also in Alumni AuthGroup, then s/he can see alumni's public profile; if not, return null.
             alumni = (_alumni == null) ? null :
                         viewerGroups.Contains(AuthGroup.Alumni) ?
@@ -96,8 +93,7 @@ public class ProfilesController(IProfileService profileService,
         else if (viewerGroups.Contains(AuthGroup.Alumni))
         {
             student = null;
-            faculty = _faculty == null ? null :
-                        profileService.ToPublicFacultyStaffProfileViewModel(username, "alu", _faculty);
+            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
             alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
         }
 
@@ -108,7 +104,9 @@ public class ProfilesController(IProfileService profileService,
 
         var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 
-        return Ok(profile);
+        var cleaned_profile = profileService.ImposePrivacySettings(username, "fac", profile);
+
+        return Ok(cleaned_profile);
     }
 
     ///<summary>Get the advisor(s) of a particular student</summary>

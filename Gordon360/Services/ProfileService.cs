@@ -278,6 +278,39 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 
 
     /// <summary>
+    /// convert combined profile to public profile based on individual privacy settings
+    /// </summary>
+    /// <param name="username">username of the person being searched</param>
+    /// <param name="currentUserType">personnel type of the logged-in user (fac, stu, alu)</param>
+    /// <param name="profile">combined profile of the person being searched</param>
+    /// <returns>public profile of the person based on individual privacy settings</returns>
+    public CombinedProfileViewModel ImposePrivacySettings
+        (string username, string currentUserType, ProfileViewModel profile)
+    {
+        CombinedProfileViewModel public_profile = (CombinedProfileViewModel) profile;
+        // select all privacy settings
+        var account = accountService.GetAccountByUsername(username);
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+
+        Type cpvm = new CombinedProfileViewModel().GetType();
+
+//        foreach (UserPrivacy_Settings row in privacy)
+//        {
+//            if (row.Visibility == "Private" || (row.Visibility == "FacStaff" && currentUserType != "fac"))
+//            {
+//                cpvm.GetProperty(row.Field).SetValue(publicFac, "Private as requested.");
+//            }
+//        }
+
+        // BOGUS ENTRY
+        // This is just an example of how we can change things.  "MobilePhone"
+        cpvm.GetProperty("MobilePhone").SetValue(public_profile, "8885551212");
+        public_profile.HomePhone = "5551212";
+
+        return public_profile;
+    }
+
+    /// <summary>
     /// convert original fac/staff profile to public fac/staff profile based on individual privacy settings
     /// </summary>
     /// <param name="username">username of the fac/staff being searched</param>
