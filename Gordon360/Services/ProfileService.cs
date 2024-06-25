@@ -59,14 +59,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
             .Mail_Location;
 
-        var combo = context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
-
-        if (combo == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "A combination was not found for the specified mailbox number." };
-        }
-
-        return combo;
+        return context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
     }
 
     /// <summary>
