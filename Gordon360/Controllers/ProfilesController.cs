@@ -104,7 +104,7 @@ public class ProfilesController(IProfileService profileService,
 
         var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 
-        var cleaned_profile = profileService.ImposePrivacySettings(username, "fac", profile);
+        var cleaned_profile = profileService.ImposePrivacySettings(username, viewerGroups, profile);
 
         return Ok(cleaned_profile);
     }
