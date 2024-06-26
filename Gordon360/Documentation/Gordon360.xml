@@ -75,6 +75,15 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetPosterByID(System.Int32)">
+            <summary>
+            Gets poster object by ID
+            </summary>
+            <returns>
+            Poster object
+            </returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:Gordon360.Controllers.Api.PostersController.CreatePoster(Gordon360.Models.ViewModels.PosterUploadViewModel)">
             <summary>
             Creates a poster
@@ -83,7 +92,7 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:Gordon360.Controllers.Api.PostersController.UpdatePoster(System.Int32)">
+        <member name="M:Gordon360.Controllers.Api.PostersController.UpdatePoster(System.Int32,Gordon360.Models.ViewModels.PosterPatchViewModel)">
             <summary>
             Updates specified poster by ID
             </summary>
@@ -2158,7 +2167,7 @@
             Service Class that facilitates data transactions between the PosterController and the Poster database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.PosterService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.PosterService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService,Gordon360.Services.IMembershipService,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
             <summary>
             Service Class that facilitates data transactions between the PosterController and the Poster database model.
             </summary>

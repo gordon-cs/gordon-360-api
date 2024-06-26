@@ -26,8 +26,8 @@ namespace Gordon360.Services;
 /// Service Class that facilitates data transactions between the PosterController and the Poster database model.
 /// </summary>
 public class PosterService(CCTContext context, 
-                            SessionService sessionService, 
-                            MembershipService membershipService, 
+                            ISessionService sessionService, 
+                            IMembershipService membershipService, 
                             IWebHostEnvironment webHostEnvironment,
                             ServerUtils serverUtils) : IPosterService
 {
