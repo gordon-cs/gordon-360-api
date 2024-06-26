@@ -48,25 +48,18 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
     /// <summary>
-    /// get mailbox combination
+    /// get mailbox information (contains box combination)
     /// </summary>
     /// <param name="username">The current user's username</param>
     /// <returns>MailboxViewModel with the combination</returns>
-    public MailboxViewModel GetMailboxCombination(string username)
+    public MailboxViewModel GetMailboxInformation(string username)
     {
         var mailboxNumber =
             context.Student
             .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
             .Mail_Location;
 
-        var combo = context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
-
-        if (combo == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "A combination was not found for the specified mailbox number." };
-        }
-
-        return combo;
+        return context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
     }
 
     /// <summary>
