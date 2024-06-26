@@ -2,6 +2,7 @@
    "CodeGenerationMode": 4,
    "ContextClassName": "CCTContext",
    "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
@@ -363,9 +364,8 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": null,
+   "UiHint": "sqltrain1.CCT.dbo",
    "UncountableWords": null,
-   "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDateOnlyTimeOnly": false,

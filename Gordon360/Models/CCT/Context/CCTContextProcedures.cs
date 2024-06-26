@@ -80,7 +80,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<ACTIVE_CLUBS_PER_SESS_IDResult>("EXEC @returnValue = [dbo].[ACTIVE_CLUBS_PER_SESS_ID] @SESS_CDE = @SESS_CDE", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<ACTIVE_CLUBS_PER_SESS_IDResult>("EXEC @returnValue = [dbo].[ACTIVE_CLUBS_PER_SESS_ID] @SESS_CDE", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -106,7 +106,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<ADVISOR_SEPARATEResult>("EXEC @returnValue = [dbo].[ADVISOR_SEPARATE] @STUDENT_ID = @STUDENT_ID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<ADVISOR_SEPARATEResult>("EXEC @returnValue = [dbo].[ADVISOR_SEPARATE] @STUDENT_ID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -215,7 +215,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[CREATE_SOCIAL_LINKS] @USERNAME = @USERNAME, @FACEBOOK = @FACEBOOK, @TWITTER = @TWITTER, @INSTAGRAM = @INSTAGRAM, @LINKEDIN = @LINKEDIN, @HANDSHAKE = @HANDSHAKE, @CALENDAR = @CALENDAR", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[CREATE_SOCIAL_LINKS] @USERNAME, @FACEBOOK, @TWITTER, @INSTAGRAM, @LINKEDIN, @HANDSHAKE, @CALENDAR", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -242,7 +242,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<DISTINCT_ACT_TYPEResult>("EXEC @returnValue = [dbo].[DISTINCT_ACT_TYPE] @SESS_CDE = @SESS_CDE", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<DISTINCT_ACT_TYPEResult>("EXEC @returnValue = [dbo].[DISTINCT_ACT_TYPE] @SESS_CDE", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -268,7 +268,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<FINALIZATION_GET_FINALIZATION_STATUSResult>("EXEC @returnValue = [dbo].[FINALIZATION_GET_FINALIZATION_STATUS] @UserID = @UserID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<FINALIZATION_GET_FINALIZATION_STATUSResult>("EXEC @returnValue = [dbo].[FINALIZATION_GET_FINALIZATION_STATUS] @UserID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -294,7 +294,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<FINALIZATION_GETHOLDSBYIDResult>("EXEC @returnValue = [dbo].[FINALIZATION_GETHOLDSBYID] @ID_NUM = @ID_NUM", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<FINALIZATION_GETHOLDSBYIDResult>("EXEC @returnValue = [dbo].[FINALIZATION_GETHOLDSBYID] @ID_NUM", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -321,7 +321,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>("EXEC @returnValue = [dbo].[FINALIZATION_MARK_AS_CURRENTLY_COMPLETED] @UserID = @UserID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>("EXEC @returnValue = [dbo].[FINALIZATION_MARK_AS_CURRENTLY_COMPLETED] @UserID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -367,7 +367,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<FINALIZATION_UPDATECELLPHONEResult>("EXEC @returnValue = [dbo].[FINALIZATION_UPDATECELLPHONE] @UserID = @UserID, @PhoneUnformatted = @PhoneUnformatted, @DoNotPublish = @DoNotPublish, @NoneProvided = @NoneProvided", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<FINALIZATION_UPDATECELLPHONEResult>("EXEC @returnValue = [dbo].[FINALIZATION_UPDATECELLPHONE] @UserID, @PhoneUnformatted, @DoNotPublish, @NoneProvided", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -407,7 +407,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<FINALIZATION_UPDATEDEMOGRAPHICResult>("EXEC @returnValue = [dbo].[FINALIZATION_UPDATEDEMOGRAPHIC] @UserID = @UserID, @RaceValue = @RaceValue, @EthnicityValue = @EthnicityValue", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<FINALIZATION_UPDATEDEMOGRAPHICResult>("EXEC @returnValue = [dbo].[FINALIZATION_UPDATEDEMOGRAPHIC] @UserID, @RaceValue, @EthnicityValue", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -433,7 +433,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<PHOTO_INFO_PER_USER_NAMEResult>("EXEC @returnValue = [dbo].[PHOTO_INFO_PER_USER_NAME] @ID = @ID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<PHOTO_INFO_PER_USER_NAMEResult>("EXEC @returnValue = [dbo].[PHOTO_INFO_PER_USER_NAME] @ID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -459,7 +459,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<STUDENT_JOBS_PER_ID_NUMResult>("EXEC @returnValue = [dbo].[STUDENT_JOBS_PER_ID_NUM] @ID_NUM = @ID_NUM", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<STUDENT_JOBS_PER_ID_NUMResult>("EXEC @returnValue = [dbo].[STUDENT_JOBS_PER_ID_NUM] @ID_NUM", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -493,7 +493,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<UPDATE_CELL_PHONEResult>("EXEC @returnValue = [dbo].[UPDATE_CELL_PHONE] @UserID = @UserID, @PhoneUnformatted = @PhoneUnformatted", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<UPDATE_CELL_PHONEResult>("EXEC @returnValue = [dbo].[UPDATE_CELL_PHONE] @UserID, @PhoneUnformatted", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -581,7 +581,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UPDATE_EMRGCONTACT] @StudentID = @StudentID, @ContactNum = @ContactNum, @ContactLastName = @ContactLastName, @ContactFirstName = @ContactFirstName, @ContactHomePhone = @ContactHomePhone, @ContactMobilePhone = @ContactMobilePhone, @ContactRelationship = @ContactRelationship, @Notes = @Notes, @Username = @Username, @JobName = @JobName", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UPDATE_EMRGCONTACT] @StudentID, @ContactNum, @ContactLastName, @ContactFirstName, @ContactHomePhone, @ContactMobilePhone, @ContactRelationship, @Notes, @Username, @JobName", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -614,7 +614,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UPDATE_PHONE_PRIVACY] @ID = @ID, @VALUE = @VALUE", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UPDATE_PHONE_PRIVACY] @ID, @VALUE", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -654,7 +654,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UPDATE_PHOTO_PATH] @ID = @ID, @FILE_PATH = @FILE_PATH, @FILE_NAME = @FILE_NAME", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UPDATE_PHOTO_PATH] @ID, @FILE_PATH, @FILE_NAME", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -687,7 +687,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UPDATE_SHOW_PIC] @ACCOUNT_ID = @ACCOUNT_ID, @VALUE = @VALUE", sqlParameters, cancellationToken);
+            var _ = await _context.Database.ExecuteSqlRawAsync("EXEC @returnValue = [dbo].[UPDATE_SHOW_PIC] @ACCOUNT_ID, @VALUE", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -713,7 +713,7 @@ namespace Gordon360.Models.CCT.Context
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<VICTORY_PROMISE_BY_STUDENT_IDResult>("EXEC @returnValue = [dbo].[VICTORY_PROMISE_BY_STUDENT_ID] @STUDENT_ID = @STUDENT_ID", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<VICTORY_PROMISE_BY_STUDENT_IDResult>("EXEC @returnValue = [dbo].[VICTORY_PROMISE_BY_STUDENT_ID] @STUDENT_ID", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
