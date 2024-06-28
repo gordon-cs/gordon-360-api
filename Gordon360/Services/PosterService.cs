@@ -150,7 +150,9 @@ public class PosterService(CCTContext context,
 
     public async Task<PosterViewModel> DeletePosterAsync(int posterID)
     {
-        return null;
+        var poster = await UpdatePosterAsync(posterID, new PosterPatchViewModel{ Status = "Deleted" });
+        return poster;
+
     }
 
 }
