@@ -30,6 +30,7 @@ public static class ServicesExtensions
         services.AddScoped<ISessionService, SessionService>();
         services.AddScoped<IStudentEmploymentService, StudentEmploymentService>();
         services.AddScoped<IVictoryPromiseService, VictoryPromiseService>();
+        services.AddScoped<IPosterService, PosterService>();
         services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
         services.AddScoped<RecIM.ISeriesService, RecIM.SeriesService>();
         services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
