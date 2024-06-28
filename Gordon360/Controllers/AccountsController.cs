@@ -53,10 +53,9 @@ public class AccountsController(IAccountService accountService) : GordonControll
     [Route("search/{searchString}")]
     public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchAsync(string searchString)
     {
-        var accounts = await accountService.GetAllBasicInfoExceptAlumniAsync();
-
+        IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
+        var accounts = accountService.GetBasicInfoToSearch(["student", "facstaff"], viewerGroups);
         var searchResults = accountService.Search(searchString, accounts);
-
         return Ok(searchResults);
     }
 
@@ -70,11 +69,9 @@ public class AccountsController(IAccountService accountService) : GordonControll
     [Route("search/{firstName}/{lastName}")]
     public async Task<ActionResult<IEnumerable<BasicInfoViewModel>>> SearchWithSpaceAsync(string firstName, string lastName)
     {
-        var accounts = await accountService.GetAllBasicInfoExceptAlumniAsync();
-
+        IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
+        var accounts = accountService.GetBasicInfoToSearch(["student", "facstaff"], viewerGroups);
         var searchResults = accountService.Search(firstName, lastName, accounts);
-
-
         return Ok(searchResults);
     }
 

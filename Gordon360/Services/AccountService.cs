@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
+using Microsoft.Graph;
+using Operation = Gordon360.Static.Names.Operation;
 
 namespace Gordon360.Services;
 
@@ -238,6 +240,30 @@ public class AccountService(CCTContext context) : IAccountService
         return students.Select<Student, AdvancedSearchViewModel>(s => s)
             .UnionBy(facstaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs), a => a.AD_Username)
             .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username);
+    }
+
+    /// <summary>
+    /// Get basic info for the accounts a user can search, based on the types of accounts 
+    /// they want to search, and their authorization.
+    /// </summary>
+    /// <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+    /// <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
+    /// <returns>BasicInfoViewModel of all the searchable accounts</returns>
+    public IEnumerable<BasicInfoViewModel> GetBasicInfoToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups)
+    {
+        var accounts = GetAccountsToSearch(accountTypes, authGroups, null);
+        IEnumerable<BasicInfoViewModel> basicInfo = Enumerable.Empty<BasicInfoViewModel>();
+        foreach (var a in accounts)
+        {
+            basicInfo.Append(new BasicInfoViewModel
+            {
+                FirstName = a.FirstName,
+                LastName = a.LastName,
+                Nickname = a.NickName,
+                UserName = a.AD_Username
+            });
+        }
+        return basicInfo;
     }
 
     /// <summary>

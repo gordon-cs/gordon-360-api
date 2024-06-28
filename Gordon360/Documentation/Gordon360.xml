@@ -1442,6 +1442,15 @@
             <param name="homeCity">The home city search param, since it is considered sensitive info</param>
             <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
         </member>
+        <member name="M:Gordon360.Services.AccountService.GetBasicInfoToSearch(System.Collections.Generic.List{System.String},System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>
+            Get basic info for the accounts a user can search, based on the types of accounts 
+            they want to search, and their authorization.
+            </summary>
+            <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+            <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
+            <returns>BasicInfoViewModel of all the searchable accounts</returns>
+        </member>
         <member name="M:Gordon360.Services.AccountService.GetAllBasicInfoAsync">
             <summary>
             Get basic info for all accounts
