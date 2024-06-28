@@ -71,6 +71,14 @@ public class PosterService(CCTContext context,
     {
         var poster = newPoster.ToPoster();
 
+        var (extension, format, data) = ImageUtils.GetImageFormat(newPoster.ImagePath);
+        var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
+        var imagePath = GetImagePath(filename);
+        var url = GetImageURL(filename);
+        poster.ImagePath = url;
+        ImageUtils.UploadImage(imagePath, data, format);
+
+
         await context.Poster.AddAsync(poster);
         await context.SaveChangesAsync();
 
@@ -93,9 +101,6 @@ public class PosterService(CCTContext context,
                .Where(ps => String.Equals(ps.Status, updatedPoster.Status, StringComparison.CurrentCultureIgnoreCase))
                .FirstOrDefault()?
                .ID ?? poster.StatusID;
-
-
-        poster.ImagePath = updatedPoster.ImagePath ?? poster.ImagePath;
 
         if (updatedPoster.ImagePath is not null)
         {
