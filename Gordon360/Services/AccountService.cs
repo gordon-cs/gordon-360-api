@@ -242,6 +242,55 @@ public class AccountService(CCTContext context) : IAccountService
             .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username);
     }
 
+    /// <summary> Refactoring to share permission code...
+    /// Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
+    /// </summary>
+    /// <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+    /// <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
+    /// <param name="homeCity">The home city search param, since it is considered sensitive info</param>
+    /// <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
+    public IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch2(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
+    {
+        IEnumerable<Student> students = Enumerable.Empty<Student>();
+        if (accountTypes.Contains("student")
+            // Only students and FacStaff are authorized to search for students
+            && (authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
+        {
+            students = context.Student;
+        }
+
+        // Only Faculty and Staff can see Private students
+        if (!authGroups.Contains(AuthGroup.FacStaff))
+        {
+            students = students.Where(s => s.KeepPrivate != "P");
+        }
+
+        IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
+        if (accountTypes.Contains("facstaff"))
+        {
+            facstaff = context.FacStaff.Where(fs => fs.ActiveAccount == true);
+        }
+
+        IEnumerable<Alumni> alumni = Enumerable.Empty<Alumni>();
+        if (accountTypes.Contains("alumni"))
+        {
+            alumni = context.Alumni.Where(a => a.ShareName != "N");
+        }
+
+        // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
+        if (!string.IsNullOrEmpty(homeCity))
+        {
+            facstaff = facstaff.Where(a => a.KeepPrivate == "0");
+            alumni = alumni.Where(a => a.ShareAddress != "N");
+        }
+
+        return students.Select<Student, AdvancedSearchViewModel>(s => s)
+            .UnionBy(facstaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs), a => a.AD_Username)
+            .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username);
+    }
+
+
+
     /// <summary>
     /// Get basic info for the accounts a user can search, based on the types of accounts 
     /// they want to search, and their authorization.
