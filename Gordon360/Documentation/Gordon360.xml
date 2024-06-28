@@ -2201,11 +2201,10 @@
             <param name="type"></param>
             <param name="content"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.ImposePrivacySettings(System.String,System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.ProfileViewModel)">
+        <member name="M:Gordon360.Services.ProfileService.ImposePrivacySettings(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.ProfileViewModel)">
             <summary>
             convert combined profile to public profile based on individual privacy settings
             </summary>
-            <param name="username">username of the person being searched</param>
             <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
             <param name="profile">combined profile of the person being searched</param>
             <returns>public profile of the person based on individual privacy settings</returns>

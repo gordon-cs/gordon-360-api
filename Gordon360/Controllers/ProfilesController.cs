@@ -46,6 +46,7 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
 
+        //var profile = profileService.ComposeProfile(student, alumni, faculty, customInfo);
         var profile = (CombinedProfileViewModel) profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
@@ -104,7 +105,7 @@ public class ProfilesController(IProfileService profileService,
 
         var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 
-        var cleaned_profile = profileService.ImposePrivacySettings(username, viewerGroups, profile);
+        var cleaned_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
 
         return Ok(cleaned_profile);
     }

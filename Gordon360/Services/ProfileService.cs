@@ -276,12 +276,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <summary>
     /// convert combined profile to public profile based on individual privacy settings
     /// </summary>
-    /// <param name="username">username of the person being searched</param>
     /// <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
     /// <param name="profile">combined profile of the person being searched</param>
     /// <returns>public profile of the person based on individual privacy settings</returns>
     public CombinedProfileViewModel ImposePrivacySettings
-        (string username, IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
+        (IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
     {
         CombinedProfileViewModel public_profile = (CombinedProfileViewModel) profile;
 
@@ -292,8 +291,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         }
 
         // select all privacy settings
-//        var account = accountService.GetAccountByUsername(public_profile.AD_Username);
-        var account = accountService.GetAccountByUsername(username);
+        var account = accountService.GetAccountByUsername(public_profile.AD_Username);
         var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
         Type cpvm = new CombinedProfileViewModel().GetType();
 
@@ -311,10 +309,17 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                     else if (public_profile.PersonType.Contains("stu"))
                     {
                         // Information remains visible, but marked as private
-                        PropertyInfo prop = cpvm.GetProperty(row.Field);
-                        ProfileItem profile_item = (ProfileItem) prop.GetValue(public_profile);
-                        profile_item.isPrivate = true;
-                        prop.SetValue(public_profile, profile_item);
+                        try
+                        {
+                            PropertyInfo prop = cpvm.GetProperty(row.Field);
+                            ProfileItem profile_item = (ProfileItem) prop.GetValue(public_profile);
+                            profile_item.isPrivate = true;
+                            prop.SetValue(public_profile, profile_item);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
                     }
                 }
             }
@@ -330,15 +335,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 }
             }
         }
-
-        // Make profile item private
-        //cpvm.GetProperty("SpouseName").SetValue(public_profile, null);
-
-        // Mark profile item as private
-        // PropertyInfo prop = cpvm.GetProperty("SpouseName");
-        // ProfileItem profile_item = (ProfileItem) prop.GetValue(public_profile);
-        // profile_item.isPrivate = true;
-        // prop.SetValue(public_profile, profile_item);
 
         return public_profile;
     }

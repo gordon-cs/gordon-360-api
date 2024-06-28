@@ -5,9 +5,9 @@ namespace Gordon360.Static.Methods;
 /// </summary>
 public record ProfileItem{
     public ProfileItem (object d, bool p) {
-        data = d;
+        value = d;
         isPrivate = p;
     }
-    public object data { get; set; }
+    public object value { get; set; }
     public bool isPrivate { get; set ;}
 }
