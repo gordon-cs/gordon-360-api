@@ -63,9 +63,9 @@ public class PosterService(CCTContext context,
         return GetPosters().Where(p => p.ClubCode == activityCode);
     }
 
-    public IEnumerable<PosterViewModel> GetPosterByID(int posterID)
+    public PosterViewModel GetPosterByID(int posterID)
     {
-        return GetPosters().Where(p => p.ID == posterID);
+        return GetPosters().Where(p => p.ID == posterID).FirstOrDefault();
     }
     public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
     {
@@ -79,10 +79,10 @@ public class PosterService(CCTContext context,
         ImageUtils.UploadImage(imagePath, data, format);
 
 
-        await context.Poster.AddAsync(poster);
+        context.Poster.Add(poster);
         await context.SaveChangesAsync();
 
-        return poster;
+        return GetPosterByID(poster.ID);
     }
 
     public async Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster)
