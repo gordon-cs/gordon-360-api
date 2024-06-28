@@ -1,4 +1,6 @@
-﻿using System;
+﻿//using Gordon360.Models.ViewModels.RecIM;
+using System;
+using Gordon360.Static.Methods;
 
 namespace Gordon360.Models.ViewModels;
 
@@ -17,15 +19,20 @@ public class CombinedProfileViewModel
     public string HomeStreet1 { get; set; }
     public string HomeStreet2 { get; set; }
     public string HomeCity { get; set; }
+    //public ProfileItem HomeCity { get; set; }
     public string HomeState { get; set; }
+    //public ProfileItem HomeState { get; set; }
     public string HomePostalCode { get; set; }
     public string HomeCountry { get; set; }
-    public string HomePhone { get; set; }
+    //public ProfileItem HomeCountry { get; set; }
+    //public string HomePhone { get; set; }
+    public ProfileItem HomePhone { get; set; }
     public string HomeFax { get; set; }
     public string AD_Username { get; set; }
     public Nullable<int> show_pic { get; set; }
     public Nullable<int> preferred_photo { get; set; }
     public string Country { get; set; }
+    //public ProfileItem Country { get; set; }
     public string Barcode { get; set; }
     public string Facebook { get; set; }
     public string Twitter { get; set; }
@@ -54,7 +61,7 @@ public class CombinedProfileViewModel
     public string Minor3Description { get; set; }
     public string GradDate { get; set; }
     public string PlannedGradYear { get; set; }
-    public string MobilePhone { get; set; }
+    public ProfileItem MobilePhone { get; set; }
     public bool IsMobilePhonePrivate { get; set; }
     public Nullable<int> ChapelRequired { get; set; }
     public Nullable<int> ChapelAttended { get; set; }
@@ -90,7 +97,7 @@ public class CombinedProfileViewModel
 
     // FacStaff and Alumni Only
     public string JobTitle { get; set; }
-    public string SpouseName { get; set; }
+    public ProfileItem SpouseName { get; set; }
 
     // FacStaff and Student Only
     public string BuildingDescription { get; set; }
@@ -110,106 +117,112 @@ public class CombinedProfileViewModel
         CombinedProfileViewModel new_vm = new CombinedProfileViewModel
         {
             // All Profiles
-            ID = vm.ID ?? null,
-            Title = vm.Title ?? null,
-            FirstName = vm.FirstName ?? null,
-            MiddleName = vm.MiddleName ?? null,
-            LastName = vm.LastName ?? null,
-            Suffix = vm.Suffix ?? null,
-            MaidenName = vm.MaidenName ?? null,
-            NickName = vm.NickName ?? null,
-            Email = vm.Email ?? null,
-            Gender = vm.Gender ?? null,
-            HomeStreet1 = vm.HomeStreet1 ?? null,
-            HomeStreet2 = vm.HomeStreet2 ?? null,
-            HomeCity = vm.HomeCity ?? null,
-            HomeState = vm.HomeState ?? null,
-            HomePostalCode = vm.HomePostalCode ?? null,
-            HomeCountry = vm.HomeCountry ?? null,
-            HomePhone = vm.HomePhone ?? null,
-            HomeFax = vm.HomeFax ?? null,
-            AD_Username = vm.AD_Username ?? null,
+            ID = vm.ID,
+            Title = vm.Title,
+            FirstName = vm.FirstName,
+            MiddleName = vm.MiddleName,
+            LastName = vm.LastName,
+            Suffix = vm.Suffix,
+            MaidenName = vm.MaidenName,
+            NickName = vm.NickName,
+            Email = vm.Email,
+            Gender = vm.Gender,
+            HomeStreet1 = vm.HomeStreet1,
+            HomeStreet2 = vm.HomeStreet2,
+            //HomeCity =  vm.HomeCity is null || vm.HomeCity == "" ? null : new ProfileItem(vm.HomeCity, false),
+            HomeCity =  vm.HomeCity,
+            //HomeState = vm.HomeState is null || vm.HomeState == "" ? null : new ProfileItem(vm.HomeState, false),
+            HomeState = vm.HomeState,
+            HomePostalCode = vm.HomePostalCode,
+            //HomeCountry = vm.HomeCountry is null || vm.HomeCountry == "" ? null : new ProfileItem(vm.HomeCountry, false),
+            HomeCountry = vm.HomeCountry,
+            HomePhone = vm.HomePhone is null || vm.HomePhone == "" ? null : new ProfileItem(vm.HomePhone, false),
+            //HomePhone = vm.HomePhone,
+            HomeFax = vm.HomeFax,
+            AD_Username = vm.AD_Username,
             show_pic = vm.show_pic,
             preferred_photo = vm.preferred_photo,
-            Country = vm.Country ?? null,
-            Barcode = vm.Barcode ?? null,
-            Facebook = vm.Facebook ?? null,
-            Twitter = vm.Twitter ?? null,
-            Instagram = vm.Instagram ?? null,
-            LinkedIn = vm.LinkedIn ?? null,
-            Handshake = vm.Handshake ?? null,
-            Calendar = vm.Calendar ?? null,
+            //Country = vm.Country is null || vm.Country == "" ? null : new ProfileItem(vm.Country, false),
+            Country = vm.Country,
+            Barcode = vm.Barcode,
+            Facebook = vm.Facebook,
+            Twitter = vm.Twitter,
+            Instagram = vm.Instagram,
+            LinkedIn = vm.LinkedIn,
+            Handshake = vm.Handshake,
+            Calendar = vm.Calendar,
 
             // Student Only
-            OnOffCampus = vm.OnOffCampus ?? null,
-            OffCampusStreet1 = vm.OffCampusStreet1 ?? null,
-            OffCampusStreet2 = vm.OffCampusStreet2 ?? null,
-            OffCampusCity = vm.OffCampusCity ?? null,
-            OffCampusState = vm.OffCampusState ?? null,
-            OffCampusPostalCode = vm.OffCampusPostalCode ?? null,
-            OffCampusCountry = vm.OffCampusCountry ?? null,
-            OffCampusPhone = vm.OffCampusPhone ?? null,
-            OffCampusFax = vm.OffCampusFax ?? null,
-            Major3 = vm.Major3 ?? null,
-            Major3Description = vm.Major3Description ?? null,
-            Minor1 = vm.Minor1 ?? null,
-            Minor1Description = vm.Minor1Description ?? null,
-            Minor2 = vm.Minor2 ?? null,
-            Minor2Description = vm.Minor2Description ?? null,
-            Minor3 = vm.Minor3 ?? null,
-            Minor3Description = vm.Minor3Description ?? null,
-            GradDate = vm.GradDate ?? null,
-            PlannedGradYear = vm.PlannedGradYear ?? null,
-            MobilePhone = vm.MobilePhone ?? null,
+            OnOffCampus = vm.OnOffCampus,
+            OffCampusStreet1 = vm.OffCampusStreet1,
+            OffCampusStreet2 = vm.OffCampusStreet2,
+            OffCampusCity = vm.OffCampusCity,
+            OffCampusState = vm.OffCampusState,
+            OffCampusPostalCode = vm.OffCampusPostalCode,
+            OffCampusCountry = vm.OffCampusCountry,
+            OffCampusPhone = vm.OffCampusPhone,
+            OffCampusFax = vm.OffCampusFax,
+            Major3 = vm.Major3,
+            Major3Description = vm.Major3Description,
+            Minor1 = vm.Minor1,
+            Minor1Description = vm.Minor1Description,
+            Minor2 = vm.Minor2,
+            Minor2Description = vm.Minor2Description,
+            Minor3 = vm.Minor3,
+            Minor3Description = vm.Minor3Description,
+            GradDate = vm.GradDate,
+            PlannedGradYear = vm.PlannedGradYear,
+            MobilePhone = vm.MobilePhone is null || vm.MobilePhone == "" ? null : new ProfileItem(vm.MobilePhone, false),
             IsMobilePhonePrivate = vm.IsMobilePhonePrivate,
             ChapelRequired = vm.ChapelRequired,
             ChapelAttended = vm.ChapelAttended,
-            Cohort = vm.Cohort ?? null,
-            Class = vm.Class ?? null,
-            AdvisorIDs = vm.AdvisorIDs ?? null,
-            Married = vm.Married ?? null,
-            Commuter = vm.Commuter ?? null,
+            Cohort = vm.Cohort,
+            Class = vm.Class,
+            AdvisorIDs = vm.AdvisorIDs,
+            Married = vm.Married,
+            Commuter = vm.Commuter,
 
             // Alumni Only
-            WebUpdate = vm. WebUpdate ?? null,
-            HomeEmail = vm.HomeEmail ?? null,
-            MaritalStatus = vm.MaritalStatus ?? null,
-            College = vm.College ?? null,
-            ClassYear = vm.ClassYear ?? null,
-            PreferredClassYear = vm. PreferredClassYear ?? null,
-            ShareName = vm.ShareName ?? null,
-            ShareAddress = vm. ShareAddress ?? null,
+            WebUpdate = vm. WebUpdate,
+            HomeEmail = vm.HomeEmail,
+            MaritalStatus = vm.MaritalStatus,
+            College = vm.College,
+            ClassYear = vm.ClassYear,
+            PreferredClassYear = vm. PreferredClassYear,
+            ShareName = vm.ShareName,
+            ShareAddress = vm. ShareAddress,
 
             // Student And Alumni Only
-            Major = vm.Major ?? null,
-            Major1Description = vm.Major1Description ?? null,
-            Major2 = vm.Major2 ?? null,
-            Major2Description = vm.Major2Description ?? null,
-            grad_student = vm.grad_student ?? null,
+            Major = vm.Major,
+            Major1Description = vm.Major1Description,
+            Major2 = vm.Major2,
+            Major2Description = vm.Major2Description,
+            grad_student = vm.grad_student,
 
             // FacStaff Only
-            OnCampusDepartment = vm. OnCampusDepartment ?? null,
-            Type = vm. Type ?? null,
-            office_hours = vm. office_hours ?? null,
-            Dept = vm.Dept ?? null,
-            Mail_Description = vm.Mail_Description ?? null,
+            OnCampusDepartment = vm. OnCampusDepartment,
+            Type = vm. Type,
+            office_hours = vm. office_hours,
+            Dept = vm.Dept,
+            Mail_Description = vm.Mail_Description,
 
             // FacStaff and Alumni Only
-            JobTitle = vm.JobTitle ?? null,
-            SpouseName = vm.SpouseName ?? null,
+            JobTitle = vm.JobTitle,
+//            SpouseName = new ProfileItem(vm.SpouseName, false),
+            SpouseName = vm.SpouseName is null || vm.SpouseName == "" ? null : new ProfileItem(vm.SpouseName, false),
 
             // FacStaff and Student Only
-            BuildingDescription = vm.BuildingDescription ?? null,
-            Mail_Location = vm.Mail_Location ?? null,
-            OnCampusBuilding = vm.OnCampusBuilding ?? null,
-            OnCampusRoom = vm.OnCampusRoom ?? null,
-            OnCampusPhone = vm.OnCampusPhone ?? null,
-            OnCampusPrivatePhone = vm.OnCampusPrivatePhone ?? null,
-            OnCampusFax = vm.OnCampusFax ?? null,
-            KeepPrivate = vm.KeepPrivate ?? null,
+            BuildingDescription = vm.BuildingDescription,
+            Mail_Location = vm.Mail_Location,
+            OnCampusBuilding = vm.OnCampusBuilding,
+            OnCampusRoom = vm.OnCampusRoom,
+            OnCampusPhone = vm.OnCampusPhone,
+            OnCampusPrivatePhone = vm.OnCampusPrivatePhone,
+            OnCampusFax = vm.OnCampusFax,
+            KeepPrivate = vm.KeepPrivate,
 
             // ProfileViewModel Only
-            PersonType = vm.PersonType ?? null
+            PersonType = vm.PersonType
         };
         return new_vm;
     }

@@ -2206,7 +2206,7 @@
             convert combined profile to public profile based on individual privacy settings
             </summary>
             <param name="username">username of the person being searched</param>
-            <param name="currentUserType">personnel type of the logged-in user (fac, stu, alu)</param>
+            <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
             <param name="profile">combined profile of the person being searched</param>
             <returns>public profile of the person based on individual privacy settings</returns>
         </member>
@@ -2400,6 +2400,11 @@
             Helper method that gets the current session we are in.
             </summary>
             <returns>The session code of the current session</returns>
+        </member>
+        <member name="T:Gordon360.Static.Methods.ProfileItem">
+            <summary>
+            Profile item class contining a single profile datum and privacy flag.
+            </summary>
         </member>
         <member name="M:Gordon360.Utilities.ImageUtils.DeleteImage(System.String)">
             <summary>

@@ -3,6 +3,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
+using Gordon360.Static.Methods;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,6 +13,7 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Enums;
@@ -302,13 +304,25 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
         Type cpvm = new CombinedProfileViewModel().GetType();
 
-        if (viewerGroups.Contains(AuthGroup.FacStaff) && public_profile.PersonType.Contains("fac"))
+        if (viewerGroups.Contains(AuthGroup.FacStaff))
         {
             foreach (UserPrivacy_Settings row in privacy)
             {
                 if (row.Visibility == "Private")
                 {
-                    cpvm.GetProperty(row.Field).SetValue(public_profile, null);
+                    if (public_profile.PersonType.Contains("fac"))
+                    {
+                        // Remove information from profile
+                        cpvm.GetProperty(row.Field).SetValue(public_profile, null);
+                    }
+                    else if (public_profile.PersonType.Contains("stu"))
+                    {
+                        // Information remains visible, but marked as private
+                        PropertyInfo prop = cpvm.GetProperty(row.Field);
+                        ProfileItem profile_item = (ProfileItem) prop.GetValue(public_profile);
+                        profile_item.isPrivate = true;
+                        prop.SetValue(public_profile, profile_item);
+                    }
                 }
             }
         }
@@ -318,10 +332,20 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             {
                 if (row.Visibility == "Private" || row.Visibility == "FacStaff")
                 {
+                    // Remove information from profile
                     cpvm.GetProperty(row.Field).SetValue(public_profile, null);
                 }
             }
         }
+
+        // Make profile item private
+        //cpvm.GetProperty("SpouseName").SetValue(public_profile, null);
+
+        // Mark profile item as private
+        // PropertyInfo prop = cpvm.GetProperty("SpouseName");
+        // ProfileItem profile_item = (ProfileItem) prop.GetValue(public_profile);
+        // profile_item.isPrivate = true;
+        // prop.SetValue(public_profile, profile_item);
 
         return public_profile;
     }

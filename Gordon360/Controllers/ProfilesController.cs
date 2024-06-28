@@ -46,7 +46,7 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
 
-        var profile = profileService.ComposeProfile(student, alumni, faculty, customInfo);
+        var profile = (CombinedProfileViewModel) profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
     }
