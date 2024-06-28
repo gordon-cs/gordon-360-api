@@ -6,7 +6,6 @@ namespace Gordon360.Models.ViewModels;
 public class PosterUploadViewModel
 
 {
-    public int ID { get; set; }
     public string ACT_CDE { get; set; }
     public string Title { get; set; }
     public string? Description { get; set; }
@@ -20,7 +19,6 @@ public class PosterUploadViewModel
     {
         return new Poster
         {
-            ID = this.ID,
             ACT_CDE = this.ACT_CDE,
             Title = this.Title,
             Description = this.Description,
