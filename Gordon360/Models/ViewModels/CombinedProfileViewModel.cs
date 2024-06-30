@@ -8,12 +8,12 @@ public class CombinedProfileViewModel
 {
     public string ID { get; set; }
     public string Title { get; set; }
-    public string FirstName { get; set; }
-    public string MiddleName { get; set; }
-    public string LastName { get; set; }
-    public string Suffix { get; set; }
-    public string MaidenName { get; set; }
-    public string NickName { get; set; }
+    public ProfileItem FirstName { get; set; }
+    public ProfileItem MiddleName { get; set; }
+    public ProfileItem LastName { get; set; }
+    public ProfileItem Suffix { get; set; }
+    public ProfileItem MaidenName { get; set; }
+    public ProfileItem NickName { get; set; }
     public string Email { get; set; }
     public string Gender { get; set; }
     public string HomeStreet1 { get; set; }
@@ -114,12 +114,13 @@ public class CombinedProfileViewModel
             // All Profiles
             ID = vm.ID,
             Title = vm.Title,
-            FirstName = vm.FirstName,
-            MiddleName = vm.MiddleName,
-            LastName = vm.LastName,
-            Suffix = vm.Suffix,
-            MaidenName = vm.MaidenName,
-            NickName = vm.NickName,
+            //FirstName = vm.FirstName,
+            FirstName = vm.FirstName is null || vm.FirstName == "" ? null : new ProfileItem(vm.FirstName, false),
+            MiddleName = vm.MiddleName is null || vm.MiddleName == "" ? null : new ProfileItem(vm.MiddleName, false),
+            LastName = vm.LastName is null || vm.LastName == "" ? null : new ProfileItem(vm.LastName, false),
+            Suffix = vm.Suffix is null || vm.Suffix == "" ? null : new ProfileItem(vm.Suffix, false),
+            MaidenName = vm.MaidenName is null || vm.MaidenName == "" ? null : new ProfileItem(vm.MaidenName, false),
+            NickName = vm.NickName is null || vm.NickName == "" ? null : new ProfileItem(vm.NickName, false),
             Email = vm.Email,
             Gender = vm.Gender,
             HomeStreet1 = vm.HomeStreet1,
