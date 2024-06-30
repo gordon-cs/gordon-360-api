@@ -24,7 +24,7 @@ public class CombinedProfileViewModel
     public ProfileItem HomeCountry { get; set; }
     public ProfileItem HomePhone { get; set; }
     public string HomeFax { get; set; }
-    public string AD_Username { get; set; }
+    public string AD_Username { get; set; } // Leave as string
     public Nullable<int> show_pic { get; set; }
     public Nullable<int> preferred_photo { get; set; }
     public ProfileItem Country { get; set; }
@@ -105,7 +105,7 @@ public class CombinedProfileViewModel
     public string KeepPrivate { get; set; }
 
     // ProfileViewModel Only
-    public string PersonType { get; set; }
+    public string PersonType { get; set; } // Leave as string
 
     public static implicit operator CombinedProfileViewModel(ProfileViewModel vm)
     {
@@ -114,7 +114,6 @@ public class CombinedProfileViewModel
             // All Profiles
             ID = vm.ID,
             Title = vm.Title,
-            //FirstName = vm.FirstName,
             FirstName = vm.FirstName is null || vm.FirstName == "" ? null : new ProfileItem(vm.FirstName, false),
             MiddleName = vm.MiddleName is null || vm.MiddleName == "" ? null : new ProfileItem(vm.MiddleName, false),
             LastName = vm.LastName is null || vm.LastName == "" ? null : new ProfileItem(vm.LastName, false),
