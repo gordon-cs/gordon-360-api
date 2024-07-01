@@ -11,7 +11,7 @@ public class MatchBracketExtendedViewModel
     public int RoundNumber { get; set; }
     public int RoundOf { get; set; }
     public string? State { get; set; }
-    public IEnumerable<TeamExtendedViewModel> Team { get; set; }
+    public IEnumerable<TeamBracketExtendedViewModel> Team { get; set; }
     public int SeedIndex { get; set; }
     public bool IsLosers { get; set; }
 }
