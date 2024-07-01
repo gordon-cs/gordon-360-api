@@ -8,7 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "sqlDebugging": true,
-      "applicationUrl": "https://localhost:51627;http://localhost:51626"
+      "applicationUrl": "https://localhost:51627;http://localhost:51671"
     },
     "Train": {
       "commandName": "Project",
