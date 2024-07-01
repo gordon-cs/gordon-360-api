@@ -46,12 +46,58 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
 
-        var profile = (CombinedProfileViewModel) profileService.ComposeProfile(student, alumni, faculty, customInfo);
+        var profile = (CombinedProfileViewModel)profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
     }
 
-    /// <summary>Get public profile info for a user</summary>
+    /// <summary>Indicates whether the user making the request is authorized to see
+    /// profile information for students.</summary>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for students, and false otherwise.</returns>
+    public bool CanISeeStudents()
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) || 
+            viewerGroups.Contains(AuthGroup.Police) ||
+            viewerGroups.Contains(AuthGroup.FacStaff) ||
+            viewerGroups.Contains(AuthGroup.Student))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>Indicates whether the user making the request is authorized to see
+    /// profile information for faculty and staff (facstaff).</summary>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for facstaff, and false otherwise.</returns>
+    public bool CanISeeFacstaff()
+    {
+        return true;
+    }
+
+    /// <summary>Indicates whether the user making the request is authorized to see
+    /// profile information for alumni.</summary>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for alumni, and false otherwise.</returns>
+    public bool CanISeeAlumni()
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police) ||
+            viewerGroups.Contains(AuthGroup.FacStaff) ||
+            viewerGroups.Contains(AuthGroup.Alumni))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>Get another user's profile info.  The info returned depends
+    /// on the permissions of the current users, who is making the request.</summary>
     /// <param name="username">username of the profile info</param>
     /// <returns></returns>
     [HttpGet]
@@ -69,6 +115,22 @@ public class ProfilesController(IProfileService profileService,
         object? faculty = null;
         object? alumni = null;
 
+        if (CanISeeStudents())
+        {
+            student = _student;
+        }
+
+        if (CanISeeFacstaff())
+        {
+            faculty = _faculty;
+        }
+
+        if (CanISeeAlumni())
+        {
+            alumni = _alumni;
+        }
+
+        /*
         if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
         {
             student = _student;
@@ -96,6 +158,7 @@ public class ProfilesController(IProfileService profileService,
             faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
             alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
         }
+        */
 
         if (student is null && alumni is null && faculty is null)
         {
