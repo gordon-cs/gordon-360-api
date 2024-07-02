@@ -453,8 +453,51 @@
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.CanISeeStudents">
+            <summary>Indicates whether the user making the request is authorized to see
+            profile information for students.</summary>
+            <returns>True if the user making the request is authorized to see
+            profile information for students, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.CanISeeFacstaff">
+            <summary>Indicates whether the user making the request is authorized to see
+            profile information for faculty and staff (facstaff).</summary>
+            <returns>True if the user making the request is authorized to see
+            profile information for facstaff, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.CanISeeAlumni">
+            <summary>Indicates whether the user making the request is authorized to see
+            profile information for alumni.</summary>
+            <returns>True if the user making the request is authorized to see
+            profile information for alumni, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.VisibleToMeStudent(Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>Restrict info about a student to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about students.</returns>
+            
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.VisibleToMeFacstaff(Gordon360.Models.ViewModels.FacultyStaffProfileViewModel)">
+            <summary>Restrict info about a facstaff person to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about facstaff.</returns>
+            
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.VisibleToMeAlumni(Gordon360.Models.ViewModels.AlumniProfileViewModel)">
+            <summary>Restrict info about an alumni person to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about alumni.</returns>
+            
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfileAsync(System.String)">
-            <summary>Get public profile info for a user</summary>
+            <summary>Get another user's profile info.  The info returned depends
+            on the permissions of the current users, who is making the request.</summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
