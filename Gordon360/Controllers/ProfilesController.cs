@@ -105,9 +105,9 @@ public class ProfilesController(IProfileService profileService,
 
         var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 
-        var cleaned_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
+        var visible_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
 
-        return Ok(cleaned_profile);
+        return Ok(visible_profile);
     }
 
     ///<summary>Get the advisor(s) of a particular student</summary>
