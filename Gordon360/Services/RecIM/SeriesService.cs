@@ -1713,6 +1713,76 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
           * 2) need 'next match ID
           * 3) status needs to be translated to 'state' enum
          */
+        var match = context.Match
+            .Include(m => m.MatchBracket)
+            .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
+            .Select(m => (MatchBracketViewModel)m.MatchBracket)
+            .AsEnumerable()
+            .OrderBy(mb => mb.RoundNumber)
+            .ThenBy(mb => mb.SeedIndex);
+   
+
+        var res = Enumerable.Empty<MatchBracketExtendedViewModel>();
+
+        /* 
+         * fill out each of round level:
+         * round of 64 needs 32 matches (64 teams), 32/16...
+         * (empty spots happen when there are bye rounds and are typically an issue in the first 2 rounds)
+         */
+        var combinedList = Enumerable.Empty<MatchBracketExtendedViewModel>().ToList();
+        var fakeMatchID = -1;
+        var i = 0;
+        while (i < match.Count())
+        {
+            var j = 0;
+            var currentRoundOf = match.ElementAt(i).RoundOf;
+ 
+            while (j < currentRoundOf/2)
+            {
+                var m = match.ElementAt(i);
+
+                if (j == match.ElementAt(i).SeedIndex) 
+                {
+                    combinedList.Add(new MatchBracketExtendedViewModel
+                    {
+                        MatchID = m.MatchID,
+                        NextMatchID = null,
+                        RoundNumber = m.RoundNumber,
+                        RoundOf = m.RoundOf,
+                        State = "SCHEDULED",
+                        SeedIndex = m.SeedIndex,
+                        IsLosers = m.IsLosers,
+                        Team = context.MatchTeam.Where(mt => mt.MatchID == m.MatchID)
+                                .Select(mt => new TeamBracketExtendedViewModel
+                                {
+                                    TeamID = mt.TeamID,
+                                    Score = mt.Score.ToString(),
+                                    IsWinner = false, //handled on UI side
+                                    TeamName = context.Team.Find(mt.TeamID).Name ?? ""
+                                })
+                    });
+                    i++;
+                }
+                else
+                {
+                    combinedList.Add(new MatchBracketExtendedViewModel
+                    {
+                        MatchID = fakeMatchID--,
+                        NextMatchID = null,
+                        RoundNumber = m.RoundNumber,
+                        RoundOf = m.RoundOf,
+                        State = "WALK_OVER",
+                        SeedIndex = m.SeedIndex,
+                        IsLosers = m.IsLosers,
+                        Team = Enumerable.Empty<TeamBracketExtendedViewModel>()
+                    });
+                }
+                j++;                    
+              }
+        }
+        
+
+
         return context.Match
             .Include(m => m.MatchBracket)
             .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
