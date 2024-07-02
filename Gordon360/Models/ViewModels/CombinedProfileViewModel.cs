@@ -8,31 +8,25 @@ public class CombinedProfileViewModel
 {
     public string ID { get; set; }
     public string Title { get; set; }
-    public string FirstName { get; set; }
-    public string MiddleName { get; set; }
-    public string LastName { get; set; }
-    public string Suffix { get; set; }
-    public string MaidenName { get; set; }
-    public string NickName { get; set; }
+    public ProfileItem FirstName { get; set; }
+    public ProfileItem MiddleName { get; set; }
+    public ProfileItem LastName { get; set; }
+    public ProfileItem Suffix { get; set; }
+    public ProfileItem MaidenName { get; set; }
+    public ProfileItem NickName { get; set; }
     public string Email { get; set; }
     public string Gender { get; set; }
-    public string HomeStreet1 { get; set; }
-    public string HomeStreet2 { get; set; }
-    public string HomeCity { get; set; }
-    //public ProfileItem HomeCity { get; set; }
-    public string HomeState { get; set; }
-    //public ProfileItem HomeState { get; set; }
-    public string HomePostalCode { get; set; }
-    public string HomeCountry { get; set; }
-    //public ProfileItem HomeCountry { get; set; }
-    //public string HomePhone { get; set; }
+    public ProfileItem HomeStreet1 { get; set; }
+    public ProfileItem HomeStreet2 { get; set; }
+    public ProfileItem HomeCity { get; set; }
+    public ProfileItem HomeState { get; set; }
+    public ProfileItem HomePostalCode { get; set; }
+    public ProfileItem HomeCountry { get; set; }
     public ProfileItem HomePhone { get; set; }
-    public string HomeFax { get; set; }
-    public string AD_Username { get; set; }
+    public string AD_Username { get; set; } // Leave as string
     public Nullable<int> show_pic { get; set; }
     public Nullable<int> preferred_photo { get; set; }
-    public string Country { get; set; }
-    //public ProfileItem Country { get; set; }
+    public ProfileItem Country { get; set; }
     public string Barcode { get; set; }
     public string Facebook { get; set; }
     public string Twitter { get; set; }
@@ -73,7 +67,7 @@ public class CombinedProfileViewModel
 
     // Alumni Only
     public string WebUpdate { get; set; }
-    public string HomeEmail { get; set; }
+    public ProfileItem HomeEmail { get; set; }
     public string MaritalStatus { get; set; }
     public string College { get; set; }
     public string ClassYear { get; set; }
@@ -110,7 +104,7 @@ public class CombinedProfileViewModel
     public string KeepPrivate { get; set; }
 
     // ProfileViewModel Only
-    public string PersonType { get; set; }
+    public string PersonType { get; set; } // Leave as string
 
     public static implicit operator CombinedProfileViewModel(ProfileViewModel vm)
     {
@@ -119,31 +113,25 @@ public class CombinedProfileViewModel
             // All Profiles
             ID = vm.ID,
             Title = vm.Title,
-            FirstName = vm.FirstName,
-            MiddleName = vm.MiddleName,
-            LastName = vm.LastName,
-            Suffix = vm.Suffix,
-            MaidenName = vm.MaidenName,
-            NickName = vm.NickName,
+            FirstName = vm.FirstName is null || vm.FirstName == "" ? null : new ProfileItem(vm.FirstName, false),
+            MiddleName = vm.MiddleName is null || vm.MiddleName == "" ? null : new ProfileItem(vm.MiddleName, false),
+            LastName = vm.LastName is null || vm.LastName == "" ? null : new ProfileItem(vm.LastName, false),
+            Suffix = vm.Suffix is null || vm.Suffix == "" ? null : new ProfileItem(vm.Suffix, false),
+            MaidenName = vm.MaidenName is null || vm.MaidenName == "" ? null : new ProfileItem(vm.MaidenName, false),
+            NickName = vm.NickName is null || vm.NickName == "" ? null : new ProfileItem(vm.NickName, false),
             Email = vm.Email,
             Gender = vm.Gender,
-            HomeStreet1 = vm.HomeStreet1,
-            HomeStreet2 = vm.HomeStreet2,
-            //HomeCity =  vm.HomeCity is null || vm.HomeCity == "" ? null : new ProfileItem(vm.HomeCity, false),
-            HomeCity =  vm.HomeCity,
-            //HomeState = vm.HomeState is null || vm.HomeState == "" ? null : new ProfileItem(vm.HomeState, false),
-            HomeState = vm.HomeState,
-            HomePostalCode = vm.HomePostalCode,
-            //HomeCountry = vm.HomeCountry is null || vm.HomeCountry == "" ? null : new ProfileItem(vm.HomeCountry, false),
-            HomeCountry = vm.HomeCountry,
+            HomeStreet1 = vm.HomeStreet1 is null || vm.HomeStreet1 == "" ? null : new ProfileItem(vm.HomeStreet1, false),
+            HomeStreet2 = vm.HomeStreet2 is null || vm.HomeStreet2 == "" ? null : new ProfileItem(vm.HomeStreet2, false),
+            HomeCity =  vm.HomeCity is null || vm.HomeCity == "" ? null : new ProfileItem(vm.HomeCity, false),
+            HomeState = vm.HomeState is null || vm.HomeState == "" ? null : new ProfileItem(vm.HomeState, false),
+            HomePostalCode = vm.HomePostalCode is null || vm.HomePostalCode == "" ? null : new ProfileItem(vm.HomePostalCode, false),
+            HomeCountry = vm.HomeCountry is null || vm.HomeCountry == "" ? null : new ProfileItem(vm.HomeCountry, false),
             HomePhone = vm.HomePhone is null || vm.HomePhone == "" ? null : new ProfileItem(vm.HomePhone, false),
-            //HomePhone = vm.HomePhone,
-            HomeFax = vm.HomeFax,
             AD_Username = vm.AD_Username,
             show_pic = vm.show_pic,
             preferred_photo = vm.preferred_photo,
-            //Country = vm.Country is null || vm.Country == "" ? null : new ProfileItem(vm.Country, false),
-            Country = vm.Country,
+            Country = vm.Country is null || vm.Country == "" ? null : new ProfileItem(vm.Country, false),
             Barcode = vm.Barcode,
             Facebook = vm.Facebook,
             Twitter = vm.Twitter,
@@ -184,7 +172,7 @@ public class CombinedProfileViewModel
 
             // Alumni Only
             WebUpdate = vm. WebUpdate,
-            HomeEmail = vm.HomeEmail,
+            HomeEmail = vm.HomeEmail is null || vm.HomeEmail == "" ? null : new ProfileItem(vm.HomeEmail, false),
             MaritalStatus = vm.MaritalStatus,
             College = vm.College,
             ClassYear = vm.ClassYear,
@@ -208,7 +196,6 @@ public class CombinedProfileViewModel
 
             // FacStaff and Alumni Only
             JobTitle = vm.JobTitle,
-//            SpouseName = new ProfileItem(vm.SpouseName, false),
             SpouseName = vm.SpouseName is null || vm.SpouseName == "" ? null : new ProfileItem(vm.SpouseName, false),
 
             // FacStaff and Student Only

@@ -46,7 +46,8 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
 
-        var profile = (CombinedProfileViewModel)profileService.ComposeProfile(student, alumni, faculty, customInfo);
+        //var profile = profileService.ComposeProfile(student, alumni, faculty, customInfo);
+        var profile = (CombinedProfileViewModel) profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
     }
@@ -187,9 +188,9 @@ public class ProfilesController(IProfileService profileService,
 
         var profile = profileService.ComposeProfile(student, alumni, facstaff, _customInfo);
 
-        var cleaned_profile = profileService.ImposePrivacySettings(username, viewerGroups, profile);
+        var visible_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
 
-        return Ok(cleaned_profile);
+        return Ok(visible_profile);
     }
 
     ///<summary>Get the advisor(s) of a particular student</summary>

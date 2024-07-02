@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Data;
 using System.Linq;
 using System.Net;
@@ -22,6 +21,13 @@ namespace Gordon360.Services;
 
 public class ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
+    // These three-character strings are valid substrings for the PersonType
+    // field in the profile. These are used in the UI and so cannot be changed
+    // here unless the correspondin change is made in the UI.
+    const string FACSTAFF_PROFILE = "fac";
+    const string STUDENT_PROFILE = "stu";
+    const string ALUMNI_PROFILE = "alu";
+
     /// <summary>
     /// get student profile info
     /// </summary>
@@ -276,133 +282,106 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <summary>
     /// convert combined profile to public profile based on individual privacy settings
     /// </summary>
-    /// <param name="username">username of the person being searched</param>
     /// <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
     /// <param name="profile">combined profile of the person being searched</param>
     /// <returns>public profile of the person based on individual privacy settings</returns>
     public CombinedProfileViewModel ImposePrivacySettings
-        (string username, IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
+        (IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
     {
-        CombinedProfileViewModel public_profile = (CombinedProfileViewModel) profile;
+        // Convert profile from record to class so we can modify its elements
+        CombinedProfileViewModel restricted_profile = (CombinedProfileViewModel) profile;
 
-        // SiteAdmin and Police see full profile
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
-        {
-            return public_profile;
-        }
+        // Privacy settings are generally heirarchical from bypassing all
+        // privacy settings to honoring all privacy settings:
+        //   SiteAdmin & Police -> FacStaff -> Students -> Alumni
 
-        // select all privacy settings
-//        var account = accountService.GetAccountByUsername(public_profile.AD_Username);
-        var account = accountService.GetAccountByUsername(username);
+        // Find the account belonging to person whose profile we are accessing and get their
+        // privacy settings
+        var account = accountService.GetAccountByUsername(restricted_profile.AD_Username);
         var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
-        Type cpvm = new CombinedProfileViewModel().GetType();
 
-        if (viewerGroups.Contains(AuthGroup.FacStaff))
-        {
-            foreach (UserPrivacy_Settings row in privacy)
-            {
-                if (row.Visibility == "Private")
-                {
-                    if (public_profile.PersonType.Contains("fac"))
-                    {
-                        // Remove information from profile
-                        cpvm.GetProperty(row.Field).SetValue(public_profile, null);
-                    }
-                    else if (public_profile.PersonType.Contains("stu"))
-                    {
-                        // Information remains visible, but marked as private
-                        PropertyInfo prop = cpvm.GetProperty(row.Field);
-                        ProfileItem profile_item = (ProfileItem) prop.GetValue(public_profile);
-                        profile_item.isPrivate = true;
-                        prop.SetValue(public_profile, profile_item);
-                    }
-                }
-            }
-        }
-        else if (viewerGroups.Contains(AuthGroup.Student) || viewerGroups.Contains(AuthGroup.Alumni))
-        {
-            foreach (UserPrivacy_Settings row in privacy)
-            {
-                if (row.Visibility == "Private" || row.Visibility == "FacStaff")
-                {
-                    // Remove information from profile
-                    cpvm.GetProperty(row.Field).SetValue(public_profile, null);
-                }
-            }
-        }
-
-        // Make profile item private
-        //cpvm.GetProperty("SpouseName").SetValue(public_profile, null);
-
-        // Mark profile item as private
-        // PropertyInfo prop = cpvm.GetProperty("SpouseName");
-        // ProfileItem profile_item = (ProfileItem) prop.GetValue(public_profile);
-        // profile_item.isPrivate = true;
-        // prop.SetValue(public_profile, profile_item);
-
-        return public_profile;
-    }
-
-    /// <summary>
-    /// convert original fac/staff profile to public fac/staff profile based on individual privacy settings
-    /// </summary>
-    /// <param name="username">username of the fac/staff being searched</param>
-    /// <param name="currentUserType">personnel type of the logged-in user (fac, stu, alu)</param>
-    /// <param name="fac">original profile of the fac/staff being searched</param>
-    /// <returns>public profile of the fac/staff based on individual privacy settings</returns>
-    public PublicFacultyStaffProfileViewModel ToPublicFacultyStaffProfileViewModel
-        (string username, string currentUserType, FacultyStaffProfileViewModel fac)
-    {
-        PublicFacultyStaffProfileViewModel publicFac = (PublicFacultyStaffProfileViewModel)fac;
-        var account = accountService.GetAccountByUsername(username);
-
-        // select all privacy settings
-        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
-        // get type of viewmodel for reflection property setting
-        Type fs_vm = new PublicFacultyStaffProfileViewModel().GetType();
+        // Determing the viewer and profile user types
+        bool viewerIsSiteAdmin = viewerGroups.Contains(AuthGroup.SiteAdmin);
+        bool viewerIsPolice = viewerGroups.Contains(AuthGroup.Police);
+        bool viewerIsFacStaff = viewerGroups.Contains(AuthGroup.FacStaff);
+        bool viewerIsStudent = viewerGroups.Contains(AuthGroup.Student);
+        bool viewerIsAlumni = viewerGroups.Contains(AuthGroup.Alumni);
+        bool profileIsFacStaff = restricted_profile.PersonType.Contains(FACSTAFF_PROFILE);
+        bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
+        bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
 
         foreach (UserPrivacy_Settings row in privacy)
         {
-            if (row.Visibility == "Private" || (row.Visibility == "FacStaff" && currentUserType != "fac"))
+            if ((viewerIsSiteAdmin || viewerIsPolice) && row.Visibility != "Public")
             {
-                fs_vm.GetProperty(row.Field).SetValue(publicFac, "Private as requested.");
+                MarkAsPrivate(restricted_profile, row.Field);
+            }
+            else if (viewerIsFacStaff)
+            {
+                if (profileIsFacStaff && row.Visibility == "Private")
+                {
+                    MakePrivate(restricted_profile, row.Field);
+                }
+                else if ((profileIsStudent || profileIsAlumni) && row.Visibility != "Public")
+                {
+                    MarkAsPrivate(restricted_profile, row.Field);
+                }
+            }
+            else if (viewerIsStudent && row.Visibility != "Public")
+            {
+                MakePrivate(restricted_profile, row.Field);
+            }
+            else if (viewerIsAlumni && row.Visibility != "Public")
+            {
+                MakePrivate(restricted_profile, row.Field);
             }
         }
 
-        return publicFac;
-    }
+        // if (viewerIsSiteAdmin || viewerIsPolice)
+        // {
+        //     foreach (UserPrivacy_Settings row in privacy)
+        //     {
+        //         if (row.Visibility != "Public")
+        //         {
+        //             MarkAsPrivate(restricted_profile, row.Field);
+        //         }
+        //     }
+        // }
+        // else if (viewerIsFacStaff)
+        // {
+        //     foreach (UserPrivacy_Settings row in privacy)
+        //     {
+        //         if (row.Visibility == "Private")
+        //         {
+        //             if (profileIsFacStaff)
+        //             {
+        //                 MakePrivate(restricted_profile, row.Field);
+        //             }
+        //             else if (profileIsStudent)
+        //             {
+        //                 MarkAsPrivate(restricted_profile, row.Field);
+        //             }
+        //         }
+        //         if (row.Visibility == "FacStaff" && profileIsStudent)
+        //         {
+        //             MarkAsPrivate(restricted_profile, row.Field);
+        //         }
+        //         // no other adjustments necessary for FacStaff viewers
+        //     }
+        // }
+        // else if (viewerIsStudent || viewerIsAlumni)
+        // {
+        //     foreach (UserPrivacy_Settings row in privacy)
+        //     {
+        //         if (row.Visibility != "Public")
+        //         {
+        //             // Remove information from profile
+        //             MakePrivate(restricted_profile, row.Field);
+        //         }
+        //     }
+        // }
 
-    /// <summary>
-    /// convert original student profile to public student profile based on individual privacy settings
-    /// </summary>
-    /// <param name="username">username of the student being searched</param>
-    /// <param name="currentUserType">personnel type of the logged-in user</param>
-    /// <param name="stu">original profile of the student being searched</param>
-    /// <returns>public profile of the student based on individual privacy settings</returns>
-    public PublicStudentProfileViewModel ToPublicStudentProfileViewModel
-        (string username, string currentUserType, StudentProfileViewModel stu)
-    {
-        PublicStudentProfileViewModel publicStu = (PublicStudentProfileViewModel)stu;
-        var account = accountService.GetAccountByUsername(username);
-
-        // select all privacy settings
-        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
-        // get type of viewmodel for reflection property setting
-        Type s_vm = new PublicStudentProfileViewModel().GetType();
-
-        foreach (UserPrivacy_Settings row in privacy)
-        {
-            if (row.Visibility == "Private" || (row.Visibility == "FacStaff" && currentUserType != "fac"))
-            {
-                s_vm.GetProperty(row.Field).SetValue(publicStu, "Private as requested.");
-            }
-            if (row.Field == "MobilePhone")
-            {
-                s_vm.GetProperty("IsMobilePhonePrivate").SetValue(publicStu, row.Visibility != "Public");
-            }
-        }
-
-        return publicStu;
+        return restricted_profile;
     }
 
     /// <summary>
@@ -592,19 +571,19 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         if (student != null)
         {
             MergeProfile(profile, JObject.FromObject(student));
-            personType += "stu";
+            personType += STUDENT_PROFILE;
         }
 
         if (alumni != null)
         {
             MergeProfile(profile, JObject.FromObject(alumni));
-            personType += "alu";
+            personType += ALUMNI_PROFILE;
         }
 
         if (faculty != null)
         {
             MergeProfile(profile, JObject.FromObject(faculty));
-            personType += "fac";
+            personType += FACSTAFF_PROFILE;
         }
 
         if (customInfo != null)
@@ -678,5 +657,28 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     {
         return webSQLContext.Mailstops.Select(m => m.code)
                        .OrderBy(d => d);
+    }
+
+    private static void MarkAsPrivate(CombinedProfileViewModel profile, string field)
+    {
+        Type cpvm = new CombinedProfileViewModel().GetType();
+        try
+        {
+            PropertyInfo prop = cpvm.GetProperty(field);
+            ProfileItem profile_item = (ProfileItem) prop.GetValue(profile);
+            profile_item.isPrivate = true;
+            prop.SetValue(profile, profile_item);
+        }
+        catch (Exception)
+        {
+            // silently fail return -1;
+        }
+        //return 0;
+    }
+
+    private static void MakePrivate(CombinedProfileViewModel profile, string field)
+    {
+        Type cpvm = new CombinedProfileViewModel().GetType();
+        cpvm.GetProperty(field).SetValue(profile, null);
     }
 }

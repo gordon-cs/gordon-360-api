@@ -53,7 +53,6 @@ public class PublicStudentProfileViewModel
             AD_Username = stu.AD_Username ?? "", // Just in case some random record has a null email field
             OnOffCampus = stu.OnOffCampus ?? "",
             Mail_Location = stu.Mail_Location ?? "",
-            HomePhone = stu.HomePhone ?? "",
             HomeCity = stu.HomeCity ?? "",
             HomeState = stu.HomeState ?? "",
             HomeCountry = stu.HomeCountry ?? "",
@@ -77,15 +76,7 @@ public class PublicStudentProfileViewModel
             Minor2Description = stu.Minor2Description ?? "",
             Minor3Description = stu.Minor3Description ?? ""
         };
-        if (vm.KeepPrivate.Contains("S"))
-        {
-            vm.HomeCity = "Private as requested.";
-            vm.HomeState = "";
-            vm.HomeCountry = "";
-            vm.Country = "";
-            vm.OnOffCampus = "P";
-            vm.Hall = "";
-        }
+
         if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
         {
             return null;

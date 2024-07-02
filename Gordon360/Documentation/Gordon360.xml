@@ -2244,32 +2244,13 @@
             <param name="type"></param>
             <param name="content"></param>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.ImposePrivacySettings(System.String,System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.ProfileViewModel)">
+        <member name="M:Gordon360.Services.ProfileService.ImposePrivacySettings(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.ProfileViewModel)">
             <summary>
             convert combined profile to public profile based on individual privacy settings
             </summary>
-            <param name="username">username of the person being searched</param>
             <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
             <param name="profile">combined profile of the person being searched</param>
             <returns>public profile of the person based on individual privacy settings</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.ToPublicFacultyStaffProfileViewModel(System.String,System.String,Gordon360.Models.ViewModels.FacultyStaffProfileViewModel)">
-            <summary>
-            convert original fac/staff profile to public fac/staff profile based on individual privacy settings
-            </summary>
-            <param name="username">username of the fac/staff being searched</param>
-            <param name="currentUserType">personnel type of the logged-in user (fac, stu, alu)</param>
-            <param name="fac">original profile of the fac/staff being searched</param>
-            <returns>public profile of the fac/staff based on individual privacy settings</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.ToPublicStudentProfileViewModel(System.String,System.String,Gordon360.Models.ViewModels.StudentProfileViewModel)">
-            <summary>
-            convert original student profile to public student profile based on individual privacy settings
-            </summary>
-            <param name="username">username of the student being searched</param>
-            <param name="currentUserType">personnel type of the logged-in user</param>
-            <param name="stu">original profile of the student being searched</param>
-            <returns>public profile of the student based on individual privacy settings</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetPrivacySettingAsync(System.String)">
             <summary>
