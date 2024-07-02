@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Data;
 using System.Linq;
 using System.Net;
@@ -318,7 +318,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e.Message);
+                            Debug.WriteLine(e.Message);
                         }
                     }
                 }
