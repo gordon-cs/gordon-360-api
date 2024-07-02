@@ -64,6 +64,7 @@ public class ProfilesController(IProfileService profileService,
             viewerGroups.Contains(AuthGroup.FacStaff) ||
             viewerGroups.Contains(AuthGroup.Student))
         {
+            //TODO: take "KeepPrivate" into account, to enforce FERPA restrictions
             return true;
         }
         return false;
@@ -86,14 +87,78 @@ public class ProfilesController(IProfileService profileService,
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
+        return viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+               viewerGroups.Contains(AuthGroup.Police) ||
+               viewerGroups.Contains(AuthGroup.FacStaff) ||
+               viewerGroups.Contains(AuthGroup.Alumni);
+    }
+
+    /// <summary>Restrict info about a student to those fields which are potentially
+    /// viewable by the user making the request.  Actual visibility may also depend
+    /// on privacy choices made by the user whose data is being viewed.</summary>
+    /// <returns>Information the requesting user is potentially authorized to see.
+    /// Null if the requesting user is never allowed to see data about students.</returns>
+    /// 
+    public PublicStudentProfileViewModel? VisibleToMeStudent(StudentProfileViewModel? student)
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+
         if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
             viewerGroups.Contains(AuthGroup.Police) ||
-            viewerGroups.Contains(AuthGroup.FacStaff) ||
-            viewerGroups.Contains(AuthGroup.Alumni))
+            viewerGroups.Contains(AuthGroup.FacStaff))
         {
-            return true;
+            return student;
         }
-        return false;
+        else if (CanISeeStudents())
+        {
+            return (student == null) ? null : (PublicStudentProfileViewModel)student;
+        }
+        return null;
+    }
+
+    /// <summary>Restrict info about a facstaff person to those fields which are potentially
+    /// viewable by the user making the request.  Actual visibility may also depend
+    /// on privacy choices made by the user whose data is being viewed.</summary>
+    /// <returns>Information the requesting user is potentially authorized to see.
+    /// Null if the requesting user is never allowed to see data about facstaff.</returns>
+    /// 
+    public PublicFacultyStaffProfileViewModel? 
+        VisibleToMeFacstaff(FacultyStaffProfileViewModel? facstaff)
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police))
+        {
+            return facstaff;
+        }
+        else if (CanISeeFacstaff())
+        {
+            return (facstaff == null) ? null : (PublicFacultyStaffProfileViewModel)facstaff;
+        }
+        return null;
+    }
+
+    /// <summary>Restrict info about an alumni person to those fields which are potentially
+    /// viewable by the user making the request.  Actual visibility may also depend
+    /// on privacy choices made by the user whose data is being viewed.</summary>
+    /// <returns>Information the requesting user is potentially authorized to see.
+    /// Null if the requesting user is never allowed to see data about alumni.</returns>
+    /// 
+    public PublicAlumniProfileViewModel? VisibleToMeAlumni(AlumniProfileViewModel? alumni)
+    {
+        var viewerGroups = AuthUtils.GetGroups(User);
+
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police))
+        {
+            return alumni;
+        }
+        else if (CanISeeAlumni())
+        {
+            return (alumni == null) ? null : (PublicAlumniProfileViewModel)alumni;
+        }
+        return null;
     }
 
     /// <summary>Get another user's profile info.  The info returned depends
@@ -106,66 +171,21 @@ public class ProfilesController(IProfileService profileService,
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        var _student = profileService.GetStudentProfileByUsername(username);
-        var _faculty = profileService.GetFacultyStaffProfileByUsername(username);
-        var _alumni = profileService.GetAlumniProfileByUsername(username);
+        StudentProfileViewModel? _student = profileService.GetStudentProfileByUsername(username);
+        FacultyStaffProfileViewModel? _facstaff = profileService.GetFacultyStaffProfileByUsername(username);
+        AlumniProfileViewModel? _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
-        object? student = null;
-        object? faculty = null;
-        object? alumni = null;
+        PublicStudentProfileViewModel? student = VisibleToMeStudent(_student);
+        PublicFacultyStaffProfileViewModel? facstaff = VisibleToMeFacstaff(_facstaff);
+        PublicAlumniProfileViewModel? alumni = VisibleToMeAlumni(_alumni);
 
-        if (CanISeeStudents())
-        {
-            student = _student;
-        }
-
-        if (CanISeeFacstaff())
-        {
-            faculty = _faculty;
-        }
-
-        if (CanISeeAlumni())
-        {
-            alumni = _alumni;
-        }
-
-        /*
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
-        {
-            student = _student;
-            faculty = _faculty;
-            alumni = _alumni;
-        }
-        else if (viewerGroups.Contains(AuthGroup.FacStaff))
-        {
-            student = _student;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
-        }
-        else if (viewerGroups.Contains(AuthGroup.Student))
-        {
-            student = _student == null ? null : (PublicStudentProfileViewModel)_student;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            // If this student is also in Alumni AuthGroup, then s/he can see alumni's public profile; if not, return null.
-            alumni = (_alumni == null) ? null :
-                        viewerGroups.Contains(AuthGroup.Alumni) ?
-                            (PublicAlumniProfileViewModel)_alumni : null;
-        }
-        else if (viewerGroups.Contains(AuthGroup.Alumni))
-        {
-            student = null;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
-        }
-        */
-
-        if (student is null && alumni is null && faculty is null)
+        if (student is null && alumni is null && facstaff is null)
         {
             return Ok(null);
         }
 
-        var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
+        var profile = profileService.ComposeProfile(student, alumni, facstaff, _customInfo);
 
         var cleaned_profile = profileService.ImposePrivacySettings(username, viewerGroups, profile);
 
