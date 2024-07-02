@@ -1772,7 +1772,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                         RoundNumber = m.RoundNumber,
                         RoundOf = m.RoundOf,
                         State = "WALK_OVER",
-                        SeedIndex = m.SeedIndex,
+                        SeedIndex = j,
                         IsLosers = m.IsLosers,
                         Team = Enumerable.Empty<TeamBracketExtendedViewModel>()
                     });
