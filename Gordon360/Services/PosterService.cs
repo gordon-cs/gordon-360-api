@@ -37,7 +37,7 @@ public class PosterService(CCTContext context,
 
     public IEnumerable<PosterViewModel> GetCurrentPosters()
     {
-        return GetPosters().Where(p => p.ExpirationDate > DateTime.Now && p.Status == "Visible");
+        return GetPosters().Where(p => p.ExpirationDate > DateTime.Now && p.Status == "Visible" && p.VisibleDate < DateTime.Now);
     }
 
     //currently will only get posters if someone is signed up for a club, can be modified to include all posters but prioritize 
