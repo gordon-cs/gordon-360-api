@@ -1680,7 +1680,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         return res;
     }
 
-    public IEnumerable<MatchBracketExtendedViewModel> GetSeriesBracketInformation(int seriesID)
+    public IEnumerable<MatchBracketExportViewModel> GetSeriesBracketInformation(int seriesID)
     {
         /**
          * TODO
@@ -1795,8 +1795,38 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             }
         }
 
+        //final conversion to exact UI shape (more efficient than letting the UI handle the key/pair changes
+        //concious decision to not make all the conversions in the extended viewmodel as it would disrupt our 
+        //current api styling and naming.
+        //I want to minimize style disruptions albeit at the cost of a tiny bit of performance
+        var res = Enumerable.Empty<MatchBracketExportViewModel>().ToList();
+        foreach( var m in combinedList )
+        {
+            var teams = Enumerable.Empty<TeamBracketExportViewModel>().ToList();
+            foreach (var t in m.Team)
+                teams.Add(new TeamBracketExportViewModel
+                {
+                    id = t.TeamID,
+                    resultText = t.Score,
+                    isWinner = t.IsWinner,
+                    status = t.Status,
+                    name = t.TeamName
+                });
+            res.Add(new MatchBracketExportViewModel
+            {
+                id = m.MatchID,
+                name = null, //unused currently
+                nextMatchID = m.NextMatchID,
+                tournamentRoundText = m.RoundNumber.ToString(),
+                state = m.State,
+                startTime = m.StartTime,
+                participants = teams,
+                seedIndex = m.SeedIndex,
+                isLosers = m.IsLosers
+            });
+        }
 
-        return combinedList;
+        return res;
     }
 
     public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)

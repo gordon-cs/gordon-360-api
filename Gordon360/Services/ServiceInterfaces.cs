@@ -281,7 +281,7 @@ namespace Gordon360.Services
             Task<IEnumerable<MatchViewModel>?> ScheduleMatchesAsync(int seriesID, UploadScheduleRequest request);
             SeriesAutoSchedulerEstimateViewModel GetScheduleMatchesEstimateAsync(int seriesID, UploadScheduleRequest request);
             SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID);
-            IEnumerable<MatchBracketExtendedViewModel> GetSeriesBracketInformation(int seriesID);
+            IEnumerable<MatchBracketExportViewModel> GetSeriesBracketInformation(int seriesID);
             Task<TeamRecordViewModel> UpdateSeriesTeamRecordAsync(int seriesID, TeamRecordPatchViewModel teamRecord);
         }
 

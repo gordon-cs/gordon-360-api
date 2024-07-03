@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -34,6 +35,7 @@ public class MatchBracketExtendedViewModel
     public int RoundNumber { get; set; }
     public int RoundOf { get; set; }
     public string? State { get; set; }
+    public DateTime StartTime { get; set;}
     public IEnumerable<TeamBracketExtendedViewModel> Team { get; set; }
     public int SeedIndex { get; set; }
     public bool IsLosers { get; set; }
