@@ -48,39 +48,32 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
     /// <summary>
-    /// get mailbox combination
+    /// get mailbox information (contains box combination)
     /// </summary>
     /// <param name="username">The current user's username</param>
     /// <returns>MailboxViewModel with the combination</returns>
-    public MailboxViewModel GetMailboxCombination(string username)
+    public MailboxViewModel GetMailboxInformation(string username)
     {
         var mailboxNumber =
             context.Student
             .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
             .Mail_Location;
 
-        var combo = context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
-
-        if (combo == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "A combination was not found for the specified mailbox number." };
-        }
-
-        return combo;
+        return context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
     }
 
     /// <summary>
     /// get a user's birthday
     /// </summary>
     /// <param name="username">The username of the person to get the birthdate of</param>
-    /// <returns>Date the user's date of birth</returns>
+    /// <returns>Date the user's date of birth, if available, or a default of 1/1/1800.</returns>
     public DateTime GetBirthdate(string username)
     {
         var birthdate = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
 
         if (birthdate == null)
         {
-            throw new ResourceNotFoundException() { ExceptionMessage = "A birthday was not found for this user." };
+            return new DateTime(1800, 1, 1);
         }
 
         try
