@@ -1680,7 +1680,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         return res;
     }
 
-    public IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID)
+    public IEnumerable<MatchBracketExtendedViewModel> GetSeriesBracketInformation(int seriesID)
     {
         /**
          * TODO
@@ -1691,7 +1691,15 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         var match = context.Match
             .Include(m => m.MatchBracket)
             .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
-            .Select(m => (MatchBracketViewModel)m.MatchBracket)
+            .Select(m => new MatchBracketViewModel
+            {
+                MatchID = m.MatchBracket.MatchID,
+                RoundNumber = m.MatchBracket.RoundNumber,
+                RoundOf = m.MatchBracket.RoundOf,
+                SeedIndex = m.MatchBracket.SeedIndex,
+                IsLosers = m.MatchBracket.IsLosers,
+                StartTime = m.StartTime
+            })
             .AsEnumerable()
             .OrderBy(mb => mb.RoundNumber)
             .ThenBy(mb => mb.SeedIndex);
@@ -1749,6 +1757,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                         State = state,
                         SeedIndex = m.SeedIndex,
                         IsLosers = m.IsLosers,
+                        StartTime = m.StartTime,
                         Team = teamList
                     });
                     i++;
@@ -1764,6 +1773,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                         State = "WALK_OVER",
                         SeedIndex = j,
                         IsLosers = m.IsLosers,
+                        StartTime = m.StartTime,
                         Team = Enumerable.Empty<TeamBracketExtendedViewModel>()
                     });
                 }
@@ -1786,10 +1796,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         }
 
 
-        return context.Match
-            .Include(m => m.MatchBracket)
-            .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
-            .Select(m => (MatchBracketViewModel) m.MatchBracket);
+        return combinedList;
     }
 
     public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)
