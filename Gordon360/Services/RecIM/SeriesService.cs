@@ -1696,9 +1696,6 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             .OrderBy(mb => mb.RoundNumber)
             .ThenBy(mb => mb.SeedIndex);
    
-
-        var res = Enumerable.Empty<MatchBracketExtendedViewModel>();
-
         /* 
          * fill out each of round level:
          * round of 64 needs 32 matches (64 teams), 32/16...
@@ -1732,7 +1729,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                                 TeamID = team.TeamID,
                                 Score = team.Score.ToString(),
                                 IsWinner = false,
-                                TeamName = context.Team.Find(team.TeamID).Name ?? ""                             
+                                TeamName = context.Team.Find(team.TeamID)?.Name ?? ""                             
                             });
 
                         if (Convert.ToInt32(teamList.ElementAt(0).Score) > Convert.ToInt32(teamList.ElementAt(1).Score))
@@ -1771,9 +1768,22 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                     });
                 }
                 j++;                    
-              }
+            }
         }
-        
+
+        //set next matchID
+        i = 0;
+        while (i < combinedList.Count() - 1) //finals match has no next match ID
+        {
+            var currentRoundOf = combinedList[i].RoundOf;
+            var initial = i;
+            for (var j = 0; j < currentRoundOf/4; j++)
+            {
+                combinedList[i].NextMatchID = combinedList[initial + j + currentRoundOf / 2].MatchID;
+                combinedList[i + 1].NextMatchID = combinedList[initial + j + currentRoundOf / 2].MatchID;
+                i += 2;
+            }
+        }
 
 
         return context.Match
