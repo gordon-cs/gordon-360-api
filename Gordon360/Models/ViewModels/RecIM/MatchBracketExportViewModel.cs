@@ -9,7 +9,7 @@ public class MatchBracketExportViewModel
 {
     public int id { get; set; }
     public string? name { get; set; }
-    public int? nextMatchID { get; set; }
+    public int? nextMatchId { get; set; }
     public string tournamentRoundText { get; set; }
     public string? state { get; set; }
     public DateTime startTime { get; set;}

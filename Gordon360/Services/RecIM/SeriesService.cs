@@ -1816,7 +1816,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             {
                 id = m.MatchID,
                 name = null, //unused currently
-                nextMatchID = m.NextMatchID,
+                nextMatchId = m.NextMatchID,
                 tournamentRoundText = $"{m.RoundNumber + 1}", //start at round 1 instead of 0 for UI readability
                 state = m.State,
                 startTime = m.StartTime,
