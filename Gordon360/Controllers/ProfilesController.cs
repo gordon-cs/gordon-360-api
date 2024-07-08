@@ -100,7 +100,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns>Information the requesting user is potentially authorized to see.
     /// Null if the requesting user is never allowed to see data about students.</returns>
     /// 
-    public PublicStudentProfileViewModel? VisibleToMeStudent(StudentProfileViewModel? student)
+    public object? VisibleToMeStudent(StudentProfileViewModel? student)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
@@ -123,8 +123,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns>Information the requesting user is potentially authorized to see.
     /// Null if the requesting user is never allowed to see data about facstaff.</returns>
     /// 
-    public PublicFacultyStaffProfileViewModel? 
-        VisibleToMeFacstaff(FacultyStaffProfileViewModel? facstaff)
+    public object? VisibleToMeFacstaff(FacultyStaffProfileViewModel? facstaff)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
@@ -146,7 +145,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns>Information the requesting user is potentially authorized to see.
     /// Null if the requesting user is never allowed to see data about alumni.</returns>
     /// 
-    public PublicAlumniProfileViewModel? VisibleToMeAlumni(AlumniProfileViewModel? alumni)
+    public object? VisibleToMeAlumni(AlumniProfileViewModel? alumni)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
@@ -177,19 +176,16 @@ public class ProfilesController(IProfileService profileService,
         AlumniProfileViewModel? _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
-        PublicStudentProfileViewModel? student = VisibleToMeStudent(_student);
-        PublicFacultyStaffProfileViewModel? facstaff = VisibleToMeFacstaff(_facstaff);
-        PublicAlumniProfileViewModel? alumni = VisibleToMeAlumni(_alumni);
+        var student = VisibleToMeStudent(_student);
+        var facstaff = VisibleToMeFacstaff(_facstaff);
+        var alumni = VisibleToMeAlumni(_alumni);
 
         if (student is null && alumni is null && facstaff is null)
         {
             return Ok(null);
         }
-
         var profile = profileService.ComposeProfile(student, alumni, facstaff, _customInfo);
-
         var visible_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
-
         return Ok(visible_profile);
     }
 
