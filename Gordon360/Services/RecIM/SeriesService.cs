@@ -1727,25 +1727,26 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                     var teams = context.MatchTeam.Where(mt => mt.MatchID == m.MatchID && mt.StatusID != 0);
 
                     var teamList = Enumerable.Empty<TeamBracketExtendedViewModel>().ToList();
-                    if (teams.Count() == 2)
+                    if (teams.Count() != 0)
                     {
-                        if (teams.ElementAt(0).Score != 0 || teams.ElementAt(1).Score != 0) state = "SCORE_DONE";
-
                         foreach (var team in teams)
                             teamList.Add(new TeamBracketExtendedViewModel
                             {
                                 TeamID = team.TeamID,
                                 Score = team.Score.ToString(),
                                 IsWinner = false,
-                                TeamName = context.Team.Find(team.TeamID)?.Name ?? ""                             
+                                TeamName = context.Team.Find(team.TeamID)?.Name ?? ""
                             });
 
-                        if (Convert.ToInt32(teamList.ElementAt(0).Score) > Convert.ToInt32(teamList.ElementAt(1).Score))
-                            teamList.ElementAt(0).IsWinner = true;
-                        if (Convert.ToInt32(teamList.ElementAt(0).Score) < Convert.ToInt32(teamList.ElementAt(1).Score))
-                            teamList.ElementAt(1).IsWinner = true;
+                        if (teams.Count() == 2)
+                        {
+                            if (teams.ElementAt(0).Score != 0 || teams.ElementAt(1).Score != 0) state = "SCORE_DONE";
 
-
+                            if (Convert.ToInt32(teamList.ElementAt(0).Score) > Convert.ToInt32(teamList.ElementAt(1).Score))
+                                teamList.ElementAt(0).IsWinner = true;
+                            if (Convert.ToInt32(teamList.ElementAt(0).Score) < Convert.ToInt32(teamList.ElementAt(1).Score))
+                                teamList.ElementAt(1).IsWinner = true;
+                        }
                     } 
 
                     combinedList.Add(new MatchBracketExtendedViewModel
