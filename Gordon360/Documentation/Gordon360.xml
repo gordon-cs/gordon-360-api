@@ -2221,7 +2221,7 @@
             privacy setting of some piece of personal data for user.
             </summary>
             <param name="username">AD Username</param>
-            <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
+            <param name="userPrivacy">User Privacy Update View Model</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>

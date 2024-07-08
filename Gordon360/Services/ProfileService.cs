@@ -403,26 +403,26 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// privacy setting of some piece of personal data for user.
     /// </summary>
     /// <param name="username">AD Username</param>
-    /// <param name="facultyStaffPrivacy">Faculty Staff Privacy View Model</param>
-    public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy)
+    /// <param name="userPrivacy">User Privacy Update View Model</param>
+    public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel userPrivacy)
     {
         var account = accountService.GetAccountByUsername(username);
-        foreach (string subField in facultyStaffPrivacy.Field)
+        foreach (string field in userPrivacy.Field)
         {
-            var facStaff = context.UserPrivacy_Settings.FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == subField);
-            if (facStaff is null)
+            var user = context.UserPrivacy_Settings.FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == field);
+            if (user is null)
             {
                 var privacy = new UserPrivacy_Settings
                 {
                     gordon_id = account.GordonID,
-                    Field = subField,
-                    Visibility = facultyStaffPrivacy.VisibilityGroup
+                    Field = field,
+                    Visibility = userPrivacy.VisibilityGroup
                 }; ;
                 await context.UserPrivacy_Settings.AddAsync(privacy);
             }
             else
             {
-                facStaff.Visibility = facultyStaffPrivacy.VisibilityGroup;
+                user.Visibility = userPrivacy.VisibilityGroup;
             }
         }
 

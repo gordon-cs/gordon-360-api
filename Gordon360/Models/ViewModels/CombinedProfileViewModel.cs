@@ -6,6 +6,9 @@ namespace Gordon360.Models.ViewModels;
 
 public class CombinedProfileViewModel
 {
+    const bool PRIVATE = true;
+    const bool PUBLIC = false;
+
     public string ID { get; set; }
     public string Title { get; set; }
     public ProfileItem FirstName { get; set; }
@@ -113,25 +116,25 @@ public class CombinedProfileViewModel
             // All Profiles
             ID = vm.ID,
             Title = vm.Title,
-            FirstName = vm.FirstName is null || vm.FirstName == "" ? null : new ProfileItem(vm.FirstName, false),
-            MiddleName = vm.MiddleName is null || vm.MiddleName == "" ? null : new ProfileItem(vm.MiddleName, false),
-            LastName = vm.LastName is null || vm.LastName == "" ? null : new ProfileItem(vm.LastName, false),
-            Suffix = vm.Suffix is null || vm.Suffix == "" ? null : new ProfileItem(vm.Suffix, false),
-            MaidenName = vm.MaidenName is null || vm.MaidenName == "" ? null : new ProfileItem(vm.MaidenName, false),
-            NickName = vm.NickName is null || vm.NickName == "" ? null : new ProfileItem(vm.NickName, false),
+            FirstName = vm.FirstName is null || vm.FirstName == "" ? null : new ProfileItem(vm.FirstName, PUBLIC),
+            MiddleName = vm.MiddleName is null || vm.MiddleName == "" ? null : new ProfileItem(vm.MiddleName, PUBLIC),
+            LastName = vm.LastName is null || vm.LastName == "" ? null : new ProfileItem(vm.LastName, PUBLIC),
+            Suffix = vm.Suffix is null || vm.Suffix == "" ? null : new ProfileItem(vm.Suffix, PUBLIC),
+            MaidenName = vm.MaidenName is null || vm.MaidenName == "" ? null : new ProfileItem(vm.MaidenName, PUBLIC),
+            NickName = vm.NickName is null || vm.NickName == "" ? null : new ProfileItem(vm.NickName, PUBLIC),
             Email = vm.Email,
             Gender = vm.Gender,
-            HomeStreet1 = vm.HomeStreet1 is null || vm.HomeStreet1 == "" ? null : new ProfileItem(vm.HomeStreet1, false),
-            HomeStreet2 = vm.HomeStreet2 is null || vm.HomeStreet2 == "" ? null : new ProfileItem(vm.HomeStreet2, false),
-            HomeCity =  vm.HomeCity is null || vm.HomeCity == "" ? null : new ProfileItem(vm.HomeCity, false),
-            HomeState = vm.HomeState is null || vm.HomeState == "" ? null : new ProfileItem(vm.HomeState, false),
-            HomePostalCode = vm.HomePostalCode is null || vm.HomePostalCode == "" ? null : new ProfileItem(vm.HomePostalCode, false),
-            HomeCountry = vm.HomeCountry is null || vm.HomeCountry == "" ? null : new ProfileItem(vm.HomeCountry, false),
-            HomePhone = vm.HomePhone is null || vm.HomePhone == "" ? null : new ProfileItem(vm.HomePhone, false),
+            HomeStreet1 = vm.HomeStreet1 is null || vm.HomeStreet1 == "" ? null : new ProfileItem(vm.HomeStreet1, PRIVATE),
+            HomeStreet2 = vm.HomeStreet2 is null || vm.HomeStreet2 == "" ? null : new ProfileItem(vm.HomeStreet2, PRIVATE),
+            HomeCity =  vm.HomeCity is null || vm.HomeCity == "" ? null : new ProfileItem(vm.HomeCity, PUBLIC),
+            HomeState = vm.HomeState is null || vm.HomeState == "" ? null : new ProfileItem(vm.HomeState, PUBLIC),
+            HomePostalCode = vm.HomePostalCode is null || vm.HomePostalCode == "" ? null : new ProfileItem(vm.HomePostalCode, PUBLIC),
+            HomeCountry = vm.HomeCountry is null || vm.HomeCountry == "" ? null : new ProfileItem(vm.HomeCountry, PUBLIC),
+            HomePhone = vm.HomePhone is null || vm.HomePhone == "" ? null : new ProfileItem(vm.HomePhone, PUBLIC),
             AD_Username = vm.AD_Username,
             show_pic = vm.show_pic,
             preferred_photo = vm.preferred_photo,
-            Country = vm.Country is null || vm.Country == "" ? null : new ProfileItem(vm.Country, false),
+            Country = vm.Country is null || vm.Country == "" ? null : new ProfileItem(vm.Country, PUBLIC),
             Barcode = vm.Barcode,
             Facebook = vm.Facebook,
             Twitter = vm.Twitter,
@@ -160,7 +163,7 @@ public class CombinedProfileViewModel
             Minor3Description = vm.Minor3Description,
             GradDate = vm.GradDate,
             PlannedGradYear = vm.PlannedGradYear,
-            MobilePhone = vm.MobilePhone is null || vm.MobilePhone == "" ? null : new ProfileItem(vm.MobilePhone, false),
+            MobilePhone = vm.MobilePhone is null || vm.MobilePhone == "" ? null : new ProfileItem(vm.MobilePhone, PUBLIC),
             IsMobilePhonePrivate = vm.IsMobilePhonePrivate,
             ChapelRequired = vm.ChapelRequired,
             ChapelAttended = vm.ChapelAttended,
@@ -172,7 +175,7 @@ public class CombinedProfileViewModel
 
             // Alumni Only
             WebUpdate = vm. WebUpdate,
-            HomeEmail = vm.HomeEmail is null || vm.HomeEmail == "" ? null : new ProfileItem(vm.HomeEmail, false),
+            HomeEmail = vm.HomeEmail is null || vm.HomeEmail == "" ? null : new ProfileItem(vm.HomeEmail, PUBLIC),
             MaritalStatus = vm.MaritalStatus,
             College = vm.College,
             ClassYear = vm.ClassYear,
@@ -196,7 +199,7 @@ public class CombinedProfileViewModel
 
             // FacStaff and Alumni Only
             JobTitle = vm.JobTitle,
-            SpouseName = vm.SpouseName is null || vm.SpouseName == "" ? null : new ProfileItem(vm.SpouseName, false),
+            SpouseName = vm.SpouseName is null || vm.SpouseName == "" ? null : new ProfileItem(vm.SpouseName, PUBLIC),
 
             // FacStaff and Student Only
             BuildingDescription = vm.BuildingDescription,
