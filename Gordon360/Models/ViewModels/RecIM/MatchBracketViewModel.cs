@@ -3,6 +3,9 @@ using System;
 
 namespace Gordon360.Models.ViewModels.RecIM;
 
+
+// Mirror of Match Bracket DB Model
+
 public class MatchBracketViewModel
 {
     public int MatchID { get; set; }
