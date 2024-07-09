@@ -459,6 +459,13 @@
             <returns>True if the user making the request is authorized to see
             profile information for students, and false otherwise.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.CanISeeThisStudent(Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>Indicates whether the user making the request is authorized to see
+            profile information for this particular student.  Some students are not shown
+            because of FERPA protections.</summary>
+            <returns>True if the user making the request is authorized to see
+            profile information for this student, and false otherwise.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.ProfilesController.CanISeeFacstaff">
             <summary>Indicates whether the user making the request is authorized to see
             profile information for faculty and staff (facstaff).</summary>
@@ -474,7 +481,9 @@
         <member name="M:Gordon360.Controllers.ProfilesController.VisibleToMeStudent(Gordon360.Models.ViewModels.StudentProfileViewModel)">
             <summary>Restrict info about a student to those fields which are potentially
             viewable by the user making the request.  Actual visibility may also depend
-            on privacy choices made by the user whose data is being viewed.</summary>
+            on privacy choices made by the user whose data is being viewed.  Note that 
+            this takes FERPA restrictions into account in determining whether this student
+            is visible to the requesting user.</summary>
             <returns>Information the requesting user is potentially authorized to see.
             Null if the requesting user is never allowed to see data about students.</returns>
             

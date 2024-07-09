@@ -72,6 +72,34 @@ public class ProfilesController(IProfileService profileService,
     }
 
     /// <summary>Indicates whether the user making the request is authorized to see
+    /// profile information for this particular student.  Some students are not shown
+    /// because of FERPA protections.</summary>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for this student, and false otherwise.</returns>
+    public bool CanISeeThisStudent(StudentProfileViewModel? student)
+    {
+        if (!CanISeeStudents())
+        {
+            return false;
+        }
+
+        var viewerGroups = AuthUtils.GetGroups(User);
+
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police) ||
+            viewerGroups.Contains(AuthGroup.FacStaff))
+        {
+            return true;
+        }
+        if (viewerGroups.Contains(AuthGroup.Student))
+        {
+            //TODO: take "KeepPrivate" into account, to enforce FERPA restrictions
+            return (student == null) ? false : student.KeepPrivate != "Y";
+        }
+        return false;
+    }
+
+    /// <summary>Indicates whether the user making the request is authorized to see
     /// profile information for faculty and staff (facstaff).</summary>
     /// <returns>True if the user making the request is authorized to see
     /// profile information for facstaff, and false otherwise.</returns>
@@ -96,7 +124,9 @@ public class ProfilesController(IProfileService profileService,
 
     /// <summary>Restrict info about a student to those fields which are potentially
     /// viewable by the user making the request.  Actual visibility may also depend
-    /// on privacy choices made by the user whose data is being viewed.</summary>
+    /// on privacy choices made by the user whose data is being viewed.  Note that 
+    /// this takes FERPA restrictions into account in determining whether this student
+    /// is visible to the requesting user.</summary>
     /// <returns>Information the requesting user is potentially authorized to see.
     /// Null if the requesting user is never allowed to see data about students.</returns>
     /// 
@@ -110,7 +140,7 @@ public class ProfilesController(IProfileService profileService,
         {
             return student;
         }
-        else if (CanISeeStudents())
+        else if (CanISeeThisStudent(student))
         {
             return (student == null) ? null : (PublicStudentProfileViewModel)student;
         }
