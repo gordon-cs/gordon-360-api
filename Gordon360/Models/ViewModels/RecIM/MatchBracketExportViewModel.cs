@@ -17,6 +17,6 @@ public class MatchBracketExportViewModel
     public string? state { get; set; }
     public DateTime startTime { get; set;}
     public IEnumerable<TeamBracketExportViewModel> participants { get; set; }
-    public int seedIndex { get; set; }
+    public int seedIndex { get; set; } //used to calculate location of match in each round of the bracket
     public bool isLosers { get; set; }
 }

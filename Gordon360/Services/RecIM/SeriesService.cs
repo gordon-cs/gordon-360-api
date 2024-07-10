@@ -1682,12 +1682,6 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
 
     public IEnumerable<MatchBracketExportViewModel> GetSeriesBracketInformation(int seriesID)
     {
-        /**
-         * TODO
-          * 1) Empty matches are not currently made, might have to create dead matches with deleted status
-          * 2) need 'next match ID
-          * 3) status needs to be translated to 'state' enum
-         */
         var match = context.Match
             .Include(m => m.MatchBracket)
             .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
