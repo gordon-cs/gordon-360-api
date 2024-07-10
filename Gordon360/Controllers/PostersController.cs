@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers.Api;
 
 [Route("api/[controller]")]
-public class PostersController(IPosterService posterService) : ControllerBase
+public class PostersController(IPosterService posterService) : GordonControllerBase
 {
     /// <summary>
     /// Gets available posters
