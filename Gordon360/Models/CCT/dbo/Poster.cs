@@ -27,7 +27,7 @@ public partial class Poster
     public string Description { get; set; }
 
     [Required]
-    [StringLength(64)]
+    [StringLength(256)]
     [Unicode(false)]
     public string ImagePath { get; set; }
 
