@@ -194,12 +194,6 @@
             </summary>
             <returns> All buildings</returns>
         </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetBuildings">
-            <summary>
-            Return a list of buildings.
-            </summary>
-            <returns> All buildings</returns>
-        </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetInvolvements">
             <summary>
             Return a list of involvements' descriptions.
@@ -452,57 +446,6 @@
         <member name="M:Gordon360.Controllers.ProfilesController.Get">
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.CanISeeStudents">
-            <summary>Indicates whether the user making the request is authorized to see
-            profile information for students.</summary>
-            <returns>True if the user making the request is authorized to see
-            profile information for students, and false otherwise.</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.CanISeeThisStudent(Gordon360.Models.ViewModels.StudentProfileViewModel)">
-            <summary>Indicates whether the user making the request is authorized to see
-            profile information for this particular student.  Some students are not shown
-            because of FERPA protections.</summary>
-            <returns>True if the user making the request is authorized to see
-            profile information for this student, and false otherwise.</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.CanISeeFacstaff">
-            <summary>Indicates whether the user making the request is authorized to see
-            profile information for faculty and staff (facstaff).</summary>
-            <returns>True if the user making the request is authorized to see
-            profile information for facstaff, and false otherwise.</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.CanISeeAlumni">
-            <summary>Indicates whether the user making the request is authorized to see
-            profile information for alumni.</summary>
-            <returns>True if the user making the request is authorized to see
-            profile information for alumni, and false otherwise.</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.VisibleToMeStudent(Gordon360.Models.ViewModels.StudentProfileViewModel)">
-            <summary>Restrict info about a student to those fields which are potentially
-            viewable by the user making the request.  Actual visibility may also depend
-            on privacy choices made by the user whose data is being viewed.  Note that 
-            this takes FERPA restrictions into account in determining whether this student
-            is visible to the requesting user.</summary>
-            <returns>Information the requesting user is potentially authorized to see.
-            Null if the requesting user is never allowed to see data about students.</returns>
-            
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.VisibleToMeFacstaff(Gordon360.Models.ViewModels.FacultyStaffProfileViewModel)">
-            <summary>Restrict info about a facstaff person to those fields which are potentially
-            viewable by the user making the request.  Actual visibility may also depend
-            on privacy choices made by the user whose data is being viewed.</summary>
-            <returns>Information the requesting user is potentially authorized to see.
-            Null if the requesting user is never allowed to see data about facstaff.</returns>
-            
-        </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.VisibleToMeAlumni(Gordon360.Models.ViewModels.AlumniProfileViewModel)">
-            <summary>Restrict info about an alumni person to those fields which are potentially
-            viewable by the user making the request.  Actual visibility may also depend
-            on privacy choices made by the user whose data is being viewed.</summary>
-            <returns>Information the requesting user is potentially authorized to see.
-            Null if the requesting user is never allowed to see data about alumni.</returns>
-            
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfileAsync(System.String)">
             <summary>Get another user's profile info.  The info returned depends
@@ -1447,12 +1390,24 @@
         </member>
         <member name="T:Gordon360.Services.AccountService">
             <summary>
-            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            Service Class that facilitates data transactions between the AccountsController and 
+            the Account database model.  It also provides methods to enforce access restrictions
+            on user data.
+            
+            The "CanISee..." and "VisibleToMe..." methods encapsulate rules about whether
+            a requesting user can even find a user (CanISee...) and if so, what fields they 
+            are allowed to see (VisibleToMe...).
             </summary>
         </member>
         <member name="M:Gordon360.Services.AccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
-            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            Service Class that facilitates data transactions between the AccountsController and 
+            the Account database model.  It also provides methods to enforce access restrictions
+            on user data.
+            
+            The "CanISee..." and "VisibleToMe..." methods encapsulate rules about whether
+            a requesting user can even find a user (CanISee...) and if so, what fields they 
+            are allowed to see (VisibleToMe...).
             </summary>
         </member>
         <member name="M:Gordon360.Services.AccountService.GetAccountByID(System.String)">
@@ -1481,6 +1436,79 @@
             </summary>
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeStudents(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for students.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for students, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeThisStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for this particular student.  Some students are not shown
+            because of FERPA protections.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <param name="student">Profile data for the student whose information
+            is being requested.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for this student, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for faculty and staff (facstaff).</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for facstaff, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for alumni.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for alumni, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.VisibleToMeStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>Restrict info about a student to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.  Note that 
+            this takes FERPA restrictions into account in determining whether this student
+            is visible to the requesting user.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <param name="student">Profile data for the student whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about students.</returns>
+            
+        </member>
+        <member name="M:Gordon360.Services.AccountService.VisibleToMeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.FacultyStaffProfileViewModel)">
+            <summary>Restrict info about a facstaff person to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <param name="facstaff">Profile data for the facstaff member whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about facstaff.</returns>
+            
+        </member>
+        <member name="M:Gordon360.Services.AccountService.VisibleToMeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
+            <summary>Restrict info about an alumni person to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <param name="alumni">Profile data for the alum whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about alumni.</returns>
+            
         </member>
         <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>

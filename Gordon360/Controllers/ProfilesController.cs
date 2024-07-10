@@ -52,145 +52,6 @@ public class ProfilesController(IProfileService profileService,
         return Ok(profile);
     }
 
-    /// <summary>Indicates whether the user making the request is authorized to see
-    /// profile information for students.</summary>
-    /// <returns>True if the user making the request is authorized to see
-    /// profile information for students, and false otherwise.</returns>
-    public bool CanISeeStudents()
-    {
-        var viewerGroups = AuthUtils.GetGroups(User);
-
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) || 
-            viewerGroups.Contains(AuthGroup.Police) ||
-            viewerGroups.Contains(AuthGroup.FacStaff) ||
-            viewerGroups.Contains(AuthGroup.Student))
-        {
-            //TODO: take "KeepPrivate" into account, to enforce FERPA restrictions
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>Indicates whether the user making the request is authorized to see
-    /// profile information for this particular student.  Some students are not shown
-    /// because of FERPA protections.</summary>
-    /// <returns>True if the user making the request is authorized to see
-    /// profile information for this student, and false otherwise.</returns>
-    public bool CanISeeThisStudent(StudentProfileViewModel? student)
-    {
-        if (!CanISeeStudents())
-        {
-            return false;
-        }
-
-        var viewerGroups = AuthUtils.GetGroups(User);
-
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
-            viewerGroups.Contains(AuthGroup.Police) ||
-            viewerGroups.Contains(AuthGroup.FacStaff))
-        {
-            return true;
-        }
-        if (viewerGroups.Contains(AuthGroup.Student))
-        {
-            //TODO: take "KeepPrivate" into account, to enforce FERPA restrictions
-            return (student == null) ? false : student.KeepPrivate != "Y";
-        }
-        return false;
-    }
-
-    /// <summary>Indicates whether the user making the request is authorized to see
-    /// profile information for faculty and staff (facstaff).</summary>
-    /// <returns>True if the user making the request is authorized to see
-    /// profile information for facstaff, and false otherwise.</returns>
-    public bool CanISeeFacstaff()
-    {
-        return true;
-    }
-
-    /// <summary>Indicates whether the user making the request is authorized to see
-    /// profile information for alumni.</summary>
-    /// <returns>True if the user making the request is authorized to see
-    /// profile information for alumni, and false otherwise.</returns>
-    public bool CanISeeAlumni()
-    {
-        var viewerGroups = AuthUtils.GetGroups(User);
-
-        return viewerGroups.Contains(AuthGroup.SiteAdmin) ||
-               viewerGroups.Contains(AuthGroup.Police) ||
-               viewerGroups.Contains(AuthGroup.FacStaff) ||
-               viewerGroups.Contains(AuthGroup.Alumni);
-    }
-
-    /// <summary>Restrict info about a student to those fields which are potentially
-    /// viewable by the user making the request.  Actual visibility may also depend
-    /// on privacy choices made by the user whose data is being viewed.  Note that 
-    /// this takes FERPA restrictions into account in determining whether this student
-    /// is visible to the requesting user.</summary>
-    /// <returns>Information the requesting user is potentially authorized to see.
-    /// Null if the requesting user is never allowed to see data about students.</returns>
-    /// 
-    public object? VisibleToMeStudent(StudentProfileViewModel? student)
-    {
-        var viewerGroups = AuthUtils.GetGroups(User);
-
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
-            viewerGroups.Contains(AuthGroup.Police) ||
-            viewerGroups.Contains(AuthGroup.FacStaff))
-        {
-            return student;
-        }
-        else if (CanISeeThisStudent(student))
-        {
-            return (student == null) ? null : (PublicStudentProfileViewModel)student;
-        }
-        return null;
-    }
-
-    /// <summary>Restrict info about a facstaff person to those fields which are potentially
-    /// viewable by the user making the request.  Actual visibility may also depend
-    /// on privacy choices made by the user whose data is being viewed.</summary>
-    /// <returns>Information the requesting user is potentially authorized to see.
-    /// Null if the requesting user is never allowed to see data about facstaff.</returns>
-    /// 
-    public object? VisibleToMeFacstaff(FacultyStaffProfileViewModel? facstaff)
-    {
-        var viewerGroups = AuthUtils.GetGroups(User);
-
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
-            viewerGroups.Contains(AuthGroup.Police))
-        {
-            return facstaff;
-        }
-        else if (CanISeeFacstaff())
-        {
-            return (facstaff == null) ? null : (PublicFacultyStaffProfileViewModel)facstaff;
-        }
-        return null;
-    }
-
-    /// <summary>Restrict info about an alumni person to those fields which are potentially
-    /// viewable by the user making the request.  Actual visibility may also depend
-    /// on privacy choices made by the user whose data is being viewed.</summary>
-    /// <returns>Information the requesting user is potentially authorized to see.
-    /// Null if the requesting user is never allowed to see data about alumni.</returns>
-    /// 
-    public object? VisibleToMeAlumni(AlumniProfileViewModel? alumni)
-    {
-        var viewerGroups = AuthUtils.GetGroups(User);
-
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
-            viewerGroups.Contains(AuthGroup.Police))
-        {
-            return alumni;
-        }
-        else if (CanISeeAlumni())
-        {
-            return (alumni == null) ? null : (PublicAlumniProfileViewModel)alumni;
-        }
-        return null;
-    }
-
     /// <summary>Get another user's profile info.  The info returned depends
     /// on the permissions of the current users, who is making the request.</summary>
     /// <param name="username">username of the profile info</param>
@@ -206,9 +67,9 @@ public class ProfilesController(IProfileService profileService,
         AlumniProfileViewModel? _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
-        var student = VisibleToMeStudent(_student);
-        var facstaff = VisibleToMeFacstaff(_facstaff);
-        var alumni = VisibleToMeAlumni(_alumni);
+        var student = accountService.VisibleToMeStudent(viewerGroups, _student);
+        var facstaff = accountService.VisibleToMeFacstaff(viewerGroups, _facstaff);
+        var alumni = accountService.VisibleToMeAlumni(viewerGroups, _alumni);
 
         if (student is null && alumni is null && facstaff is null)
         {

@@ -10,12 +10,19 @@ using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
+using Microsoft.Graph;
 
 namespace Gordon360.Services;
 
 
 /// <summary>
-/// Service Class that facilitates data transactions between the AccountsController and the Account database model.
+/// Service Class that facilitates data transactions between the AccountsController and 
+/// the Account database model.  It also provides methods to enforce access restrictions
+/// on user data.
+/// 
+/// The "CanISee..." and "VisibleToMe..." methods encapsulate rules about whether
+/// a requesting user can even find a user (CanISee...) and if so, what fields they 
+/// are allowed to see (VisibleToMe...).
 /// </summary>
 public class AccountService(CCTContext context) : IAccountService
 {
@@ -25,7 +32,7 @@ public class AccountService(CCTContext context) : IAccountService
     /// </summary>
     /// <param name="id">The person's gordon id</param>
     /// <returns>AccountViewModel if found, null if not found</returns>
-    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+    [StateYourBusiness(operation = Static.Names.Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public AccountViewModel GetAccountByID(string id)
     {
         var account = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
@@ -42,7 +49,7 @@ public class AccountService(CCTContext context) : IAccountService
     /// Fetches all the account records from storage.
     /// </summary>
     /// <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
+    [StateYourBusiness(operation = Static.Names.Operation.READ_ALL, resource = Resource.ACCOUNT)]
     public IEnumerable<AccountViewModel> GetAll()
     {
         return (IEnumerable<AccountViewModel>)context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
@@ -78,6 +85,155 @@ public class AccountService(CCTContext context) : IAccountService
         }
 
         return account;
+    }
+
+    /// <summary>Indicates whether a user making a request is authorized to see
+    /// profile information for students.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for students, and false otherwise.</returns>
+    public bool CanISeeStudents(IEnumerable<AuthGroup> viewerGroups)
+    {
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police) ||
+            viewerGroups.Contains(AuthGroup.FacStaff) ||
+            viewerGroups.Contains(AuthGroup.Student))
+        {
+            //TODO: take "KeepPrivate" into account, to enforce FERPA restrictions
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>Indicates whether a user making a request is authorized to see
+    /// profile information for this particular student.  Some students are not shown
+    /// because of FERPA protections.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <param name="student">Profile data for the student whose information
+    /// is being requested.</param>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for this student, and false otherwise.</returns>
+    public bool CanISeeThisStudent(IEnumerable<AuthGroup> viewerGroups, StudentProfileViewModel? student)
+    {
+        if (!CanISeeStudents(viewerGroups))
+        {
+            return false;
+        }
+
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police) ||
+            viewerGroups.Contains(AuthGroup.FacStaff))
+        {
+            return true;
+        }
+        if (viewerGroups.Contains(AuthGroup.Student))
+        {
+            //TODO: take "KeepPrivate" into account, to enforce FERPA restrictions
+            return (student == null) ? false : student.KeepPrivate != "Y";
+        }
+        return false;
+    }
+
+    /// <summary>Indicates whether a user making a request is authorized to see
+    /// profile information for faculty and staff (facstaff).</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for facstaff, and false otherwise.</returns>
+    public bool CanISeeFacstaff(IEnumerable<AuthGroup> viewerGroups)
+    {
+        return true;
+    }
+
+    /// <summary>Indicates whether a user making a request is authorized to see
+    /// profile information for alumni.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for alumni, and false otherwise.</returns>
+    public bool CanISeeAlumni(IEnumerable<AuthGroup> viewerGroups)
+    {
+        return viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+               viewerGroups.Contains(AuthGroup.Police) ||
+               viewerGroups.Contains(AuthGroup.FacStaff) ||
+               viewerGroups.Contains(AuthGroup.Alumni);
+    }
+
+    /// <summary>Restrict info about a student to those fields which are potentially
+    /// viewable by the user making the request.  Actual visibility may also depend
+    /// on privacy choices made by the user whose data is being viewed.  Note that 
+    /// this takes FERPA restrictions into account in determining whether this student
+    /// is visible to the requesting user.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <param name="student">Profile data for the student whose information
+    /// is being requested.</param>
+    /// <returns>Information the requesting user is potentially authorized to see.
+    /// Null if the requesting user is never allowed to see data about students.</returns>
+    /// 
+    public object? VisibleToMeStudent(IEnumerable<AuthGroup> viewerGroups, StudentProfileViewModel? student)
+    {
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police) ||
+            viewerGroups.Contains(AuthGroup.FacStaff))
+        {
+            return student;
+        }
+        else if (CanISeeThisStudent(viewerGroups, student))
+        {
+            return (student == null) ? null : (PublicStudentProfileViewModel)student;
+        }
+        return null;
+    }
+
+    /// <summary>Restrict info about a facstaff person to those fields which are potentially
+    /// viewable by the user making the request.  Actual visibility may also depend
+    /// on privacy choices made by the user whose data is being viewed.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <param name="facstaff">Profile data for the facstaff member whose information
+    /// is being requested.</param>
+    /// <returns>Information the requesting user is potentially authorized to see.
+    /// Null if the requesting user is never allowed to see data about facstaff.</returns>
+    /// 
+    public object? VisibleToMeFacstaff(IEnumerable<AuthGroup> viewerGroups, FacultyStaffProfileViewModel? facstaff)
+    {
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police))
+        {
+            return facstaff;
+        }
+        else if (CanISeeFacstaff(viewerGroups))
+        {
+            return (facstaff == null) ? null : (PublicFacultyStaffProfileViewModel)facstaff;
+        }
+        return null;
+    }
+
+    /// <summary>Restrict info about an alumni person to those fields which are potentially
+    /// viewable by the user making the request.  Actual visibility may also depend
+    /// on privacy choices made by the user whose data is being viewed.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <param name="alumni">Profile data for the alum whose information
+    /// is being requested.</param>
+    /// <returns>Information the requesting user is potentially authorized to see.
+    /// Null if the requesting user is never allowed to see data about alumni.</returns>
+    /// 
+    public object? VisibleToMeAlumni(IEnumerable<AuthGroup> viewerGroups, AlumniProfileViewModel? alumni)
+    {
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police))
+        {
+            return alumni;
+        }
+        else if (CanISeeAlumni(viewerGroups))
+        {
+            return (alumni == null) ? null : (PublicAlumniProfileViewModel)alumni;
+        }
+        return null;
     }
 
     /// <summary>
