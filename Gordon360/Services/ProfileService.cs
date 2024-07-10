@@ -337,50 +337,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             }
         }
 
-        // if (viewerIsSiteAdmin || viewerIsPolice)
-        // {
-        //     foreach (UserPrivacy_Settings row in privacy)
-        //     {
-        //         if (row.Visibility != "Public")
-        //         {
-        //             MarkAsPrivate(restricted_profile, row.Field);
-        //         }
-        //     }
-        // }
-        // else if (viewerIsFacStaff)
-        // {
-        //     foreach (UserPrivacy_Settings row in privacy)
-        //     {
-        //         if (row.Visibility == "Private")
-        //         {
-        //             if (profileIsFacStaff)
-        //             {
-        //                 MakePrivate(restricted_profile, row.Field);
-        //             }
-        //             else if (profileIsStudent)
-        //             {
-        //                 MarkAsPrivate(restricted_profile, row.Field);
-        //             }
-        //         }
-        //         if (row.Visibility == "FacStaff" && profileIsStudent)
-        //         {
-        //             MarkAsPrivate(restricted_profile, row.Field);
-        //         }
-        //         // no other adjustments necessary for FacStaff viewers
-        //     }
-        // }
-        // else if (viewerIsStudent || viewerIsAlumni)
-        // {
-        //     foreach (UserPrivacy_Settings row in privacy)
-        //     {
-        //         if (row.Visibility != "Public")
-        //         {
-        //             // Remove information from profile
-        //             MakePrivate(restricted_profile, row.Field);
-        //         }
-        //     }
-        // }
-
         return restricted_profile;
     }
 
