@@ -376,7 +376,7 @@ Differences from GoSite:
 
 `api/profiles/clifton/{username}` Get the Clifton Strengths of a user with username `username` as a parameter.
 
-`api/profiles/mailbox-combination` Get the mailbox combination of the current logged in user.
+`api/profiles/mailbox-information` Get the mailbox information, including combination, of the current logged in user.
 
 `api/profiles/Image` Get profile image of the current logged in user. Image is stored in a base 64 string.
 
