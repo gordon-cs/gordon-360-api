@@ -1717,10 +1717,29 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             var j = 0;
             var currentRoundOf = match.ElementAt(i).RoundOf;
  
-            while (j < currentRoundOf/2)
+            while (j < currentRoundOf/2) //roundOf is a term based on number of teams, matches are per 2 teams
             {
                 var m = match.ElementAt(i);
-
+                /**
+                 * Round 0 |  1  |  2  | ... n-1 (finals)
+                 *    0 - 
+                 *        \ _ 0
+                 *        /     \
+                 *    1 -        \ _ 0
+                 *               /     \
+                 *    2 -       /       \
+                 *        \ _ 1           .
+                 *        /      .        .
+                 *  n-1 -        .        .
+                 *  
+                 *  Each bracket has has an associated RoundOf which declares how many matches should exist in each
+                 *  round: roundOf64 = 32 matches, roundOf32 = 16 matches ...
+                 *  Each match in the bracket has an associated index. If there are "missing" indicies, we know a bye 
+                 *  match needs to be filled in. 
+                 *  
+                 *  Check each element (sorted), if the index is incrementing by 1, if not, then we make a pseudo match
+                 *  to be displayed on the UI.
+                 */
                 if (j == match.ElementAt(i).SeedIndex) 
                 {
                     var state = "SCHEDULED";
