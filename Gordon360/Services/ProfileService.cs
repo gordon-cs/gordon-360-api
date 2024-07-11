@@ -16,6 +16,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Enums;
+using System.Security.Permissions;
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.Extensions.ObjectPool;
 
 namespace Gordon360.Services;
 
@@ -379,6 +382,31 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             else
             {
                 user.Visibility = userPrivacy.VisibilityGroup;
+            }
+
+            // Attempt to update the "isMobilePhonePrivate" profile field.
+            // Students have this but facstaff and alumni do not.  This
+            // maintains some measure of backward-compatibility in that
+            // changes made on 360 are pushed to Jenzebar, but changes made
+            // to this profile setting in other places will not make it
+            // into 360.
+            try
+            {
+                if (user is not null && field == "MobilePhone")
+                {
+                    var value = user.Visibility == "Public" ? "N" : "Y";
+                    await context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
+                    // Update value in cached data
+                    var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+                    if (student != null)
+                    {
+                        student.IsMobilePhonePrivate = value == "Y" ? 1 : 0;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
         }
 
