@@ -28,6 +28,7 @@ namespace Gordon360.Models.ViewModels.RecIM;
 //                "name": "Ant"
 //            }
 //    }
+// API Internal calculation viewmodel
 public class MatchBracketExtendedViewModel
 {
     public int MatchID { get; set; }
