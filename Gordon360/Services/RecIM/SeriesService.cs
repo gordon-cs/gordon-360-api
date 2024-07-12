@@ -1718,16 +1718,16 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             {
                 var m = match.ElementAt(i);
                 /**
-                 * Round 0 |  1  |  2  | ... n-1 (finals)
-                 *    0 - 
-                 *        \ _ 0
-                 *        /     \
-                 *    1 -        \ _ 0
-                 *               /     \
-                 *    2 -       /       \
-                 *        \ _ 1           .
-                 *        /      .        .
-                 *  n-1 -        .        .
+                 *     Round 0 |  1  |  2  | ... n-1 (finals)
+                 *        0 - 
+                 *            \ _ 0
+                 *            /     \
+                 *        1 -        \ _ 0
+                 *                   /     \
+                 *        2 -       /       \
+                 *            \ _ 1           .
+                 *            /      .        .
+                 *      n-1 -        .        .
                  *  
                  *  Each bracket has has an associated RoundOf which declares how many matches should exist in each
                  *  round: roundOf64 = 32 matches, roundOf32 = 16 matches ...
@@ -1800,7 +1800,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
 
         //set next matchID
         i = 0;
-        while (i < combinedList.Count() - 1) //finals match has no next match ID
+        while (i < combinedList.Count() - 2) //finals match has no next match ID
         {
             var currentRoundOf = combinedList[i].RoundOf;
             var initial = i;
@@ -1808,6 +1808,55 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             {
                 combinedList[i].NextMatchID = combinedList[initial + j + currentRoundOf / 2].MatchID;
                 combinedList[i + 1].NextMatchID = combinedList[initial + j + currentRoundOf / 2].MatchID;
+
+                //if (i >= combinedList.Count - 1) break;
+
+                //if either are a bye match, fill in the "winning team" of the bye match
+                if (combinedList[i].MatchID < 0 || combinedList[i + 1].MatchID < 0) 
+                {
+                    /**
+                     * 3 conditions
+                     * 1) Match i is the only bye match
+                     *      - Inherit the team in the next match that is not i+1
+                     * 2) Match i+1 is the only bye match
+                     *      - Inherit the team that is in the next match that is not i
+                     * 3) Both are bye matches
+                     *      - Inherit Team at index 0,1 respectively
+                     */
+                 
+                    if (combinedList[i].MatchID < 0 && combinedList[i + 1].MatchID > 0)
+                    {
+                        combinedList[i].Team = combinedList[initial + j + currentRoundOf / 2].Team;
+                    }
+                    else if (combinedList[i + 1].MatchID < 0 && combinedList[i].MatchID > 0)
+                    {
+                        combinedList[i + 1].Team = combinedList[initial + j + currentRoundOf / 2].Team;
+                    }
+                    else
+                    {
+                        combinedList[i].Team = [new TeamBracketExtendedViewModel()
+                        {
+                            TeamID = combinedList[initial + j + currentRoundOf / 2].Team.First().TeamID,
+                            Score = "BYE",
+                            IsWinner = true,
+                            Status = "WALK_OVER",
+                            TeamName = combinedList[initial + j + currentRoundOf / 2].Team.First().TeamName
+                        }];
+
+                        combinedList[i + 1].Team = [new TeamBracketExtendedViewModel()
+                        {
+                            TeamID = combinedList[initial + j + currentRoundOf / 2].Team.Last().TeamID,
+                            Score = "BYE",
+                            IsWinner = true,
+                            Status = "WALK_OVER",
+                            TeamName = combinedList[initial + j + currentRoundOf / 2].Team.Last().TeamName
+                        }];
+                    }
+
+
+                }
+                
+
                 i += 2;
             }
         }
