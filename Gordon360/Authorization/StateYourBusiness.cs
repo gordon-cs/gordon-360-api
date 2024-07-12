@@ -45,6 +45,7 @@ public class StateYourBusiness : ActionFilterAttribute
     private IMembershipService _membershipService;
     private IMembershipRequestService _membershipRequestService;
     private INewsService _newsService;
+    private IPosterService _posterService;
 
     //RecIM services
     private IParticipantService _recimParticipantService;
