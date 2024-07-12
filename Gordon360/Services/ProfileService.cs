@@ -351,10 +351,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
     /// <summary>
-    /// get privacy setting for particular user
+    /// Get profile fields and visibility settings for a specific user
     /// </summary>
     /// <param name="username">AD username</param>
-    /// <returns>all privacy setting of the particular user</returns>
+    /// <returns>List of field and visibility privacy settings for a specific user</returns>
     public IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username)
     {
         var account = accountService.GetAccountByUsername(username);
@@ -366,7 +366,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
     /// <summary>
-    /// privacy setting of some piece of personal data for user.
+    /// Set privacy setting of some piece of personal data for user.
     /// </summary>
     /// <param name="username">AD Username</param>
     /// <param name="userPrivacy">User Privacy Update View Model</param>
