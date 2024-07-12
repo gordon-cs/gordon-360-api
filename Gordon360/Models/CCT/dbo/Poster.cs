@@ -42,6 +42,8 @@ public partial class Poster
 
     public int StatusID { get; set; }
 
+    public int Priority { get; set; }
+
     [ForeignKey("ACT_CDE")]
     [InverseProperty("Poster")]
     public virtual ACT_INFO ACT_CDENavigation { get; set; }
