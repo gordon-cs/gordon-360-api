@@ -625,8 +625,16 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                        .OrderBy(d => d);
     }
 
+    /// <summary>
+    /// Change a ProfileItem's privacy setting to true
+    /// </summary>
+    /// <param name="profile">Combined profile containing element to update</param>
+    /// <param name="field">The profile element to update</param>
     private static void MarkAsPrivate(CombinedProfileViewModel profile, string field)
     {
+        // Profile element will be returned to UI, but should be marked as private
+        // since the authenticated user is only seeing because they are authorized
+        // to do so.
         Type cpvm = new CombinedProfileViewModel().GetType();
         try
         {
@@ -635,15 +643,28 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             profile_item.isPrivate = true;
             prop.SetValue(profile, profile_item);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            // silently ignore
+            System.Diagnostics.Debug.WriteLine(e.Message);
         }
     }
 
+    /// <summary>
+    /// Change a ProfileItem to be null (remove it from the profile)
+    /// </summary>
+    /// <param name="profile">Combined profile containing element to make null</param>
+    /// <param name="field">The profile element to make null</param>
     private static void MakePrivate(CombinedProfileViewModel profile, string field)
     {
-        Type cpvm = new CombinedProfileViewModel().GetType();
-        cpvm.GetProperty(field).SetValue(profile, null);
+        // remove profile element if it should not be sent to the UI
+        try
+        {
+            Type cpvm = new CombinedProfileViewModel().GetType();
+            cpvm.GetProperty(field).SetValue(profile, null);
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Message);
+        }
     }
 }

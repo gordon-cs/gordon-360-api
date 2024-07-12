@@ -637,8 +637,13 @@ public class StateYourBusiness : ActionFilterAttribute
                 }
             case Resource.PROFILE_PRIVACY:
                 {
-                    // current implementation only allows for facstaff implementation. 
-                    return user_groups.Contains(AuthGroup.FacStaff);
+                    // Currently all users can change their privacy settings
+                    // in their profile.  To limit this functionality to
+                    // certian user types, change the return statement to be
+                    // something like:
+                    //      return user_groups.Contains(AuthGroup.FacStaff);
+
+                    return true;
                 }
             case Resource.ACTIVITY_INFO:
                 {

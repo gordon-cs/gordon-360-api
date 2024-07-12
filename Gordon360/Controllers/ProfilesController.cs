@@ -491,7 +491,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpPut]
     [Route("user_privacy")]
-    // [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_PRIVACY)]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_PRIVACY)]
     public async Task<ActionResult<UserPrivacyUpdateViewModel>> UpdateUserPrivacyAsync(UserPrivacyUpdateViewModel userPrivacy)
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
