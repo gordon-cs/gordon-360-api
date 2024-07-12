@@ -2269,6 +2269,20 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.MarkAsPrivate(Gordon360.Models.ViewModels.CombinedProfileViewModel,System.String)">
+            <summary>
+            Change a ProfileItem's privacy setting to true
+            </summary>
+            <param name="profile">Combined profile containing element to update</param>
+            <param name="field">The profile element to update</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.MakePrivate(Gordon360.Models.ViewModels.CombinedProfileViewModel,System.String)">
+            <summary>
+            Change a ProfileItem to be null (remove it from the profile)
+            </summary>
+            <param name="profile">Combined profile containing element to make null</param>
+            <param name="field">The profile element to make null</param>
+        </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>
             this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
