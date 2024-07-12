@@ -1720,15 +1720,16 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                 var m = match.ElementAt(i);
                 /**
                  *     Round 0 |  1  |  2  | ... n-1 (finals)
-                 *        0 - 
-                 *            \ _ 0
-                 *            /     \
-                 *        1 -        \ _ 0
-                 *                   /     \
-                 *        2 -       /       \
-                 *            \ _ 1           .
-                 *            /      .        .
-                 *      n-1 -        .        .
+                 *  s      0 - 
+                 *  e          \ _ 0
+                 *  e          /     \
+                 *  d      1 -        \ _ 0
+                 *                    /     \
+                 *  i      2 -       /       \
+                 *  n          \ _ 1           .
+                 *  d          /      .        .
+                 *  e    n-1 -        .        .
+                 *  x
                  *  
                  *  Each bracket has has an associated RoundOf which declares how many matches should exist in each
                  *  round: roundOf64 = 32 matches, roundOf32 = 16 matches ...
