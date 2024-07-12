@@ -72,6 +72,7 @@ namespace Gordon360.Services
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
         public bool CanISeeStudents(IEnumerable<AuthGroup> viewerGroups);
+        public bool CanISeeStudentSchedule(IEnumerable<AuthGroup> viewerGroups);
         public bool CanISeeThisStudent(IEnumerable<AuthGroup> viewerGroups, StudentProfileViewModel? student);
         public bool CanISeeFacstaff(IEnumerable<AuthGroup> viewerGroups);
         public bool CanISeeAlumni(IEnumerable<AuthGroup> viewerGroups);

@@ -1445,6 +1445,14 @@
             <returns>True if the user making the request is authorized to see
             profile information for students, and false otherwise.</returns>
         </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeStudentSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            course schedule information for students.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            schedule information for students, and false otherwise.</returns>
+        </member>
         <member name="M:Gordon360.Services.AccountService.CanISeeThisStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for this particular student.  Some students are not shown

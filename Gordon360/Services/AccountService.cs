@@ -107,6 +107,18 @@ public class AccountService(CCTContext context) : IAccountService
     }
 
     /// <summary>Indicates whether a user making a request is authorized to see
+    /// course schedule information for students.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <returns>True if the user making the request is authorized to see
+    /// schedule information for students, and false otherwise.</returns>
+    public bool CanISeeStudentSchedule(IEnumerable<AuthGroup> viewerGroups)
+    {
+        return viewerGroups.Contains(AuthGroup.Advisors);
+    }
+
+
+    /// <summary>Indicates whether a user making a request is authorized to see
     /// profile information for this particular student.  Some students are not shown
     /// because of FERPA protections.</summary>
     /// <param name="viewerGroups">The authentication groups associated with the 

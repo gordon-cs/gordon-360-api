@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ScheduleController(IScheduleService scheduleService) : ControllerBase
+public class ScheduleController(IProfileService profileService,
+                                IScheduleService scheduleService,
+                                IAccountService accountService) : GordonControllerBase
 {
 
     /// <summary>
@@ -21,9 +23,24 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
     [Route("{username}/allcourses")]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
-        IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
-        return Ok(result);
-
+        var groups = AuthUtils.GetGroups(User);
+        FacultyStaffProfileViewModel? fac = profileService.GetFacultyStaffProfileByUsername(username);
+        StudentProfileViewModel? student = profileService.GetStudentProfileByUsername(username);
+        AlumniProfileViewModel? alumni = profileService.GetAlumniProfileByUsername(username);
+        // Everyone can see faculty schedules.
+        // Some users can see student and alumni schedules,
+        // but check that they can see this student or alumni.
+        if ((fac != null) ||
+            (accountService.CanISeeStudentSchedule(groups) &&
+               (student != null &&
+                accountService.CanISeeThisStudent(groups, student)) ||
+               (alumni != null &&
+                accountService.CanISeeAlumni(groups))))
+        {
+            IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+            return Ok(result);
+        }
+        return Forbid();
     }
 
     /// <summary>
@@ -35,6 +52,6 @@ public class ScheduleController(IScheduleService scheduleService) : ControllerBa
     public async Task<ActionResult<bool>> GetCanReadStudentSchedules()
     {
         var groups = AuthUtils.GetGroups(User);
-        return groups.Contains(AuthGroup.Advisors);
+        return accountService.CanISeeStudentSchedule(groups);
     }
 }
