@@ -629,7 +629,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         {
             // silently ignore
         }
-        //return 0;
     }
 
     private static void MakePrivate(CombinedProfileViewModel profile, string field)
