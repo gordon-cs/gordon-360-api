@@ -1700,7 +1700,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             .AsEnumerable()
             .OrderBy(mb => mb.RoundNumber)
             .ThenBy(mb => mb.SeedIndex);
-   
+
         /* 
          * fill out each of round level:
          * round of 64 needs 32 matches (64 teams), 32/16...
@@ -1713,8 +1713,9 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         {
             var j = 0;
             var currentRoundOf = match.ElementAt(i).RoundOf;
- 
-            while (j < currentRoundOf/2) //roundOf is a term based on number of teams, matches are per 2 teams
+            var currentRoundNum = match.ElementAt(i).RoundNumber;
+
+            while (j < currentRoundOf / 2) //roundOf is a term based on number of teams, matches are per 2 teams
             {
                 var m = match.ElementAt(i);
                 /**
@@ -1737,7 +1738,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                  *  Check each element (sorted), if the index is incrementing by 1, if not, then we make a pseudo match
                  *  to be displayed on the UI.
                  */
-                if (j == match.ElementAt(i).SeedIndex) 
+                if (j == match.ElementAt(i).SeedIndex)
                 {
                     var state = "SCHEDULED";
                     var teams = context.MatchTeam.Where(mt => mt.MatchID == m.MatchID && mt.StatusID != 0);
@@ -1763,7 +1764,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                             if (Convert.ToInt32(teamList.ElementAt(0).Score) < Convert.ToInt32(teamList.ElementAt(1).Score))
                                 teamList.ElementAt(1).IsWinner = true;
                         }
-                    } 
+                    }
 
                     combinedList.Add(new MatchBracketExtendedViewModel
                     {
@@ -1785,7 +1786,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                     {
                         MatchID = fakeMatchID--,
                         NextMatchID = null,
-                        RoundNumber = m.RoundNumber,
+                        RoundNumber = currentRoundNum,
                         RoundOf = m.RoundOf,
                         State = "WALK_OVER",
                         SeedIndex = j,
@@ -1794,72 +1795,50 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
                         Team = Enumerable.Empty<TeamBracketExtendedViewModel>()
                     });
                 }
-                j++;                    
+                j++;
             }
         }
 
-        //set next matchID
         i = 0;
-        while (i < combinedList.Count() - 2) //finals match has no next match ID
+        foreach (var _match in combinedList)
         {
-            var currentRoundOf = combinedList[i].RoundOf;
-            var initial = i;
-            for (var j = 0; j < currentRoundOf/4; j++)
+            var nextMatchSeedIndex = _match.SeedIndex >> 1;
+            var nextMatch = combinedList.FirstOrDefault(m => m.RoundNumber == _match.RoundNumber + 1 && m.SeedIndex == nextMatchSeedIndex);
+            _match.NextMatchID = nextMatch?.MatchID;
+
+            if (_match.MatchID < 0)
             {
-                combinedList[i].NextMatchID = combinedList[initial + j + currentRoundOf / 2].MatchID;
-                combinedList[i + 1].NextMatchID = combinedList[initial + j + currentRoundOf / 2].MatchID;
-
-                //if (i >= combinedList.Count - 1) break;
-
-                //if either are a bye match, fill in the "winning team" of the bye match
-                if (combinedList[i].MatchID < 0 || combinedList[i + 1].MatchID < 0) 
+                /**
+                 * 2 conditions
+                 * 1) Match i is the only bye match
+                 *      - Inherit the team in the next match that is not i+1
+                 * 2) Both are bye matches
+                 *      - Inherit Team at index 0,1 respectively
+                 */
+                var bye = nextMatch?.Team;
+                if (_match.SeedIndex % 2 == 0)
                 {
-                    /**
-                     * 3 conditions
-                     * 1) Match i is the only bye match
-                     *      - Inherit the team in the next match that is not i+1
-                     * 2) Match i+1 is the only bye match
-                     *      - Inherit the team that is in the next match that is not i
-                     * 3) Both are bye matches
-                     *      - Inherit Team at index 0,1 respectively
-                     */
-                 
-                    if (combinedList[i].MatchID < 0 && combinedList[i + 1].MatchID > 0)
-                    {
-                        combinedList[i].Team = combinedList[initial + j + currentRoundOf / 2].Team;
-                    }
-                    else if (combinedList[i + 1].MatchID < 0 && combinedList[i].MatchID > 0)
-                    {
-                        combinedList[i + 1].Team = combinedList[initial + j + currentRoundOf / 2].Team;
-                    }
-                    else
-                    {
-                        combinedList[i].Team = [new TeamBracketExtendedViewModel()
-                        {
-                            TeamID = combinedList[initial + j + currentRoundOf / 2].Team.First().TeamID,
-                            Score = "BYE",
-                            IsWinner = true,
-                            Status = "WALK_OVER",
-                            TeamName = combinedList[initial + j + currentRoundOf / 2].Team.First().TeamName
-                        }];
-
-                        combinedList[i + 1].Team = [new TeamBracketExtendedViewModel()
-                        {
-                            TeamID = combinedList[initial + j + currentRoundOf / 2].Team.Last().TeamID,
-                            Score = "BYE",
-                            IsWinner = true,
-                            Status = "WALK_OVER",
-                            TeamName = combinedList[initial + j + currentRoundOf / 2].Team.Last().TeamName
-                        }];
-                    }
-
+                    bye = nextMatch?.Team
+                        .Where(t => !combinedList[i+1].Team.Any(t_ => t_.TeamID == t.TeamID));
+                }
+                else
+                {
+                    bye = nextMatch?.Team
+                        .Where(t => !combinedList[i-1].Team.Any(t_ => t_.TeamID == t.TeamID));
 
                 }
-                
-
-                i += 2;
+                combinedList[i].Team = [new TeamBracketExtendedViewModel()
+                {
+                    TeamID = bye.First().TeamID,
+                    Score = "BYE",
+                    IsWinner = true,
+                    Status = "WALK_OVER",
+                    TeamName = bye.First().TeamName
+                }];
             }
+            i++;
         }
+      
 
         //final conversion to exact UI shape (more efficient than letting the UI handle the key/pair changes
         //concious decision to not make all the conversions in the extended viewmodel as it would disrupt our 
