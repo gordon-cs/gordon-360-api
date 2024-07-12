@@ -627,7 +627,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         }
         catch (Exception)
         {
-            // silently fail return -1;
+            // silently ignore
         }
         //return 0;
     }
