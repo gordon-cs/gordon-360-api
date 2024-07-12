@@ -143,7 +143,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
     public SeriesScheduleExtendedViewModel GetSeriesScheduleByID(int seriesID)
     {
         int scheduleID = context.Series.Find(seriesID)?.ScheduleID ?? 0;
-        SeriesScheduleExtendedViewModel res =  context.SeriesSchedule.Find(scheduleID);
+        SeriesScheduleExtendedViewModel res = context.SeriesSchedule.Find(scheduleID);
         res.SurfaceIDs = context.SeriesSurface.Where(ss => ss.SeriesID == seriesID).Select(s => s.SurfaceID);
         return res;
     }
@@ -290,7 +290,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
 
         // add or subtract points to halls/affiliations logic
 
-        if (series.StatusID == 2 && update.StatusID == 3 ) //in-progress -> completed
+        if (series.StatusID == 2 && update.StatusID == 3) //in-progress -> completed
         {
             var calculatedWinner = context.SeriesTeamView
                 .Where(st => st.SeriesID == seriesID)
@@ -474,7 +474,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             "RR" => ScheduleRoundRobinEst(seriesID, request),
             "SE" => ScheduleSingleEliminationEst(seriesID),
             "DE" => ScheduleDoubleEliminationEst(seriesID),
-            "L" =>  ScheduleLadderEst(seriesID, request),
+            "L" => ScheduleLadderEst(seriesID, request),
         _ => null
         };
     }
@@ -575,7 +575,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
             .Select(st => st.TeamID)
             .ToList();
 
-        int numCycles = request.RoundRobinMatchCapacity ?? teams.Count + 1 - teams.Count%2;
+        int numCycles = request.RoundRobinMatchCapacity ?? teams.Count + 1 - teams.Count % 2;
         //algorithm requires odd number of teams
         if (teams.Count() % 2 == 0)
             teams.Add(-1);//-1 is not a valid true team ID thus will act as dummy team
@@ -1633,7 +1633,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
 
         return new EliminationRound
         {
-            TeamsInNextRound = allMatches.Count()/2,
+            TeamsInNextRound = allMatches.Count() / 2,
             NumByeTeams = numByes,
             Match = matches
         };
@@ -1646,7 +1646,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         var matchArr = matchesIDs.ToArray();
         var matchIndexes = new List<int> { 0 };
 
-        for(int i = 0; i < rounds; i++)
+        for (int i = 0; i < rounds; i++)
         {
             var temp = new List<int>();
             var newLength = matchIndexes.Count() * 2 - 1;
@@ -1659,7 +1659,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         }
         var indexArr = matchIndexes.ToArray();
         int j = 0;
-        foreach(int i in indexArr)
+        foreach (int i in indexArr)
         {
             if (matchArr[i] != -1)
             {
@@ -1804,7 +1804,7 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         {
             var currentRoundOf = combinedList[i].RoundOf;
             var initial = i;
-            for (var j = 0; j < currentRoundOf/4; j++)
+            for (var j = 0; j < currentRoundOf / 4; j++)
             {
                 combinedList[i].NextMatchID = combinedList[initial + j + currentRoundOf / 2].MatchID;
                 combinedList[i + 1].NextMatchID = combinedList[initial + j + currentRoundOf / 2].MatchID;
