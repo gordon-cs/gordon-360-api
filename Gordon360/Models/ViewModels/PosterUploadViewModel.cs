@@ -14,6 +14,7 @@ public class PosterUploadViewModel
     public DateTime ExpirationDate { get; set; }
     public string UploaderADUsername { get; set; }
     public int StatusID { get; set; }
+    public int? Priority { get; set; }
 
     public Poster ToPoster()
     {
@@ -27,6 +28,7 @@ public class PosterUploadViewModel
             ExpirationDate = this.ExpirationDate,
             UploaderADUsername = this.UploaderADUsername,
             StatusID = 1, //default status
+            Priority = this.Priority ?? 0
         };
     }
 }

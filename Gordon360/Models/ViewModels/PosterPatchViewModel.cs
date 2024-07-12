@@ -11,5 +11,6 @@ public class PosterPatchViewModel
     public DateTime? VisibleDate { get; set; }
     public DateTime? ExpirationDate { get; set; }
     public string? Status { get; set; }
+    public int? Priority { get; set; }
 
 }

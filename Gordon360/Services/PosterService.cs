@@ -39,7 +39,8 @@ public class PosterService(CCTContext context,
     {
         return GetPosters()
             .Where(p => p.ExpirationDate > DateTime.Now && p.Status == "Visible" && p.VisibleDate < DateTime.Now)
-            .OrderBy(p => p.ExpirationDate);
+            .OrderByDescending(p => p.Priority)
+            .ThenBy(p => p.ExpirationDate);
     }
 
     //currently will only get posters if someone is signed up for a club, can be modified to include all posters but prioritize 

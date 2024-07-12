@@ -13,6 +13,7 @@ public class PosterViewModel
     public DateTime VisibleDate { get; set; }
     public DateTime ExpirationDate { get; set; }
     public string Status { get; set; }
+    public int Priority { get; set; }
 
 
     public static implicit operator PosterViewModel(Poster p)
@@ -26,7 +27,8 @@ public class PosterViewModel
             ImagePath = p.ImagePath,
             VisibleDate = p.VisibleDate,
             ExpirationDate = p.ExpirationDate,
-            Status = p.Status.Status
+            Status = p.Status.Status,
+            Priority = p.Priority
         };
 
         return vm;
