@@ -81,10 +81,20 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     public DateTime GetBirthdate(string username)
     {
         var birthdate = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
+        var impossible_birthdate = new DateTime(1800, 1, 1);
 
         if (birthdate == null)
         {
-            return new DateTime(1800, 1, 1);
+            return impossible_birthdate;
+        }
+
+        // Test accounts always have current date and time as birthday, so
+        // treat this the same as no birthday
+        // Comment this out to see "happy birthday" banner in test accounts
+        var lifetime = DateTime.Now - (DateTime) birthdate;
+        if (lifetime.Days < 1) // no valid user was born within the last 24 hours
+        {
+            return impossible_birthdate;
         }
 
         try
