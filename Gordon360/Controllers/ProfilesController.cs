@@ -52,7 +52,8 @@ public class ProfilesController(IProfileService profileService,
         return Ok(profile);
     }
 
-    /// <summary>Get public profile info for a user</summary>
+    /// <summary>Get another user's profile info.  The info returned depends
+    /// on the permissions of the current users, who is making the request.</summary>
     /// <param name="username">username of the profile info</param>
     /// <returns></returns>
     [HttpGet]
@@ -61,52 +62,21 @@ public class ProfilesController(IProfileService profileService,
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        var _student = profileService.GetStudentProfileByUsername(username);
-        var _faculty = profileService.GetFacultyStaffProfileByUsername(username);
-        var _alumni = profileService.GetAlumniProfileByUsername(username);
+        StudentProfileViewModel? _student = profileService.GetStudentProfileByUsername(username);
+        FacultyStaffProfileViewModel? _facstaff = profileService.GetFacultyStaffProfileByUsername(username);
+        AlumniProfileViewModel? _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
-        object? student = null;
-        object? faculty = null;
-        object? alumni = null;
+        var student = accountService.VisibleToMeStudent(viewerGroups, _student);
+        var facstaff = accountService.VisibleToMeFacstaff(viewerGroups, _facstaff);
+        var alumni = accountService.VisibleToMeAlumni(viewerGroups, _alumni);
 
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
-        {
-            student = _student;
-            faculty = _faculty;
-            alumni = _alumni;
-        }
-        else if (viewerGroups.Contains(AuthGroup.FacStaff))
-        {
-            student = _student;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
-        }
-        else if (viewerGroups.Contains(AuthGroup.Student))
-        {
-            student = _student == null ? null : (PublicStudentProfileViewModel)_student;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            // If this student is also in Alumni AuthGroup, then s/he can see alumni's public profile; if not, return null.
-            alumni = (_alumni == null) ? null :
-                        viewerGroups.Contains(AuthGroup.Alumni) ?
-                            (PublicAlumniProfileViewModel)_alumni : null;
-        }
-        else if (viewerGroups.Contains(AuthGroup.Alumni))
-        {
-            student = null;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
-        }
-
-        if (student is null && alumni is null && faculty is null)
+        if (student is null && alumni is null && facstaff is null)
         {
             return Ok(null);
         }
-
-        var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
-
+        var profile = profileService.ComposeProfile(student, alumni, facstaff, _customInfo);
         var visible_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
-
         return Ok(visible_profile);
     }
 

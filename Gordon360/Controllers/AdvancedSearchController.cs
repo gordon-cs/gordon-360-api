@@ -125,26 +125,11 @@ public class AdvancedSearchController(CCTContext context) : GordonControllerBase
     /// <returns> All buildings</returns>
     [HttpGet]
     [Route("building")]
+    [Route("buildings")]
     public async Task<ActionResult<IEnumerable<BuildingViewModel>>> GetBuildingsAsync([FromServices] webSQLContext webSQLContext)
     {
         var buildings = await webSQLContext.Procedures.account_list_buildingsAsync();
         return Ok(buildings.Select(b => new BuildingViewModel(b.BLDG_CDE, b.BUILDING_DESC)));
-    }
-
-    /// <summary>
-    /// Return a list of buildings.
-    /// </summary>
-    /// <returns> All buildings</returns>
-    [Obsolete("Use GetBuildingsAsync that gives structured building data")]
-    [HttpGet]
-    [Route("buildings")]
-    public ActionResult<IEnumerable<string>> GetBuildings()
-    {
-        var buildings = context.FacStaff.Select(fs => fs.BuildingDescription)
-                               .Distinct()
-                               .Where(d => d != null)
-                               .OrderBy(d => d);
-        return Ok(buildings);
     }
 
     /// <summary>
