@@ -143,7 +143,7 @@ public class AccountService(CCTContext context) : IAccountService
         if (viewerGroups.Contains(AuthGroup.Student))
         {
             //TODO: take "KeepPrivate" into account, to enforce FERPA restrictions
-            return (student == null) ? false : student.KeepPrivate != "Y";
+            return (student == null) ? false : student.KeepPrivate != "Y" && student.KeepPrivate != "P";
         }
         return false;
     }
