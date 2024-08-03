@@ -1317,6 +1317,14 @@
             From account table
             </summary>
         </member>
+        <member name="M:Gordon360.Options.ValidateAzureAdOptions.Validate(System.String,Gordon360.Options.AzureAdOptions)">
+            <summary>
+            Validates a specific named options instance (or all when <paramref name="name"/> is <see langword="null" />).
+            </summary>
+            <param name="name">The name of the options instance being validated.</param>
+            <param name="options">The options instance.</param>
+            <returns>Validation result.</returns>
+        </member>
         <member name="M:Gordon360.Options.ValidateBonAppetitOptions.Validate(System.String,Gordon360.Options.BonAppetitOptions)">
             <summary>
             Validates a specific named options instance (or all when <paramref name="name"/> is <see langword="null" />).

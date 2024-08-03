@@ -26,6 +26,8 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
+    builder.Services.Add360Options();
+
     builder.Services.AddSerilog((services, lc) => lc
         .ReadFrom.Configuration(builder.Configuration)
         .ReadFrom.Services(services)
@@ -41,7 +43,7 @@ try
 
     builder.Services.AddEndpointsApiExplorer();
 
-    var azureConfig = builder.Configuration.GetSection("AzureAd").Get<AzureAdConfig>();
+    var azureOptions = builder.Configuration.GetSection("AzureAd").Get<AzureAdOptions>();
 
     builder.Services.AddSwaggerGen(c =>
     {
@@ -52,11 +54,11 @@ try
             {
                 AuthorizationCode = new OpenApiOAuthFlow()
                 {
-                    AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{azureConfig.TenantId}/oauth2/v2.0/authorize"),
-                    TokenUrl = new Uri($"https://login.microsoftonline.com/{azureConfig.TenantId}/oauth2/v2.0/token"),
+                    AuthorizationUrl = new Uri($"https://login.microsoftonline.com/{azureOptions.TenantId}/oauth2/v2.0/authorize"),
+                    TokenUrl = new Uri($"https://login.microsoftonline.com/{azureOptions.TenantId}/oauth2/v2.0/token"),
                     Scopes = new Dictionary<string, string> {
                 {
-                    $"{azureConfig.Audience}/access_as_user",
+                    $"{azureOptions.Audience}/access_as_user",
                     "Access 360 as you."
                 }
             }
@@ -92,7 +94,6 @@ try
         options.UseSqlServer(builder.Configuration.GetConnectionString("webSQL"))
     );
 
-    builder.Services.Add360Options();
     builder.Services.Add360Services();
     builder.Services.AddHostedService<EventCacheRefreshService>();
     builder.Services.AddScoped<ServerUtils, ServerUtils>();
@@ -106,8 +107,8 @@ try
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.OAuthClientId(azureConfig.ClientId);
-        c.OAuthScopes($"{azureConfig.Audience}/access_as_user");
+        c.OAuthClientId(azureOptions.ClientId);
+        c.OAuthScopes($"{azureOptions.Audience}/access_as_user");
         c.OAuthUsePkce();
     });
 

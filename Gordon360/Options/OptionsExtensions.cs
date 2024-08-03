@@ -8,6 +8,11 @@ public static class OptionsExtensions
 {
     public static IServiceCollection Add360Options(this IServiceCollection services)
     {
+        services.AddSingleton<IValidateOptions<AzureAdOptions>, ValidateAzureAdOptions>();
+        services.AddOptions<AzureAdOptions>()
+            .BindConfiguration(AzureAdOptions.AzureAd)
+            .ValidateOnStart();
+
         services.AddSingleton<IValidateOptions<BonAppetitOptions>, ValidateBonAppetitOptions>();
         services.AddOptions<BonAppetitOptions>()
             .BindConfiguration(BonAppetitOptions.BonAppetit)
