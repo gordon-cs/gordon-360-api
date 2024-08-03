@@ -37,7 +37,10 @@ try
     {
         options.OutputFormatters.RemoveType<StringOutputFormatter>(); // Return strings as application/json instead of text/plain
         options.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>(); // Return null as 200 Ok null instead of 204 No Content
-    }).AddNewtonsoftJson(options => options.UseMemberCasing());
+    }).AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Prevent System.Text.Json converting PascalCase to camelCase when serializing objects to JSON in endpoints responses
+    });
 
     builder.Services.AddEndpointsApiExplorer();
 
