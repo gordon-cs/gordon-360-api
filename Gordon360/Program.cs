@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.MyGordon.Context;
 using Gordon360.Models.webSQL.Context;
+using Gordon360.Options;
 using Gordon360.Services;
 using Gordon360.Utilities;
 using Microsoft.AspNetCore.Builder;
@@ -13,7 +14,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Formatting.Compact;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -92,6 +92,7 @@ try
         options.UseSqlServer(builder.Configuration.GetConnectionString("webSQL"))
     );
 
+    builder.Services.Add360Options();
     builder.Services.Add360Services();
     builder.Services.AddHostedService<EventCacheRefreshService>();
     builder.Services.AddScoped<ServerUtils, ServerUtils>();

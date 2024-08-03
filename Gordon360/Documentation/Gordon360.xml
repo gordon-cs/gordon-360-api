@@ -1317,6 +1317,14 @@
             From account table
             </summary>
         </member>
+        <member name="M:Gordon360.Options.ValidateBonAppetitOptions.Validate(System.String,Gordon360.Options.BonAppetitOptions)">
+            <summary>
+            Validates a specific named options instance (or all when <paramref name="name"/> is <see langword="null" />).
+            </summary>
+            <param name="name">The name of the options instance being validated.</param>
+            <param name="options">The options instance.</param>
+            <returns>Validation result.</returns>
+        </member>
         <member name="T:Gordon360.Services.AcademicCheckInService">
             <summary>
             Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
@@ -1597,7 +1605,12 @@
             Service that allows for meal control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.DiningService.GetBalance(System.Int32,System.String)">
+        <member name="M:Gordon360.Services.DiningService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Options.IOptions{Gordon360.Options.BonAppetitOptions})">
+            <summary>
+            Service that allows for meal control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.DiningService.GetBalanceAsync(System.Int32,System.String)">
             <summary>
             
             </summary>
@@ -1605,7 +1618,7 @@
             <param name="planID"></param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Services.DiningService.GetDiningPlanInfo(System.Int32,System.String)">
+        <member name="M:Gordon360.Services.DiningService.GetDiningPlanInfoAsync(System.Int32,System.String)">
             <summary>
             Get information about the selected plan for the student user
             </summary>

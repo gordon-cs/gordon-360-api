@@ -1,15 +1,17 @@
 ﻿using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Data;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Nodes;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Gordon360.Options;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -19,103 +21,45 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service that allows for meal control
 /// </summary>
-public class DiningService : IDiningService
+public class DiningService(CCTContext context, IOptions<BonAppetitOptions> options) : IDiningService
 {
-    private CCTContext _context;
-    private static string issuerID;
-    private static string applicationId;
-    private static string secret;
-    //private static string issuerID = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitIssuerID"];
-    //private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
-    //private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
-
-    public DiningService(CCTContext context, IConfiguration config)
-    {
-        _context = context;
-        issuerID = config["BonAppetit:IssuerID"];
-        applicationId = config["BonAppetit:ApplicationID"];
-        secret = config["BonAppetit:Secret"];
-    }
-
-    private static string getTimestamp()
-    {
-        DateTime baseDate = new DateTime(1970, 1, 1, 0, 0, 0);
-        TimeSpan diff = DateTime.UtcNow - baseDate;
-        Int64 millis = Convert.ToInt64(diff.TotalMilliseconds);
-        return millis.ToString();
-    }
-
-    private static string getHash(int cardHolderID, string planID, string timestamp)
-    {
-        string hashstring = (secret + issuerID + cardHolderID.ToString() + planID +
-        applicationId + timestamp);
-
-        SHA1 sha1 = SHA1.Create();
-        var hash = sha1.ComputeHash(Encoding.ASCII.GetBytes(hashstring));
-        var sb = new StringBuilder(hash.Length * 2);
-
-        foreach (byte b in hash)
-        {
-            // can be "x2" if you want lowercase
-            sb.Append(b.ToString("x2"));
-        }
-        Console.WriteLine(timestamp);
-        Console.WriteLine(sb.ToString());
-        return sb.ToString();
-    }
-
+    private BonAppetitOptions Options = options.Value;
+    
     /// <summary>
     /// 
     /// </summary>
     /// <param name="cardHolderID"></param>
     /// <param name="planID"></param>
     /// <returns></returns>
-    public static string GetBalance(int cardHolderID, string planID)
+    public async Task<string> GetBalanceAsync(int cardHolderID, string planID)
     {
         try
         {
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            ServicePointManager.Expect100Continue = false;
+            HttpRequestMessage request = new(HttpMethod.Post, "https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr")
+            {
+                Content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    ["issuerId"] = Options.IssuerID.ToString(),
+                    ["cardholderId"] = cardHolderID.ToString(),
+                    ["planId"] = planID,
+                    ["applicationId"] = Options.ApplicationID,
+                    ["valueCmd"] = "bal",
+                    ["value"] = "0",
+                    ["timestamp"] = timestamp.ToString(),
+                    ["hash"] = GetHash(cardHolderID, planID, timestamp.ToString()),
+                })
+            };
 
-            WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
+            using var client = new HttpClient();
+            var response = await client.SendAsync(request);
 
-            request.Method = "POST";
+            var responseString = await response.Content.ReadAsStringAsync();
+            JsonNode? json = JsonNode.Parse(responseString);
+            string? balance = json?["balance"]?.GetValue<string>();
 
-            string timestamp = getTimestamp();
-
-            // Create POST data and convert it to a byte array.  
-            string postData = $"issuerId={issuerID}&cardholderId={cardHolderID}&planId={planID}&applicationId={applicationId}&valueCmd=bal&value=0&timestamp={timestamp}&hash={getHash(cardHolderID, planID, timestamp)}";
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = byteArray.Length;
-
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
-
-            // Get the response.  
-            WebResponse response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
-            // Get the stream containing content returned by the server.  
-            dataStream = response.GetResponseStream();
-
-            // Read the content. 
-            StreamReader reader = new StreamReader(dataStream);
-            string responseFromServer = reader.ReadToEnd();
-            JObject json = JObject.Parse(responseFromServer);
-            string balance = json["balance"].ToString();
-
-            // Display the content.  
-            Console.WriteLine(responseFromServer);
-            Console.WriteLine("Balance: " + balance);
-
-            // Clean up the streams.  
-            reader.Close();
-            dataStream.Close();
-            response.Close();
-            return balance;
+            return balance ?? "0";
         }
         catch
         {
@@ -129,18 +73,21 @@ public class DiningService : IDiningService
     /// <param name="cardHolderID">Student's Gordon ID</param>
     /// <param name="sessionCode">Current Session Code</param>
     /// <returns></returns>
-    public DiningViewModel GetDiningPlanInfo(int cardHolderID, string sessionCode)
+    public async Task<DiningViewModel> GetDiningPlanInfoAsync(int cardHolderID, string sessionCode)
     {
-        var result = _context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode)
-            .Select(d => new DiningTableViewModel
+        List<DiningTableViewModel> result = [];
+        foreach (var plan in context.DiningInfo.Where(d => d.StudentId == cardHolderID && d.SessionCode == sessionCode))
+        {
+            result.Add(new DiningTableViewModel
             {
-                ChoiceDescription = d.ChoiceDescription,
-                PlanDescriptions = d.PlanDescriptions,
-                PlanId = d.PlanId,
-                PlanType = d.PlanType,
-                InitialBalance = d.InitialBalance ?? 0,
-                CurrentBalance = GetBalance(cardHolderID, d.PlanId)
+                ChoiceDescription = plan.ChoiceDescription,
+                PlanDescriptions = plan.PlanDescriptions,
+                PlanId = plan.PlanId,
+                PlanType = plan.PlanType,
+                InitialBalance = plan.InitialBalance ?? 0,
+                CurrentBalance = await GetBalanceAsync(cardHolderID, plan.PlanId)
             });
+        }
 
         if (result == null)
         {
@@ -148,5 +95,17 @@ public class DiningService : IDiningService
         }
 
         return new DiningViewModel(result);
+    }
+
+    private string GetHash(int cardHolderID, string planID, string timestamp)
+    {
+        string hashstring = Options.Secret
+                            + Options.IssuerID
+                            + cardHolderID.ToString()
+                            + planID
+                            + Options.ApplicationID
+                            + timestamp;
+        byte[] hash = SHA1.HashData(Encoding.ASCII.GetBytes(hashstring));
+        return Convert.ToHexString(hash);
     }
 }

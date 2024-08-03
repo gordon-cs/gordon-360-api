@@ -1,105 +1,108 @@
-﻿namespace Gordon360.Models.ViewModels;
+﻿using System.Text.Json.Serialization;
 
-public record ProfileViewModel(
+namespace Gordon360.Models.ViewModels;
+
+public record ProfileViewModel
+{
     // All Profiles
-    string ID,
-    string Title,
-    string FirstName,
-    string MiddleName,
-    string LastName,
-    string Suffix,
-    string MaidenName,
-    string NickName,
-    string Email,
-    string Gender,
-    string HomeStreet1,
-    string HomeStreet2,
-    string HomeCity,
-    string HomeState,
-    string HomePostalCode,
-    string HomeCountry,
-    string HomePhone,
-    string HomeFax,
-    string AD_Username,
-    int? show_pic,
-    int? preferred_photo,
-    string Country,
-    string Barcode,
-    string Facebook,
-    string Twitter,
-    string Instagram,
-    string LinkedIn,
-    string Handshake,
-    string Calendar,
+    public string ID { get; set; }
+    public string Title { get; set; }
+    public string FirstName { get; set; }
+    public string MiddleName { get; set; }
+    public string LastName { get; set; }
+    public string Suffix { get; set; }
+    public string MaidenName { get; set; }
+    public string NickName { get; set; }
+    public string Email { get; set; }
+    public string Gender { get; set; }
+    public string HomeStreet1 { get; set; }
+    public string HomeStreet2 { get; set; }
+    public string HomeCity { get; set; }
+    public string HomeState { get; set; }
+    public string HomePostalCode { get; set; }
+    public string HomeCountry { get; set; }
+    public string HomePhone { get; set; }
+    public string HomeFax { get; set; }
+    public string AD_Username { get; set; }
+    public int? show_pic { get; set; }
+    public int? preferred_photo { get; set; }
+    public string Country { get; set; }
+    public string Barcode { get; set; }
+    public string Facebook { get; set; }
+    public string Twitter { get; set; }
+    public string Instagram { get; set; }
+    public string LinkedIn { get; set; }
+    public string Handshake { get; set; }
+    public string Calendar { get; set; }
 
     // Student Only
-    string OnOffCampus,
-    string OffCampusStreet1,
-    string OffCampusStreet2,
-    string OffCampusCity,
-    string OffCampusState,
-    string OffCampusPostalCode,
-    string OffCampusCountry,
-    string OffCampusPhone,
-    string OffCampusFax,
-    string Major3,
-    string Major3Description,
-    string Minor1,
-    string Minor1Description,
-    string Minor2,
-    string Minor2Description,
-    string Minor3,
-    string Minor3Description,
-    string GradDate,
-    string PlannedGradYear,
-    string MobilePhone,
-    bool IsMobilePhonePrivate,
-    int? ChapelRequired,
-    int? ChapelAttended,
-    string Cohort,
-    string Class,
-    string AdvisorIDs,
-    string Married,
-    string Commuter,
+    public string OnOffCampus { get; set; }
+    public string OffCampusStreet1 { get; set; }
+    public string OffCampusStreet2 { get; set; }
+    public string OffCampusCity { get; set; }
+    public string OffCampusState { get; set; }
+    public string OffCampusPostalCode { get; set; }
+    public string OffCampusCountry { get; set; }
+    public string OffCampusPhone { get; set; }
+    public string OffCampusFax { get; set; }
+    public string Major3 { get; set; }
+    public string Major3Description { get; set; }
+    public string Minor1 { get; set; }
+    public string Minor1Description { get; set; }
+    public string Minor2 { get; set; }
+    public string Minor2Description { get; set; }
+    public string Minor3 { get; set; }
+    public string Minor3Description { get; set; }
+    public string GradDate { get; set; }
+    public string PlannedGradYear { get; set; }
+    public string MobilePhone { get; set; }
+    public bool IsMobilePhonePrivate { get; set; }
+    public int? ChapelRequired { get; set; }
+    public int? ChapelAttended { get; set; }
+    public string Cohort { get; set; }
+    public string Class { get; set; }
+    public string AdvisorIDs { get; set; }
+    public string Married { get; set; }
+    public string Commuter { get; set; }
 
     // Alumni Only
-    string? WebUpdate,
-    string HomeEmail,
-    string MaritalStatus,
-    string College,
-    string ClassYear,
-    string? PreferredClassYear,
-    string ShareName,
-    string? ShareAddress,
+    public int? WebUpdate { get; set; }
+    public string HomeEmail { get; set; }
+    public string MaritalStatus { get; set; }
+    public string College { get; set; }
+    public string ClassYear { get; set; }
+    public string? PreferredClassYear { get; set; }
+    public string ShareName { get; set; }
+    public string? ShareAddress { get; set; }
 
     // Student And Alumni Only
-    string Major,
-    string Major1Description,
-    string Major2,
-    string Major2Description,
-    string grad_student,
+    public string Major { get; set; }
+    public string Major1Description { get; set; }
+    public string Major2 { get; set; }
+    public string Major2Description { get; set; }
+    public string grad_student { get; set; }
 
     // FacStaff Only
-    string? OnCampusDepartment,
-    string? Type,
-    string? office_hours,
-    string Dept,
-    string Mail_Description,
+    public string? OnCampusDepartment { get; set; }
+    public string? Type { get; set; }
+    public string? office_hours { get; set; }
+    public string Dept { get; set; }
+    public string Mail_Description { get; set; }
 
     // FacStaff and Alumni Only
-    string JobTitle,
-    string SpouseName,
+    public string JobTitle { get; set; }
+    public string SpouseName { get; set; }
 
     // FacStaff and Student Only
-    string BuildingDescription,
-    string Mail_Location,
-    string OnCampusBuilding,
-    string OnCampusRoom,
-    string OnCampusPhone,
-    string OnCampusPrivatePhone,
-    string OnCampusFax,
-    string KeepPrivate,
+    public string BuildingDescription { get; set; }
+    public string Mail_Location { get; set; }
+    public string OnCampusBuilding { get; set; }
+    public string OnCampusRoom { get; set; }
+    public string OnCampusPhone { get; set; }
+    public string OnCampusPrivatePhone { get; set; }
+    public string OnCampusFax { get; set; }
+    public string KeepPrivate { get; set; }
 
     // ProfileViewModel Only
-    string PersonType
-    );
+    public string PersonType { get; set; }
+}
