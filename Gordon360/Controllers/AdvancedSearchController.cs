@@ -57,53 +57,6 @@ public class AdvancedSearchController(CCTContext context) : GordonControllerBase
     }
 
     /// <summary>
-    /// Return a list states.
-    /// </summary>
-    ///
-    /// <remarks>DEPRECATED: Use AddressController instead</remarks>
-    /// <returns> All states</returns>
-    [HttpGet]
-    [Route("states")]
-    public ActionResult<IEnumerable<string>> DEPRECATED_GetStates()
-    {
-        var studentStates = context.Student.Select(s => s.HomeState).AsEnumerable();
-        var facStaffStates = context.FacStaff.Select(fs => fs.HomeState).AsEnumerable();
-        var alumniStates = context.Alumni.Select(a => a.HomeState).AsEnumerable();
-
-        var states = studentStates
-                              .Union(facStaffStates)
-                              .Union(alumniStates)
-                              .Distinct()
-                              .Where(s => s != null)
-                              .OrderBy(s => s);
-        return Ok(states);
-    }
-
-
-    /// <summary>
-    /// Return a list countries.
-    /// </summary>
-    /// 
-    /// <remarks>DEPRECATED: Use AddressController instead</remarks>
-    /// <returns> All countries</returns>
-    [HttpGet]
-    [Route("countries")]
-    public ActionResult<IEnumerable<string>> DEPREACTED_GetCountries()
-    {
-        var studentCountries = context.Student.Select(s => s.Country).AsEnumerable();
-        var facstaffCountries = context.FacStaff.Select(fs => fs.Country).AsEnumerable();
-        var alumniCountries = context.Alumni.Select(a => a.Country).AsEnumerable();
-
-        var countries = studentCountries
-                              .Union(facstaffCountries)
-                              .Union(alumniCountries)
-                              .Distinct()
-                              .Where(s => s != null)
-                              .OrderBy(s => s);
-        return Ok(countries);
-    }
-
-    /// <summary>
     /// Return a list departments.
     /// </summary>
     /// <returns> All departments</returns>
@@ -129,22 +82,6 @@ public class AdvancedSearchController(CCTContext context) : GordonControllerBase
     {
         var buildings = await webSQLContext.Procedures.account_list_buildingsAsync();
         return Ok(buildings.Select(b => new BuildingViewModel(b.BLDG_CDE, b.BUILDING_DESC)));
-    }
-
-    /// <summary>
-    /// Return a list of buildings.
-    /// </summary>
-    /// <returns> All buildings</returns>
-    [Obsolete("Use GetBuildingsAsync that gives structured building data")]
-    [HttpGet]
-    [Route("buildings")]
-    public ActionResult<IEnumerable<string>> GetBuildings()
-    {
-        var buildings = context.FacStaff.Select(fs => fs.BuildingDescription)
-                               .Distinct()
-                               .Where(d => d != null)
-                               .OrderBy(d => d);
-        return Ok(buildings);
     }
 
     /// <summary>

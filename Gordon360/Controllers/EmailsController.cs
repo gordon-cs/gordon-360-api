@@ -21,17 +21,6 @@ public class EmailsController(IEmailService emailService) : GordonControllerBase
         return Ok(result);
     }
 
-    [HttpGet]
-    [Route("activity/{activityCode}")]
-    [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.EMAILS_BY_ACTIVITY)]
-    [Obsolete("Use the new route that accepts a list of participation types instead")]
-    public ActionResult<IEnumerable<EmailViewModel>> DEPRECATED_GetEmailsForActivity(string activityCode, string? sessionCode, string? participationType)
-    {
-        var result = emailService.GetEmailsForActivity(activityCode, sessionCode, new List<string> { participationType ?? "" });
-
-        return Ok(result);
-    }
-
     [HttpPut]
     [Route("")]
     public ActionResult SendEmails([FromBody] EmailContentViewModel email)

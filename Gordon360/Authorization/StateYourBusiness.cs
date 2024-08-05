@@ -201,18 +201,6 @@ public class StateYourBusiness : ActionFilterAttribute
 
         switch (resource)
         {
-            case Resource.MEMBERSHIP_BY_ACTIVITY:
-                {
-                    // Only people that are part of the activity should be able to see members
-                    if (context.ActionArguments["activityCode"] is string activityCode)
-                    {
-                        var activityMembers = _membershipService.GetMemberships(activityCode: activityCode, username: user_name);
-                        var is_personAMember = activityMembers.Any(x => x.Participation != Participation.Guest.GetCode());
-                        return is_personAMember;
-                    }
-                    return false;
-                }
-
             case Resource.MEMBERSHIP:
                 {
                     // Everyone can read a specific user's memberships
@@ -278,16 +266,6 @@ public class StateYourBusiness : ActionFilterAttribute
                                 Participation.GroupAdmin.GetCode(),
                                 Participation.Advisor.GetCode()
                             };
-
-                    // Anyone can view group-admin and advisor emails
-                    // TODO: Remove once Obsolete EmailsController routes are gone
-                    if (context.ActionArguments.TryGetValue("participationType", out var participationType)
-                        && participationType is string participation
-                        && participation.In(publicParticipantTypes.ToArray())
-                        )
-                    {
-                        return true;
-                    }
 
                     // Anyone can view group-admin and advisor emails
                     if (context.ActionArguments.TryGetValue("participationTypes", out var p)

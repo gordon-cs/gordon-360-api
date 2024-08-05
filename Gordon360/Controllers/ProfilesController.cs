@@ -125,28 +125,6 @@ public class ProfilesController(IProfileService profileService,
     /// <param name="username"> The username for which to retrieve info </param>
     /// <returns> Clifton strengths of the given user. </returns>
     [HttpGet]
-    [Route("clifton/{username}")]
-    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-    public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
-    {
-        var id = accountService.GetAccountByUsername(username).GordonID;
-        var strengths = profileService.GetCliftonStrengths(int.Parse(id));
-        if (strengths is null)
-        {
-            return Ok(Array.Empty<string>());
-        }
-
-        var authenticatedUserName = AuthUtils.GetUsername(User);
-        return strengths.Private is false || authenticatedUserName.EqualsIgnoreCase(username)
-            ? Ok(strengths.Themes)
-            : Ok(Array.Empty<string>());
-    }
-
-
-    /// <summary> Gets the clifton strengths of a particular user </summary>
-    /// <param name="username"> The username for which to retrieve info </param>
-    /// <returns> Clifton strengths of the given user. </returns>
-    [HttpGet]
     [Route("{username}/clifton")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
     public ActionResult<CliftonStrengthsViewModel?> GetCliftonStrengths(string username)
@@ -549,41 +527,6 @@ public class ProfilesController(IProfileService profileService,
             // The 360 default profile image path is a URL, so we have to download it over an HTTP connection
             return await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]);
         }
-    }
-
-    /// <summary>
-    /// Fetch memberships that a specific student has been a part of
-    /// @TODO: Move security checks to state your business? Or consider changing implementation here
-    /// </summary>
-    /// <param name="username">The Student Username</param>
-    /// <param name="sessionCode">Optional session code or "current". If passed, only memberships from that session will be included. </param>
-    /// <param name="participationTypes">Optional participation type. If passed, only memberships of those participation types will be inlcuded</param>
-    /// <returns>The membership information that the student is a part of</returns>
-    [Route("{username}/memberships")]
-    [HttpGet]
-    [Obsolete("Use /api/memberships with username query param instead")]
-    public ActionResult<List<MembershipView>> GetMembershipsByUser(string username, string? sessionCode = null, [FromQuery] List<string>? participationTypes = null)
-    {
-        var memberships = membershipService.GetMemberships(
-            username: username,
-            sessionCode: sessionCode,
-            participationTypes: participationTypes);
-
-        var authenticatedUserUsername = AuthUtils.GetUsername(User);
-        var viewerGroups = AuthUtils.GetGroups(User);
-
-        // User can see all their own memberships. SiteAdmin and Police can see all of anyone's memberships
-        if (username == authenticatedUserUsername
-            || viewerGroups.Contains(AuthGroup.SiteAdmin)
-            || viewerGroups.Contains(AuthGroup.Police)
-            )
-        {
-            return Ok(memberships);
-        }
-
-        var visibleMemberships = membershipService.RemovePrivateMemberships(memberships, authenticatedUserUsername);
-
-        return Ok(visibleMemberships);
     }
 
     /// <summary>
