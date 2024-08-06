@@ -6,6 +6,7 @@ public static class Resource
 {
     public const string EMERGENCY_CONTACT = "A new emergency contact resource";
     public const string PROFILE = "A new profile resource";
+    public const string PROFILE_PRIVACY = "A individual's specific profile privacy resource";
     public const string MEMBERSHIP_REQUEST = "A Membership Request Resource";
     public const string MEMBERSHIP = "A Membership Resource";
     public const string MEMBERSHIP_PRIVACY = "A Membership privacy";
