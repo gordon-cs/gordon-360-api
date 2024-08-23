@@ -1,8 +1,10 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,14 +12,23 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ScheduleController(IScheduleService scheduleService) : ControllerBase
+public partial class ScheduleController(IScheduleService scheduleService) : GordonControllerBase
 {
     [HttpGet]
+    [Route("{username}/courses")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.SCHEDULE)]
-    public ActionResult<IEnumerable<ScheduleViewModel>> GetSchedules(string? username)
+    public ActionResult<IEnumerable<ScheduleCourseViewModel>> GetCourses(string username, string yearCode, string termCode, string? subtermCode)
     {
         username ??= AuthUtils.GetUsername(User);
-        return Ok(scheduleService.GetUserSchedules(username));
+        return Ok(scheduleService.GetUserCoursesPerTerm(username, yearCode, termCode, subtermCode));
+    }
+
+    [HttpGet]
+    [Route("{username}/terms")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.SCHEDULE)]
+    public ActionResult<IEnumerable<ScheduleTerm>> GetTermsContainingCourses(string username)
+    {
+        return Ok(scheduleService.GetTermsContainingCoursesForUser(username));
     }
 
     /// <summary>

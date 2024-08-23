@@ -234,7 +234,8 @@ namespace Gordon360.Services
     public interface IScheduleService
     {
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
-        IEnumerable<ScheduleViewModel> GetUserSchedules(string username);
+        IEnumerable<ScheduleCourseViewModel> GetUserCoursesPerTerm(string username, string year, string termCode, string? subtermCode);
+        IEnumerable<ScheduleTerm> GetTermsContainingCoursesForUser(string username);
         bool CanReadStudentSchedules(string username);
     }
 

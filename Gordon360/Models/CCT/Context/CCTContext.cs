@@ -91,8 +91,8 @@ namespace Gordon360.Models.CCT.Context
         public virtual DbSet<Rooms> Rooms { get; set; }
         public virtual DbSet<Save_Bookings> Save_Bookings { get; set; }
         public virtual DbSet<Save_Rides> Save_Rides { get; set; }
-        public virtual DbSet<ScheduleCourses> ScheduleCourses { get; set; }
-        public virtual DbSet<ScheduleTerms> ScheduleTerms { get; set; }
+        public virtual DbSet<ScheduleCourse> ScheduleCourse { get; set; }
+        public virtual DbSet<ScheduleTerm> ScheduleTerm { get; set; }
         public virtual DbSet<Schedule_Control> Schedule_Control { get; set; }
         public virtual DbSet<Series> Series { get; set; }
         public virtual DbSet<SeriesSchedule> SeriesSchedule { get; set; }
@@ -701,9 +701,9 @@ namespace Gordon360.Models.CCT.Context
                     .HasConstraintName("FK_booking_rides");
             });
 
-            modelBuilder.Entity<ScheduleCourses>(entity =>
+            modelBuilder.Entity<ScheduleCourse>(entity =>
             {
-                entity.ToView("ScheduleCourses");
+                entity.ToView("ScheduleCourse");
 
                 entity.Property(e => e.BLDG_CDE).IsFixedLength();
 
@@ -734,13 +734,11 @@ namespace Gordon360.Models.CCT.Context
                 entity.Property(e => e.YR_CDE).IsFixedLength();
             });
 
-            modelBuilder.Entity<ScheduleTerms>(entity =>
+            modelBuilder.Entity<ScheduleTerm>(entity =>
             {
-                entity.ToView("ScheduleTerms");
+                entity.ToView("ScheduleTerm");
 
-                entity.Property(e => e.SubTermCode).IsFixedLength();
-
-                entity.Property(e => e.SubTermDescription).IsFixedLength();
+                entity.Property(e => e.SubtermCode).IsFixedLength();
 
                 entity.Property(e => e.TermCode).IsFixedLength();
 

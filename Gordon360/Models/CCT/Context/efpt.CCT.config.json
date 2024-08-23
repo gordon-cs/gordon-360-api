@@ -372,11 +372,11 @@
          "ObjectType": 3
       },
       {
-         "Name": "[dbo].[ScheduleCourses]",
+         "Name": "[dbo].[ScheduleCourse]",
          "ObjectType": 3
       },
       {
-         "Name": "[dbo].[ScheduleTerms]",
+         "Name": "[dbo].[ScheduleTerm]",
          "ObjectType": 3
       },
       {

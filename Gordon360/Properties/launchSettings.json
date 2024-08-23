@@ -2,13 +2,11 @@
   "profiles": {
     "Development": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "https://localhost:51627/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "sqlDebugging": true,
-      "applicationUrl": "https://localhost:51627;http://localhost:51626"
+      "applicationUrl": "https://localhost:52627;http://172.26.160.1:52626"
     },
     "Train": {
       "commandName": "Project",

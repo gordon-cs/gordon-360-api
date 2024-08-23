@@ -23,7 +23,7 @@ public class ScheduleService(CCTContext context) : IScheduleService
     /// </summary>
     /// <param name="username">The AD Username of the user</param>
     /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
-    [Obsolete("Use GetUserSchedules instead")]
+    [Obsolete("Use GetUserCoursesPerTerm instead")]
     public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username)
     {
         List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
@@ -40,27 +40,45 @@ public class ScheduleService(CCTContext context) : IScheduleService
     }
 
     /// <summary>
-    /// Get schedules for the specified user.
+    /// Get schedules for the specified user that are in the specified term.
     /// </summary>
     /// <param name="username">The AD Username of the user</param>
+    /// <param name="yearCode">The year code to retrieve courses from</param>
+    /// <param name="termCode">The term code to retrieve courses from</param>
+    /// <param name="subtermCode">The (optional) subterm code to retrieve courses from</param>
     /// <returns>Enumerable of schedules in which the user either attended or taught courses.</returns>
-    public IEnumerable<ScheduleViewModel> GetUserSchedules(string username)
+    public IEnumerable<ScheduleCourseViewModel> GetUserCoursesPerTerm(string username, string yearCode, string termCode, string? subtermCode)
     {
-        IEnumerable<ScheduleCourseViewModel> courses = context.ScheduleCourses
-            .Where(x => x.Username == username)
-            .Select<ScheduleCourses, ScheduleCourseViewModel>(c => c)
-            .AsEnumerable();
+        var courses = context.ScheduleCourse
+            .Where(c => c.Username == username && c.YR_CDE == yearCode && c.TRM_CDE == termCode);
 
-        // Todo: improve grouping so that top-level list is of full terms, and each term contains all courses, along with a list of subterms and the courses that vccur only in that subterm.
-        var coursesBySession = context.ScheduleTerms
-            .AsEnumerable()
-            .GroupJoin(courses,
-                       s => s.YearCode + s.TermCode + s.SubTermCode,
-                       c => c.YearCode + c.TermCode + c.SubTermCode,
-                       (session, courses) => new ScheduleViewModel(session, courses)
-            );
+        if (subtermCode is not null)
+        {
+            courses = courses.Where(c => c.SUBTERM_CDE == subtermCode); 
+        }
 
-        return coursesBySession.Where(cbs => cbs.Courses.Any()).OrderByDescending(cbs => cbs.Session.Start);
+        return courses
+            .OrderBy(c => c.BeginDate)
+            .Select(c => new ScheduleCourseViewModel(c));
+    }
+
+    public IEnumerable<ScheduleTerm> GetTermsContainingCoursesForUser(string username)
+    {
+        IQueryable<string> distinctTermsWithCourse =
+            context.ScheduleCourse
+                .Where(x => x.Username == username)
+                .Select(x => x.YR_CDE + x.TRM_CDE + x.SUBTERM_CDE)
+                .Distinct();
+
+        IQueryable<ScheduleTerm> termsContainingCourse =
+            context.ScheduleTerm.Join(distinctTermsWithCourse,
+                                       term => term.YearCode + term.TermCode + term.SubtermCode,
+                                       session => session,
+                                       (term, session) => term);
+
+        return termsContainingCourse
+            .OrderByDescending(t => t.YearCode)
+            .ThenByDescending(t => t.TermCode);
     }
 
     public bool CanReadStudentSchedules(string username)
@@ -68,5 +86,4 @@ public class ScheduleService(CCTContext context) : IScheduleService
         var groups = AuthUtils.GetGroups(username);
         return groups.Contains(AuthGroup.Advisors);
     }
-
 }

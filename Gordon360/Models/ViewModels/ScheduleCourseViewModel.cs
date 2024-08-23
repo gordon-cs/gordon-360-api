@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Gordon360.Models.ViewModels;
@@ -8,6 +9,9 @@ namespace Gordon360.Models.ViewModels;
 public partial record ScheduleCourseViewModel
 {
     public required string Code { get; set; }
+    public required string YearCode { get; set; }
+    public required string TermCode { get; set; }
+    public required string? SubtermCode { get; set; }
     public required string Title { get; set; }
     public required string Role { get; set; }
     public string? Location { get; set; }
@@ -16,12 +20,9 @@ public partial record ScheduleCourseViewModel
     public TimeOnly? EndTime { get; set; }
     public DateOnly? BeginDate { get; set; }
     public DateOnly? EndDate { get; set; }
-    public required string YearCode { get; set; }
-    public required string TermCode { get; set; }
-    public string? SubTermCode { get; set; }
 
-
-    public static implicit operator ScheduleCourseViewModel(ScheduleCourses course)
+    [SetsRequiredMembers]
+    public ScheduleCourseViewModel(ScheduleCourse course)
     {
         List<char> meetingDays = new();
         if (course.MONDAY_CDE == "M")
@@ -48,31 +49,28 @@ public partial record ScheduleCourseViewModel
         {
             meetingDays.Add('S');
         }
-        if (course.MONDAY_CDE == "U")
+        if (course.SUNDAY_CDE == "U")
         {
             meetingDays.Add('U');
         }
 
-        return new ScheduleCourseViewModel()
+        Code = RepeatedSpacesRegex().Replace(course.CRS_CDE.Trim(), " ");
+        YearCode = course.YR_CDE;
+        TermCode = course.TRM_CDE;
+        SubtermCode = course.SUBTERM_CDE;
+        Title = course.CRS_TITLE.Trim();
+        Role = course.Role;
+        Location = (course.BLDG_CDE, course.ROOM_CDE) switch
         {
-            Code = RepeatedSpacesRegex().Replace(course.CRS_CDE.Trim(), " "),
-            Title = course.CRS_TITLE.Trim(),
-            Role = course.Role,
-            Location = (course.BLDG_CDE, course.ROOM_CDE) switch
-            {
-                (string building_code, string room_code) => $"{building_code} {room_code}",
-                (string building_code, null) => building_code,
-                _ => null
-            },
-            MeetingDays = meetingDays,
-            BeginTime = course.BeginTime,
-            EndTime = course.EndTime,
-            BeginDate = course.BeginDate,
-            EndDate = course.EndDate,
-            YearCode = course.YR_CDE,
-            TermCode = course.TRM_CDE,
-            SubTermCode = course.SUBTERM_CDE,
+            (string building_code, string room_code) => $"{building_code} {room_code}",
+            (string building_code, null) => building_code,
+            _ => null
         };
+        MeetingDays = meetingDays;
+        BeginTime = course.BeginTime;
+        EndTime = course.EndTime;
+        BeginDate = course.BeginDate;
+        EndDate = course.EndDate;
     }
 
     [GeneratedRegex("\\s+")]

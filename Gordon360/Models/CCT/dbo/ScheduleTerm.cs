@@ -9,25 +9,24 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT
 {
     [Keyless]
-    public partial class ScheduleTerms
+    public partial class ScheduleTerm
     {
+        [Required]
         [StringLength(4)]
         [Unicode(false)]
         public string YearCode { get; set; }
+        [Required]
         [StringLength(2)]
         [Unicode(false)]
         public string TermCode { get; set; }
-        [StringLength(1000)]
-        [Unicode(false)]
-        public string Description { get; set; }
-        public DateOnly? TermBeginDate { get; set; }
-        public DateOnly? TermEndDate { get; set; }
+        [Required]
         [StringLength(2)]
         [Unicode(false)]
-        public string SubTermCode { get; set; }
-        public int? SubTermSortOrder { get; set; }
-        [StringLength(30)]
+        public string SubtermCode { get; set; }
+        [StringLength(96)]
         [Unicode(false)]
-        public string SubTermDescription { get; set; }
+        public string Description { get; set; }
+        public DateOnly? BeginDate { get; set; }
+        public DateOnly? EndDate { get; set; }
     }
 }

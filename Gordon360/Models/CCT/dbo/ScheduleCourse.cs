@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT
 {
     [Keyless]
-    public partial class ScheduleCourses
+    public partial class ScheduleCourse
     {
         [StringLength(50)]
         [Unicode(false)]
