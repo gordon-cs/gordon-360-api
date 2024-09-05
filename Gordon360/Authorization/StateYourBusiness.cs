@@ -70,7 +70,7 @@ public class StateYourBusiness : ActionFilterAttribute
         _recimParticipantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
         _recimTeamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
         _recimActivityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
-
+        
         user_name = AuthUtils.GetUsername(authenticatedUser);
         user_groups = AuthUtils.GetGroups(authenticatedUser);
 
@@ -188,6 +188,8 @@ public class StateYourBusiness : ActionFilterAttribute
                 }
             case Resource.NEWS:
                 return true;
+            case Resource.STUDENT_SCHEDULE:
+                return user_groups.Contains(AuthGroup.Advisors);
             default: return false;
 
         }
