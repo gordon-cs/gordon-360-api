@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 
 namespace Gordon360.Models.ViewModels;
 
-public partial record ScheduleCourseViewModel
+public record ScheduleCourseViewModel
 {
     public required string Code { get; set; }
     public required string YearCode { get; set; }
@@ -54,7 +53,7 @@ public partial record ScheduleCourseViewModel
             meetingDays.Add('U');
         }
 
-        Code = RepeatedSpacesRegex().Replace(course.CRS_CDE.Trim(), " ");
+        Code = course.CRS_CDE;
         YearCode = course.YR_CDE;
         TermCode = course.TRM_CDE;
         SubtermCode = course.SUBTERM_CDE;
@@ -72,7 +71,4 @@ public partial record ScheduleCourseViewModel
         BeginDate = course.BeginDate;
         EndDate = course.EndDate;
     }
-
-    [GeneratedRegex("\\s+")]
-    private static partial Regex RepeatedSpacesRegex();
 }

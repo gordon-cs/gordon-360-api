@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public partial class ScheduleController(IScheduleService scheduleService) : GordonControllerBase
+public class ScheduleController(IScheduleService scheduleService) : GordonControllerBase
 {
     [HttpGet]
     [Route("{username}/courses")]
