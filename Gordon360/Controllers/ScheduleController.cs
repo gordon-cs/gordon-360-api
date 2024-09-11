@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ScheduleController(IScheduleService scheduleService) : ControllerBase
+public class ScheduleController(IScheduleService scheduleService) : GordonControllerBase
 {
 
     /// <summary>
