@@ -36,6 +36,7 @@ public static class Resource
     public const string RECIM_PARTICIPANT_ADMIN = "The admin status of a RecIM participating user";
     public const string RECIM_SUPER_ADMIN = "A RecIM director level resource";
     public const string RECIM_SURFACE = "RecIM Surfaces/Playing fields/Locations";
+    public const string STUDENT_SCHEDULE = "A student's schedule events";
 
     // Partial resources, to be targetted by Operation.READ_PARTIAL
     public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";
