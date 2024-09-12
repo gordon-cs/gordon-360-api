@@ -46,6 +46,8 @@ public class StateYourBusiness : ActionFilterAttribute
     private IMembershipRequestService _membershipRequestService;
     private INewsService _newsService;
     private IPosterService _posterService;
+    private IAccountService _accountService;
+
 
     //RecIM services
     private IParticipantService _recimParticipantService;
@@ -66,12 +68,13 @@ public class StateYourBusiness : ActionFilterAttribute
         _membershipRequestService = context.HttpContext.RequestServices.GetRequiredService<IMembershipRequestService>();
         _newsService = context.HttpContext.RequestServices.GetRequiredService<INewsService>();
         _CCTContext = context.HttpContext.RequestServices.GetService<CCTContext>();
+        _accountService = context.HttpContext.RequestServices.GetRequiredService<IAccountService>();
 
         // set RecIM services
         _recimParticipantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
         _recimTeamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
         _recimActivityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
-
+        
         user_name = AuthUtils.GetUsername(authenticatedUser);
         user_groups = AuthUtils.GetGroups(authenticatedUser);
 
@@ -189,6 +192,10 @@ public class StateYourBusiness : ActionFilterAttribute
                 }
             case Resource.NEWS:
                 return true;
+            case Resource.STUDENT_SCHEDULE:
+                if (context.ActionArguments["username"] is string viewed_username)
+                    return user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(viewed_username).AccountType.EqualsIgnoreCase("FACULTY");
+                return false;
             default: return false;
 
         }

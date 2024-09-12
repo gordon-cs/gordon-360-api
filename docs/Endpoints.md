@@ -6,7 +6,7 @@ This documentation explains the different endpoints of the API.
 
 NOTE: these docs are no longer maintained and are likely to be missing information or else wholly incorrect. They are only being preserved until we have a better human-readable source of documentation.
 
-This info ought to be redundant with the route docs in the [XML documentation](Gordon360/Documentation/Gordon360.xml) automatically generated from the documentation comments in our code. However, since the documentation comments are not as human-readable, and since considerable effort was put into these endpoint docs, we are choosing to preserve this document in the short-term.
+This info ought to be redundant with the route docs in the [XML documentation](../Gordon360/Documentation/Gordon360.xml) automatically generated from the documentation comments in our code. However, since the documentation comments are not as human-readable, and since considerable effort was put into these endpoint docs, we are choosing to preserve this document in the short-term.
 
 ## Notation
 
@@ -376,7 +376,7 @@ Differences from GoSite:
 
 `api/profiles/clifton/{username}` Get the Clifton Strengths of a user with username `username` as a parameter.
 
-`api/profiles/mailbox-combination` Get the mailbox combination of the current logged in user.
+`api/profiles/mailbox-information` Get the mailbox information, including combination, of the current logged in user.
 
 `api/profiles/Image` Get profile image of the current logged in user. Image is stored in a base 64 string.
 

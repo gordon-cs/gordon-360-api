@@ -48,25 +48,18 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
     /// <summary>
-    /// get mailbox combination
+    /// get mailbox information (contains box combination)
     /// </summary>
     /// <param name="username">The current user's username</param>
     /// <returns>MailboxViewModel with the combination</returns>
-    public MailboxViewModel GetMailboxCombination(string username)
+    public MailboxViewModel GetMailboxInformation(string username)
     {
         var mailboxNumber =
             context.Student
             .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
             .Mail_Location;
 
-        var combo = context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
-
-        if (combo == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "A combination was not found for the specified mailbox number." };
-        }
-
-        return combo;
+        return context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
     }
 
     /// <summary>
@@ -77,10 +70,20 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     public DateTime GetBirthdate(string username)
     {
         var birthdate = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
+        var impossible_birthdate = new DateTime(1800, 1, 1);
 
         if (birthdate == null)
         {
-            return new DateTime(1800, 1, 1);
+            return impossible_birthdate;
+        }
+
+        // Test accounts always have current date and time as birthday, so
+        // treat this the same as no birthday
+        // Comment this out to see "happy birthday" banner in test accounts
+        var lifetime = DateTime.Now - (DateTime) birthdate;
+        if (lifetime.Days < 1) // no valid user was born within the last 24 hours
+        {
+            return impossible_birthdate;
         }
 
         try
