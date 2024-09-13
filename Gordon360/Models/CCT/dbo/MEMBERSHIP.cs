@@ -41,7 +41,7 @@ public partial class MEMBERSHIP
     [Unicode(false)]
     public string COMMENT_TXT { get; set; }
 
-    [StringLength(20)]
+    [StringLength(15)]
     [Unicode(false)]
     public string USER_NAME { get; set; }
 
