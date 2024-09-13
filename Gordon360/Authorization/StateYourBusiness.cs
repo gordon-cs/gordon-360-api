@@ -48,7 +48,6 @@ public class StateYourBusiness : ActionFilterAttribute
     private IPosterService _posterService;
     private IAccountService _accountService;
 
-
     //RecIM services
     private IParticipantService _recimParticipantService;
     private Services.RecIM.IActivityService _recimActivityService;
