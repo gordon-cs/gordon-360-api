@@ -16,10 +16,9 @@
             <param name="data"> The contact data to be stored </param>
             <returns> The data stored </returns>
         </member>
-        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutCellPhoneAsync(Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+        <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutCellPhoneAsync(Gordon360.Models.ViewModels.MobilePhoneUpdateViewModel)">
             <summary> Sets the students cell phone number</summary>
             <param name="data"> The phone number object to be added to the database </param>
-            <returns> The data stored </returns>
         </member>
         <member name="M:Gordon360.Controllers.Api.AcademicCheckInController.PutDemographicAsync(Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
             <summary>Sets the students race and ethinicity</summary>
@@ -1344,7 +1343,7 @@
             <param name="HomePhone"> The home phone of the contact </param>
             <returns> The formatted notes parameter to be passed to the database </returns>
         </member>
-        <member name="M:Gordon360.Services.AcademicCheckInService.PutCellPhoneAsync(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
+        <member name="M:Gordon360.Services.AcademicCheckInService.PutCellPhoneAsync(System.String,Gordon360.Models.ViewModels.MobilePhoneUpdateViewModel)">
             <summary> Stores the cellphone preferences for the current user </summary>
             <param name="data"> The phone number object for the user </param>
             <param name="id"> The id of the student to be updated </param>
@@ -1359,7 +1358,7 @@
         <member name="M:Gordon360.Services.AcademicCheckInService.GetHoldsAsync(System.String)">
             <summary> Gets the holds of the user with the given ID </summary>
             <param name="id"> The id of the user whose holds are to be found </param>
-            <returns> The stored data </returns>
+            <returns>Data about any holds the user has</returns>
         </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.SetStatusAsync(System.String)">
             <summary> Sets the user as having been checked in </summary>
@@ -1373,6 +1372,19 @@
             <summary> Formats a phone number for insertion into the database </summary>
             <param name="phoneNum"> The phone number to be formatted </param>
             <returns> The formatted number </returns>
+        </member>
+        <member name="M:Gordon360.Services.AcademicCheckInService.PhoneNumberRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>^\\+?\\d*$</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Match '+' atomically, optionally.<br/>
+            ○ Match a Unicode digit atomically any number of times.<br/>
+            ○ Match if at the end of the string or if before an ending newline.<br/>
+            </code>
+            </remarks>
         </member>
         <member name="T:Gordon360.Services.AccountService">
             <summary>
@@ -2385,6 +2397,47 @@
             </summary>
             <param name="imagePath">The path to the image</param>
             <returns>The base64 content of the image</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the PhoneNumberRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.PhoneNumberRegex_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
         </member>
     </members>
 </doc>

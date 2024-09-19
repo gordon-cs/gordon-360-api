@@ -228,9 +228,9 @@ namespace Gordon360.Services
 
     public interface IAcademicCheckInService
     {
-        Task<AcademicCheckInViewModel> PutCellPhoneAsync(string id, AcademicCheckInViewModel data);
+        Task PutCellPhoneAsync(string id, MobilePhoneUpdateViewModel data);
         Task<EmergencyContactViewModel> PutEmergencyContactAsync(EmergencyContactViewModel data, string id, string username);
-        Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(string id);
+        Task<EnrollmentCheckinHolds> GetHoldsAsync(string id);
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
         Task<bool> GetStatusAsync(string id);

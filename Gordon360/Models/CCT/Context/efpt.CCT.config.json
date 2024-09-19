@@ -2,7 +2,6 @@
    "CodeGenerationMode": 4,
    "ContextClassName": "CCTContext",
    "ContextNamespace": null,
-   "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": false,
    "ModelNamespace": null,
@@ -308,10 +307,6 @@
          "ObjectType": 1
       },
       {
-         "Name": "[dbo].[FINALIZATION_GETHOLDSBYID]",
-         "ObjectType": 1
-      },
-      {
          "Name": "[dbo].[FINALIZATION_MARK_AS_CURRENTLY_COMPLETED]",
          "ObjectType": 1
       },
@@ -321,6 +316,10 @@
       },
       {
          "Name": "[dbo].[FINALIZATION_UPDATEDEMOGRAPHIC]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[GetEnrollmentCheckinHolds]",
          "ObjectType": 1
       },
       {
@@ -356,8 +355,9 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "sqltrain1.CCT.dbo",
+   "UiHint": null,
    "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
    "UseDateOnlyTimeOnly": false,
