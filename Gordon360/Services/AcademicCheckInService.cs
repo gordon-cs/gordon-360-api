@@ -74,6 +74,8 @@ public partial class AcademicCheckInService(CCTContext context) : IAcademicCheck
     /// <returns> The stored data </returns>
     public async Task PutCellPhoneAsync(string id, MobilePhoneUpdateViewModel data)
     {
+        // TODO: Store SMS Consent value somewhere
+
         var result = await context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, NoneProvided: false);
         if (result == null || result.Any(r => r.Success != true))
         {
