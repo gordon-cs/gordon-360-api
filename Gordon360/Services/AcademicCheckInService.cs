@@ -100,7 +100,7 @@ public partial class AcademicCheckInService(CCTContext context) : IAcademicCheck
     /// <returns>Data about any holds the user has</returns>
     public async Task<EnrollmentCheckinHolds> GetHoldsAsync(string id)
     {
-        var result = await context.Procedures.FINALIZATION_GETHOLDSBYIDAsync(int.Parse(id));
+        var result = await context.Procedures.GetEnrollmentCheckinHoldsAsync(int.Parse(id));
 
         if (result == null || result.Count != 1)
         {
