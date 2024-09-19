@@ -39,22 +39,19 @@ public class AcademicCheckInController(IAcademicCheckInService academicCheckInSe
 
     }
 
-
-
     /// <summary> Sets the students cell phone number</summary>
     /// <param name="data"> The phone number object to be added to the database </param>
-    /// <returns> The data stored </returns>
     [HttpPut]
     [Route("cellphone")]
-    public async Task<ActionResult<AcademicCheckInViewModel>> PutCellPhoneAsync([FromBody] AcademicCheckInViewModel data)
+    public async Task<ActionResult> PutCellPhoneAsync([FromBody] MobilePhoneUpdateViewModel data)
     {
         var username = AuthUtils.GetUsername(User);
         var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            var result = await academicCheckInService.PutCellPhoneAsync(id, data);
-            return Ok(result);
+            await academicCheckInService.PutCellPhoneAsync(id, data);
+            return Ok();
         }
         catch (System.Exception e)
         {
@@ -91,22 +88,21 @@ public class AcademicCheckInController(IAcademicCheckInService academicCheckInSe
     /// <returns> The user's stored holds </returns>
     [HttpGet]
     [Route("holds")]
-    public async Task<ActionResult<AcademicCheckInViewModel>> GetHoldsAsync()
+    public async Task<ActionResult<EnrollmentCheckinHolds>> GetHoldsAsync()
     {
         var username = AuthUtils.GetUsername(User);
         var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            var result = (await academicCheckInService.GetHoldsAsync(id)).First();
-            return Ok(result);
+            EnrollmentCheckinHolds holds = await academicCheckInService.GetHoldsAsync(id);
+            return Ok(holds);
         }
         catch (System.Exception e)
         {
             System.Diagnostics.Debug.WriteLine(e.Message);
             return NotFound();
         }
-
     }
 
     /// <summary> Sets the user as having completed Academic Checkin </summary>
