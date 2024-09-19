@@ -74,7 +74,7 @@ public partial class AcademicCheckInService(CCTContext context) : IAcademicCheck
     /// <returns> The stored data </returns>
     public async Task PutCellPhoneAsync(string id, MobilePhoneUpdateViewModel data)
     {
-        var result = await context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PhoneNumber), data.isPrivate, NoneProvided: false);
+        var result = await context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, NoneProvided: false);
         if (result == null || result.Any(r => r.Success != true))
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
