@@ -290,7 +290,7 @@ namespace Gordon360.Services
             IEnumerable<LookupViewModel>? GetTeamLookup(string type);
             double GetTeamSportsmanshipScore(int teamID);
             IEnumerable<TeamExtendedViewModel> GetTeams(bool active);
-            TeamExtendedViewModel GetTeamByID(int teamID);
+            TeamExtendedViewModel GetTeamByID(int teamID, bool isAdminView = false);
             IEnumerable<TeamExtendedViewModel> GetTeamInvitesByParticipantUsername(string username);
             ParticipantTeamViewModel GetParticipantTeam(int teamID, string username);
             Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
@@ -314,7 +314,7 @@ namespace Gordon360.Services
             bool GetParticipantIsCustom(string username);
             IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
-            ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null);
+            ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null, bool isAdminView = false);
             AccountViewModel GetUnaffiliatedAccountByUsername(string username);
             IEnumerable<MatchExtendedViewModel> GetParticipantMatches(string username);
             IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
