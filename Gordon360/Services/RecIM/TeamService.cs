@@ -85,8 +85,6 @@ public class TeamService(CCTContext context,
                 Affiliation = t.Affiliation,
                 Status = t.Status.Description,
                 Logo = t.Logo,
-                Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0) // 0 is deleted
-                    .Select(pt => participantSerivce.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                 TeamRecord = t.SeriesTeam
                     .Select(st => (TeamRecordViewModel)st)
                     .AsEnumerable(),
