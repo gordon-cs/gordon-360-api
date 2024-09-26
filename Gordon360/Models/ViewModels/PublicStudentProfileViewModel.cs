@@ -13,6 +13,7 @@ public class PublicStudentProfileViewModel
     public string NickName { get; set; }
     public string OnOffCampus { get; set; }
     public string Mail_Location { get; set; }
+    public string HomePhone { get; set; }
     public string HomeCity { get; set; }
     public string HomeState { get; set; }
     public string HomeCountry { get; set; }
@@ -52,6 +53,7 @@ public class PublicStudentProfileViewModel
             AD_Username = stu.AD_Username ?? "", // Just in case some random record has a null email field
             OnOffCampus = stu.OnOffCampus ?? "",
             Mail_Location = stu.Mail_Location ?? "",
+            HomePhone = stu.HomePhone ?? "",
             HomeCity = stu.HomeCity ?? "",
             HomeState = stu.HomeState ?? "",
             HomeCountry = stu.HomeCountry ?? "",
@@ -74,12 +76,7 @@ public class PublicStudentProfileViewModel
             Minor1Description = stu.Minor1Description ?? "",
             Minor2Description = stu.Minor2Description ?? "",
             Minor3Description = stu.Minor3Description ?? ""
-
         };
-        if (vm.IsMobilePhonePrivate)
-        {
-            vm.MobilePhone = "Private as requested.";
-        }
         if (vm.KeepPrivate.Contains("S"))
         {
             vm.HomeCity = "Private as requested.";
