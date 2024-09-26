@@ -69,9 +69,9 @@ public class TeamService(CCTContext context,
 
     public IEnumerable<TeamExtendedViewModel> GetTeams(bool active)
     {
-        var teamQuery = active 
+        var teamQuery = active
             ? context.Team.Where(t => t.Activity.Completed != active && t.StatusID != 0) // 0 is deleted
-            : context.Team.Where(t => t.StatusID != 0);    
+            : context.Team.Where(t => t.StatusID != 0);
 
         var teams = teamQuery
             .Include(t => t.SeriesTeam)
@@ -85,8 +85,6 @@ public class TeamService(CCTContext context,
                 Affiliation = t.Affiliation,
                 Status = t.Status.Description,
                 Logo = t.Logo,
-                Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0) // 0 is deleted
-                    .Select(pt => participantSerivce.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
                 TeamRecord = t.SeriesTeam
                     .Select(st => (TeamRecordViewModel)st)
                     .AsEnumerable(),
@@ -104,78 +102,81 @@ public class TeamService(CCTContext context,
                             m => m.ID,
                             mt => mt.MatchID,
                             (m, mt) => mt.SportsmanshipScore
-                        ).Average() 
+                        ).Average()
             })
             .AsEnumerable();
         return teams;
     }
-    public TeamExtendedViewModel GetTeamByID(int teamID)
-    {
-        var team = context.Team
-                        .Where(t => t.ID == teamID && t.StatusID != 0)
-                        .Include(t => t.Activity)
-                            .ThenInclude(t => t.Type)
-                        .Include(t => t.SeriesTeam)
-                            .ThenInclude(t => t.Team)
-                        .Select(t => new TeamExtendedViewModel
-                        {
-                            ID = teamID,
-                            Activity = t.Activity,
-                            Name = t.Name,
-                            Affiliation = t.Affiliation,
-                            Status = t.Status.Description,
-                            Logo = t.Logo,
-                            Match = t.MatchTeam
-                                .Where(mt => mt.Match.StatusID != 0)
-                                .Select(mt => matchService.GetMatchForTeamByMatchID(mt.MatchID)).AsEnumerable(),
-                            Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
-                                            .Select(pt => participantSerivce.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
-                            MatchHistory = context.Match.Where(m => m.StatusID == 6 || m.StatusID == 4) // completed or forfeited status
-                                            .Join(context.MatchTeam
-                                                .Where(mt => mt.TeamID == teamID)
 
-                                                    .Join(
-                                                        context.MatchTeam.Where(mt => mt.TeamID != teamID),
-                                                        mt0 => mt0.MatchID,
-                                                        mt1 => mt1.MatchID,
-                                                        (mt0, mt1) => new
+    public TeamExtendedViewModel GetTeamByID(int teamID, bool isAdminView = false)
+    {
+        var team =
+            context.Team
+                .Where(t => t.ID == teamID && t.StatusID != 0)
+                .Include(t => t.Activity)
+                    .ThenInclude(t => t.Type)
+                .Include(t => t.SeriesTeam)
+                    .ThenInclude(t => t.Team)
+                .Select(t => new TeamExtendedViewModel
+                {
+                    ID = teamID,
+                    Activity = t.Activity,
+                    Name = t.Name,
+                    Affiliation = t.Affiliation,
+                    Status = t.Status.Description,
+                    Logo = t.Logo,
+                    Match = t.MatchTeam
+                        .Where(mt => mt.Match.StatusID != 0)
+                        .Select(mt => matchService.GetMatchForTeamByMatchID(mt.MatchID)).AsEnumerable(),
+                    Participant = t.ParticipantTeam.Where(pt => pt.RoleTypeID != 0)
+                                    .Select(pt => participantSerivce.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description, isAdminView)),
+                    MatchHistory = context.Match.Where(m => m.StatusID == 6 || m.StatusID == 4) // completed or forfeited status
+                                    .Join(context.MatchTeam
+                                        .Where(mt => mt.TeamID == teamID)
+
+                                            .Join(
+                                                context.MatchTeam.Where(mt => mt.TeamID != teamID),
+                                                mt0 => mt0.MatchID,
+                                                mt1 => mt1.MatchID,
+                                                (mt0, mt1) => new
+                                                {
+                                                    TeamID = mt0.TeamID,
+                                                    MatchID = mt0.MatchID,
+                                                    OwnScore = mt0.Score,
+                                                    OpposingTeamID = mt1.TeamID,
+                                                    OpposingTeamScore = mt1.Score,
+                                                    Status = mt0.Score > mt1.Score
+                                                            ? "Win"
+                                                            : mt0.Score < mt1.Score
+                                                                ? "Lose"
+                                                                : "Tie"
+                                                }),
+                                                match => match.ID,
+                                                matchTeamJoin => matchTeamJoin.MatchID,
+                                                (match, matchTeamJoin) => new TeamMatchHistoryViewModel
+                                                {
+                                                    TeamID = matchTeamJoin.TeamID,
+                                                    MatchID = match.ID,
+                                                    Opponent = context.Team.Where(t => t.ID == matchTeamJoin.OpposingTeamID)
+                                                        .Select(o => new TeamExtendedViewModel
                                                         {
-                                                            TeamID = mt0.TeamID,
-                                                            MatchID = mt0.MatchID,
-                                                            OwnScore = mt0.Score,
-                                                            OpposingTeamID = mt1.TeamID,
-                                                            OpposingTeamScore = mt1.Score,
-                                                            Status = mt0.Score > mt1.Score
-                                                                    ? "Win"
-                                                                    : mt0.Score < mt1.Score
-                                                                        ? "Lose"
-                                                                        : "Tie"
-                                                        }),
-                                                        match => match.ID,
-                                                        matchTeamJoin => matchTeamJoin.MatchID,
-                                                        (match, matchTeamJoin) => new TeamMatchHistoryViewModel
-                                                        {
-                                                            TeamID = matchTeamJoin.TeamID,
-                                                            MatchID = match.ID,
-                                                            Opponent = context.Team.Where(t => t.ID == matchTeamJoin.OpposingTeamID)
-                                                                .Select(o => new TeamExtendedViewModel
-                                                                {
-                                                                    ID = o.ID,
-                                                                    Name = o.Name,
-                                                                    Logo = o.Logo
-                                                                }).FirstOrDefault(),
-                                                            TeamScore = matchTeamJoin.OwnScore,
-                                                            OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
-                                                            Status = matchTeamJoin.Status,
-                                                            MatchStatusID = match.StatusID,
-                                                            MatchStartTime = match.StartTime.SpecifyUtc()
-                                                        }
-                                            ).AsEnumerable(),
-                            TeamRecord = t.SeriesTeam
-                                        .Select(st =>  (TeamRecordViewModel)st)
-                                        .AsEnumerable(),
-                            SportsmanshipRating = GetTeamSportsmanshipScore(teamID)
-                        }).FirstOrDefault();
+                                                            ID = o.ID,
+                                                            Name = o.Name,
+                                                            Logo = o.Logo
+                                                        }).FirstOrDefault(),
+                                                    TeamScore = matchTeamJoin.OwnScore,
+                                                    OpposingTeamScore = matchTeamJoin.OpposingTeamScore,
+                                                    Status = matchTeamJoin.Status,
+                                                    MatchStatusID = match.StatusID,
+                                                    MatchStartTime = match.StartTime.SpecifyUtc()
+                                                }
+                                    ).AsEnumerable(),
+                    TeamRecord = t.SeriesTeam
+                                .Select(st => (TeamRecordViewModel)st)
+                                .AsEnumerable(),
+                    SportsmanshipRating = GetTeamSportsmanshipScore(teamID)
+                }).FirstOrDefault();
+
         return team;
     }
 
@@ -184,7 +185,7 @@ public class TeamService(CCTContext context,
         var participantStatus = participantSerivce.GetParticipantByUsername(username)?.Status;
         if (participantStatus is null) return Enumerable.Empty<TeamExtendedViewModel>();
 
-        if (participantStatus == "Banned" || participantStatus == "Suspended") 
+        if (participantStatus == "Banned" || participantStatus == "Suspended")
             throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
 
         var teamInvites = context.ParticipantTeam
@@ -199,9 +200,9 @@ public class TeamService(CCTContext context,
                 .AsEnumerable();
 
         return teamInvites;
-;
+        ;
     }
-    
+
     public ParticipantTeamViewModel GetParticipantTeam(int teamID, string username)
     {
         var participantStatus = participantSerivce.GetParticipantByUsername(username).Status;
@@ -227,8 +228,8 @@ public class TeamService(CCTContext context,
         var participantStatus = participantSerivce.GetParticipantByUsername(username).Status;
         if (participantStatus == "Banned" || participantStatus == "Suspended")
             throw new UnauthorizedAccessException($"{username} is currented {participantStatus}. If you would like to dispute this, please contact Rec.IM@gordon.edu");
-        
-        if(context.Activity.Find(newTeam.ActivityID).Team.Any(team => team.Name == newTeam.Name))
+
+        if (context.Activity.Find(newTeam.ActivityID).Team.Any(team => team.Name == newTeam.Name))
             throw new UnprocessibleEntity
             { ExceptionMessage = $"Team name {newTeam.Name} has already been taken by another team in this activity" };
 
@@ -244,7 +245,8 @@ public class TeamService(CCTContext context,
         await AddParticipantToTeamAsync(team.ID, captain);
 
         var existingSeries = context.Series.Where(s => s.ActivityID == newTeam.ActivityID).OrderBy(s => s.StartDate)?.FirstOrDefault();
-        if (existingSeries is not null) {
+        if (existingSeries is not null)
+        {
             var seriesTeam = new SeriesTeam
             {
                 TeamID = team.ID,
@@ -274,7 +276,7 @@ public class TeamService(CCTContext context,
             (pt, t) => pt);
 
         //if captain or inactive on another team, delete this participant team (admins can bypass)
-        if (otherInstances.Any(pt => new int[] { 5,6 }.Contains(pt.RoleTypeID) && !participantSerivce.IsAdmin(participant.Username)))  
+        if (otherInstances.Any(pt => new int[] { 5, 6 }.Contains(pt.RoleTypeID) && !participantSerivce.IsAdmin(participant.Username)))
         {
             context.ParticipantTeam.Remove(participantTeam);
             throw new ResourceCreationException() { ExceptionMessage = $"Participant is in an immutable role in this activity" };
@@ -303,7 +305,7 @@ public class TeamService(CCTContext context,
             .FirstOrDefault(t => t.ID == teamID);
         team.StatusID = 0;
 
-        foreach(var mt in team.MatchTeam)
+        foreach (var mt in team.MatchTeam)
             mt.StatusID = 0;
 
 
@@ -314,15 +316,15 @@ public class TeamService(CCTContext context,
 
     public async Task<TeamViewModel> UpdateTeamAsync(int teamID, TeamPatchViewModel updatedTeam)
     {
-        var team =  context.Team
+        var team = context.Team
             .Include(t => t.Activity)
                 .ThenInclude(t => t.Team)
             .FirstOrDefault(t => t.ID == teamID);
         if (updatedTeam.Name is not null)
         {
-            if (team.Activity.Team.Any(team => team.Name == updatedTeam.Name && team.ID != teamID)) 
-                throw new UnprocessibleEntity 
-                    { ExceptionMessage = $"Team name {updatedTeam.Name} has already been taken by another team in this activity" };
+            if (team.Activity.Team.Any(team => team.Name == updatedTeam.Name && team.ID != teamID))
+                throw new UnprocessibleEntity
+                { ExceptionMessage = $"Team name {updatedTeam.Name} has already been taken by another team in this activity" };
         }
         team.Name = updatedTeam.Name ?? team.Name;
         team.StatusID = updatedTeam.StatusID ?? team.StatusID;
@@ -381,17 +383,17 @@ public class TeamService(CCTContext context,
             );
         string subject = $"Gordon Rec-IM: {inviter.FirstName} {inviter.LastName} has {(isCustom ? "added" : "invited")} you to a team!";
 
-        emailService.SendEmails(new string[] {to_email},from_email,subject,messageBody,password);
+        emailService.SendEmails(new string[] { to_email }, from_email, subject, messageBody, password);
     }
-    
+
     public async Task<ParticipantTeamViewModel> AddParticipantToTeamAsync(int teamID, ParticipantTeamUploadViewModel participant, string? inviterUsername = null)
     {
         //new check for enabling non-recim participants to be invited
-        if(!context.Participant.Any(p => p.Username == participant.Username))
+        if (!context.Participant.Any(p => p.Username == participant.Username))
             await participantSerivce.PostParticipantAsync(participant.Username, 1); //pending user
 
         //check for participant is on the team
-        if (context.Team.FirstOrDefault(t => t.ID == teamID).ParticipantTeam.Any(pt => pt.ParticipantUsername == participant.Username 
+        if (context.Team.FirstOrDefault(t => t.ID == teamID).ParticipantTeam.Any(pt => pt.ParticipantUsername == participant.Username
             && pt.RoleTypeID != 0 && pt.RoleTypeID != 2)) //doesn't check for deleted or invited
             throw new UnprocessibleEntity { ExceptionMessage = $"Participant {participant.Username} is already in this team" };
 
@@ -410,15 +412,15 @@ public class TeamService(CCTContext context,
         else
         {
             participantTeam = new ParticipantTeam
-                {
-                    TeamID = teamID,
-                    ParticipantUsername = participant.Username,
-                    SignDate = DateTime.UtcNow,
-                    RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
-                };
+            {
+                TeamID = teamID,
+                ParticipantUsername = participant.Username,
+                SignDate = DateTime.UtcNow,
+                RoleTypeID = participant.RoleTypeID ?? 2, //3 -> Member, 2-> Requested Join
+            };
             await context.ParticipantTeam.AddAsync(participantTeam);
         }
-        
+
         await context.SaveChangesAsync();
         if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
         {
@@ -484,7 +486,7 @@ public class TeamService(CCTContext context,
             && !attendees.Any(name => mp.ParticipantUsername == name));
         context.MatchParticipant.RemoveRange(attendanceToRemove);
 
-        var existingAttendance = context.MatchParticipant.Where(mp => mp.MatchID == matchID && mp.TeamID == teamID 
+        var existingAttendance = context.MatchParticipant.Where(mp => mp.MatchID == matchID && mp.TeamID == teamID
             && attendees.Any(name => mp.ParticipantUsername == name));
 
         var attendanceToAdd = attendees.Where(name => !existingAttendance.Any(ea => ea.ParticipantUsername == name));
@@ -498,7 +500,7 @@ public class TeamService(CCTContext context,
             };
             await context.MatchParticipant.AddAsync(created);
             res.Add(created);
-   
+
         }
         await context.SaveChangesAsync();
         return (res);

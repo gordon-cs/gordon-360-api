@@ -317,6 +317,7 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.JOB_NAME).IsFixedLength();
             entity.Property(e => e.PART_CDE).IsFixedLength();
             entity.Property(e => e.SESS_CDE).IsFixedLength();
+            entity.Property(e => e.USER_NAME).IsFixedLength();
         });
 
         modelBuilder.Entity<Mailboxes>(entity =>
@@ -468,6 +469,7 @@ public partial class CCTContext : DbContext
         {
             entity.ToView("ParticipantView", "RecIM");
 
+            entity.Property(e => e.Hall).IsFixedLength();
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
@@ -611,7 +613,6 @@ public partial class CCTContext : DbContext
         });
         modelBuilder.HasSequence("Information_Change_Request_Seq");
 
-        OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
     }
 

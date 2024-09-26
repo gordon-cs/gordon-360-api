@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gordon360.Models.CCT
 {
-    public partial class FINALIZATION_GETHOLDSBYIDResult
+    public partial class GetEnrollmentCheckinHoldsResult
     {
         public bool? FinancialHold { get; set; }
         public bool? HighSchoolHold { get; set; }
@@ -14,9 +14,5 @@ namespace Gordon360.Models.CCT
         public bool? RegistrarHold { get; set; }
         public bool? LaVidaHold { get; set; }
         public bool? MustRegisterForClasses { get; set; }
-        public int NewStudent { get; set; }
-        public string FinancialHoldText { get; set; }
-        public string MeetingDate { get; set; }
-        public string MeetingLocations { get; set; }
     }
 }
