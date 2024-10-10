@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
+[Table("CUSTOM_PROFILE", Schema = "dbo")]
 public partial class CUSTOM_PROFILE
 {
     [Key]

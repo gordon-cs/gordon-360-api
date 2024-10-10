@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT;
 
 [PrimaryKey("ID_NUM", "ACCESS_CODE")]
+[Table("Clifton_Strengths", Schema = "dbo")]
 public partial class Clifton_Strengths
 {
     [Key]

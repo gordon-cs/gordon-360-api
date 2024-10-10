@@ -8,19 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("Housing_HallChoices", Schema = "dbo")]
-[Index("HousingAppID", Name = "IX_Housing_HallChoices")]
-public partial class Housing_HallChoices
+[Table("RA_Tasks", Schema = "Housing")]
+public partial class RA_Tasks
 {
     [Key]
-    public int HallChoiceID { get; set; }
-
-    public int HousingAppID { get; set; }
-
-    public int Ranking { get; set; }
+    public int Task_ID { get; set; }
 
     [Required]
-    [StringLength(15)]
+    [StringLength(100)]
     [Unicode(false)]
-    public string HallName { get; set; }
+    public string Task_Name { get; set; }
+
+    [InverseProperty("Task")]
+    public virtual ICollection<RA_Task_Status> RA_Task_Status { get; set; } = new List<RA_Task_Status>();
 }
