@@ -15,59 +15,55 @@
    "T4TemplatePath": null,
    "Tables": [
       {
-         "Name": "[dbo].[ACT_INFO]",
+         "Name": "[Housing].[Hall_Assignment_Ranges]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Clifton_Strengths]",
+         "Name": "[Housing].[Hall_Permissions]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Config]",
+         "Name": "[Housing].[Halls]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[CUSTOM_PROFILE]",
+         "Name": "[Housing].[RA_Assigned_Ranges]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[ERROR_LOG]",
+         "Name": "[Housing].[RA_On_Call]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Housing_Applicants]",
+         "Name": "[Housing].[RA_On_Call_History]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Housing_Applications]",
+         "Name": "[Housing].[RA_Status]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Housing_HallChoices]",
+         "Name": "[Housing].[RA_Status_History]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Housing_Halls]",
+         "Name": "[Housing].[RA_Status_Schedule]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Information_Change_Request]",
+         "Name": "[Housing].[RA_Task_Status]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[MEMBERSHIP]",
+         "Name": "[Housing].[RA_Tasks]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[REQUEST]",
+         "Name": "[Housing].[Recurrence]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Slider_Images]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[StudentNewsExpiration]",
+         "Name": "[Housing].[Resident_Advisor]",
          "ObjectType": 0
       },
       {
