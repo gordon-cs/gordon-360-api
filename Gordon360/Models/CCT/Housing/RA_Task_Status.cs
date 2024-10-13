@@ -18,7 +18,7 @@ public partial class RA_Task_Status
     [Key]
     public int Task_ID { get; set; }
 
-    public bool? Status { get; set; }
+    public bool? Is_Completed { get; set; }
 
     [ForeignKey("Ra_ID")]
     [InverseProperty("RA_Task_Status")]

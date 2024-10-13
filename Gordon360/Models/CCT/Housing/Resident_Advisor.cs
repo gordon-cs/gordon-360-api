@@ -46,13 +46,7 @@ public partial class Resident_Advisor
     public virtual ICollection<RA_On_Call> RA_On_Call { get; set; } = new List<RA_On_Call>();
 
     [InverseProperty("Ra")]
-    public virtual ICollection<RA_On_Call_History> RA_On_Call_History { get; set; } = new List<RA_On_Call_History>();
-
-    [InverseProperty("Ra")]
     public virtual ICollection<RA_Status> RA_Status { get; set; } = new List<RA_Status>();
-
-    [InverseProperty("Ra")]
-    public virtual ICollection<RA_Status_History> RA_Status_History { get; set; } = new List<RA_Status_History>();
 
     [InverseProperty("Ra")]
     public virtual ICollection<RA_Status_Schedule> RA_Status_Schedule { get; set; } = new List<RA_Status_Schedule>();

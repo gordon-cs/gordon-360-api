@@ -26,9 +26,6 @@ public partial class Halls
     public virtual ICollection<RA_On_Call> RA_On_Call { get; set; } = new List<RA_On_Call>();
 
     [InverseProperty("Hall")]
-    public virtual ICollection<RA_On_Call_History> RA_On_Call_History { get; set; } = new List<RA_On_Call_History>();
-
-    [InverseProperty("Hall")]
     public virtual ICollection<Resident_Advisor> Resident_Advisor { get; set; } = new List<Resident_Advisor>();
 
     [ForeignKey("Hall_ID")]

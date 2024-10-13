@@ -8,18 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[PrimaryKey("Hall_ID", "Ra_ID")]
 [Table("RA_On_Call", Schema = "Housing")]
 public partial class RA_On_Call
 {
     [Key]
+    public int Record_ID { get; set; }
+
     public int Hall_ID { get; set; }
 
-    [Key]
     public int Ra_ID { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime Check_in_time { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? Check_out_time { get; set; }
 
     [ForeignKey("Hall_ID")]
     [InverseProperty("RA_On_Call")]

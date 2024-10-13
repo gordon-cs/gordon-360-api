@@ -91,15 +91,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[RA_On_Call_History]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[Housing].[RA_Status]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[Housing].[RA_Status_History]",
          "ObjectType": 0
       },
       {

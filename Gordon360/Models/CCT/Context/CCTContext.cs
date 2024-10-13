@@ -112,11 +112,7 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RA_On_Call> RA_On_Call { get; set; }
 
-    public virtual DbSet<RA_On_Call_History> RA_On_Call_History { get; set; }
-
     public virtual DbSet<RA_Status> RA_Status { get; set; }
-
-    public virtual DbSet<RA_Status_History> RA_Status_History { get; set; }
 
     public virtual DbSet<RA_Status_Schedule> RA_Status_Schedule { get; set; }
 
@@ -558,40 +554,24 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<RA_On_Call>(entity =>
         {
-            entity.HasKey(e => new { e.Hall_ID, e.Ra_ID }).HasName("PK__RA_On_Ca__4B2C77107B706BE7");
+            entity.HasKey(e => e.Record_ID).HasName("PK__tmp_ms_x__603A0C60709CA1D3");
 
             entity.HasOne(d => d.Hall).WithMany(p => p.RA_On_Call)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_On_Cal__Hall___18427513");
+                .HasConstraintName("FK__RA_On_Cal__Hall___3A978D17");
 
             entity.HasOne(d => d.Ra).WithMany(p => p.RA_On_Call)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_On_Cal__Ra_ID__1936994C");
-        });
-
-        modelBuilder.Entity<RA_On_Call_History>(entity =>
-        {
-            entity.HasKey(e => e.Record_ID).HasName("PK__RA_On_Ca__603A0C6045336E5A");
-
-            entity.HasOne(d => d.Hall).WithMany(p => p.RA_On_Call_History).HasConstraintName("FK__RA_On_Cal__Hall___1C1305F7");
-
-            entity.HasOne(d => d.Ra).WithMany(p => p.RA_On_Call_History).HasConstraintName("FK__RA_On_Cal__Ra_ID__1D072A30");
+                .HasConstraintName("FK__RA_On_Cal__Ra_ID__3B8BB150");
         });
 
         modelBuilder.Entity<RA_Status>(entity =>
         {
-            entity.HasKey(e => new { e.Ra_ID, e.Status_name }).HasName("PK__RA_Statu__D0CCD16385537CA7");
+            entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC119AC79C");
 
             entity.HasOne(d => d.Ra).WithMany(p => p.RA_Status)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_Status__Ra_ID__0717E911");
-        });
-
-        modelBuilder.Entity<RA_Status_History>(entity =>
-        {
-            entity.HasKey(e => e.Record_ID).HasName("PK__RA_Statu__603A0C6074EFB375");
-
-            entity.HasOne(d => d.Ra).WithMany(p => p.RA_Status_History).HasConstraintName("FK__RA_Status__Ra_ID__11957784");
+                .HasConstraintName("FK__RA_Status__Ra_ID__3E681DFB");
         });
 
         modelBuilder.Entity<RA_Status_Schedule>(entity =>
