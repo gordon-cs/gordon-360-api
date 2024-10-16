@@ -14,7 +14,9 @@ public partial class RA_Status_Schedule
     [Key]
     public int Sched_ID { get; set; }
 
-    public int? Ra_ID { get; set; }
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Ra_ID { get; set; }
 
     [Required]
     [StringLength(50)]
@@ -28,10 +30,6 @@ public partial class RA_Status_Schedule
     public DateTime? End_time { get; set; }
 
     public int? recur_ID { get; set; }
-
-    [ForeignKey("Ra_ID")]
-    [InverseProperty("RA_Status_Schedule")]
-    public virtual Resident_Advisor Ra { get; set; }
 
     [ForeignKey("recur_ID")]
     [InverseProperty("RA_Status_Schedule")]

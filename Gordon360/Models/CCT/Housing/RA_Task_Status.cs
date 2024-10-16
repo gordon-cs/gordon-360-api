@@ -13,16 +13,14 @@ namespace Gordon360.Models.CCT;
 public partial class RA_Task_Status
 {
     [Key]
-    public int Ra_ID { get; set; }
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Ra_ID { get; set; }
 
     [Key]
     public int Task_ID { get; set; }
 
     public bool? Is_Completed { get; set; }
-
-    [ForeignKey("Ra_ID")]
-    [InverseProperty("RA_Task_Status")]
-    public virtual Resident_Advisor Ra { get; set; }
 
     [ForeignKey("Task_ID")]
     [InverseProperty("RA_Task_Status")]

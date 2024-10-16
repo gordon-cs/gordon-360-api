@@ -14,7 +14,9 @@ public partial class Hall_Assignment_Ranges
     [Key]
     public int Range_ID { get; set; }
 
-    public int? Hall_ID { get; set; }
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Hall_ID { get; set; }
 
     [StringLength(10)]
     [Unicode(false)]
@@ -24,11 +26,6 @@ public partial class Hall_Assignment_Ranges
     [Unicode(false)]
     public string Room_End { get; set; }
 
-    [ForeignKey("Hall_ID")]
-    [InverseProperty("Hall_Assignment_Ranges")]
-    public virtual Halls Hall { get; set; }
-
-    [ForeignKey("Range_ID")]
     [InverseProperty("Range")]
-    public virtual ICollection<Resident_Advisor> Ra { get; set; } = new List<Resident_Advisor>();
+    public virtual ICollection<RA_Assigned_Ranges> RA_Assigned_Ranges { get; set; } = new List<RA_Assigned_Ranges>();
 }

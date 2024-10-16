@@ -8,25 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("RA_Status", Schema = "Housing")]
-public partial class RA_Status
+[PrimaryKey("Range_ID", "Ra_ID")]
+[Table("RA_Assigned_Ranges", Schema = "Housing")]
+public partial class RA_Assigned_Ranges
 {
     [Key]
-    public int Status_ID { get; set; }
+    public int Range_ID { get; set; }
 
-    [Required]
+    [Key]
     [StringLength(10)]
     [Unicode(false)]
     public string Ra_ID { get; set; }
 
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Status_name { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime Start_Time { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? End_Time { get; set; }
+    [ForeignKey("Range_ID")]
+    [InverseProperty("RA_Assigned_Ranges")]
+    public virtual Hall_Assignment_Ranges Range { get; set; }
 }

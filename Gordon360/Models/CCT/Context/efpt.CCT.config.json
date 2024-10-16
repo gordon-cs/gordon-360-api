@@ -75,19 +75,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[Hall_Permissions]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[Housing].[Halls]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[Housing].[RA_Assigned_Ranges]",
          "ObjectType": 0
       },
       {
          "Name": "[Housing].[RA_On_Call]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Pref_Contact]",
          "ObjectType": 0
       },
       {
@@ -108,10 +104,6 @@
       },
       {
          "Name": "[Housing].[Recurrence]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[Housing].[Resident_Advisor]",
          "ObjectType": 0
       },
       {

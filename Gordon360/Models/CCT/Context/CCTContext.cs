@@ -56,8 +56,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Hall_Assignment_Ranges> Hall_Assignment_Ranges { get; set; }
 
-    public virtual DbSet<Halls> Halls { get; set; }
-
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
 
     public virtual DbSet<Housing_Applications> Housing_Applications { get; set; }
@@ -110,7 +108,11 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<PrivType> PrivType { get; set; }
 
+    public virtual DbSet<RA_Assigned_Ranges> RA_Assigned_Ranges { get; set; }
+
     public virtual DbSet<RA_On_Call> RA_On_Call { get; set; }
+
+    public virtual DbSet<RA_Pref_Contact> RA_Pref_Contact { get; set; }
 
     public virtual DbSet<RA_Status> RA_Status { get; set; }
 
@@ -125,8 +127,6 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Recurrence> Recurrence { get; set; }
 
     public virtual DbSet<RequestView> RequestView { get; set; }
-
-    public virtual DbSet<Resident_Advisor> Resident_Advisor { get; set; }
 
     public virtual DbSet<RoleType> RoleType { get; set; }
 
@@ -307,62 +307,6 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Hall_Assignment_Ranges>(entity =>
         {
             entity.HasKey(e => e.Range_ID).HasName("PK__Hall_Ass__918829E78BFD242E");
-
-            entity.HasOne(d => d.Hall).WithMany(p => p.Hall_Assignment_Ranges).HasConstraintName("FK__Hall_Assi__Hall___1FE396DB");
-
-            entity.HasMany(d => d.Ra).WithMany(p => p.Range)
-                .UsingEntity<Dictionary<string, object>>(
-                    "RA_Assigned_Ranges",
-                    r => r.HasOne<Resident_Advisor>().WithMany()
-                        .HasForeignKey("Ra_ID")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__RA_Assign__Ra_ID__23B427BF"),
-                    l => l.HasOne<Hall_Assignment_Ranges>().WithMany()
-                        .HasForeignKey("Range_ID")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__RA_Assign__Range__22C00386"),
-                    j =>
-                    {
-                        j.HasKey("Range_ID", "Ra_ID").HasName("PK__RA_Assig__48DB2FD1B0A5147D");
-                        j.ToTable("RA_Assigned_Ranges", "Housing");
-                    });
-        });
-
-        modelBuilder.Entity<Halls>(entity =>
-        {
-            entity.HasMany(d => d.Accessible_Hall).WithMany(p => p.Hall)
-                .UsingEntity<Dictionary<string, object>>(
-                    "Hall_Permissions",
-                    r => r.HasOne<Halls>().WithMany()
-                        .HasForeignKey("Accessible_Hall_ID")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Hall_Perm__Acces__15660868"),
-                    l => l.HasOne<Halls>().WithMany()
-                        .HasForeignKey("Hall_ID")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Hall_Perm__Hall___1471E42F"),
-                    j =>
-                    {
-                        j.HasKey("Hall_ID", "Accessible_Hall_ID").HasName("PK__Hall_Per__BEF631825AADE55A");
-                        j.ToTable("Hall_Permissions", "Housing");
-                    });
-
-            entity.HasMany(d => d.Hall).WithMany(p => p.Accessible_Hall)
-                .UsingEntity<Dictionary<string, object>>(
-                    "Hall_Permissions",
-                    r => r.HasOne<Halls>().WithMany()
-                        .HasForeignKey("Hall_ID")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Hall_Perm__Hall___1471E42F"),
-                    l => l.HasOne<Halls>().WithMany()
-                        .HasForeignKey("Accessible_Hall_ID")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__Hall_Perm__Acces__15660868"),
-                    j =>
-                    {
-                        j.HasKey("Hall_ID", "Accessible_Hall_ID").HasName("PK__Hall_Per__BEF631825AADE55A");
-                        j.ToTable("Hall_Permissions", "Housing");
-                    });
         });
 
         modelBuilder.Entity<Housing_Applicants>(entity =>
@@ -552,48 +496,46 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
+        modelBuilder.Entity<RA_Assigned_Ranges>(entity =>
+        {
+            entity.HasKey(e => new { e.Range_ID, e.Ra_ID }).HasName("PK__tmp_ms_x__48DB2FD19ADEAB8F");
+
+            entity.HasOne(d => d.Range).WithMany(p => p.RA_Assigned_Ranges)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__RA_Assign__Range__48E5AC6E");
+        });
+
         modelBuilder.Entity<RA_On_Call>(entity =>
         {
-            entity.HasKey(e => e.Record_ID).HasName("PK__tmp_ms_x__603A0C60709CA1D3");
+            entity.HasKey(e => new { e.Hall_ID, e.Ra_ID }).HasName("PK__tmp_ms_x__4B2C7710E9B7FD7B");
 
-            entity.HasOne(d => d.Hall).WithMany(p => p.RA_On_Call)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_On_Cal__Hall___3A978D17");
+            entity.Property(e => e.Record_ID).ValueGeneratedOnAdd();
+        });
 
-            entity.HasOne(d => d.Ra).WithMany(p => p.RA_On_Call)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_On_Cal__Ra_ID__3B8BB150");
+        modelBuilder.Entity<RA_Pref_Contact>(entity =>
+        {
+            entity.HasKey(e => e.Ra_ID).HasName("PK__RA_Pref___9530636C18757ADA");
         });
 
         modelBuilder.Entity<RA_Status>(entity =>
         {
             entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC119AC79C");
-
-            entity.HasOne(d => d.Ra).WithMany(p => p.RA_Status)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_Status__Ra_ID__3E681DFB");
         });
 
         modelBuilder.Entity<RA_Status_Schedule>(entity =>
         {
             entity.HasKey(e => e.Sched_ID).HasName("PK__RA_Statu__67FBEF061E83AAC9");
 
-            entity.HasOne(d => d.Ra).WithMany(p => p.RA_Status_Schedule).HasConstraintName("FK__RA_Status__Ra_ID__0DC4E6A0");
-
             entity.HasOne(d => d.recur).WithMany(p => p.RA_Status_Schedule).HasConstraintName("FK__RA_Status__recur__0EB90AD9");
         });
 
         modelBuilder.Entity<RA_Task_Status>(entity =>
         {
-            entity.HasKey(e => new { e.Ra_ID, e.Task_ID }).HasName("PK__RA_Task___522697C0F2F5407E");
-
-            entity.HasOne(d => d.Ra).WithMany(p => p.RA_Task_Status)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_Task_S__Ra_ID__2878DCDC");
+            entity.HasKey(e => new { e.Ra_ID, e.Task_ID }).HasName("PK__tmp_ms_x__522697C0D44FD4E0");
 
             entity.HasOne(d => d.Task).WithMany(p => p.RA_Task_Status)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_Task_S__Task___296D0115");
+                .HasConstraintName("FK__RA_Task_S__Task___432CD318");
         });
 
         modelBuilder.Entity<RA_Tasks>(entity =>
@@ -621,13 +563,6 @@ public partial class CCTContext : DbContext
 
             entity.Property(e => e.ActivityDescription).IsFixedLength();
             entity.Property(e => e.ParticipationDescription).IsFixedLength();
-        });
-
-        modelBuilder.Entity<Resident_Advisor>(entity =>
-        {
-            entity.HasKey(e => e.Ra_ID).HasName("PK__Resident__9530636CD75B0459");
-
-            entity.HasOne(d => d.Hall).WithMany(p => p.Resident_Advisor).HasConstraintName("FK__Resident___Hall___043B7C66");
         });
 
         modelBuilder.Entity<Series>(entity =>

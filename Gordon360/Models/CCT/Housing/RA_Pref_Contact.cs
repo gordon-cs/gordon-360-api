@@ -8,25 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("RA_Status", Schema = "Housing")]
-public partial class RA_Status
+[Table("RA_Pref_Contact", Schema = "Housing")]
+public partial class RA_Pref_Contact
 {
     [Key]
-    public int Status_ID { get; set; }
-
-    [Required]
     [StringLength(10)]
     [Unicode(false)]
     public string Ra_ID { get; set; }
 
     [Required]
-    [StringLength(50)]
+    [StringLength(10)]
     [Unicode(false)]
-    public string Status_name { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime Start_Time { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? End_Time { get; set; }
+    public string Pref_contact { get; set; }
 }
