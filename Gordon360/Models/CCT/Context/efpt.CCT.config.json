@@ -307,6 +307,18 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Housing].[Current_On_Call]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RA_Students]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RD_Info]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[RecIM].[ParticipantView]",
          "ObjectType": 3
       },

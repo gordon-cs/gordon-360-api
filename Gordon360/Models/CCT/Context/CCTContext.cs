@@ -44,6 +44,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Countries> Countries { get; set; }
 
+    public virtual DbSet<Current_On_Call> Current_On_Call { get; set; }
+
     public virtual DbSet<CustomParticipant> CustomParticipant { get; set; }
 
     public virtual DbSet<DiningInfo> DiningInfo { get; set; }
@@ -118,9 +120,13 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RA_Status_Schedule> RA_Status_Schedule { get; set; }
 
+    public virtual DbSet<RA_Students> RA_Students { get; set; }
+
     public virtual DbSet<RA_Task_Status> RA_Task_Status { get; set; }
 
     public virtual DbSet<RA_Tasks> RA_Tasks { get; set; }
+
+    public virtual DbSet<RD_Info> RD_Info { get; set; }
 
     public virtual DbSet<REQUEST> REQUEST { get; set; }
 
@@ -256,6 +262,11 @@ public partial class CCTContext : DbContext
             entity.ToView("Countries", "dbo");
 
             entity.Property(e => e.CTY).IsFixedLength();
+        });
+
+        modelBuilder.Entity<Current_On_Call>(entity =>
+        {
+            entity.ToView("Current_On_Call", "Housing");
         });
 
         modelBuilder.Entity<CustomParticipant>(entity =>
@@ -529,6 +540,13 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.recur).WithMany(p => p.RA_Status_Schedule).HasConstraintName("FK__RA_Status__recur__0EB90AD9");
         });
 
+        modelBuilder.Entity<RA_Students>(entity =>
+        {
+            entity.ToView("RA_Students", "Housing");
+
+            entity.Property(e => e.Dorm).IsFixedLength();
+        });
+
         modelBuilder.Entity<RA_Task_Status>(entity =>
         {
             entity.HasKey(e => new { e.Ra_ID, e.Task_ID }).HasName("PK__tmp_ms_x__522697C0D44FD4E0");
@@ -541,6 +559,13 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<RA_Tasks>(entity =>
         {
             entity.HasKey(e => e.Task_ID).HasName("PK__RA_Tasks__716F4ACD264F4856");
+        });
+
+        modelBuilder.Entity<RD_Info>(entity =>
+        {
+            entity.ToView("RD_Info", "Housing");
+
+            entity.Property(e => e.HallName).IsFixedLength();
         });
 
         modelBuilder.Entity<REQUEST>(entity =>
