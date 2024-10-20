@@ -1,0 +1,9 @@
+namespace Gordon360.Models.ViewModels
+{
+    public class HallAssignmentRangeViewModel
+    {
+        public string Hall_ID { get; set; }      // ID for the hall (e.g., "Chase")
+        public string Room_Start { get; set; }   // Start room number (e.g., "101")
+        public string Room_End { get; set; }     // End room number (e.g., "120")
+    }
+}

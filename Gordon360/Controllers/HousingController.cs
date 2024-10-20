@@ -229,4 +229,23 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return NotFound();
         }
     }
+
+    [HttpPost("roomrange")]
+    public async Task<ActionResult<Hall_Assignment_Ranges>> CreateRoomRange([FromBody] HallAssignmentRangeViewModel model)
+    {
+        try
+        {
+            var newRange = await _housingService.CreateRoomRangeAsync(model);
+            return Created("Room range created successfully.", newRange);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
 }

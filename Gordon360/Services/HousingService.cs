@@ -531,4 +531,37 @@ public class HousingService(CCTContext context) : IHousingService
         context.SaveChanges();
         return true;
     }
+
+    /// <summary>
+    /// Creates a new hall assignment range if it does not overlap with any existing ranges
+    /// </summary>
+    /// <param name="model">The ViewModel that contains the hall ID and room range</param>
+    /// <returns>The created Hall_Assignment_Ranges object</returns>
+    public async Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model)
+    {
+        // Check if there is any overlapping room ranges in the same hall
+        var overlappingRange = await context.Hall_Assignment_Ranges
+            .FirstOrDefaultAsync(r => r.Hall_ID == model.Hall_ID
+                && ((string.Compare(r.Room_Start, model.Room_Start) <= 0 && string.Compare(r.Room_End, model.Room_Start) >= 0) ||
+                    (string.Compare(r.Room_Start, model.Room_End) <= 0 && string.Compare(r.Room_End, model.Room_End) >= 0)));
+
+        if (overlappingRange != null)
+        {
+            throw new InvalidOperationException("The room range overlaps with an existing range in this hall.");
+        }
+
+        // Create a new Hall_Assignment_Ranges object
+        var newRange = new Hall_Assignment_Ranges
+        {
+            Hall_ID = model.Hall_ID,
+            Room_Start = model.Room_Start,
+            Room_End = model.Room_End
+        };
+
+        // Add to the context and save changes
+        context.Hall_Assignment_Ranges.Add(newRange);
+        await context.SaveChangesAsync();
+
+        return newRange;
+    }
 }
