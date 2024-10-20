@@ -1,6 +1,8 @@
 using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.CCT;
+using System.Threading.Tasks;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.Housing;
 using Gordon360.Services;
@@ -9,6 +11,7 @@ using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
+using System;
 
 namespace Gordon360.Controllers;
 
@@ -236,7 +239,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         try
         {
-            var newRange = await _housingService.CreateRoomRangeAsync(model);
+            var newRange = await housingService.CreateRoomRangeAsync(model);
             return Created("Room range created successfully.", newRange);
         }
         catch (InvalidOperationException ex)
