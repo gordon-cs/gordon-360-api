@@ -566,4 +566,28 @@ public class HousingService(CCTContext context) : IHousingService
 
         return newRange;
     }
+
+    /// <summary>
+    /// Deletes a Room Range
+    /// </summary>
+    /// <param name="rangeId">The ID of the room range to delete</param>
+    /// <returns> Returns if completed</returns>
+    public async Task<bool> DeleteRoomRangeAsync(int rangeId)
+    {
+        // Find the room range by ID
+        var roomRange = await context.Hall_Assignment_Ranges
+                                    .FirstOrDefaultAsync(r => r.ID == rangeId);
+
+        if (roomRange == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "Room range not found." };
+        }
+
+        context.Hall_Assignment_Ranges.Remove(roomRange);
+
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
 }

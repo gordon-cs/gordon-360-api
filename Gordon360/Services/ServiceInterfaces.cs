@@ -226,6 +226,7 @@ namespace Gordon360.Services
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
         Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model);
+        Task<bool> DeleteRoomRangeAsync(int rangeId);
     }
 
     public interface IAcademicCheckInService

@@ -252,4 +252,28 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    [HttpDelete("roomrange/{rangeId}")]
+    public async Task<IActionResult> DeleteRoomRange(int rangeId)
+    {
+        try
+        {
+            var success = await housingService.DeleteRoomRangeAsync(rangeId);
+            if (success)
+            {
+                return Ok(new { message = "Room range deleted successfully." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to delete the room range." });
+            }
+        }
+        catch (ResourceNotFoundException ex)
+        {
+            return NotFound(new { message = ex.ExceptionMessage });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 }
