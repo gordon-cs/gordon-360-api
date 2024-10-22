@@ -576,7 +576,7 @@ public class HousingService(CCTContext context) : IHousingService
     {
         // Find the room range by ID
         var roomRange = await context.Hall_Assignment_Ranges
-                                    .FirstOrDefaultAsync(r => r.ID == rangeId);
+                                    .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
 
         if (roomRange == null)
         {

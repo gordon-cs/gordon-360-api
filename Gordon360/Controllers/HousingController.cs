@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
 using System;
+using Gordon360.Exceptions;
+
 
 namespace Gordon360.Controllers;
 

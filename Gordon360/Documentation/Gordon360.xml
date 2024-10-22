@@ -1840,6 +1840,20 @@
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.CreateRoomRangeAsync(Gordon360.Models.ViewModels.Housing.HallAssignmentRangeViewModel)">
+            <summary>
+            Creates a new hall assignment range if it does not overlap with any existing ranges
+            </summary>
+            <param name="model">The ViewModel that contains the hall ID and room range</param>
+            <returns>The created Hall_Assignment_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteRoomRangeAsync(System.Int32)">
+            <summary>
+            Deletes a Room Range
+            </summary>
+            <param name="rangeId">The ID of the room range to delete</param>
+            <returns> Returns if completed</returns>
+        </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
             Service class to facilitate data transactions between the MembershipRequestController and the database
