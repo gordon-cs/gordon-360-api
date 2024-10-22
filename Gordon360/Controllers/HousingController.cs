@@ -1,13 +1,19 @@
 using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Models.CCT.Context;
+using Gordon360.Models.CCT;
+using System.Threading.Tasks;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.ViewModels.Housing;
 using Gordon360.Services;
 using Gordon360.Static.Methods;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
+using System;
+using Gordon360.Exceptions;
+
 
 namespace Gordon360.Controllers;
 
@@ -227,6 +233,49 @@ public class HousingController(CCTContext context, IProfileService profileServic
         else
         {
             return NotFound();
+        }
+    }
+
+    [HttpPost("roomrange")]
+    public async Task<ActionResult<Hall_Assignment_Ranges>> CreateRoomRange([FromBody] HallAssignmentRangeViewModel model)
+    {
+        try
+        {
+            var newRange = await housingService.CreateRoomRangeAsync(model);
+            return Created("Room range created successfully.", newRange);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [HttpDelete("roomrange/{rangeId}")]
+    public async Task<IActionResult> DeleteRoomRange(int rangeId)
+    {
+        try
+        {
+            var success = await housingService.DeleteRoomRangeAsync(rangeId);
+            if (success)
+            {
+                return Ok(new { message = "Room range deleted successfully." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to delete the room range." });
+            }
+        }
+        catch (ResourceNotFoundException ex)
+        {
+            return NotFound(new { message = ex.ExceptionMessage });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 }

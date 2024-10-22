@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.ViewModels.Housing;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -224,6 +225,8 @@ namespace Gordon360.Services
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, List<ApartmentApplicantViewModel> newApartmentApplicants, List<ApartmentChoiceViewModel> newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
+        Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model);
+        Task<bool> DeleteRoomRangeAsync(int rangeId);
     }
 
     public interface IAcademicCheckInService

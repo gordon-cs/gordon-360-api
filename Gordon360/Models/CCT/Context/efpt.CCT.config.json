@@ -71,6 +71,42 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[Hall_Assignment_Ranges]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Assigned_Ranges]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_On_Call]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Pref_Contact]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Status]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Status_Schedule]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Task_Status]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Tasks]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Recurrence]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Activity]",
          "ObjectType": 0
       },
@@ -268,6 +304,18 @@
       },
       {
          "Name": "[dbo].[UserCourses]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Current_On_Call]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RA_Students]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RD_Info]",
          "ObjectType": 3
       },
       {
