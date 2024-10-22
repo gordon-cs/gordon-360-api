@@ -226,6 +226,13 @@ namespace Gordon360.Services
         bool ChangeApplicationDateSubmitted(int applicationID);
     }
 
+    public interface ILostAndFoundService
+    {
+        IEnumerable<FoundItems> GetFoundItems();
+        FoundItems? GetFoundItem(int ID);
+    }
+
+
     public interface IAcademicCheckInService
     {
         Task PutCellPhoneAsync(string id, MobilePhoneUpdateViewModel data);

@@ -1840,6 +1840,13 @@
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
         </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItem(System.Int32)">
+            <summary>
+            Gets a FoundItem by id
+            </summary>
+            <param name="ID">The ID of the found item</param>
+            <returns>A FoundItem, or null if no item matches the id</returns>
+        </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
             Service class to facilitate data transactions between the MembershipRequestController and the database
