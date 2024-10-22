@@ -90,6 +90,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Minors> Minors { get; set; }
 
+    public virtual DbSet<Missing> Missing { get; set; }
+
     public virtual DbSet<PART_DEF> PART_DEF { get; set; }
 
     public virtual DbSet<Participant> Participant { get; set; }
@@ -405,6 +407,13 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Minors>(entity =>
         {
             entity.ToView("Minors", "dbo");
+        });
+
+        modelBuilder.Entity<Missing>(entity =>
+        {
+            entity.HasKey(e => e.recordID).HasName("PK__Missing__D825197EEC1C3D1C");
+
+            entity.Property(e => e.recordID).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>
