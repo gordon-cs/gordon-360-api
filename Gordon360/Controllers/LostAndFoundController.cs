@@ -11,6 +11,20 @@ namespace Gordon360.Controllers
     [Route("/api/[controller]")]
     public class LostAndFoundController(CCTContext context, ILostAndFoundService lostAndFoundService) : GordonControllerBase
     {
+        [HttpGet]
+        [Route("/MissingItems")]
+        public ActionResult<IEnumerable<Missing>> GetMissingItems()
+        {
+            IEnumerable<Missing> result = lostAndFoundService.GetMissingItems();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
         [HttpGet]
         [Route("/FoundItems")]

@@ -8,6 +8,11 @@ namespace Gordon360.Services
 {
     public class LostAndFoundService(CCTContext context) : ILostAndFoundService
     {
+        public IEnumerable<Missing> GetMissingItems()
+        {
+            return context.Missing.AsEnumerable();
+        }
+
         public IEnumerable<FoundItems> GetFoundItems()
         {
             return context.FoundItems.AsEnumerable();
