@@ -71,6 +71,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[LostAndFound].[FoundItems]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[Missing]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Activity]",
          "ObjectType": 0
       },
