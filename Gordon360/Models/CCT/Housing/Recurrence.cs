@@ -12,7 +12,7 @@ namespace Gordon360.Models.CCT;
 public partial class Recurrence
 {
     [Key]
-    public int recur_ID { get; set; }
+    public int sched_ID { get; set; }
 
     [StringLength(10)]
     [Unicode(false)]
@@ -27,6 +27,7 @@ public partial class Recurrence
     [Column(TypeName = "date")]
     public DateTime? end_date { get; set; }
 
-    [InverseProperty("recur")]
-    public virtual ICollection<RA_Status_Schedule> RA_Status_Schedule { get; set; } = new List<RA_Status_Schedule>();
+    [ForeignKey("sched_ID")]
+    [InverseProperty("Recurrence")]
+    public virtual RA_Status_Schedule sched { get; set; }
 }
