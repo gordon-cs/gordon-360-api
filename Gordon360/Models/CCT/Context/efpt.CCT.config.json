@@ -311,6 +311,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Housing].[Halls]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[Housing].[RA_Students]",
          "ObjectType": 3
       },
