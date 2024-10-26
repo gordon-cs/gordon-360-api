@@ -292,15 +292,15 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <summary>
     /// Assigns an RA to a room range if no RA is currently assigned
     /// </summary>
-    /// <param name="rangeId">The ID of the room range</param>
-    /// <param name="raId">The ID of the RA to assign</param>
+    /// <param name="range_Id">The ID of the room range</param>
+    /// <param name="ra_Id">The ID of the RA to assign</param>
     /// <returns>The created RA_Assigned_Ranges object</returns>
     [HttpPost("assign-ra")]
-    public async Task<ActionResult<RA_Assigned_Ranges>> AssignRaToRoomRange([FromBody] RaAssignmentViewModel model)
+    public async Task<ActionResult<RA_Assigned_Ranges>> AssignRaToRoomRange([FromBody] RA_AssignmentViewModel model)
     {
         try
         {
-            var assignedRange = await housingService.AssignRaToRoomRangeAsync(model.RangeId, model.RaId);
+            var assignedRange = await housingService.AssignRaToRoomRangeAsync(model.Range_ID, model.Ra_ID);
             return Created("RA assigned to room range successfully.", assignedRange);
         }
         catch (InvalidOperationException ex)
@@ -324,7 +324,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         try
         {
-            var raId = await _housingService.GetResidentRAAsync(hallId, roomNumber);
+            var raId = await housingService.GetResidentRAAsync(hallId, roomNumber);
             return Ok(raId);
         }
         catch (InvalidOperationException ex)
