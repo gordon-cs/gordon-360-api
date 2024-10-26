@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Gordon360.Models.CCT;
+using System;
+using System.Reflection;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -32,10 +34,30 @@ namespace Gordon360.Models.ViewModels
 
         public string? altPhone { get; set; }
 
-        public string emailAddress { get; set; }
+        public string emailAddr { get; set; }
 
         public string status { get; set; }
 
         public string? adminUsername { get; set; }
+
+        public static implicit operator MissingItemReportViewModel(CCT.Missing MissingReportDBModel) => new MissingItemReportViewModel
+        {
+            recordID = MissingReportDBModel.recordID,
+            firstName = MissingReportDBModel.firstName,
+            lastName = MissingReportDBModel.lastName,
+            category = MissingReportDBModel.category,
+            brand = MissingReportDBModel.brand,
+            description = MissingReportDBModel.description,
+            locationLost = MissingReportDBModel.locationLost,
+            stolen = (bool)MissingReportDBModel.stolen,
+            stolenDescription = MissingReportDBModel.stolenDescription,
+            dateLost = (DateTime)MissingReportDBModel.dateLost,
+            dateCreated = (DateTime)MissingReportDBModel.dateCreated,
+            phoneNumber = MissingReportDBModel.phoneNumber,
+            altPhone = MissingReportDBModel.altPhone,
+            emailAddr = MissingReportDBModel.emailAddr,
+            status = MissingReportDBModel.status,
+            adminUsername = MissingReportDBModel.adminUsername,
+        };
     }
 }

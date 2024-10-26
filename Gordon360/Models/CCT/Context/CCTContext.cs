@@ -411,9 +411,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<Missing>(entity =>
         {
-            entity.HasKey(e => e.recordID).HasName("PK__Missing__D825197EEC1C3D1C");
-
-            entity.Property(e => e.recordID).ValueGeneratedNever();
+            entity.HasKey(e => e.recordID).HasName("PK__Missing__D825197E645524A6");
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>

@@ -1840,6 +1840,18 @@
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
         </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItems">
+            <summary>
+            Get the full list of all missing item reports.
+            </summary>
+            <returns>an Enumerable of Missing containing all missing item reports</returns>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItems">
+            <summary>
+            Gets all FoundItems
+            </summary>
+            <returns>An Enumerable of FoundItems containing all the Found Items</returns>
+        </member>
         <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItem(System.Int32)">
             <summary>
             Gets a FoundItem by id

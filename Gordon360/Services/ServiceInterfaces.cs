@@ -229,7 +229,7 @@ namespace Gordon360.Services
     public interface ILostAndFoundService
     {
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails);
-        IEnumerable<Missing> GetMissingItems();
+        IEnumerable<MissingItemReportViewModel> GetMissingItems();
         IEnumerable<FoundItems> GetFoundItems();
         FoundItems? GetFoundItem(int ID);
     }

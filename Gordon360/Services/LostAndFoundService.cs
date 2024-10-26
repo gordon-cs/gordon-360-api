@@ -12,13 +12,12 @@ namespace Gordon360.Services
     {
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails)
         {
-          
-
-            var newReportResults = context.Missing.Add(new Missing { firstName = reportDetails.firstName, lastName = reportDetails.lastName, category = reportDetails.category, brand = reportDetails.brand, description = reportDetails.description, locationLost = reportDetails.locationLost, stolen = reportDetails.stolen, stolenDescription = reportDetails.stolenDescription, dateLost = reportDetails.dateLost, dateCreated = reportDetails.dateCreated, phoneNumber = reportDetails.phoneNumber, altPhone = reportDetails.altPhone, emailAddr = reportDetails.emailAddress, status = reportDetails.status, adminUsername = reportDetails.adminUsername });
+            var newReportResults = context.Missing.Add(new Missing { firstName = reportDetails.firstName, lastName = reportDetails.lastName, category = reportDetails.category, brand = reportDetails.brand, description = reportDetails.description, locationLost = reportDetails.locationLost, stolen = reportDetails.stolen, stolenDescription = reportDetails.stolenDescription, dateLost = reportDetails.dateLost, dateCreated = reportDetails.dateCreated, phoneNumber = reportDetails.phoneNumber, altPhone = reportDetails.altPhone, emailAddr = reportDetails.emailAddr, status = reportDetails.status, adminUsername = reportDetails.adminUsername });
+            // var newReportResults = context.Missing.Add(new Missing(reportDetails))
 
             context.SaveChanges();
 
-            if (newReportResults?.Entity == null)
+            if (newReportResults?.Entity == null || newReportResults?.Entity?.recordID == 0)
             {
                 throw new ResourceCreationException() { ExceptionMessage = "The application could not be saved." };
             }
@@ -29,11 +28,19 @@ namespace Gordon360.Services
             return reportID;
         }
 
-        public IEnumerable<Missing> GetMissingItems()
+        /// <summary>
+        /// Get the full list of all missing item reports.
+        /// </summary>
+        /// <returns>an Enumerable of Missing containing all missing item reports</returns>
+        public IEnumerable<MissingItemReportViewModel> GetMissingItems()
         {
-            return context.Missing.AsEnumerable();
+             return context.Missing.Select<Missing, MissingItemReportViewModel>(a => a).AsEnumerable();
         }
 
+        /// <summary>
+        /// Gets all FoundItems
+        /// </summary>
+        /// <returns>An Enumerable of FoundItems containing all the Found Items</returns>
         public IEnumerable<FoundItems> GetFoundItems()
         {
             return context.FoundItems.AsEnumerable();
