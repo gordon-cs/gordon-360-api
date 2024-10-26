@@ -590,4 +590,71 @@ public class HousingService(CCTContext context) : IHousingService
         return true;
     }
 
+    /// <summary>
+    /// Assigns an RA to a room range if no RA is currently assigned
+    /// </summary>
+    /// <param name="rangeId">The ID of the room range</param>
+    /// <param name="raId">The ID of the RA to assign</param>
+    /// <returns>The created RA_Assigned_Ranges object</returns>
+    public async Task<RA_Assigned_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId)
+    {
+        // Check if a different RA is already assigned to the range
+        var existingAssignment = await context.RA_Assigned_Ranges
+            .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
+
+        if (existingAssignment != null)
+        {
+            throw new InvalidOperationException("This room range already has an RA assigned.");
+        }
+
+        // Create the new RA assignment
+        var newAssignment = new RA_Assigned_Ranges
+        {
+            Range_ID = rangeId,
+            Ra_ID = raId
+        };
+
+        // Add the assignment to the database
+        context.RA_Assigned_Ranges.Add(newAssignment);
+        await context.SaveChangesAsync();
+
+        return newAssignment;
+    }
+
+    /// <summary>
+    /// Retrieves the RA assigned to a resident based on their room number and hall ID.
+    /// </summary>
+    /// <param name="hallId">The ID of the hall.</param>
+    /// <param name="roomNumber">The resident's room number.</param>
+    /// <returns>Returns the RA's ID if found, otherwise null.</returns>
+    public async Task<string> GetResidentRAAsync(string hallId, string roomNumber)
+    {
+        // Query the room range within the specified hall that contains the room number
+        var roomRange = await context.Hall_Assignment_Ranges
+            .FirstOrDefaultAsync(r => r.Hall_ID == hallId 
+                && string.Compare(r.Room_Start, roomNumber) <= 0 
+                && string.Compare(r.Room_End, roomNumber) >= 0);
+
+        if (roomRange == null)
+        {
+            throw new InvalidOperationException("No RA found for the provided room number in the specified hall.");
+        }
+
+        // Find the RA assigned to that room range
+        var assignedRA = await context.RA_Assigned_Ranges
+            .Where(ra => ra.Range_ID == roomRange.Range_ID)
+            .Select(ra => ra.Ra_ID)
+            .FirstOrDefaultAsync();
+
+        if (assignedRA == null)
+        {
+            throw new InvalidOperationException("No RA assigned to this room range.");
+        }
+
+        return assignedRA;
+    }
+
+
+
+
 }
