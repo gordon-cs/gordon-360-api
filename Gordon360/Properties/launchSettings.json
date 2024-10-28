@@ -3,12 +3,12 @@
     "Development": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:51619/swagger",
+      "launchUrl": "https://localhost:51659/swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "sqlDebugging": true,
-      "applicationUrl": "https://localhost:51619;http://localhost:51618"
+      "applicationUrl": "https://localhost:51659;http://localhost:51660"
     },
     "Train": {
       "commandName": "Project",

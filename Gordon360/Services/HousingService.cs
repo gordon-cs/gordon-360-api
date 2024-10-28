@@ -658,15 +658,15 @@ public class HousingService(CCTContext context) : IHousingService
     /// Retrieves all room ranges.
     /// </summary>
     /// <returns>A list of room ranges.</returns>
-    public async Task<List<RoomRangeViewModel>> GetAllRoomRangesAsync()
+    public async Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync()
     {
         var roomRanges = await context.Hall_Assignment_Ranges
-            .Select(r => new RoomRangeViewModel
+            .Select(r => new HallAssignmentRangeViewModel
             {
                 RangeID = r.Range_ID,
-                HallID = r.Hall_ID,
-                RoomStart = r.Room_Start,
-                RoomEnd = r.Room_End
+                Hall_ID = r.Hall_ID,
+                Room_Start = r.Room_Start,
+                Room_End = r.Room_End
             })
             .ToListAsync();
 

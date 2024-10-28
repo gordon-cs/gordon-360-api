@@ -13,7 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System;
 using Gordon360.Exceptions;
-
+using System.Collections.Generic;
 
 namespace Gordon360.Controllers;
 
@@ -342,7 +342,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns>A list of room ranges.</returns>
     [HttpGet("room-ranges")]
-    public async Task<ActionResult<List<RoomRangeViewModel>>> GetAllRoomRanges()
+    public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetAllRoomRanges()
     {
         try
         {
