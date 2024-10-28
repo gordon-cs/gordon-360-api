@@ -654,7 +654,24 @@ public class HousingService(CCTContext context) : IHousingService
         return assignedRA;
     }
 
+    /// <summary>
+    /// Retrieves all room ranges.
+    /// </summary>
+    /// <returns>A list of room ranges.</returns>
+    public async Task<List<RoomRangeViewModel>> GetAllRoomRangesAsync()
+    {
+        var roomRanges = await context.Hall_Assignment_Ranges
+            .Select(r => new RoomRangeViewModel
+            {
+                RangeID = r.Range_ID,
+                HallID = r.Hall_ID,
+                RoomStart = r.Room_Start,
+                RoomEnd = r.Room_End
+            })
+            .ToListAsync();
 
+        return roomRanges;
+    }
 
 
 }

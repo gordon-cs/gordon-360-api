@@ -337,6 +337,24 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Retrieves all room ranges.
+    /// </summary>
+    /// <returns>A list of room ranges.</returns>
+    [HttpGet("room-ranges")]
+    public async Task<ActionResult<List<RoomRangeViewModel>>> GetAllRoomRanges()
+    {
+        try
+        {
+            var roomRanges = await housingService.GetAllRoomRangesAsync();
+            return Ok(roomRanges);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
 
 
 }
