@@ -26,7 +26,7 @@ public partial class Missing
 
     [StringLength(255)]
     [Unicode(false)]
-    public string brand { get; set; }
+    public string? brand { get; set; }
 
     [StringLength(255)]
     [Unicode(false)]
@@ -40,7 +40,7 @@ public partial class Missing
 
     [StringLength(255)]
     [Unicode(false)]
-    public string stolenDescription { get; set; }
+    public string? stolenDescription { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime? dateLost { get; set; }
@@ -54,7 +54,7 @@ public partial class Missing
 
     [StringLength(255)]
     [Unicode(false)]
-    public string altPhone { get; set; }
+    public string? altPhone { get; set; }
 
     [StringLength(255)]
     [Unicode(false)]
@@ -66,5 +66,5 @@ public partial class Missing
 
     [StringLength(255)]
     [Unicode(false)]
-    public string adminUsername { get; set; }
+    public string? adminUsername { get; set; }
 }

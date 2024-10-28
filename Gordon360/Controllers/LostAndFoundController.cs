@@ -22,9 +22,9 @@ namespace Gordon360.Controllers
 
         [HttpGet]
         [Route("missingitems")]
-        public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems()
+        public ActionResult<IEnumerable<Missing>> GetMissingItems()
         {
-            IEnumerable<MissingItemReportViewModel> result = lostAndFoundService.GetMissingItems();
+            IEnumerable<Missing> result = lostAndFoundService.GetMissingItems();
             if (result != null)
             {
                 return Ok(result);

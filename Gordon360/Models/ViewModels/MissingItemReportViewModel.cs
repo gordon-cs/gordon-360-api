@@ -22,13 +22,13 @@ namespace Gordon360.Models.ViewModels
 
         public string locationLost { get; set; }
 
-        public bool stolen { get; set; }
+        public bool? stolen { get; set; }
 
         public string? stolenDescription { get; set; }
 
-        public DateTime dateLost { get; set; }
+        public DateTime? dateLost { get; set; }
 
-        public DateTime dateCreated { get; set; }
+        public DateTime? dateCreated { get; set; }
 
         public string phoneNumber { get; set; }
 
@@ -49,10 +49,10 @@ namespace Gordon360.Models.ViewModels
             brand = MissingReportDBModel.brand,
             description = MissingReportDBModel.description,
             locationLost = MissingReportDBModel.locationLost,
-            stolen = (bool)MissingReportDBModel.stolen,
+            stolen = MissingReportDBModel.stolen,
             stolenDescription = MissingReportDBModel.stolenDescription,
-            dateLost = (DateTime)MissingReportDBModel.dateLost,
-            dateCreated = (DateTime)MissingReportDBModel.dateCreated,
+            dateLost = MissingReportDBModel.dateLost,
+            dateCreated = MissingReportDBModel.dateCreated,
             phoneNumber = MissingReportDBModel.phoneNumber,
             altPhone = MissingReportDBModel.altPhone,
             emailAddr = MissingReportDBModel.emailAddr,

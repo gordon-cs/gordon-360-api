@@ -32,9 +32,10 @@ namespace Gordon360.Services
         /// Get the full list of all missing item reports.
         /// </summary>
         /// <returns>an Enumerable of Missing containing all missing item reports</returns>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItems()
+        public IEnumerable<Missing> GetMissingItems()
         {
-             return context.Missing.Select<Missing, MissingItemReportViewModel>(a => a).AsEnumerable();
+            IEnumerable<Missing> missingList = context.Missing.AsEnumerable();
+            return missingList;
         }
 
         /// <summary>
