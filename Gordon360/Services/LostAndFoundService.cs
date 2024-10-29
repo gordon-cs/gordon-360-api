@@ -29,15 +29,35 @@ namespace Gordon360.Services
             return reportID;
         }
 
-        /// <param name="type"></param>
-        public async Task UpdateMissingItemReport(MissingItemReportViewModel reportDetails, string type)
+        /// <param name="id">The id</param>
+        public async Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails)
         {
-            var original = context.Missing;
+            var original = await context.Missing.FindAsync(id);
 
-            switch (type)
+            if (original != null)
             {
+                original.firstName = reportDetails.firstName;
+                original.lastName = reportDetails.lastName;
+                original.category = reportDetails.category;
+                original.brand = reportDetails.brand;
+                original.description = reportDetails.description;
+                original.locationLost = reportDetails.locationLost;
+                original.stolen = reportDetails.stolen;
+                original.stolenDescription = reportDetails.stolenDescription;
+                original.dateLost = reportDetails.dateLost;
+                original.dateCreated = reportDetails.dateCreated;
+                original.phoneNumber = reportDetails.phoneNumber;
+                original.altPhone = reportDetails.altPhone;
+                original.emailAddr = reportDetails.emailAddr;
+                original.status = reportDetails.status;
+                original.adminUsername = reportDetails.adminUsername;
 
-                    case 
+                await context.SaveChangesAsync();
+
+            }
+            else
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
             }
         }
 

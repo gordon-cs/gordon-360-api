@@ -295,6 +295,13 @@
             <returns></returns>
             <remarks>Posts a new message to the service to be added into the database</remarks>
         </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateMissingItemReport(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
+            <summary>
+            Update Missing component
+            </summary>
+            <param name="id">The id</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
@@ -1839,6 +1846,9 @@
             </summary>
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.UpdateMissingItemReportAsync(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
+            <param name="id">The id</param>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItems">
             <summary>

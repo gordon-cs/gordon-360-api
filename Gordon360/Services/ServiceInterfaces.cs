@@ -231,6 +231,7 @@ namespace Gordon360.Services
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails);
         IEnumerable<Missing> GetMissingItems();
         IEnumerable<FoundItems> GetFoundItems();
+        Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails);
         FoundItems? GetFoundItem(int ID);
     }
 

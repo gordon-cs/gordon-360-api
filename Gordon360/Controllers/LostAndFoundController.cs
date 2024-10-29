@@ -5,6 +5,8 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
 
 namespace Gordon360.Controllers
 {
@@ -18,6 +20,20 @@ namespace Gordon360.Controllers
             int ID = lostAndFoundService.CreateMissingItemReport(MissingItemDetails);
 
             return Ok(ID);
+        }
+
+        /// <summary>
+        /// Update Missing component
+        /// </summary>
+        /// <param name="id">The id</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("missingitem/id")]
+        public async Task<ActionResult> UpdateMissingItemReport(int id, [FromBody] MissingItemReportViewModel MissingItemDetails)
+        {
+            await lostAndFoundService.UpdateMissingItemReportAsync(id, MissingItemDetails);
+
+            return Ok();
         }
 
         [HttpGet]
