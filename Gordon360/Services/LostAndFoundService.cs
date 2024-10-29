@@ -4,6 +4,7 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 
 namespace Gordon360.Services
@@ -26,6 +27,18 @@ namespace Gordon360.Services
             int reportID = newReportResults.Entity.recordID;
 
             return reportID;
+        }
+
+        /// <param name="type"></param>
+        public async Task UpdateMissingItemReport(MissingItemReportViewModel reportDetails, string type)
+        {
+            var original = context.Missing;
+
+            switch (type)
+            {
+
+                    case 
+            }
         }
 
         /// <summary>
