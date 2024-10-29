@@ -230,6 +230,7 @@ namespace Gordon360.Services
         Task<RA_Assigned_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId);
         Task<string> GetResidentRAAsync(string hallId, string roomNumber);
         Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync();
+        Task<List<RA_Students>> GetAllRAsAsync();
     }
 
     public interface IAcademicCheckInService

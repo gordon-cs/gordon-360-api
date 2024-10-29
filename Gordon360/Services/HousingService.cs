@@ -673,5 +673,14 @@ public class HousingService(CCTContext context) : IHousingService
         return roomRanges;
     }
 
+    /// <summary>
+    /// Retrieves a list of all RAs.
+    /// </summary>
+    /// <returns>Returns a list of RA_Students containing information about each RA</returns>
+    public async Task<List<RA_Students>> GetAllRAsAsync()
+    {
+        return await context.RA_Students.ToListAsync();
+    }
+
 
 }

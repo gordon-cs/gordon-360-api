@@ -355,6 +355,27 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
-
+    /// <summary>
+    /// Retrieves a list of all RAs.
+    /// </summary>
+    /// <returns>Returns a list of RA_Students containing information about each RA</returns>
+    [HttpGet]
+    [Route("ras")]
+    public ActionResult<List<RA_Students>> GetAllRAs()
+    {
+        try
+        {
+            var raList = housingService.GetAllRAsAsync();
+            if (raList == null || !raList.Any())
+            {
+                return NotFound("No Resident Advisors found.");
+            }
+            return Ok(raList);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 
 }
