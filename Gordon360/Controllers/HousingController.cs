@@ -361,12 +361,12 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns>Returns a list of RA_Students containing information about each RA</returns>
     [HttpGet]
     [Route("ras")]
-    public ActionResult<List<RA_Students>> GetAllRAs()
+    public async Task<IActionResult> GetAllRAs()
     {
         try
         {
-            var raList = housingService.GetAllRAsAsync();
-            if (raList == null || !raList.Any())
+            var raList = await housingService.GetAllRAsAsync();
+            if (raList == null)
             {
                 return NotFound("No Resident Advisors found.");
             }

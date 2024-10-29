@@ -676,11 +676,24 @@ public class HousingService(CCTContext context) : IHousingService
     /// <summary>
     /// Retrieves a list of all RAs.
     /// </summary>
-    /// <returns>Returns a list of RA_Students containing information about each RA</returns>
-    public async Task<List<RA_Students>> GetAllRAsAsync()
+    /// <returns>Returns a list of RA_StudentsViewModel containing information about each RA</returns>
+    public async Task<List<RA_StudentsViewModel>> GetAllRAsAsync()
     {
-        return await context.RA_Students.ToListAsync();
+        return await context.RA_Students
+            .Select(ra => new RA_StudentsViewModel
+            {
+                FirstName = ra.FirstName,
+                LastName = ra.LastName,
+                Dorm = ra.Dorm,
+                BLDG_Code = ra.BLDG_Code,
+                RoomNumber = ra.RoomNumber,
+                Email = ra.Email,
+                PhoneNumber = ra.PhoneNumber,
+                ID = ra.ID
+            })
+            .ToListAsync();
     }
+
 
 
 }

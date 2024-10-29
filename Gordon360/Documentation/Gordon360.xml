@@ -325,6 +325,12 @@
             </summary>
             <returns>A list of room ranges.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllRAs">
+            <summary>
+            Retrieves a list of all RAs.
+            </summary>
+            <returns>Returns a list of RA_Students containing information about each RA</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
@@ -1911,6 +1917,12 @@
             Retrieves all room ranges.
             </summary>
             <returns>A list of room ranges.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllRAsAsync">
+            <summary>
+            Retrieves a list of all RAs.
+            </summary>
+            <returns>Returns a list of RA_StudentsViewModel containing information about each RA</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
