@@ -13,7 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System;
 using Gordon360.Exceptions;
-
+using System.Collections.Generic;
 
 namespace Gordon360.Controllers;
 
@@ -236,6 +236,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Creates a new hall assignment range if it does not overlap with any existing ranges
+    /// </summary>
+    /// <param name="model">The ViewModel that contains the hall ID and room range</param>
+    /// <returns>The created Hall_Assignment_Ranges object</returns>
     [HttpPost("roomrange")]
     public async Task<ActionResult<Hall_Assignment_Ranges>> CreateRoomRange([FromBody] HallAssignmentRangeViewModel model)
     {
@@ -254,6 +259,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Deletes a Room Range
+    /// </summary>
+    /// <param name="rangeId">The ID of the room range to delete</param>
+    /// <returns> Returns if completed</returns>
     [HttpDelete("roomrange/{rangeId}")]
     public async Task<IActionResult> DeleteRoomRange(int rangeId)
     {
@@ -278,4 +288,73 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Assigns an RA to a room range if no RA is currently assigned
+    /// </summary>
+    /// <param name="range_Id">The ID of the room range</param>
+    /// <param name="ra_Id">The ID of the RA to assign</param>
+    /// <returns>The created RA_Assigned_Ranges object</returns>
+    [HttpPost("assign-ra")]
+    public async Task<ActionResult<RA_Assigned_Ranges>> AssignRaToRoomRange([FromBody] RA_AssignmentViewModel model)
+    {
+        try
+        {
+            var assignedRange = await housingService.AssignRaToRoomRangeAsync(model.Range_ID, model.Ra_ID);
+            return Created("RA assigned to room range successfully.", assignedRange);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Retrieves the RA assigned to a resident based on their room number and hall ID.
+    /// </summary>
+    /// <param name="hallId">The ID of the hall.</param>
+    /// <param name="roomNumber">The resident's room number.</param>
+    /// <returns>Returns the RA's ID if found, otherwise null.</returns>
+    [HttpGet("GetResidentRA")]
+    public async Task<ActionResult<string>> GetResidentRA([FromQuery] string hallId, [FromQuery] string roomNumber)
+    {
+        try
+        {
+            var raId = await housingService.GetResidentRAAsync(hallId, roomNumber);
+            return Ok(raId);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);  // Return 404 if no RA is found for the room in the specified hall
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Retrieves all room ranges.
+    /// </summary>
+    /// <returns>A list of room ranges.</returns>
+    [HttpGet("room-ranges")]
+    public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetAllRoomRanges()
+    {
+        try
+        {
+            var roomRanges = await housingService.GetAllRoomRangesAsync();
+            return Ok(roomRanges);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+
+
 }

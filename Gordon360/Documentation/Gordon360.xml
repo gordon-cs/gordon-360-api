@@ -289,6 +289,42 @@
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
             <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.CreateRoomRange(Gordon360.Models.ViewModels.Housing.HallAssignmentRangeViewModel)">
+            <summary>
+            Creates a new hall assignment range if it does not overlap with any existing ranges
+            </summary>
+            <param name="model">The ViewModel that contains the hall ID and room range</param>
+            <returns>The created Hall_Assignment_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteRoomRange(System.Int32)">
+            <summary>
+            Deletes a Room Range
+            </summary>
+            <param name="rangeId">The ID of the room range to delete</param>
+            <returns> Returns if completed</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.AssignRaToRoomRange(RA_AssignmentViewModel)">
+            <summary>
+            Assigns an RA to a room range if no RA is currently assigned
+            </summary>
+            <param name="range_Id">The ID of the room range</param>
+            <param name="ra_Id">The ID of the RA to assign</param>
+            <returns>The created RA_Assigned_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetResidentRA(System.String,System.String)">
+            <summary>
+            Retrieves the RA assigned to a resident based on their room number and hall ID.
+            </summary>
+            <param name="hallId">The ID of the hall.</param>
+            <param name="roomNumber">The resident's room number.</param>
+            <returns>Returns the RA's ID if found, otherwise null.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllRoomRanges">
+            <summary>
+            Retrieves all room ranges.
+            </summary>
+            <returns>A list of room ranges.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
@@ -1853,6 +1889,28 @@
             </summary>
             <param name="rangeId">The ID of the room range to delete</param>
             <returns> Returns if completed</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AssignRaToRoomRangeAsync(System.Int32,System.String)">
+            <summary>
+            Assigns an RA to a room range if no RA is currently assigned
+            </summary>
+            <param name="rangeId">The ID of the room range</param>
+            <param name="raId">The ID of the RA to assign</param>
+            <returns>The created RA_Assigned_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetResidentRAAsync(System.String,System.String)">
+            <summary>
+            Retrieves the RA assigned to a resident based on their room number and hall ID.
+            </summary>
+            <param name="hallId">The ID of the hall.</param>
+            <param name="roomNumber">The resident's room number.</param>
+            <returns>Returns the RA's ID if found, otherwise null.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllRoomRangesAsync">
+            <summary>
+            Retrieves all room ranges.
+            </summary>
+            <returns>A list of room ranges.</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
