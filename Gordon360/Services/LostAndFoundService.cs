@@ -4,6 +4,7 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 
 namespace Gordon360.Services
@@ -26,6 +27,38 @@ namespace Gordon360.Services
             int reportID = newReportResults.Entity.recordID;
 
             return reportID;
+        }
+
+        /// <param name="id">The id</param>
+        public async Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails)
+        {
+            var original = await context.Missing.FindAsync(id);
+
+            if (original != null)
+            {
+                original.firstName = reportDetails.firstName;
+                original.lastName = reportDetails.lastName;
+                original.category = reportDetails.category;
+                original.brand = reportDetails.brand;
+                original.description = reportDetails.description;
+                original.locationLost = reportDetails.locationLost;
+                original.stolen = reportDetails.stolen;
+                original.stolenDescription = reportDetails.stolenDescription;
+                original.dateLost = reportDetails.dateLost;
+                original.dateCreated = reportDetails.dateCreated;
+                original.phoneNumber = reportDetails.phoneNumber;
+                original.altPhone = reportDetails.altPhone;
+                original.emailAddr = reportDetails.emailAddr;
+                original.status = reportDetails.status;
+                original.adminUsername = reportDetails.adminUsername;
+
+                await context.SaveChangesAsync();
+
+            }
+            else
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
+            }
         }
 
         /// <summary>
