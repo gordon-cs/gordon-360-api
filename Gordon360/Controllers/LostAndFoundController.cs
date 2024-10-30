@@ -23,7 +23,7 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update Missing component
+        /// Update Missing Item Report with the given id
         /// </summary>
         /// <param name="id">The id</param>
         /// <returns></returns>
@@ -71,6 +71,22 @@ namespace Gordon360.Controllers
         public ActionResult<FoundItems> GetFoundItem(int itemID)
         {
             FoundItems? result = lostAndFoundService.GetFoundItem(itemID);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        /// <param name="id">The id</param>
+        [HttpGet]
+        [Route("/missingitemsbyid")]
+        public ActionResult<Missing> GetMissingItem(int id)
+        {
+            Missing? result = lostAndFoundService.GetMissingItem(id);
             if (result != null)
             {
                 return Ok(result);
