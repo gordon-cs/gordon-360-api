@@ -80,5 +80,21 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
+
+        /// <param name="id">The id</param>
+        [HttpGet]
+        [Route("/missingitemsbyid")]
+        public ActionResult<Missing> GetMissingItem(int id)
+        {
+            Missing? result = lostAndFoundService.GetMissingItem(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

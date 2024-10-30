@@ -89,5 +89,15 @@ namespace Gordon360.Services
         {
             return context.FoundItems.FirstOrDefault(x => x.ID == ID);
         }
+
+        /// <summary>
+        /// Gets a Missing by id
+        /// </summary>
+        /// <param name="id">The ID of the missing item</param>
+        /// <returns>A Missing, or null if no item matches the id</returns>
+        public Missing? GetMissingItem(int id)
+        {
+            return context.Missing.FirstOrDefault(x => x.recordID == id);
+        }
     }
 }
