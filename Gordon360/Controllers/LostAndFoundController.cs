@@ -23,7 +23,7 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update Missing component
+        /// Update Missing Item Report with the given id
         /// </summary>
         /// <param name="id">The id</param>
         /// <returns></returns>
