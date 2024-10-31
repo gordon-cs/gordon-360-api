@@ -541,6 +541,18 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>The created Hall_Assignment_Ranges object</returns>
     public async Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model)
     {
+
+        // Room_Start and Room_End are integers
+        if (!int.TryParse(model.Room_Start, out int roomStart) || !int.TryParse(model.Room_End, out int roomEnd))
+        {
+            throw new ArgumentException("Room_Start and Room_End must be integers.");
+        }
+
+        // Check if Room_End is greater than Room_Start
+        if (roomEnd <= roomStart)
+        {
+            throw new ArgumentException("Room_End must be greater than Room_Start.");
+        }
         // Check if there is any overlapping room ranges in the same hall
         var overlappingRange = await context.Hall_Assignment_Ranges
             .FirstOrDefaultAsync(r => r.Hall_ID == model.Hall_ID
