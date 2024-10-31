@@ -14,6 +14,7 @@ jobs:
         with:
           dotnet-version: '8.x'
           cache: true
+          cache-dependency-path: Gordon360/packages.lock.json
 
       - name: Install dependencies
         run: dotnet restore
@@ -37,6 +38,7 @@ jobs:
         with:
           dotnet-version: '8.x'
           cache: true
+          cache-dependency-path: Gordon360/packages.lock.json
 
       - name: Install dependencies
         run: dotnet restore
@@ -67,6 +69,7 @@ jobs:
         with:
           dotnet-version: '8.x'
           cache: true
+          cache-dependency-path: Gordon360/packages.lock.json
 
       - name: Install dependencies
         run: dotnet restore
