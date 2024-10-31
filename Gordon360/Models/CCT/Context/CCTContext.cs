@@ -58,6 +58,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Hall_Assignment_Ranges> Hall_Assignment_Ranges { get; set; }
 
+    public virtual DbSet<Halls> Halls { get; set; }
+
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
 
     public virtual DbSet<Housing_Applications> Housing_Applications { get; set; }
@@ -111,6 +113,8 @@ public partial class CCTContext : DbContext
     public virtual DbSet<PrivType> PrivType { get; set; }
 
     public virtual DbSet<RA_Assigned_Ranges> RA_Assigned_Ranges { get; set; }
+
+    public virtual DbSet<RA_Assigned_Ranges_View> RA_Assigned_Ranges_View { get; set; }
 
     public virtual DbSet<RA_On_Call> RA_On_Call { get; set; }
 
@@ -320,6 +324,14 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.Range_ID).HasName("PK__Hall_Ass__918829E78BFD242E");
         });
 
+        modelBuilder.Entity<Halls>(entity =>
+        {
+            entity.ToView("Halls", "Housing");
+
+            entity.Property(e => e.BuildingCode).IsFixedLength();
+            entity.Property(e => e.HallName).IsFixedLength();
+        });
+
         modelBuilder.Entity<Housing_Applicants>(entity =>
         {
             entity.Property(e => e.SESS_CDE).IsFixedLength();
@@ -503,7 +515,7 @@ public partial class CCTContext : DbContext
         {
             entity.ToView("ParticipantView", "RecIM");
 
-            entity.Property(e => e.Email).IsFixedLength();
+            entity.Property(e => e.Hall).IsFixedLength();
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
@@ -514,6 +526,13 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.Range).WithMany(p => p.RA_Assigned_Ranges)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__RA_Assign__Range__48E5AC6E");
+        });
+
+        modelBuilder.Entity<RA_Assigned_Ranges_View>(entity =>
+        {
+            entity.ToView("RA_Assigned_Ranges_View", "Housing");
+
+            entity.Property(e => e.Hall_Name).IsFixedLength();
         });
 
         modelBuilder.Entity<RA_On_Call>(entity =>
@@ -536,8 +555,6 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<RA_Status_Schedule>(entity =>
         {
             entity.HasKey(e => e.Sched_ID).HasName("PK__RA_Statu__67FBEF061E83AAC9");
-
-            entity.HasOne(d => d.recur).WithMany(p => p.RA_Status_Schedule).HasConstraintName("FK__RA_Status__recur__0EB90AD9");
         });
 
         modelBuilder.Entity<RA_Students>(entity =>
@@ -579,7 +596,13 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<Recurrence>(entity =>
         {
-            entity.HasKey(e => e.recur_ID).HasName("PK__Recurren__69860EC35971086A");
+            entity.HasKey(e => e.sched_ID).HasName("PK__tmp_ms_x__74F23FE0175EF47A");
+
+            entity.Property(e => e.sched_ID).ValueGeneratedNever();
+
+            entity.HasOne(d => d.sched).WithOne(p => p.Recurrence)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Recurrenc__sched__6581EB1C");
         });
 
         modelBuilder.Entity<RequestView>(entity =>

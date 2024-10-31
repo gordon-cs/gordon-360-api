@@ -29,9 +29,8 @@ public partial class RA_Status_Schedule
     [Column(TypeName = "datetime")]
     public DateTime? End_time { get; set; }
 
-    public int? recur_ID { get; set; }
+    public bool Is_Recurring { get; set; }
 
-    [ForeignKey("recur_ID")]
-    [InverseProperty("RA_Status_Schedule")]
-    public virtual Recurrence recur { get; set; }
+    [InverseProperty("sched")]
+    public virtual Recurrence Recurrence { get; set; }
 }

@@ -679,7 +679,7 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>Returns a list of RA_StudentsViewModel containing information about each RA</returns>
     public async Task<List<RA_StudentsViewModel>> GetAllRAsAsync()
     {
-        return await context.RA_Students
+        var RAs = await context.RA_Students
             .Select(ra => new RA_StudentsViewModel
             {
                 FirstName = ra.FirstName,
@@ -692,6 +692,8 @@ public class HousingService(CCTContext context) : IHousingService
                 ID = ra.ID
             })
             .ToListAsync();
+
+        return RAs;
     }
 
 

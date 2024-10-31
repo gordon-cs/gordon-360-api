@@ -311,6 +311,14 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Housing].[Halls]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RA_Assigned_Ranges_View]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[Housing].[RA_Students]",
          "ObjectType": 3
       },
