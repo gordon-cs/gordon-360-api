@@ -331,6 +331,12 @@
             </summary>
             <returns>Returns a list of RA_Students containing information about each RA</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRangeAssignments">
+            <summary>
+            Retrieves the list of all assignments.
+            </summary>
+            <returns>Returns a list of all assignments</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
@@ -1923,6 +1929,12 @@
             Retrieves a list of all RAs.
             </summary>
             <returns>Returns a list of RA_StudentsViewModel containing information about each RA</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetRangeAssignmentsAsync">
+            <summary>
+            Retrieves the list of all assignments.
+            </summary>
+            <returns>Returns a list of all assignments</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
