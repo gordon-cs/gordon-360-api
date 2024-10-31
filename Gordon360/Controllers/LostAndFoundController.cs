@@ -36,6 +36,21 @@ namespace Gordon360.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Update Item Report Status to "Deleted" with the given id
+        /// </summary>
+        /// <param name="id">The id</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("missingitem/status")]
+        public async Task<ActionResult> UpdateReportStatus(int id, [FromBody] MissingItemReportViewModel MissingItemDetails)
+        {
+            await lostAndFoundService.UpdateReportStatusAsync(id, MissingItemDetails);
+
+            return Ok();
+        }
+
+
         [HttpGet]
         [Route("missingitems")]
         public ActionResult<IEnumerable<Missing>> GetMissingItems()

@@ -61,6 +61,23 @@ namespace Gordon360.Services
             }
         }
 
+        /// <param name="id">The id</param>
+        public async Task UpdateReportStatusAsync(int id, MissingItemReportViewModel reportDetails)
+        {
+            var original = await context.Missing.FindAsync(id);
+
+            if (original != null)
+            {
+                original.status = reportDetails.status;
+
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
+            }
+        }
+
         /// <summary>
         /// Get the full list of all missing item reports.
         /// </summary>

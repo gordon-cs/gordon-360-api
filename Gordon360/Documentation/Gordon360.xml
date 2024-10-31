@@ -297,7 +297,14 @@
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateMissingItemReport(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
             <summary>
-            Update Missing component
+            Update Missing Item Report with the given id
+            </summary>
+            <param name="id">The id</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateReportStatus(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
+            <summary>
+            Update Item Report Status to "Deleted" with the given id
             </summary>
             <param name="id">The id</param>
             <returns></returns>
@@ -1851,6 +1858,9 @@
             <returns>Returns whether the query succeeded</returns>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.UpdateMissingItemReportAsync(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
+            <param name="id">The id</param>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.UpdateReportStatusAsync(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
             <param name="id">The id</param>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItems">
