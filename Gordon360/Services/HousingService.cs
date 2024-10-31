@@ -541,6 +541,18 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>The created Hall_Assignment_Ranges object</returns>
     public async Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model)
     {
+
+        // Room_Start and Room_End are integers
+        if (!int.TryParse(model.Room_Start, out int roomStart) || !int.TryParse(model.Room_End, out int roomEnd))
+        {
+            throw new ArgumentException("Room_Start and Room_End must be integers.");
+        }
+
+        // Check if Room_End is greater than Room_Start
+        if (roomEnd <= roomStart)
+        {
+            throw new ArgumentException("Room_End must be greater than Room_Start.");
+        }
         // Check if there is any overlapping room ranges in the same hall
         var overlappingRange = await context.Hall_Assignment_Ranges
             .FirstOrDefaultAsync(r => r.Hall_ID == model.Hall_ID
@@ -672,6 +684,51 @@ public class HousingService(CCTContext context) : IHousingService
 
         return roomRanges;
     }
+
+    /// <summary>
+    /// Retrieves a list of all RAs.
+    /// </summary>
+    /// <returns>Returns a list of RA_StudentsViewModel containing information about each RA</returns>
+    public async Task<List<RA_StudentsViewModel>> GetAllRAsAsync()
+    {
+        var RAs = await context.RA_Students
+            .Select(ra => new RA_StudentsViewModel
+            {
+                FirstName = ra.FirstName,
+                LastName = ra.LastName,
+                Dorm = ra.Dorm,
+                BLDG_Code = ra.BLDG_Code,
+                RoomNumber = ra.RoomNumber,
+                Email = ra.Email,
+                PhoneNumber = ra.PhoneNumber,
+                ID = ra.ID
+            })
+            .ToListAsync();
+
+        return RAs;
+    }
+
+    /// <summary>
+    /// Retrieves the list of all assignments.
+    /// </summary>
+    /// <returns>Returns a list of all assignments</returns>
+    public async Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync()
+    {
+        var Assignments = await context.RA_Assigned_Ranges_View
+            .Select(assignment => new RA_Assigned_RangesViewModel
+            {
+                RA_ID = assignment.RA_ID,
+                Fname = assignment.Fname,
+                Lname = assignment.Lname,
+                Hall_Name = assignment.Hall_Name,
+                Room_Start = assignment.Room_Start,
+                Room_End = assignment.Room_End
+            })
+            .ToListAsync();
+
+        return Assignments;
+    }
+
 
 
 }

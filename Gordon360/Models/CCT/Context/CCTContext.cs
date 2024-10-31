@@ -114,6 +114,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RA_Assigned_Ranges> RA_Assigned_Ranges { get; set; }
 
+    public virtual DbSet<RA_Assigned_Ranges_View> RA_Assigned_Ranges_View { get; set; }
+
     public virtual DbSet<RA_On_Call> RA_On_Call { get; set; }
 
     public virtual DbSet<RA_Pref_Contact> RA_Pref_Contact { get; set; }
@@ -524,6 +526,13 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.Range).WithMany(p => p.RA_Assigned_Ranges)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__RA_Assign__Range__48E5AC6E");
+        });
+
+        modelBuilder.Entity<RA_Assigned_Ranges_View>(entity =>
+        {
+            entity.ToView("RA_Assigned_Ranges_View", "Housing");
+
+            entity.Property(e => e.Hall_Name).IsFixedLength();
         });
 
         modelBuilder.Entity<RA_On_Call>(entity =>

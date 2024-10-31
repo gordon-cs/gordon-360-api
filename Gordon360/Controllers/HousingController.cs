@@ -355,6 +355,50 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Retrieves a list of all RAs.
+    /// </summary>
+    /// <returns>Returns a list of RA_Students containing information about each RA</returns>
+    [HttpGet]
+    [Route("ras")]
+    public async Task<IActionResult> GetAllRAs()
+    {
+        try
+        {
+            var raList = await housingService.GetAllRAsAsync();
+            if (raList == null)
+            {
+                return NotFound("No Resident Advisors found.");
+            }
+            return Ok(raList);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 
+    /// <summary>
+    /// Retrieves the list of all assignments.
+    /// </summary>
+    /// <returns>Returns a list of all assignments</returns>
+    [HttpGet]
+    [Route("RangeAssignments")]
+    public async Task<IActionResult> GetRangeAssignments()
+    {
+        try
+        {
+            var RangeAssignments = await housingService.GetRangeAssignmentsAsync();
+            if (RangeAssignments == null)
+            {
+                return NotFound("No Assigned Ranges");
+            }
+            return Ok(RangeAssignments);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 
 }
