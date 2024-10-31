@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
 {
-    [Route("/api/[controller]")]
+    [Route("api/[controller]")]
     public class LostAndFoundController(CCTContext context, ILostAndFoundService lostAndFoundService) : GordonControllerBase
     {
         [HttpPost]
@@ -28,7 +28,7 @@ namespace Gordon360.Controllers
         /// <param name="id">The id</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("missingitem/id")]
+        [Route("missingitem/{id}")]
         public async Task<ActionResult> UpdateMissingItemReport(int id, [FromBody] MissingItemReportViewModel MissingItemDetails)
         {
             await lostAndFoundService.UpdateMissingItemReportAsync(id, MissingItemDetails);
