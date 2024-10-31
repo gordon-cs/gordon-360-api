@@ -62,13 +62,13 @@ namespace Gordon360.Services
         }
 
         /// <param name="id">The id</param>
-        public async Task UpdateReportStatusAsync(int id, MissingItemReportViewModel reportDetails)
+        public async Task UpdateReportStatusAsync(int id, string status)
         {
             var original = await context.Missing.FindAsync(id);
 
             if (original != null)
             {
-                original.status = reportDetails.status;
+                original.status = status;
 
                 await context.SaveChangesAsync();
             }
