@@ -378,4 +378,27 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Retrieves the list of all assignments.
+    /// </summary>
+    /// <returns>Returns a list of all assignments</returns>
+    [HttpGet]
+    [Route("RangeAssignments")]
+    public async Task<IActionResult> GetRangeAssignments()
+    {
+        try
+        {
+            var RangeAssignments = await housingService.GetRangeAssignmentsAsync();
+            if (RangeAssignments == null)
+            {
+                return NotFound("No Assigned Ranges");
+            }
+            return Ok(RangeAssignments);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
 }

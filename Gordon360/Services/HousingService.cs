@@ -696,6 +696,27 @@ public class HousingService(CCTContext context) : IHousingService
         return RAs;
     }
 
+    /// <summary>
+    /// Retrieves the list of all assignments.
+    /// </summary>
+    /// <returns>Returns a list of all assignments</returns>
+    public async Task<List<RA_Assigned_RangesViewodel>> GetRangeAssignmentsAsync()
+    {
+        var Assignments = await context.RA_Assigned_Ranges_View
+            .Select(assignment => new RA_Assigned_RangesViewModel
+            {
+                RA_ID = assignment.RA_ID,
+                Fname = assignment.Fname,
+                Lname = assignment.Lname,
+                Hall_Name = assignment.Hall_Name,
+                Room_Start = assignment.Room_Start,
+                Room_End = assignment.Room_End
+            })
+            .ToListAsync();
+
+        return Assignments;
+    }
+
 
 
 }
