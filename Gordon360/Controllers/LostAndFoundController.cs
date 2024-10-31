@@ -42,7 +42,7 @@ namespace Gordon360.Controllers
         /// <param name="id">The id</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("missingitem/id/status")]
+        [Route("missingitem/{id}/{status}")]
         public async Task<ActionResult> UpdateReportStatus(int id, string status)
         {
             await lostAndFoundService.UpdateReportStatusAsync(id, status);
