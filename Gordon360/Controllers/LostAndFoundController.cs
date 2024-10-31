@@ -83,7 +83,7 @@ namespace Gordon360.Controllers
 
         /// <param name="id">The id</param>
         [HttpGet]
-        [Route("missingitemsbyid")]
+        [Route("missingitemsbyid/{id}")]
         public ActionResult<Missing> GetMissingItem(int id)
         {
             Missing? result = lostAndFoundService.GetMissingItem(id);
