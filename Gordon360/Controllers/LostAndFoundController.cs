@@ -1,8 +1,10 @@
-﻿using Gordon360.Authorization;
+﻿using Azure;
+using Gordon360.Authorization;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -22,6 +24,7 @@ namespace Gordon360.Controllers
 
         [HttpGet]
         [Route("missingitems")]
+        [StateYourBusiness(operation = Static.Names.Operation.READ_ALL, resource = Resource.LOST_AND_FOUND_MISSING_REPORT)]
         public ActionResult<IEnumerable<Missing>> GetMissingItems()
         {
             IEnumerable<Missing> result = lostAndFoundService.GetMissingItems();

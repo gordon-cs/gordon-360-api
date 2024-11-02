@@ -13,7 +13,8 @@ public enum AuthGroup
     RecIMSuperAdmin,
     SiteAdmin,
     Staff,
-    Student
+    Student,
+    LostAndFoundAdmin
 }
 
 public static class AuthGroupEnum
@@ -32,6 +33,7 @@ public static class AuthGroupEnum
         "360-SiteAdmin-SG" => AuthGroup.SiteAdmin,
         "360-Staff-SG" => AuthGroup.Staff,
         "360-Student-SG" => AuthGroup.Student,
+        "360-LostAndFoundAdmin-SG" => AuthGroup.LostAndFoundAdmin,
         _ => null
     };
 }
