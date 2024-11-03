@@ -314,6 +314,36 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Deletes an RA range assignment
+    /// </summary>
+    /// <param name="rangeId">The Room range of the assignment to delete</param>
+    /// <returns> Returns if completed</returns>
+    [HttpDelete("assignment/{rangeId}")]
+    public async Task<IActionResult> DeleteAssignment(int rangeId)
+    {
+        try
+        {
+            var success = await housingService.DeleteAssignmentAsync(rangeId);
+            if (success)
+            {
+                return Ok(new { message = "Assigment deleted successfully." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to delete the Assignment." });
+            }
+        }
+        catch (ResourceNotFoundException ex)
+        {
+            return NotFound(new { message = ex.ExceptionMessage });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Retrieves the RA assigned to a resident based on their room number and hall ID.
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
