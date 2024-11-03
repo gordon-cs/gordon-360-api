@@ -580,6 +580,31 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Creates a new status event for an RA schedule
+    /// </summary>
+    /// <param name="model">The RA_Status_ScheduleViewModel variables</param>
+    /// <returns>The created RA_Status_Schedule object</returns>
+    public async Task<RA_Status_Schedule> CreateStatusAsync( RA_Status_ScheduleViewModel model)
+    {
+        // Create a RA_Schedule_Status object
+        var newStatus = new RA_Status_Schedule
+        {
+            Sched_ID = model.Sched_ID,
+            Ra_ID = model.Ra_ID,
+            Status_name = model.Status_name,
+            Start_time = model.Start_time,
+            End_time = model.End_time,
+            Is_Recurring = model.Is_Recurring
+        };
+
+        // Add to the context and save changes
+        context.RA_Status_Schedule.Add(newStatus);
+        await context.SaveChangesAsync();
+
+        return newStatus;
+    }
+
+    /// <summary>
     /// Deletes a Room Range
     /// </summary>
     /// <param name="rangeId">The ID of the room range to delete</param>
