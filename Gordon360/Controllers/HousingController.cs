@@ -260,6 +260,29 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Creates a new status event for an RA schedule
+    /// </summary>
+    /// <param name="model">The ViewModel that contains the Schedule ID and RA ID</param>
+    /// <returns>The created RA_Status_Schedule object</returns>
+    [HttpPost("status")]
+    public async Task<ActionResult<RA_Status_Schedule>> CreateStatus( [FromBody] RA_Status_ScheduleViewModel model )
+    {
+        try
+        {
+            var newStatus = await housingService.CreateStatusAsync(model);
+            return Created("Status event created successfully.", newStatus);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Deletes a Room Range
     /// </summary>
     /// <param name="rangeId">The ID of the room range to delete</param>
