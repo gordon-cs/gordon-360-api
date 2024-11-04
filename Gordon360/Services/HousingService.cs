@@ -659,6 +659,29 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Deletes an RA range assignment
+    /// </summary>
+    /// <param name="rangeId">The Room range of the assignment to delete</param>
+    /// <returns> Returns if completed</returns>
+    public async Task<bool> DeleteAssignmentAsync(int rangeId)
+    {
+        // Find the assignment by range id
+        var Assigment = await context.RA_Assigned_Ranges
+                                    .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
+
+        if (Assigment == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "Assignment not found." };
+        }
+
+        context.RA_Assigned_Ranges.Remove(Assigment);
+
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
     /// Retrieves the RA assigned to a resident based on their room number and hall ID.
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
