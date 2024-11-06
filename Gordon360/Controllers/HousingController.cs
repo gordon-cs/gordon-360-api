@@ -454,4 +454,32 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Checks an RA in
+    /// </summary>
+    /// <param name="checkin">The viewmodel object of the RA checking in</param>
+    /// <returns>true if ra checked in succesfully</returns>
+    [HttpPost("ra-checkin")]
+    public async Task<ActionResult<bool>> RA_Checkin([FromBody] RA_On_CallViewModel RAcheckin)
+    {
+        try
+        {
+            var checkedIn = await housingService.RA_CheckinAsync(RAcheckin);
+            if (checkedIn)
+            {
+                return Created("RA checked in successfully.", checkedIn);
+            }
+            return BadRequest("Failed to check in RA.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+
 }

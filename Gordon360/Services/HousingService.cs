@@ -777,6 +777,42 @@ public class HousingService(CCTContext context) : IHousingService
         return Assignments;
     }
 
+    /// <summary>
+    /// Checks an RA in
+    /// </summary>
+    /// <param name="checkin">The viewmodel object of the RA checking in</param>
+    /// <returns>true if ra checked in succesfully</returns>
+    public async Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin)
+    {
+        foreach (string hallId in checkin.Hall_ID)
+        {
+            // Check if there is an existing RA checked into this hall without an end time
+            var existingRA = await context.RA_On_Call
+                .Where(r => r.Hall_ID == hallId && r.Check_out_time == null)
+                .FirstOrDefaultAsync();
+
+            // If an existing RA is found, set their Check_out_time to the current time
+            if (existingRA != null)
+            {
+                existingRA.Check_out_time = DateTime.Now;
+                context.RA_On_Call.Update(existingRA);
+            }
+
+            // Add the new RA check-in record with no check-out time
+            var newCheckin = new RA_On_Call
+            {
+                Ra_ID = checkin.Ra_ID,
+                Hall_ID = hallId,
+                Check_in_time = checkin.Check_in_time,
+                Check_out_time = null // RA has an active checkin
+            };
+            await context.RA_On_Call.AddAsync(newCheckin);
+        }
+
+        await context.SaveChangesAsync();
+        return true;
+    }
+
 
 
 }

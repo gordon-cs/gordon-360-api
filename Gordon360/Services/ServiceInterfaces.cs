@@ -234,6 +234,7 @@ namespace Gordon360.Services
         Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync();
         Task<List<RA_StudentsViewModel>> GetAllRAsAsync();
         Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync();
+        Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin);
     }
 
     public interface IAcademicCheckInService
