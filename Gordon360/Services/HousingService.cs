@@ -803,7 +803,7 @@ public class HousingService(CCTContext context) : IHousingService
             {
                 Ra_ID = checkin.Ra_ID,
                 Hall_ID = hallId,
-                Check_in_time = checkin.Check_in_time,
+                Check_in_time = DateTime.Now,
                 Check_out_time = null // RA has an active checkin
             };
             await context.RA_On_Call.AddAsync(newCheckin);

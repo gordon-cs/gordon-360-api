@@ -296,6 +296,13 @@
             <param name="model">The ViewModel that contains the hall ID and room range</param>
             <returns>The created Hall_Assignment_Ranges object</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel)">
+            <summary>
+            Creates a new status event for an RA schedule
+            </summary>
+            <param name="model">The ViewModel that contains the Schedule ID and RA ID</param>
+            <returns>The created RA_Status_Schedule object</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.DeleteRoomRange(System.Int32)">
             <summary>
             Deletes a Room Range
@@ -310,6 +317,13 @@
             <param name="range_Id">The ID of the room range</param>
             <param name="ra_Id">The ID of the RA to assign</param>
             <returns>The created RA_Assigned_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteAssignment(System.Int32)">
+            <summary>
+            Deletes an RA range assignment
+            </summary>
+            <param name="rangeId">The Room range of the assignment to delete</param>
+            <returns> Returns if completed</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetResidentRA(System.String,System.String)">
             <summary>
@@ -336,6 +350,13 @@
             Retrieves the list of all assignments.
             </summary>
             <returns>Returns a list of all assignments</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
+            <summary>
+            Checks an RA in
+            </summary>
+            <param name="checkin">The viewmodel object of the RA checking in</param>
+            <returns>true if ra checked in succesfully</returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
@@ -1895,6 +1916,13 @@
             <param name="model">The ViewModel that contains the hall ID and room range</param>
             <returns>The created Hall_Assignment_Ranges object</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.CreateStatusAsync(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel)">
+            <summary>
+            Creates a new status event for an RA schedule
+            </summary>
+            <param name="model">The RA_Status_ScheduleViewModel variables</param>
+            <returns>The created RA_Status_Schedule object</returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.DeleteRoomRangeAsync(System.Int32)">
             <summary>
             Deletes a Room Range
@@ -1909,6 +1937,13 @@
             <param name="rangeId">The ID of the room range</param>
             <param name="raId">The ID of the RA to assign</param>
             <returns>The created RA_Assigned_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteAssignmentAsync(System.Int32)">
+            <summary>
+            Deletes an RA range assignment
+            </summary>
+            <param name="rangeId">The Room range of the assignment to delete</param>
+            <returns> Returns if completed</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetResidentRAAsync(System.String,System.String)">
             <summary>
@@ -1935,6 +1970,13 @@
             Retrieves the list of all assignments.
             </summary>
             <returns>Returns a list of all assignments</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
+            <summary>
+            Checks an RA in
+            </summary>
+            <param name="checkin">The viewmodel object of the RA checking in</param>
+            <returns>true if ra checked in succesfully</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
