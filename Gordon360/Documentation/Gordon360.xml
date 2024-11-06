@@ -311,6 +311,13 @@
             <param name="ra_Id">The ID of the RA to assign</param>
             <returns>The created RA_Assigned_Ranges object</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteAssignment(System.Int32)">
+            <summary>
+            Deletes an RA range assignment
+            </summary>
+            <param name="rangeId">The Room range of the assignment to delete</param>
+            <returns> Returns if completed</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetResidentRA(System.String,System.String)">
             <summary>
             Retrieves the RA assigned to a resident based on their room number and hall ID.
@@ -1909,6 +1916,13 @@
             <param name="rangeId">The ID of the room range</param>
             <param name="raId">The ID of the RA to assign</param>
             <returns>The created RA_Assigned_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteAssignmentAsync(System.Int32)">
+            <summary>
+            Deletes an RA range assignment
+            </summary>
+            <param name="rangeId">The Room range of the assignment to delete</param>
+            <returns> Returns if completed</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetResidentRAAsync(System.String,System.String)">
             <summary>

@@ -745,7 +745,8 @@ public class HousingService(CCTContext context) : IHousingService
                 Lname = assignment.Lname,
                 Hall_Name = assignment.Hall_Name,
                 Room_Start = assignment.Room_Start,
-                Room_End = assignment.Room_End
+                Room_End = assignment.Room_End,
+                Range_ID = assignment.Range_ID
             })
             .ToListAsync();
 

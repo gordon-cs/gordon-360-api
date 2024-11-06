@@ -537,9 +537,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<RA_On_Call>(entity =>
         {
-            entity.HasKey(e => new { e.Hall_ID, e.Ra_ID }).HasName("PK__tmp_ms_x__4B2C7710E9B7FD7B");
-
-            entity.Property(e => e.Record_ID).ValueGeneratedOnAdd();
+            entity.HasKey(e => e.Record_ID).HasName("PK__tmp_ms_x__603A0C60046D3031");
         });
 
         modelBuilder.Entity<RA_Pref_Contact>(entity =>
