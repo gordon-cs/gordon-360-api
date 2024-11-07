@@ -481,5 +481,55 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Gets the ID of the on-call RA for a specified hall.
+    /// </summary>
+    /// <param name="Hall_ID">The ID of the hall</param>
+    /// <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
+    [HttpGet("on-call-ra/{Hall_ID}")]
+    public async Task<ActionResult<string>> GetOnCallRA(string Hall_ID)
+    {
+        try
+        {
+            var raId = await housingService.GetOnCallRAAsync(Hall_ID);
+
+            if (raId == null)
+            {
+                return NotFound($"No RA is currently on call for hall ID: {Hall_ID}");
+            }
+
+            return Ok(raId);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Gets the on-call RAs for all halls.
+    /// </summary>
+    /// <returns>The RAs on call</returns>
+    [HttpGet("on-call-ra/all")]
+    public async Task<ActionResult<List<RA_On_Call_GetViewModel>>> GetOnCallRAAllHalls()
+    {
+        try
+        {
+            var onCallRAs = await housingService.GetOnCallRAAllHallsAsync();
+
+            if (onCallRAs == null || !onCallRAs.Any())
+            {
+                return NotFound("No RA is currently on call for any hall.");
+            }
+
+            return Ok(onCallRAs);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+
 
 }

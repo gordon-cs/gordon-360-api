@@ -358,6 +358,13 @@
             <param name="checkin">The viewmodel object of the RA checking in</param>
             <returns>true if ra checked in succesfully</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetOnCallRA(System.String)">
+            <summary>
+            Gets the ID of the on-call RA for a specified hall.
+            </summary>
+            <param name="Hall_ID">The ID of the hall</param>
+            <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
@@ -1977,6 +1984,19 @@
             </summary>
             <param name="checkin">The viewmodel object of the RA checking in</param>
             <returns>true if ra checked in succesfully</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetOnCallRAAsync(System.String)">
+            <summary>
+            Gets the on-call RA's ID for specified hall.
+            </summary>
+            <param name="Hall_ID">The ID of the hall</param>
+            <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetOnCallRAForAllHallsAsync">
+            <summary>
+            Gets the on-call RAs for all halls.
+            </summary>
+            <returns>The RAs on call</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>

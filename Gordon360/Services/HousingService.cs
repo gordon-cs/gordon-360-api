@@ -813,6 +813,42 @@ public class HousingService(CCTContext context) : IHousingService
         return true;
     }
 
+    /// <summary>
+    /// Gets the on-call RA's ID for specified hall.
+    /// </summary>
+    /// <param name="Hall_ID">The ID of the hall</param>
+    /// <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
+    public async Task<string> GetOnCallRAAsync(string Hall_ID)
+    {
+        var onCallRA = await context.RA_On_Call
+            .Where(ra => ra.Hall_ID == Hall_ID && ra.Check_out_time == null)
+            .Select(ra => ra.Ra_ID)
+            .FirstOrDefaultAsync();
+
+        return onCallRA;
+    }
+
+    /// <summary>
+    /// Gets the on-call RAs for all halls.
+    /// </summary>
+    /// <returns>The RAs on call</returns>
+    public async Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync()
+    {
+        var onCallRAs = await context.RA_On_Call
+            .Where(r => r.Check_out_time == null)  // Only select active check-ins
+            .GroupBy(r => r.Hall_ID)
+            .Select(oncall => new RA_On_Call_GetViewModel
+            {
+                Hall_ID = oncall.Key,
+                Ra_ID = oncall.FirstOrDefault().Ra_ID,
+                Check_in_time = oncall.FirstOrDefault().Check_in_time
+            })
+            .ToListAsync();
+
+        return onCallRAs;
+    }
+
+
 
 
 }
