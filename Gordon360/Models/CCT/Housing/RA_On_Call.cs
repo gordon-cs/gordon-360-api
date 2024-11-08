@@ -8,18 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[PrimaryKey("Hall_ID", "Ra_ID")]
 [Table("RA_On_Call", Schema = "Housing")]
 public partial class RA_On_Call
 {
+    [Key]
     public int Record_ID { get; set; }
 
-    [Key]
+    [Required]
     [StringLength(10)]
     [Unicode(false)]
     public string Hall_ID { get; set; }
 
-    [Key]
+    [Required]
     [StringLength(10)]
     [Unicode(false)]
     public string Ra_ID { get; set; }
