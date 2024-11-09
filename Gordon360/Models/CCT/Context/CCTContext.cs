@@ -20,6 +20,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
 
+    public virtual DbSet<ActionsTaken> ActionsTaken { get; set; }
+
     public virtual DbSet<Activity> Activity { get; set; }
 
     public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
@@ -35,6 +37,8 @@ public partial class CCTContext : DbContext
     public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
 
     public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
+
+    public virtual DbSet<Categories> Categories { get; set; }
 
     public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
 
@@ -55,6 +59,8 @@ public partial class CCTContext : DbContext
     public virtual DbSet<FacStaff> FacStaff { get; set; }
 
     public virtual DbSet<FoundItems> FoundItems { get; set; }
+
+    public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
 
@@ -91,6 +97,8 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Minors> Minors { get; set; }
 
     public virtual DbSet<Missing> Missing { get; set; }
+
+    public virtual DbSet<MissingReports> MissingReports { get; set; }
 
     public virtual DbSet<PART_DEF> PART_DEF { get; set; }
 
@@ -138,6 +146,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Statistic> Statistic { get; set; }
 
+    public virtual DbSet<Statuses> Statuses { get; set; }
+
     public virtual DbSet<Student> Student { get; set; }
 
     public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
@@ -170,6 +180,15 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<AccountPhotoURL>(entity =>
         {
             entity.ToView("AccountPhotoURL", "dbo");
+        });
+
+        modelBuilder.Entity<ActionsTaken>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__ActionsT__3214EC2722EC236F");
+
+            entity.HasOne(d => d.missing).WithMany(p => p.ActionsTaken)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ActionsTa__missi__11606D5A");
         });
 
         modelBuilder.Entity<Activity>(entity =>
@@ -223,6 +242,11 @@ public partial class CCTContext : DbContext
             entity.ToView("CM_SESSION_MSTR", "dbo");
 
             entity.Property(e => e.SESS_CDE).IsFixedLength();
+        });
+
+        modelBuilder.Entity<Categories>(entity =>
+        {
+            entity.HasKey(e => e.CategoryName).HasName("PK__Categori__8517B2E195D5FEE5");
         });
 
         modelBuilder.Entity<ChapelEvent>(entity =>
@@ -295,6 +319,15 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.ID).HasName("PK__FoundIte__3214EC277B2634DE");
 
             entity.Property(e => e.ID).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<GuestUsers>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__GuestUse__3214EC2774F2F95F");
+
+            entity.HasOne(d => d.missing).WithMany(p => p.GuestUsers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__GuestUser__missi__0E8400AF");
         });
 
         modelBuilder.Entity<Housing_Applicants>(entity =>
@@ -412,6 +445,19 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Missing>(entity =>
         {
             entity.HasKey(e => e.recordID).HasName("PK__Missing__D825197E645524A6");
+        });
+
+        modelBuilder.Entity<MissingReports>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__MissingR__3214EC27985CEC3D");
+
+            entity.HasOne(d => d.categoryNavigation).WithMany(p => p.MissingReports)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MissingRe__categ__0AB36FCB");
+
+            entity.HasOne(d => d.statusNavigation).WithMany(p => p.MissingReports)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__MissingRe__statu__0BA79404");
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>
@@ -572,6 +618,11 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.ParticipantTeam).WithMany(p => p.Statistic)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Statistic_ParticipantTeam");
+        });
+
+        modelBuilder.Entity<Statuses>(entity =>
+        {
+            entity.HasKey(e => e.StatusName).HasName("PK__Statuses__05E7698B0A94483B");
         });
 
         modelBuilder.Entity<Student>(entity =>
