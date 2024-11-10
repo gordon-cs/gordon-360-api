@@ -372,8 +372,8 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="hallId">The ID of the hall.</param>
     /// <param name="roomNumber">The resident's room number.</param>
     /// <returns>Returns the RA's ID if found, otherwise null.</returns>
-    [HttpGet("GetResidentRA")]
-    public async Task<ActionResult<string>> GetResidentRA([FromQuery] string hallId, [FromQuery] string roomNumber)
+    [HttpGet("GetResidentRA/{hallId}/{roomNumber}")]
+    public async Task<ActionResult<string>> GetResidentRA(string hallId, string roomNumber)
     {
         try
         {

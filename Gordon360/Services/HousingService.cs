@@ -711,7 +711,18 @@ public class HousingService(CCTContext context) : IHousingService
             throw new InvalidOperationException("No RA assigned to this room range.");
         }
 
-        return assignedRA;
+        // Use RA_ID to query RA_Assigned_Ranges_View for the RA’s name
+        var assignedRAName = await context.RA_Assigned_Ranges_View
+            .Where(raView => raView.RA_ID == assignedRA)
+            .Select(raView => raView.Fname + " " + raView.Lname)
+            .FirstOrDefaultAsync();
+
+        if (assignedRAName == null)
+        {
+            throw new InvalidOperationException("No RA name found for the RA ID.");
+        }
+        
+        return assignedRAName;
     }
 
     /// <summary>
