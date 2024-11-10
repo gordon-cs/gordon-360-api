@@ -8,9 +8,9 @@ namespace Gordon360.Models.ViewModels
     {
         public int? recordID { get; set; }
 
-        public string firstName { get; set; }
+        public string? firstName { get; set; }
 
-        public string lastName { get; set; }
+        public string? lastName { get; set; }
 
         public string category { get; set; }
 
@@ -26,17 +26,21 @@ namespace Gordon360.Models.ViewModels
 
         public string? stolenDescription { get; set; }
 
-        public DateTime? dateLost { get; set; }
+        public DateTime dateLost { get; set; }
 
-        public DateTime? dateCreated { get; set; }
+        public DateTime dateCreated { get; set; }
 
-        public string phone { get; set; }
+        public string? phone { get; set; }
 
-        public string email { get; set; }
+        public string? email { get; set; }
 
         public string status { get; set; }
 
         public string submitterUsername { get; set; }
+
+        public string? submitterID { get; set; }
+
+        public bool forGuest { get; set; }
 
         public static implicit operator MissingItemReportViewModel(CCT.MissingItemData MissingReportDBModel) => new MissingItemReportViewModel
         {
@@ -55,6 +59,7 @@ namespace Gordon360.Models.ViewModels
             email = MissingReportDBModel.email,
             status = MissingReportDBModel.status,
             submitterUsername = MissingReportDBModel.submitterUsername,
+            forGuest = MissingReportDBModel.forGuest,
         };
     }
 }

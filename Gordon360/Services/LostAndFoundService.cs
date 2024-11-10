@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,32 +14,64 @@ namespace Gordon360.Services
     {
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails)
         {
-            var newReportResults = context.Missing.Add(new Missing { 
-                firstName = reportDetails.firstName, 
-                lastName = reportDetails.lastName, 
+
+            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == reportDetails.submitterUsername);
+
+            string idNum;
+
+            if (account != null)
+            {
+                idNum = account.gordon_id;
+            }
+            else
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "No account could be found for the user." };
+            }
+
+            var newReportResults = context.MissingReports.Add(new MissingReports
+            {
+                submitterID = idNum,
+                forGuest = reportDetails.forGuest,
                 category = reportDetails.category,
-                brand = reportDetails.brand, 
+                colors = reportDetails.colors,
+                brand = reportDetails.brand,
                 description = reportDetails.description,
-                locationLost = reportDetails.locationLost, 
-                stolen = reportDetails.stolen, 
-                stolenDescription = reportDetails.stolenDescription, 
-                dateLost = reportDetails.dateLost, 
-                dateCreated = reportDetails.dateCreated, 
-                phoneNumber = reportDetails.phone, 
-                emailAddr = reportDetails.email, 
+                locationLost = reportDetails.locationLost,
+                stolen = reportDetails.stolen,
+                stolenDesc = reportDetails.stolenDescription,
+                dateLost = reportDetails.dateLost,
+                dateCreated = reportDetails.dateCreated,
                 status = reportDetails.status,
-                adminUsername = reportDetails.submitterUsername });
-            // var newReportResults = context.Missing.Add(new Missing(reportDetails))
+            });
 
             context.SaveChanges();
 
-            if (newReportResults?.Entity == null || newReportResults?.Entity?.recordID == 0)
+            if (newReportResults == null || newReportResults?.Entity?.ID == 0)
             {
-                throw new ResourceCreationException() { ExceptionMessage = "The application could not be saved." };
+                throw new ResourceCreationException() { ExceptionMessage = "The report could not be saved." };
+            }
+
+            if (reportDetails.forGuest)
+            {
+                var newGuest = context.GuestUsers.Add(new GuestUsers
+                {
+                    missingID = newReportResults.Entity.ID,
+                    firstName = reportDetails.firstName,
+                    lastName = reportDetails.lastName,
+                    phoneNumber = reportDetails.phone, 
+                    emailAddress = reportDetails.email,
+                });
+
+                context.SaveChanges();
+
+                if (newGuest.Entity == null || newReportResults?.Entity?.ID == 0)
+                {
+                    throw new ResourceCreationException() { ExceptionMessage = "The user associated with this record could not be saved." };
+                }
             }
 
             // Retrieve the application ID number of this new application
-            int reportID = newReportResults.Entity.recordID;
+            int reportID = newReportResults.Entity.ID;
 
             return reportID;
         }
@@ -46,24 +79,19 @@ namespace Gordon360.Services
         /// <param name="id">The id</param>
         public async Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails)
         {
-            var original = await context.Missing.FindAsync(id);
+            var original = await context.MissingReports.FindAsync(id);
 
             if (original != null)
             {
-                original.firstName = reportDetails.firstName;
-                original.lastName = reportDetails.lastName;
                 original.category = reportDetails.category;
                 original.brand = reportDetails.brand;
                 original.description = reportDetails.description;
                 original.locationLost = reportDetails.locationLost;
                 original.stolen = reportDetails.stolen;
-                original.stolenDescription = reportDetails.stolenDescription;
+                original.stolenDesc = reportDetails.stolenDescription;
                 original.dateLost = reportDetails.dateLost;
                 original.dateCreated = reportDetails.dateCreated;
-                original.phoneNumber = reportDetails.phone;
-                original.emailAddr = reportDetails.email;
                 original.status = reportDetails.status;
-                original.adminUsername = reportDetails.submitterUsername;
 
                 await context.SaveChangesAsync();
 
@@ -77,7 +105,7 @@ namespace Gordon360.Services
         /// <param name="id">The id</param>
         public async Task UpdateReportStatusAsync(int id, string status)
         {
-            var original = await context.Missing.FindAsync(id);
+            var original = await context.MissingReports.FindAsync(id);
 
             if (original != null)
             {
@@ -126,9 +154,10 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The ID of the missing item</param>
         /// <returns>A Missing, or null if no item matches the id</returns>
-        public Missing? GetMissingItem(int id)
+        public MissingItemReportViewModel? GetMissingItem(int id)
         {
-            return context.Missing.FirstOrDefault(x => x.recordID == id);
+            MissingItemData report = context.MissingItemData.FirstOrDefault(x => x.ID == id);
+            return (MissingItemReportViewModel)report;
         }
     }
 }

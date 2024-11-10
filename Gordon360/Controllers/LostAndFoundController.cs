@@ -99,9 +99,9 @@ namespace Gordon360.Controllers
         /// <param name="id">The id</param>
         [HttpGet]
         [Route("missingitemsbyid/{id}")]
-        public ActionResult<Missing> GetMissingItem(int id)
+        public ActionResult<MissingItemReportViewModel> GetMissingItem(int id)
         {
-            Missing? result = lostAndFoundService.GetMissingItem(id);
+            MissingItemReportViewModel? result = lostAndFoundService.GetMissingItem(id);
             if (result != null)
             {
                 return Ok(result);
