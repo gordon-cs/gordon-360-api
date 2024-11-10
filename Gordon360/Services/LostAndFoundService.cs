@@ -13,7 +13,21 @@ namespace Gordon360.Services
     {
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails)
         {
-            var newReportResults = context.Missing.Add(new Missing { firstName = reportDetails.firstName, lastName = reportDetails.lastName, category = reportDetails.category, brand = reportDetails.brand, description = reportDetails.description, locationLost = reportDetails.locationLost, stolen = reportDetails.stolen, stolenDescription = reportDetails.stolenDescription, dateLost = reportDetails.dateLost, dateCreated = reportDetails.dateCreated, phoneNumber = reportDetails.phoneNumber, altPhone = reportDetails.altPhone, emailAddr = reportDetails.emailAddr, status = reportDetails.status, adminUsername = reportDetails.adminUsername });
+            var newReportResults = context.Missing.Add(new Missing { 
+                firstName = reportDetails.firstName, 
+                lastName = reportDetails.lastName, 
+                category = reportDetails.category,
+                brand = reportDetails.brand, 
+                description = reportDetails.description,
+                locationLost = reportDetails.locationLost, 
+                stolen = reportDetails.stolen, 
+                stolenDescription = reportDetails.stolenDescription, 
+                dateLost = reportDetails.dateLost, 
+                dateCreated = reportDetails.dateCreated, 
+                phoneNumber = reportDetails.phone, 
+                emailAddr = reportDetails.email, 
+                status = reportDetails.status,
+                adminUsername = reportDetails.submitterUsername });
             // var newReportResults = context.Missing.Add(new Missing(reportDetails))
 
             context.SaveChanges();
@@ -46,11 +60,10 @@ namespace Gordon360.Services
                 original.stolenDescription = reportDetails.stolenDescription;
                 original.dateLost = reportDetails.dateLost;
                 original.dateCreated = reportDetails.dateCreated;
-                original.phoneNumber = reportDetails.phoneNumber;
-                original.altPhone = reportDetails.altPhone;
-                original.emailAddr = reportDetails.emailAddr;
+                original.phoneNumber = reportDetails.phone;
+                original.emailAddr = reportDetails.email;
                 original.status = reportDetails.status;
-                original.adminUsername = reportDetails.adminUsername;
+                original.adminUsername = reportDetails.submitterUsername;
 
                 await context.SaveChangesAsync();
 
@@ -82,10 +95,11 @@ namespace Gordon360.Services
         /// Get the full list of all missing item reports.
         /// </summary>
         /// <returns>an Enumerable of Missing containing all missing item reports</returns>
-        public IEnumerable<Missing> GetMissingItems()
+        public IEnumerable<MissingItemReportViewModel> GetMissingItems()
         {
-            IEnumerable<Missing> missingList = context.Missing.AsEnumerable();
-            return missingList;
+            IEnumerable<MissingItemData> missingList = context.MissingItemData.AsEnumerable();
+            IEnumerable<MissingItemReportViewModel> returnList = missingList.Select(x => (MissingItemReportViewModel)x);
+            return returnList;
         }
 
         /// <summary>

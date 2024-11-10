@@ -53,9 +53,9 @@ namespace Gordon360.Controllers
 
         [HttpGet]
         [Route("missingitems")]
-        public ActionResult<IEnumerable<Missing>> GetMissingItems()
+        public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems()
         {
-            IEnumerable<Missing> result = lostAndFoundService.GetMissingItems();
+            IEnumerable<MissingItemReportViewModel> result = lostAndFoundService.GetMissingItems();
             if (result != null)
             {
                 return Ok(result);

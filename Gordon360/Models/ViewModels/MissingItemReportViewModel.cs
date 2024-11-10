@@ -14,7 +14,7 @@ namespace Gordon360.Models.ViewModels
 
         public string category { get; set; }
 
-        public string[]? colors { get; set; }
+        public string? colors { get; set; }
 
         public string? brand { get; set; }
 
@@ -22,7 +22,7 @@ namespace Gordon360.Models.ViewModels
 
         public string locationLost { get; set; }
 
-        public bool? stolen { get; set; }
+        public bool stolen { get; set; }
 
         public string? stolenDescription { get; set; }
 
@@ -30,19 +30,17 @@ namespace Gordon360.Models.ViewModels
 
         public DateTime? dateCreated { get; set; }
 
-        public string phoneNumber { get; set; }
+        public string phone { get; set; }
 
-        public string? altPhone { get; set; }
-
-        public string emailAddr { get; set; }
+        public string email { get; set; }
 
         public string status { get; set; }
 
-        public string? adminUsername { get; set; }
+        public string submitterUsername { get; set; }
 
-        public static implicit operator MissingItemReportViewModel(CCT.Missing MissingReportDBModel) => new MissingItemReportViewModel
+        public static implicit operator MissingItemReportViewModel(CCT.MissingItemData MissingReportDBModel) => new MissingItemReportViewModel
         {
-            recordID = MissingReportDBModel.recordID,
+            recordID = MissingReportDBModel.ID,
             firstName = MissingReportDBModel.firstName,
             lastName = MissingReportDBModel.lastName,
             category = MissingReportDBModel.category,
@@ -50,14 +48,13 @@ namespace Gordon360.Models.ViewModels
             description = MissingReportDBModel.description,
             locationLost = MissingReportDBModel.locationLost,
             stolen = MissingReportDBModel.stolen,
-            stolenDescription = MissingReportDBModel.stolenDescription,
+            stolenDescription = MissingReportDBModel.stolenDesc,
             dateLost = MissingReportDBModel.dateLost,
             dateCreated = MissingReportDBModel.dateCreated,
-            phoneNumber = MissingReportDBModel.phoneNumber,
-            altPhone = MissingReportDBModel.altPhone,
-            emailAddr = MissingReportDBModel.emailAddr,
+            phone = MissingReportDBModel.phone,
+            email = MissingReportDBModel.email,
             status = MissingReportDBModel.status,
-            adminUsername = MissingReportDBModel.adminUsername,
+            submitterUsername = MissingReportDBModel.submitterUsername,
         };
     }
 }
