@@ -299,6 +299,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[LostAndFound].[MissingItemData]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[RecIM].[ParticipantView]",
          "ObjectType": 3
       },

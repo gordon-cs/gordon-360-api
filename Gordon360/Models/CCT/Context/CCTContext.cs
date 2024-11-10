@@ -98,6 +98,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Missing> Missing { get; set; }
 
+    public virtual DbSet<MissingItemData> MissingItemData { get; set; }
+
     public virtual DbSet<MissingReports> MissingReports { get; set; }
 
     public virtual DbSet<PART_DEF> PART_DEF { get; set; }
@@ -445,6 +447,11 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Missing>(entity =>
         {
             entity.HasKey(e => e.recordID).HasName("PK__Missing__D825197E645524A6");
+        });
+
+        modelBuilder.Entity<MissingItemData>(entity =>
+        {
+            entity.ToView("MissingItemData", "LostAndFound");
         });
 
         modelBuilder.Entity<MissingReports>(entity =>
