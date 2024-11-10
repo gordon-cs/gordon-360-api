@@ -5,6 +5,7 @@ using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -87,6 +88,7 @@ namespace Gordon360.Services
             if (original != null)
             {
                 original.category = reportDetails.category;
+                original.colors = string.Join(",", reportDetails.colors);
                 original.brand = reportDetails.brand;
                 original.description = reportDetails.description;
                 original.locationLost = reportDetails.locationLost;
@@ -97,7 +99,6 @@ namespace Gordon360.Services
                 original.status = reportDetails.status;
 
                 await context.SaveChangesAsync();
-
             }
             else
             {

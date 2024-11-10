@@ -95,36 +95,6 @@ namespace Gordon360.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("founditems")]
-        public ActionResult<IEnumerable<FoundItems>> GetFoundItems()
-        {
-            IEnumerable<FoundItems> result = lostAndFoundService.GetFoundItems();
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpGet]
-        [Route("founditemsbyid")]
-        public ActionResult<FoundItems> GetFoundItem(int itemID)
-        {
-            FoundItems? result = lostAndFoundService.GetFoundItem(itemID);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
         /// <param name="id">The id</param>
         [HttpGet]
         [Route("missingitemsbyid/{id}")]
