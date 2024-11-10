@@ -295,16 +295,30 @@
             <returns></returns>
             <remarks>Posts a new message to the service to be added into the database</remarks>
         </member>
-        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateMissingItemReport(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
+        <member name="M:Gordon360.Controllers.LostAndFoundController.CreateMissingItemReport(Gordon360.Models.ViewModels.MissingItemReportViewModel)">
             <summary>
-            Update Missing Item Report with the given id
+            Create a new missing item report with given data
             </summary>
             <param name="id">The id</param>
-            <returns></returns>
+            <returns>ObjectResult(ID) - An HTTP result code, with the ID of the created report if created successfully</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateMissingItemReport(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
+            <summary>
+            Update Missing Item Report with the given id with given data
+            </summary>
+            <param name="id">The id of the report to update</param>
+            <returns>ObjectResult - the http status code result of the action</returns>
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateReportStatus(System.Int32,System.String)">
             <summary>
-            Update Item Report Status to "Deleted" with the given id
+            Update the status of the item report with given id to the given status text
+            </summary>
+            <param name="id">The id of the report to update</param>
+            <returns>ObjectResult - the http status code result of the action</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetAllMissingItems">
+            <summary>
+            Get all missing items, only for data entry level users
             </summary>
             <param name="id">The id</param>
             <returns></returns>
@@ -1863,10 +1877,11 @@
         <member name="M:Gordon360.Services.LostAndFoundService.UpdateReportStatusAsync(System.Int32,System.String)">
             <param name="id">The id</param>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItems">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItems(System.String)">
             <summary>
-            Get the full list of all missing item reports.
+            Get the list of missing item reports for given user.
             </summary>
+            <param name="username">The username to get reports for</param>
             <returns>an Enumerable of Missing containing all missing item reports</returns>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItems">

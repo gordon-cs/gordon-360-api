@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,12 +29,13 @@ namespace Gordon360.Services
                 throw new ResourceCreationException() { ExceptionMessage = "No account could be found for the user." };
             }
 
+            // Create the new report
             var newReportResults = context.MissingReports.Add(new MissingReports
             {
                 submitterID = idNum,
                 forGuest = reportDetails.forGuest,
                 category = reportDetails.category,
-                colors = reportDetails.colors,
+                colors = string.Join(",", reportDetails.colors),
                 brand = reportDetails.brand,
                 description = reportDetails.description,
                 locationLost = reportDetails.locationLost,
@@ -51,6 +53,7 @@ namespace Gordon360.Services
                 throw new ResourceCreationException() { ExceptionMessage = "The report could not be saved." };
             }
 
+            // Add a guest user for this report, if submitted for a guest user.
             if (reportDetails.forGuest)
             {
                 var newGuest = context.GuestUsers.Add(new GuestUsers
@@ -120,14 +123,34 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Get the full list of all missing item reports.
+        /// Get the list of missing item reports for given user.
         /// </summary>
+        /// <param name="username">The username to get reports for</param>
         /// <returns>an Enumerable of Missing containing all missing item reports</returns>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItems()
+        public IEnumerable<MissingItemReportViewModel> GetMissingItems(string username)
         {
-            IEnumerable<MissingItemData> missingList = context.MissingItemData.AsEnumerable();
+            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+
+            string idNum;
+
+            if (account != null)
+            {
+                idNum = account.gordon_id;
+            }
+            else
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "No account could be found for the usename." };
+            }
+
+            IEnumerable<MissingItemData> missingList = context.MissingItemData.Where(x => x.submitterID == idNum && x.forGuest == false);
             IEnumerable<MissingItemReportViewModel> returnList = missingList.Select(x => (MissingItemReportViewModel)x);
             return returnList;
+        }
+
+        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll()
+        {
+            IEnumerable<MissingItemData> missingList = context.MissingItemData.AsEnumerable();
+            return missingList.Select(x => (MissingItemReportViewModel)x);
         }
 
         /// <summary>

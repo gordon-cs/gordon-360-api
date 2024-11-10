@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Gordon360.Models.ViewModels
@@ -14,7 +15,7 @@ namespace Gordon360.Models.ViewModels
 
         public string category { get; set; }
 
-        public string? colors { get; set; }
+        public string[] colors { get; set; }
 
         public string? brand { get; set; }
 
@@ -48,6 +49,7 @@ namespace Gordon360.Models.ViewModels
             firstName = MissingReportDBModel.firstName,
             lastName = MissingReportDBModel.lastName,
             category = MissingReportDBModel.category,
+            colors = MissingReportDBModel.colors.Split(',').Select(item => item.Trim()).ToArray(),
             brand = MissingReportDBModel.brand,
             description = MissingReportDBModel.description,
             locationLost = MissingReportDBModel.locationLost,
