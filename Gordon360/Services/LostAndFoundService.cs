@@ -16,8 +16,14 @@ namespace Gordon360.Services
     {
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username)
         {
+            // By default, get the submitter's account from the report details passed by the frontend
+            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == reportDetails.submitterUsername);
 
-            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            // If that fails, get the account from the authenticated user details
+            if (account == null)
+            {
+                account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
+            }
 
             string idNum;
 
