@@ -371,14 +371,14 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
     /// <param name="roomNumber">The resident's room number.</param>
-    /// <returns>Returns the RA's ID if found, otherwise null.</returns>
+    /// <returns>Returns the RA's details if found, otherwise null. </returns>
     [HttpGet("GetResidentRA/{hallId}/{roomNumber}")]
-    public async Task<ActionResult<string>> GetResidentRA(string hallId, string roomNumber)
+    public async Task<IActionResult> GetResidentRA([FromRoute] string hallId, [FromRoute] string roomNumber)
     {
         try
         {
-            var raId = await housingService.GetResidentRAAsync(hallId, roomNumber);
-            return Ok(raId);
+            var raInfo = await housingService.GetResidentRAAsync(hallId, roomNumber);
+            return Ok(raInfo);
         }
         catch (InvalidOperationException ex)
         {

@@ -686,13 +686,13 @@ public class HousingService(CCTContext context) : IHousingService
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
     /// <param name="roomNumber">The resident's room number.</param>
-    /// <returns>Returns the RA's ID if found, otherwise null.</returns>
-    public async Task<string> GetResidentRAAsync(string hallId, string roomNumber)
+    /// <returns>Returns the RA's details if found, otherwise throws an exception.</returns>
+    public async Task<RA_StudentsViewModel> GetResidentRAAsync(string hallId, string roomNumber)
     {
         // Query the room range within the specified hall that contains the room number
         var roomRange = await context.Hall_Assignment_Ranges
-            .FirstOrDefaultAsync(r => r.Hall_ID == hallId 
-                && string.Compare(r.Room_Start, roomNumber) <= 0 
+            .FirstOrDefaultAsync(r => r.Hall_ID == hallId
+                && string.Compare(r.Room_Start, roomNumber) <= 0
                 && string.Compare(r.Room_End, roomNumber) >= 0);
 
         if (roomRange == null)
@@ -701,28 +701,38 @@ public class HousingService(CCTContext context) : IHousingService
         }
 
         // Find the RA assigned to that room range
-        var assignedRA = await context.RA_Assigned_Ranges
+        var assignedRAID = await context.RA_Assigned_Ranges
             .Where(ra => ra.Range_ID == roomRange.Range_ID)
             .Select(ra => ra.Ra_ID)
             .FirstOrDefaultAsync();
 
-        if (assignedRA == null)
+        if (assignedRAID == null)
         {
             throw new InvalidOperationException("No RA assigned to this room range.");
         }
 
-        // Use RA_ID to query RA_Assigned_Ranges_View for the RA’s name
-        var assignedRAName = await context.RA_Assigned_Ranges_View
-            .Where(raView => raView.RA_ID == assignedRA)
-            .Select(raView => raView.Fname + " " + raView.Lname)
+        // Get the full details of the RA assigned to the room range
+        var assignedRA = await context.RA_Students
+            .Where(ra => ra.ID == assignedRAID)
+            .Select(ra => new RA_StudentsViewModel
+            {
+                FirstName = ra.FirstName,
+                LastName = ra.LastName,
+                Dorm = ra.Dorm,
+                BLDG_Code = ra.BLDG_Code,
+                RoomNumber = ra.RoomNumber,
+                Email = ra.Email,
+                PhoneNumber = ra.PhoneNumber,
+                ID = ra.ID
+            })
             .FirstOrDefaultAsync();
 
-        if (assignedRAName == null)
+        if (assignedRA == null)
         {
-            throw new InvalidOperationException("No RA name found for the RA ID.");
+            throw new InvalidOperationException("RA details could not be retrieved.");
         }
-        
-        return assignedRAName;
+
+        return assignedRA;
     }
 
     /// <summary>
