@@ -371,14 +371,14 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
     /// <param name="roomNumber">The resident's room number.</param>
-    /// <returns>Returns the RA's ID if found, otherwise null.</returns>
-    [HttpGet("GetResidentRA")]
-    public async Task<ActionResult<string>> GetResidentRA([FromQuery] string hallId, [FromQuery] string roomNumber)
+    /// <returns>Returns the RA's details if found, otherwise null. </returns>
+    [HttpGet("GetResidentRA/{hallId}/{roomNumber}")]
+    public async Task<IActionResult> GetResidentRA([FromRoute] string hallId, [FromRoute] string roomNumber)
     {
         try
         {
-            var raId = await housingService.GetResidentRAAsync(hallId, roomNumber);
-            return Ok(raId);
+            var raInfo = await housingService.GetResidentRAAsync(hallId, roomNumber);
+            return Ok(raInfo);
         }
         catch (InvalidOperationException ex)
         {
@@ -454,66 +454,141 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
-
-    /// <summary>
-    /// Sets or updates an RA's preferred contact method
-    /// </summary>
-    /// <param name="raId">The ID of the RA</param>
-    /// <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
-    /// <returns>True if the contact method was successfully set</returns>
-    [HttpPost("set-preferred-contact")]
-    public async Task<IActionResult> SetPreferredContact([FromQuery] string raId, [FromQuery] string preferredContactMethod)
+/// <summary>
+/// Sets or updates an RA's preferred contact method
+/// </summary>
+/// <param name="raId">The ID of the RA</param>
+/// <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
+/// <returns>True if the contact method was successfully set</returns>
+[HttpPost("set-preferred-contact")]
+public async Task<IActionResult> SetPreferredContact([FromQuery] string raId, [FromQuery] string preferredContactMethod)
+{
+    if (string.IsNullOrWhiteSpace(raId) || string.IsNullOrWhiteSpace(preferredContactMethod))
     {
-        if (string.IsNullOrWhiteSpace(raId) || string.IsNullOrWhiteSpace(preferredContactMethod))
-        {
-            return BadRequest("RA ID and contact method are required.");
-        }
-
-        try
-        {
-            var result = await housingService.SetPreferredContactMethodAsync(raId, preferredContactMethod);
-            if (result)
-            {
-                return Ok("Preferred contact method set successfully.");
-            }
-            else
-            {
-                return StatusCode(500, "An error occurred while setting the preferred contact method.");
-            }
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        return BadRequest("RA ID and contact method are required.");
     }
 
-    /// <summary>
-    /// Retrieves the preferred contact information for an RA based on their contact preference.
-    /// If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
-    /// with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
-    /// </summary>
-    /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
-    /// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
-    /// phone number if no preference is set.</returns>
-    [HttpGet("ra-contact/{raId}")]
-    public async Task<ActionResult<string>> GetRAContact(string raId)
+    try
     {
-        try
+        var result = await housingService.SetPreferredContactMethodAsync(raId, preferredContactMethod);
+        if (result)
         {
-            var contactInfo = await housingService.GetPreferredContactAsync(raId);
-
-            if (string.IsNullOrEmpty(contactInfo))
-            {
-                return NotFound("RA contact information not found.");
-            }
-
-            return Ok(contactInfo);
+            return Ok("Preferred contact method set successfully.");
         }
-        catch (Exception ex)
+        else
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return StatusCode(500, "An error occurred while setting the preferred contact method.");
         }
     }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+    }
+}
+
+/// <summary>
+/// Checks an RA in
+/// </summary>
+/// <param name="checkin">The viewmodel object of the RA checking in</param>
+/// <returns>true if RA checked in successfully</returns>
+[HttpPost("ra-checkin")]
+public async Task<ActionResult<bool>> RA_Checkin([FromBody] RA_On_CallViewModel RAcheckin)
+{
+    try
+    {
+        var checkedIn = await housingService.RA_CheckinAsync(RAcheckin);
+        if (checkedIn)
+        {
+            return Created("RA checked in successfully.", checkedIn);
+        }
+        return BadRequest("Failed to check in RA.");
+    }
+    catch (InvalidOperationException ex)
+    {
+        return BadRequest(ex.Message);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+    }
+}
+
+/// <summary>
+/// Gets the ID of the on-call RA for a specified hall.
+/// </summary>
+/// <param name="Hall_ID">The ID of the hall</param>
+/// <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
+[HttpGet("on-call-ra/{Hall_ID}")]
+public async Task<ActionResult<string>> GetOnCallRA(string Hall_ID)
+{
+    try
+    {
+        var raId = await housingService.GetOnCallRAAsync(Hall_ID);
+
+        if (raId == null)
+        {
+            return NotFound($"No RA is currently on call for hall ID: {Hall_ID}");
+        }
+
+        return Ok(raId);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+    }
+}
+
+/// <summary>
+/// Retrieves the preferred contact information for an RA based on their contact preference.
+/// If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+/// with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+/// </summary>
+/// <param name="raId">The ID of the RA whose contact information is being requested.</param>
+/// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
+/// phone number if no preference is set.</returns>
+[HttpGet("ra-contact/{raId}")]
+public async Task<ActionResult<string>> GetRAContact(string raId)
+{
+    try
+    {
+        var contactInfo = await housingService.GetPreferredContactAsync(raId);
+
+        if (string.IsNullOrEmpty(contactInfo))
+        {
+            return NotFound("RA contact information not found.");
+        }
+
+        return Ok(contactInfo);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+    }
+}
+
+/// <summary>
+/// Gets the on-call RAs for all halls.
+/// </summary>
+/// <returns>The RAs on call</returns>
+[HttpGet("on-call-ra/all")]
+public async Task<ActionResult<List<RA_On_Call_GetViewModel>>> GetOnCallRAAllHalls()
+{
+    try
+    {
+        var onCallRAs = await housingService.GetOnCallRAAllHallsAsync();
+
+        if (onCallRAs == null || !onCallRAs.Any())
+        {
+            return NotFound("No RA is currently on call for any hall.");
+        }
+
+        return Ok(onCallRAs);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+    }
+}
 
 
 
