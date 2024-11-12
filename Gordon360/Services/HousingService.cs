@@ -613,19 +613,30 @@ public class HousingService(CCTContext context) : IHousingService
     {
         // Find the room range by ID
         var roomRange = await context.Hall_Assignment_Ranges
-                                    .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
+                                     .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
 
         if (roomRange == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "Room range not found." };
         }
 
+        // Check if the room range is assigned to an RA
+        var isAssignedToRA = await context.RA_Assigned_Ranges
+                                          .AnyAsync(a => a.Range_ID == rangeId);
+
+        if (isAssignedToRA)
+        {
+            throw new InvalidOperationException("Cannot delete room range because it is currently assigned to an RA.");
+        }
+
+        // Proceed to remove the room range
         context.Hall_Assignment_Ranges.Remove(roomRange);
 
         await context.SaveChangesAsync();
 
         return true;
     }
+
 
     /// <summary>
     /// Assigns an RA to a room range if no RA is currently assigned
