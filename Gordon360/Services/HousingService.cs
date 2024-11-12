@@ -777,6 +777,90 @@ public class HousingService(CCTContext context) : IHousingService
         return Assignments;
     }
 
+    /// <summary>
+    /// Sets or updates an RA's preferred contact method
+    /// </summary>
+    /// <param name="raId">The ID of the RA</param>
+    /// <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
+    /// <returns>True if the contact method was successfully set</returns>
+    public async Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod)
+    {
+        // Check if the RA already has a contact preference in the CCT model
+        var existingPreference = await context.RA_Pref_Contact
+            .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+
+        if (existingPreference != null)
+        {
+            // Update the existing preference
+            existingPreference.Pref_contact = preferredContactMethod;
+            context.RA_Pref_Contact.Update(existingPreference);
+        }
+        else
+        {
+            // Create a new preference using the CCT entity
+            await context.RA_Pref_Contact.AddAsync(new RA_Pref_Contact
+            {
+                Ra_ID = raId,
+                Pref_contact = preferredContactMethod
+            });
+        }
+
+        // Save changes to the database
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    /// <summary>
+    /// Retrieves the preferred contact information for an RA based on their contact preference.
+    /// If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+    /// with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+    /// </summary>
+    /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
+    /// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
+    /// phone number if no preference is set.</returns>
+    public async Task<string> GetPreferredContactAsync(string raId)
+    {
+        // Check if there is a preferred contact method for the given RA
+        var contactPreference = await context.RA_Pref_Contact
+            .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+
+        if (contactPreference != null)
+        {
+            // Determine the preferred method and get corresponding contact info
+            if (contactPreference.Pref_contact == "phone")
+            {
+                // Fetch RA's phone number from the RA_Students table
+                var ra = await context.RA_Students
+                    .FirstOrDefaultAsync(r => r.ID == raId);
+
+                return ra?.PhoneNumber ?? "Phone number not found";
+            }
+            else if (contactPreference.Pref_contact == "teams")
+            {
+                // Fetch RA's email from the RA_Students table
+                var ra = await context.RA_Students
+                    .FirstOrDefaultAsync(r => r.ID == raId);
+
+                if (ra?.Email != null)
+                {
+                    // Generate Teams link using the email
+                    return $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}";
+                }
+                else
+                {
+                    return "Email not found";
+                }
+            }
+        }
+
+        // If no preference exists, return the phone number by default
+        var defaultContact = await context.RA_Students
+            .FirstOrDefaultAsync(r => r.ID == raId);
+
+        return defaultContact?.PhoneNumber ?? "Default phone number not found";
+    }
+
+
 
 
 }
