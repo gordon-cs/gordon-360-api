@@ -487,6 +487,34 @@ public async Task<IActionResult> SetPreferredContact([FromQuery] string raId, [F
 }
 
 /// <summary>
+/// Retrieves the preferred contact information for an RA based on their contact preference.
+/// If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+/// with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+/// </summary>
+/// <param name="raId">The ID of the RA whose contact information is being requested.</param>
+/// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
+/// phone number if no preference is set.</returns>
+[HttpGet("ra-contact/{raId}")]
+public async Task<ActionResult<string>> GetRAContact(string raId)
+{
+    try
+    {
+        var contactInfo = await housingService.GetPreferredContactAsync(raId);
+
+        if (string.IsNullOrEmpty(contactInfo))
+        {
+            return NotFound("RA contact information not found.");
+        }
+
+        return Ok(contactInfo);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"Internal server error: {ex.Message}");
+    }
+}
+
+/// <summary>
 /// Checks an RA in
 /// </summary>
 /// <param name="checkin">The viewmodel object of the RA checking in</param>
@@ -531,34 +559,6 @@ public async Task<ActionResult<string>> GetOnCallRA(string Hall_ID)
         }
 
         return Ok(raId);
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, $"Internal server error: {ex.Message}");
-    }
-}
-
-/// <summary>
-/// Retrieves the preferred contact information for an RA based on their contact preference.
-/// If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
-/// with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
-/// </summary>
-/// <param name="raId">The ID of the RA whose contact information is being requested.</param>
-/// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
-/// phone number if no preference is set.</returns>
-[HttpGet("ra-contact/{raId}")]
-public async Task<ActionResult<string>> GetRAContact(string raId)
-{
-    try
-    {
-        var contactInfo = await housingService.GetPreferredContactAsync(raId);
-
-        if (string.IsNullOrEmpty(contactInfo))
-        {
-            return NotFound("RA contact information not found.");
-        }
-
-        return Ok(contactInfo);
     }
     catch (Exception ex)
     {
