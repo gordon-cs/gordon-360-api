@@ -14,10 +14,10 @@ namespace Gordon360.Services
 {
     public class LostAndFoundService(CCTContext context) : ILostAndFoundService
     {
-        public int CreateMissingItemReport(MissingItemReportViewModel reportDetails)
+        public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username)
         {
 
-            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == reportDetails.submitterUsername);
+            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
             string idNum;
 

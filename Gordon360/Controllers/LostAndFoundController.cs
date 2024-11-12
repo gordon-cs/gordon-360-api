@@ -24,7 +24,9 @@ namespace Gordon360.Controllers
         [Route("missingitem")]
         public ActionResult<int> CreateMissingItemReport([FromBody] MissingItemReportViewModel MissingItemDetails)
         {
-            int ID = lostAndFoundService.CreateMissingItemReport(MissingItemDetails);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            int ID = lostAndFoundService.CreateMissingItemReport(MissingItemDetails, authenticatedUserUsername);
 
             return Ok(ID);
         }
