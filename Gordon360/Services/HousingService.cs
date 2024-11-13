@@ -818,15 +818,26 @@ public class HousingService(CCTContext context) : IHousingService
     /// </summary>
     /// <param name="Hall_ID">The ID of the hall</param>
     /// <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
-    public async Task<string> GetOnCallRAAsync(string Hall_ID)
+    public async Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string Hall_ID)
     {
-        var onCallRA = await context.RA_On_Call
-            .Where(ra => ra.Hall_ID == Hall_ID && ra.Check_out_time == null)
-            .Select(ra => ra.Ra_ID)
+        var onCallRA = await context.Current_On_Call  // Use your updated view name here
+            .Where(ra => ra.Hall_ID == Hall_ID)  // Filter by Hall_ID and only active check-ins
+            .Select(ra => new RA_On_Call_GetViewModel
+            {
+                Hall_ID = ra.Hall_ID,
+                Hall_Name = ra.Hall_Name,            // Hall name
+                RA_Name = ra.RA_Name,                // RA's full name
+                PreferredContact = ra.PreferredContact,  // Preferred contact method
+                Check_in_time = ra.Check_in_time,    // Check-in time
+                RD_Email = ra.RD_Email,              // RD's email
+                RA_Profile_Link = ra.RA_Profile_Link,    // RA's profile link
+                RD_Profile_Link = ra.RD_Profile_Link     // RD's profile link
+            })
             .FirstOrDefaultAsync();
 
         return onCallRA;
     }
+
 
     /// <summary>
     /// Gets the on-call RAs for all halls.
@@ -834,14 +845,17 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>The RAs on call</returns>
     public async Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync()
     {
-        var onCallRAs = await context.RA_On_Call
-            .Where(r => r.Check_out_time == null)  // Only select active check-ins
-            .GroupBy(r => r.Hall_ID)
+        var onCallRAs = await context.Current_On_Call  // Use your updated view name here
             .Select(oncall => new RA_On_Call_GetViewModel
             {
-                Hall_ID = oncall.Key,
-                Ra_ID = oncall.FirstOrDefault().Ra_ID,
-                Check_in_time = oncall.FirstOrDefault().Check_in_time
+                Hall_ID = oncall.Hall_ID,
+                Hall_Name = oncall.Hall_Name,  // Hall name
+                RA_Name = oncall.RA_Name,  // RA's full name
+                PreferredContact = oncall.PreferredContact,  // Preferred contact method
+                Check_in_time = oncall.Check_in_time,  // Check-in time
+                RD_Email = oncall.RD_Email,  // RD's email
+                RA_Profile_Link = oncall.RA_Profile_Link,  // RA's profile link
+                RD_Profile_Link = oncall.RD_Profile_Link  // RD's profile link
             })
             .ToListAsync();
 

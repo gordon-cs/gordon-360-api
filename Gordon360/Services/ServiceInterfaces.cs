@@ -235,7 +235,7 @@ namespace Gordon360.Services
         Task<List<RA_StudentsViewModel>> GetAllRAsAsync();
         Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync();
         Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin);
-        Task<string> GetOnCallRAAsync(string Hall_ID);
+        Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string hallId);
         Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync();
     }
 

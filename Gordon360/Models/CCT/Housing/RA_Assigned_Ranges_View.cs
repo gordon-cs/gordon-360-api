@@ -11,6 +11,8 @@ namespace Gordon360.Models.CCT;
 [Keyless]
 public partial class RA_Assigned_Ranges_View
 {
+    public int Range_ID { get; set; }
+
     [StringLength(9)]
     [Unicode(false)]
     public string RA_ID { get; set; }
