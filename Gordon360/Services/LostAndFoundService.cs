@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 
@@ -78,6 +79,30 @@ namespace Gordon360.Services
             int reportID = newReportResults.Entity.ID;
 
             return reportID;
+        }
+
+        /// <param name="id">The id</param>
+        public int CreateActionTaken(int id, ActionsTaken ActionsTaken)
+        {
+            var newActionTaken = context.ActionsTaken.Add(new ActionsTaken
+            {
+                missingID = ActionsTaken.missingID,
+                action = ActionsTaken.action,
+                actionNote = ActionsTaken.actionNote,
+                actionDate = ActionsTaken.actionDate,
+                submitterID = ActionsTaken.submitterID,
+            });
+
+            context.SaveChangesAsync();
+
+            if (newActionTaken == null || newActionTaken?.Entity?.ID == 0)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The report could not be saved." };
+            }
+
+            int actionTakenID = newActionTaken.Entity.ID;
+
+            return actionTakenID;
         }
 
         /// <param name="id">The id</param>

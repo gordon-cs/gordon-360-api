@@ -5,6 +5,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,6 +28,20 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             int ID = lostAndFoundService.CreateMissingItemReport(MissingItemDetails, authenticatedUserUsername);
+
+            return Ok(ID);
+        }
+
+        /// <summary>
+        /// Create action taken of the missing item report with actions taken object and missing item report ID
+        /// </summary>
+        /// <param name="id">The id of the report to update</param>
+        /// <returns>ObjectResult - the http status code result of the action</returns>
+        [HttpPost]
+        [Route("missingitem/{id}/actionTaken")]
+        public ActionResult<int> CreateActionTaken(int id, [FromBody] ActionsTaken ActionsTaken)
+        {
+            int ID = lostAndFoundService.CreateActionTaken(id, ActionsTaken);
 
             return Ok(ID);
         }
