@@ -853,39 +853,45 @@ public class HousingService(CCTContext context) : IHousingService
     /// phone number if no preference is set.</returns>
     public async Task<string> GetPreferredContactAsync(string raId)
     {
-        // Check if there is a preferred contact method for the given RA
-        var contactPreference = await context.RA_Pref_Contact
-            .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+    // Check if there is a preferred contact method for the given RA
+    var contactPreference = await context.RA_Pref_Contact
+        .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
 
-        if (contactPreference != null)
+    if (contactPreference != null)
+    {
+        // Determine the preferred method and get corresponding contact info
+        if (contactPreference.Pref_contact == "phone")
         {
-            // Determine the preferred method and get corresponding contact info
-            if (contactPreference.Pref_contact == "phone")
-            {
-                // Fetch RA's phone number from the RA_Students table
-                var ra = await context.RA_Students
-                    .FirstOrDefaultAsync(r => r.ID == raId);
+            // Fetch RA's phone number from the RA_Students table
+            var ra = await context.RA_Students
+                .FirstOrDefaultAsync(r => r.ID == raId);
 
-                return ra?.PhoneNumber ?? "Phone number not found";
+            return ra?.PhoneNumber ?? "Phone number not found";
+        }
+        else if (contactPreference.Pref_contact == "teams")
+        {
+            // Fetch RA's email from the RA_Students table
+            var ra = await context.RA_Students
+                .FirstOrDefaultAsync(r => r.ID == raId);
+
+            if (ra?.Email != null)
+            {
+                // Generate Teams link using the email
+                return $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}";
             }
-            else if (contactPreference.Pref_contact == "teams")
+            else
             {
-                // Fetch RA's email from the RA_Students table
-                var ra = await context.RA_Students
-                    .FirstOrDefaultAsync(r => r.ID == raId);
-
-                if (ra?.Email != null)
-                {
-                    // Generate Teams link using the email
-                    return $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}";
-                }
-                else
-                {
-                    return "Email not found";
-                }
+                return "Email not found";
             }
         }
-        }
+    }
+
+        // If no preference exists, return the phone number by default
+        var defaultContact = await context.RA_Students
+            .FirstOrDefaultAsync(r => r.ID == raId);
+    
+        return defaultContact?.PhoneNumber ?? "Default phone number not found";
+    }
 
     /// <summary>
     /// Gets the on-call RA's ID for specified hall.
