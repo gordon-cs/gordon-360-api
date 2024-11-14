@@ -271,6 +271,8 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Current_On_Call>(entity =>
         {
             entity.ToView("Current_On_Call", "Housing");
+
+            entity.Property(e => e.Hall_Name).IsFixedLength();
         });
 
         modelBuilder.Entity<CustomParticipant>(entity =>

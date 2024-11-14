@@ -16,11 +16,33 @@ public partial class Current_On_Call
     [Unicode(false)]
     public string Hall_ID { get; set; }
 
-    [Required]
-    [StringLength(10)]
+    [StringLength(45)]
     [Unicode(false)]
-    public string Ra_ID { get; set; }
+    public string Hall_Name { get; set; }
+
+    [Required]
+    [StringLength(101)]
+    [Unicode(false)]
+    public string RA_Name { get; set; }
+
+    [StringLength(95)]
+    [Unicode(false)]
+    public string PreferredContact { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime Check_in_time { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string RD_Email { get; set; }
+
+    [Required]
+    [StringLength(81)]
+    [Unicode(false)]
+    public string RA_Profile_Link { get; set; }
+
+    [Required]
+    [StringLength(81)]
+    [Unicode(false)]
+    public string RD_Profile_Link { get; set; }
 }
