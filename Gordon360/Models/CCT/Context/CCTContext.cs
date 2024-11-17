@@ -38,8 +38,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<CUSTOM_PROFILE> CUSTOM_PROFILE { get; set; }
 
-    public virtual DbSet<Categories> Categories { get; set; }
-
     public virtual DbSet<ChapelEvent> ChapelEvent { get; set; }
 
     public virtual DbSet<Clifton_Strengths> Clifton_Strengths { get; set; }
@@ -57,8 +55,6 @@ public partial class CCTContext : DbContext
     public virtual DbSet<EmergencyContact> EmergencyContact { get; set; }
 
     public virtual DbSet<FacStaff> FacStaff { get; set; }
-
-    public virtual DbSet<FoundItems> FoundItems { get; set; }
 
     public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
@@ -95,8 +91,6 @@ public partial class CCTContext : DbContext
     public virtual DbSet<MembershipView> MembershipView { get; set; }
 
     public virtual DbSet<Minors> Minors { get; set; }
-
-    public virtual DbSet<Missing> Missing { get; set; }
 
     public virtual DbSet<MissingItemData> MissingItemData { get; set; }
 
@@ -147,8 +141,6 @@ public partial class CCTContext : DbContext
     public virtual DbSet<States> States { get; set; }
 
     public virtual DbSet<Statistic> Statistic { get; set; }
-
-    public virtual DbSet<Statuses> Statuses { get; set; }
 
     public virtual DbSet<Student> Student { get; set; }
 
@@ -246,11 +238,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.SESS_CDE).IsFixedLength();
         });
 
-        modelBuilder.Entity<Categories>(entity =>
-        {
-            entity.HasKey(e => e.CategoryName).HasName("PK__Categori__8517B2E195D5FEE5");
-        });
-
         modelBuilder.Entity<ChapelEvent>(entity =>
         {
             entity.ToView("ChapelEvent", "dbo");
@@ -314,13 +301,6 @@ public partial class CCTContext : DbContext
             entity.ToView("FacStaff", "dbo");
 
             entity.Property(e => e.BuildingDescription).IsFixedLength();
-        });
-
-        modelBuilder.Entity<FoundItems>(entity =>
-        {
-            entity.HasKey(e => e.ID).HasName("PK__FoundIte__3214EC277B2634DE");
-
-            entity.Property(e => e.ID).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<GuestUsers>(entity =>
@@ -444,11 +424,6 @@ public partial class CCTContext : DbContext
             entity.ToView("Minors", "dbo");
         });
 
-        modelBuilder.Entity<Missing>(entity =>
-        {
-            entity.HasKey(e => e.recordID).HasName("PK__Missing__D825197E645524A6");
-        });
-
         modelBuilder.Entity<MissingItemData>(entity =>
         {
             entity.ToView("MissingItemData", "LostAndFound");
@@ -457,14 +432,6 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<MissingReports>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__MissingR__3214EC27985CEC3D");
-
-            entity.HasOne(d => d.categoryNavigation).WithMany(p => p.MissingReports)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MissingRe__categ__0AB36FCB");
-
-            entity.HasOne(d => d.statusNavigation).WithMany(p => p.MissingReports)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MissingRe__statu__0BA79404");
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>
@@ -625,11 +592,6 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.ParticipantTeam).WithMany(p => p.Statistic)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Statistic_ParticipantTeam");
-        });
-
-        modelBuilder.Entity<Statuses>(entity =>
-        {
-            entity.HasKey(e => e.StatusName).HasName("PK__Statuses__05E7698B0A94483B");
         });
 
         modelBuilder.Entity<Student>(entity =>
