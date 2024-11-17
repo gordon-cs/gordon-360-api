@@ -39,7 +39,7 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPost]
         [Route("missingitem/{id}/actionTaken")]
-        public ActionResult<int> CreateActionTaken(int id, [FromBody] ActionsTaken ActionsTaken)
+        public ActionResult<int> CreateActionTaken(int id, [FromBody] ActionsTakenViewModel ActionsTaken)
         {
             int ID = lostAndFoundService.CreateActionTaken(id, ActionsTaken);
 

@@ -82,7 +82,7 @@ namespace Gordon360.Services
         }
 
         /// <param name="id">The id</param>
-        public int CreateActionTaken(int id, ActionsTaken ActionsTaken)
+        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken)
         {
             var newActionTaken = context.ActionsTaken.Add(new ActionsTaken
             {
@@ -94,11 +94,6 @@ namespace Gordon360.Services
             });
 
             context.SaveChangesAsync();
-
-            if (newActionTaken == null || newActionTaken?.Entity?.ID == 0)
-            {
-                throw new ResourceCreationException() { ExceptionMessage = "The report could not be saved." };
-            }
 
             int actionTakenID = newActionTaken.Entity.ID;
 

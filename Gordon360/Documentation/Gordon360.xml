@@ -302,7 +302,7 @@
             <param name="id">The id</param>
             <returns>ObjectResult(ID) - An HTTP result code, with the ID of the created report if created successfully</returns>
         </member>
-        <member name="M:Gordon360.Controllers.LostAndFoundController.CreateActionTaken(System.Int32,Gordon360.Models.CCT.ActionsTaken)">
+        <member name="M:Gordon360.Controllers.LostAndFoundController.CreateActionTaken(System.Int32,Gordon360.Models.ViewModels.ActionsTakenViewModel)">
             <summary>
             Create action taken of the missing item report with actions taken object and missing item report ID
             </summary>
@@ -1878,7 +1878,7 @@
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.CreateActionTaken(System.Int32,Gordon360.Models.CCT.ActionsTaken)">
+        <member name="M:Gordon360.Services.LostAndFoundService.CreateActionTaken(System.Int32,Gordon360.Models.ViewModels.ActionsTakenViewModel)">
             <param name="id">The id</param>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.UpdateMissingItemReportAsync(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
