@@ -26,7 +26,7 @@ namespace Gordon360.Services
             // By default, get the submitter's account from the report details passed by the frontend
             var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == reportDetails.submitterUsername);
 
-            // If that fails, get the account from the authenticated user details
+            // If that fails, use the account of the currently authenticated user
             if (account == null)
             {
                 account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
@@ -43,7 +43,7 @@ namespace Gordon360.Services
                 throw new ResourceCreationException() { ExceptionMessage = "No account could be found for the user." };
             }
 
-            // Create the new report
+            // Create the new report using the supplied fields
             var newReportResults = context.MissingReports.Add(new MissingReports
             {
                 submitterID = idNum,
@@ -67,9 +67,10 @@ namespace Gordon360.Services
                 throw new ResourceCreationException() { ExceptionMessage = "The report could not be saved." };
             }
 
-            // Add a guest user for this report, if submitted for a guest user.
+            // /If this report was submitted for a guest user.
             if (reportDetails.forGuest)
             {
+                // Add a guest user to the db associated with this report
                 var newGuest = context.GuestUsers.Add(new GuestUsers
                 {
                     missingID = newReportResults.Entity.ID,
@@ -157,6 +158,7 @@ namespace Gordon360.Services
         /// <returns>an Enumerable of Missing Item Reports containing all missing item reports</returns>
         public IEnumerable<MissingItemReportViewModel> GetMissingItems(string username)
         {
+            // Get the account of the given username.
             var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
 
             string idNum;
@@ -169,8 +171,9 @@ namespace Gordon360.Services
             {
                 throw new ResourceCreationException() { ExceptionMessage = "No account could be found for the usename." };
             }
-
+            // Fetch the missing item reports belonging to that user, and not submitted for someone else
             IEnumerable<MissingItemData> missingList = context.MissingItemData.Where(x => x.submitterID == idNum && x.forGuest == false);
+            // Convert the report objects into viewmodel objects.
             IEnumerable<MissingItemReportViewModel> returnList = missingList.Select(x => (MissingItemReportViewModel)x);
             return returnList;
         }

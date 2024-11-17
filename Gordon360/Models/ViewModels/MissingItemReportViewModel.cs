@@ -5,6 +5,7 @@ using System.Reflection;
 
 namespace Gordon360.Models.ViewModels
 {
+    // Backend model of a missing item report
     public class MissingItemReportViewModel
     {
         public int? recordID { get; set; }
@@ -39,7 +40,7 @@ namespace Gordon360.Models.ViewModels
 
         public string submitterUsername { get; set; }
 
-        public string? submitterID { get; set; }
+        public string? submitterID { get; set; } //ID used internally, but will never be passed to the frontend
 
         public bool forGuest { get; set; }
 
