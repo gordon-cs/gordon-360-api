@@ -196,16 +196,17 @@ namespace Gordon360.Services
         /// <returns>A Missing Item Report object, or null if no item matches the id</returns>
         public MissingItemReportViewModel? GetMissingItem(int id, string username)
         {
+            MissingItemData report;
             // If user is admin, simply get the report
             if (Authorization.AuthUtils.GetGroups(username).Contains(Enums.AuthGroup.LostAndFoundAdmin))
             {
-                MissingItemData report = context.MissingItemData.FirstOrDefault(x => x.ID == id);
+                report = context.MissingItemData.FirstOrDefault(x => x.ID == id);
             }
             else
             {
                 // Otherwise check if the report belongs to the requesting user
                 var idNum = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username).gordon_id;
-                MissingItemData report = context.MissingItemData.FirstOrDefault(x => x.ID == id && x.submitterID == idNum);
+                report = context.MissingItemData.FirstOrDefault(x => x.ID == id && x.submitterID == idNum);
             }
             return (MissingItemReportViewModel)report;
         }
