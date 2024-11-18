@@ -75,10 +75,10 @@ public class PublicAlumniProfileViewModel
         }
         else if (!vm.ShareAddress.Contains("Y"))
         {
-            vm.HomeCity = "Private as requested.";
-            vm.HomeCountry = "";
-            vm.HomeState = "";
-            vm.Country = "";
+            vm.HomeCity = null;
+            vm.HomeCountry = null;
+            vm.HomeState = null;
+            vm.Country = null;
         }
         return vm;
     }
