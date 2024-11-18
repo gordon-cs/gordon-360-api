@@ -71,11 +71,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "[LostAndFound].[FoundItems]",
+         "Name": "[LostAndFound].[ActionsTaken]",
          "ObjectType": 0
       },
       {
-         "Name": "[LostAndFound].[Missing]",
+         "Name": "[LostAndFound].[GuestUsers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[MissingReports]",
          "ObjectType": 0
       },
       {
@@ -276,6 +280,10 @@
       },
       {
          "Name": "[dbo].[UserCourses]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[LostAndFound].[MissingItemData]",
          "ObjectType": 3
       },
       {

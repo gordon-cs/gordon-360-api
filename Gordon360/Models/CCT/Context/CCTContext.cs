@@ -20,6 +20,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
 
+    public virtual DbSet<ActionsTaken> ActionsTaken { get; set; }
+
     public virtual DbSet<Activity> Activity { get; set; }
 
     public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
@@ -54,7 +56,7 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<FacStaff> FacStaff { get; set; }
 
-    public virtual DbSet<FoundItems> FoundItems { get; set; }
+    public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
 
@@ -90,7 +92,9 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Minors> Minors { get; set; }
 
-    public virtual DbSet<Missing> Missing { get; set; }
+    public virtual DbSet<MissingItemData> MissingItemData { get; set; }
+
+    public virtual DbSet<MissingReports> MissingReports { get; set; }
 
     public virtual DbSet<PART_DEF> PART_DEF { get; set; }
 
@@ -170,6 +174,15 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<AccountPhotoURL>(entity =>
         {
             entity.ToView("AccountPhotoURL", "dbo");
+        });
+
+        modelBuilder.Entity<ActionsTaken>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__ActionsT__3214EC2722EC236F");
+
+            entity.HasOne(d => d.missing).WithMany(p => p.ActionsTaken)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ActionsTa__missi__11606D5A");
         });
 
         modelBuilder.Entity<Activity>(entity =>
@@ -290,11 +303,13 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.BuildingDescription).IsFixedLength();
         });
 
-        modelBuilder.Entity<FoundItems>(entity =>
+        modelBuilder.Entity<GuestUsers>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__FoundIte__3214EC277B2634DE");
+            entity.HasKey(e => e.ID).HasName("PK__GuestUse__3214EC2774F2F95F");
 
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.HasOne(d => d.missing).WithMany(p => p.GuestUsers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__GuestUser__missi__0E8400AF");
         });
 
         modelBuilder.Entity<Housing_Applicants>(entity =>
@@ -409,9 +424,14 @@ public partial class CCTContext : DbContext
             entity.ToView("Minors", "dbo");
         });
 
-        modelBuilder.Entity<Missing>(entity =>
+        modelBuilder.Entity<MissingItemData>(entity =>
         {
-            entity.HasKey(e => e.recordID).HasName("PK__Missing__D825197E645524A6");
+            entity.ToView("MissingItemData", "LostAndFound");
+        });
+
+        modelBuilder.Entity<MissingReports>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__MissingR__3214EC27985CEC3D");
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>

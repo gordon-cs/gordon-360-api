@@ -3,6 +3,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,20 +14,28 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class LostAndFoundController(CCTContext context, ILostAndFoundService lostAndFoundService) : GordonControllerBase
     {
+
+        /// <summary>
+        /// Create a new missing item report with given data
+        /// </summary>
+        /// <param name="id">The id</param>
+        /// <returns>ObjectResult(ID) - An HTTP result code, with the ID of the created report if created successfully</returns>
         [HttpPost]
         [Route("missingitem")]
         public ActionResult<int> CreateMissingItemReport([FromBody] MissingItemReportViewModel MissingItemDetails)
         {
-            int ID = lostAndFoundService.CreateMissingItemReport(MissingItemDetails);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            int ID = lostAndFoundService.CreateMissingItemReport(MissingItemDetails, authenticatedUserUsername);
 
             return Ok(ID);
         }
 
         /// <summary>
-        /// Update Missing Item Report with the given id
+        /// Update Missing Item Report with the given id with given data
         /// </summary>
-        /// <param name="id">The id</param>
-        /// <returns></returns>
+        /// <param name="id">The id of the report to update</param>
+        /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route("missingitem/{id}")]
         public async Task<ActionResult> UpdateMissingItemReport(int id, [FromBody] MissingItemReportViewModel MissingItemDetails)
@@ -37,10 +46,10 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update Item Report Status to "Deleted" with the given id
+        /// Update the status of the item report with given id to the given status text
         /// </summary>
-        /// <param name="id">The id</param>
-        /// <returns></returns>
+        /// <param name="id">The id of the report to update</param>
+        /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route("missingitem/{id}/{status}")]
         public async Task<ActionResult> UpdateReportStatus(int id, string status)
@@ -50,12 +59,37 @@ namespace Gordon360.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Get all missing item reports, only for data entry level users
+        /// </summary>
+        /// <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
+        [HttpGet]
+        [Route("missingitemsall")]
+        [StateYourBusiness(operation = Static.Names.Operation.READ_ALL, resource = Resource.LOST_AND_FOUND_MISSING_REPORT)]
+        public ActionResult<IEnumerable<MissingItemReportViewModel>> GetAllMissingItems()
+        {
+            IEnumerable<MissingItemReportViewModel> result = lostAndFoundService.GetMissingItemsAll();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
+        /// <summary>
+        /// Get the list of missing item reports for the currently authenticated user.
+        /// </summary>
+        /// <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
         [HttpGet]
         [Route("missingitems")]
-        public ActionResult<IEnumerable<Missing>> GetMissingItems()
+        public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems()
         {
-            IEnumerable<Missing> result = lostAndFoundService.GetMissingItems();
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            IEnumerable<MissingItemReportViewModel> result = lostAndFoundService.GetMissingItems(authenticatedUserUsername);
             if (result != null)
             {
                 return Ok(result);
@@ -65,43 +99,18 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
-
-        [HttpGet]
-        [Route("founditems")]
-        public ActionResult<IEnumerable<FoundItems>> GetFoundItems()
-        {
-            IEnumerable<FoundItems> result = lostAndFoundService.GetFoundItems();
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpGet]
-        [Route("founditemsbyid")]
-        public ActionResult<FoundItems> GetFoundItem(int itemID)
-        {
-            FoundItems? result = lostAndFoundService.GetFoundItem(itemID);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
-
-        /// <param name="id">The id</param>
+        /// <summary>
+        /// Get a missing item report with given ID.
+        /// </summary>
+        /// <param name="id">The id of the report to get</param>
+        /// <returns>ObjectResult - an http status code, with a MissingItem object in the body </returns>
         [HttpGet]
         [Route("missingitemsbyid/{id}")]
-        public ActionResult<Missing> GetMissingItem(int id)
+        public ActionResult<MissingItemReportViewModel> GetMissingItem(int id)
         {
-            Missing? result = lostAndFoundService.GetMissingItem(id);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            MissingItemReportViewModel? result = lostAndFoundService.GetMissingItem(id, authenticatedUserUsername);
             if (result != null)
             {
                 return Ok(result);
