@@ -33,7 +33,7 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Create action taken of the missing item report with actions taken object and missing item report ID
+        /// Update Missing Item Report with the given id with given data
         /// </summary>
         /// <param name="id">The id of the report to update</param>
         /// <returns>ObjectResult - the http status code result of the action</returns>
@@ -135,8 +135,11 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
-
-        /// <param name="id">The id</param>
+        /// <summary>
+        /// Get a missing item report with given ID.
+        /// </summary>
+        /// <param name="id">The id of the report to get</param>
+        /// <returns>ObjectResult - an http status code, with a MissingItem object in the body </returns>
         [HttpGet]
         [Route(("missingitem/{id}/actionstakenall"))]
         public ActionResult<IEnumerable<ActionsTakenViewModel>> GetActionsTaken(int id)

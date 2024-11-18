@@ -4,7 +4,6 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -25,6 +24,8 @@ namespace Gordon360.Services
         /// <exception cref="ResourceCreationException"></exception>
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username)
         {
+            // By default, get the submitter's account from the report details passed by the frontend
+            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == reportDetails.submitterUsername);
 
             // If that fails, use the account of the currently authenticated user
             if (account == null)
@@ -92,6 +93,44 @@ namespace Gordon360.Services
             int reportID = newReportResults.Entity.ID;
 
             return reportID;
+        }
+
+        /// <param name="id">The id</param>
+        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken)
+        {
+            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == ActionsTaken.username);
+
+            string idNum;
+
+            if (account != null)
+            {
+                idNum = account.gordon_id;
+            }
+            else
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "No account could be found for the user." };
+            }
+
+            var newActionTaken = context.ActionsTaken.Add(new ActionsTaken
+
+            {
+                missingID = id,
+                action = ActionsTaken.action,
+                actionNote = ActionsTaken.actionNote,
+                actionDate = ActionsTaken.actionDate,
+                submitterID = idNum
+            });
+
+            context.SaveChanges();
+
+            if (newActionTaken == null || newActionTaken?.Entity?.ID == 0)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The action could not be saved." };
+            }
+
+            int actionTakenID = newActionTaken.Entity.ID;
+
+            return actionTakenID;
         }
 
         /// <summary>
@@ -212,7 +251,7 @@ namespace Gordon360.Services
         }
 
         /// <summary>
-        /// Gets actions taken by id
+        /// Gets a list of Actions Taken by id
         /// </summary>
         /// <param name="id">The ID of the associated missing item report</param>
         /// <returns>An ActionsTaken, or null if no item matches the id</returns>
