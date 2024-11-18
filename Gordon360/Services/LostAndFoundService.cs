@@ -84,16 +84,35 @@ namespace Gordon360.Services
         /// <param name="id">The id</param>
         public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken)
         {
-            var newActionTaken = context.ActionsTaken.Add(new ActionsTaken
+            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == ActionsTaken.username);
+
+            string idNum;
+
+            if (account != null)
             {
-                missingID = ActionsTaken.missingID,
+                idNum = account.gordon_id;
+            }
+            else
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "No account could be found for the user." };
+            }
+
+            var newActionTaken = context.ActionsTaken.Add(new ActionsTaken
+
+            {
+                missingID = id,
                 action = ActionsTaken.action,
                 actionNote = ActionsTaken.actionNote,
                 actionDate = ActionsTaken.actionDate,
-                submitterID = ActionsTaken.submitterID,
+                submitterID = idNum
             });
 
-            context.SaveChangesAsync();
+            context.SaveChanges();
+
+            if (newActionTaken == null || newActionTaken?.Entity?.ID == 0)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The action could not be saved." };
+            }
 
             int actionTakenID = newActionTaken.Entity.ID;
 
