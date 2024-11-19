@@ -230,10 +230,12 @@ namespace Gordon360.Services
         Task<bool> DeleteRoomRangeAsync(int rangeId);
         Task<RA_Assigned_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId);
         Task<bool> DeleteAssignmentAsync(int rangeId);
-        Task<string> GetResidentRAAsync(string hallId, string roomNumber);
+        Task<RA_StudentsViewModel> GetResidentRAAsync(string hallId, string roomNumber);
         Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync();
         Task<List<RA_StudentsViewModel>> GetAllRAsAsync();
         Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync();
+        Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod);
+        Task<string> GetPreferredContactAsync(string raId);
         Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin);
         Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string hallId);
         Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync();

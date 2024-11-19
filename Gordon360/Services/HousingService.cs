@@ -613,19 +613,30 @@ public class HousingService(CCTContext context) : IHousingService
     {
         // Find the room range by ID
         var roomRange = await context.Hall_Assignment_Ranges
-                                    .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
+                                     .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
 
         if (roomRange == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "Room range not found." };
         }
 
+        // Check if the room range is assigned to an RA
+        var isAssignedToRA = await context.RA_Assigned_Ranges
+                                          .AnyAsync(a => a.Range_ID == rangeId);
+
+        if (isAssignedToRA)
+        {
+            throw new InvalidOperationException("Cannot delete room range because it is currently assigned to an RA.");
+        }
+
+        // Proceed to remove the room range
         context.Hall_Assignment_Ranges.Remove(roomRange);
 
         await context.SaveChangesAsync();
 
         return true;
     }
+
 
     /// <summary>
     /// Assigns an RA to a room range if no RA is currently assigned
@@ -686,13 +697,13 @@ public class HousingService(CCTContext context) : IHousingService
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
     /// <param name="roomNumber">The resident's room number.</param>
-    /// <returns>Returns the RA's ID if found, otherwise null.</returns>
-    public async Task<string> GetResidentRAAsync(string hallId, string roomNumber)
+    /// <returns>Returns the RA's details if found, otherwise throws an exception.</returns>
+    public async Task<RA_StudentsViewModel> GetResidentRAAsync(string hallId, string roomNumber)
     {
         // Query the room range within the specified hall that contains the room number
         var roomRange = await context.Hall_Assignment_Ranges
-            .FirstOrDefaultAsync(r => r.Hall_ID == hallId 
-                && string.Compare(r.Room_Start, roomNumber) <= 0 
+            .FirstOrDefaultAsync(r => r.Hall_ID == hallId
+                && string.Compare(r.Room_Start, roomNumber) <= 0
                 && string.Compare(r.Room_End, roomNumber) >= 0);
 
         if (roomRange == null)
@@ -701,14 +712,35 @@ public class HousingService(CCTContext context) : IHousingService
         }
 
         // Find the RA assigned to that room range
-        var assignedRA = await context.RA_Assigned_Ranges
+        var assignedRAID = await context.RA_Assigned_Ranges
             .Where(ra => ra.Range_ID == roomRange.Range_ID)
             .Select(ra => ra.Ra_ID)
             .FirstOrDefaultAsync();
 
-        if (assignedRA == null)
+        if (assignedRAID == null)
         {
             throw new InvalidOperationException("No RA assigned to this room range.");
+        }
+
+        // Get the full details of the RA assigned to the room range
+        var assignedRA = await context.RA_Students
+            .Where(ra => ra.ID == assignedRAID)
+            .Select(ra => new RA_StudentsViewModel
+            {
+                FirstName = ra.FirstName,
+                LastName = ra.LastName,
+                Dorm = ra.Dorm,
+                BLDG_Code = ra.BLDG_Code,
+                RoomNumber = ra.RoomNumber,
+                Email = ra.Email,
+                PhoneNumber = ra.PhoneNumber,
+                ID = ra.ID
+            })
+            .FirstOrDefaultAsync();
+
+        if (assignedRA == null)
+        {
+            throw new InvalidOperationException("RA details could not be retrieved.");
         }
 
         return assignedRA;
@@ -770,97 +802,175 @@ public class HousingService(CCTContext context) : IHousingService
                 Lname = assignment.Lname,
                 Hall_Name = assignment.Hall_Name,
                 Room_Start = assignment.Room_Start,
-                Room_End = assignment.Room_End
+                Room_End = assignment.Room_End,
+                Range_ID = assignment.Range_ID
             })
             .ToListAsync();
 
         return Assignments;
     }
 
-    /// <summary>
-    /// Checks an RA in
-    /// </summary>
-    /// <param name="checkin">The viewmodel object of the RA checking in</param>
-    /// <returns>true if ra checked in succesfully</returns>
-    public async Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin)
+/// <summary>
+/// Sets or updates an RA's preferred contact method
+/// </summary>
+/// <param name="raId">The ID of the RA</param>
+/// <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
+/// <returns>True if the contact method was successfully set</returns>
+public async Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod)
+{
+    // Check if the RA already has a contact preference in the CCT model
+    var existingPreference = await context.RA_Pref_Contact
+        .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+
+    if (existingPreference != null)
     {
-        foreach (string hallId in checkin.Hall_ID)
+        // Update the existing preference
+        existingPreference.Pref_contact = preferredContactMethod;
+        context.RA_Pref_Contact.Update(existingPreference);
+    }
+    else
+    {
+        // Create a new preference using the CCT entity
+        await context.RA_Pref_Contact.AddAsync(new RA_Pref_Contact
         {
-            // Check if there is an existing RA checked into this hall without an end time
-            var existingRA = await context.RA_On_Call
-                .Where(r => r.Hall_ID == hallId && r.Check_out_time == null)
-                .FirstOrDefaultAsync();
-
-            // If an existing RA is found, set their Check_out_time to the current time
-            if (existingRA != null)
-            {
-                existingRA.Check_out_time = DateTime.Now;
-                context.RA_On_Call.Update(existingRA);
-            }
-
-            // Add the new RA check-in record with no check-out time
-            var newCheckin = new RA_On_Call
-            {
-                Ra_ID = checkin.Ra_ID,
-                Hall_ID = hallId,
-                Check_in_time = DateTime.Now,
-                Check_out_time = null // RA has an active checkin
-            };
-            await context.RA_On_Call.AddAsync(newCheckin);
-        }
-
-        await context.SaveChangesAsync();
-        return true;
+            Ra_ID = raId,
+            Pref_contact = preferredContactMethod
+        });
     }
 
-    /// <summary>
-    /// Gets the on-call RA's ID for specified hall.
-    /// </summary>
-    /// <param name="Hall_ID">The ID of the hall</param>
-    /// <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
-    public async Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string Hall_ID)
+    // Save changes to the database
+    await context.SaveChangesAsync();
+    return true;
+}
+
+/// <summary>
+/// Retrieves the preferred contact information for an RA based on their contact preference.
+/// If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+/// with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+/// </summary>
+/// <param name="raId">The ID of the RA whose contact information is being requested.</param>
+/// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
+/// phone number if no preference is set.</returns>
+public async Task<string> GetPreferredContactAsync(string raId)
+{
+    // Check if there is a preferred contact method for the given RA
+    var contactPreference = await context.RA_Pref_Contact
+        .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+
+    if (contactPreference != null)
     {
-        var onCallRA = await context.Current_On_Call  // Use your updated view name here
-            .Where(ra => ra.Hall_ID == Hall_ID)  // Filter by Hall_ID and only active check-ins
-            .Select(ra => new RA_On_Call_GetViewModel
+        // Determine the preferred method and get corresponding contact info
+        if (contactPreference.Pref_contact == "phone")
+        {
+            // Fetch RA's phone number from the RA_Students table
+            var ra = await context.RA_Students
+                .FirstOrDefaultAsync(r => r.ID == raId);
+
+            return ra?.PhoneNumber ?? "Phone number not found";
+        }
+        else if (contactPreference.Pref_contact == "teams")
+        {
+            // Fetch RA's email from the RA_Students table
+            var ra = await context.RA_Students
+                .FirstOrDefaultAsync(r => r.ID == raId);
+
+            if (ra?.Email != null)
             {
-                Hall_ID = ra.Hall_ID,
-                Hall_Name = ra.Hall_Name,            // Hall name
-                RA_Name = ra.RA_Name,                // RA's full name
-                PreferredContact = ra.PreferredContact,  // Preferred contact method
-                Check_in_time = ra.Check_in_time,    // Check-in time
-                RD_Email = ra.RD_Email,              // RD's email
-                RA_Profile_Link = ra.RA_Profile_Link,    // RA's profile link
-                RD_Profile_Link = ra.RD_Profile_Link     // RD's profile link
-            })
+                // Generate Teams link using the email
+                return $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}";
+            }
+            else
+            {
+                return "Email not found";
+            }
+        }
+    }
+
+/// <summary>
+/// Gets the on-call RA's ID for specified hall.
+/// </summary>
+/// <param name="Hall_ID">The ID of the hall</param>
+/// <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
+public async Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string Hall_ID)
+{
+    var onCallRA = await context.Current_On_Call  // Use your updated view name here
+        .Where(ra => ra.Hall_ID == Hall_ID)  // Filter by Hall_ID and only active check-ins
+        .Select(ra => new RA_On_Call_GetViewModel
+        {
+            Hall_ID = ra.Hall_ID,
+            Hall_Name = ra.Hall_Name,            // Hall name
+            RA_Name = ra.RA_Name,                // RA's full name
+            PreferredContact = ra.PreferredContact,  // Preferred contact method
+            Check_in_time = ra.Check_in_time,    // Check-in time
+            RD_Email = ra.RD_Email,              // RD's email
+            RA_Profile_Link = ra.RA_Profile_Link,    // RA's profile link
+            RD_Profile_Link = ra.RD_Profile_Link     // RD's profile link
+        })
+        .FirstOrDefaultAsync();
+
+    return onCallRA;
+}
+
+/// <summary>
+/// Checks an RA in
+/// </summary>
+/// <param name="checkin">The viewmodel object of the RA checking in</param>
+/// <returns>true if RA checked in successfully</returns>
+public async Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin)
+{
+    foreach (string hallId in checkin.Hall_ID)
+    {
+        // Check if there is an existing RA checked into this hall without an end time
+        var existingRA = await context.RA_On_Call
+            .Where(r => r.Hall_ID == hallId && r.Check_out_time == null)
             .FirstOrDefaultAsync();
 
-        return onCallRA;
+        // If an existing RA is found, set their Check_out_time to the current time
+        if (existingRA != null)
+        {
+            existingRA.Check_out_time = DateTime.Now;
+            context.RA_On_Call.Update(existingRA);
+        }
+
+        // Add the new RA check-in record with no check-out time
+        var newCheckin = new RA_On_Call
+        {
+            Ra_ID = checkin.Ra_ID,
+            Hall_ID = hallId,
+            Check_in_time = DateTime.Now,
+            Check_out_time = null // RA has an active checkin
+        };
+        await context.RA_On_Call.AddAsync(newCheckin);
     }
 
+    await context.SaveChangesAsync();
+    return true;
+}
 
-    /// <summary>
-    /// Gets the on-call RAs for all halls.
-    /// </summary>
-    /// <returns>The RAs on call</returns>
-    public async Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync()
-    {
-        var onCallRAs = await context.Current_On_Call  // Use your updated view name here
-            .Select(oncall => new RA_On_Call_GetViewModel
-            {
-                Hall_ID = oncall.Hall_ID,
-                Hall_Name = oncall.Hall_Name,  // Hall name
-                RA_Name = oncall.RA_Name,  // RA's full name
-                PreferredContact = oncall.PreferredContact,  // Preferred contact method
-                Check_in_time = oncall.Check_in_time,  // Check-in time
-                RD_Email = oncall.RD_Email,  // RD's email
-                RA_Profile_Link = oncall.RA_Profile_Link,  // RA's profile link
-                RD_Profile_Link = oncall.RD_Profile_Link  // RD's profile link
-            })
-            .ToListAsync();
+/// <summary>
+/// Gets the on-call RAs for all halls.
+/// </summary>
+/// <returns>The RAs on call</returns>
+public async Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync()
+{
+    var onCallRAs = await context.Current_On_Call  // Use your updated view name here
+        .Select(oncall => new RA_On_Call_GetViewModel
+        {
+            Hall_ID = oncall.Hall_ID,
+            Hall_Name = oncall.Hall_Name,  // Hall name
+            RA_Name = oncall.RA_Name,  // RA's full name
+            PreferredContact = oncall.PreferredContact,  // Preferred contact method
+            Check_in_time = oncall.Check_in_time,  // Check-in time
+            RD_Email = oncall.RD_Email,  // RD's email
+            RA_Profile_Link = oncall.RA_Profile_Link,  // RA's profile link
+            RD_Profile_Link = oncall.RD_Profile_Link  // RD's profile link
+        })
+        .ToListAsync();
 
-        return onCallRAs;
-    }
+    return onCallRAs;
+}
+
+
 
     public async Task<bool> IsRAOnCallAsync(string raId)
     {
