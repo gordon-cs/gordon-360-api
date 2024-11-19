@@ -582,6 +582,7 @@ public partial class CCTContext : DbContext
         {
             entity.ToView("RD_Info", "Housing");
 
+            entity.Property(e => e.BuildingCode).IsFixedLength();
             entity.Property(e => e.HallName).IsFixedLength();
         });
 

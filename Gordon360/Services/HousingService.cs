@@ -970,7 +970,9 @@ public class HousingService(CCTContext context) : IHousingService
                     Check_in_time = oncall.Check_in_time,  // Check-in time
                     RD_Email = oncall.RD_Email,  // RD's email
                     RA_Profile_Link = oncall.RA_Profile_Link,  // RA's profile link
-                    RD_Profile_Link = oncall.RD_Profile_Link  // RD's profile link
+                    RD_Profile_Link = oncall.RD_Profile_Link,  // RD's profile link
+                    RD_Name = oncall.RD_Name,
+                    RA_Photo = oncall.RA_Photo
                 })
                 .ToListAsync();
         
@@ -978,6 +980,15 @@ public class HousingService(CCTContext context) : IHousingService
         }
 
 
+
+    public async Task<bool> IsRAOnCallAsync(string raId)
+    {
+        // Check if the RA is currently on call
+        var isOnCall = await context.RA_On_Call
+            .AnyAsync(ra => ra.Ra_ID == raId && ra.Check_out_time == null);
+
+        return isOnCall;
+    }
 
 
 

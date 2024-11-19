@@ -15,6 +15,11 @@ public partial class RD_Info
     [Unicode(false)]
     public string HallName { get; set; }
 
+    [Required]
+    [StringLength(5)]
+    [Unicode(false)]
+    public string BuildingCode { get; set; }
+
     [Column("RD Email")]
     [StringLength(50)]
     [Unicode(false)]
@@ -22,4 +27,9 @@ public partial class RD_Info
 
     [StringLength(10)]
     public string RDId { get; set; }
+
+    [Required]
+    [StringLength(101)]
+    [Unicode(false)]
+    public string RDName { get; set; }
 }
