@@ -296,12 +296,11 @@
             <param name="model">The ViewModel that contains the hall ID and room range</param>
             <returns>The created Hall_Assignment_Ranges object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel)">
+        <member name="M:Gordon360.Controllers.HousingController.GetAllRoomRanges">
             <summary>
-            Creates a new status event for an RA schedule
+            Retrieves all room ranges.
             </summary>
-            <param name="model">The ViewModel that contains the Schedule ID and RA ID</param>
-            <returns>The created RA_Status_Schedule object</returns>
+            <returns>A list of room ranges.</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.DeleteRoomRange(System.Int32)">
             <summary>
@@ -318,6 +317,12 @@
             <param name="ra_Id">The ID of the RA to assign</param>
             <returns>The created RA_Assigned_Ranges object</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRangeAssignments">
+            <summary>
+            Retrieves the list of all assignments.
+            </summary>
+            <returns>Returns a list of all assignments</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.DeleteAssignment(System.Int32)">
             <summary>
             Deletes an RA range assignment
@@ -333,23 +338,11 @@
             <param name="roomNumber">The resident's room number.</param>
             <returns>Returns the RA's details if found, otherwise null. </returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetAllRoomRanges">
-            <summary>
-            Retrieves all room ranges.
-            </summary>
-            <returns>A list of room ranges.</returns>
-        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetAllRAs">
             <summary>
             Retrieves a list of all RAs.
             </summary>
             <returns>Returns a list of RA_Students containing information about each RA</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetRangeAssignments">
-            <summary>
-            Retrieves the list of all assignments.
-            </summary>
-            <returns>Returns a list of all assignments</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.SetPreferredContact(System.String,System.String)">
             <summary>
@@ -361,14 +354,36 @@
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetRAContact(System.String)">
             <summary>
-            Retrieves the preferred contact information for a Resident Advisor (RA) based on their contact preference.
+            Retrieves the preferred contact information for an RA based on their contact preference.
             If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
             with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
             </summary>
-            <param name="raId">The ID of the Resident Advisor (RA) whose contact information is being requested.</param>
+            <param name="raId">The ID of the RA whose contact information is being requested.</param>
             <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
             phone number if no preference is set.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel)">
+            <summary>
+            Creates a new status event for an RA schedule
+            </summary>
+            <param name="model">The ViewModel that contains the Schedule ID and RA ID</param>
+            <returns>The created RA_Status_Schedule object</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
+            <summary>
+            Checks an RA in
+            </summary>
+            <param name="checkin">The viewmodel object of the RA checking in</param>
+            <returns>true if RA checked in successfully</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetOnCallRA(System.String)">
+            <summary>
+            Gets the ID of the on-call RA for a specified hall.
+            </summary>
+            <param name="Hall_ID">The ID of the hall</param>
+            <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetOnCallRAAllHalls">
             <summary>
             Gets the on-call RAs for all halls.
             </summary>
@@ -380,12 +395,6 @@
             </summary>
             <param name="raId">The ID of the RA</param>
             <returns>True if the RA is on call, false otherwise</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetOnCallRAAllHalls">
-            <summary>
-            Gets the on-call RAs for all halls.
-            </summary>
-            <returns>The RAs on call</returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
@@ -2010,19 +2019,13 @@
         </member>
         <member name="M:Gordon360.Services.HousingService.GetPreferredContactAsync(System.String)">
             <summary>
-            Retrieves the preferred contact information for a Resident Advisor (RA) based on their contact preference.
+            Retrieves the preferred contact information for an RA based on their contact preference.
             If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
             with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
             </summary>
-            <param name="raId">The ID of the Resident Advisor (RA) whose contact information is being requested.</param>
+            <param name="raId">The ID of the RA whose contact information is being requested.</param>
             <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
             phone number if no preference is set.</returns>
-        <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
-            <summary>
-            Checks an RA in
-            </summary>
-            <param name="checkin">The viewmodel object of the RA checking in</param>
-            <returns>true if RA checked in successfully</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAAsync(System.String)">
             <summary>
@@ -2030,6 +2033,13 @@
             </summary>
             <param name="Hall_ID">The ID of the hall</param>
             <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
+            <summary>
+            Checks an RA in
+            </summary>
+            <param name="checkin">The viewmodel object of the RA checking in</param>
+            <returns>true if RA checked in successfully</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAAllHallsAsync">
             <summary>

@@ -14,4 +14,6 @@ public class RA_On_Call_GetViewModel
     public string RD_Email { get; set; }
     public string RA_Profile_Link { get; set; }
     public string RD_Profile_Link { get; set; }
+    public string RD_Name { get; set; }
+    public string RA_Photo { get; set; }
 }

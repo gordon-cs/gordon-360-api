@@ -592,11 +592,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
-    catch (Exception ex)
-    {
-        return StatusCode(500, $"Internal server error: {ex.Message}");
-    }
-}
 
     /// <summary>
     /// Checks if an RA is currently on call.

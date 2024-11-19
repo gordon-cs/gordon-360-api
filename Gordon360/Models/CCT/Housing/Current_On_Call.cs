@@ -37,6 +37,11 @@ public partial class Current_On_Call
     public string RD_Email { get; set; }
 
     [Required]
+    [StringLength(101)]
+    [Unicode(false)]
+    public string RD_Name { get; set; }
+
+    [Required]
     [StringLength(81)]
     [Unicode(false)]
     public string RA_Profile_Link { get; set; }
@@ -45,4 +50,8 @@ public partial class Current_On_Call
     [StringLength(81)]
     [Unicode(false)]
     public string RD_Profile_Link { get; set; }
+
+    [StringLength(86)]
+    [Unicode(false)]
+    public string RA_Photo { get; set; }
 }
