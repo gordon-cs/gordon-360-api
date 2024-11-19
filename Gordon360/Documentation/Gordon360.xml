@@ -331,7 +331,7 @@
             </summary>
             <param name="hallId">The ID of the hall.</param>
             <param name="roomNumber">The resident's room number.</param>
-            <returns>Returns the RA's ID if found, otherwise null.</returns>
+            <returns>Returns the RA's details if found, otherwise null. </returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetAllRoomRanges">
             <summary>
@@ -351,19 +351,35 @@
             </summary>
             <returns>Returns a list of all assignments</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.SetPreferredContact(System.String,System.String)">
+            <summary>
+            Sets or updates an RA's preferred contact method
+            </summary>
+            <param name="raId">The ID of the RA</param>
+            <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
+            <returns>True if the contact method was successfully set</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRAContact(System.String)">
+            <summary>
+            Retrieves the preferred contact information for a Resident Advisor (RA) based on their contact preference.
+            If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+            with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+            </summary>
+            <param name="raId">The ID of the Resident Advisor (RA) whose contact information is being requested.</param>
+            <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
+            phone number if no preference is set.</returns>
         <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
             <summary>
-            Checks an RA in
+            Gets the on-call RAs for all halls.
             </summary>
-            <param name="checkin">The viewmodel object of the RA checking in</param>
-            <returns>true if ra checked in succesfully</returns>
+            <returns>The RAs on call</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetOnCallRA(System.String)">
+        <member name="M:Gordon360.Controllers.HousingController.IsRAOnCall(System.String)">
             <summary>
-            Gets the ID of the on-call RA for a specified hall.
+            Checks if an RA is currently on call.
             </summary>
-            <param name="Hall_ID">The ID of the hall</param>
-            <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
+            <param name="raId">The ID of the RA</param>
+            <returns>True if the RA is on call, false otherwise</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetOnCallRAAllHalls">
             <summary>
@@ -1964,7 +1980,7 @@
             </summary>
             <param name="hallId">The ID of the hall.</param>
             <param name="roomNumber">The resident's room number.</param>
-            <returns>Returns the RA's ID if found, otherwise null.</returns>
+            <returns>Returns the RA's details if found, otherwise throws an exception.</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllRoomRangesAsync">
             <summary>
@@ -1984,12 +2000,29 @@
             </summary>
             <returns>Returns a list of all assignments</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.SetPreferredContactMethodAsync(System.String,System.String)">
+            <summary>
+            Sets or updates an RA's preferred contact method
+            </summary>
+            <param name="raId">The ID of the RA</param>
+            <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
+            <returns>True if the contact method was successfully set</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetPreferredContactAsync(System.String)">
+            <summary>
+            Retrieves the preferred contact information for a Resident Advisor (RA) based on their contact preference.
+            If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+            with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+            </summary>
+            <param name="raId">The ID of the Resident Advisor (RA) whose contact information is being requested.</param>
+            <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
+            phone number if no preference is set.</returns>
         <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
             <summary>
             Checks an RA in
             </summary>
             <param name="checkin">The viewmodel object of the RA checking in</param>
-            <returns>true if ra checked in succesfully</returns>
+            <returns>true if RA checked in successfully</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAAsync(System.String)">
             <summary>

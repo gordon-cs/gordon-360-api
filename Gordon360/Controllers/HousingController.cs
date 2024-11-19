@@ -530,6 +530,27 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Checks if an RA is currently on call.
+    /// </summary>
+    /// <param name="raId">The ID of the RA</param>
+    /// <returns>True if the RA is on call, false otherwise</returns>
+    [HttpGet("is-on-call/{raId}")]
+    public async Task<IActionResult> IsRAOnCall([FromRoute] string raId)
+    {
+        try
+        {
+            var isOnCall = await housingService.IsRAOnCallAsync(raId);
+
+            return Ok(new { IsOnCall = isOnCall });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+
 
 
 }

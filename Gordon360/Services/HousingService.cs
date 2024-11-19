@@ -862,6 +862,15 @@ public class HousingService(CCTContext context) : IHousingService
         return onCallRAs;
     }
 
+    public async Task<bool> IsRAOnCallAsync(string raId)
+    {
+        // Check if the RA is currently on call
+        var isOnCall = await context.RA_On_Call
+            .AnyAsync(ra => ra.Ra_ID == raId && ra.Check_out_time == null);
+
+        return isOnCall;
+    }
+
 
 
 
