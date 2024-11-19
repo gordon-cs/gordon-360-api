@@ -12,5 +12,6 @@ public class RA_Assigned_RangesViewModel
     public string Room_Start { get; set; }
     public string Room_End { get; set; }
     public int Range_ID {  get; set; }
+    public string Hall_ID { get; set;}
 
 }

@@ -36,4 +36,8 @@ public partial class RA_Assigned_Ranges_View
     [StringLength(10)]
     [Unicode(false)]
     public string Room_End { get; set; }
+
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Hall_ID { get; set; }
 }
