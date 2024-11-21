@@ -4,6 +4,7 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -221,6 +222,18 @@ namespace Gordon360.Services
         {
             MissingItemData report = context.MissingItemData.FirstOrDefault(x => x.ID == id);
             return (MissingItemReportViewModel)report;
+        }
+
+        /// <summary>
+        /// Gets actions taken by id
+        /// </summary>
+        /// <param name="id">The ID of the associated missing item report</param>
+        /// <returns>An ActionsTaken, or null if no item matches the id</returns>
+        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id)
+        {
+            IEnumerable<ActionsTaken> actionsList = context.ActionsTaken.Where(x => x.missingID == id);
+            IEnumerable<ActionsTakenViewModel> returnList = actionsList.Select(x => (ActionsTakenViewModel)x);
+            return returnList;
         }
     }
 }

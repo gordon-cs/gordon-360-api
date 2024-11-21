@@ -333,6 +333,9 @@
         <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItem(System.Int32)">
             <param name="id">The id</param>
         </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetActionsTaken(System.Int32)">
+            <param name="id">The id</param>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
@@ -1913,6 +1916,13 @@
             </summary>
             <param name="id">The ID of the missing item</param>
             <returns>A Missing, or null if no item matches the id</returns>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32)">
+            <summary>
+            Gets actions taken by id
+            </summary>
+            <param name="id">The ID of the associated missing item report</param>
+            <returns>An ActionsTaken, or null if no item matches the id</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>

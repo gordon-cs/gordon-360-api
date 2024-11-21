@@ -127,5 +127,21 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
+
+        /// <param name="id">The id</param>
+        [HttpGet]
+        [Route(("missingitem/{id}/actionsTakenAll"))]
+        public ActionResult<IEnumerable<ActionsTakenViewModel>> GetActionsTaken(int id)
+        {
+            IEnumerable<ActionsTakenViewModel> result = lostAndFoundService.GetActionsTaken(id);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }
