@@ -75,27 +75,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[LostAndFound].[Categories]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[LostAndFound].[FoundItems]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[LostAndFound].[GuestUsers]",
          "ObjectType": 0
       },
       {
-         "Name": "[LostAndFound].[Missing]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[LostAndFound].[MissingReports]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[LostAndFound].[Statuses]",
          "ObjectType": 0
       },
       {
