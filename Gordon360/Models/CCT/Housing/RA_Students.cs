@@ -42,4 +42,8 @@ public partial class RA_Students
     [StringLength(9)]
     [Unicode(false)]
     public string ID { get; set; }
+
+    [StringLength(86)]
+    [Unicode(false)]
+    public string PhotoURL { get; set; }
 }
