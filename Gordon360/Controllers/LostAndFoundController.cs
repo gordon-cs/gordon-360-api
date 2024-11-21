@@ -75,9 +75,10 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Get all missing item reports, only for data entry level users
+        /// Get all missing items, only for data entry level users
         /// </summary>
-        /// <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
+        /// <param name="id">The id</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("missingitemsall")]
         [StateYourBusiness(operation = Static.Names.Operation.READ_ALL, resource = Resource.LOST_AND_FOUND_MISSING_REPORT)]
@@ -94,10 +95,6 @@ namespace Gordon360.Controllers
             }
         }
 
-        /// <summary>
-        /// Get the list of missing item reports for the currently authenticated user.
-        /// </summary>
-        /// <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
         [HttpGet]
         [Route("missingitems")]
         public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems()
@@ -114,18 +111,13 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
-        /// <summary>
-        /// Get a missing item report with given ID.
-        /// </summary>
-        /// <param name="id">The id of the report to get</param>
-        /// <returns>ObjectResult - an http status code, with a MissingItem object in the body </returns>
+
+        /// <param name="id">The id</param>
         [HttpGet]
         [Route("missingitemsbyid/{id}")]
         public ActionResult<MissingItemReportViewModel> GetMissingItem(int id)
         {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-
-            MissingItemReportViewModel? result = lostAndFoundService.GetMissingItem(id, authenticatedUserUsername);
+            MissingItemReportViewModel? result = lostAndFoundService.GetMissingItem(id);
             if (result != null)
             {
                 return Ok(result);

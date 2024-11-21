@@ -236,7 +236,8 @@ namespace Gordon360.Services
         IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id);
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails);
         Task UpdateReportStatusAsync(int id, string status);
-        MissingItemReportViewModel? GetMissingItem(int id, string username);
+        FoundItems? GetFoundItem(int ID);
+        MissingItemReportViewModel? GetMissingItem(int id);
     }
 
 

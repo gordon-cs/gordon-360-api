@@ -67,4 +67,12 @@ public partial class MissingReports
 
     [InverseProperty("missing")]
     public virtual ICollection<GuestUsers> GuestUsers { get; set; } = new List<GuestUsers>();
+
+    [ForeignKey("category")]
+    [InverseProperty("MissingReports")]
+    public virtual Categories categoryNavigation { get; set; }
+
+    [ForeignKey("status")]
+    [InverseProperty("MissingReports")]
+    public virtual Statuses statusNavigation { get; set; }
 }
