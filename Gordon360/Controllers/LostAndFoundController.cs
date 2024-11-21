@@ -38,7 +38,7 @@ namespace Gordon360.Controllers
         /// <param name="id">The id of the report to update</param>
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPost]
-        [Route("missingitem/{id}/actionTaken")]
+        [Route("missingitem/{id}/actiontaken")]
         public ActionResult<int> CreateActionTaken(int id, [FromBody] ActionsTakenViewModel ActionsTaken)
         {
             int ID = lostAndFoundService.CreateActionTaken(id, ActionsTaken);
@@ -130,7 +130,7 @@ namespace Gordon360.Controllers
 
         /// <param name="id">The id</param>
         [HttpGet]
-        [Route(("missingitem/{id}/actionsTakenAll"))]
+        [Route(("missingitem/{id}/actionstakenall"))]
         public ActionResult<IEnumerable<ActionsTakenViewModel>> GetActionsTaken(int id)
         {
             IEnumerable<ActionsTakenViewModel> result = lostAndFoundService.GetActionsTaken(id);
