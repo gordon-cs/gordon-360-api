@@ -734,7 +734,8 @@ public class HousingService(CCTContext context) : IHousingService
                 RoomNumber = ra.RoomNumber,
                 Email = ra.Email,
                 PhoneNumber = ra.PhoneNumber,
-                ID = ra.ID
+                ID = ra.ID,
+                PhotoURL = ra.PhotoURL
             })
             .FirstOrDefaultAsync();
 

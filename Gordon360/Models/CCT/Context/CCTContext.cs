@@ -517,7 +517,7 @@ public partial class CCTContext : DbContext
         {
             entity.ToView("ParticipantView", "RecIM");
 
-            entity.Property(e => e.Email).IsFixedLength();
+            entity.Property(e => e.Hall).IsFixedLength();
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
