@@ -693,6 +693,34 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Retrieve the RD of the resident's hall based on their hall ID.
+    /// </summary>
+    /// <param name="hallId">The ID of the hall.</param>
+    /// <returns>Returns the RD's details if found, otherwise null.</returns>
+    public async Task<RD_StudentsViewModel> GetResidentRDAsync(string hallId)
+    {
+        // Get the full details of the RD for the specified hall
+        var hallRD = await context.RD_Info
+            .Where(rd => rd.BuildingCode == hallId)
+            .Select(rd => new RD_StudentsViewModel
+            {
+                HallName = rd.HallName,
+                BuildingCode = rd.BuildingCode,
+                RD_Email = rd.RD_Email,
+                RD_Id = rd.RDId,
+                RD_Name = rd.RDName
+            })
+            .FirstOrDefaultAsync();
+
+        if (hallRD == null)
+        {
+            throw new InvalidOperationException("No RD found for the specified hall.");
+        }
+
+        return hallRD;
+    }
+
+    /// <summary>
     /// Retrieves the RA assigned to a resident based on their room number and hall ID.
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
