@@ -284,7 +284,7 @@ namespace Gordon360.Services
             IEnumerator<string> usernameEnumerator = usernameList.GetEnumerator();
 
             // For each action taken in returnList, update the username based on the username list enumerator
-            returnList = returnList.Select(x => { x.username = usernameEnumerator.Current; usernameEnumerator.MoveNext(); return x; });
+            returnList = returnList.Select(x => { usernameEnumerator.MoveNext(); x.username = usernameEnumerator.Current; return x; });
 
             return returnList;
         }
