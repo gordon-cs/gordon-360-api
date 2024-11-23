@@ -307,7 +307,7 @@
             Update Missing Item Report with the given id with given data
             </summary>
             <param name="id">The id of the report to update</param>
-            <returns>ObjectResult - the http status code result of the action</returns>
+            <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateMissingItemReport(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
             <summary>
@@ -344,10 +344,10 @@
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.GetActionsTaken(System.Int32)">
             <summary>
-            Get a missing item report with given ID.
+            Get all actions taken on a given missing item report.
             </summary>
             <param name="id">The id of the report to get</param>
-            <returns>ObjectResult - an http status code, with a MissingItem object in the body </returns>
+            <returns>ObjectResult - an http status code, with a list of Actions Taken objects </returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>

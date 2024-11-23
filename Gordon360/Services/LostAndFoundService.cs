@@ -4,10 +4,10 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Azure;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 
@@ -112,7 +112,6 @@ namespace Gordon360.Services
             }
 
             var newActionTaken = context.ActionsTaken.Add(new ActionsTaken
-
             {
                 missingID = id,
                 action = ActionsTaken.action,
@@ -256,9 +255,37 @@ namespace Gordon360.Services
         /// <param name="id">The ID of the associated missing item report</param>
         /// <returns>An ActionsTaken, or null if no item matches the id</returns>
         public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id)
-        {
+        {   
             IEnumerable<ActionsTaken> actionsList = context.ActionsTaken.Where(x => x.missingID == id);
+
+            // Create a list of usernames based on the submitter ID
+            List<string> usernameList = [];
+            foreach (ActionsTaken element in actionsList)
+            {
+                var submitter_id = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == element.submitterID);
+
+                string username;
+
+                if (submitter_id != null)
+                {
+                    username = submitter_id.AD_Username;
+                    usernameList.Add(username);
+                }
+                else
+                {
+                    throw new ResourceCreationException() { ExceptionMessage = "No username could be found for the user." };
+                }
+            }
+
+            // Type cast to Actions Taken View Model 
             IEnumerable<ActionsTakenViewModel> returnList = actionsList.Select(x => (ActionsTakenViewModel)x);
+
+            // Create an Enumerator for the username list
+            IEnumerator<string> usernameEnumerator = usernameList.GetEnumerator();
+
+            // For each action taken in returnList, update the username based on the username list enumerator
+            returnList = returnList.Select(x => { x.username = usernameEnumerator.Current; usernameEnumerator.MoveNext(); return x; });
+
             return returnList;
         }
     }

@@ -5,7 +5,6 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -36,7 +35,7 @@ namespace Gordon360.Controllers
         /// Update Missing Item Report with the given id with given data
         /// </summary>
         /// <param name="id">The id of the report to update</param>
-        /// <returns>ObjectResult - the http status code result of the action</returns>
+        /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
         [HttpPost]
         [Route("missingitem/{id}/actiontaken")]
         public ActionResult<int> CreateActionTaken(int id, [FromBody] ActionsTakenViewModel ActionsTaken)
@@ -136,10 +135,10 @@ namespace Gordon360.Controllers
             }
         }
         /// <summary>
-        /// Get a missing item report with given ID.
+        /// Get all actions taken on a given missing item report.
         /// </summary>
         /// <param name="id">The id of the report to get</param>
-        /// <returns>ObjectResult - an http status code, with a MissingItem object in the body </returns>
+        /// <returns>ObjectResult - an http status code, with a list of Actions Taken objects </returns>
         [HttpGet]
         [Route(("missingitem/{id}/actionstakenall"))]
         public ActionResult<IEnumerable<ActionsTakenViewModel>> GetActionsTaken(int id)
