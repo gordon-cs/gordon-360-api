@@ -4,6 +4,7 @@ using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -229,11 +230,13 @@ namespace Gordon360.Services
     public interface ILostAndFoundService
     {
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
+        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken);
         IEnumerable<MissingItemReportViewModel> GetMissingItems(string username);
         IEnumerable<MissingItemReportViewModel> GetMissingItemsAll();
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails);
         Task UpdateReportStatusAsync(int id, string status);
         MissingItemReportViewModel? GetMissingItem(int id, string username);
+        IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id);
     }
 
 

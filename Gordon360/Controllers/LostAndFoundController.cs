@@ -35,6 +35,20 @@ namespace Gordon360.Controllers
         /// Update Missing Item Report with the given id with given data
         /// </summary>
         /// <param name="id">The id of the report to update</param>
+        /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
+        [HttpPost]
+        [Route("missingitem/{id}/actiontaken")]
+        public ActionResult<int> CreateActionTaken(int id, [FromBody] ActionsTakenViewModel ActionsTaken)
+        {
+            int ID = lostAndFoundService.CreateActionTaken(id, ActionsTaken);
+
+            return Ok(ID);
+        }
+
+        /// <summary>
+        /// Update Missing Item Report with the given id with given data
+        /// </summary>
+        /// <param name="id">The id of the report to update</param>
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route("missingitem/{id}")]
@@ -111,6 +125,25 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             MissingItemReportViewModel? result = lostAndFoundService.GetMissingItem(id, authenticatedUserUsername);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        /// <summary>
+        /// Get all actions taken on a given missing item report.
+        /// </summary>
+        /// <param name="id">The id of the report to get</param>
+        /// <returns>ObjectResult - an http status code, with a list of Actions Taken objects </returns>
+        [HttpGet]
+        [Route(("missingitem/{id}/actionstakenall"))]
+        public ActionResult<IEnumerable<ActionsTakenViewModel>> GetActionsTaken(int id)
+        {
+            IEnumerable<ActionsTakenViewModel> result = lostAndFoundService.GetActionsTaken(id);
             if (result != null)
             {
                 return Ok(result);
