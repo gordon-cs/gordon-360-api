@@ -386,6 +386,29 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Retrieve the RD of the resident's hall based on their hall ID.
+    /// </summary>
+    /// <param name="hallId">The ID of the hall.</param>
+    /// <returns>Returns the RD's details if found, otherwise null.</returns>
+    [HttpGet("rd/{hallId}")]
+    public async Task<IActionResult> GetResidentRD([FromRoute] string hallId)
+    {
+        try
+        {
+            var rdInfo = await housingService.GetResidentRDAsync(hallId);
+            return Ok(rdInfo);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message); // Return 404 if no RD is found for the specified hall
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Retrieves the RA assigned to a resident based on their room number and hall ID.
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
