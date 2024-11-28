@@ -8,6 +8,7 @@ public class RA_On_Call_GetViewModel
 {
     public string Hall_ID { get; set; }
     public string Hall_Name { get; set; }
+    public string RoomNumber { get; set; }
     public string RA_Name { get; set; }
     public string PreferredContact { get; set; }
     public DateTime Check_in_time { get; set; }

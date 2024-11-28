@@ -20,6 +20,10 @@ public partial class Current_On_Call
     [Unicode(false)]
     public string Hall_Name { get; set; }
 
+    [StringLength(5)]
+    [Unicode(false)]
+    public string RoomNumber { get; set; }
+
     [Required]
     [StringLength(101)]
     [Unicode(false)]
@@ -37,7 +41,7 @@ public partial class Current_On_Call
     public string RD_Email { get; set; }
 
     [Required]
-    [StringLength(101)]
+    [StringLength(46)]
     [Unicode(false)]
     public string RD_Name { get; set; }
 
