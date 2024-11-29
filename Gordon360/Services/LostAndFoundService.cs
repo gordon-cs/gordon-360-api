@@ -223,7 +223,20 @@ namespace Gordon360.Services
         public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll()
         {
             IEnumerable<MissingItemData> missingList = context.MissingItemData.AsEnumerable();
-            return missingList.Select(x => (MissingItemReportViewModel)x);
+            IEnumerable<MissingItemReportViewModel>missingModelList = missingList.Select(x => (MissingItemReportViewModel)x);
+            List<IEnumerable<ActionsTakenViewModel>> actionsTakenList = [];
+            foreach (MissingItemReportViewModel item in missingModelList)
+            {
+                if (item.recordID != null)
+                {
+                    actionsTakenList.Add(GetActionsTaken((int)item.recordID));
+                }
+            }
+
+            IEnumerator<IEnumerable<ActionsTakenViewModel>> actionsTakenEnumerator = actionsTakenList.GetEnumerator();
+
+            missingModelList = missingModelList.Select(x => { actionsTakenEnumerator.MoveNext(); x.adminActions = actionsTakenEnumerator.Current; return x; });
+            return missingModelList;
         }
 
         /// <summary>

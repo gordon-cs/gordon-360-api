@@ -1,7 +1,6 @@
-﻿using Gordon360.Models.CCT;
-using System;
+﻿using System;
 using System.Linq;
-using System.Reflection;
+using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels
 {
@@ -43,6 +42,8 @@ namespace Gordon360.Models.ViewModels
         public string? submitterID { get; set; } //ID used internally, but will never be passed to the frontend
 
         public bool forGuest { get; set; }
+
+        public IEnumerable<ActionsTakenViewModel>? adminActions { get; set; }
 
         public static implicit operator MissingItemReportViewModel(CCT.MissingItemData MissingReportDBModel) => new MissingItemReportViewModel
         {
