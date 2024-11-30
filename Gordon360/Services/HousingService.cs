@@ -934,15 +934,17 @@ public class HousingService(CCTContext context) : IHousingService
             .Where(ra => ra.Hall_ID == Hall_ID)  // Filter by Hall_ID and only active check-ins
             .Select(ra => new RA_On_Call_GetViewModel
             {
-                Hall_ID = ra.Hall_ID,                         // Hall ID
-                Hall_Name = ra.Hall_Name,                    // Hall name
-                RoomNumber = ra.RoomNumber,                 // RA's room number
-                RA_Name = ra.RA_Name,                      // RA's full name
-                PreferredContact = ra.PreferredContact,   // Preferred contact method
-                Check_in_time = ra.Check_in_time,        // Check-in time
-                RD_Email = ra.RD_Email,                 // RD's email
+                Hall_ID = ra.Hall_ID,                          // Hall ID
+                Hall_Name = ra.Hall_Name,                     // Hall name
+                RoomNumber = ra.RoomNumber,                  // RA's room number
+                RA_Name = ra.RA_Name,                       // RA's full name
+                PreferredContact = ra.PreferredContact,    // Preferred contact method
+                Check_in_time = ra.Check_in_time,         // Check-in time
+                RD_Email = ra.RD_Email,                  // RD's email
+                RD_Name = ra.RD_Name,                   // RD's name
                 RA_Profile_Link = ra.RA_Profile_Link,  // RA's profile link
-                RD_Profile_Link = ra.RD_Profile_Link  // RD's profile link
+                RD_Profile_Link = ra.RD_Profile_Link, // RD's profile link
+                RA_Photo = ra.RA_Photo               // RA's Photo URL
             })
             .FirstOrDefaultAsync();
 
