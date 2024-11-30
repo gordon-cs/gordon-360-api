@@ -58,6 +58,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Hall_Assignment_Ranges> Hall_Assignment_Ranges { get; set; }
 
+    public virtual DbSet<Hall_Task_Recurrence> Hall_Task_Recurrence { get; set; }
+
+    public virtual DbSet<Hall_Tasks> Hall_Tasks { get; set; }
+
     public virtual DbSet<Halls> Halls { get; set; }
 
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
@@ -125,10 +129,6 @@ public partial class CCTContext : DbContext
     public virtual DbSet<RA_Status_Schedule> RA_Status_Schedule { get; set; }
 
     public virtual DbSet<RA_Students> RA_Students { get; set; }
-
-    public virtual DbSet<RA_Task_Status> RA_Task_Status { get; set; }
-
-    public virtual DbSet<RA_Tasks> RA_Tasks { get; set; }
 
     public virtual DbSet<RD_Info> RD_Info { get; set; }
 
@@ -324,6 +324,18 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Hall_Assignment_Ranges>(entity =>
         {
             entity.HasKey(e => e.Range_ID).HasName("PK__Hall_Ass__918829E78BFD242E");
+        });
+
+        modelBuilder.Entity<Hall_Task_Recurrence>(entity =>
+        {
+            entity.HasKey(e => e.Task_ID).HasName("PK__Hall_Tas__716F4ACD42CA3102");
+
+            entity.Property(e => e.Task_ID).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<Hall_Tasks>(entity =>
+        {
+            entity.HasKey(e => e.Task_ID).HasName("PK__Hall_Tas__716F4ACD53833CA6");
         });
 
         modelBuilder.Entity<Halls>(entity =>
@@ -562,20 +574,6 @@ public partial class CCTContext : DbContext
             entity.ToView("RA_Students", "Housing");
 
             entity.Property(e => e.Dorm).IsFixedLength();
-        });
-
-        modelBuilder.Entity<RA_Task_Status>(entity =>
-        {
-            entity.HasKey(e => new { e.Ra_ID, e.Task_ID }).HasName("PK__tmp_ms_x__522697C0D44FD4E0");
-
-            entity.HasOne(d => d.Task).WithMany(p => p.RA_Task_Status)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_Task_S__Task___432CD318");
-        });
-
-        modelBuilder.Entity<RA_Tasks>(entity =>
-        {
-            entity.HasKey(e => e.Task_ID).HasName("PK__RA_Tasks__716F4ACD264F4856");
         });
 
         modelBuilder.Entity<RD_Info>(entity =>

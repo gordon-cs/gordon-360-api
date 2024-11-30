@@ -8,21 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[PrimaryKey("Ra_ID", "Task_ID")]
-[Table("RA_Task_Status", Schema = "Housing")]
-public partial class RA_Task_Status
+[Table("Hall_Task_Recurrence", Schema = "Housing")]
+public partial class Hall_Task_Recurrence
 {
-    [Key]
+    [Required]
     [StringLength(10)]
     [Unicode(false)]
-    public string Ra_ID { get; set; }
+    public string Recur_ID { get; set; }
 
     [Key]
     public int Task_ID { get; set; }
 
-    public bool? Is_Completed { get; set; }
-
-    [ForeignKey("Task_ID")]
-    [InverseProperty("RA_Task_Status")]
-    public virtual RA_Tasks Task { get; set; }
+    [Column(TypeName = "datetime")]
+    public DateTime? Next_Occurance { get; set; }
 }

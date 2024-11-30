@@ -75,6 +75,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[Hall_Task_Recurrence]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Hall_Tasks]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[Housing].[RA_Assigned_Ranges]",
          "ObjectType": 0
       },
@@ -92,14 +100,6 @@
       },
       {
          "Name": "[Housing].[RA_Status_Schedule]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[Housing].[RA_Task_Status]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[Housing].[RA_Tasks]",
          "ObjectType": 0
       },
       {

@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("RA_Tasks", Schema = "Housing")]
-public partial class RA_Tasks
+[Table("Hall_Tasks", Schema = "Housing")]
+public partial class Hall_Tasks
 {
     [Key]
     public int Task_ID { get; set; }
@@ -19,6 +19,15 @@ public partial class RA_Tasks
     [Unicode(false)]
     public string Task_Name { get; set; }
 
-    [InverseProperty("Task")]
-    public virtual ICollection<RA_Task_Status> RA_Task_Status { get; set; } = new List<RA_Task_Status>();
+    [Required]
+    [StringLength(100)]
+    [Unicode(false)]
+    public string Hall_ID { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime Task_Date { get; set; }
+
+    public bool Is_Recurring { get; set; }
+
+    public bool Is_Completed { get; set; }
 }

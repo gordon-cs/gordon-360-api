@@ -29,7 +29,7 @@ public partial class RD_Info
     public string RDId { get; set; }
 
     [Required]
-    [StringLength(101)]
+    [StringLength(46)]
     [Unicode(false)]
     public string RDName { get; set; }
 }
