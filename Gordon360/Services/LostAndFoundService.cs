@@ -213,6 +213,21 @@ namespace Gordon360.Services
             IEnumerable<MissingItemData> missingList = context.MissingItemData.Where(x => x.submitterID == idNum && x.forGuest == false);
             // Convert the report objects into viewmodel objects.
             IEnumerable<MissingItemReportViewModel> returnList = missingList.Select(x => (MissingItemReportViewModel)x);
+
+            // Get the list of actions taken that are public, and add them to each missing item report.
+            List<IEnumerable<ActionsTakenViewModel>> actionsTakenList = [];
+            foreach (MissingItemReportViewModel item in returnList)
+            {
+                if (item.recordID != null)
+                {
+                    actionsTakenList.Add(GetActionsTaken((int)item.recordID, true));
+                }
+            }
+
+            IEnumerator<IEnumerable<ActionsTakenViewModel>> actionsTakenEnumerator = actionsTakenList.GetEnumerator();
+            // Mix-in actions taken lists for each report
+            returnList = returnList.Select(x => { actionsTakenEnumerator.MoveNext(); x.adminActions = actionsTakenEnumerator.Current; return x; });
+
             return returnList;
         }
 
@@ -248,8 +263,9 @@ namespace Gordon360.Services
         public MissingItemReportViewModel? GetMissingItem(int id, string username)
         {
             MissingItemData report;
+            bool isAdmin = Authorization.AuthUtils.GetGroups(username).Contains(Enums.AuthGroup.LostAndFoundAdmin);
             // If user is admin, simply get the report
-            if (Authorization.AuthUtils.GetGroups(username).Contains(Enums.AuthGroup.LostAndFoundAdmin))
+            if (isAdmin)
             {
                 report = context.MissingItemData.FirstOrDefault(x => x.ID == id);
             }
@@ -259,17 +275,32 @@ namespace Gordon360.Services
                 var idNum = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username).gordon_id;
                 report = context.MissingItemData.FirstOrDefault(x => x.ID == id && x.submitterID == idNum);
             }
-            return (MissingItemReportViewModel)report;
+            // Typecast the data into the viewmodel
+            MissingItemReportViewModel returnReport = (MissingItemReportViewModel)report;
+
+            // Get the list of public admin actions on this report, and add them to the report.
+            returnReport.adminActions = GetActionsTaken(id, true);
+            
+            return returnReport;
         }
 
         /// <summary>
         /// Gets a list of Actions Taken by id
         /// </summary>
         /// <param name="id">The ID of the associated missing item report</param>
+        /// <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
         /// <returns>An ActionsTaken, or null if no item matches the id</returns>
-        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id)
-        {   
-            IEnumerable<ActionsTaken> actionsList = context.ActionsTaken.Where(x => x.missingID == id);
+        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, bool getPublicOnly = false)
+        {
+            IEnumerable<ActionsTaken> actionsList;
+            if (getPublicOnly)
+            {
+                actionsList = context.ActionsTaken.Where(x => x.missingID == id && x.isPublic);
+            }
+            else
+            {
+                actionsList = context.ActionsTaken.Where(x => x.missingID == id);
+            }
 
             // Create a list of usernames based on the submitter ID
             List<string> usernameList = [];
