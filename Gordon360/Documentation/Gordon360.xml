@@ -1951,11 +1951,12 @@
             <param name="username">The username of the person requesting the data</param>
             <returns>A Missing Item Report object, or null if no item matches the id</returns>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32)">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32,System.Boolean)">
             <summary>
             Gets a list of Actions Taken by id
             </summary>
             <param name="id">The ID of the associated missing item report</param>
+            <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
             <returns>An ActionsTaken, or null if no item matches the id</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
