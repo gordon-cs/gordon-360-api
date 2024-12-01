@@ -34,8 +34,6 @@ public partial class ActionsTaken
     [Unicode(false)]
     public string submitterID { get; set; }
 
-    public bool isPublic { get; set; }
-
     [ForeignKey("missingID")]
     [InverseProperty("ActionsTaken")]
     public virtual MissingReports missing { get; set; }
