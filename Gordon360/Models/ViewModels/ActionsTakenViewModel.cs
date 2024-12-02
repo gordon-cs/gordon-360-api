@@ -11,6 +11,7 @@ namespace Gordon360.Models.ViewModels
         public string actionNote { get; set; }
         public string? submitterID { get; set; }
         public string username { get; set; }
+        public bool isPublic { get; set; }
 
         public static implicit operator ActionsTakenViewModel(CCT.ActionsTaken a) => new ActionsTakenViewModel
         {
@@ -19,6 +20,7 @@ namespace Gordon360.Models.ViewModels
             action = a.action,
             actionDate = a.actionDate,
             actionNote = a.actionNote,
+            isPublic = a.isPublic,
         };
     }
 }
