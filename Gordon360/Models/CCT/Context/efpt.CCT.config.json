@@ -71,6 +71,18 @@
          "ObjectType": 0
       },
       {
+         "Name": "[LostAndFound].[ActionsTaken]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[GuestUsers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[MissingReports]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Activity]",
          "ObjectType": 0
       },
@@ -268,6 +280,10 @@
       },
       {
          "Name": "[dbo].[UserCourses]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[LostAndFound].[MissingItemData]",
          "ObjectType": 3
       },
       {
