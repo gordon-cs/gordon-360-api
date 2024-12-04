@@ -369,6 +369,13 @@
             <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
             phone number if no preference is set.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRAPrefContact(System.String)">
+            <summary>
+            Retrieves the preferred contact method for an RA based on their contact preference.
+            </summary>
+            <param name="raId">The ID of the RA whose contact information is being requested.</param>
+            <returns>A string containing the preferred contact method (Teams or Phone).</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel)">
             <summary>
             Creates a new status event for an RA schedule
@@ -2040,6 +2047,13 @@
             <param name="raId">The ID of the RA whose contact information is being requested.</param>
             <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
             phone number if no preference is set.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetContactPreferenceAsync(System.String)">
+            <summary>
+            Retrieves the preferred contact method for an RA based on their contact preference.
+            </summary>
+            <param name="raId">The ID of the RA whose contact information is being requested.</param>
+            <returns>An object containing the preferred contact method (Teams or Phone).</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAAsync(System.String)">
             <summary>

@@ -924,6 +924,33 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Retrieves the preferred contact method for an RA based on their contact preference.
+    /// </summary>
+    /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
+    /// <returns>An object containing the preferred contact method (Teams or Phone).</returns>
+    public async Task<object> GetContactPreferenceAsync(string raId)
+    {
+        // Check if there is a preferred contact method for the given RA
+        var contactPreference = await context.RA_Pref_Contact
+            .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+
+        if (contactPreference != null)
+        {
+            return new
+            {
+                PreferredContact = contactPreference.Pref_contact
+            };
+        }
+
+        // If no preference exists, return phone default as default method
+        return new
+        {
+            PreferredContact = "phone"
+        };
+
+    }
+
+    /// <summary>
     /// Gets the on-call RA's ID for specified hall.
     /// </summary>
     /// <param name="Hall_ID">The ID of the hall</param>
