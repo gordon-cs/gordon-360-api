@@ -772,6 +772,12 @@ public class HousingService(CCTContext context) : IHousingService
             throw new InvalidOperationException("RA details could not be retrieved.");
         }
 
+        // Fetch the preferred contact method for the RA
+        var preferredContact = await GetPreferredContactAsync(assignedRA.ID);
+
+        // Include the preferred contact in the returned model
+        assignedRA.PreferredContact = preferredContact;
+
         return assignedRA;
     }
 

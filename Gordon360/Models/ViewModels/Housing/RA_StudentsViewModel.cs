@@ -14,4 +14,5 @@ using System.Collections.Generic;
         public string PhoneNumber { get; set; }
         public string ID { get; set; }
         public string PhotoURL { get; set; }
-    }
+        public string PreferredContact { get; set; }
+}
