@@ -7,12 +7,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
+          cache: true
+          cache-dependency-path: Gordon360/packages.lock.json
 
       - name: Install dependencies
         run: dotnet restore
@@ -29,12 +31,14 @@ jobs:
       url: https://360ApiTrain.gordon.edu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
+          cache: true
+          cache-dependency-path: Gordon360/packages.lock.json
 
       - name: Install dependencies
         run: dotnet restore
@@ -58,12 +62,14 @@ jobs:
       url: https://360Api.gordon.edu
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
+          cache: true
+          cache-dependency-path: Gordon360/packages.lock.json
 
       - name: Install dependencies
         run: dotnet restore
@@ -72,7 +78,38 @@ jobs:
         run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -p:PublishDir=${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
 
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+          path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
+          if-no-files-found: error
+
+  deploy-senior-project:
+    runs-on: windows-latest
+    if: ${{ github.ref == 'refs/heads/senior-project' }}
+    needs: build
+    environment:
+      name: Senior Project
+      url: https://360ApiSP.gordon.edu
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+          cache: true
+          cache-dependency-path: Gordon360/packages.lock.json
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Publish
+        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -p:PublishDir=${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: build-${{ secrets.DEPLOYMENT_ENVIRONMENT }}
           path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
