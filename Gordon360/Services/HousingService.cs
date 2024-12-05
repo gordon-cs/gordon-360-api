@@ -772,6 +772,12 @@ public class HousingService(CCTContext context) : IHousingService
             throw new InvalidOperationException("RA details could not be retrieved.");
         }
 
+        // Fetch the preferred contact method for the RA
+        var preferredContact = await GetPreferredContactAsync(assignedRA.ID);
+
+        // Include the preferred contact in the returned model
+        assignedRA.PreferredContact = preferredContact;
+
         return assignedRA;
     }
 
@@ -921,6 +927,33 @@ public class HousingService(CCTContext context) : IHousingService
             .FirstOrDefaultAsync(r => r.ID == raId);
     
         return defaultContact?.PhoneNumber ?? "Default phone number not found";
+    }
+
+    /// <summary>
+    /// Retrieves the preferred contact method for an RA based on their contact preference.
+    /// </summary>
+    /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
+    /// <returns>An object containing the preferred contact method (Teams or Phone).</returns>
+    public async Task<object> GetContactPreferenceAsync(string raId)
+    {
+        // Check if there is a preferred contact method for the given RA
+        var contactPreference = await context.RA_Pref_Contact
+            .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+
+        if (contactPreference != null)
+        {
+            return new
+            {
+                PreferredContact = contactPreference.Pref_contact
+            };
+        }
+
+        // If no preference exists, return phone default as default method
+        return new
+        {
+            PreferredContact = "phone"
+        };
+
     }
 
     /// <summary>

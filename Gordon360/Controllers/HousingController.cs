@@ -515,6 +515,31 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Retrieves the preferred contact method for an RA based on their contact preference.
+    /// </summary>
+    /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
+    /// <returns>A string containing the preferred contact method (Teams or Phone).</returns>
+    [HttpGet("ra/contact/preference/{raId}")]
+    public async Task<ActionResult> GetRAPrefContact(string raId)
+    {
+        try
+        {
+            var Preference = await housingService.GetContactPreferenceAsync(raId);
+
+            if (Preference == null)
+            {
+                return NotFound("RA preferred contact information not found.");
+            }
+
+            return Ok(Preference);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
 
     /// <summary>
     /// Creates a new status event for an RA schedule
