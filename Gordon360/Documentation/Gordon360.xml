@@ -306,7 +306,7 @@
             <summary>
             Update Missing Item Report with the given id with given data
             </summary>
-            <param name="id">The id of the report to update</param>
+            <param name="missingItemId">The id of the report to update</param>
             <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateMissingItemReport(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
@@ -1938,7 +1938,7 @@
             <param name="username">The username to get reports for</param>
             <returns>an Enumerable of Missing Item Reports containing all missing item reports</returns>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll(System.String)">
             <summary>
             Get all missing item reports
             </summary>
@@ -1952,11 +1952,12 @@
             <param name="username">The username of the person requesting the data</param>
             <returns>A Missing Item Report object, or null if no item matches the id</returns>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32,System.Boolean)">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32,System.String,System.Boolean)">
             <summary>
             Gets a list of Actions Taken by id
             </summary>
             <param name="id">The ID of the associated missing item report</param>
+            <param name="username">The username of the user requesting the information</param>
             <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
             <returns>An ActionsTaken, or null if no item matches the id</returns>
         </member>

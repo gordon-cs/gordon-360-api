@@ -232,11 +232,11 @@ namespace Gordon360.Services
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
         public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken);
         IEnumerable<MissingItemReportViewModel> GetMissingItems(string username);
-        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll();
+        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username);
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails);
         Task UpdateReportStatusAsync(int id, string status);
         MissingItemReportViewModel? GetMissingItem(int id, string username);
-        IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, bool getPublicOnly = false);
+        IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false);
     }
 
 

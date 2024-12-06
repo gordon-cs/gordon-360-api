@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -222,7 +223,7 @@ namespace Gordon360.Services
             {
                 if (item.recordID != null)
                 {
-                    actionsTakenList.Add(GetActionsTaken((int)item.recordID, true));
+                    actionsTakenList.Add(GetActionsTaken((int)item.recordID, username, true));
                 }
             }
 
@@ -237,23 +238,26 @@ namespace Gordon360.Services
         /// Get all missing item reports
         /// </summary>
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll()
+        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username)
         {
-            IEnumerable<MissingItemData> missingList = context.MissingItemData.AsEnumerable();
-            IEnumerable<MissingItemReportViewModel>missingModelList = missingList.Select(x => (MissingItemReportViewModel)x);
-            List<IEnumerable<ActionsTakenViewModel>> actionsTakenList = [];
-            foreach (MissingItemReportViewModel item in missingModelList)
+            //List<IEnumerable<ActionsTakenViewModel>> actionsTakenList = [];
+
+            IEnumerable<MissingItemReportViewModel> missingItems = context.MissingItemData.Select(x => (MissingItemReportViewModel)x);
+
+            foreach (MissingItemReportViewModel item in missingItems)
             {
                 if (item.recordID != null)
                 {
-                    actionsTakenList.Add(GetActionsTaken((int)item.recordID));
+                    item.adminActions = (GetActionsTaken((int)item.recordID, username));
                 }
             }
 
-            IEnumerator<IEnumerable<ActionsTakenViewModel>> actionsTakenEnumerator = actionsTakenList.GetEnumerator();
+            return missingItems;
 
-            missingModelList = missingModelList.Select(x => { actionsTakenEnumerator.MoveNext(); x.adminActions = actionsTakenEnumerator.Current; return x; });
-            return missingModelList;
+            //IEnumerator<IEnumerable<ActionsTakenViewModel>> actionsTakenEnumerator = actionsTakenList.GetEnumerator();
+
+            // Select required to join actions taken with reports and actually change the values in the Enumerable.
+            //return missingList.Select(x => { actionsTakenEnumerator.MoveNext(); x.adminActions = actionsTakenEnumerator.Current; return x; });
         }
 
         /// <summary>
@@ -266,8 +270,9 @@ namespace Gordon360.Services
         {
             MissingItemData report;
             bool isAdmin = Authorization.AuthUtils.GetGroups(username).Contains(Enums.AuthGroup.LostAndFoundAdmin);
-            // If user is admin, simply get the report
-            if (isAdmin)
+            bool isDev = Authorization.AuthUtils.GetGroups(username).Contains(Enums.AuthGroup.LostAndFoundDevelopers);
+            // If user is admin or developer, simply get the report
+            if (isAdmin || isDev)
             {
                 report = context.MissingItemData.FirstOrDefault(x => x.ID == id);
             }
@@ -281,7 +286,7 @@ namespace Gordon360.Services
             MissingItemReportViewModel returnReport = (MissingItemReportViewModel)report;
 
             // Get the list of public admin actions on this report, and add them to the report.
-            returnReport.adminActions = GetActionsTaken(id, true);
+            returnReport.adminActions = GetActionsTaken(id, username, true);
             
             return returnReport;
         }
@@ -290,47 +295,40 @@ namespace Gordon360.Services
         /// Gets a list of Actions Taken by id
         /// </summary>
         /// <param name="id">The ID of the associated missing item report</param>
+        /// <param name="username">The username of the user requesting the information</param>
         /// <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
         /// <returns>An ActionsTaken, or null if no item matches the id</returns>
-        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, bool getPublicOnly = false)
+        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false)
         {
-            IEnumerable<ActionsTaken> actionsList;
-            if (getPublicOnly)
+            username = "Matthew.Jones";
+            IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
+            var adminGroup = Enums.AuthGroup.HousingAdmin;
+            var devGroup = Enums.AuthGroup.LostAndFoundDevelopers;
+            bool isDev = userGroups.Contains(devGroup);
+            bool isAdmin = userGroups.Contains(adminGroup);
+
+            IEnumerable<ActionsTakenData> actionsList;
+            if (!getPublicOnly && (isAdmin || isDev))
             {
-                actionsList = context.ActionsTaken.Where(x => x.missingID == id && x.isPublic);
+                actionsList = context.ActionsTakenData.Where(x => x.missingID == id);
             }
             else
             {
-                actionsList = context.ActionsTaken.Where(x => x.missingID == id);
-            }
-
-            // Create a list of usernames based on the submitter ID
-            List<string> usernameList = [];
-            foreach (ActionsTaken element in actionsList)
-            {
-                var submitter_id = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == element.submitterID);
-
-                string username;
-
-                if (submitter_id != null)
-                {
-                    username = submitter_id.AD_Username;
-                    usernameList.Add(username);
-                }
-                else
-                {
-                    throw new ResourceCreationException() { ExceptionMessage = "No username could be found for the user." };
-                }
+                // TODO - Check if the missing item report belongs to this non-admin user
+                actionsList = context.ActionsTakenData.Where(x => x.missingID == id && x.isPublic);
+                // Check if the report belongs to the user
+                //if (GetMissingItem(id, username) != null)
+                //{
+                //    actionsList = context.ActionsTakenData.Where(x => x.missingID == id && x.isPublic);
+                //}
+                //else
+                //{
+                //    throw new UnauthorizedAccessException();
+                //}
             }
 
             // Type cast to Actions Taken View Model 
             IEnumerable<ActionsTakenViewModel> returnList = actionsList.Select(x => (ActionsTakenViewModel)x);
-
-            // Create an Enumerator for the username list
-            IEnumerator<string> usernameEnumerator = usernameList.GetEnumerator();
-
-            // For each action taken in returnList, update the username based on the username list enumerator
-            returnList = returnList.Select(x => { usernameEnumerator.MoveNext(); x.username = usernameEnumerator.Current; return x; });
 
             return returnList;
         }

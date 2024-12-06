@@ -34,15 +34,15 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Update Missing Item Report with the given id with given data
         /// </summary>
-        /// <param name="id">The id of the report to update</param>
+        /// <param name="missingItemId">The id of the report to update</param>
         /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
         [HttpPost]
         [Route("missingitem/{id}/actiontaken")]
-        public ActionResult<int> CreateActionTaken(int id, [FromBody] ActionsTakenViewModel ActionsTaken)
+        public ActionResult<int> CreateActionTaken(int missingItemId, [FromBody] ActionsTakenViewModel ActionsTaken)
         {
-            int ID = lostAndFoundService.CreateActionTaken(id, ActionsTaken);
+            int actionId = lostAndFoundService.CreateActionTaken(missingItemId, ActionsTaken);
 
-            return Ok(ID);
+            return Ok(actionId);
         }
 
         /// <summary>
@@ -82,7 +82,8 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Static.Names.Operation.READ_ALL, resource = Resource.LOST_AND_FOUND_MISSING_REPORT)]
         public ActionResult<IEnumerable<MissingItemReportViewModel>> GetAllMissingItems()
         {
-            IEnumerable<MissingItemReportViewModel> result = lostAndFoundService.GetMissingItemsAll();
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            IEnumerable<MissingItemReportViewModel> result = lostAndFoundService.GetMissingItemsAll(authenticatedUserUsername);
             if (result != null)
             {
                 return Ok(result);
@@ -143,7 +144,9 @@ namespace Gordon360.Controllers
         [Route(("missingitem/{id}/actionstakenall"))]
         public ActionResult<IEnumerable<ActionsTakenViewModel>> GetActionsTaken(int id)
         {
-            IEnumerable<ActionsTakenViewModel> result = lostAndFoundService.GetActionsTaken(id);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            IEnumerable<ActionsTakenViewModel> result = lostAndFoundService.GetActionsTaken(id, authenticatedUserUsername);
             if (result != null)
             {
                 return Ok(result);

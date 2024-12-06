@@ -13,7 +13,7 @@ namespace Gordon360.Models.ViewModels
         public string username { get; set; }
         public bool isPublic { get; set; }
 
-        public static implicit operator ActionsTakenViewModel(CCT.ActionsTaken a) => new ActionsTakenViewModel
+        public static implicit operator ActionsTakenViewModel(CCT.ActionsTakenData a) => new ActionsTakenViewModel
         {
             ID = a.ID,
             missingID = a.missingID,
