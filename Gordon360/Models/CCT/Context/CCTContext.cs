@@ -138,8 +138,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RequestView> RequestView { get; set; }
 
-    public virtual DbSet<ResidentialStatus_View> ResidentialStatus_View { get; set; }
-
     public virtual DbSet<RoleType> RoleType { get; set; }
 
     public virtual DbSet<Series> Series { get; set; }
@@ -614,14 +612,6 @@ public partial class CCTContext : DbContext
 
             entity.Property(e => e.ActivityDescription).IsFixedLength();
             entity.Property(e => e.ParticipationDescription).IsFixedLength();
-        });
-
-        modelBuilder.Entity<ResidentialStatus_View>(entity =>
-        {
-            entity.ToView("ResidentialStatus_View", "Housing");
-
-            entity.Property(e => e.Latest_Session).IsFixedLength();
-            entity.Property(e => e.Residency_Status).IsFixedLength();
         });
 
         modelBuilder.Entity<Series>(entity =>

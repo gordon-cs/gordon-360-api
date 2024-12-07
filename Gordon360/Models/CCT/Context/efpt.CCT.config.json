@@ -327,10 +327,6 @@
          "ObjectType": 3
       },
       {
-         "Name": "[Housing].[ResidentialStatus_View]",
-         "ObjectType": 3
-      },
-      {
          "Name": "[RecIM].[ParticipantView]",
          "ObjectType": 3
       },
