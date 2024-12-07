@@ -661,6 +661,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    [HttpGet]
+    [Route("student/is-residential/{idNum}")]
+    public async Task<IActionResult> IsStudentResidential([FromRoute] int idNum)
+    {
+        try
+        {
+            var isResidential = await housingService.IsStudentResidentialAsync(idNum);
+            return Ok(new { IsResidential = isResidential });
+        }
+        catch (ResourceNotFoundException)
+        {
+            return NotFound($"Student with ID {idNum} not found.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
 
 
 

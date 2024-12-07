@@ -1056,6 +1056,22 @@ public class HousingService(CCTContext context) : IHousingService
         return isOnCall;
     }
 
+    public async Task<bool> IsStudentResidentialAsync(int idNum)
+    {
+        var student = await Task.FromResult(
+            context.ResidentialStatus_View
+                    .Where(s => s.Student_ID == idNum)
+                    .Select(s => s.Is_Residential)
+                    .FirstOrDefault()
+        );
+
+        if (student == null)
+        {
+            throw new InvalidOperationException("Student details could not be retrieved.");
+        }
+
+        return student == 1;
+    }
 
 
 
