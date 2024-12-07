@@ -2,8 +2,10 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -240,9 +242,7 @@ namespace Gordon360.Services
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
         public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username)
         {
-            //List<IEnumerable<ActionsTakenViewModel>> actionsTakenList = [];
-
-            IEnumerable<MissingItemReportViewModel> missingItems = context.MissingItemData.Select(x => (MissingItemReportViewModel)x);
+            IEnumerable<MissingItemReportViewModel> missingItems = context.MissingItemData.Select(x => (MissingItemReportViewModel)x).ToList();
 
             foreach (MissingItemReportViewModel item in missingItems)
             {
@@ -253,84 +253,136 @@ namespace Gordon360.Services
             }
 
             return missingItems;
-
-            //IEnumerator<IEnumerable<ActionsTakenViewModel>> actionsTakenEnumerator = actionsTakenList.GetEnumerator();
-
-            // Select required to join actions taken with reports and actually change the values in the Enumerable.
-            //return missingList.Select(x => { actionsTakenEnumerator.MoveNext(); x.adminActions = actionsTakenEnumerator.Current; return x; });
         }
 
         /// <summary>
         /// Gets a Missing by id, only allowed if it belongs to the username, or the user is an admin
         /// </summary>
-        /// <param name="id">The ID of the missing item</param>
+        /// <param name="missingItemID">The ID of the missing item</param>
         /// <param name="username">The username of the person requesting the data</param>
         /// <returns>A Missing Item Report object, or null if no item matches the id</returns>
-        public MissingItemReportViewModel? GetMissingItem(int id, string username)
+        public MissingItemReportViewModel? GetMissingItem(int missingItemID, string username)
         {
-            MissingItemData report;
-            bool isAdmin = Authorization.AuthUtils.GetGroups(username).Contains(Enums.AuthGroup.LostAndFoundAdmin);
-            bool isDev = Authorization.AuthUtils.GetGroups(username).Contains(Enums.AuthGroup.LostAndFoundDevelopers);
+            IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
+            bool isDev;
+            bool isAdmin;
+
+            // AD permission issues can, in rare cases, lead to errors enumerating userGroups:
+            try
+            {
+                isDev = userGroups.Contains(Enums.AuthGroup.LostAndFoundDevelopers);
+            }
+            catch (NoMatchingPrincipalException e)
+            {
+                Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundDevelopers, for USER UPN " + username + " EXCEPTION: " + e);
+                // If we fail to get the admin group, default to false.
+                isDev = false;
+            }
+            try
+            {
+                isAdmin = userGroups.Contains(Enums.AuthGroup.LostAndFoundAdmin);
+            }
+            catch (NoMatchingPrincipalException e)
+            {
+                Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundAdmin, for USER UPN " + username + " EXCEPTION: " + e);
+                // If we fail to get the admin group, default to false.
+                isAdmin = false;
+            }
+
+            MissingItemReportViewModel report;
             // If user is admin or developer, simply get the report
             if (isAdmin || isDev)
             {
-                report = context.MissingItemData.FirstOrDefault(x => x.ID == id);
+                var data = context.MissingItemData.FirstOrDefault(x => x.ID == missingItemID);
+                if (data != null)
+                {
+                    report = (MissingItemReportViewModel)data;
+
+                    // Get the list of all admin actions on this report, and add them to the report.
+                    report.adminActions = GetActionsTaken(missingItemID, username);
+                }
+                else
+                {
+                    // If no such report exists
+                    throw new ResourceNotFoundException();
+                }
             }
             else
             {
-                // Otherwise check if the report belongs to the requesting user
-                var idNum = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username).gordon_id;
-                report = context.MissingItemData.FirstOrDefault(x => x.ID == id && x.submitterID == idNum);
-            }
-            // Typecast the data into the viewmodel
-            MissingItemReportViewModel returnReport = (MissingItemReportViewModel)report;
+                // Otherwise get the reportif it belongs to the requesting user
+                var data = context.MissingItemData.FirstOrDefault(x => x.ID == missingItemID && x.submitterUsername == username);
+                if (data != null)
+                {
+                    report = (MissingItemReportViewModel)data;
 
-            // Get the list of public admin actions on this report, and add them to the report.
-            returnReport.adminActions = GetActionsTaken(id, username, true);
+                    // Get the list of public admin actions on this report, and add them to the report.
+                    report.adminActions = GetActionsTaken(missingItemID, username, true);
+                }
+                else
+                {
+                    // If no such report exists
+                    throw new ResourceNotFoundException();
+                }
+            }
             
-            return returnReport;
+            return report;
         }
 
         /// <summary>
-        /// Gets a list of Actions Taken by id
+        /// Gets a list of Actions Taken by id, general users only allowed to get public actions on their own reports
+        /// Attemps by a non-admin user to get actions for a report which doesn't belong to them will yield an UnauthorizedAccessException
         /// </summary>
         /// <param name="id">The ID of the associated missing item report</param>
         /// <param name="username">The username of the user requesting the information</param>
         /// <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
-        /// <returns>An ActionsTaken, or null if no item matches the id</returns>
+        /// <returns>An ActionsTaken[], or null if no item matches the id</returns>
         public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false)
         {
-            username = "Matthew.Jones";
             IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
-            var adminGroup = Enums.AuthGroup.HousingAdmin;
-            var devGroup = Enums.AuthGroup.LostAndFoundDevelopers;
-            bool isDev = userGroups.Contains(devGroup);
-            bool isAdmin = userGroups.Contains(adminGroup);
+            bool isDev;
+            bool isAdmin;
 
-            IEnumerable<ActionsTakenData> actionsList;
+            // AD permission issues can, in rare cases, lead to errors enumerating userGroups:
+            try
+            {
+                isDev = userGroups.Contains(Enums.AuthGroup.LostAndFoundDevelopers);
+            }
+            catch (NoMatchingPrincipalException e)
+            {
+                Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundDevelopers, for USER UPN " + username + " EXCEPTION: " + e);
+                // If we fail to get the admin group, default to false.
+                isDev = false;
+            }
+            try
+            {
+                isAdmin = userGroups.Contains(Enums.AuthGroup.LostAndFoundAdmin);
+            }
+            catch (NoMatchingPrincipalException e)
+            {
+                Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundAdmin, for USER UPN " + username + " EXCEPTION: " + e);
+                // If we fail to get the admin group, default to false.
+                isAdmin = false;
+            }
+
+            IEnumerable<ActionsTakenViewModel> actionsList;
             if (!getPublicOnly && (isAdmin || isDev))
             {
-                actionsList = context.ActionsTakenData.Where(x => x.missingID == id);
+                actionsList = context.ActionsTakenData.Where(x => x.missingID == id).Select(x => (ActionsTakenViewModel)x);
             }
             else
             {
-                // TODO - Check if the missing item report belongs to this non-admin user
-                actionsList = context.ActionsTakenData.Where(x => x.missingID == id && x.isPublic);
-                // Check if the report belongs to the user
-                //if (GetMissingItem(id, username) != null)
-                //{
-                //    actionsList = context.ActionsTakenData.Where(x => x.missingID == id && x.isPublic);
-                //}
-                //else
-                //{
-                //    throw new UnauthorizedAccessException();
-                //}
+                var missingReport = context.MissingItemData.FirstOrDefault(x => x.ID == id && x.submitterUsername.ToLower() == username.ToLower());
+                if (missingReport != null)
+                {
+                    actionsList = context.ActionsTakenData.Where(x => x.missingID == id && x.isPublic).Select(x => (ActionsTakenViewModel)x);
+                }
+                else
+                {
+                    throw new UnauthorizedAccessException();
+                }
             }
 
-            // Type cast to Actions Taken View Model 
-            IEnumerable<ActionsTakenViewModel> returnList = actionsList.Select(x => (ActionsTakenViewModel)x);
-
-            return returnList;
+            return actionsList;
         }
     }
 }

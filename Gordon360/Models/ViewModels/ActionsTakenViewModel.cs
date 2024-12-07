@@ -17,6 +17,7 @@ namespace Gordon360.Models.ViewModels
         {
             ID = a.ID,
             missingID = a.missingID,
+            username = a.AD_Username,
             action = a.action,
             actionDate = a.actionDate,
             actionNote = a.actionNote,
