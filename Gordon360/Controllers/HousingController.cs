@@ -242,6 +242,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="model">The ViewModel that contains the hall ID and room range</param>
     /// <returns>The created Hall_Assignment_Ranges object</returns>
     [HttpPost("roomrange")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_ROOM_RANGE)]
     public async Task<ActionResult<Hall_Assignment_Ranges>> CreateRoomRange([FromBody] HallAssignmentRangeViewModel model)
     {
         try
@@ -264,6 +265,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns>A list of room ranges.</returns>
     [HttpGet("roomrange/all")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ROOM_RANGE)]
     public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetAllRoomRanges()
     {
         try
@@ -283,6 +285,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="rangeId">The ID of the room range to delete</param>
     /// <returns> Returns if completed</returns>
     [HttpDelete("roomrange/{rangeId}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_ROOM_RANGE)]
     public async Task<IActionResult> DeleteRoomRange(int rangeId)
     {
         try
@@ -315,6 +318,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="ra_Id">The ID of the RA to assign</param>
     /// <returns>The created RA_Assigned_Ranges object</returns>
     [HttpPost("roomrange/assign-ra")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_ASSIGNMENT)]
     public async Task<ActionResult<RA_Assigned_Ranges>> AssignRaToRoomRange([FromBody] RA_AssignmentViewModel model)
     {
         try
@@ -338,6 +342,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns>Returns a list of all assignments</returns>
     [HttpGet]
     [Route("roomrange/assignment/all")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RA_ASSIGNMENT)]
     public async Task<IActionResult> GetRangeAssignments()
     {
         try
@@ -361,6 +366,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="rangeId">The Room range of the assignment to delete</param>
     /// <returns> Returns if completed</returns>
     [HttpDelete("roomrange/assignment/{rangeId}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_ASSIGNMENT)]
     public async Task<IActionResult> DeleteAssignment(int rangeId)
     {
         try
@@ -462,6 +468,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
     /// <returns>True if the contact method was successfully set</returns>
     [HttpPost("ra/contact")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_CONTACT_PREFERENCE)]
     public async Task<IActionResult> SetPreferredContact([FromQuery] string raId, [FromQuery] string preferredContactMethod)
     {
         if (string.IsNullOrWhiteSpace(raId) || string.IsNullOrWhiteSpace(preferredContactMethod))
@@ -496,6 +503,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
     /// phone number if no preference is set.</returns>
     [HttpGet("ra/contact/{raId}")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_CONTACT_PREFERENCE)]
     public async Task<ActionResult<string>> GetRAContact(string raId)
     {
         try
@@ -571,6 +579,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="checkin">The viewmodel object of the RA checking in</param>
     /// <returns>true if RA checked in successfully</returns>
     [HttpPost("ra/checkin")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.RA_CHECKIN)]
     public async Task<ActionResult<bool>> RA_Checkin([FromBody] RA_On_CallViewModel RAcheckin)
     {
         try
@@ -598,6 +607,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="Hall_ID">The ID of the hall</param>
     /// <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
     [HttpGet("ra/on-call/{Hall_ID}")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_ON_CALL_RA)]
     public async Task<ActionResult<string>> GetOnCallRA(string Hall_ID)
     {
         try
@@ -622,6 +632,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns>The RAs on call</returns>
     [HttpGet("ra/on-call/all")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ON_CALL_RA)]
     public async Task<ActionResult<List<RA_On_Call_GetViewModel>>> GetOnCallRAAllHalls()
     {
         try
