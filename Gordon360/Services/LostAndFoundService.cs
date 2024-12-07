@@ -201,39 +201,13 @@ namespace Gordon360.Services
         /// <returns>an Enumerable of Missing Item Reports containing all missing item reports</returns>
         public IEnumerable<MissingItemReportViewModel> GetMissingItems(string username)
         {
-            // Get the account of the given username.
-            var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-
-            string idNum;
-
-            if (account != null)
-            {
-                idNum = account.gordon_id;
-            }
-            else
-            {
-                throw new ResourceCreationException() { ExceptionMessage = "No account could be found for the usename." };
-            }
-            // Fetch the missing item reports belonging to that user, and not submitted for someone else
-            IEnumerable<MissingItemData> missingList = context.MissingItemData.Where(x => x.submitterID == idNum && x.forGuest == false);
-            // Convert the report objects into viewmodel objects.
-            IEnumerable<MissingItemReportViewModel> returnList = missingList.Select(x => (MissingItemReportViewModel)x);
-
-            // Get the list of actions taken that are public, and add them to each missing item report.
-            List<IEnumerable<ActionsTakenViewModel>> actionsTakenList = [];
-            foreach (MissingItemReportViewModel item in returnList)
-            {
-                if (item.recordID != null)
-                {
-                    actionsTakenList.Add(GetActionsTaken((int)item.recordID, username, true));
-                }
-            }
-
-            IEnumerator<IEnumerable<ActionsTakenViewModel>> actionsTakenEnumerator = actionsTakenList.GetEnumerator();
-            // Mix-in actions taken lists for each report
-            returnList = returnList.Select(x => { actionsTakenEnumerator.MoveNext(); x.adminActions = actionsTakenEnumerator.Current; return x; });
-
-            return returnList;
+            return context.MissingItemData
+                .Where(x => x.submitterUsername == username && !x.forGuest)
+                .GroupJoin(context.ActionsTakenData
+                .Where(x => x.isPublic),
+                    mi => mi.ID,
+                    at => at.missingID, 
+                    (mi, at) => MissingItemReportViewModel.From(mi, at));
         }
 
         /// <summary>
@@ -242,17 +216,13 @@ namespace Gordon360.Services
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
         public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username)
         {
-            IEnumerable<MissingItemReportViewModel> missingItems = context.MissingItemData.Select(x => (MissingItemReportViewModel)x).ToList();
-
-            foreach (MissingItemReportViewModel item in missingItems)
-            {
-                if (item.recordID != null)
-                {
-                    item.adminActions = (GetActionsTaken((int)item.recordID, username, false, true));
-                }
-            }
-
-            return missingItems;
+            // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
+            // Only performs a single SQL query to the db, so much more performant than alternative solutions
+            return context.MissingItemData
+                .GroupJoin(context.ActionsTakenData,
+                    mi => mi.ID, 
+                    at => at.missingID, 
+                    (mi, at) => MissingItemReportViewModel.From(mi, at));
         }
 
         /// <summary>
