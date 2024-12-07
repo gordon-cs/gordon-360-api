@@ -332,11 +332,11 @@ namespace Gordon360.Services
         /// Gets a list of Actions Taken by id, general users only allowed to get public actions on their own reports
         /// Attemps by a non-admin user to get actions for a report which doesn't belong to them will yield an UnauthorizedAccessException
         /// </summary>
-        /// <param name="id">The ID of the associated missing item report</param>
+        /// <param name="missingID">The ID of the associated missing item report</param>
         /// <param name="username">The username of the user requesting the information</param>
         /// <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
         /// <returns>An ActionsTaken[], or null if no item matches the id</returns>
-        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false)
+        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int missingID, string username, bool getPublicOnly = false)
         {
             IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
             bool isDev;
@@ -364,25 +364,35 @@ namespace Gordon360.Services
                 isAdmin = false;
             }
 
-            IEnumerable<ActionsTakenViewModel> actionsList;
-            if (!getPublicOnly && (isAdmin || isDev))
+            bool hasElevatedPermissions = (isAdmin || isDev);
+
+            // Get all actions taken for the report
+            IQueryable<ActionsTakenData> actionsList = context.ActionsTakenData.Where(x => x.missingID == missingID);
+
+            // If an admin requests only public actions
+            if (hasElevatedPermissions && getPublicOnly)
             {
-                actionsList = context.ActionsTakenData.Where(x => x.missingID == id).Select(x => (ActionsTakenViewModel)x);
+                actionsList = actionsList.Where(x => x.isPublic);
             }
-            else
+            // Otherwise if a general user requests actions for a report
+            else if (!hasElevatedPermissions)
             {
-                var missingReport = context.MissingItemData.FirstOrDefault(x => x.ID == id && x.submitterUsername.ToLower() == username.ToLower());
+                // Check if the report belongs to them
+                var missingReport = context.MissingItemData.FirstOrDefault(x => x.ID == missingID && x.submitterUsername.ToLower() == username.ToLower());
                 if (missingReport != null)
                 {
-                    actionsList = context.ActionsTakenData.Where(x => x.missingID == id && x.isPublic).Select(x => (ActionsTakenViewModel)x);
+                    // If the missing item report exists (aka it belongs to them), get the public actions
+                    actionsList = actionsList.Where(x => x.isPublic);
                 }
                 else
                 {
+                    // If the missing report doesn't exist for this user
                     throw new UnauthorizedAccessException();
                 }
             }
 
-            return actionsList;
+            // Typecast into the viewModel and return
+            return actionsList.Select(x => (ActionsTakenViewModel)x);
         }
     }
 }
