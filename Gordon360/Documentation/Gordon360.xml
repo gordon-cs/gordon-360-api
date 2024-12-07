@@ -1952,7 +1952,7 @@
             <param name="username">The username of the person requesting the data</param>
             <returns>A Missing Item Report object, or null if no item matches the id</returns>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32,System.String,System.Boolean)">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32,System.String,System.Boolean,System.Boolean)">
             <summary>
             Gets a list of Actions Taken by id, general users only allowed to get public actions on their own reports
             Attemps by a non-admin user to get actions for a report which doesn't belong to them will yield an UnauthorizedAccessException

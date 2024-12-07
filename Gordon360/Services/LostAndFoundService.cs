@@ -248,7 +248,7 @@ namespace Gordon360.Services
             {
                 if (item.recordID != null)
                 {
-                    item.adminActions = (GetActionsTaken((int)item.recordID, username));
+                    item.adminActions = (GetActionsTaken((int)item.recordID, username, false, true));
                 }
             }
 
@@ -335,36 +335,42 @@ namespace Gordon360.Services
         /// <param name="missingID">The ID of the associated missing item report</param>
         /// <param name="username">The username of the user requesting the information</param>
         /// <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
+        /// <param name="hasElevatedPermissions">Signal to the function that user elevated authorization has already been confirmed</param>
         /// <returns>An ActionsTaken[], or null if no item matches the id</returns>
-        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int missingID, string username, bool getPublicOnly = false)
+        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int missingID, string username, bool getPublicOnly = false, bool hasElevatedPermissions = false)
         {
-            IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
             bool isDev;
             bool isAdmin;
 
-            // AD permission issues can, in rare cases, lead to errors enumerating userGroups:
-            try
+            // Ignore checking authorization if authorization is set (improved performance for large admin requests)
+            if (!hasElevatedPermissions)
             {
-                isDev = userGroups.Contains(Enums.AuthGroup.LostAndFoundDevelopers);
-            }
-            catch (NoMatchingPrincipalException e)
-            {
-                Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundDevelopers, for USER UPN " + username + " EXCEPTION: " + e);
-                // If we fail to get the admin group, default to false.
-                isDev = false;
-            }
-            try
-            {
-                isAdmin = userGroups.Contains(Enums.AuthGroup.LostAndFoundAdmin);
-            }
-            catch (NoMatchingPrincipalException e)
-            {
-                Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundAdmin, for USER UPN " + username + " EXCEPTION: " + e);
-                // If we fail to get the admin group, default to false.
-                isAdmin = false;
-            }
+                IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
 
-            bool hasElevatedPermissions = (isAdmin || isDev);
+                // AD permission issues can, in rare cases, lead to errors enumerating userGroups:
+                try
+                {
+                    isDev = userGroups.Contains(Enums.AuthGroup.LostAndFoundDevelopers);
+                }
+                catch (NoMatchingPrincipalException e)
+                {
+                    Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundDevelopers, for USER UPN " + username + " EXCEPTION: " + e);
+                    // If we fail to get the admin group, default to false.
+                    isDev = false;
+                }
+                try
+                {
+                    isAdmin = userGroups.Contains(Enums.AuthGroup.LostAndFoundAdmin);
+                }
+                catch (NoMatchingPrincipalException e)
+                {
+                    Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundAdmin, for USER UPN " + username + " EXCEPTION: " + e);
+                    // If we fail to get the admin group, default to false.
+                    isAdmin = false;
+                }
+
+                hasElevatedPermissions = (isAdmin || isDev);
+            }
 
             // Get all actions taken for the report
             IQueryable<ActionsTakenData> actionsList = context.ActionsTakenData.Where(x => x.missingID == missingID);
