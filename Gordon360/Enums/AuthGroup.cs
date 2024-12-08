@@ -13,7 +13,11 @@ public enum AuthGroup
     RecIMSuperAdmin,
     SiteAdmin,
     Staff,
-    Student
+    Student,
+    RA,
+    RD,
+    HallInfoViewer,
+    HousingDeveloper //Remove before deployment
 }
 
 public static class AuthGroupEnum
@@ -32,6 +36,11 @@ public static class AuthGroupEnum
         "360-SiteAdmin-SG" => AuthGroup.SiteAdmin,
         "360-Staff-SG" => AuthGroup.Staff,
         "360-Student-SG" => AuthGroup.Student,
+        "360-ResLifeStudentWorker-SG" => AuthGroup.RA,
+        "360-HallInfoViewer-SG" => AuthGroup.HallInfoViewer,
+        "360-ResidentDirector" => AuthGroup.RD,
+        "360-HousingDevelopers-SG" => AuthGroup.HousingDeveloper,
+
         _ => null
     };
 }
