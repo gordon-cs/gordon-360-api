@@ -1894,6 +1894,13 @@
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
         </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
+            <summary>
+            Check if the user has full admin permissions in the system
+            </summary>
+            <param name="username">the UPN of the user</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Services.LostAndFoundService.CreateMissingItemReport(Gordon360.Models.ViewModels.MissingItemReportViewModel,System.String)">
             <summary>
             Create a new missing item report, for the submitter in the details, or the authenticated user if that is null.
@@ -1960,7 +1967,7 @@
             <param name="missingID">The ID of the associated missing item report</param>
             <param name="username">The username of the user requesting the information</param>
             <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
-            <param name="hasElevatedPermissions">Signal to the function that user elevated authorization has already been confirmed</param>
+            <param name="elevatedPermissions">Signal to the function that user elevated authorization has already been confirmed</param>
             <returns>An ActionsTaken[], or null if no item matches the id</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">

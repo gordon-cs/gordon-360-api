@@ -15,6 +15,41 @@ namespace Gordon360.Services
     public class LostAndFoundService(CCTContext context) : ILostAndFoundService
     {
         /// <summary>
+        /// Check if the user has full admin permissions in the system
+        /// </summary>
+        /// <param name="username">the UPN of the user</param>
+        /// <returns></returns>
+        private bool hasFullPermissions(string username)
+        {
+            IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
+            bool isDev;
+            bool isAdmin;
+
+            // AD permission issues can, in rare cases, lead to errors enumerating userGroups:
+            try
+            {
+                isDev = userGroups.Contains(Enums.AuthGroup.LostAndFoundDevelopers);
+            }
+            catch (NoMatchingPrincipalException e)
+            {
+                Log.Error("NoMatchingPrincipleException encountered and handled when searching for LostAndFoundDevelopers group on USER UPN " + username + " EXCEPTION: " + e);
+                // If we fail to get the admin group, default to false.
+                isDev = false;
+            }
+            try
+            {
+                isAdmin = userGroups.Contains(Enums.AuthGroup.LostAndFoundAdmin);
+            }
+            catch (NoMatchingPrincipalException e)
+            {
+                Log.Error("NoMatchingPrincipleException encountered and handled when searching for LostAndFoundAdmin group on USER UPN " + username + " EXCEPTION: " + e);
+                // If we fail to get the admin group, default to false.
+                isAdmin = false;
+            }
+            return (isAdmin || isDev);
+        }
+
+        /// <summary>
         /// Create a new missing item report, for the submitter in the details, or the authenticated user if that is null.
         /// </summary>
         /// <param name="reportDetails"></param>
@@ -233,35 +268,9 @@ namespace Gordon360.Services
         /// <returns>A Missing Item Report object, or null if no item matches the id</returns>
         public MissingItemReportViewModel? GetMissingItem(int missingItemID, string username)
         {
-            IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
-            bool isDev;
-            bool isAdmin;
-
-            // AD permission issues can, in rare cases, lead to errors enumerating userGroups:
-            try
-            {
-                isDev = userGroups.Contains(Enums.AuthGroup.LostAndFoundDevelopers);
-            }
-            catch (NoMatchingPrincipalException e)
-            {
-                Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundDevelopers, for USER UPN " + username + " EXCEPTION: " + e);
-                // If we fail to get the admin group, default to false.
-                isDev = false;
-            }
-            try
-            {
-                isAdmin = userGroups.Contains(Enums.AuthGroup.LostAndFoundAdmin);
-            }
-            catch (NoMatchingPrincipalException e)
-            {
-                Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundAdmin, for USER UPN " + username + " EXCEPTION: " + e);
-                // If we fail to get the admin group, default to false.
-                isAdmin = false;
-            }
-
             MissingItemReportViewModel report;
             // If user is admin or developer, simply get the report
-            if (isAdmin || isDev)
+            if (hasFullPermissions(username))
             {
                 var data = context.MissingItemData.FirstOrDefault(x => x.ID == missingItemID);
                 if (data != null)
@@ -269,7 +278,7 @@ namespace Gordon360.Services
                     report = (MissingItemReportViewModel)data;
 
                     // Get the list of all admin actions on this report, and add them to the report.
-                    report.adminActions = GetActionsTaken(missingItemID, username);
+                    report.adminActions = GetActionsTaken(missingItemID, username, false, true);
                 }
                 else
                 {
@@ -294,7 +303,6 @@ namespace Gordon360.Services
                     throw new ResourceNotFoundException();
                 }
             }
-            
             return report;
         }
 
@@ -305,53 +313,26 @@ namespace Gordon360.Services
         /// <param name="missingID">The ID of the associated missing item report</param>
         /// <param name="username">The username of the user requesting the information</param>
         /// <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
-        /// <param name="hasElevatedPermissions">Signal to the function that user elevated authorization has already been confirmed</param>
+        /// <param name="elevatedPermissions">Signal to the function that user elevated authorization has already been confirmed</param>
         /// <returns>An ActionsTaken[], or null if no item matches the id</returns>
-        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int missingID, string username, bool getPublicOnly = false, bool hasElevatedPermissions = false)
+        public IEnumerable<ActionsTakenViewModel> GetActionsTaken(int missingID, string username, bool getPublicOnly = false, bool elevatedPermissions = false)
         {
-            bool isDev;
-            bool isAdmin;
-
             // Ignore checking authorization if authorization is set (improved performance for large admin requests)
-            if (!hasElevatedPermissions)
+            if (!elevatedPermissions)
             {
-                IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
-
-                // AD permission issues can, in rare cases, lead to errors enumerating userGroups:
-                try
-                {
-                    isDev = userGroups.Contains(Enums.AuthGroup.LostAndFoundDevelopers);
-                }
-                catch (NoMatchingPrincipalException e)
-                {
-                    Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundDevelopers, for USER UPN " + username + " EXCEPTION: " + e);
-                    // If we fail to get the admin group, default to false.
-                    isDev = false;
-                }
-                try
-                {
-                    isAdmin = userGroups.Contains(Enums.AuthGroup.LostAndFoundAdmin);
-                }
-                catch (NoMatchingPrincipalException e)
-                {
-                    Log.Error("No Matching Principle Exception encountered when enumerating groups searching for LostAndFoundAdmin, for USER UPN " + username + " EXCEPTION: " + e);
-                    // If we fail to get the admin group, default to false.
-                    isAdmin = false;
-                }
-
-                hasElevatedPermissions = (isAdmin || isDev);
+                elevatedPermissions = hasFullPermissions(username);
             }
 
-            // Get all actions taken for the report
+            // Get all actions taken for the report with given
             IQueryable<ActionsTakenData> actionsList = context.ActionsTakenData.Where(x => x.missingID == missingID);
 
             // If an admin requests only public actions
-            if (hasElevatedPermissions && getPublicOnly)
+            if (elevatedPermissions && getPublicOnly)
             {
                 actionsList = actionsList.Where(x => x.isPublic);
             }
             // Otherwise if a general user requests actions for a report
-            else if (!hasElevatedPermissions)
+            else if (!elevatedPermissions)
             {
                 // Check if the report belongs to them
                 var missingReport = context.MissingItemData.FirstOrDefault(x => x.ID == missingID && x.submitterUsername.ToLower() == username.ToLower());
@@ -362,7 +343,7 @@ namespace Gordon360.Services
                 }
                 else
                 {
-                    // If the missing report doesn't exist for this user
+                    // If the missing report doesn't belong to this user, short circuit and throw exception
                     throw new UnauthorizedAccessException();
                 }
             }
