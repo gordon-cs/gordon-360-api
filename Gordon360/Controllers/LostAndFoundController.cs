@@ -37,7 +37,7 @@ namespace Gordon360.Controllers
         /// <param name="missingItemId">The id of the report to update</param>
         /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
         [HttpPost]
-        [Route("missingitem/{id}/actiontaken")]
+        [Route("missingitem/{missingItemId}/actiontaken")]
         public ActionResult<int> CreateActionTaken(int missingItemId, [FromBody] ActionsTakenViewModel ActionsTaken)
         {
             int actionId = lostAndFoundService.CreateActionTaken(missingItemId, ActionsTaken);
