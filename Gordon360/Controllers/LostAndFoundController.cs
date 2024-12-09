@@ -14,7 +14,6 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class LostAndFoundController(CCTContext context, ILostAndFoundService lostAndFoundService) : GordonControllerBase
     {
-
         /// <summary>
         /// Create a new missing item report with given data
         /// </summary>
@@ -63,6 +62,7 @@ namespace Gordon360.Controllers
         /// Update the status of the item report with given id to the given status text
         /// </summary>
         /// <param name="id">The id of the report to update</param>
+        /// <param name="status"></param>
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route("missingitem/{id}/{status}")]
@@ -82,8 +82,7 @@ namespace Gordon360.Controllers
         [StateYourBusiness(operation = Static.Names.Operation.READ_ALL, resource = Resource.LOST_AND_FOUND_MISSING_REPORT)]
         public ActionResult<IEnumerable<MissingItemReportViewModel>> GetAllMissingItems()
         {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-            IEnumerable<MissingItemReportViewModel> result = lostAndFoundService.GetMissingItemsAll(authenticatedUserUsername);
+            IEnumerable<MissingItemReportViewModel> result = lostAndFoundService.GetMissingItemsAll();
             if (result != null)
             {
                 return Ok(result);
@@ -114,6 +113,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
+
         /// <summary>
         /// Get a missing item report with given ID.
         /// </summary>
@@ -135,6 +135,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
+
         /// <summary>
         /// Get all actions taken on a given missing item report.
         /// </summary>
