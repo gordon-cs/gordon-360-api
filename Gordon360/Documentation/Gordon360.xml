@@ -306,7 +306,7 @@
             <summary>
             Update Missing Item Report with the given id with given data
             </summary>
-            <param name="id">The id of the report to update</param>
+            <param name="missingItemId">The id of the report to update</param>
             <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateMissingItemReport(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
@@ -1894,6 +1894,13 @@
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
         </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
+            <summary>
+            Check if the user has full admin permissions in the system
+            </summary>
+            <param name="username">the UPN of the user</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Services.LostAndFoundService.CreateMissingItemReport(Gordon360.Models.ViewModels.MissingItemReportViewModel,System.String)">
             <summary>
             Create a new missing item report, for the submitter in the details, or the authenticated user if that is null.
@@ -1938,7 +1945,7 @@
             <param name="username">The username to get reports for</param>
             <returns>an Enumerable of Missing Item Reports containing all missing item reports</returns>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll(System.String)">
             <summary>
             Get all missing item reports
             </summary>
@@ -1948,17 +1955,20 @@
             <summary>
             Gets a Missing by id, only allowed if it belongs to the username, or the user is an admin
             </summary>
-            <param name="id">The ID of the missing item</param>
+            <param name="missingItemID">The ID of the missing item</param>
             <param name="username">The username of the person requesting the data</param>
             <returns>A Missing Item Report object, or null if no item matches the id</returns>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32,System.Boolean)">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32,System.String,System.Boolean,System.Boolean)">
             <summary>
-            Gets a list of Actions Taken by id
+            Gets a list of Actions Taken by id, general users only allowed to get public actions on their own reports
+            Attemps by a non-admin user to get actions for a report which doesn't belong to them will yield an UnauthorizedAccessException
             </summary>
-            <param name="id">The ID of the associated missing item report</param>
+            <param name="missingID">The ID of the associated missing item report</param>
+            <param name="username">The username of the user requesting the information</param>
             <param name="getPublicOnly">Oonly get actions marked as public.  Default false.</param>
-            <returns>An ActionsTaken, or null if no item matches the id</returns>
+            <param name="elevatedPermissions">Signal to the function that user elevated authorization has already been confirmed</param>
+            <returns>An ActionsTaken[], or null if no item matches the id</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>

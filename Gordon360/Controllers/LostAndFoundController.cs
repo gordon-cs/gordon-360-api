@@ -14,7 +14,6 @@ namespace Gordon360.Controllers
     [Route("api/[controller]")]
     public class LostAndFoundController(CCTContext context, ILostAndFoundService lostAndFoundService) : GordonControllerBase
     {
-
         /// <summary>
         /// Create a new missing item report with given data
         /// </summary>
@@ -34,15 +33,15 @@ namespace Gordon360.Controllers
         /// <summary>
         /// Update Missing Item Report with the given id with given data
         /// </summary>
-        /// <param name="id">The id of the report to update</param>
+        /// <param name="missingItemId">The id of the report to update</param>
         /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
         [HttpPost]
-        [Route("missingitem/{id}/actiontaken")]
-        public ActionResult<int> CreateActionTaken(int id, [FromBody] ActionsTakenViewModel ActionsTaken)
+        [Route("missingitem/{missingItemId}/actiontaken")]
+        public ActionResult<int> CreateActionTaken(int missingItemId, [FromBody] ActionsTakenViewModel ActionsTaken)
         {
-            int ID = lostAndFoundService.CreateActionTaken(id, ActionsTaken);
+            int actionId = lostAndFoundService.CreateActionTaken(missingItemId, ActionsTaken);
 
-            return Ok(ID);
+            return Ok(actionId);
         }
 
         /// <summary>
@@ -63,6 +62,7 @@ namespace Gordon360.Controllers
         /// Update the status of the item report with given id to the given status text
         /// </summary>
         /// <param name="id">The id of the report to update</param>
+        /// <param name="status"></param>
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route("missingitem/{id}/{status}")]
@@ -113,6 +113,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
+
         /// <summary>
         /// Get a missing item report with given ID.
         /// </summary>
@@ -134,6 +135,7 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
+
         /// <summary>
         /// Get all actions taken on a given missing item report.
         /// </summary>
@@ -143,7 +145,9 @@ namespace Gordon360.Controllers
         [Route(("missingitem/{id}/actionstakenall"))]
         public ActionResult<IEnumerable<ActionsTakenViewModel>> GetActionsTaken(int id)
         {
-            IEnumerable<ActionsTakenViewModel> result = lostAndFoundService.GetActionsTaken(id);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            IEnumerable<ActionsTakenViewModel> result = lostAndFoundService.GetActionsTaken(id, authenticatedUserUsername);
             if (result != null)
             {
                 return Ok(result);

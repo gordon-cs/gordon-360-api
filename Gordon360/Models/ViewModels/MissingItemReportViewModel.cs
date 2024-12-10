@@ -65,5 +65,29 @@ namespace Gordon360.Models.ViewModels
             submitterUsername = MissingReportDBModel.submitterUsername,
             forGuest = MissingReportDBModel.forGuest,
         };
+
+        // Create a viewmodel from the MissingItemData and the collection of ActionsTaken
+        public static MissingItemReportViewModel From(CCT.MissingItemData MissingReportDBModel, IEnumerable<CCT.ActionsTakenData> actionsTaken)
+            => new MissingItemReportViewModel
+        {
+            recordID = MissingReportDBModel.ID,
+            firstName = MissingReportDBModel.firstName,
+            lastName = MissingReportDBModel.lastName,
+            category = MissingReportDBModel.category,
+            colors = MissingReportDBModel.colors.Split(',').Select(item => item.Trim()).ToArray(),
+            brand = MissingReportDBModel.brand,
+            description = MissingReportDBModel.description,
+            locationLost = MissingReportDBModel.locationLost,
+            stolen = MissingReportDBModel.stolen,
+            stolenDescription = MissingReportDBModel.stolenDesc,
+            dateLost = MissingReportDBModel.dateLost,
+            dateCreated = MissingReportDBModel.dateCreated,
+            phone = MissingReportDBModel.phone,
+            email = MissingReportDBModel.email,
+            status = MissingReportDBModel.status,
+            submitterUsername = MissingReportDBModel.submitterUsername,
+            forGuest = MissingReportDBModel.forGuest,
+            adminActions = actionsTaken.Select(a => (ActionsTakenViewModel)a).ToList(),
+        };
     }
 }

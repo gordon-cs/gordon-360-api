@@ -283,6 +283,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[LostAndFound].[ActionsTakenData]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[LostAndFound].[MissingItemData]",
          "ObjectType": 3
       },

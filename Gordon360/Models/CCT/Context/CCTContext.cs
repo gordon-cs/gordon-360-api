@@ -22,6 +22,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<ActionsTaken> ActionsTaken { get; set; }
 
+    public virtual DbSet<ActionsTakenData> ActionsTakenData { get; set; }
+
     public virtual DbSet<Activity> Activity { get; set; }
 
     public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
@@ -183,6 +185,11 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.missing).WithMany(p => p.ActionsTaken)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__ActionsTa__missi__11606D5A");
+        });
+
+        modelBuilder.Entity<ActionsTakenData>(entity =>
+        {
+            entity.ToView("ActionsTakenData", "LostAndFound");
         });
 
         modelBuilder.Entity<Activity>(entity =>
