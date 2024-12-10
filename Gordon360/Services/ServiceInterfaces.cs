@@ -230,11 +230,11 @@ namespace Gordon360.Services
     public interface ILostAndFoundService
     {
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
-        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken);
-        IEnumerable<MissingItemReportViewModel> GetMissingItems(string username);
-        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll();
-        Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails);
-        Task UpdateReportStatusAsync(int id, string status);
+        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
+        IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
+        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username);
+        Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
+        Task UpdateReportStatusAsync(int id, string status, string username);
         MissingItemReportViewModel? GetMissingItem(int id, string username);
         IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false, bool elevatedPermissions = false);
     }
