@@ -280,7 +280,7 @@ namespace Gordon360.Services
             else
             {
                 // If a non-admin user requests the reports of someone else
-                if (requestedUsername.ToLower() != requestedUsername.ToLower())
+                if (requestorUsername.Equals(requestedUsername, StringComparison.OrdinalIgnoreCase))
                 {
                     throw new ResourceNotFoundException() { ExceptionMessage = "No missing item reports could be found" };
                 }
