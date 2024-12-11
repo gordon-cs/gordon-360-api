@@ -989,9 +989,9 @@ public class HousingService(CCTContext context) : IHousingService
     /// </summary>
     /// <param name="checkin">The viewmodel object of the RA checking in</param>
     /// <returns>true if RA checked in successfully</returns>
-    public async Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin)
+    public async Task<bool> RA_CheckinAsync(string[] Hall_ID, string Ra_ID)
     {
-        foreach (string hallId in checkin.Hall_ID)
+        foreach (string hallId in Hall_ID)
         {
             // Check if there is an existing RA checked into this hall without an end time
             var existingRA = await context.RA_On_Call
@@ -1008,7 +1008,7 @@ public class HousingService(CCTContext context) : IHousingService
             // Add the new RA check-in record with no check-out time
             var newCheckin = new RA_On_Call
             {
-                Ra_ID = checkin.Ra_ID,
+                Ra_ID = Ra_ID,
                 Hall_ID = hallId,
                 Check_in_time = DateTime.Now,
                 Check_out_time = null // RA has an active checkin

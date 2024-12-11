@@ -238,7 +238,7 @@ namespace Gordon360.Services
         Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod);
         Task<string> GetPreferredContactAsync(string raId);
         Task<object> GetContactPreferenceAsync(string raId);
-        Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin);
+        Task<bool> RA_CheckinAsync(string[] HallIDs, string raId);
         Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string hallId);
         Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync();
         Task<bool> IsRAOnCallAsync(string raId);

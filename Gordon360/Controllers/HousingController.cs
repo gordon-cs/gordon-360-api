@@ -224,7 +224,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
         //get token data from context, username is the username of current logged in person
         var authenticatedUserIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-        
+
         ApartmentApplicationViewModel[] result = housingService.GetAllApartmentApplication();
         if (result != null)
         {
@@ -264,7 +264,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// Retrieves all room ranges.
     /// </summary>
     /// <returns>A list of room ranges.</returns>
-    [HttpGet("roomrange/all")]
+    [HttpGet("roomranges")]
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ROOM_RANGE)]
     public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetAllRoomRanges()
     {
@@ -284,9 +284,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <param name="rangeId">The ID of the room range to delete</param>
     /// <returns> Returns if completed</returns>
-    [HttpDelete("roomrange/{rangeId}")]
+    [HttpDelete("roomranges/{rangeId}")]
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_ROOM_RANGE)]
-    public async Task<IActionResult> DeleteRoomRange(int rangeId)
+    public async Task<IActionResult> DeleteRoomRange([FromRoute] int rangeId)
     {
         try
         {
@@ -317,7 +317,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="range_Id">The ID of the room range</param>
     /// <param name="ra_Id">The ID of the RA to assign</param>
     /// <returns>The created RA_Assigned_Ranges object</returns>
-    [HttpPost("roomrange/assign-ra")]
+    [HttpPost("roomrangeassignments")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_ASSIGNMENT)]
     public async Task<ActionResult<RA_Assigned_Ranges>> AssignRaToRoomRange([FromBody] RA_AssignmentViewModel model)
     {
@@ -341,7 +341,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns>Returns a list of all assignments</returns>
     [HttpGet]
-    [Route("roomrange/assignment/all")]
+    [Route("roomrangeassignments")]
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RA_ASSIGNMENT)]
     public async Task<IActionResult> GetRangeAssignments()
     {
@@ -365,9 +365,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <param name="rangeId">The Room range of the assignment to delete</param>
     /// <returns> Returns if completed</returns>
-    [HttpDelete("roomrange/assignment/{rangeId}")]
+    [HttpDelete("roomranges/assignment/{rangeId}")]
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_ASSIGNMENT)]
-    public async Task<IActionResult> DeleteAssignment(int rangeId)
+    public async Task<IActionResult> DeleteAssignment([FromRoute] int rangeId)
     {
         try
         {
@@ -396,8 +396,8 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <param name="hallId">The ID of the hall.</param>
     /// <returns>Returns the RD's details if found, otherwise null.</returns>
-    [HttpGet("rd/{hallId}")]
-    public async Task<IActionResult> GetResidentRD([FromRoute] string hallId)
+    [HttpGet("rds")]
+    public async Task<IActionResult> GetResidentRD([FromQuery] string hallId)
     {
         try
         {
@@ -420,8 +420,8 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="hallId">The ID of the hall.</param>
     /// <param name="roomNumber">The resident's room number.</param>
     /// <returns>Returns the RA's details if found, otherwise null. </returns>
-    [HttpGet("ra/{hallId}/{roomNumber}")]
-    public async Task<IActionResult> GetResidentRA([FromRoute] string hallId, [FromRoute] string roomNumber)
+    [HttpGet("resident/ra")]
+    public async Task<IActionResult> GetResidentRA([FromQuery] string hallId, [FromQuery] string roomNumber)
     {
         try
         {
@@ -443,7 +443,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns>Returns a list of RA_Students containing information about each RA</returns>
     [HttpGet]
-    [Route("ra/all")]
+    [Route("ras")]
     public async Task<IActionResult> GetAllRAs()
     {
         try
@@ -467,9 +467,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="raId">The ID of the RA</param>
     /// <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
     /// <returns>True if the contact method was successfully set</returns>
-    [HttpPost("ra/contact")]
+    [HttpPost("ras/{raId}/contact")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_CONTACT_PREFERENCE)]
-    public async Task<IActionResult> SetPreferredContact([FromQuery] string raId, [FromQuery] string preferredContactMethod)
+    public async Task<IActionResult> SetPreferredContact([FromRoute] string raId, [FromQuery] string preferredContactMethod)
     {
         if (string.IsNullOrWhiteSpace(raId) || string.IsNullOrWhiteSpace(preferredContactMethod))
         {
@@ -502,9 +502,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
     /// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
     /// phone number if no preference is set.</returns>
-    [HttpGet("ra/contact/{raId}")]
+    [HttpGet("ra/{raId}/contact")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_CONTACT_PREFERENCE)]
-    public async Task<ActionResult<string>> GetRAContact(string raId)
+    public async Task<ActionResult<string>> GetRAContact([FromRoute] string raId)
     {
         try
         {
@@ -529,7 +529,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
     /// <returns>A string containing the preferred contact method (Teams or Phone).</returns>
     [HttpGet("ra/contact/preference/{raId}")]
-    public async Task<ActionResult> GetRAPrefContact(string raId)
+    public async Task<ActionResult> GetRAPrefContact([FromRoute] string raId)
     {
         try
         {
@@ -576,15 +576,15 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <summary>
     /// Checks an RA in
     /// </summary>
-    /// <param name="checkin">The viewmodel object of the RA checking in</param>
+    /// <param name="RAcheckin">The viewmodel object of the RA checking in</param>
     /// <returns>true if RA checked in successfully</returns>
-    [HttpPost("ra/checkin")]
+    [HttpPost("ras/{raId}/checkin")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RA_CHECKIN)]
-    public async Task<ActionResult<bool>> RA_Checkin([FromBody] RA_On_CallViewModel RAcheckin)
+    public async Task<ActionResult<bool>> RA_Checkin([FromRoute] string raId,[FromBody] string[] HallIDs)
     {
         try
         {
-            var checkedIn = await housingService.RA_CheckinAsync(RAcheckin);
+            var checkedIn = await housingService.RA_CheckinAsync(HallIDs, raId);
             if (checkedIn)
             {
                 return Created("RA checked in successfully.", checkedIn);
@@ -608,7 +608,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
     [HttpGet("ra/on-call/{Hall_ID}")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_ON_CALL_RA)]
-    public async Task<ActionResult<string>> GetOnCallRA(string Hall_ID)
+    public async Task<ActionResult<string>> GetOnCallRA([FromRoute] string Hall_ID)
     {
         try
         {
@@ -657,7 +657,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <param name="raId">The ID of the RA</param>
     /// <returns>True if the RA is on call, false otherwise</returns>
-    [HttpGet("is-on-call/{raId}")]
+    [HttpGet("ras/{raId}/is-on-call")]
     public async Task<IActionResult> IsRAOnCall([FromRoute] string raId)
     {
         try
@@ -673,7 +673,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     [HttpGet]
-    [Route("student/is-residential/{idNum}")]
+    [Route("students/{idNum}/is-residential")]
     public async Task<IActionResult> IsStudentResidential([FromRoute] int idNum)
     {
         try

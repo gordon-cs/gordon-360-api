@@ -383,11 +383,11 @@
             <param name="model">The ViewModel that contains the Schedule ID and RA ID</param>
             <returns>The created RA_Status_Schedule object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
+        <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(System.String,System.String[])">
             <summary>
             Checks an RA in
             </summary>
-            <param name="checkin">The viewmodel object of the RA checking in</param>
+            <param name="RAcheckin">The viewmodel object of the RA checking in</param>
             <returns>true if RA checked in successfully</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetOnCallRA(System.String)">
@@ -2062,7 +2062,7 @@
             <param name="Hall_ID">The ID of the hall</param>
             <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
+        <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(System.String[],System.String)">
             <summary>
             Checks an RA in
             </summary>
