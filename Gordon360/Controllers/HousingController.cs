@@ -239,24 +239,20 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <summary>
     /// Creates a new hall assignment range if it does not overlap with any existing ranges
     /// </summary>
-    /// <param name="model">The ViewModel that contains the hall ID and room range</param>
-    /// <returns>The created Hall_Assignment_Ranges object</returns>
+    /// <param name="assignmentRange">The ViewModel that contains the hall ID and room range</param>
+    /// <returns>The created Hall_Assignment_Range object</returns>
     [HttpPost("roomrange")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_ROOM_RANGE)]
-    public async Task<ActionResult<Hall_Assignment_Ranges>> CreateRoomRange([FromBody] HallAssignmentRangeViewModel model)
+    public async Task<ActionResult<Hall_Assignment_Ranges>> CreateRoomRange([FromBody] HallAssignmentRangeViewModel assignmentRange)
     {
         try
         {
-            var newRange = await housingService.CreateRoomRangeAsync(model);
+            var newRange = await housingService.CreateRoomRangeAsync(assignmentRange);
             return Created("Room range created successfully.", newRange);
         }
         catch (InvalidOperationException ex)
         {
             return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 
@@ -268,15 +264,8 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ROOM_RANGE)]
     public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetAllRoomRanges()
     {
-        try
-        {
-            var roomRanges = await housingService.GetAllRoomRangesAsync();
-            return Ok(roomRanges);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var roomRanges = await housingService.GetAllRoomRangesAsync();
+        return Ok(roomRanges);
     }
 
     /// <summary>
@@ -288,25 +277,14 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_ROOM_RANGE)]
     public async Task<IActionResult> DeleteRoomRange([FromRoute] int rangeId)
     {
-        try
+        var success = await housingService.DeleteRoomRangeAsync(rangeId);
+        if (success)
         {
-            var success = await housingService.DeleteRoomRangeAsync(rangeId);
-            if (success)
-            {
-                return Ok(new { message = "Room range deleted successfully." });
-            }
-            else
-            {
-                return BadRequest(new { message = "Failed to delete the room range." });
-            }
+            return Ok(new { message = "Room range deleted successfully." });
         }
-        catch (ResourceNotFoundException ex)
+        else
         {
-            return NotFound(new { message = ex.ExceptionMessage });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return BadRequest(new { message = "Failed to delete the room range." });
         }
     }
 
@@ -314,30 +292,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <summary>
     /// Assigns an RA to a room range if no RA is currently assigned
     /// </summary>
-    /// <param name="range_Id">The ID of the room range</param>
-    /// <param name="ra_Id">The ID of the RA to assign</param>
+    /// <param name="assignment">The model containging the RA and range ids</param>
     /// <returns>The created RA_Assigned_Ranges object</returns>
     [HttpPost("roomrangeassignments")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_ASSIGNMENT)]
-    public async Task<ActionResult<RA_Assigned_Ranges>> AssignRaToRoomRange([FromBody] RA_AssignmentViewModel model)
+    public async Task<ActionResult<RA_Assigned_Ranges>> AssignRaToRoomRange([FromBody] RA_AssignmentViewModel assignment)
     {
         try
         {
-            var assignedRange = await housingService.AssignRaToRoomRangeAsync(model.Range_ID, model.Ra_ID);
+            var assignedRange = await housingService.AssignRaToRoomRangeAsync(assignment.Range_ID, assignment.Ra_ID);
             return Created("RA assigned to room range successfully.", assignedRange);
         }
         catch (InvalidOperationException ex)
         {
             return BadRequest(ex.Message);
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
     }
 
     /// <summary>
-    /// Retrieves the list of all assignments.
+    /// Retrieves the list of all ra roomrange assignments.
     /// </summary>
     /// <returns>Returns a list of all assignments</returns>
     [HttpGet]
@@ -345,19 +318,12 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RA_ASSIGNMENT)]
     public async Task<IActionResult> GetRangeAssignments()
     {
-        try
+        var RangeAssignments = await housingService.GetRangeAssignmentsAsync();
+        if (RangeAssignments == null)
         {
-            var RangeAssignments = await housingService.GetRangeAssignmentsAsync();
-            if (RangeAssignments == null)
-            {
-                return NotFound("No Assigned Ranges");
-            }
-            return Ok(RangeAssignments);
+            return NotFound("No Assigned Ranges");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        return Ok(RangeAssignments);
     }
 
     /// <summary>
@@ -369,25 +335,14 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_ASSIGNMENT)]
     public async Task<IActionResult> DeleteAssignment([FromRoute] int rangeId)
     {
-        try
+        var success = await housingService.DeleteAssignmentAsync(rangeId);
+        if (success)
         {
-            var success = await housingService.DeleteAssignmentAsync(rangeId);
-            if (success)
-            {
-                return Ok(new { message = "Assigment deleted successfully." });
-            }
-            else
-            {
-                return BadRequest(new { message = "Failed to delete the Assignment." });
-            }
+            return Ok(new { message = "Assigment deleted successfully." });
         }
-        catch (ResourceNotFoundException ex)
+        else
         {
-            return NotFound(new { message = ex.ExceptionMessage });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return BadRequest(new { message = "Failed to delete the Assignment." });
         }
     }
 
@@ -399,19 +354,8 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [HttpGet("rds")]
     public async Task<IActionResult> GetResidentRD([FromQuery] string hallId)
     {
-        try
-        {
-            var rdInfo = await housingService.GetResidentRDAsync(hallId);
-            return Ok(rdInfo);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return NotFound(ex.Message); // Return 404 if no RD is found for the specified hall
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        var rdInfo = await housingService.GetResidentRDAsync(hallId);
+        return Ok(rdInfo);
     }
 
     /// <summary>
@@ -432,10 +376,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
         {
             return NotFound(ex.Message);  // Return 404 if no RA is found for the room in the specified hall
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
     }
 
     /// <summary>
@@ -446,19 +386,12 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [Route("ras")]
     public async Task<IActionResult> GetAllRAs()
     {
-        try
+        var raList = await housingService.GetAllRAsAsync();
+        if (raList == null)
         {
-            var raList = await housingService.GetAllRAsAsync();
-            if (raList == null)
-            {
-                return NotFound("No Resident Advisors found.");
-            }
-            return Ok(raList);
+            return NotFound("No Resident Advisors found.");
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        return Ok(raList);
     }
 
     /// <summary>
@@ -476,21 +409,14 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return BadRequest("RA ID and contact method are required.");
         }
 
-        try
+        var result = await housingService.SetPreferredContactMethodAsync(raId, preferredContactMethod);
+        if (result)
         {
-            var result = await housingService.SetPreferredContactMethodAsync(raId, preferredContactMethod);
-            if (result)
-            {
-                return Ok("Preferred contact method set successfully.");
-            }
-            else
-            {
-                return StatusCode(500, "An error occurred while setting the preferred contact method.");
-            }
+            return Ok("Preferred contact method set successfully.");
         }
-        catch (Exception ex)
+        else
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return StatusCode(500, "An error occurred while setting the preferred contact method.");
         }
     }
 
@@ -506,21 +432,14 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_CONTACT_PREFERENCE)]
     public async Task<ActionResult<string>> GetRAContact([FromRoute] string raId)
     {
-        try
-        {
-            var contactInfo = await housingService.GetPreferredContactAsync(raId);
+        var contactInfo = await housingService.GetPreferredContactAsync(raId);
 
-            if (string.IsNullOrEmpty(contactInfo))
-            {
-                return NotFound("RA contact information not found.");
-            }
-
-            return Ok(contactInfo);
-        }
-        catch (Exception ex)
+        if (string.IsNullOrEmpty(contactInfo))
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return NotFound("RA contact information not found.");
         }
+
+        return Ok(contactInfo);
     }
 
     /// <summary>
@@ -531,44 +450,35 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [HttpGet("ra/contact/preference/{raId}")]
     public async Task<ActionResult> GetRAPrefContact([FromRoute] string raId)
     {
-        try
-        {
-            var Preference = await housingService.GetContactPreferenceAsync(raId);
+        var Preference = await housingService.GetContactPreferenceAsync(raId);
 
-            if (Preference == null)
-            {
-                return NotFound("RA preferred contact information not found.");
-            }
-
-            return Ok(Preference);
-        }
-        catch (Exception ex)
+        if (Preference == null)
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return NotFound("RA preferred contact information not found.");
         }
+
+        return Ok(Preference);
+
     }
 
 
     /// <summary>
     /// Creates a new status event for an RA schedule
     /// </summary>
-    /// <param name="model">The ViewModel that contains the Schedule ID and RA ID</param>
+    /// <param name="Status_Sched">The ViewModel that contains the Schedule ID and RA ID</param>
+    /// <param name="raId">the id of the RA setting a status</param>
     /// <returns>The created RA_Status_Schedule object</returns>
-    [HttpPost("ra/status")]
-    public async Task<ActionResult<RA_Status_Schedule>> CreateStatus( [FromBody] RA_Status_ScheduleViewModel model )
+    [HttpPost("ras/{raId}/status")]
+    public async Task<ActionResult<RA_Status_Schedule>> CreateStatus( [FromBody] RA_Status_ScheduleViewModel Status_Sched, [FromRoute] string raId)
     {
         try
         {
-            var newStatus = await housingService.CreateStatusAsync(model);
+            var newStatus = await housingService.CreateStatusAsync(Status_Sched,raId);
             return Created("Status event created successfully.", newStatus);
         }
         catch (InvalidOperationException ex)
         {
             return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 
@@ -576,7 +486,8 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <summary>
     /// Checks an RA in
     /// </summary>
-    /// <param name="RAcheckin">The viewmodel object of the RA checking in</param>
+    /// <param name="raId">Id of the ra checking in</param>
+    ///<param name="HallIDs">The Hall(s) the RA is checking into</param>
     /// <returns>true if RA checked in successfully</returns>
     [HttpPost("ras/{raId}/checkin")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RA_CHECKIN)]
@@ -595,61 +506,43 @@ public class HousingController(CCTContext context, IProfileService profileServic
         {
             return BadRequest(ex.Message);
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
     }
 
     /// <summary>
     /// Gets the ID of the on-call RA for a specified hall.
     /// </summary>
-    /// <param name="Hall_ID">The ID of the hall</param>
+    /// <param name="hallid">The ID of the hall</param>
     /// <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
-    [HttpGet("ra/on-call/{Hall_ID}")]
+    [HttpGet("halls/{hallId}/on-call")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_ON_CALL_RA)]
-    public async Task<ActionResult<string>> GetOnCallRA([FromRoute] string Hall_ID)
+    public async Task<ActionResult<string>> GetOnCallRA([FromRoute] string hallid)
     {
-        try
-        {
-            var raId = await housingService.GetOnCallRAAsync(Hall_ID);
+        var raId = await housingService.GetOnCallRAAsync(hallid);
 
-            if (raId == null)
-            {
-                return NotFound($"No RA is currently on call for hall ID: {Hall_ID}");
-            }
-
-            return Ok(raId);
-        }
-        catch (Exception ex)
+        if (raId == null)
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return NotFound($"No RA is currently on call for selected Hall");
         }
+
+        return Ok(raId);
     }
 
     /// <summary>
     /// Gets the on-call RAs for all halls.
     /// </summary>
     /// <returns>The RAs on call</returns>
-    [HttpGet("ra/on-call/all")]
+    [HttpGet("halls/on-calls")]
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ON_CALL_RA)]
     public async Task<ActionResult<List<RA_On_Call_GetViewModel>>> GetOnCallRAAllHalls()
     {
-        try
-        {
-            var onCallRAs = await housingService.GetOnCallRAAllHallsAsync();
+        var onCallRAs = await housingService.GetOnCallRAAllHallsAsync();
 
-            if (onCallRAs == null || !onCallRAs.Any())
-            {
-                return NotFound("No RA is currently on call for any hall.");
-            }
-
-            return Ok(onCallRAs);
-        }
-        catch (Exception ex)
+        if (onCallRAs == null || !onCallRAs.Any())
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return NotFound("No RA is currently on call for any hall.");
         }
+
+        return Ok(onCallRAs);
     }
 
     /// <summary>
@@ -660,16 +553,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [HttpGet("ras/{raId}/is-on-call")]
     public async Task<IActionResult> IsRAOnCall([FromRoute] string raId)
     {
-        try
-        {
-            var isOnCall = await housingService.IsRAOnCallAsync(raId);
+        var isOnCall = await housingService.IsRAOnCallAsync(raId);
 
-            return Ok(new { IsOnCall = isOnCall });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
-        }
+        return Ok(new { IsOnCall = isOnCall });
     }
 
     [HttpGet]
@@ -684,10 +570,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
         catch (ResourceNotFoundException)
         {
             return NotFound($"Student with ID {idNum} not found.");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 

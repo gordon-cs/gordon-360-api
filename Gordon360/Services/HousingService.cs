@@ -583,14 +583,15 @@ public class HousingService(CCTContext context) : IHousingService
     /// Creates a new status event for an RA schedule
     /// </summary>
     /// <param name="model">The RA_Status_ScheduleViewModel variables</param>
+    /// <param name="raId">The ID of the ra checking in</param>
     /// <returns>The created RA_Status_Schedule object</returns>
-    public async Task<RA_Status_Schedule> CreateStatusAsync( RA_Status_ScheduleViewModel model)
+    public async Task<RA_Status_Schedule> CreateStatusAsync( RA_Status_ScheduleViewModel model, string raId)
     {
         // Create a RA_Schedule_Status object
         var newStatus = new RA_Status_Schedule
         {
             Sched_ID = model.Sched_ID,
-            Ra_ID = model.Ra_ID,
+            Ra_ID = raId,
             Status_name = model.Status_name,
             Start_time = model.Start_time,
             End_time = model.End_time,
