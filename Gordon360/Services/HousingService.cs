@@ -550,11 +550,11 @@ public class HousingService(CCTContext context) : IHousingService
         }
         // Check if there is any overlapping room ranges in the same hall
         var overlappingRange = await context.Hall_Assignment_Ranges
-            .FirstOrDefaultAsync(r => r.Hall_ID == model.Hall_ID
+            .AnyAsync(r => r.Hall_ID == model.Hall_ID
                 && ((r.Room_Start <= model.Room_Start && r.Room_End >= model.Room_Start) ||
                     (r.Room_Start <= model.Room_End && r.Room_End >= model.Room_End)));
 
-        if (overlappingRange != null)
+        if (overlappingRange)
         {
             throw new InvalidOperationException("The room range overlaps with an existing range in this hall.");
         }
@@ -1062,12 +1062,12 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>True if the student is a resident</returns>
     public async Task<bool> IsStudentResidentialAsync(int idNum)
     {
-        var student = await context.ResidentialStatus_View
+        var isRes = await context.ResidentialStatus_View
                                 .Where(s => s.Student_ID == idNum)
                                 .Select(s => s.Is_Residential)
                                 .FirstOrDefaultAsync();
 
-        return student == 1;
+        return isRes ?? false;
     }
 
 
