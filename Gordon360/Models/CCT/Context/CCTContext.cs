@@ -178,7 +178,6 @@ public partial class CCTContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("GORDON\\Ross.Clark");
 
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
