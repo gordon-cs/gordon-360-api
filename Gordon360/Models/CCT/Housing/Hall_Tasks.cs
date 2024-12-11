@@ -24,10 +24,15 @@ public partial class Hall_Tasks
     [Unicode(false)]
     public string Hall_ID { get; set; }
 
-    [Column(TypeName = "datetime")]
     public DateTime Task_Date { get; set; }
 
     public bool Is_Recurring { get; set; }
 
     public bool Is_Completed { get; set; }
+
+    public DateTime? Completed_At { get; set; }
+
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Completed_By { get; set; }
 }

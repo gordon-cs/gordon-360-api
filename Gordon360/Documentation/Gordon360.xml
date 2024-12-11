@@ -411,6 +411,13 @@
             <param name="raId">The ID of the RA</param>
             <returns>True if the RA is on call, false otherwise</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.IsStudentResidential(System.Int32)">
+            <summary>
+            Checks if a student is residential
+            </summary>
+            <param name="idNum">The ID of the student</param>
+            <returns>True if the student is a resident</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
@@ -2065,17 +2072,32 @@
             <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(System.String[],System.String)">
-            <summary>
-            Checks an RA in
-            </summary>
-            <param name="checkin">The viewmodel object of the RA checking in</param>
-            <returns>true if RA checked in successfully</returns>
+             <summary>
+             Checks an RA in
+             </summary>
+             <param name="Ra_ID">Id of the ra checking in</param>
+            <param name="Hall_IDs">The Hall(s) the RA is checking into</param>
+             <returns>true if RA checked in successfully</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAAllHallsAsync">
             <summary>
             Gets the on-call RAs for all halls.
             </summary>
             <returns>The RAs on call</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.IsRAOnCallAsync(System.String)">
+            <summary>
+            Checks if an RA is currently on call.
+            </summary>
+            <param name="raId">The ID of the RA</param>
+            <returns>True if the RA is on call, false otherwise</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.IsStudentResidentialAsync(System.Int32)">
+            <summary>
+            Checks if a student is residential
+            </summary>
+            <param name="idNum">The ID of the student</param>
+            <returns>True if the student is a resident</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>

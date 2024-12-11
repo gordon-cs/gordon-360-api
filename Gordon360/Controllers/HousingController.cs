@@ -558,6 +558,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(new { IsOnCall = isOnCall });
     }
 
+    /// <summary>
+    /// Checks if a student is residential
+    /// </summary>
+    /// <param name="idNum">The ID of the student</param>
+    /// <returns>True if the student is a resident</returns>
     [HttpGet]
     [Route("students/{idNum}/is-residential")]
     public async Task<IActionResult> IsStudentResidential([FromRoute] int idNum)

@@ -24,9 +24,7 @@ public partial class RA_On_Call
     [Unicode(false)]
     public string Ra_ID { get; set; }
 
-    [Column(TypeName = "datetime")]
     public DateTime Check_in_time { get; set; }
 
-    [Column(TypeName = "datetime")]
     public DateTime? Check_out_time { get; set; }
 }

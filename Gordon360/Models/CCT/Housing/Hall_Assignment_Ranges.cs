@@ -18,13 +18,9 @@ public partial class Hall_Assignment_Ranges
     [Unicode(false)]
     public string Hall_ID { get; set; }
 
-    [StringLength(10)]
-    [Unicode(false)]
-    public string Room_Start { get; set; }
+    public int Room_Start { get; set; }
 
-    [StringLength(10)]
-    [Unicode(false)]
-    public string Room_End { get; set; }
+    public int Room_End { get; set; }
 
     [InverseProperty("Range")]
     public virtual ICollection<RA_Assigned_Ranges> RA_Assigned_Ranges { get; set; } = new List<RA_Assigned_Ranges>();
