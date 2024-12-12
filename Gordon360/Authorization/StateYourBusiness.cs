@@ -521,7 +521,7 @@ public class StateYourBusiness : ActionFilterAttribute
             case Resource.HOUSING_CONTACT_PREFERENCE:
                 return (user_groups.Contains(AuthGroup.RA));
             case Resource.RA_CHECKIN:
-                return (user_groups.contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA));
             case Resource.ADMIN:
                 return false;
             case Resource.ERROR_LOG:
