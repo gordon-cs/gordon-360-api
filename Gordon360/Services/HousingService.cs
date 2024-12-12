@@ -11,6 +11,7 @@ using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gordon360.Services;
 
@@ -564,7 +565,8 @@ public class HousingService(CCTContext context) : IHousingService
         {
             Hall_ID = model.Hall_ID,
             Room_Start = model.Room_Start,
-            Room_End = model.Room_End
+            Room_End = model.Room_End,
+            Assigned_RA = null
         };
 
         // Add to the context and save changes
@@ -616,16 +618,6 @@ public class HousingService(CCTContext context) : IHousingService
             throw new ResourceNotFoundException() { ExceptionMessage = "Room range not found." };
         }
 
-        // Check if the room range is assigned to an RA
-        var isAssignedToRA = await context.RA_Assigned_Ranges
-                                          .AnyAsync(a => a.Range_ID == rangeId);
-
-        if (isAssignedToRA)
-        {
-            throw new InvalidOperationException("Cannot delete room range because it is currently assigned to an RA.");
-        }
-
-        // Proceed to remove the room range
         context.Hall_Assignment_Ranges.Remove(roomRange);
 
         await context.SaveChangesAsync();
@@ -640,29 +632,23 @@ public class HousingService(CCTContext context) : IHousingService
     /// <param name="rangeId">The ID of the room range</param>
     /// <param name="raId">The ID of the RA to assign</param>
     /// <returns>The created RA_Assigned_Ranges object</returns>
-    public async Task<RA_Assigned_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId)
+    public async Task<Hall_Assignment_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId)
     {
         // Check if a different RA is already assigned to the range
-        var existingAssignment = await context.RA_Assigned_Ranges
-            .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
+        var existingAssignment = await context.Hall_Assignment_Ranges
+            .Where(r => r.Range_ID == rangeId).FirstOrDefaultAsync();
 
-        if (existingAssignment != null)
+        if (existingAssignment.Assigned_RA != null)
         {
             throw new InvalidOperationException("This room range already has an RA assigned.");
         }
 
         // Create the new RA assignment
-        var newAssignment = new RA_Assigned_Ranges
-        {
-            Range_ID = rangeId,
-            Ra_ID = raId
-        };
+        existingAssignment.Assigned_RA = raId;
 
-        // Add the assignment to the database
-        context.RA_Assigned_Ranges.Add(newAssignment);
         await context.SaveChangesAsync();
 
-        return newAssignment;
+        return existingAssignment;
     }
 
     /// <summary>
@@ -673,7 +659,7 @@ public class HousingService(CCTContext context) : IHousingService
     public async Task<bool> DeleteAssignmentAsync(int rangeId)
     {
         // Find the assignment by range id
-        var Assigment = await context.RA_Assigned_Ranges
+        var Assigment = await context.Hall_Assignment_Ranges
                                     .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
 
         if (Assigment == null)
@@ -681,7 +667,7 @@ public class HousingService(CCTContext context) : IHousingService
             throw new ResourceNotFoundException() { ExceptionMessage = "Assignment not found." };
         }
 
-        context.RA_Assigned_Ranges.Remove(Assigment);
+        Assigment.Assigned_RA = null;
 
         await context.SaveChangesAsync();
 
@@ -736,9 +722,9 @@ public class HousingService(CCTContext context) : IHousingService
         }
 
         // Find the RA assigned to that room range
-        var assignedRAID = await context.RA_Assigned_Ranges
+        var assignedRAID = await context.Hall_Assignment_Ranges
             .Where(ra => ra.Range_ID == roomRange.Range_ID)
-            .Select(ra => ra.Ra_ID)
+            .Select(ra => ra.Assigned_RA)
             .FirstOrDefaultAsync();
 
         if (assignedRAID == null)

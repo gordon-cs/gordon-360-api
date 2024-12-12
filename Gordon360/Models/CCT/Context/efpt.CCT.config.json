@@ -83,10 +83,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[RA_Assigned_Ranges]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[Housing].[RA_On_Call]",
          "ObjectType": 0
       },

@@ -296,7 +296,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns>The created RA_Assigned_Ranges object</returns>
     [HttpPost("roomrangeassignments")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_ASSIGNMENT)]
-    public async Task<ActionResult<RA_Assigned_Ranges>> AssignRaToRoomRange([FromBody] RA_AssignmentViewModel assignment)
+    public async Task<ActionResult<Hall_Assignment_Ranges>> AssignRaToRoomRange([FromBody] RA_AssignmentViewModel assignment)
     {
         try
         {

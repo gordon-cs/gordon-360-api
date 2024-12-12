@@ -116,8 +116,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<PrivType> PrivType { get; set; }
 
-    public virtual DbSet<RA_Assigned_Ranges> RA_Assigned_Ranges { get; set; }
-
     public virtual DbSet<RA_Assigned_Ranges_View> RA_Assigned_Ranges_View { get; set; }
 
     public virtual DbSet<RA_On_Call> RA_On_Call { get; set; }
@@ -178,7 +176,7 @@ public partial class CCTContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
+ 
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
             entity.ToView("ACCOUNT", "dbo");
@@ -534,15 +532,6 @@ public partial class CCTContext : DbContext
 
             entity.Property(e => e.Hall).IsFixedLength();
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
-        });
-
-        modelBuilder.Entity<RA_Assigned_Ranges>(entity =>
-        {
-            entity.HasKey(e => new { e.Range_ID, e.Ra_ID }).HasName("PK__tmp_ms_x__48DB2FD19ADEAB8F");
-
-            entity.HasOne(d => d.Range).WithMany(p => p.RA_Assigned_Ranges)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_Assign__Range__48E5AC6E");
         });
 
         modelBuilder.Entity<RA_Assigned_Ranges_View>(entity =>

@@ -22,6 +22,7 @@ public partial class Hall_Assignment_Ranges
 
     public int Room_End { get; set; }
 
-    [InverseProperty("Range")]
-    public virtual ICollection<RA_Assigned_Ranges> RA_Assigned_Ranges { get; set; } = new List<RA_Assigned_Ranges>();
+    [StringLength(10)]
+    [Unicode(false)]
+    public string Assigned_RA { get; set; }
 }
