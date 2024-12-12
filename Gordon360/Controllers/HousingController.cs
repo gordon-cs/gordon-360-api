@@ -426,8 +426,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
     /// </summary>
     /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
-    /// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
-    /// phone number if no preference is set.</returns>
+    /// <returns>An object containing the RAiD, preferred method, and the actual contact.</returns>
     [HttpGet("ra/{raId}/contact")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_CONTACT_PREFERENCE)]
     public async Task<ActionResult<RA_ContactPreference>> GetRAContact([FromRoute] string raId)
@@ -490,11 +489,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Gets the ID of the on-call RA for a specified hall.
+    /// Gets the on-call RA for a specified hall.
     /// </summary>
     /// <param name="hallid">The ID of the hall</param>
-    /// <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
-    [HttpGet("halls/{hallId}/on-call")]
+    /// <returns> the on-call RA's details, or a 404 if no RA is on call</returns>
+    [HttpGet("halls/{hallid}/on-call")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_ON_CALL_RA)]
     public async Task<ActionResult<string>> GetOnCallRA([FromRoute] string hallid)
     {
@@ -511,7 +510,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <summary>
     /// Gets the on-call RAs for all halls.
     /// </summary>
-    /// <returns>The RAs on call</returns>
+    /// <returns>The RAs on call with their details</returns>
     [HttpGet("halls/on-calls")]
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ON_CALL_RA)]
     public async Task<ActionResult<List<RA_On_Call_GetViewModel>>> GetOnCallRAAllHalls()

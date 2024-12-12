@@ -937,8 +937,8 @@ public class HousingService(CCTContext context) : IHousingService
                 Check_in_time = ra.Check_in_time,
                 RD_Email = ra.RD_Email,
                 RD_Name = ra.RD_Name,
-                RA_Profile_Link = ra.RA_Profile_Link,
-                RD_Profile_Link = ra.RD_Profile_Link,
+                RA_UserName = ra.RA_UserName,
+                RD_UserName = ra.RD_UserName,
                 RA_Photo = ra.RA_Photo
             })
             .FirstOrDefaultAsync();
@@ -998,8 +998,8 @@ public class HousingService(CCTContext context) : IHousingService
                     PreferredContact = oncall.PreferredContact,
                     Check_in_time = oncall.Check_in_time,
                     RD_Email = oncall.RD_Email,
-                    RA_Profile_Link = oncall.RA_Profile_Link,
-                    RD_Profile_Link = oncall.RD_Profile_Link,
+                    RA_UserName = oncall.RA_UserName,
+                    RD_UserName = oncall.RD_UserName,
                     RD_Name = oncall.RD_Name,
                     RA_Photo = oncall.RA_Photo
                 })

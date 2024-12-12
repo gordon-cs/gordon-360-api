@@ -176,7 +176,7 @@ public partial class CCTContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
- 
+
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
             entity.ToView("ACCOUNT", "dbo");
