@@ -17,7 +17,7 @@ public enum AuthGroup
     RA,
     RD,
     HallInfoViewer,
-    HousingDeveloper //Remove before deployment
+    HousingDeveloper, //Remove before deployment
     LostAndFoundAdmin,
     LostAndFoundAssist,
     LostAndFoundDevelopers,
