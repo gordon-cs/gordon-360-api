@@ -18,6 +18,9 @@ public enum AuthGroup
     RD,
     HallInfoViewer,
     HousingDeveloper //Remove before deployment
+    LostAndFoundAdmin,
+    LostAndFoundAssist,
+    LostAndFoundDevelopers,
 }
 
 public static class AuthGroupEnum
@@ -40,7 +43,9 @@ public static class AuthGroupEnum
         "360-HallInfoViewer-SG" => AuthGroup.HallInfoViewer,
         "360-ResidentDirector" => AuthGroup.RD,
         "360-HousingDevelopers-SG" => AuthGroup.HousingDeveloper,
-
+        "360-LostAndFoundAdmins-SG" => AuthGroup.LostAndFoundAdmin,
+        "360-LostAndFoundAssist-SG" => AuthGroup.LostAndFoundAssist,
+        "360-LostAndFound-Developers-SG" => AuthGroup.LostAndFoundDevelopers,
         _ => null
     };
 }
