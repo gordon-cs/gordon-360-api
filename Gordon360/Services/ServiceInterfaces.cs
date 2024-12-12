@@ -4,6 +4,7 @@ using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -225,6 +226,19 @@ namespace Gordon360.Services
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
     }
+
+    public interface ILostAndFoundService
+    {
+        public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
+        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
+        IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
+        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username);
+        Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
+        Task UpdateReportStatusAsync(int id, string status, string username);
+        MissingItemReportViewModel? GetMissingItem(int id, string username);
+        IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false, bool elevatedPermissions = false);
+    }
+
 
     public interface IAcademicCheckInService
     {

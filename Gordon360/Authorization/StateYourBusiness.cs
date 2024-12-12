@@ -402,6 +402,8 @@ public class StateYourBusiness : ActionFilterAttribute
                 return user_groups.Contains(AuthGroup.NewsAdmin);
             case Resource.RECIM:
                 return _recimParticipantService.IsAdmin(user_name);
+            case Resource.LOST_AND_FOUND_MISSING_REPORT:
+                    return (user_groups.Contains(AuthGroup.LostAndFoundAdmin) || user_groups.Contains(AuthGroup.LostAndFoundDevelopers));
             default: return false;
         }
     }

@@ -42,11 +42,14 @@ public class AuthUtils
         {
             return Enumerable.Empty<AuthGroup>();
         }
-
-        return user.GetAuthorizationGroups()
-                           .Where(g => g is GroupPrincipal)
+        try {
+            return user.GetAuthorizationGroups().Where(g => g is GroupPrincipal)
                            .Select(g => AuthGroupEnum.FromString(g.SamAccountName))
                            .OfType<AuthGroup>();
+        }
+        catch (NoMatchingPrincipalException)
+        {
+            return Enumerable.Empty<AuthGroup>();
+        }
     }
 }
-
