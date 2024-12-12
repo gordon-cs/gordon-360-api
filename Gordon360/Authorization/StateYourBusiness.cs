@@ -520,6 +520,8 @@ public class StateYourBusiness : ActionFilterAttribute
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
             case Resource.HOUSING_CONTACT_PREFERENCE:
                 return (user_groups.Contains(AuthGroup.RA));
+            case Resource.RA_CHECKIN:
+                return (user_groups.contains(AuthGroup.RA));
             case Resource.ADMIN:
                 return false;
             case Resource.ERROR_LOG:
