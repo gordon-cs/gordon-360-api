@@ -22,5 +22,5 @@ public partial class ResidentialStatus_View
     [Unicode(false)]
     public string Residency_Status { get; set; }
 
-    public int Is_Residential { get; set; }
+    public bool? Is_Residential { get; set; }
 }

@@ -83,10 +83,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[RA_Assigned_Ranges]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[Housing].[RA_On_Call]",
          "ObjectType": 0
       },
@@ -420,6 +416,7 @@
    "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
+   "UseDatabaseNamesForRoutines": true,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
@@ -438,5 +435,6 @@
    "UseSchemaFolders": true,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
-   "UseT4": false
+   "UseT4": false,
+   "UseT4Split": false
 }

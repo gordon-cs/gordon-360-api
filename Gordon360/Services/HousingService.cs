@@ -11,6 +11,8 @@ using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Services;
 
@@ -542,24 +544,19 @@ public class HousingService(CCTContext context) : IHousingService
     public async Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model)
     {
 
-        // Room_Start and Room_End are integers
-        if (!int.TryParse(model.Room_Start, out int roomStart) || !int.TryParse(model.Room_End, out int roomEnd))
-        {
-            throw new ArgumentException("Room_Start and Room_End must be integers.");
-        }
 
         // Check if Room_End is greater than Room_Start
-        if (roomEnd <= roomStart)
+        if (model.Room_End <= model.Room_Start)
         {
-            throw new ArgumentException("Room_End must be greater than Room_Start.");
+            throw new BadInputException() { ExceptionMessage = "Room_End must be greater than Room_Start." };
         }
         // Check if there is any overlapping room ranges in the same hall
         var overlappingRange = await context.Hall_Assignment_Ranges
-            .FirstOrDefaultAsync(r => r.Hall_ID == model.Hall_ID
-                && ((string.Compare(r.Room_Start, model.Room_Start) <= 0 && string.Compare(r.Room_End, model.Room_Start) >= 0) ||
-                    (string.Compare(r.Room_Start, model.Room_End) <= 0 && string.Compare(r.Room_End, model.Room_End) >= 0)));
+            .AnyAsync(r => r.Hall_ID == model.Hall_ID
+                && ((r.Room_Start <= model.Room_Start && r.Room_End >= model.Room_Start) ||
+                    (r.Room_Start <= model.Room_End && r.Room_End >= model.Room_End)));
 
-        if (overlappingRange != null)
+        if (overlappingRange)
         {
             throw new InvalidOperationException("The room range overlaps with an existing range in this hall.");
         }
@@ -569,7 +566,8 @@ public class HousingService(CCTContext context) : IHousingService
         {
             Hall_ID = model.Hall_ID,
             Room_Start = model.Room_Start,
-            Room_End = model.Room_End
+            Room_End = model.Room_End,
+            Assigned_RA = null
         };
 
         // Add to the context and save changes
@@ -583,14 +581,15 @@ public class HousingService(CCTContext context) : IHousingService
     /// Creates a new status event for an RA schedule
     /// </summary>
     /// <param name="model">The RA_Status_ScheduleViewModel variables</param>
+    /// <param name="raId">The ID of the ra checking in</param>
     /// <returns>The created RA_Status_Schedule object</returns>
-    public async Task<RA_Status_Schedule> CreateStatusAsync( RA_Status_ScheduleViewModel model)
+    public async Task<RA_Status_Schedule> CreateStatusAsync( RA_Status_ScheduleViewModel model, string raId)
     {
         // Create a RA_Schedule_Status object
         var newStatus = new RA_Status_Schedule
         {
             Sched_ID = model.Sched_ID,
-            Ra_ID = model.Ra_ID,
+            Ra_ID = raId,
             Status_name = model.Status_name,
             Start_time = model.Start_time,
             End_time = model.End_time,
@@ -612,24 +611,14 @@ public class HousingService(CCTContext context) : IHousingService
     public async Task<bool> DeleteRoomRangeAsync(int rangeId)
     {
         // Find the room range by ID
-        var roomRange = await context.Hall_Assignment_Ranges
-                                     .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
+        var roomRange = await context.Hall_Assignment_Ranges.FindAsync(rangeId);
+
 
         if (roomRange == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "Room range not found." };
         }
 
-        // Check if the room range is assigned to an RA
-        var isAssignedToRA = await context.RA_Assigned_Ranges
-                                          .AnyAsync(a => a.Range_ID == rangeId);
-
-        if (isAssignedToRA)
-        {
-            throw new InvalidOperationException("Cannot delete room range because it is currently assigned to an RA.");
-        }
-
-        // Proceed to remove the room range
         context.Hall_Assignment_Ranges.Remove(roomRange);
 
         await context.SaveChangesAsync();
@@ -644,29 +633,23 @@ public class HousingService(CCTContext context) : IHousingService
     /// <param name="rangeId">The ID of the room range</param>
     /// <param name="raId">The ID of the RA to assign</param>
     /// <returns>The created RA_Assigned_Ranges object</returns>
-    public async Task<RA_Assigned_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId)
+    public async Task<Hall_Assignment_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId)
     {
         // Check if a different RA is already assigned to the range
-        var existingAssignment = await context.RA_Assigned_Ranges
-            .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
+        var existingAssignment = await context.Hall_Assignment_Ranges
+            .Where(r => r.Range_ID == rangeId).FirstOrDefaultAsync();
 
-        if (existingAssignment != null)
+        if (existingAssignment.Assigned_RA != null)
         {
             throw new InvalidOperationException("This room range already has an RA assigned.");
         }
 
         // Create the new RA assignment
-        var newAssignment = new RA_Assigned_Ranges
-        {
-            Range_ID = rangeId,
-            Ra_ID = raId
-        };
+        existingAssignment.Assigned_RA = raId;
 
-        // Add the assignment to the database
-        context.RA_Assigned_Ranges.Add(newAssignment);
         await context.SaveChangesAsync();
 
-        return newAssignment;
+        return existingAssignment;
     }
 
     /// <summary>
@@ -677,7 +660,7 @@ public class HousingService(CCTContext context) : IHousingService
     public async Task<bool> DeleteAssignmentAsync(int rangeId)
     {
         // Find the assignment by range id
-        var Assigment = await context.RA_Assigned_Ranges
+        var Assigment = await context.Hall_Assignment_Ranges
                                     .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
 
         if (Assigment == null)
@@ -685,7 +668,7 @@ public class HousingService(CCTContext context) : IHousingService
             throw new ResourceNotFoundException() { ExceptionMessage = "Assignment not found." };
         }
 
-        context.RA_Assigned_Ranges.Remove(Assigment);
+        Assigment.Assigned_RA = null;
 
         await context.SaveChangesAsync();
 
@@ -731,8 +714,8 @@ public class HousingService(CCTContext context) : IHousingService
         // Query the room range within the specified hall that contains the room number
         var roomRange = await context.Hall_Assignment_Ranges
             .FirstOrDefaultAsync(r => r.Hall_ID == hallId
-                && string.Compare(r.Room_Start, roomNumber) <= 0
-                && string.Compare(r.Room_End, roomNumber) >= 0);
+                && r.Room_Start <= int.Parse(roomNumber)
+                && r.Room_End >= int.Parse(roomNumber));
 
         if (roomRange == null)
         {
@@ -740,9 +723,9 @@ public class HousingService(CCTContext context) : IHousingService
         }
 
         // Find the RA assigned to that room range
-        var assignedRAID = await context.RA_Assigned_Ranges
+        var assignedRAID = await context.Hall_Assignment_Ranges
             .Where(ra => ra.Range_ID == roomRange.Range_ID)
-            .Select(ra => ra.Ra_ID)
+            .Select(ra => ra.Assigned_RA)
             .FirstOrDefaultAsync();
 
         if (assignedRAID == null)
@@ -772,11 +755,10 @@ public class HousingService(CCTContext context) : IHousingService
             throw new InvalidOperationException("RA details could not be retrieved.");
         }
 
-        // Fetch the preferred contact method for the RA
+        // Fetch and include the preferred contact method for the RA
         var preferredContact = await GetPreferredContactAsync(assignedRA.ID);
 
-        // Include the preferred contact in the returned model
-        assignedRA.PreferredContact = preferredContact;
+        assignedRA.PreferredContact = preferredContact.Contact;
 
         return assignedRA;
     }
@@ -867,7 +849,7 @@ public class HousingService(CCTContext context) : IHousingService
         else
         {
             // Create a new preference using the CCT entity
-            await context.RA_Pref_Contact.AddAsync(new RA_Pref_Contact
+            context.RA_Pref_Contact.Add(new RA_Pref_Contact
             {
                 Ra_ID = raId,
                 Pref_contact = preferredContactMethod
@@ -887,74 +869,55 @@ public class HousingService(CCTContext context) : IHousingService
     /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
     /// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
     /// phone number if no preference is set.</returns>
-    public async Task<string> GetPreferredContactAsync(string raId)
-    {
-    // Check if there is a preferred contact method for the given RA
-    var contactPreference = await context.RA_Pref_Contact
-        .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
-
-    if (contactPreference != null)
-    {
-        // Determine the preferred method and get corresponding contact info
-        if (contactPreference.Pref_contact == "phone")
-        {
-            // Fetch RA's phone number from the RA_Students table
-            var ra = await context.RA_Students
-                .FirstOrDefaultAsync(r => r.ID == raId);
-
-            return ra?.PhoneNumber ?? "Phone number not found";
-        }
-        else if (contactPreference.Pref_contact == "teams")
-        {
-            // Fetch RA's email from the RA_Students table
-            var ra = await context.RA_Students
-                .FirstOrDefaultAsync(r => r.ID == raId);
-
-            if (ra?.Email != null)
-            {
-                // Generate Teams link using the email
-                return $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}";
-            }
-            else
-            {
-                return "Email not found";
-            }
-        }
-    }
-
-        // If no preference exists, return the phone number by default
-        var defaultContact = await context.RA_Students
-            .FirstOrDefaultAsync(r => r.ID == raId);
-    
-        return defaultContact?.PhoneNumber ?? "Default phone number not found";
-    }
-
-    /// <summary>
-    /// Retrieves the preferred contact method for an RA based on their contact preference.
-    /// </summary>
-    /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
-    /// <returns>An object containing the preferred contact method (Teams or Phone).</returns>
-    public async Task<object> GetContactPreferenceAsync(string raId)
+    public async Task<RA_ContactPreference> GetPreferredContactAsync(string raId)
     {
         // Check if there is a preferred contact method for the given RA
         var contactPreference = await context.RA_Pref_Contact
             .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
 
-        if (contactPreference != null)
-        {
-            return new
-            {
-                PreferredContact = contactPreference.Pref_contact
-            };
-        }
+        //find ra by id
+        var ra = await context.RA_Students
+                    .FirstOrDefaultAsync(r => r.ID == raId);
 
-        // If no preference exists, return phone default as default method
-        return new
+        // default contact to be phone
+        var Contact = new RA_ContactPreference
         {
-            PreferredContact = "phone"
+            Ra_ID = raId,
+            PreferredContactMethod = "phone",
+            Contact = ra?.PhoneNumber ?? "Phone number not found"
         };
 
+
+        if (contactPreference != null)
+        {
+            // Determine the preferred method and get corresponding contact info
+            if (contactPreference.Pref_contact == "phone")
+            {
+                    return Contact;
+            }
+            else if (contactPreference.Pref_contact == "teams")
+            {
+                // Fetch RA's email from the RA_Students table
+
+                if (ra?.Email != null)
+                {
+                    // Generate Teams link using the email
+                    Contact = new RA_ContactPreference
+                    {
+                        Ra_ID = raId,
+                        PreferredContactMethod = "teams",
+                        Contact = $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}"
+                    };
+
+                    return Contact; //unable to generate teams link, default to phone
+                }
+            }
+        }
+
+            // If no preference exists, return the phone number by default
+            return Contact;
     }
+
 
     /// <summary>
     /// Gets the on-call RA's ID for specified hall.
@@ -963,21 +926,21 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
     public async Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string Hall_ID)
     {
-        var onCallRA = await context.Current_On_Call  // Use your updated view name here
+        var onCallRA = await context.Current_On_Call 
             .Where(ra => ra.Hall_ID == Hall_ID)  // Filter by Hall_ID and only active check-ins
             .Select(ra => new RA_On_Call_GetViewModel
             {
-                Hall_ID = ra.Hall_ID,                          // Hall ID
-                Hall_Name = ra.Hall_Name,                     // Hall name
-                RoomNumber = ra.RoomNumber,                  // RA's room number
-                RA_Name = ra.RA_Name,                       // RA's full name
-                PreferredContact = ra.PreferredContact,    // Preferred contact method
-                Check_in_time = ra.Check_in_time,         // Check-in time
-                RD_Email = ra.RD_Email,                  // RD's email
-                RD_Name = ra.RD_Name,                   // RD's name
-                RA_Profile_Link = ra.RA_Profile_Link,  // RA's profile link
-                RD_Profile_Link = ra.RD_Profile_Link, // RD's profile link
-                RA_Photo = ra.RA_Photo               // RA's Photo URL
+                Hall_ID = ra.Hall_ID,
+                Hall_Name = ra.Hall_Name,
+                RoomNumber = ra.RoomNumber,
+                RA_Name = ra.RA_Name,
+                PreferredContact = ra.PreferredContact,
+                Check_in_time = ra.Check_in_time,
+                RD_Email = ra.RD_Email,
+                RD_Name = ra.RD_Name,
+                RA_UserName = ra.RA_UserName,
+                RD_UserName = ra.RD_UserName,
+                RA_Photo = ra.RA_Photo
             })
             .FirstOrDefaultAsync();
 
@@ -987,11 +950,12 @@ public class HousingService(CCTContext context) : IHousingService
     /// <summary>
     /// Checks an RA in
     /// </summary>
-    /// <param name="checkin">The viewmodel object of the RA checking in</param>
+    /// <param name="Ra_ID">Id of the ra checking in</param>
+    ///<param name="Hall_IDs">The Hall(s) the RA is checking into</param>
     /// <returns>true if RA checked in successfully</returns>
-    public async Task<bool> RA_CheckinAsync(RA_On_CallViewModel checkin)
+    public async Task<bool> RA_CheckinAsync(string[] Hall_IDs, string Ra_ID)
     {
-        foreach (string hallId in checkin.Hall_ID)
+        foreach (string hallId in Hall_IDs)
         {
             // Check if there is an existing RA checked into this hall without an end time
             var existingRA = await context.RA_On_Call
@@ -1008,12 +972,12 @@ public class HousingService(CCTContext context) : IHousingService
             // Add the new RA check-in record with no check-out time
             var newCheckin = new RA_On_Call
             {
-                Ra_ID = checkin.Ra_ID,
+                Ra_ID = Ra_ID,
                 Hall_ID = hallId,
                 Check_in_time = DateTime.Now,
                 Check_out_time = null // RA has an active checkin
             };
-            await context.RA_On_Call.AddAsync(newCheckin);
+            context.RA_On_Call.Add(newCheckin);
         }
 
         await context.SaveChangesAsync();
@@ -1026,17 +990,17 @@ public class HousingService(CCTContext context) : IHousingService
         /// <returns>The RAs on call</returns>
         public async Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync()
         {
-            var onCallRAs = await context.Current_On_Call  // Use your updated view name here
+            var onCallRAs = await context.Current_On_Call
                 .Select(oncall => new RA_On_Call_GetViewModel
                 {
                     Hall_ID = oncall.Hall_ID,
-                    Hall_Name = oncall.Hall_Name,  // Hall name
-                    RA_Name = oncall.RA_Name,  // RA's full name
-                    PreferredContact = oncall.PreferredContact,  // Preferred contact method
-                    Check_in_time = oncall.Check_in_time,  // Check-in time
-                    RD_Email = oncall.RD_Email,  // RD's email
-                    RA_Profile_Link = oncall.RA_Profile_Link,  // RA's profile link
-                    RD_Profile_Link = oncall.RD_Profile_Link,  // RD's profile link
+                    Hall_Name = oncall.Hall_Name,
+                    RA_Name = oncall.RA_Name,
+                    PreferredContact = oncall.PreferredContact,
+                    Check_in_time = oncall.Check_in_time,
+                    RD_Email = oncall.RD_Email,
+                    RA_UserName = oncall.RA_UserName,
+                    RD_UserName = oncall.RD_UserName,
                     RD_Name = oncall.RD_Name,
                     RA_Photo = oncall.RA_Photo
                 })
@@ -1046,7 +1010,11 @@ public class HousingService(CCTContext context) : IHousingService
         }
 
 
-
+    /// <summary>
+    /// Checks if an RA is currently on call.
+    /// </summary>
+    /// <param name="raId">The ID of the RA</param>
+    /// <returns>True if the RA is on call, false otherwise</returns>
     public async Task<bool> IsRAOnCallAsync(string raId)
     {
         // Check if the RA is currently on call
@@ -1055,22 +1023,19 @@ public class HousingService(CCTContext context) : IHousingService
 
         return isOnCall;
     }
-
+    /// <summary>
+    /// Checks if a student is residential
+    /// </summary>
+    /// <param name="idNum">The ID of the student</param>
+    /// <returns>True if the student is a resident</returns>
     public async Task<bool> IsStudentResidentialAsync(int idNum)
     {
-        var student = await Task.FromResult(
-            context.ResidentialStatus_View
-                    .Where(s => s.Student_ID == idNum)
-                    .Select(s => s.Is_Residential)
-                    .FirstOrDefault()
-        );
+        var isRes = await context.ResidentialStatus_View
+                                .Where(s => s.Student_ID == idNum)
+                                .Select(s => s.Is_Residential)
+                                .FirstOrDefaultAsync();
 
-        if (student == null)
-        {
-            throw new InvalidOperationException("Student details could not be retrieved.");
-        }
-
-        return student == 1;
+        return isRes ?? false;
     }
 
 

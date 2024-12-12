@@ -29,13 +29,9 @@ public partial class RA_Assigned_Ranges_View
     [Unicode(false)]
     public string Hall_Name { get; set; }
 
-    [StringLength(10)]
-    [Unicode(false)]
-    public string Room_Start { get; set; }
+    public int Room_Start { get; set; }
 
-    [StringLength(10)]
-    [Unicode(false)]
-    public string Room_End { get; set; }
+    public int Room_End { get; set; }
 
     [StringLength(10)]
     [Unicode(false)]

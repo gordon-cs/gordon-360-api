@@ -293,8 +293,8 @@
             <summary>
             Creates a new hall assignment range if it does not overlap with any existing ranges
             </summary>
-            <param name="model">The ViewModel that contains the hall ID and room range</param>
-            <returns>The created Hall_Assignment_Ranges object</returns>
+            <param name="assignmentRange">The ViewModel that contains the hall ID and room range</param>
+            <returns>The created Hall_Assignment_Range object</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetAllRoomRanges">
             <summary>
@@ -313,13 +313,12 @@
             <summary>
             Assigns an RA to a room range if no RA is currently assigned
             </summary>
-            <param name="range_Id">The ID of the room range</param>
-            <param name="ra_Id">The ID of the RA to assign</param>
+            <param name="assignment">The model containging the RA and range ids</param>
             <returns>The created RA_Assigned_Ranges object</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetRangeAssignments">
             <summary>
-            Retrieves the list of all assignments.
+            Retrieves the list of all ra roomrange assignments.
             </summary>
             <returns>Returns a list of all assignments</returns>
         </member>
@@ -366,42 +365,36 @@
             with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
             </summary>
             <param name="raId">The ID of the RA whose contact information is being requested.</param>
-            <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
-            phone number if no preference is set.</returns>
+            <returns>An object containing the RAiD, preferred method, and the actual contact.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetRAPrefContact(System.String)">
-            <summary>
-            Retrieves the preferred contact method for an RA based on their contact preference.
-            </summary>
-            <param name="raId">The ID of the RA whose contact information is being requested.</param>
-            <returns>A string containing the preferred contact method (Teams or Phone).</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel)">
+        <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel,System.String)">
             <summary>
             Creates a new status event for an RA schedule
             </summary>
-            <param name="model">The ViewModel that contains the Schedule ID and RA ID</param>
+            <param name="Status_Sched">The ViewModel that contains the Schedule ID and RA ID</param>
+            <param name="raId">the id of the RA setting a status</param>
             <returns>The created RA_Status_Schedule object</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
-            <summary>
-            Checks an RA in
-            </summary>
-            <param name="checkin">The viewmodel object of the RA checking in</param>
-            <returns>true if RA checked in successfully</returns>
+        <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(System.String,System.String[])">
+             <summary>
+             Checks an RA in
+             </summary>
+             <param name="raId">Id of the ra checking in</param>
+            <param name="HallIDs">The Hall(s) the RA is checking into</param>
+             <returns>true if RA checked in successfully</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetOnCallRA(System.String)">
             <summary>
-            Gets the ID of the on-call RA for a specified hall.
+            Gets the on-call RA for a specified hall.
             </summary>
-            <param name="Hall_ID">The ID of the hall</param>
-            <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
+            <param name="hallid">The ID of the hall</param>
+            <returns> the on-call RA's details, or a 404 if no RA is on call</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetOnCallRAAllHalls">
             <summary>
             Gets the on-call RAs for all halls.
             </summary>
-            <returns>The RAs on call</returns>
+            <returns>The RAs on call with their details</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.IsRAOnCall(System.String)">
             <summary>
@@ -409,6 +402,13 @@
             </summary>
             <param name="raId">The ID of the RA</param>
             <returns>True if the RA is on call, false otherwise</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.IsStudentResidential(System.Int32)">
+            <summary>
+            Checks if a student is residential
+            </summary>
+            <param name="idNum">The ID of the student</param>
+            <returns>True if the student is a resident</returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
@@ -1968,11 +1968,12 @@
             <param name="model">The ViewModel that contains the hall ID and room range</param>
             <returns>The created Hall_Assignment_Ranges object</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.CreateStatusAsync(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel)">
+        <member name="M:Gordon360.Services.HousingService.CreateStatusAsync(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel,System.String)">
             <summary>
             Creates a new status event for an RA schedule
             </summary>
             <param name="model">The RA_Status_ScheduleViewModel variables</param>
+            <param name="raId">The ID of the ra checking in</param>
             <returns>The created RA_Status_Schedule object</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.DeleteRoomRangeAsync(System.Int32)">
@@ -2048,13 +2049,6 @@
             <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
             phone number if no preference is set.</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetContactPreferenceAsync(System.String)">
-            <summary>
-            Retrieves the preferred contact method for an RA based on their contact preference.
-            </summary>
-            <param name="raId">The ID of the RA whose contact information is being requested.</param>
-            <returns>An object containing the preferred contact method (Teams or Phone).</returns>
-        </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAAsync(System.String)">
             <summary>
             Gets the on-call RA's ID for specified hall.
@@ -2062,18 +2056,33 @@
             <param name="Hall_ID">The ID of the hall</param>
             <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(Gordon360.Models.ViewModels.RA_On_CallViewModel)">
-            <summary>
-            Checks an RA in
-            </summary>
-            <param name="checkin">The viewmodel object of the RA checking in</param>
-            <returns>true if RA checked in successfully</returns>
+        <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(System.String[],System.String)">
+             <summary>
+             Checks an RA in
+             </summary>
+             <param name="Ra_ID">Id of the ra checking in</param>
+            <param name="Hall_IDs">The Hall(s) the RA is checking into</param>
+             <returns>true if RA checked in successfully</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAAllHallsAsync">
             <summary>
             Gets the on-call RAs for all halls.
             </summary>
             <returns>The RAs on call</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.IsRAOnCallAsync(System.String)">
+            <summary>
+            Checks if an RA is currently on call.
+            </summary>
+            <param name="raId">The ID of the RA</param>
+            <returns>True if the RA is on call, false otherwise</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.IsStudentResidentialAsync(System.Int32)">
+            <summary>
+            Checks if a student is residential
+            </summary>
+            <param name="idNum">The ID of the student</param>
+            <returns>True if the student is a resident</returns>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
