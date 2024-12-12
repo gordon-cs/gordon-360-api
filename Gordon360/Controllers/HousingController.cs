@@ -430,35 +430,16 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// phone number if no preference is set.</returns>
     [HttpGet("ra/{raId}/contact")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_CONTACT_PREFERENCE)]
-    public async Task<ActionResult<string>> GetRAContact([FromRoute] string raId)
+    public async Task<ActionResult<RA_ContactPreference>> GetRAContact([FromRoute] string raId)
     {
         var contactInfo = await housingService.GetPreferredContactAsync(raId);
 
-        if (string.IsNullOrEmpty(contactInfo))
+        if (contactInfo.Contact == null)
         {
             return NotFound("RA contact information not found.");
         }
 
         return Ok(contactInfo);
-    }
-
-    /// <summary>
-    /// Retrieves the preferred contact method for an RA based on their contact preference.
-    /// </summary>
-    /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
-    /// <returns>A string containing the preferred contact method (Teams or Phone).</returns>
-    [HttpGet("ra/contact/preference/{raId}")]
-    public async Task<ActionResult> GetRAPrefContact([FromRoute] string raId)
-    {
-        var Preference = await housingService.GetContactPreferenceAsync(raId);
-
-        if (Preference == null)
-        {
-            return NotFound("RA preferred contact information not found.");
-        }
-
-        return Ok(Preference);
-
     }
 
 
