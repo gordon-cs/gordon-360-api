@@ -33,7 +33,6 @@ public partial class Current_On_Call
     [Unicode(false)]
     public string PreferredContact { get; set; }
 
-    [Column(TypeName = "datetime")]
     public DateTime Check_in_time { get; set; }
 
     [StringLength(50)]
@@ -45,15 +44,13 @@ public partial class Current_On_Call
     [Unicode(false)]
     public string RD_Name { get; set; }
 
-    [Required]
-    [StringLength(81)]
+    [StringLength(50)]
     [Unicode(false)]
-    public string RA_Profile_Link { get; set; }
+    public string RA_UserName { get; set; }
 
-    [Required]
-    [StringLength(81)]
+    [StringLength(50)]
     [Unicode(false)]
-    public string RD_Profile_Link { get; set; }
+    public string RD_UserName { get; set; }
 
     [StringLength(86)]
     [Unicode(false)]

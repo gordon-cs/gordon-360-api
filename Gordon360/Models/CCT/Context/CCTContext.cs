@@ -20,6 +20,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
 
+    public virtual DbSet<ActionsTaken> ActionsTaken { get; set; }
+
+    public virtual DbSet<ActionsTakenData> ActionsTakenData { get; set; }
+
     public virtual DbSet<Activity> Activity { get; set; }
 
     public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
@@ -63,6 +67,7 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Hall_Tasks> Hall_Tasks { get; set; }
 
     public virtual DbSet<Halls> Halls { get; set; }
+    public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
 
@@ -98,6 +103,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Minors> Minors { get; set; }
 
+    public virtual DbSet<MissingItemData> MissingItemData { get; set; }
+
+    public virtual DbSet<MissingReports> MissingReports { get; set; }
+
     public virtual DbSet<PART_DEF> PART_DEF { get; set; }
 
     public virtual DbSet<Participant> Participant { get; set; }
@@ -115,8 +124,6 @@ public partial class CCTContext : DbContext
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
 
     public virtual DbSet<PrivType> PrivType { get; set; }
-
-    public virtual DbSet<RA_Assigned_Ranges> RA_Assigned_Ranges { get; set; }
 
     public virtual DbSet<RA_Assigned_Ranges_View> RA_Assigned_Ranges_View { get; set; }
 
@@ -197,6 +204,20 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<AccountPhotoURL>(entity =>
         {
             entity.ToView("AccountPhotoURL", "dbo");
+        });
+
+        modelBuilder.Entity<ActionsTaken>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__ActionsT__3214EC2722EC236F");
+
+            entity.HasOne(d => d.missing).WithMany(p => p.ActionsTaken)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ActionsTa__missi__11606D5A");
+        });
+
+        modelBuilder.Entity<ActionsTakenData>(entity =>
+        {
+            entity.ToView("ActionsTakenData", "LostAndFound");
         });
 
         modelBuilder.Entity<Activity>(entity =>
@@ -348,6 +369,14 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.BuildingCode).IsFixedLength();
             entity.Property(e => e.HallName).IsFixedLength();
         });
+        modelBuilder.Entity<GuestUsers>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__GuestUse__3214EC2774F2F95F");
+
+            entity.HasOne(d => d.missing).WithMany(p => p.GuestUsers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__GuestUser__missi__0E8400AF");
+        });
 
         modelBuilder.Entity<Housing_Applicants>(entity =>
         {
@@ -461,6 +490,16 @@ public partial class CCTContext : DbContext
             entity.ToView("Minors", "dbo");
         });
 
+        modelBuilder.Entity<MissingItemData>(entity =>
+        {
+            entity.ToView("MissingItemData", "LostAndFound");
+        });
+
+        modelBuilder.Entity<MissingReports>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__MissingR__3214EC27985CEC3D");
+        });
+
         modelBuilder.Entity<PART_DEF>(entity =>
         {
             entity.ToView("PART_DEF", "dbo");
@@ -534,15 +573,6 @@ public partial class CCTContext : DbContext
 
             entity.Property(e => e.Hall).IsFixedLength();
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
-        });
-
-        modelBuilder.Entity<RA_Assigned_Ranges>(entity =>
-        {
-            entity.HasKey(e => new { e.Range_ID, e.Ra_ID }).HasName("PK__tmp_ms_x__48DB2FD19ADEAB8F");
-
-            entity.HasOne(d => d.Range).WithMany(p => p.RA_Assigned_Ranges)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__RA_Assign__Range__48E5AC6E");
         });
 
         modelBuilder.Entity<RA_Assigned_Ranges_View>(entity =>

@@ -83,10 +83,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[RA_Assigned_Ranges]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[Housing].[RA_On_Call]",
          "ObjectType": 0
       },
@@ -104,6 +100,18 @@
       },
       {
          "Name": "[Housing].[Recurrence]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[ActionsTaken]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[GuestUsers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[MissingReports]",
          "ObjectType": 0
       },
       {
@@ -331,6 +339,14 @@
          "ObjectType": 3
       },
       {
+         "Name": "[LostAndFound].[ActionsTakenData]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[LostAndFound].[MissingItemData]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[RecIM].[ParticipantView]",
          "ObjectType": 3
       },
@@ -420,6 +436,7 @@
    "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
+   "UseDatabaseNamesForRoutines": true,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
@@ -438,5 +455,6 @@
    "UseSchemaFolders": true,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
-   "UseT4": false
+   "UseT4": false,
+   "UseT4Split": false
 }
