@@ -12,6 +12,7 @@ using Gordon360.Enums;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Services;
 
@@ -547,7 +548,7 @@ public class HousingService(CCTContext context) : IHousingService
         // Check if Room_End is greater than Room_Start
         if (model.Room_End <= model.Room_Start)
         {
-            throw new ArgumentException("Room_End must be greater than Room_Start.");
+            throw new BadInputException() { ExceptionMessage = "Room_End must be greater than Room_Start." };
         }
         // Check if there is any overlapping room ranges in the same hall
         var overlappingRange = await context.Hall_Assignment_Ranges

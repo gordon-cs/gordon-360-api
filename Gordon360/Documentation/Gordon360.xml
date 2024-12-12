@@ -365,8 +365,7 @@
             with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
             </summary>
             <param name="raId">The ID of the RA whose contact information is being requested.</param>
-            <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
-            phone number if no preference is set.</returns>
+            <returns>An object containing the RAiD, preferred method, and the actual contact.</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel,System.String)">
             <summary>
@@ -386,16 +385,16 @@
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetOnCallRA(System.String)">
             <summary>
-            Gets the ID of the on-call RA for a specified hall.
+            Gets the on-call RA for a specified hall.
             </summary>
             <param name="hallid">The ID of the hall</param>
-            <returns>The ID of the on-call RA, or a 404 if no RA is on call</returns>
+            <returns> the on-call RA's details, or a 404 if no RA is on call</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetOnCallRAAllHalls">
             <summary>
             Gets the on-call RAs for all halls.
             </summary>
-            <returns>The RAs on call</returns>
+            <returns>The RAs on call with their details</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.IsRAOnCall(System.String)">
             <summary>
