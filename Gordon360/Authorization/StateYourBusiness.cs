@@ -76,7 +76,7 @@ public class StateYourBusiness : ActionFilterAttribute
         user_name = AuthUtils.GetUsername(authenticatedUser);
         user_groups = AuthUtils.GetGroups(authenticatedUser);
 
-        if ((user_groups.Contains(AuthGroup.SiteAdmin))|| (user_groups.Contains(AuthGroup.HousingDeveloper))) //remove housing developer before deployment
+        if ((user_groups.Contains(AuthGroup.SiteAdmin)))
         {
             await next();
             return;
