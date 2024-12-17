@@ -71,7 +71,7 @@ public class StateYourBusiness : ActionFilterAttribute
         _recimParticipantService = context.HttpContext.RequestServices.GetRequiredService<IParticipantService>();
         _recimTeamService = context.HttpContext.RequestServices.GetRequiredService<ITeamService>();
         _recimActivityService = context.HttpContext.RequestServices.GetRequiredService<Services.RecIM.IActivityService>();
-        
+
         user_name = AuthUtils.GetUsername(authenticatedUser);
         user_groups = AuthUtils.GetGroups(authenticatedUser);
 
@@ -187,6 +187,11 @@ public class StateYourBusiness : ActionFilterAttribute
                     }
                     return false;
                 }
+            case Resource.HOUSING_CONTACT_PREFERENCE:
+                return (user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) ||
+                    user_groups.Contains(AuthGroup.HallInfoViewer) || user_groups.Contains(AuthGroup.Student));
+            case Resource.HOUSING_ON_CALL_RA:
+                return (user_groups.Contains(AuthGroup.Student));
             case Resource.NEWS:
                 return true;
             case Resource.STUDENT_SCHEDULE:
@@ -397,10 +402,19 @@ public class StateYourBusiness : ActionFilterAttribute
                     }
                     return false;
                 }
+            case Resource.HOUSING_ROOM_RANGE:
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+            case Resource.HOUSING_RA_ASSIGNMENT:
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+            case Resource.HOUSING_ON_CALL_RA:
+                return (user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HallInfoViewer) || 
+                    user_groups.Contains(AuthGroup.HousingAdmin));
             case Resource.NEWS:
                 return user_groups.Contains(AuthGroup.NewsAdmin);
             case Resource.RECIM:
                 return _recimParticipantService.IsAdmin(user_name);
+            case Resource.LOST_AND_FOUND_MISSING_REPORT:
+                    return (user_groups.Contains(AuthGroup.LostAndFoundAdmin) || user_groups.Contains(AuthGroup.LostAndFoundDevelopers));
             default: return false;
         }
     }
@@ -499,6 +513,14 @@ public class StateYourBusiness : ActionFilterAttribute
                     }
                     return false;
                 }
+            case Resource.HOUSING_ROOM_RANGE:
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+            case Resource.HOUSING_RA_ASSIGNMENT:
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+            case Resource.HOUSING_CONTACT_PREFERENCE:
+                return (user_groups.Contains(AuthGroup.RA));
+            case Resource.RA_CHECKIN:
+                return (user_groups.Contains(AuthGroup.RA));
             case Resource.ADMIN:
                 return false;
             case Resource.ERROR_LOG:
@@ -852,6 +874,10 @@ public class StateYourBusiness : ActionFilterAttribute
                     // Super admins have unrestricted access by default: no need to check
                     return false;
                 }
+            case Resource.HOUSING_ROOM_RANGE:
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+            case Resource.HOUSING_RA_ASSIGNMENT:
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
             case Resource.NEWS:
                 {
                     if (context.ActionArguments["newsID"] is int newsID)

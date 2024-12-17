@@ -289,11 +289,183 @@
             <summary>Get apartment application info for all applications if the current user is a housing admin</summary>
             <returns>Object of type ApartmentApplicationViewModel</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.CreateRoomRange(Gordon360.Models.ViewModels.Housing.HallAssignmentRangeViewModel)">
+            <summary>
+            Creates a new hall assignment range if it does not overlap with any existing ranges
+            </summary>
+            <param name="assignmentRange">The ViewModel that contains the hall ID and room range</param>
+            <returns>The created Hall_Assignment_Range object</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllRoomRanges">
+            <summary>
+            Retrieves all room ranges.
+            </summary>
+            <returns>A list of room ranges.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteRoomRange(System.Int32)">
+            <summary>
+            Deletes a Room Range
+            </summary>
+            <param name="rangeId">The ID of the room range to delete</param>
+            <returns> Returns if completed</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.AssignRaToRoomRange(RA_AssignmentViewModel)">
+            <summary>
+            Assigns an RA to a room range if no RA is currently assigned
+            </summary>
+            <param name="assignment">The model containging the RA and range ids</param>
+            <returns>The created RA_Assigned_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRangeAssignments">
+            <summary>
+            Retrieves the list of all ra roomrange assignments.
+            </summary>
+            <returns>Returns a list of all assignments</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteAssignment(System.Int32)">
+            <summary>
+            Deletes an RA range assignment
+            </summary>
+            <param name="rangeId">The Room range of the assignment to delete</param>
+            <returns> Returns if completed</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetResidentRD(System.String)">
+            <summary>
+            Retrieve the RD of the resident's hall based on their hall ID.
+            </summary>
+            <param name="hallId">The ID of the hall.</param>
+            <returns>Returns the RD's details if found, otherwise null.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetResidentRA(System.String,System.String)">
+            <summary>
+            Retrieves the RA assigned to a resident based on their room number and hall ID.
+            </summary>
+            <param name="hallId">The ID of the hall.</param>
+            <param name="roomNumber">The resident's room number.</param>
+            <returns>Returns the RA's details if found, otherwise null. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllRAs">
+            <summary>
+            Retrieves a list of all RAs.
+            </summary>
+            <returns>Returns a list of RA_Students containing information about each RA</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.SetPreferredContact(System.String,System.String)">
+            <summary>
+            Sets or updates an RA's preferred contact method
+            </summary>
+            <param name="raId">The ID of the RA</param>
+            <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
+            <returns>True if the contact method was successfully set</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRAContact(System.String)">
+            <summary>
+            Retrieves the preferred contact information for an RA based on their contact preference.
+            If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+            with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+            </summary>
+            <param name="raId">The ID of the RA whose contact information is being requested.</param>
+            <returns>An object containing the RAiD, preferred method, and the actual contact.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel,System.String)">
+            <summary>
+            Creates a new status event for an RA schedule
+            </summary>
+            <param name="Status_Sched">The ViewModel that contains the Schedule ID and RA ID</param>
+            <param name="raId">the id of the RA setting a status</param>
+            <returns>The created RA_Status_Schedule object</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(System.String,System.String[])">
+             <summary>
+             Checks an RA in
+             </summary>
+             <param name="raId">Id of the ra checking in</param>
+            <param name="HallIDs">The Hall(s) the RA is checking into</param>
+             <returns>true if RA checked in successfully</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetOnCallRA(System.String)">
+            <summary>
+            Gets the on-call RA for a specified hall.
+            </summary>
+            <param name="hallid">The ID of the hall</param>
+            <returns> the on-call RA's details, or a 404 if no RA is on call</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetOnCallRAAllHalls">
+            <summary>
+            Gets the on-call RAs for all halls.
+            </summary>
+            <returns>The RAs on call with their details</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.IsRAOnCall(System.String)">
+            <summary>
+            Checks if an RA is currently on call.
+            </summary>
+            <param name="raId">The ID of the RA</param>
+            <returns>True if the RA is on call, false otherwise</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.IsStudentResidential(System.Int32)">
+            <summary>
+            Checks if a student is residential
+            </summary>
+            <param name="idNum">The ID of the student</param>
+            <returns>True if the student is a resident</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
             <returns></returns>
             <remarks>Posts a new message to the service to be added into the database</remarks>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.CreateMissingItemReport(Gordon360.Models.ViewModels.MissingItemReportViewModel)">
+            <summary>
+            Create a new missing item report with given data
+            </summary>
+            <param name="id">The id</param>
+            <returns>ObjectResult(ID) - An HTTP result code, with the ID of the created report if created successfully</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.CreateActionTaken(System.Int32,Gordon360.Models.ViewModels.ActionsTakenViewModel)">
+            <summary>
+            Update Missing Item Report with the given id with given data
+            </summary>
+            <param name="missingItemId">The id of the report to update</param>
+            <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateMissingItemReport(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel)">
+            <summary>
+            Update Missing Item Report with the given id with given data
+            </summary>
+            <param name="missingItemId">The id of the report to update</param>
+            <returns>ObjectResult - the http status code result of the action</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateReportStatus(System.Int32,System.String)">
+            <summary>
+            Update the status of the item report with given id to the given status text
+            </summary>
+            <param name="missingItemId">The id of the report to update</param>
+            <param name="status"></param>
+            <returns>ObjectResult - the http status code result of the action</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItems(System.String)">
+            <summary>
+            Get the list of missing item reports for the currently authenticated user.
+            </summary>
+            <param name="user">Query parameter, default is null and route will get all missing items, or if user is set
+            route will get missing items for the authenticated user</param>
+            <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItem(System.Int32)">
+            <summary>
+            Get a missing item report with given ID.
+            </summary>
+            <param name="missingItemId">The id of the report to get</param>
+            <returns>ObjectResult - an http status code, with a MissingItem object in the body </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetActionsTaken(System.Int32)">
+            <summary>
+            Get all actions taken on a given missing item report.
+            </summary>
+            <param name="missingItemId">The id of the report to get</param>
+            <returns>ObjectResult - an http status code, with a list of Actions Taken objects </returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -1839,6 +2011,227 @@
             </summary>
             <param name="applicationID"> The application ID number of the application to be submitted </param>
             <returns>Returns whether the query succeeded</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CreateRoomRangeAsync(Gordon360.Models.ViewModels.Housing.HallAssignmentRangeViewModel)">
+            <summary>
+            Creates a new hall assignment range if it does not overlap with any existing ranges
+            </summary>
+            <param name="model">The ViewModel that contains the hall ID and room range</param>
+            <returns>The created Hall_Assignment_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CreateStatusAsync(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel,System.String)">
+            <summary>
+            Creates a new status event for an RA schedule
+            </summary>
+            <param name="model">The RA_Status_ScheduleViewModel variables</param>
+            <param name="raId">The ID of the ra checking in</param>
+            <returns>The created RA_Status_Schedule object</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteRoomRangeAsync(System.Int32)">
+            <summary>
+            Deletes a Room Range
+            </summary>
+            <param name="rangeId">The ID of the room range to delete</param>
+            <returns> Returns if completed</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.AssignRaToRoomRangeAsync(System.Int32,System.String)">
+            <summary>
+            Assigns an RA to a room range if no RA is currently assigned
+            </summary>
+            <param name="rangeId">The ID of the room range</param>
+            <param name="raId">The ID of the RA to assign</param>
+            <returns>The created RA_Assigned_Ranges object</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteAssignmentAsync(System.Int32)">
+            <summary>
+            Deletes an RA range assignment
+            </summary>
+            <param name="rangeId">The Room range of the assignment to delete</param>
+            <returns> Returns if completed</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetResidentRDAsync(System.String)">
+            <summary>
+            Retrieve the RD of the resident's hall based on their hall ID.
+            </summary>
+            <param name="hallId">The ID of the hall.</param>
+            <returns>Returns the RD's details if found, otherwise null.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetResidentRAAsync(System.String,System.String)">
+            <summary>
+            Retrieves the RA assigned to a resident based on their room number and hall ID.
+            </summary>
+            <param name="hallId">The ID of the hall.</param>
+            <param name="roomNumber">The resident's room number.</param>
+            <returns>Returns the RA's details if found, otherwise throws an exception.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllRoomRangesAsync">
+            <summary>
+            Retrieves all room ranges.
+            </summary>
+            <returns>A list of room ranges.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllRAsAsync">
+            <summary>
+            Retrieves a list of all RAs.
+            </summary>
+            <returns>Returns a list of RA_StudentsViewModel containing information about each RA</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetRangeAssignmentsAsync">
+            <summary>
+            Retrieves the list of all assignments.
+            </summary>
+            <returns>Returns a list of all assignments</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.SetPreferredContactMethodAsync(System.String,System.String)">
+            <summary>
+            Sets or updates an RA's preferred contact method
+            </summary>
+            <param name="raId">The ID of the RA</param>
+            <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
+            <returns>True if the contact method was successfully set</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetPreferredContactAsync(System.String)">
+            <summary>
+            Retrieves the preferred contact information for an RA based on their contact preference.
+            If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+            with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+            </summary>
+            <param name="raId">The ID of the RA whose contact information is being requested.</param>
+            <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
+            phone number if no preference is set.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetOnCallRAAsync(System.String)">
+            <summary>
+            Gets the on-call RA's ID for specified hall.
+            </summary>
+            <param name="Hall_ID">The ID of the hall</param>
+            <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.RA_CheckinAsync(System.String[],System.String)">
+             <summary>
+             Checks an RA in
+             </summary>
+             <param name="Ra_ID">Id of the ra checking in</param>
+            <param name="Hall_IDs">The Hall(s) the RA is checking into</param>
+             <returns>true if RA checked in successfully</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetOnCallRAAllHallsAsync">
+            <summary>
+            Gets the on-call RAs for all halls.
+            </summary>
+            <returns>The RAs on call</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.IsRAOnCallAsync(System.String)">
+            <summary>
+            Checks if an RA is currently on call.
+            </summary>
+            <param name="raId">The ID of the RA</param>
+            <returns>True if the RA is on call, false otherwise</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.IsStudentResidentialAsync(System.Int32)">
+            <summary>
+            Checks if a student is residential
+            </summary>
+            <param name="idNum">The ID of the student</param>
+            <returns>True if the student is a resident</returns>
+        <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
+            <summary>
+            Check if the user has full admin permissions in the system
+            </summary>
+            <param name="username">the UPN of the user</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.CreateMissingItemReport(Gordon360.Models.ViewModels.MissingItemReportViewModel,System.String)">
+            <summary>
+            Create a new missing item report, for the submitter in the details, or the authenticated user if that is null.
+            </summary>
+            <param name="reportDetails"></param>
+            <param name="username"></param>
+            <returns>Report ID - The ID of the report, generated by the database.</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If a general user attempts to create a report for someone else
+            or the report can't be successfully saved</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.CreateActionTaken(System.Int32,Gordon360.Models.ViewModels.ActionsTakenViewModel,System.String)">
+            <summary>
+            Create an action taken for the missing item report with given id
+            </summary>
+            <param name="missingItemID">The id of the missing item to add an action to</param>
+            <param name="ActionsTaken">The actions taken object to create</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>actionTakenID - The ID of the action taken, generated by the database.</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If the requesting users account can't be found, or the action fails to save</exception>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If no missing item report exists with the given id</exception>
+            <exception cref="T:System.UnauthorizedAccessException">If a non-admin user attempts to create an action on a report which doesn't
+            belong to them</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.UpdateMissingItemReportAsync(System.Int32,Gordon360.Models.ViewModels.MissingItemReportViewModel,System.String)">
+            <summary>
+            Update a report with given id, to the given report detail data.
+               NOTE: cannot modify associated guest user data, if this report is for guest.
+            </summary>
+            <param name="missingItemID">The id of the missing item to modify</param>
+            <param name="reportDetails">The new object to update to</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>None</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If not account can be found for the requesting user</exception>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the missing item report with given id cannot be found in the database</exception>
+            <exception cref="T:System.UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user 
+            (admins cannot edit reports of other people)</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.UpdateReportStatusAsync(System.Int32,System.String,System.String)">
+            <summary>
+            Update the status of a report with given id, to the given status message
+                Status text must be in the set of allowed statuses, "Active", "Expired", "Deleted", "Found"
+            </summary>
+            <param name="missingItemID">The id of the missing item to modify</param>
+            <param name="status">The new status</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>None</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If not account can be found for the requesting user</exception>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the missing item report with given id cannot be found in the database</exception>
+            <exception cref="T:System.UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user and the
+            user is not an admin</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItems(System.String,System.String)">
+            <summary>
+            Get the list of missing item reports for given user.
+            </summary>
+            <param name="requestedUsername">The username to get the data of, if allowed</param>
+            <param name="requestorUsername">The username of the person making the request</param>
+            <returns>an Enumerable of Missing Item Reports containing all missing item reports</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If a user requests reports they are not permitted to access</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll(System.String)">
+            <summary>
+            Get all missing item reports
+            Throw unauthorized access exception if the user doesn't have admin permissions
+            </summary>
+            <param name="username">The username of the person making the request</param>
+            <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
+            <exception cref="T:System.UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItem(System.Int32,System.String)">
+            <summary>
+            Gets a Missing by id, only allowed if it belongs to the username, or the user is an admin
+            </summary>
+            <param name="missingItemID">The ID of the missing item</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>A Missing Item Report object, or null if no item matches the id</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the report with given ID doesn't exist or the user
+            doesn't have permissions to read it</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetActionsTaken(System.Int32,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Gets a list of actions taken on a missing item report with given ID, 
+            general users only allowed to get public actions on their own reports
+            </summary>
+            <param name="missingID">The ID of the missing item report to get the actions of</param>
+            <param name="username">The username of the person making the request</param>
+            <param name="getPublicOnly">Only get actions marked as public.  Default false.</param>
+            <param name="elevatedPermissions">Signal to the function that user elevated authorization has already been confirmed</param>
+            <returns>An ActionsTaken[], or null if no item matches the id</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Attemps by a non-admin user to get actions for 
+            a report which doesn't belong to them will yield an ResourceNotFoundException</exception>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>

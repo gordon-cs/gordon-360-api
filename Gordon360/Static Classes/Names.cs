@@ -20,6 +20,11 @@ public static class Resource
     public const string DINING = "Info related to dining service";
     public const string HOUSING = "Info related to housing";
     public const string HOUSING_ADMIN = "A Housing Admin Resource";
+    public const string HOUSING_ROOM_RANGE = "Information related to room ranges in housing";
+    public const string HOUSING_RA_ASSIGNMENT = "Resident Advisor assignments in housing";
+    public const string RA_CHECKIN = "Info relating to an RA Checkin";
+    public const string HOUSING_CONTACT_PREFERENCE = "Resident Advisor preferred contact methods";
+    public const string HOUSING_ON_CALL_RA = "Information about on-call Resident Advisors";
     public const string ERROR_LOG = "The error log resource";
     public const string NEWS = "A student news resource";
     public const string NEWS_APPROVAL = "The approval of a student news resource";
@@ -36,6 +41,7 @@ public static class Resource
     public const string RECIM_PARTICIPANT_ADMIN = "The admin status of a RecIM participating user";
     public const string RECIM_SUPER_ADMIN = "A RecIM director level resource";
     public const string RECIM_SURFACE = "RecIM Surfaces/Playing fields/Locations";
+    public const string LOST_AND_FOUND_MISSING_REPORT = "Lost and Found missing item reports";
     public const string STUDENT_SCHEDULE = "A student's schedule events";
 
     // Partial resources, to be targetted by Operation.READ_PARTIAL
