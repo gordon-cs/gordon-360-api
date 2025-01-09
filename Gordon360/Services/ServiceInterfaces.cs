@@ -233,7 +233,7 @@ namespace Gordon360.Services
         Task<EnrollmentCheckinHolds> GetHoldsAsync(string id);
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
-        Task<bool> GetStatusAsync(string id);
+        Task<bool> GetStatusAsync(string username);
     }
 
     namespace RecIM

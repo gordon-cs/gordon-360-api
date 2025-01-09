@@ -1322,7 +1322,7 @@
             </summary>
             
         </member>
-        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IProfileService,Gordon360.Services.IAccountService)">
             <summary>
             Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
             </summary>
@@ -1346,7 +1346,7 @@
         <member name="M:Gordon360.Services.AcademicCheckInService.PutCellPhoneAsync(System.String,Gordon360.Models.ViewModels.MobilePhoneUpdateViewModel)">
             <summary> Stores the cellphone preferences for the current user </summary>
             <param name="data"> The phone number object for the user </param>
-            <param name="id"> The id of the student to be updated </param>
+            <param name="username"> The username of the student to be updated </param>
             <returns> The stored data </returns>
         </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.PutDemographicAsync(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
