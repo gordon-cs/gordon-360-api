@@ -12,7 +12,7 @@ namespace Gordon360.Services;
 /// Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
 /// </summary>
 	/// 
-public partial class AcademicCheckInService(CCTContext context) : IAcademicCheckInService
+public partial class AcademicCheckInService(CCTContext context, IProfileService profileService, IAccountService accountService) : IAcademicCheckInService
 {
     /// <summary> Stores the emergency contact information of a particular user </summary>
     /// <param name="data"> The object that stores the contact info </param>
@@ -70,13 +70,15 @@ public partial class AcademicCheckInService(CCTContext context) : IAcademicCheck
 
     /// <summary> Stores the cellphone preferences for the current user </summary>
     /// <param name="data"> The phone number object for the user </param>
-    /// <param name="id"> The id of the student to be updated </param>
+    /// <param name="username"> The username of the student to be updated </param>
     /// <returns> The stored data </returns>
-    public async Task PutCellPhoneAsync(string id, MobilePhoneUpdateViewModel data)
+    public async Task PutCellPhoneAsync(string username, MobilePhoneUpdateViewModel data)
     {
-        // TODO: Store SMS Consent value somewhere
+        await profileService.UpdateCustomProfileAsync(username, "SMSOptedIn", new Models.CCT.CUSTOM_PROFILE { username = username, SMSOptedIn = data.SMSOptedIn });
 
+        string id = accountService.GetAccountByUsername(username).GordonID;
         var result = await context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, NoneProvided: false);
+
         if (result == null || result.Any(r => r.Success != true))
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
