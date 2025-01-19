@@ -410,6 +410,50 @@
             <param name="idNum">The ID of the student</param>
             <returns>True if the student is a resident</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.CreateTask(Gordon360.Models.ViewModels.HallTaskViewModel)">
+            <summary>
+            Creates a new task for the given hall
+            </summary>
+            <param name="task">The HallTaskViewModel object containing necessary info</param>
+            <returns>The created task</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.UpdateTask(System.Int32,Gordon360.Models.ViewModels.HallTaskViewModel)">
+            <summary>
+            Updates the task by the given ID
+            </summary>
+            <param name="taskID">The HallTaskViewModel object containing necessary info</param>
+            <param name="task">The HallTaskViewModel object containing necessary info</param>
+            <returns>The created task</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteTask(System.Int32)">
+            <summary>
+            Deletes a task
+            </summary>
+            <param name="taskID">The ID of the task to delete</param>
+            <returns>True if deleted</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.CompleteTask(System.Int32,System.String)">
+            <summary>
+            Marks a task completed
+            </summary>
+            <param name="taskID">the ID of the task to update</param>
+            <param name="CompletedBy">The ID of the RA completing the task</param>
+            <returns>True if completed</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetActiveTasksForHall(System.String)">
+            <summary>
+            Gets the list of active tasks
+            </summary>
+            <param name="hallId">the ID of the hall to get tasks for</param>
+            <returns>The list of tasks</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetTasksForHall(System.String)">
+            <summary>
+            Gets the list of daily tasks for a hall
+            </summary>
+            <param name="hallId">the ID of the hall to get tasks for</param>
+            <returns>The list of daily tasks</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
@@ -2134,6 +2178,51 @@
             </summary>
             <param name="idNum">The ID of the student</param>
             <returns>True if the student is a resident</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CreateTaskAsync(Gordon360.Models.ViewModels.HallTaskViewModel)">
+            <summary>
+            Creates a new task for the given hall
+            </summary>
+            <param name="task">The HallTaskViewModel object containing necessary info</param>
+            <returns>The created task</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateTaskAsync(System.Int32,Gordon360.Models.ViewModels.HallTaskViewModel)">
+            <summary>
+            Updates the task by the given ID
+            </summary>
+            <param name="taskID">The HallTaskViewModel object containing necessary info</param>
+            <param name="task">The HallTaskViewModel object containing necessary info</param>
+            <returns>The created task</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteTaskAsync(System.Int32)">
+            <summary>
+            Deletes a task
+            </summary>
+            <param name="taskID">The ID of the task to delete</param>
+            <returns>True if deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CompleteTaskAsync(System.Int32,System.String)">
+            <summary>
+            Marks a task completed
+            </summary>
+            <param name="taskID">the ID of the task to update</param>
+            <param name="CompletedBy">The ID of the RA completing the task</param>
+            <returns>True if completed</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetActiveTasksForHallAsync(System.String)">
+            <summary>
+            Gets the list of active tasks
+            </summary>
+            <param name="hallId">the ID of the hall to get tasks for</param>
+            <returns>The list of tasks</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetTasksForHallAsync(System.String)">
+            <summary>
+            Gets the list of daily tasks for a hall
+            </summary>
+            <param name="hallId">the ID of the hall to get tasks for</param>
+            <returns>The list of daily tasks</returns>
+        </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
             <summary>
             Check if the user has full admin permissions in the system

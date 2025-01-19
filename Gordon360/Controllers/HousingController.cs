@@ -558,6 +558,149 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Creates a new task for the given hall
+    /// </summary>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    [HttpPost]
+    [Route("halls/task")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> CreateTask([FromBody] HallTaskViewModel task)
+    {
+
+        try
+        {
+            var result = await housingService.CreateTaskAsync(task);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while creating the task.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Updates the task by the given ID
+    /// </summary>
+    /// <param name="taskID">The HallTaskViewModel object containing necessary info</param>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    [HttpPatch("halls/task/{taskID}")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> UpdateTask(int taskID, [FromBody] HallTaskViewModel task)
+    {
+        try
+        {
+            var result = await housingService.UpdateTaskAsync(taskID, task);
+            if (result == null)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while updating the task.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Deletes a task
+    /// </summary>
+    /// <param name="taskID">The ID of the task to delete</param>
+    /// <returns>True if deleted</returns>
+    [HttpDelete("halls/task/{taskID}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> DeleteTask(int taskID)
+    {
+        try
+        {
+            var result = await housingService.DeleteTaskAsync(taskID);
+            if (!result)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(new { Message = "Task deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while deleting the task.", Details = ex.Message });
+        }
+    }
+
+
+    /// <summary>
+    /// Marks a task completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <param name="CompletedBy">The ID of the RA completing the task</param>
+    /// <returns>True if completed</returns>
+    [HttpPatch("halls/task/Complete/{taskID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK_COMPLETE)]
+    public async Task<IActionResult> CompleteTask(int taskID, [FromBody] string CompletedBy)
+    {
+
+        try
+        {
+            var result = await housingService.CompleteTaskAsync(taskID, CompletedBy);
+            if (!result)
+            {
+                return NotFound("Task not found or already completed.");
+            }
+            return Ok(new { Message = "Task marked as completed successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while completing the task.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of active tasks
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of tasks</returns>
+    [HttpGet("Halls/{hallId}/ActiveTasks")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> GetActiveTasksForHall(string hallId)
+    {
+        if (string.IsNullOrEmpty(hallId))
+        {
+            return BadRequest("Hall ID is required.");
+        }
+
+        try
+        {
+            var tasks = await housingService.GetActiveTasksForHallAsync(hallId);
+            return Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while fetching tasks.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of daily tasks for a hall
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of daily tasks</returns>
+    [HttpGet("Halls/{hallId}/DailyTasks")]
+    public async Task<IActionResult> GetTasksForHall(string hallId)
+    {
+
+        try
+        {
+            var tasks = await housingService.GetTasksForHallAsync(hallId);
+            return Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while fetching tasks.", Details = ex.Message });
+        }
+    }
+
 
 
 
