@@ -75,7 +75,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[Hall_Task_Recurrence]",
+         "Name": "[Housing].[Hall_Task_Occurrence]",
          "ObjectType": 0
       },
       {
@@ -316,6 +316,10 @@
       },
       {
          "Name": "[Housing].[Current_On_Call]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[CurrentTasks]",
          "ObjectType": 3
       },
       {

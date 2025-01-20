@@ -1038,6 +1038,173 @@ public class HousingService(CCTContext context) : IHousingService
         return isRes ?? false;
     }
 
+    /// <summary>
+    /// Creates a new task for the given hall
+    /// </summary>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    public async Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task)
+    {
+        var newTask = new Hall_Tasks
+        {
+            Name = task.Name,
+            Description = task.Description,
+            Hall_ID = task.HallID,
+            Is_Recurring = task.IsRecurring,
+            Frequency = task.Frequency,
+            Interval = task.Interval,
+            Start_Date = task.StartDate,
+            End_Date = task.EndDate,
+            Created_Date = DateTime.UtcNow
+        };
+
+        await context.Hall_Tasks.AddAsync(newTask);
+        await context.SaveChangesAsync();
+
+        return new HallTaskViewModel
+        {
+            TaskID = newTask.Task_ID,
+            Name = newTask.Name,
+            Description = newTask.Description,
+            HallID = newTask.Hall_ID,
+            IsRecurring = newTask.Is_Recurring,
+            Frequency = newTask.Frequency,
+            Interval = newTask.Interval,
+            StartDate = newTask.Start_Date,
+            EndDate = newTask.End_Date,
+            CreatedDate = newTask.Created_Date
+        };
+    }
+
+    /// <summary>
+    /// Updates the task by the given ID
+    /// </summary>
+    /// <param name="taskID">The HallTaskViewModel object containing necessary info</param>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    public async Task<HallTaskViewModel> UpdateTaskAsync(int taskID, HallTaskViewModel task)
+    {
+        var existingTask = await context.Hall_Tasks.FindAsync(taskID);
+        if (existingTask == null)
+        {
+            return null;
+        }
+
+        existingTask.Name = task.Name;
+        existingTask.Description = task.Description;
+        existingTask.Hall_ID = task.HallID;
+        existingTask.Is_Recurring = task.IsRecurring;
+        existingTask.Frequency = task.Frequency;
+        existingTask.Interval = task.Interval;
+        existingTask.Start_Date = task.StartDate;
+        existingTask.End_Date = task.EndDate;
+
+        context.Hall_Tasks.Update(existingTask);
+        await context.SaveChangesAsync();
+
+        return new HallTaskViewModel
+        {
+            TaskID = existingTask.Task_ID,
+            Name = existingTask.Name,
+            Description = existingTask.Description,
+            HallID = existingTask.Hall_ID,
+            IsRecurring = existingTask.Is_Recurring,
+            Frequency = existingTask.Frequency,
+            Interval = existingTask.Interval,
+            StartDate = existingTask.Start_Date,
+            EndDate = existingTask.End_Date,
+            CreatedDate = existingTask.Created_Date
+        };
+    }
+
+    /// <summary>
+    /// Deletes a task
+    /// </summary>
+    /// <param name="taskID">The ID of the task to delete</param>
+    /// <returns>True if deleted</returns>
+    public async Task<bool> DeleteTaskAsync(int taskID)
+    {
+        var existingTask = await context.Hall_Tasks.FindAsync(taskID);
+        if (existingTask == null)
+        {
+            return false;
+        }
+
+        context.Hall_Tasks.Remove(existingTask);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    /// <summary>
+    /// Marks a task completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <param name="CompletedBy">The ID of the RA completing the task</param>
+    /// <returns>True if completed</returns>
+    public async Task<bool> CompleteTaskAsync(int taskID, string CompletedBy)
+    {
+        var existingTask = await context.Hall_Task_Occurrence.FindAsync(taskID);
+
+        existingTask.CompletedDate = DateTime.UtcNow;
+        existingTask.CompletedBy = CompletedBy;
+        existingTask.IsComplete = true;
+
+        context.Hall_Task_Occurrence.Update(existingTask);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the list of active tasks
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of tasks</returns>
+    public async Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId)
+    {
+        var tasks = await context.Hall_Tasks
+            .Where(t => t.Hall_ID == hallId && (!t.End_Date.HasValue || t.End_Date >= DateTime.UtcNow))
+            .Select(t => new HallTaskViewModel
+            {
+                TaskID = t.Task_ID,
+                Name = t.Name,
+                Description = t.Description,
+                HallID = t.Hall_ID,
+                IsRecurring = t.Is_Recurring,
+                Frequency = t.Frequency,
+                Interval = t.Interval,
+                StartDate = t.Start_Date,
+                EndDate = t.End_Date,
+                CreatedDate = t.Created_Date
+            })
+            .ToListAsync();
+
+        return tasks;
+    }
+
+    /// <summary>
+    /// Gets the list of daily tasks for a hall
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of daily tasks</returns>
+    public async Task<List<DailyTaskViewModel>> GetTasksForHallAsync(string hallId)
+    {
+        var tasks = await context.CurrentTasks
+            .Where(t => t.Hall_ID == hallId)
+            .Select(t => new DailyTaskViewModel
+            {
+                TaskID = t.Task_ID,
+                Name = t.Name,
+                Description = t.Description,
+                HallID = t.Hall_ID,
+                CompletedDate = t.CompletedDate,
+                CompletedBy = t.CompletedBy,
+                OccurDate = t.OccurDate
+            })
+            .ToListAsync();
+
+        return tasks;
+    }
 
 
 }
