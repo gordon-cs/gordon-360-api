@@ -301,9 +301,11 @@ namespace Gordon360.Services
         /// Throw unauthorized access exception if the user doesn't have admin permissions
         /// </summary>
         /// <param name="username">The username of the person making the request</param>
+        /// <param name="lastId">The last accessed ID number, for pagination</param>
+        /// <param name="pageSize"></param>
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
         /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username)
+        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, int lastId, int pageSize)
         {
             if (!hasFullPermissions(username))
             {
@@ -313,7 +315,10 @@ namespace Gordon360.Services
             // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
             // Only performs a single SQL query to the db, so much more performant than alternative solutions
             return context.MissingItemData
-                .GroupJoin(context.ActionsTakenData,
+                .OrderBy(item => item.ID)
+                .Where(item => item.ID > lastId)
+                .Take(pageSize)
+                .GroupJoin(context.ActionsTakenData.OrderBy(action => action.ID),
                     missingItem => missingItem.ID,
                     action => action.missingID,
                     (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
