@@ -300,10 +300,11 @@ namespace Gordon360.Services
         /// Get all missing item reports
         /// Throw unauthorized access exception if the user doesn't have admin permissions
         /// </summary>
+        /// <param name="status">The selected status</param>
         /// <param name="username">The username of the person making the request</param>
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
         /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username)
+        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, string status)
         {
             if (!hasFullPermissions(username))
             {
