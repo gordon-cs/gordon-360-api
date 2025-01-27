@@ -88,7 +88,7 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
         [HttpGet]
         [Route("missingitems")]
-        public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems(string status, string? user = null)
+        public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems(string? status, string? user = null)
         {
             IEnumerable<MissingItemReportViewModel> result;
             var authenticatedUserUsername = AuthUtils.GetUsername(User);

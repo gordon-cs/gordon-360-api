@@ -311,13 +311,26 @@ namespace Gordon360.Services
                 throw new UnauthorizedAccessException();
             }
 
-            // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
-            // Only performs a single SQL query to the db, so much more performant than alternative solutions
-            return context.MissingItemData
+            // If status is null do not perform where
+            if (status == null)
+            {
+                return context.MissingItemData
                 .GroupJoin(context.ActionsTakenData,
                     missingItem => missingItem.ID,
                     action => action.missingID,
                     (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
+            } 
+            else
+            {
+                // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
+                // Only performs a single SQL query to the db, so much more performant than alternative solutions
+                return context.MissingItemData.Where(x => x.status == status)
+                    .GroupJoin(context.ActionsTakenData,
+                        missingItem => missingItem.ID,
+                        action => action.missingID,
+                        (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
+            }
+            
         }
 
         /// <summary>
