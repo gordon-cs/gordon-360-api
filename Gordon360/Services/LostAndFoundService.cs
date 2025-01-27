@@ -313,12 +313,12 @@ namespace Gordon360.Services
             // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
             // Only performs a single SQL query to the db, so much more performant than alternative solutions
             return context.MissingItemData
-                .GroupJoin(context.ActionsTakenData,
+                .GroupJoin(context.ActionsTakenData.OrderBy(action => action.actionDate),
                     missingItem => missingItem.ID,
                     action => action.missingID,
                     (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
         }
-
+        
         /// <summary>
         /// Gets a Missing by id, only allowed if it belongs to the username, or the user is an admin
         /// </summary>
