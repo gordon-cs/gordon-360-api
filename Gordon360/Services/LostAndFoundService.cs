@@ -326,8 +326,6 @@ namespace Gordon360.Services
                           (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
         }
 
-    }
-
         /// <summary>
         /// Gets a Missing by id, only allowed if it belongs to the username, or the user is an admin
         /// </summary>
