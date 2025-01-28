@@ -311,27 +311,22 @@ namespace Gordon360.Services
                 throw new UnauthorizedAccessException();
             }
 
-            // If status is null do not perform where
-            if (status == null)
+            IQueryable<MissingItemData> missingItems = context.MissingItemData;
+            if (status is not null)
             {
-                return context.MissingItemData
-                .GroupJoin(context.ActionsTakenData,
-                    missingItem => missingItem.ID,
-                    action => action.missingID,
-                    (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
-            } 
-            else
-            {
-                // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
-                // Only performs a single SQL query to the db, so much more performant than alternative solutions
-                return context.MissingItemData.Where(x => x.status == status)
-                    .GroupJoin(context.ActionsTakenData,
-                        missingItem => missingItem.ID,
-                        action => action.missingID,
-                        (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
+                missingItems = missingItems.Where(x => x.status == status);
             }
-            
+
+            // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
+            // Only performs a single SQL query to the db, so much more performant than alternative solutions
+            return missingItems
+                      .GroupJoin(context.ActionsTakenData.OrderBy(action => action.actionDate),
+                          missingItem => missingItem.ID,
+                          action => action.missingID,
+                          (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
         }
+
+    }
 
         /// <summary>
         /// Gets a Missing by id, only allowed if it belongs to the username, or the user is an admin
