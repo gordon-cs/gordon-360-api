@@ -300,23 +300,30 @@ namespace Gordon360.Services
         /// Get all missing item reports
         /// Throw unauthorized access exception if the user doesn't have admin permissions
         /// </summary>
+        /// <param name="status">The selected status</param>
         /// <param name="username">The username of the person making the request</param>
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
         /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username)
+        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, string status)
         {
             if (!hasFullPermissions(username))
             {
                 throw new UnauthorizedAccessException();
             }
 
+            IQueryable<MissingItemData> missingItems = context.MissingItemData;
+            if (status is not null)
+            {
+                missingItems = missingItems.Where(x => x.status == status);
+            }
+
             // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
             // Only performs a single SQL query to the db, so much more performant than alternative solutions
-            return context.MissingItemData
-                .GroupJoin(context.ActionsTakenData,
-                    missingItem => missingItem.ID,
-                    action => action.missingID,
-                    (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
+            return missingItems
+                      .GroupJoin(context.ActionsTakenData.OrderBy(action => action.actionDate),
+                          missingItem => missingItem.ID,
+                          action => action.missingID,
+                          (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
         }
 
         /// <summary>
