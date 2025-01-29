@@ -233,7 +233,13 @@ namespace Gordon360.Services
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
         public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
         IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
-        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, string? status, string? color, string? category, string? keywords);
+        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, 
+                                                                   int? lastId, 
+                                                                   int? pageSize, 
+                                                                   string? status, 
+                                                                   string? color, 
+                                                                   string? category, 
+                                                                   string? keywords);
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
         Task UpdateReportStatusAsync(int id, string status, string username);
         MissingItemReportViewModel? GetMissingItem(int id, string username);

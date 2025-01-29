@@ -88,10 +88,14 @@ namespace Gordon360.Controllers
         /// <param name="status">The selected status for filtering reports</param>
         /// <param name="user">Query parameter, default is null and route will get all missing items, or if user is set
         /// route will get missing items for the authenticated user</param>
+        /// <param name="lastId">The ID of the last fetched report to start from for pagination</param>
+        /// <param name="pageSize">The size of the page to fetch for pagination</param>
         /// <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
         [HttpGet]
         [Route("missingitems")]
         public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems(string? user = null,
+                                                                                     int? lastId = null,
+                                                                                     int? pageSize = null,
                                                                                      string? status = null, 
                                                                                      string? color = null, 
                                                                                      string? category = null,
@@ -103,7 +107,7 @@ namespace Gordon360.Controllers
             // If no username specified in the query, get all items
             if (user == null)
             {
-                result = lostAndFoundService.GetMissingItemsAll(authenticatedUserUsername, status, color, category, keywords);
+                result = lostAndFoundService.GetMissingItemsAll(authenticatedUserUsername, lastId, pageSize, status, color, category, keywords);
             }
             else
             {
