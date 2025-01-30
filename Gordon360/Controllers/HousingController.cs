@@ -441,28 +441,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(contactInfo);
     }
 
-
-    /// <summary>
-    /// Creates a new status event for an RA schedule
-    /// </summary>
-    /// <param name="Status_Sched">The ViewModel that contains the Schedule ID and RA ID</param>
-    /// <param name="raId">the id of the RA setting a status</param>
-    /// <returns>The created RA_Status_Schedule object</returns>
-    [HttpPost("ras/{raId}/status")]
-    public async Task<ActionResult<RA_Status_Schedule>> CreateStatus( [FromBody] RA_Status_ScheduleViewModel Status_Sched, [FromRoute] string raId)
-    {
-        try
-        {
-            var newStatus = await housingService.CreateStatusAsync(Status_Sched,raId);
-            return Created("Status event created successfully.", newStatus);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-
     /// <summary>
     /// Checks an RA in
     /// </summary>

@@ -20,13 +20,25 @@ public partial class RA_Status
     public string Ra_ID { get; set; }
 
     [Required]
+    [StringLength(20)]
+    [Unicode(false)]
+    public string Status_Name { get; set; }
+
+    public bool Is_Recurring { get; set; }
+
+    [Required]
     [StringLength(50)]
     [Unicode(false)]
-    public string Status_name { get; set; }
+    public string Frequency { get; set; }
+
+    public int Interval { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime Start_Time { get; set; }
+    public DateTime Start_Date { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime? End_Time { get; set; }
+    public DateTime? End_Date { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime Created_Date { get; set; }
 }
