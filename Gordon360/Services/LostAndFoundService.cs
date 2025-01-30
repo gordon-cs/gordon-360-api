@@ -300,21 +300,57 @@ namespace Gordon360.Services
         /// Get all missing item reports
         /// Throw unauthorized access exception if the user doesn't have admin permissions
         /// </summary>
-        /// <param name="status">The selected status</param>
+        /// <param name="color">The selected color for filtering reports</param>
+        /// <param name="category">The selected category for filtering reports</param>
+        /// <param name="keywords">The selected keywords for filtering by keywords</param>
+        /// <param name="status">The selected status for filtering reports</param>
         /// <param name="username">The username of the person making the request</param>
+        /// <param name="lastId">The ID of the last fetched report to start from for pagination</param>
+        /// <param name="pageSize">The size of the page to fetch for pagination</param>
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
         /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, string status)
+        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, 
+                                                                          int? lastId, 
+                                                                          int? pageSize, 
+                                                                          string? status, 
+                                                                          string? color, 
+                                                                          string? category, 
+                                                                          string? keywords)
         {
             if (!hasFullPermissions(username))
             {
                 throw new UnauthorizedAccessException();
             }
 
-            IQueryable<MissingItemData> missingItems = context.MissingItemData;
+            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderBy(item => item.ID);
             if (status is not null)
             {
                 missingItems = missingItems.Where(x => x.status == status);
+            }
+            if (color is not null)
+            {
+                missingItems = missingItems.Where(x => x.colors.Contains(color));
+            }
+            if (category is not null) 
+            { 
+                missingItems = missingItems.Where(x => x.category == category);
+            }
+            if (keywords is not null) 
+            {
+                missingItems = missingItems.Where(x => x.firstName.Contains(keywords) 
+                                                    || x.lastName.Contains(keywords) 
+                                                    || (x.firstName + " " + x.lastName).Contains(keywords)
+                                                    || x.description.Contains(keywords) 
+                                                    || x.locationLost.Contains(keywords));
+            }
+            if (lastId is not null)
+            {
+                missingItems = missingItems.Where(item => item.ID > lastId);
+            }
+            if (pageSize is not null)
+            {
+                int pageLength = pageSize ?? default(int);
+                missingItems = missingItems.Take(pageLength);
             }
 
             // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
