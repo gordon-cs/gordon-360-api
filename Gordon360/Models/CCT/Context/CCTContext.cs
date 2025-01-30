@@ -612,8 +612,6 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<RA_Status>(entity =>
         {
             entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC90008321");
-
-            entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<RA_Status_Schedule>(entity =>
