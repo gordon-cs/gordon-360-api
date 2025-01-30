@@ -1180,5 +1180,40 @@ public class HousingService(CCTContext context) : IHousingService
         return tasks;
     }
 
+    /// <summary>
+    /// Creates a status for an RA's schedule
+    /// </summary>
+    /// <param name="status">The RA_StatusViewModel object containing necessary info</param>
+    /// <returns>The created status</returns>
+    public async Task<RA_StatusViewModel> CreateStatusAsync(RA_StatusViewModel status)
+    {
+        var newStatus = new RA_Status
+        {
+            Status_Name = status.StatusName,
+            Is_Recurring = status.IsRecurring,
+            Frequency = status.Frequency,
+            Interval = status.Interval,
+            Start_Date = status.StartDate,
+            End_Date = status.EndDate,
+            Created_Date = DateTime.UtcNow
+        };
+
+        await context.RA_Status.AddAsync(newStatus);
+        await context.SaveChangesAsync();
+
+        return new RA_StatusViewModel
+        {
+            StatusID = newStatus.Status_ID,
+            RA_ID = newStatus.Ra_ID,
+            StatusName = newStatus.Status_Name,
+            IsRecurring = newStatus.Is_Recurring,
+            Frequency = newStatus.Frequency,
+            Interval = newStatus.Interval,
+            StartDate = newStatus.Start_Date,
+            EndDate = newStatus.End_Date,
+            CreatedDate = newStatus.Created_Date
+        };
+}
+
 
 }

@@ -679,6 +679,29 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Creates a status for an RA's schedule
+    /// </summary>
+    /// <param name="status">The RA_StatusViewModel object containing necessary info</param>
+    /// <returns>The created status</returns>
+    [HttpPost]
+    [Route("ras/status")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS)]
+    public async Task<IActionResult> CreateStatus([FromBody] RA_StatusViewModel status)
+    {
+        try
+        {
+            var result = await housingService.CreateStatusAsync(status);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while creating the status.", Details = ex.Message });
+        }
+    }
+
+
+
 
 
 

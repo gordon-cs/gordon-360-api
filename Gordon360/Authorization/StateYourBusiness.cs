@@ -193,6 +193,8 @@ public class StateYourBusiness : ActionFilterAttribute
                     user_groups.Contains(AuthGroup.HallInfoViewer) || user_groups.Contains(AuthGroup.Student));
             case Resource.HOUSING_ON_CALL_RA:
                 return (user_groups.Contains(AuthGroup.Student));
+            case Resource.HOUSING_RA_STATUS:
+                return (user_groups.Contains(AuthGroup.Student));
             case Resource.NEWS:
                 return true;
             case Resource.STUDENT_SCHEDULE:
@@ -527,6 +529,8 @@ public class StateYourBusiness : ActionFilterAttribute
             case Resource.HOUSING_HALL_TASK:
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
             case Resource.HOUSING_HALL_TASK_COMPLETE:
+                return (user_groups.Contains(AuthGroup.RA));
+            case Resource.HOUSING_RA_STATUS:
                 return (user_groups.Contains(AuthGroup.RA));
             case Resource.ADMIN:
                 return false;
