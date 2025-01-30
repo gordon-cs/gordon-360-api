@@ -148,6 +148,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RequestView> RequestView { get; set; }
 
+    public virtual DbSet<ResRooms> ResRooms { get; set; }
+
     public virtual DbSet<ResidentialStatus_View> ResidentialStatus_View { get; set; }
 
     public virtual DbSet<RoleType> RoleType { get; set; }
@@ -184,10 +186,13 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<TeamStatus> TeamStatus { get; set; }
 
+    public virtual DbSet<Unassigned_Rooms> Unassigned_Rooms { get; set; }
+
     public virtual DbSet<UserCourses> UserCourses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("GORDON\\Ross.Clark");
 
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
@@ -607,7 +612,9 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<RA_Status>(entity =>
         {
-            entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC119AC79C");
+            entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC90008321");
+
+            entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<RA_Status_Schedule>(entity =>
@@ -766,6 +773,11 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.Status).WithMany(p => p.Team)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Team_TeamStatus");
+        });
+
+        modelBuilder.Entity<Unassigned_Rooms>(entity =>
+        {
+            entity.ToView("Unassigned_Rooms", "Housing");
         });
 
         modelBuilder.Entity<UserCourses>(entity =>

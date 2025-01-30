@@ -269,6 +269,18 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Retrieves all rooms with no associated ranges.
+    /// </summary>
+    /// <returns>A list of rooms.</returns>
+    [HttpGet("roomranges/missedrooms")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ROOM_RANGE)]
+    public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetRoomsMissingRanges()
+    {
+        var roomRanges = await housingService.GetRoomsMissingRangesAsync();
+        return Ok(roomRanges);
+    }
+
+    /// <summary>
     /// Deletes a Room Range
     /// </summary>
     /// <param name="rangeId">The ID of the room range to delete</param>
