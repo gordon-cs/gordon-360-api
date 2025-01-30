@@ -322,7 +322,10 @@ namespace Gordon360.Services
                 throw new UnauthorizedAccessException();
             }
 
+            // Initialize database query to get all missing items ordered by id
             IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderBy(item => item.ID);
+
+            // Add filters to query based on provided filters
             if (status is not null)
             {
                 missingItems = missingItems.Where(x => x.status == status);
@@ -343,6 +346,8 @@ namespace Gordon360.Services
                                                     || x.description.Contains(keywords) 
                                                     || x.locationLost.Contains(keywords));
             }
+
+            // Finally paginate filtered reports, based on the last ID the frontend received, and the size of the page to get
             if (lastId is not null)
             {
                 missingItems = missingItems.Where(item => item.ID > lastId);
@@ -354,7 +359,8 @@ namespace Gordon360.Services
             }
 
             // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
-            // Only performs a single SQL query to the db, so much more performant than alternative solutions
+            // Using a group join results in the use of a single SQL query to the db, so is much more performant than
+            // alternative solutions.
             return missingItems
                       .GroupJoin(context.ActionsTakenData.OrderBy(action => action.actionDate),
                           missingItem => missingItem.ID,
