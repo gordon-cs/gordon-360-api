@@ -13,7 +13,7 @@ public partial class RA_Assigned_Ranges_View
 {
     public int Range_ID { get; set; }
 
-    [StringLength(9)]
+    [StringLength(10)]
     [Unicode(false)]
     public string RA_ID { get; set; }
 

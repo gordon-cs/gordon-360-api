@@ -103,6 +103,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[ResRooms]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[LostAndFound].[ActionsTaken]",
          "ObjectType": 0
       },
@@ -340,6 +344,10 @@
       },
       {
          "Name": "[Housing].[ResidentialStatus_View]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Unassigned_Rooms]",
          "ObjectType": 3
       },
       {
