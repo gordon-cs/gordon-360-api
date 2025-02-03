@@ -58,6 +58,14 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<FacStaff> FacStaff { get; set; }
 
+    public virtual DbSet<FoundActionsTaken> FoundActionsTaken { get; set; }
+
+    public virtual DbSet<FoundGuest> FoundGuest { get; set; }
+
+    public virtual DbSet<FoundItemData> FoundItemData { get; set; }
+
+    public virtual DbSet<FoundItems> FoundItems { get; set; }
+
     public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
@@ -308,6 +316,40 @@ public partial class CCTContext : DbContext
             entity.ToView("FacStaff", "dbo");
 
             entity.Property(e => e.BuildingDescription).IsFixedLength();
+        });
+
+        modelBuilder.Entity<FoundActionsTaken>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__FoundAct__3214EC27331AE340");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+
+            entity.HasOne(d => d.found).WithMany(p => p.FoundActionsTaken)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__FoundActi__found__48B0A244");
+        });
+
+        modelBuilder.Entity<FoundGuest>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__FoundGue__3214EC2715D31CC7");
+
+            entity.Property(e => e.ID).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<FoundItemData>(entity =>
+        {
+            entity.ToView("FoundItemData", "LostAndFound");
+        });
+
+        modelBuilder.Entity<FoundItems>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC2792138BD9");
+
+            entity.HasOne(d => d.foundByGuest).WithMany(p => p.FoundItemsfoundByGuest).HasConstraintName("FK__FoundItem__found__5CB79AF1");
+
+            entity.HasOne(d => d.guestOwner).WithMany(p => p.FoundItemsguestOwner).HasConstraintName("FK__FoundItem__guest__4D755761");
+
+            entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__4B8D0EEF");
         });
 
         modelBuilder.Entity<GuestUsers>(entity =>
