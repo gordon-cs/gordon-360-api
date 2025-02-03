@@ -250,6 +250,7 @@ namespace Gordon360.Services
         Task<List<DailyTaskViewModel>> GetTasksForHallAsync(string hallId);
         Task<RA_StatusViewModel> CreateStatusAsync(RA_StatusViewModel status);
         Task<bool> DeleteStatusAsync(int statusID);
+        Task<List<RA_StatusViewModel>> GetStatusEventsForRAAsync(string raId);
 
 
     }

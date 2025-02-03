@@ -1233,5 +1233,35 @@ public class HousingService(CCTContext context) : IHousingService
         return true;
     }
 
+    /// <summary>
+    /// Gets the list of status events for an RA
+    /// </summary>
+    /// <param name="raId"> The ID of the RA</param>
+    /// <returns>The list of RA status events</returns>
+    public async Task<List<RA_StatusViewModel>> GetStatusEventsForRAAsync(string raId)
+    {
+        var statusEvents = await context.RA_Status
+            .Where(s => s.Ra_ID == raId &&
+                        (!s.End_Date.HasValue ||
+                         (s.End_Date.Value.Date >= DateTime.UtcNow.Date && // Make sure end date falls within today's date
+                          s.End_Date.Value.Date < DateTime.UtcNow.Date.AddDays(1)))
+                        )
+            .Select(s => new RA_StatusViewModel
+            {
+                StatusID = s.Status_ID,
+                RA_ID = s.Ra_ID,
+                StatusName = s.Status_Name,
+                IsRecurring = s.Is_Recurring,
+                Frequency = s.Frequency,
+                Interval = s.Interval,
+                StartDate = s.Start_Date,
+                EndDate = s.End_Date,
+                CreatedDate = s.Created_Date
+            })
+            .ToListAsync();
+
+        return statusEvents;
+    }
+
 
 }

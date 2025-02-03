@@ -680,10 +680,10 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Creates a status event for an RA's schedule
+    /// Creates a status event for an RA
     /// </summary>
     /// <param name="status">The RA_StatusViewModel object containing necessary info</param>
-    /// <returns>The created status</returns>
+    /// <returns>The created status event</returns>
     [HttpPost]
     [Route("ras/status")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS)]
@@ -701,7 +701,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Deletes a status event for an RA's schedule
+    /// Deletes a status event for an RA
     /// </summary>
     /// <param name="statusID">The ID of the status event to delete</param>
     /// <returns>True if deleted</returns>
@@ -724,9 +724,23 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
-
-
-
-
+    /// <summary>
+    /// Gets the list of status events for an RA
+    /// </summary>
+    /// <param name="raId"> The ID of the RA</param>
+    /// <returns>The list of RA status events</returns>
+    [HttpGet("ras/{raId}/status-events")]
+    public async Task<IActionResult> GetStatusEventsForRA(string raId)
+    {
+        try
+        {
+            var statusEvents = await housingService.GetStatusEventsForRAAsync(raId);
+            return Ok(statusEvents);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while fetching the RA's status events.", Details = ex.Message });
+        }
+    }
 
 }
