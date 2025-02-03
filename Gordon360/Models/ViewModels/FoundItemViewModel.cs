@@ -32,36 +32,46 @@ namespace Gordon360.Models.ViewModels
 
         public string status { get; set; }
 
-        public string finderFirstName { get; set; }
+        public string? finderFirstName { get; set; }
 
-        public string finderLastName { get; set; }
+        public string? finderLastName { get; set; }
 
-        public string finderPhone { get; set; }
+        public string? finderPhone { get; set; }
 
-        public string finderEmail { get; set; }
+        public string? finderEmail { get; set; }
 
-        public string ownerFirstName { get; set; }
+        public string? ownerFirstName { get; set; }
 
-        public string ownerLastName { get; set; }
+        public string? ownerLastName { get; set; }
 
-        public string ownerPhone { get; set; }
+        public string? ownerPhone { get; set; }
 
-        public string ownerEmail { get; set; }
+        public string? ownerEmail { get; set; }
 
         public IEnumerable<FoundActionsTakenViewModel>? adminActions { get; set; }
 
-        public static implicit operator FoundItemViewModel(CCT.FoundItemData MissingReportDBModel) => new FoundItemViewModel
+        public static implicit operator FoundItemViewModel(CCT.FoundItemData FoundItemDBModel) => new FoundItemViewModel
         {
-            recordID = MissingReportDBModel.ID,
-            category = MissingReportDBModel.category,
-            colors = MissingReportDBModel.colors.Split(',').Select(item => item.Trim()).ToArray(),
-            brand = MissingReportDBModel.brand,
-            description = MissingReportDBModel.description,
-            locationFound = MissingReportDBModel.locationFound,
-            dateFound = MissingReportDBModel.dateFound,
-            dateCreated = MissingReportDBModel.dateCreated,
-            status = MissingReportDBModel.status,
-            submitterUsername = MissingReportDBModel.submitterUsername,
+            recordID = FoundItemDBModel.ID,
+            submitterUsername = FoundItemDBModel.submitterUsername,
+            matchingMissingID = FoundItemDBModel.matchingMissingID,
+            category = FoundItemDBModel.category,
+            colors = FoundItemDBModel.colors.Split(',').Select(item => item.Trim()).ToArray(),
+            brand = FoundItemDBModel.brand,
+            description = FoundItemDBModel.description,
+            locationFound = FoundItemDBModel.locationFound,
+            dateFound = FoundItemDBModel.dateFound,
+            dateCreated = FoundItemDBModel.dateCreated,
+            finderWants = FoundItemDBModel.finderWants,
+            status = FoundItemDBModel.status,
+            finderFirstName = FoundItemDBModel.finderFirstName,
+            finderLastName = FoundItemDBModel.finderLastName,
+            finderPhone = FoundItemDBModel.finderPhone,
+            finderEmail = FoundItemDBModel.finderEmail,
+            ownerFirstName = FoundItemDBModel.ownerFirstName,
+            ownerLastName = FoundItemDBModel.ownerLastName,
+            ownerPhone = FoundItemDBModel.ownerPhone,
+            ownerEmail = FoundItemDBModel.ownerEmail,
         };
     }
 }
