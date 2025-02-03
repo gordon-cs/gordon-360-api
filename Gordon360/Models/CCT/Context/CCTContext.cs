@@ -338,9 +338,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<FoundGuest>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__FoundGue__3214EC2715D31CC7");
-
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.HasKey(e => e.ID).HasName("PK__FoundGue__3214EC275E423367");
         });
 
         modelBuilder.Entity<FoundItemData>(entity =>
@@ -351,10 +349,6 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<FoundItems>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC2792138BD9");
-
-            entity.HasOne(d => d.foundByGuest).WithMany(p => p.FoundItemsfoundByGuest).HasConstraintName("FK__FoundItem__found__5CB79AF1");
-
-            entity.HasOne(d => d.guestOwner).WithMany(p => p.FoundItemsguestOwner).HasConstraintName("FK__FoundItem__guest__4D755761");
 
             entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__4B8D0EEF");
         });

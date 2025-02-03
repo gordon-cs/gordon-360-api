@@ -31,10 +31,4 @@ public partial class FoundGuest
     [StringLength(255)]
     [Unicode(false)]
     public string emailAddress { get; set; }
-
-    [InverseProperty("foundByGuest")]
-    public virtual ICollection<FoundItems> FoundItemsfoundByGuest { get; set; } = new List<FoundItems>();
-
-    [InverseProperty("guestOwner")]
-    public virtual ICollection<FoundItems> FoundItemsguestOwner { get; set; } = new List<FoundItems>();
 }
