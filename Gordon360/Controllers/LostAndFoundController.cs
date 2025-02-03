@@ -167,5 +167,16 @@ namespace Gordon360.Controllers
                 return NotFound();
             }
         }
+
+        [HttpPost]
+        [Route(("founditems"))]
+        public ActionResult<string> CreateFoundItemReport([FromBody] FoundItemViewModel FoundItemDetails)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            string reportID = lostAndFoundService.CreateFoundItem(FoundItemDetails, authenticatedUserUsername);
+
+            return Ok(reportID);
+        }
     }
 }

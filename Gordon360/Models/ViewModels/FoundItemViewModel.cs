@@ -32,6 +32,10 @@ namespace Gordon360.Models.ViewModels
 
         public string status { get; set; }
 
+        public string storageLocation { get; set; }
+
+        public string? finderUsername { get; set; }
+
         public string? finderFirstName { get; set; }
 
         public string? finderLastName { get; set; }
@@ -39,6 +43,8 @@ namespace Gordon360.Models.ViewModels
         public string? finderPhone { get; set; }
 
         public string? finderEmail { get; set; }
+
+        public string? ownerUsername { get; set; }
 
         public string? ownerFirstName { get; set; }
 
@@ -64,6 +70,7 @@ namespace Gordon360.Models.ViewModels
             dateCreated = FoundItemDBModel.dateCreated,
             finderWants = FoundItemDBModel.finderWants,
             status = FoundItemDBModel.status,
+            storageLocation = FoundItemDBModel.storageLocation,
             finderFirstName = FoundItemDBModel.finderFirstName,
             finderLastName = FoundItemDBModel.finderLastName,
             finderPhone = FoundItemDBModel.finderPhone,

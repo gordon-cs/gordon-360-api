@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Microsoft.Graph;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -462,6 +463,107 @@ namespace Gordon360.Services
 
             // Typecast into the viewModel and return
             return actionsList.Select(x => (ActionsTakenViewModel)x);
+        }
+
+        public string CreateFoundItem(FoundItemViewModel FoundItemDetails, string username)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+
+            // Get the id for the username submitted with the report object
+            string idNum;
+            if (FoundItemDetails.submitterUsername != "")
+            {
+                idNum = accountService.GetAccountByUsername(FoundItemDetails.submitterUsername).GordonID;
+            }
+            else
+            {
+                idNum = accountService.GetAccountByUsername(username).GordonID;
+            }
+
+
+            // Get user ID for a gordon finder, or create guest user entry for guest finder
+            string? finderID = null;
+            int? guestFinderID = null;
+            if (FoundItemDetails.finderUsername != null)
+            {
+                finderID = accountService.GetAccountByUsername(FoundItemDetails.finderUsername).GordonID;
+            }
+            else if (FoundItemDetails.finderFirstName != null || FoundItemDetails.finderLastName != null)
+            {
+                var guestFinderResults = context.FoundGuest.Add(new FoundGuest
+                {
+                    firstName = FoundItemDetails.finderFirstName, 
+                    lastName = FoundItemDetails.finderLastName,
+                    phoneNumber = FoundItemDetails.finderPhone,
+                    emailAddress = FoundItemDetails.finderEmail, 
+                });
+
+                context.SaveChanges();
+
+                guestFinderID = guestFinderResults.Entity.ID;
+            }
+
+            // Get user ID for a gordon owner, or create guest user entry for guest owner
+            string? ownerID = null;
+            int? guestOwnerID = null;
+            if (FoundItemDetails.ownerUsername != null)
+            {
+                ownerID = accountService.GetAccountByUsername(FoundItemDetails.ownerUsername).GordonID;
+            }
+            else if (FoundItemDetails.ownerFirstName != null || FoundItemDetails.ownerLastName != null)
+            {
+                var guestOwnerResults = context.FoundGuest.Add(new FoundGuest
+                {
+                    firstName = FoundItemDetails.ownerFirstName,
+                    lastName = FoundItemDetails.ownerLastName,
+                    phoneNumber = FoundItemDetails.ownerPhone,
+                    emailAddress = FoundItemDetails.ownerEmail,
+                });
+
+                context.SaveChanges();
+
+                guestOwnerID = guestOwnerResults.Entity.ID;
+            }
+
+            // Calculate new item ID for physical tag, based on current date and number of items created today
+            string reportID = DateTime.Now.ToString("MMddyy") + "-";
+            DateTime dateToday = DateTime.Now.Date;
+
+            int numReportsToday = context.FoundItemData.Where(x => x.dateCreated == dateToday).Count();
+
+            // Create the new report using the supplied fields
+            var newReportResults = context.FoundItems.Add(new FoundItems
+            {
+                ID = reportID + (numReportsToday + 1),
+                adminID = idNum,
+                matchingMissingID = FoundItemDetails.matchingMissingID, 
+                category = FoundItemDetails.category,
+                colors = string.Join(",", FoundItemDetails.colors),
+                brand = FoundItemDetails.brand,
+                description = FoundItemDetails.description,
+                locationFound = FoundItemDetails.locationFound,
+                dateFound = FoundItemDetails.dateFound,
+                dateCreated = FoundItemDetails.dateCreated,
+                foundByID = finderID, 
+                foundByGuestID = guestFinderID,
+                finderWants = FoundItemDetails.finderWants,
+                ownerID = ownerID,
+                guestOwnerID = guestOwnerID,
+                status = FoundItemDetails.status,
+                storageLocation = FoundItemDetails.storageLocation,
+            });
+
+            context.SaveChanges();
+
+            if (newReportResults == null)
+            {
+                throw new ResourceCreationException() { ExceptionMessage = "The report could not be saved." };
+            }
+
+            return reportID + (numReportsToday + 1);
         }
     }
 }
