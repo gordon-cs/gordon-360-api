@@ -60,6 +60,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<FoundActionsTaken> FoundActionsTaken { get; set; }
 
+    public virtual DbSet<FoundActionsTakenData> FoundActionsTakenData { get; set; }
+
     public virtual DbSet<FoundGuest> FoundGuest { get; set; }
 
     public virtual DbSet<FoundItemData> FoundItemData { get; set; }
@@ -327,6 +329,11 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.found).WithMany(p => p.FoundActionsTaken)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__FoundActi__found__48B0A244");
+        });
+
+        modelBuilder.Entity<FoundActionsTakenData>(entity =>
+        {
+            entity.ToView("FoundActionsTakenData", "LostAndFound");
         });
 
         modelBuilder.Entity<FoundGuest>(entity =>
