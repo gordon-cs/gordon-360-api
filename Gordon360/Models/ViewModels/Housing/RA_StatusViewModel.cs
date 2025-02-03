@@ -10,7 +10,7 @@ public class RA_StatusViewModel
     public string RA_ID { get; set; }
     public string StatusName { get; set; }
     public bool IsRecurring { get; set; }
-    public string? Frequency { get; set; }
+    public string Frequency { get; set; }
     public int Interval { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
