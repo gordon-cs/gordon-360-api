@@ -893,6 +893,8 @@ public class StateYourBusiness : ActionFilterAttribute
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
             case Resource.HOUSING_HALL_TASK:
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+            case Resource.HOUSING_RA_STATUS:
+                return (user_groups.Contains(AuthGroup.RA));
             case Resource.NEWS:
                 {
                     if (context.ActionArguments["newsID"] is int newsID)

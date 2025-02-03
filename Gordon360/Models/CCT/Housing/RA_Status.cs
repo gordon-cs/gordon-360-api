@@ -26,12 +26,11 @@ public partial class RA_Status
 
     public bool Is_Recurring { get; set; }
 
-    [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string Frequency { get; set; }
 
-    public int Interval { get; set; }
+    public int? Interval { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime Start_Date { get; set; }

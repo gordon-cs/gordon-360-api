@@ -680,7 +680,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Creates a status for an RA's schedule
+    /// Creates a status event for an RA's schedule
     /// </summary>
     /// <param name="status">The RA_StatusViewModel object containing necessary info</param>
     /// <returns>The created status</returns>
@@ -697,6 +697,30 @@ public class HousingController(CCTContext context, IProfileService profileServic
         catch (Exception ex)
         {
             return StatusCode(500, new { Message = "An error occurred while creating the status.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Deletes a status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to delete</param>
+    /// <returns>True if deleted</returns>
+    [HttpDelete("ras/status/{statusID}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_STATUS)]
+    public async Task<IActionResult> DeleteStatus(int statusID)
+    {
+        try
+        {
+            var result = await housingService.DeleteStatusAsync(statusID);
+            if (!result)
+            {
+                return NotFound("Status event not found.");
+            }
+            return Ok(new { Message = "Status event deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while deleting the status event.", Details = ex.Message });
         }
     }
 

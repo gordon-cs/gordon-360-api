@@ -1213,7 +1213,25 @@ public class HousingService(CCTContext context) : IHousingService
             EndDate = newStatus.End_Date,
             CreatedDate = newStatus.Created_Date
         };
-}
+    }
+
+    /// <summary>
+    /// Deletes a status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to delete</param>
+    /// <returns>True if deleted</returns>
+    public async Task<bool> DeleteStatusAsync(int statusID)
+    {
+        var existingStatus = await context.RA_Status.FindAsync(statusID);
+        if (existingStatus == null)
+        {
+            return false;
+        }
+
+        context.RA_Status.Remove(existingStatus);
+        await context.SaveChangesAsync();
+        return true;
+    }
 
 
 }
