@@ -80,14 +80,6 @@ public partial class FoundItems
     [InverseProperty("found")]
     public virtual ICollection<FoundActionsTaken> FoundActionsTaken { get; set; } = new List<FoundActionsTaken>();
 
-    [ForeignKey("foundByGuestID")]
-    [InverseProperty("FoundItemsfoundByGuest")]
-    public virtual FoundGuest foundByGuest { get; set; }
-
-    [ForeignKey("guestOwnerID")]
-    [InverseProperty("FoundItemsguestOwner")]
-    public virtual FoundGuest guestOwner { get; set; }
-
     [ForeignKey("matchingMissingID")]
     [InverseProperty("FoundItems")]
     public virtual MissingReports matchingMissing { get; set; }

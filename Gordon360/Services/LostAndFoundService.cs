@@ -546,7 +546,7 @@ namespace Gordon360.Services
                 description = FoundItemDetails.description,
                 locationFound = FoundItemDetails.locationFound,
                 dateFound = FoundItemDetails.dateFound,
-                dateCreated = FoundItemDetails.dateCreated,
+                dateCreated = DateTime.Now.Date,
                 foundByID = finderID, 
                 foundByGuestID = guestFinderID,
                 finderWants = FoundItemDetails.finderWants,
