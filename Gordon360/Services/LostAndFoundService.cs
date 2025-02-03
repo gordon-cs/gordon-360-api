@@ -323,7 +323,7 @@ namespace Gordon360.Services
             }
 
             // Initialize database query to get all missing items ordered by date lost
-            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderBy(item => item.dateLost);
+            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderBy(item => item.ID);
 
             // Add filters to query based on provided filters
             if (status is not null)
