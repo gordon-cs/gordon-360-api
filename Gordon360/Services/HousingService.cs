@@ -1208,7 +1208,7 @@ public class HousingService(CCTContext context) : IHousingService
             StatusName = newStatus.Status_Name,
             IsRecurring = newStatus.Is_Recurring,
             Frequency = newStatus.Frequency,
-            Interval = newStatus.Interval,
+            Interval = (int)newStatus.Interval,
             StartDate = newStatus.Start_Date,
             EndDate = newStatus.End_Date,
             CreatedDate = newStatus.Created_Date
