@@ -322,7 +322,7 @@ namespace Gordon360.Services
                 throw new UnauthorizedAccessException();
             }
 
-            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderBy(item => item.ID);
+            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderBy(item => item.dateLost);
             if (status is not null)
             {
                 missingItems = missingItems.Where(x => x.status == status);
