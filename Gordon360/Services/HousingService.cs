@@ -1118,19 +1118,18 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
-    /// Deletes a task
+    /// Disables a task
     /// </summary>
-    /// <param name="taskID">The ID of the task to delete</param>
-    /// <returns>True if deleted</returns>
-    public async Task<bool> DeleteTaskAsync(int taskID)
+    /// <param name="taskID">The ID of the task to disable</param>
+    /// <returns>True if disable</returns>
+    public async Task<bool> DisableTaskAsync(int taskID)
     {
         var existingTask = await context.Hall_Tasks.FindAsync(taskID);
         if (existingTask == null)
         {
             return false;
         }
-
-        context.Hall_Tasks.Remove(existingTask);
+        existingTask.End_Date = DateTime.UtcNow;
         await context.SaveChangesAsync();
         return true;
     }
