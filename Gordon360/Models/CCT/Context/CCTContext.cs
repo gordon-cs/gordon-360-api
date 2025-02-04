@@ -134,10 +134,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RA_Pref_Contact> RA_Pref_Contact { get; set; }
 
-    public virtual DbSet<RA_Status> RA_Status { get; set; }
-
-    public virtual DbSet<RA_Status_Schedule> RA_Status_Schedule { get; set; }
-
     public virtual DbSet<RA_Students> RA_Students { get; set; }
 
     public virtual DbSet<RD_Info> RD_Info { get; set; }
@@ -188,7 +184,6 @@ public partial class CCTContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
             entity.ToView("ACCOUNT", "dbo");
@@ -605,16 +600,6 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.Ra_ID).HasName("PK__RA_Pref___9530636C18757ADA");
         });
 
-        modelBuilder.Entity<RA_Status>(entity =>
-        {
-            entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC119AC79C");
-        });
-
-        modelBuilder.Entity<RA_Status_Schedule>(entity =>
-        {
-            entity.HasKey(e => e.Sched_ID).HasName("PK__RA_Statu__67FBEF061E83AAC9");
-        });
-
         modelBuilder.Entity<RA_Students>(entity =>
         {
             entity.ToView("RA_Students", "Housing");
@@ -644,10 +629,6 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.sched_ID).HasName("PK__tmp_ms_x__74F23FE0175EF47A");
 
             entity.Property(e => e.sched_ID).ValueGeneratedNever();
-
-            entity.HasOne(d => d.sched).WithOne(p => p.Recurrence)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Recurrenc__sched__6581EB1C");
         });
 
         modelBuilder.Entity<RequestView>(entity =>

@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 
 namespace Gordon360.Models.ViewModels;
-public class RA_StatusViewModel
+public class RA_StatusEventsViewModel
 {
     public int StatusID { get; set; }
-    public string RA_ID { get; set; }
+    public string RaID { get; set; }
     public string StatusName { get; set; }
     public bool IsRecurring { get; set; }
     public string Frequency { get; set; }

@@ -367,14 +367,6 @@
             <param name="raId">The ID of the RA whose contact information is being requested.</param>
             <returns>An object containing the RAiD, preferred method, and the actual contact.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel,System.String)">
-            <summary>
-            Creates a new status event for an RA schedule
-            </summary>
-            <param name="Status_Sched">The ViewModel that contains the Schedule ID and RA ID</param>
-            <param name="raId">the id of the RA setting a status</param>
-            <returns>The created RA_Status_Schedule object</returns>
-        </member>
         <member name="M:Gordon360.Controllers.HousingController.RA_Checkin(System.String,System.String[])">
              <summary>
              Checks an RA in
@@ -453,6 +445,27 @@
             </summary>
             <param name="hallId">the ID of the hall to get tasks for</param>
             <returns>The list of daily tasks</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.CreateStatus(Gordon360.Models.ViewModels.RA_StatusViewModel)">
+            <summary>
+            Creates a status event for an RA
+            </summary>
+            <param name="status">The RA_StatusViewModel object containing necessary info</param>
+            <returns>The created status event</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteStatus(System.Int32)">
+            <summary>
+            Deletes a status event for an RA
+            </summary>
+            <param name="statusID">The ID of the status event to delete</param>
+            <returns>True if deleted</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetStatusEventsForRA(System.String)">
+            <summary>
+            Gets the list of status events for an RA
+            </summary>
+            <param name="raId"> The ID of the RA</param>
+            <returns>The list of RA status events</returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
@@ -2063,14 +2076,6 @@
             <param name="model">The ViewModel that contains the hall ID and room range</param>
             <returns>The created Hall_Assignment_Ranges object</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.CreateStatusAsync(Gordon360.Models.ViewModels.RA_Status_ScheduleViewModel,System.String)">
-            <summary>
-            Creates a new status event for an RA schedule
-            </summary>
-            <param name="model">The RA_Status_ScheduleViewModel variables</param>
-            <param name="raId">The ID of the ra checking in</param>
-            <returns>The created RA_Status_Schedule object</returns>
-        </member>
         <member name="M:Gordon360.Services.HousingService.DeleteRoomRangeAsync(System.Int32)">
             <summary>
             Deletes a Room Range
@@ -2222,6 +2227,27 @@
             </summary>
             <param name="hallId">the ID of the hall to get tasks for</param>
             <returns>The list of daily tasks</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CreateStatusAsync(Gordon360.Models.ViewModels.RA_StatusViewModel)">
+            <summary>
+            Creates a status for an RA's schedule
+            </summary>
+            <param name="status">The RA_StatusViewModel object containing necessary info</param>
+            <returns>The created status</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteStatusAsync(System.Int32)">
+            <summary>
+            Deletes a status event for an RA's schedule
+            </summary>
+            <param name="statusID">The ID of the status event to delete</param>
+            <returns>True if deleted</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetStatusEventsForRAAsync(System.String)">
+            <summary>
+            Gets the list of status events for an RA
+            </summary>
+            <param name="raId"> The ID of the RA</param>
+            <returns>The list of RA status events</returns>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
             <summary>
