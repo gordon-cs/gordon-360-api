@@ -13,6 +13,7 @@ using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services;
 
@@ -1181,10 +1182,31 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
-    /// Creates a status for an RA's schedule
+    /// Creates a new status event for an RA's schedule
     /// </summary>
-    /// <param name="status">The RA_StatusViewModel object containing necessary info</param>
-    /// <returns>The created status</returns>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The created status event</returns>
+    public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status)
+    {
+        var newStatus = new RA_Status_Events
+        {
+
+        }
+
+    }
+
+
+
+
+
+
+    
+
+
+
+
+
+
     //public async Task<RA_StatusEventViewModel> CreateStatusAsync(RA_StatusEventViewModel status)
     //{
     //    var newStatus = new RA_Status

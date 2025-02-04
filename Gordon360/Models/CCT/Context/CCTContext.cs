@@ -134,6 +134,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RA_Pref_Contact> RA_Pref_Contact { get; set; }
 
+    public virtual DbSet<RA_Status_Event_Occurrence> RA_Status_Event_Occurrence { get; set; }
+
+    public virtual DbSet<RA_Status_Events> RA_Status_Events { get; set; }
+
     public virtual DbSet<RA_Students> RA_Students { get; set; }
 
     public virtual DbSet<RD_Info> RD_Info { get; set; }
@@ -598,6 +602,18 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<RA_Pref_Contact>(entity =>
         {
             entity.HasKey(e => e.Ra_ID).HasName("PK__RA_Pref___9530636C18757ADA");
+        });
+
+        modelBuilder.Entity<RA_Status_Event_Occurrence>(entity =>
+        {
+            entity.HasKey(e => e.Occur_ID).HasName("PK__RA_Statu__0A37E7861E6BD7B5");
+        });
+
+        modelBuilder.Entity<RA_Status_Events>(entity =>
+        {
+            entity.HasKey(e => e.Status_ID).HasName("PK__RA_Statu__519009ACDEFADB93");
+
+            entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<RA_Students>(entity =>

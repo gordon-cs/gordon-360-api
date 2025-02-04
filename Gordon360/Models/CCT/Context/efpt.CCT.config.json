@@ -91,6 +91,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[RA_Status_Event_Occurrence]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Status_Events]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[Housing].[Recurrence]",
          "ObjectType": 0
       },
