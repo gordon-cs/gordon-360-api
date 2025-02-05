@@ -1220,18 +1220,19 @@ public class HousingService(CCTContext context) : IHousingService
     /// <summary>
     /// Deletes a status event for an RA's schedule
     /// </summary>
-    /// <param name="statusId">The ID of the status event to delete</param>
+    /// <param name="statusID">The ID of the status event to delete</param>
     /// <returns>True if deleted</returns>
-    public async Task<bool> DeleteStatusEventAsync(int statusId)
+    public async Task<bool> DeleteStatusEventAsync(int statusID)
     {
-        var existingStatus = await context.RA_Status_Events.FindAsync(statusId);
+        var existingStatus = await context.RA_Status_Events.FindAsync(statusID);
 
         if (existingStatus == null)
         {
             return false;
         }
         
-        existingStatus.End_Date = DateTime.UtcNow.Date; // Mark status as ended
+        context.RA_Status_Events.Remove(existingStatus);
+        //existingStatus.End_Date = DateTime.UtcNow.Date; // Mark status as ended
         await context.SaveChangesAsync();
         return true;
     }

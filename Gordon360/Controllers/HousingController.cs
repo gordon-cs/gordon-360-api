@@ -703,16 +703,16 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <summary>
     /// Deletes a status event for an RA's schedule
     /// </summary>
-    /// <param name="statusId">The ID of the status event to delete</param>
+    /// <param name="statusID">The ID of the status event to delete</param>
     /// <returns>True if deleted</returns>
     [HttpDelete]
-    [Route("ras/status-event/{statusId}")]
+    [Route("ras/status-event/{statusID}")]
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
-    public async Task<IActionResult> DeleteStatusEvent(int statusId)
+    public async Task<IActionResult> DeleteStatusEvent(int statusID)
     {
         try
         {
-            var result = await housingService.DeleteStatusEventAsync(statusId);
+            var result = await housingService.DeleteStatusEventAsync(statusID);
             if (!result)
             {
                 return NotFound("Status event cannot be found.");
