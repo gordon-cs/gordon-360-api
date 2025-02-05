@@ -728,14 +728,14 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <summary>
     /// Gets the list of daily status events for an RA
     /// </summary>
-    /// <param name="raId"> The ID of the RA</param>
+    /// <param name="raID"> The ID of the RA</param>
     /// <returns>The list of daily status events</returns>
-    [HttpGet("ras/{raId}/daily-status-events")]
-    public async Task<IActionResult> GetStatusEventsForRA(string raId)
+    [HttpGet("ras/{raID}/daily-status-events")]
+    public async Task<IActionResult> GetStatusEventsForRA(string raID)
     {
         try
         {
-            var result = await housingService.GetStatusEventsForRAAsync(raId);
+            var result = await housingService.GetStatusEventsForRAAsync(raID);
             return Ok(result);
         }
         catch (Exception ex)

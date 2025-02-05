@@ -1224,14 +1224,14 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>True if deleted</returns>
     public async Task<bool> DeleteStatusEventAsync(int statusID)
     {
-        var existingStatus = await context.RA_Status_Events.FindAsync(statusID);
+        var existingStatus = await context.RA_Status_Events
+            .FirstOrDefaultAsync(s => s.Status_ID == statusID);
 
         if (existingStatus == null)
         {
             return false;
         }
-        
-        //context.RA_Status_Events.Remove(existingStatus);
+
         existingStatus.End_Date = DateTime.UtcNow.Date; // Mark status as ended
         await context.SaveChangesAsync();
         return true;
@@ -1240,12 +1240,12 @@ public class HousingService(CCTContext context) : IHousingService
     /// <summary>
     /// Gets the list of daily status events for an RA
     /// </summary>
-    /// <param name="raId"> The ID of the RA</param>
+    /// <param name="raID"> The ID of the RA</param>
     /// <returns>The list of daily status events</returns>
-    public async Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raId)
+    public async Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raID)
     {
         var statusEvents = await context.CurrentStatusEvents
-            .Where(s => s.Ra_ID == raId)
+            .Where(s => s.Ra_ID == raID)
             .Select(s => new DailyStatusEventsViewModel
             {
                 StatusID = s.Status_ID,
