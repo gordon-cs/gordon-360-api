@@ -1190,70 +1190,63 @@ public class HousingService(CCTContext context) : IHousingService
     {
         var newStatus = new RA_Status_Events
         {
+            Status_Name = status.StatusName,
+            Is_Recurring = status.IsRecurring,
+            Frequency = status.Frequency,
+            Interval = status.Interval,
+            Start_Date = status.StartDate,
+            End_Date = status.EndDate,
+            Created_Date = DateTime.UtcNow
+        };
 
-        }
+        await context.RA_Status_Events.AddAsync(newStatus);
+        await context.SaveChangesAsync();
 
+        return new RA_StatusEventsViewModel
+        {
+            StatusID = newStatus.Status_ID,
+            RaID = newStatus.Ra_ID,
+            StatusName = newStatus.Status_Name,
+            IsRecurring = newStatus.Is_Recurring,
+            Frequency = newStatus.Frequency,
+            Interval = newStatus.Interval,
+            StartDate = newStatus.Start_Date,
+            EndDate = newStatus.End_Date,
+            CreatedDate = newStatus.Created_Date
+        };
     }
-
-
-
-
-
-
-    
-
-
-
-
-
-
-    //public async Task<RA_StatusEventViewModel> CreateStatusAsync(RA_StatusEventViewModel status)
-    //{
-    //    var newStatus = new RA_Status
-    //    {
-    //        Status_Name = status.StatusName,
-    //        Is_Recurring = status.IsRecurring,
-    //        Frequency = status.Frequency,
-    //        Interval = status.Interval,
-    //        Start_Date = status.StartDate,
-    //        End_Date = status.EndDate,
-    //        Created_Date = DateTime.UtcNow
-    //    };
-
-    //    await context.RA_Status.AddAsync(newStatus);
-    //    await context.SaveChangesAsync();
-
-    //    return new RA_StatusEventViewModel
-    //    {
-    //        StatusID = newStatus.Status_ID,
-    //        RA_ID = newStatus.Ra_ID,
-    //        StatusName = newStatus.Status_Name,
-    //        IsRecurring = newStatus.Is_Recurring,
-    //        Frequency = newStatus.Frequency,
-    //        Interval = newStatus.Interval,
-    //        StartDate = newStatus.Start_Date,
-    //        EndDate = newStatus.End_Date,
-    //        CreatedDate = newStatus.Created_Date
-    //    };
-    //}
 
     /// <summary>
     /// Deletes a status event for an RA's schedule
     /// </summary>
-    /// <param name="statusID">The ID of the status event to delete</param>
+    /// <param name="statusId">The ID of the status event to delete</param>
     /// <returns>True if deleted</returns>
-    //public async Task<bool> DeleteStatusAsync(int statusID)
-    //{
-    //    var existingStatus = await context.RA_Status.FindAsync(statusID);
-    //    if (existingStatus == null)
-    //    {
-    //        return false;
-    //    }
+    public async Task<bool> DisableStatusEventAsync(int statusId)
+    {
+        var existingStatus = await context.RA_Status_Events.FindAsync(statusId);
 
-    //    context.RA_Status.Remove(existingStatus);
-    //    await context.SaveChangesAsync();
-    //    return true;
-    //}
+        if (existingStatus != null)
+        {
+            existingStatus.End_Date = DateTime.UtcNow.Date;
+            await context.SaveChangesAsync();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of status events for an RA
+    /// </summary>
+    /// <param name="raId"> The ID of the RA</param>
+    /// <returns>The list of RA status events</returns>
+    public async Task<List<RA_StatusEventsViewModel> GetStatusEventsForRAAsync(string raId)
+    {
+        
+    }
+    
 
     /// <summary>
     /// Gets the list of status events for an RA

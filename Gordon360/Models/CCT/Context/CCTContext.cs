@@ -48,6 +48,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Countries> Countries { get; set; }
 
+    public virtual DbSet<CurrentStatusEvents> CurrentStatusEvents { get; set; }
+
     public virtual DbSet<CurrentTasks> CurrentTasks { get; set; }
 
     public virtual DbSet<Current_On_Call> Current_On_Call { get; set; }
@@ -292,6 +294,11 @@ public partial class CCTContext : DbContext
             entity.ToView("Countries", "dbo");
 
             entity.Property(e => e.CTY).IsFixedLength();
+        });
+
+        modelBuilder.Entity<CurrentStatusEvents>(entity =>
+        {
+            entity.ToView("CurrentStatusEvents", "Housing");
         });
 
         modelBuilder.Entity<CurrentTasks>(entity =>

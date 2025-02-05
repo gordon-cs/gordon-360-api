@@ -319,6 +319,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Housing].[CurrentStatusEvents]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[Housing].[CurrentTasks]",
          "ObjectType": 3
       },
