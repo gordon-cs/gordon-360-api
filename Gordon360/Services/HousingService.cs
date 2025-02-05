@@ -1217,24 +1217,22 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
-    /// Deletes a status event for an RA's schedule
+    /// Disables a status event for an RA's schedule
     /// </summary>
-    /// <param name="statusId">The ID of the status event to delete</param>
-    /// <returns>True if deleted</returns>
+    /// <param name="statusId">The ID of the status event to disable</param>
+    /// <returns>True if disabled</returns>
     public async Task<bool> DisableStatusEventAsync(int statusId)
     {
         var existingStatus = await context.RA_Status_Events.FindAsync(statusId);
 
-        if (existingStatus != null)
-        {
-            existingStatus.End_Date = DateTime.UtcNow.Date;
-            await context.SaveChangesAsync();
-            return true;
-        }
-        else
+        if (existingStatus == null)
         {
             return false;
         }
+        
+        existingStatus.End_Date = DateTime.UtcNow.Date;
+        await context.SaveChangesAsync();
+        return true;
     }
 
     /// <summary>

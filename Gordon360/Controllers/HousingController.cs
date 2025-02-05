@@ -704,10 +704,10 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// Disables a status event for an RA's schedule
     /// </summary>
     /// <param name="statusId">The ID of the status event to delete</param>
-    /// <returns>True if deleted</returns>
-    [HttpDelete]
+    /// <returns>True if disabled</returns>
+    [HttpPatch]
     [Route("ras/status-event/{statusId}")]
-    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
     public async Task<IActionResult> DisableStatusEvent(int statusId)
     {
         try
@@ -717,7 +717,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
             {
                 return NotFound("Status event cannot be found.");
             }
-            return Ok(new { Message = "Status event has been deleted successfully." });
+            return Ok(new { Message = "Statis event has been disabled successfully." });
         }
         catch (Exception ex)
         {
