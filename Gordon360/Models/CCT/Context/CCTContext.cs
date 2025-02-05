@@ -146,8 +146,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<REQUEST> REQUEST { get; set; }
 
-    public virtual DbSet<Recurrence> Recurrence { get; set; }
-
     public virtual DbSet<RequestView> RequestView { get; set; }
 
     public virtual DbSet<ResidentialStatus_View> ResidentialStatus_View { get; set; }
@@ -645,13 +643,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.ACT_CDE).IsFixedLength();
             entity.Property(e => e.PART_CDE).IsFixedLength();
             entity.Property(e => e.SESS_CDE).IsFixedLength();
-        });
-
-        modelBuilder.Entity<Recurrence>(entity =>
-        {
-            entity.HasKey(e => e.sched_ID).HasName("PK__tmp_ms_x__74F23FE0175EF47A");
-
-            entity.Property(e => e.sched_ID).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<RequestView>(entity =>

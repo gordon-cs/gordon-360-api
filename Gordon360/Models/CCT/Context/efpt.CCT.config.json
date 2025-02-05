@@ -99,10 +99,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[Recurrence]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[LostAndFound].[ActionsTaken]",
          "ObjectType": 0
       },
