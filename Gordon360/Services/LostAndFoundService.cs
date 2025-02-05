@@ -323,7 +323,7 @@ namespace Gordon360.Services
             }
 
             // Initialize database query to get all missing items ordered by date lost
-            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderBy(item => item.ID);
+            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderByDescending(item => item.ID);
 
             // Add filters to query based on provided filters
             if (status is not null)
@@ -350,7 +350,7 @@ namespace Gordon360.Services
             // Finally paginate filtered reports, based on the last ID the frontend received, and the size of the page to get
             if (lastId is not null)
             {
-                missingItems = missingItems.Where(item => item.ID > lastId);
+                missingItems = missingItems.Where(item => item.ID < lastId);
             }
             if (pageSize is not null)
             {
