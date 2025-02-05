@@ -28,6 +28,10 @@ namespace Gordon360.Models.ViewModels
 
         public DateTime dateCreated { get; set; }
 
+        public string? foundByID { get; set; }
+
+        public int? foundByGuestID { get; set; }
+
         public bool finderWants { get; set; }
 
         public string status { get; set; }
@@ -68,11 +72,11 @@ namespace Gordon360.Models.ViewModels
             locationFound = FoundItemDBModel.locationFound,
             dateFound = FoundItemDBModel.dateFound,
             dateCreated = FoundItemDBModel.dateCreated,
+            foundByID = FoundItemDBModel.foundByID,
+            foundByGuestID = FoundItemDBModel.foundByGuestID,
             finderWants = FoundItemDBModel.finderWants,
             status = FoundItemDBModel.status,
             storageLocation = FoundItemDBModel.storageLocation,
-            foundById = FoundItemDBModel.foundByID,
-
             finderFirstName = FoundItemDBModel.finderFirstName,
             finderLastName = FoundItemDBModel.finderLastName,
             finderPhone = FoundItemDBModel.finderPhone,

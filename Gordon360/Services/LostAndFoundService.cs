@@ -568,29 +568,47 @@ namespace Gordon360.Services
 
         /// <summary>
         /// Update a found item with given id, to the given report detail data.
-        ///    NOTE: cannot modify associated guest user data, if this report is for guest.
         /// </summary>
         /// <param name="itemID">The id of the found item to modify</param>
         /// <param name="reportDetails">The new object to update to</param>
         /// <param name="username">The username of the person making the request</param>
         /// <returns>None</returns>
         /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
-        /// <exception cref="ResourceNotFoundException">If the missing item report with given id cannot be found in the database</exception>
+        /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
         /// <exception cref="UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user 
-        public async Task UpdateFoundItemReportAsync(int itemID, FoundItemViewModel reportDetails, string username)
+        public async Task UpdateFoundItemReportAsync(string itemID, FoundItemViewModel reportDetails, string username)
         {
             if (!hasFullPermissions(username))
             {
                 throw new ResourceNotFoundException();
             }
-            // Get requesting user's ID number
-            var idNum = accountService.GetAccountByUsername(username).GordonID;
 
-            var original = await context.FoundItems.FindAsync(idNum);
+            var original = await context.FoundItems.FindAsync(itemID);
 
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Found Item Report was not found" };
+            }
+
+            string? ownerID = null;
+            int? guestOwnerID = null;
+            if (reportDetails.ownerUsername != null)
+            {
+                ownerID = accountService.GetAccountByUsername(reportDetails.ownerUsername).GordonID;
+            }
+            else if (reportDetails.ownerFirstName != null || reportDetails.ownerLastName != null)
+            {
+                var guestOwnerResults = context.FoundGuest.Add(new FoundGuest
+                {
+                    firstName = reportDetails.ownerFirstName,
+                    lastName = reportDetails.ownerLastName,
+                    phoneNumber = reportDetails.ownerPhone,
+                    emailAddress = reportDetails.ownerEmail,
+                });
+
+                context.SaveChanges();
+
+                guestOwnerID = guestOwnerResults.Entity.ID;
             }
 
             original.matchingMissingID = reportDetails.matchingMissingID;
@@ -601,9 +619,13 @@ namespace Gordon360.Services
             original.locationFound = reportDetails.locationFound;
             original.dateFound = reportDetails.dateFound;
             original.dateCreated = reportDetails.dateCreated;
+            original.foundByID = reportDetails.foundByID;
+            original.foundByGuestID = reportDetails.foundByGuestID;
             original.finderWants = reportDetails.finderWants;
-            original.storageLocation = reportDetails.storageLocation;
+            original.ownerID = ownerID;
+            original.guestOwnerID = guestOwnerID;
             original.status = reportDetails.status;
+            original.storageLocation = reportDetails.storageLocation;
 
             await context.SaveChangesAsync();
         }

@@ -186,7 +186,7 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route(("founditems/{itemId}"))]
-        public async Task<ActionResult> UpdateFoundItemReport(int itemId, [FromBody] FoundItemViewModel FoundItemDetails)
+        public async Task<ActionResult> UpdateFoundItemReport(string itemId, [FromBody] FoundItemViewModel FoundItemDetails)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 

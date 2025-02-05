@@ -352,6 +352,13 @@
             <param name="missingItemId">The id of the report to get</param>
             <returns>ObjectResult - an http status code, with a list of Actions Taken objects </returns>
         </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateFoundItemReport(System.String,Gordon360.Models.ViewModels.FoundItemViewModel)">
+            <summary>
+            Update Found Item with the given id with given data
+            </summary>
+            <param name="itemId">The id of the report to update</param>
+            <returns>ObjectResult - the http status code result of the action</returns>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
@@ -2002,6 +2009,7 @@
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Attemps by a non-admin user to get actions for 
             a report which doesn't belong to them will yield an ResourceNotFoundException</exception>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.LostAndFoundService.UpdateFoundItemReportAsync(System.String,Gordon360.Models.ViewModels.FoundItemViewModel,System.String)" -->
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
             Service class to facilitate data transactions between the MembershipRequestController and the database
