@@ -110,7 +110,7 @@ namespace Gordon360.Services
                     missingID = newReportResults.Entity.ID,
                     firstName = reportDetails.firstName,
                     lastName = reportDetails.lastName,
-                    phoneNumber = reportDetails.phone, 
+                    phoneNumber = reportDetails.phone,
                     emailAddress = reportDetails.email,
                 });
 
@@ -151,7 +151,7 @@ namespace Gordon360.Services
             }
 
             // If the reports does not belong to the user, and the user is not an admin
-            if (missingItemReport.submitterID != idNum && !hasFullPermissions(username)) 
+            if (missingItemReport.submitterID != idNum && !hasFullPermissions(username))
             {
                 throw new UnauthorizedAccessException("Cannot modify a report that doesn't belong to you!");
             }
@@ -245,7 +245,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
             }
-            
+
             // If a non-admin user attempts to update the status of a report
             if (original.submitterID != idNum && !hasFullPermissions(username))
             {
@@ -309,12 +309,12 @@ namespace Gordon360.Services
         /// <param name="pageSize">The size of the page to fetch for pagination</param>
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
         /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, 
-                                                                          int? lastId, 
-                                                                          int? pageSize, 
-                                                                          string? status, 
-                                                                          string? color, 
-                                                                          string? category, 
+        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username,
+                                                                          int? lastId,
+                                                                          int? pageSize,
+                                                                          string? status,
+                                                                          string? color,
+                                                                          string? category,
                                                                           string? keywords)
         {
             if (!hasFullPermissions(username))
@@ -334,16 +334,16 @@ namespace Gordon360.Services
             {
                 missingItems = missingItems.Where(x => x.colors.Contains(color));
             }
-            if (category is not null) 
-            { 
+            if (category is not null)
+            {
                 missingItems = missingItems.Where(x => x.category == category);
             }
-            if (keywords is not null) 
+            if (keywords is not null)
             {
-                missingItems = missingItems.Where(x => x.firstName.Contains(keywords) 
-                                                    || x.lastName.Contains(keywords) 
+                missingItems = missingItems.Where(x => x.firstName.Contains(keywords)
+                                                    || x.lastName.Contains(keywords)
                                                     || (x.firstName + " " + x.lastName).Contains(keywords)
-                                                    || x.description.Contains(keywords) 
+                                                    || x.description.Contains(keywords)
                                                     || x.locationLost.Contains(keywords));
             }
 

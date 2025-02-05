@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.ViewModels.Housing;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -226,6 +227,25 @@ namespace Gordon360.Services
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, List<ApartmentApplicantViewModel> newApartmentApplicants, List<ApartmentChoiceViewModel> newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
+        Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model);
+        Task<RA_Status_Schedule> CreateStatusAsync(RA_Status_ScheduleViewModel model, string raId);
+        Task<bool> DeleteRoomRangeAsync(int rangeId);
+        Task<Hall_Assignment_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId);
+        Task<bool> DeleteAssignmentAsync(int rangeId);
+        Task<RD_StudentsViewModel> GetResidentRDAsync(string hallId);
+        Task<RA_StudentsViewModel> GetResidentRAAsync(string hallId, string roomNumber);
+        Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync();
+        Task<List<RA_StudentsViewModel>> GetAllRAsAsync();
+        Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync();
+        Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod);
+        Task<RA_ContactPreference> GetPreferredContactAsync(string raId);
+        Task<bool> RA_CheckinAsync(string[] HallIDs, string raId);
+        Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string hallId);
+        Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync();
+        Task<bool> IsRAOnCallAsync(string raId);
+        Task<bool> IsStudentResidentialAsync(int idNum);
+
+
     }
 
     public interface ILostAndFoundService
@@ -254,7 +274,7 @@ namespace Gordon360.Services
         Task<EnrollmentCheckinHolds> GetHoldsAsync(string id);
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
-        Task<bool> GetStatusAsync(string id);
+        Task<bool> GetStatusAsync(string username);
     }
 
     namespace RecIM
