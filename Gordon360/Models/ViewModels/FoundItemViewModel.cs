@@ -71,6 +71,8 @@ namespace Gordon360.Models.ViewModels
             finderWants = FoundItemDBModel.finderWants,
             status = FoundItemDBModel.status,
             storageLocation = FoundItemDBModel.storageLocation,
+            foundById = FoundItemDBModel.foundByID,
+
             finderFirstName = FoundItemDBModel.finderFirstName,
             finderLastName = FoundItemDBModel.finderLastName,
             finderPhone = FoundItemDBModel.finderPhone,

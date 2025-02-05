@@ -565,5 +565,47 @@ namespace Gordon360.Services
 
             return reportID + (numReportsToday + 1);
         }
+
+        /// <summary>
+        /// Update a found item with given id, to the given report detail data.
+        ///    NOTE: cannot modify associated guest user data, if this report is for guest.
+        /// </summary>
+        /// <param name="itemID">The id of the found item to modify</param>
+        /// <param name="reportDetails">The new object to update to</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>None</returns>
+        /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
+        /// <exception cref="ResourceNotFoundException">If the missing item report with given id cannot be found in the database</exception>
+        /// <exception cref="UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user 
+        public async Task UpdateFoundItemReportAsync(int itemID, FoundItemViewModel reportDetails, string username)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+            // Get requesting user's ID number
+            var idNum = accountService.GetAccountByUsername(username).GordonID;
+
+            var original = await context.FoundItems.FindAsync(idNum);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Found Item Report was not found" };
+            }
+
+            original.matchingMissingID = reportDetails.matchingMissingID;
+            original.category = reportDetails.category;
+            original.colors = string.Join(",", reportDetails.colors);
+            original.brand = reportDetails.brand;
+            original.description = reportDetails.description;
+            original.locationFound = reportDetails.locationFound;
+            original.dateFound = reportDetails.dateFound;
+            original.dateCreated = reportDetails.dateCreated;
+            original.finderWants = reportDetails.finderWants;
+            original.storageLocation = reportDetails.storageLocation;
+            original.status = reportDetails.status;
+
+            await context.SaveChangesAsync();
+        }
     }
 }

@@ -96,8 +96,8 @@ namespace Gordon360.Controllers
         public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems(string? user = null,
                                                                                      int? lastId = null,
                                                                                      int? pageSize = null,
-                                                                                     string? status = null, 
-                                                                                     string? color = null, 
+                                                                                     string? status = null,
+                                                                                     string? color = null,
                                                                                      string? category = null,
                                                                                      string? keywords = null)
         {
@@ -113,7 +113,7 @@ namespace Gordon360.Controllers
             {
                 result = lostAndFoundService.GetMissingItems(user, authenticatedUserUsername);
             }
-            
+
             if (result != null)
             {
                 return Ok(result);
@@ -177,6 +177,22 @@ namespace Gordon360.Controllers
             string reportID = lostAndFoundService.CreateFoundItem(FoundItemDetails, authenticatedUserUsername);
 
             return Ok(reportID);
+        }
+
+        /// <summary>
+        /// Update Found Item with the given id with given data
+        /// </summary>
+        /// <param name="itemId">The id of the report to update</param>
+        /// <returns>ObjectResult - the http status code result of the action</returns>
+        [HttpPut]
+        [Route(("founditems/{itemId}"))]
+        public async Task<ActionResult> UpdateFoundItemReport(int itemId, [FromBody] FoundItemViewModel FoundItemDetails)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            await lostAndFoundService.UpdateFoundItemReportAsync(itemId, FoundItemDetails, authenticatedUserUsername);
+
+            return Ok();
         }
     }
 }
