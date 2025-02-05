@@ -1231,8 +1231,8 @@ public class HousingService(CCTContext context) : IHousingService
             return false;
         }
         
-        context.RA_Status_Events.Remove(existingStatus);
-        //existingStatus.End_Date = DateTime.UtcNow.Date; // Mark status as ended
+        //context.RA_Status_Events.Remove(existingStatus);
+        existingStatus.End_Date = DateTime.UtcNow.Date; // Mark status as ended
         await context.SaveChangesAsync();
         return true;
     }
