@@ -457,7 +457,7 @@
             <summary>
             Deletes a status event for an RA's schedule
             </summary>
-            <param name="statusId">The ID of the status event to delete</param>
+            <param name="statusID">The ID of the status event to delete</param>
             <returns>True if deleted</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetStatusEventsForRA(System.String)">
@@ -2239,7 +2239,7 @@
             <summary>
             Deletes a status event for an RA's schedule
             </summary>
-            <param name="statusId">The ID of the status event to delete</param>
+            <param name="statusID">The ID of the status event to delete</param>
             <returns>True if deleted</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetStatusEventsForRAAsync(System.String)">
