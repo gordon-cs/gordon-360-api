@@ -80,5 +80,32 @@ namespace Gordon360.Models.ViewModels
             ownerPhone = FoundItemDBModel.ownerPhone,
             ownerEmail = FoundItemDBModel.ownerEmail,
         };
+
+        // Create a viewmodel from the FoundItemData and the collection of ActionsTaken
+        public static FoundItemViewModel From(CCT.FoundItemData FoundItemDBModel, IEnumerable<CCT.FoundActionsTakenData> actionsTaken) => new FoundItemViewModel
+        {
+            recordID = FoundItemDBModel.ID,
+            submitterUsername = FoundItemDBModel.submitterUsername,
+            matchingMissingID = FoundItemDBModel.matchingMissingID,
+            category = FoundItemDBModel.category,
+            colors = FoundItemDBModel.colors.Split(',').Select(item => item.Trim()).ToArray(),
+            brand = FoundItemDBModel.brand,
+            description = FoundItemDBModel.description,
+            locationFound = FoundItemDBModel.locationFound,
+            dateFound = FoundItemDBModel.dateFound,
+            dateCreated = FoundItemDBModel.dateCreated,
+            finderWants = FoundItemDBModel.finderWants,
+            status = FoundItemDBModel.status,
+            storageLocation = FoundItemDBModel.storageLocation,
+            finderFirstName = FoundItemDBModel.finderFirstName,
+            finderLastName = FoundItemDBModel.finderLastName,
+            finderPhone = FoundItemDBModel.finderPhone,
+            finderEmail = FoundItemDBModel.finderEmail,
+            ownerFirstName = FoundItemDBModel.ownerFirstName,
+            ownerLastName = FoundItemDBModel.ownerLastName,
+            ownerPhone = FoundItemDBModel.ownerPhone,
+            ownerEmail = FoundItemDBModel.ownerEmail,
+            adminActions = actionsTaken.Select(a => (FoundActionsTakenViewModel)a).ToList(),
+        };
     }
 }

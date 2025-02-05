@@ -178,5 +178,28 @@ namespace Gordon360.Controllers
 
             return Ok(reportID);
         }
+
+        /// <summary>
+        /// Get the list of found items for the currently authenticated user.
+        /// </summary>
+        /// <param name="color">The selected color for filtering items</param>
+        /// <param name="category">The selected category for filtering items</param>
+        /// <param name="ID">The selected tag number/id for filtering by tag number</param>
+        /// <param name="keywords">The selected keywords for filtering by items</param>
+        /// <param name="status">The selected status for filtering items</param>
+        /// <param name="user">Query parameter, default is null and route will get all found items, or if user is set
+        /// route will get found items for the authenticated user</param>
+        /// <returns>ObjectResult - an http status code, with an array of FoundItem objects in the body </returns>
+        [HttpGet]
+        [Route("founditems")]
+        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItems(string? user = null,
+                                                                                     string? status = null,
+                                                                                     string? color = null,
+                                                                                     string? category = null,
+                                                                                     string? ID = null,
+                                                                                     string? keywords = null)
+        {
+            
+        }
     }
 }

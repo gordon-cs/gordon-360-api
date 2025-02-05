@@ -565,5 +565,80 @@ namespace Gordon360.Services
 
             return reportID + (numReportsToday + 1);
         }
+
+        /// <summary>
+        /// Get the list of found items for given user.
+        /// </summary>
+        /// <param name="requestedUsername">The username to get the data of, if allowed</param>
+        /// <param name="requestorUsername">The username of the person making the request</param>
+        /// <returns>an Enumerable of Found Items containing all found items</returns>
+        /// <exception cref="ResourceNotFoundException">If a user requests items they are not permitted to access</exception>
+        public IEnumerable<FoundItemViewModel> GetFoundItems(string requestedUsername, string requestorUsername)
+        {
+            
+        }
+
+        /// <summary>
+        /// Get all found items
+        /// Throw unauthorized access exception if the user doesn't have admin permissions
+        /// </summary>
+        /// <param name="color">The selected color for filtering items</param>
+        /// <param name="category">The selected category for filtering items</param>
+        /// <param name="ID">The selected tag number/id for filtering by tag number</param>
+        /// <param name="keywords">The selected keywords for filtering by keywords</param>
+        /// <param name="status">The selected status for filtering items</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>An enumerable of Found Items, from the Found Item Data view</returns>
+        /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
+        public IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
+                                                                          string? status,
+                                                                          string? color,
+                                                                          string? category,
+                                                                          string? ID,
+                                                                          string? keywords)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            // Initialize database query to get all found items ordered by date found descending
+            IQueryable<FoundItemData> foundItems = context.FoundItemData.OrderByDescending(item => item.dateFound);
+
+            // Add filters to query based on provided filters
+            if (status is not null)
+            {
+                foundItems = foundItems.Where(x => x.status == status);
+            }
+            if (color is not null)
+            {
+                foundItems = foundItems.Where(x => x.colors.Contains(color));
+            }
+            if (category is not null)
+            {
+                foundItems = foundItems.Where(x => x.category == category);
+            }
+            if (ID is not null)
+            {
+                foundItems = foundItems.Where(x => x.ID.Contains(ID));
+            }
+            if (keywords is not null)
+            {
+                foundItems = foundItems.Where(x => x.ownerFirstName.Contains(keywords)
+                                                    || x.ownerLastName.Contains(keywords)
+                                                    || (x.ownerFirstName + " " + x.ownerLastName).Contains(keywords)
+                                                    || x.description.Contains(keywords)
+                                                    || x.locationFound.Contains(keywords));
+            }
+
+            // Perform a group join to create a FoundItemViewModel with actions taken data for each report
+            // Using a group join results in the use of a single SQL query to the db, so is much more performant than
+            // alternative solutions.
+            return foundItems
+                      .GroupJoin(context.FoundActionsTakenData.OrderBy(action => action.actionDate),
+                          foundItem => foundItem.ID,
+                          action => action.foundID,
+                          (foundItem, action) => FoundItemViewModel.From(foundItem, action));
+        }
     }
 }
