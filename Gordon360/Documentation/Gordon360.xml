@@ -464,7 +464,7 @@
             <summary>
             Gets the list of daily status events for an RA
             </summary>
-            <param name="raId"> The ID of the RA</param>
+            <param name="raID"> The ID of the RA</param>
             <returns>The list of daily status events</returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
@@ -2246,7 +2246,7 @@
             <summary>
             Gets the list of daily status events for an RA
             </summary>
-            <param name="raId"> The ID of the RA</param>
+            <param name="raID"> The ID of the RA</param>
             <returns>The list of daily status events</returns>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">

@@ -26,6 +26,7 @@ public partial class RA_Status_Events
 
     public bool Is_Recurring { get; set; }
 
+    [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string Frequency { get; set; }
