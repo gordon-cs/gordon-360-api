@@ -1190,6 +1190,7 @@ public class HousingService(CCTContext context) : IHousingService
     {
         var newStatus = new RA_Status_Events
         {
+            Ra_ID = status.RaID,
             Status_Name = status.StatusName,
             Is_Recurring = status.IsRecurring,
             Frequency = status.Frequency,
@@ -1227,7 +1228,6 @@ public class HousingService(CCTContext context) : IHousingService
 
         if (existingStatus == null)
         {
-            Console.WriteLine($"Status event with ID {statusId} not found.");
             return false;
         }
         

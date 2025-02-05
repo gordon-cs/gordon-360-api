@@ -453,19 +453,19 @@
             <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
             <returns>The created status event</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.DisableStatusEvent(System.Int32)">
+        <member name="M:Gordon360.Controllers.HousingController.DeleteStatusEvent(System.Int32)">
             <summary>
-            Disables a status event for an RA's schedule
+            Deletes a status event for an RA's schedule
             </summary>
             <param name="statusId">The ID of the status event to delete</param>
             <returns>True if deleted</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetStatusEventsForRA(System.String)">
             <summary>
-            Gets the list of status events for an RA
+            Gets the list of daily status events for an RA
             </summary>
             <param name="raId"> The ID of the RA</param>
-            <returns>The list of RA status events</returns>
+            <returns>The list of daily status events</returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
@@ -2235,7 +2235,7 @@
             <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
             <returns>The created status event</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.DisableStatusEventAsync(System.Int32)">
+        <member name="M:Gordon360.Services.HousingService.DeleteStatusEventAsync(System.Int32)">
             <summary>
             Deletes a status event for an RA's schedule
             </summary>
@@ -2244,10 +2244,10 @@
         </member>
         <member name="M:Gordon360.Services.HousingService.GetStatusEventsForRAAsync(System.String)">
             <summary>
-            Gets the list of status events for an RA
+            Gets the list of daily status events for an RA
             </summary>
             <param name="raId"> The ID of the RA</param>
-            <returns>The list of RA status events</returns>
+            <returns>The list of daily status events</returns>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
             <summary>
