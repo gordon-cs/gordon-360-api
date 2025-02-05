@@ -1217,29 +1217,30 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
-    /// Disables a status event for an RA's schedule
+    /// Deletes a status event for an RA's schedule
     /// </summary>
-    /// <param name="statusId">The ID of the status event to disable</param>
-    /// <returns>True if disabled</returns>
-    public async Task<bool> DisableStatusEventAsync(int statusId)
+    /// <param name="statusId">The ID of the status event to delete</param>
+    /// <returns>True if deleted</returns>
+    public async Task<bool> DeleteStatusEventAsync(int statusId)
     {
         var existingStatus = await context.RA_Status_Events.FindAsync(statusId);
 
         if (existingStatus == null)
         {
+            Console.WriteLine($"Status event with ID {statusId} not found.");
             return false;
         }
         
-        existingStatus.End_Date = DateTime.UtcNow.Date;
+        existingStatus.End_Date = DateTime.UtcNow.Date; // Mark status as ended
         await context.SaveChangesAsync();
         return true;
     }
 
     /// <summary>
-    /// Gets the list of status events for an RA
+    /// Gets the list of daily status events for an RA
     /// </summary>
     /// <param name="raId"> The ID of the RA</param>
-    /// <returns>The list of RA status events</returns>
+    /// <returns>The list of daily status events</returns>
     public async Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raId)
     {
         var statusEvents = await context.CurrentStatusEvents

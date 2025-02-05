@@ -701,36 +701,36 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Disables a status event for an RA's schedule
+    /// Deletes a status event for an RA's schedule
     /// </summary>
     /// <param name="statusId">The ID of the status event to delete</param>
-    /// <returns>True if disabled</returns>
-    [HttpPatch]
+    /// <returns>True if deleted</returns>
+    [HttpDelete]
     [Route("ras/status-event/{statusId}")]
-    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
-    public async Task<IActionResult> DisableStatusEvent(int statusId)
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> DeleteStatusEvent(int statusId)
     {
         try
         {
-            var result = await housingService.DisableStatusEventAsync(statusId);
+            var result = await housingService.DeleteStatusEventAsync(statusId);
             if (!result)
             {
                 return NotFound("Status event cannot be found.");
             }
-            return Ok(new { Message = "Statis event has been disabled successfully." });
+            return Ok(new { Message = "Status event has been deleted successfully." });
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { Message = "An error occurred while disabling the status event.", Details = ex.Message });
+            return StatusCode(500, new { Message = "An error occurred while deleting the status event.", Details = ex.Message });
         }
     }
 
     /// <summary>
-    /// Gets the list of status events for an RA
+    /// Gets the list of daily status events for an RA
     /// </summary>
     /// <param name="raId"> The ID of the RA</param>
-    /// <returns>The list of RA status events</returns>
-    [HttpGet("ras/{raId}/status-events")]
+    /// <returns>The list of daily status events</returns>
+    [HttpGet("ras/{raId}/daily-status-events")]
     public async Task<IActionResult> GetStatusEventsForRA(string raId)
     {
         try
