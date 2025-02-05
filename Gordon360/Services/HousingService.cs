@@ -1242,33 +1242,25 @@ public class HousingService(CCTContext context) : IHousingService
     /// </summary>
     /// <param name="raId"> The ID of the RA</param>
     /// <returns>The list of RA status events</returns>
-    public async Task<List<RA_StatusEventsViewModel> GetStatusEventsForRAAsync(string raId)
+    public async Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raId)
     {
-        
+        var statusEvents = await context.CurrentStatusEvents
+            .Where(s => s.Ra_ID == raId)
+            .Select(s => new DailyStatusEventsViewModel
+            {
+                StatusID = s.Status_ID,
+                RaID = s.Ra_ID,
+                StatusName = s.Status_Name,
+                CompletedDate = s.Completed_Date,
+                OccurDate = s.Occur_Date
+            })
+            .ToListAsync();
+
+        return statusEvents;
     }
-    
 
-    /// <summary>
-    /// Gets the list of status events for an RA
-    /// </summary>
-    /// <param name="raId"> The ID of the RA</param>
-    /// <returns>The list of RA status events</returns>
-    //public async Task<List<RA_StatusEventViewModel>> GetStatusEventsForRAAsync(string raId)
-    //{
-    //    var statusEvents = await context.Current_RA_StatusEvents
-    //        .Where(s => s.Ra_ID == raId)
-    //        .Select(s => new DailyStatusEventViewModel
-    //        {
-    //            Status_ID = s.Status_ID,
-    //            Ra_ID = s.Ra_ID,
-    //            Status_Name = s.Status_Name,
-    //            Completed_Date = s.Completed_Date,
-    //            Occur_Date = s.Occur_Date
-    //        })
-    //        .ToListAsync();
 
-    //    return statusEvents;
-    //}
+  
 
 
 }
