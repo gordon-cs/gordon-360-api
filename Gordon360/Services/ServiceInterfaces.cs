@@ -245,6 +245,7 @@ namespace Gordon360.Services
         MissingItemReportViewModel? GetMissingItem(int id, string username);
         IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false, bool elevatedPermissions = false);
         public string CreateFoundItem(FoundItemViewModel reportDetails, string username);
+        public int CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
     }
 
 
