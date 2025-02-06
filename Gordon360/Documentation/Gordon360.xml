@@ -302,7 +302,7 @@
             </summary>
             <returns>A list of room ranges.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetRoomsMissingRanges">
+        <member name="M:Gordon360.Controllers.HousingController.GetMissedRooms">
             <summary>
             Retrieves all rooms with no associated ranges.
             </summary>
@@ -2120,11 +2120,11 @@
             </summary>
             <returns>A list of room ranges.</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.GetRoomsMissingRangesAsync">
+        <member name="M:Gordon360.Services.HousingService.GetMissedRoomsAsync">
             <summary>
-            Retrieves all room ranges.
+            Retrieves all rooms missing a range.
             </summary>
-            <returns>A list of room ranges.</returns>
+            <returns>A list of rooms.</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllRAsAsync">
             <summary>

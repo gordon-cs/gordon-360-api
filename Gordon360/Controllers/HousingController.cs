@@ -274,9 +274,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns>A list of rooms.</returns>
     [HttpGet("roomranges/missedrooms")]
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ROOM_RANGE)]
-    public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetRoomsMissingRanges()
+    public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetMissedRooms()
     {
-        var roomRanges = await housingService.GetRoomsMissingRangesAsync();
+        var roomRanges = await housingService.GetMissedRoomsAsync();
         return Ok(roomRanges);
     }
 

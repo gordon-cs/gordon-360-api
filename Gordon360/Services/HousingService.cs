@@ -786,7 +786,7 @@ public class HousingService(CCTContext context) : IHousingService
     /// Retrieves all rooms missing a range.
     /// </summary>
     /// <returns>A list of rooms.</returns>
-    public async Task<List<MissedRoomsViewModel>> GetRoomsMissingRangesAsync()
+    public async Task<List<MissedRoomsViewModel>> GetMissedRoomsAsync()
     {
         var rooms = await context.Unassigned_Rooms
             .Select(r => new MissedRoomsViewModel
