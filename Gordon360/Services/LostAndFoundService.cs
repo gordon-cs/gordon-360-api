@@ -583,7 +583,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException();
             }
 
-            var original = await context.FoundItems.FindAsync(itemID);
+            var original = context.FoundItems.Find(itemID);
 
             if (original == null)
             {
