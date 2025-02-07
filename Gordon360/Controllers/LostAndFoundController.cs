@@ -186,7 +186,7 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route(("founditems/{itemId}"))]
-        public async Task<ActionResult> UpdateFoundItemReport(string itemId, [FromBody] FoundItemViewModel FoundItemDetails)
+        public async Task<ActionResult> UpdateFoundItem(string itemId, [FromBody] FoundItemViewModel FoundItemDetails)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
@@ -203,11 +203,11 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route("founditems/{itemId}/{status}")]
-        public async Task<ActionResult> UpdateFoundReportStatus(string itemId, string status)
+        public async Task<ActionResult> UpdateFoundStatus(string itemId, string status)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            await lostAndFoundService.UpdateFoundReportStatusAsync(itemId, status, authenticatedUserUsername);
+            await lostAndFoundService.UpdateFoundStatusAsync(itemId, status, authenticatedUserUsername);
 
             return Ok();
         }

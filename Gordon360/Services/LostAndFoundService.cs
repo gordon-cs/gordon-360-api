@@ -575,8 +575,8 @@ namespace Gordon360.Services
         /// <returns>None</returns>
         /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
         /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
-        /// <exception cref="UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user 
-        public async Task UpdateFoundItemReportAsync(string itemID, FoundItemViewModel reportDetails, string username)
+        /// <exception cref="UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user</exception>
+        public async Task UpdateFoundItemAsync(string itemID, FoundItemViewModel reportDetails, string username)
         {
             if (!hasFullPermissions(username))
             {
@@ -640,7 +640,7 @@ namespace Gordon360.Services
         /// <returns>None</returns>
         /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
         /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
-        public async Task UpdateFoundReportStatusAsync(string foundItemID, string status, string username)
+        public async Task UpdateFoundStatusAsync(string foundItemID, string status, string username)
         {
             if (!hasFullPermissions(username))
             {

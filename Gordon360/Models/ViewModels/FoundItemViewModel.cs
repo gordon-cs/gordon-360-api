@@ -32,6 +32,8 @@ namespace Gordon360.Models.ViewModels
 
         public int? foundByGuestID { get; set; }
 
+        public int? guestOwnerID { get; set; }
+
         public bool finderWants { get; set; }
 
         public string status { get; set; }
@@ -72,8 +74,8 @@ namespace Gordon360.Models.ViewModels
             locationFound = FoundItemDBModel.locationFound,
             dateFound = FoundItemDBModel.dateFound,
             dateCreated = FoundItemDBModel.dateCreated,
-            foundByID = FoundItemDBModel.foundByID,
             foundByGuestID = FoundItemDBModel.foundByGuestID,
+            guestOwnerID = FoundItemDBModel.guestOwnerID,
             finderWants = FoundItemDBModel.finderWants,
             status = FoundItemDBModel.status,
             storageLocation = FoundItemDBModel.storageLocation,
