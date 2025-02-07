@@ -194,5 +194,22 @@ namespace Gordon360.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Update the status of the found item report with given id to the given status text
+        /// </summary>
+        /// <param name="itemId">The id of the report to update</param>
+        /// <param name="status"></param>
+        /// <returns>ObjectResult - the http status code result of the action</returns>
+        [HttpPut]
+        [Route("founditems/{itemId}/{status}")]
+        public async Task<ActionResult> UpdateFoundReportStatus(string itemId, string status)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            await lostAndFoundService.UpdateFoundReportStatusAsync(itemId, status, authenticatedUserUsername);
+
+            return Ok();
+        }
     }
 }

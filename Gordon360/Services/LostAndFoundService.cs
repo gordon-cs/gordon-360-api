@@ -629,5 +629,34 @@ namespace Gordon360.Services
 
             await context.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Update the status of a found report with given id, to the given status message
+        ///     Status text must be in the set of allowed statuses, "Active", "Expired", "Deleted", "Found"
+        /// </summary>
+        /// <param name="foundItemID">The id of the missing item to modify</param>
+        /// <param name="status">The new status</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>None</returns>
+        /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
+        /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
+        public async Task UpdateFoundReportStatusAsync(string foundItemID, string status, string username)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+
+            var original = await context.FoundItems.FindAsync(foundItemID);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
+            }
+
+            original.status = status;
+
+            await context.SaveChangesAsync();
+        }
     }
 }

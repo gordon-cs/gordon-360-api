@@ -359,6 +359,14 @@
             <param name="itemId">The id of the report to update</param>
             <returns>ObjectResult - the http status code result of the action</returns>
         </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateFoundReportStatus(System.String,System.String)">
+            <summary>
+            Update the status of the found item report with given id to the given status text
+            </summary>
+            <param name="itemId">The id of the report to update</param>
+            <param name="status"></param>
+            <returns>ObjectResult - the http status code result of the action</returns>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
@@ -2010,6 +2018,20 @@
             a report which doesn't belong to them will yield an ResourceNotFoundException</exception>
         </member>
         <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.LostAndFoundService.UpdateFoundItemReportAsync(System.String,Gordon360.Models.ViewModels.FoundItemViewModel,System.String)" -->
+        <member name="M:Gordon360.Services.LostAndFoundService.UpdateFoundReportStatusAsync(System.String,System.String,System.String)">
+            <summary>
+            Update the status of a found report with given id, to the given status message
+                Status text must be in the set of allowed statuses, "Active", "Expired", "Deleted", "Found"
+            </summary>
+            <param name="foundItemID">The id of the missing item to modify</param>
+            <param name="status">The new status</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>None</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If not account can be found for the requesting user</exception>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the missing item report with given id cannot be found in the database</exception>
+            <exception cref="T:System.UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user and the
+            user is not an admin</exception>
+        </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
             Service class to facilitate data transactions between the MembershipRequestController and the database
