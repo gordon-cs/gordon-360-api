@@ -634,7 +634,7 @@ namespace Gordon360.Services
         /// Update the status of a found report with given id, to the given status message
         ///     Status text must be in the set of allowed statuses, "Active", "Expired", "Deleted", "Found"
         /// </summary>
-        /// <param name="foundItemID">The id of the missing item to modify</param>
+        /// <param name="foundItemID">The id of the found item to modify</param>
         /// <param name="status">The new status</param>
         /// <param name="username">The username of the person making the request</param>
         /// <returns>None</returns>
