@@ -402,6 +402,12 @@
             </summary>
             <returns>The RAs on call with their details</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRACurrentHalls(System.String)">
+            <summary>
+            Gets the on-call RA's current halls.
+            </summary>
+            <returns>The Building codes the RA is checked in to</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.IsRAOnCall(System.String)">
             <summary>
             Checks if an RA is currently on call.
@@ -2172,6 +2178,12 @@
              <returns>true if RA checked in successfully</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAAllHallsAsync">
+            <summary>
+            Gets the on-call RAs for all halls.
+            </summary>
+            <returns>The RAs on call</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetOnCallRAHallsAsync(System.String)">
             <summary>
             Gets the on-call RAs for all halls.
             </summary>

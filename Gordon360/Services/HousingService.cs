@@ -1027,6 +1027,19 @@ public class HousingService(CCTContext context) : IHousingService
             return onCallRAs;
         }
 
+    /// <summary>
+    /// Gets the on-call RA's current halls
+    /// </summary>
+    /// <param name="userName">The username of the ra</param>
+    /// <returns>The RA's current halls</returns>
+    public async Task<List<string>> GetOnCallRAHallsAsync(string userName)
+    {
+        return await context.Current_On_Call
+            .Where(oncall => oncall.RA_UserName == userName)
+            .Select(oncall => oncall.Hall_ID)
+            .ToListAsync();
+    }
+
 
     /// <summary>
     /// Checks if an RA is currently on call.

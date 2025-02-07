@@ -538,6 +538,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Gets the on-call RA's current halls
+    /// </summary>
+    /// <param name="userName">The username of the ra</param>
+    /// <returns>The RA's current halls</returns>
+    [HttpGet("halls/on-calls/{userName}/locations")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ON_CALL_RA)]
+    public async Task<ActionResult<List<string>>> GetRACurrentHalls([FromRoute] string userName)
+    {
+        var Halls = await housingService.GetOnCallRAHallsAsync(userName);
+
+        if (Halls == null || !Halls.Any())
+        {
+            return NotFound("No check-in locations found");
+        }
+
+        return Ok(Halls);
+    }
+
+    /// <summary>
     /// Checks if an RA is currently on call.
     /// </summary>
     /// <param name="raId">The ID of the RA</param>

@@ -242,6 +242,7 @@ namespace Gordon360.Services
         Task<bool> RA_CheckinAsync(string[] HallIDs, string raId);
         Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string hallId);
         Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync();
+        Task<List<string>> GetOnCallRAHallsAsync(string userName);
         Task<bool> IsRAOnCallAsync(string raId);
         Task<bool> IsStudentResidentialAsync(int idNum);
         Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task);
