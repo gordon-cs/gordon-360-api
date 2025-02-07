@@ -2002,6 +2002,16 @@
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Attemps by a non-admin user to get actions for 
             a report which doesn't belong to them will yield an ResourceNotFoundException</exception>
         </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItem(System.String,System.String)">
+            <summary>
+            Gets a found item by ID, only allowed for admin users
+            </summary>
+            <param name="foundItemID">The ID of the found item</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>A Found Item object</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the report with given ID doesn't exist or the user
+            doesn't have permissions to read it</exception>
+        </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
             Service class to facilitate data transactions between the MembershipRequestController and the database

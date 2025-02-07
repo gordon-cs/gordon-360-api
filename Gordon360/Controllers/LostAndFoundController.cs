@@ -178,5 +178,14 @@ namespace Gordon360.Controllers
 
             return Ok(reportID);
         }
+
+        [HttpGet]
+        [Route(("founditems/{itemID}"))]
+        public ActionResult<FoundItemViewModel> GetFoundItem(string itemID)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            return Ok(lostAndFoundService.GetFoundItem(itemID, authenticatedUserUsername));
+        }
     }
 }
