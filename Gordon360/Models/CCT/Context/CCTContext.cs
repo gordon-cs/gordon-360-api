@@ -322,13 +322,11 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<FoundActionsTaken>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__FoundAct__3214EC27331AE340");
-
-            entity.Property(e => e.ID).ValueGeneratedNever();
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC2744C7D4F3");
 
             entity.HasOne(d => d.found).WithMany(p => p.FoundActionsTaken)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__FoundActi__found__48B0A244");
+                .HasConstraintName("FK__FoundActi__found__0000D72E");
         });
 
         modelBuilder.Entity<FoundActionsTakenData>(entity =>

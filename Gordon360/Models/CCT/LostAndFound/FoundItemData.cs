@@ -81,6 +81,14 @@ public partial class FoundItemData
     [Unicode(false)]
     public string submitterUsername { get; set; }
 
+    [StringLength(50)]
+    [Unicode(false)]
+    public string finderUsername { get; set; }
+
+    [StringLength(50)]
+    [Unicode(false)]
+    public string ownerUsername { get; set; }
+
     [StringLength(255)]
     [Unicode(false)]
     public string finderFirstName { get; set; }
