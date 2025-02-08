@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Graph;
 using Serilog;
 using System;
@@ -564,6 +565,40 @@ namespace Gordon360.Services
             }
 
             return reportID + (numReportsToday + 1);
+        }
+
+        /// <summary>
+        /// Gets a found item by ID, only allowed for admin users
+        /// </summary>
+        /// <param name="foundItemID">The ID of the found item</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>A Found Item object</returns>
+        /// <exception cref="ResourceNotFoundException">If the report with given ID doesn't exist or the user
+        /// doesn't have permissions to read it</exception>
+        public FoundItemViewModel GetFoundItem(string foundItemID, string username)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+
+            FoundItemViewModel report;
+            
+            var data = context.FoundItemData.FirstOrDefault(x => x.ID == foundItemID);
+            if (data != null)
+            {
+                report = (FoundItemViewModel)data;
+
+                // Get the list of all admin actions on this report, and add them to the report.
+                report.adminActions = context.FoundActionsTakenData.Where(x => x.foundID == foundItemID)
+                                                                    .Select(x => (FoundActionsTakenViewModel)x);
+            }
+            else
+            {
+                // If no such report exists
+                throw new ResourceNotFoundException();
+            }
+            return report;
         }
     }
 }
