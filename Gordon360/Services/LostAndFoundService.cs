@@ -340,10 +340,8 @@ namespace Gordon360.Services
             }
             if (keywords is not null)
             {
-                missingItems = missingItems.Where(x => x.firstName.Contains(keywords)
-                                                    || x.lastName.Contains(keywords)
-                                                    || (x.firstName + " " + x.lastName).Contains(keywords)
-                                                    || x.description.Contains(keywords)
+                missingItems = missingItems.Where(x => (x.firstName + " " + x.lastName).Contains(keywords)
+                                                    || x.description.Contains(keywords) 
                                                     || x.locationLost.Contains(keywords));
             }
 
@@ -352,9 +350,8 @@ namespace Gordon360.Services
             {
                 missingItems = missingItems.Where(item => item.ID < lastId);
             }
-            if (pageSize is not null)
+            if (pageSize is int pageLength)
             {
-                int pageLength = pageSize ?? default(int);
                 missingItems = missingItems.Take(pageLength);
             }
 
