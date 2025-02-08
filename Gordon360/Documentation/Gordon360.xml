@@ -302,6 +302,12 @@
             </summary>
             <returns>A list of room ranges.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetMissedRooms">
+            <summary>
+            Retrieves all rooms with no associated ranges.
+            </summary>
+            <returns>A list of rooms.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.DeleteRoomRange(System.Int32)">
             <summary>
             Deletes a Room Range
@@ -2118,6 +2124,12 @@
             Retrieves all room ranges.
             </summary>
             <returns>A list of room ranges.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetMissedRoomsAsync">
+            <summary>
+            Retrieves all rooms missing a range.
+            </summary>
+            <returns>A list of rooms.</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllRAsAsync">
             <summary>
