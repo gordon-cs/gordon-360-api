@@ -74,6 +74,7 @@ namespace Gordon360.Models.ViewModels
             locationFound = FoundItemDBModel.locationFound,
             dateFound = FoundItemDBModel.dateFound,
             dateCreated = FoundItemDBModel.dateCreated,
+            finderUsername = FoundItemDBModel.finderUsername,
             foundByGuestID = FoundItemDBModel.foundByGuestID,
             guestOwnerID = FoundItemDBModel.guestOwnerID,
             finderWants = FoundItemDBModel.finderWants,

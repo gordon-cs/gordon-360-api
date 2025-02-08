@@ -491,7 +491,7 @@ namespace Gordon360.Services
             {
                 finderID = accountService.GetAccountByUsername(FoundItemDetails.finderUsername).GordonID;
             }
-            else if (FoundItemDetails.finderFirstName != null || FoundItemDetails.finderLastName != null)
+            else if (FoundItemDetails.finderFirstName != null && FoundItemDetails.finderLastName != null)
             {
                 var guestFinderResults = context.FoundGuest.Add(new FoundGuest
                 {
@@ -513,7 +513,7 @@ namespace Gordon360.Services
             {
                 ownerID = accountService.GetAccountByUsername(FoundItemDetails.ownerUsername).GordonID;
             }
-            else if (FoundItemDetails.ownerFirstName != null || FoundItemDetails.ownerLastName != null)
+            else if (FoundItemDetails.ownerFirstName != null && FoundItemDetails.ownerLastName != null)
             {
                 var guestOwnerResults = context.FoundGuest.Add(new FoundGuest
                 {
@@ -570,13 +570,13 @@ namespace Gordon360.Services
         /// Update a found item with given id, to the given report detail data.
         /// </summary>
         /// <param name="itemID">The id of the found item to modify</param>
-        /// <param name="reportDetails">The new object to update to</param>
+        /// <param name="itemDetails">The new object to update to</param>
         /// <param name="username">The username of the person making the request</param>
         /// <returns>None</returns>
         /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
         /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
         /// <exception cref="UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user</exception>
-        public async Task UpdateFoundItemAsync(string itemID, FoundItemViewModel reportDetails, string username)
+        public async Task UpdateFoundItemAsync(string itemID, FoundItemViewModel itemDetails, string username)
         {
             if (!hasFullPermissions(username))
             {
@@ -590,44 +590,106 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Found Item Report was not found" };
             }
 
-            string? ownerID = null;
-            int? guestOwnerID = null;
-            if (reportDetails.ownerUsername != null)
-            {
-                ownerID = accountService.GetAccountByUsername(reportDetails.ownerUsername).GordonID;
-            }
-            else if (reportDetails.ownerFirstName != null || reportDetails.ownerLastName != null)
-            {
-                var guestOwnerResults = context.FoundGuest.Add(new FoundGuest
-                {
-                    firstName = reportDetails.ownerFirstName,
-                    lastName = reportDetails.ownerLastName,
-                    phoneNumber = reportDetails.ownerPhone,
-                    emailAddress = reportDetails.ownerEmail,
-                });
+            (int? guestFinderID, string? finderID) = FoundDataHelper(itemDetails.finderFirstName,
+                            itemDetails.finderLastName,
+                            itemDetails.finderPhone,
+                            itemDetails.finderEmail,
+                            itemDetails.finderUsername,
+                            original.foundByGuestID);
 
-                context.SaveChanges();
+            (int? guestOwnerID, string? ownerID) = FoundDataHelper(itemDetails.ownerFirstName,
+                            itemDetails.ownerLastName,
+                            itemDetails.ownerPhone,
+                            itemDetails.ownerEmail,
+                            itemDetails.ownerUsername,
+                            original.guestOwnerID);
 
-                guestOwnerID = guestOwnerResults.Entity.ID;
-            }
-
-            original.matchingMissingID = reportDetails.matchingMissingID;
-            original.category = reportDetails.category;
-            original.colors = string.Join(",", reportDetails.colors);
-            original.brand = reportDetails.brand;
-            original.description = reportDetails.description;
-            original.locationFound = reportDetails.locationFound;
-            original.dateFound = reportDetails.dateFound;
-            original.dateCreated = reportDetails.dateCreated;
-            original.foundByID = reportDetails.foundByID;
-            original.foundByGuestID = reportDetails.foundByGuestID;
-            original.finderWants = reportDetails.finderWants;
+            original.matchingMissingID = itemDetails.matchingMissingID;
+            original.category = itemDetails.category;
+            original.colors = string.Join(",", itemDetails.colors);
+            original.brand = itemDetails.brand;
+            original.description = itemDetails.description;
+            original.locationFound = itemDetails.locationFound;
+            original.dateFound = itemDetails.dateFound;
+            original.dateCreated = itemDetails.dateCreated;
+            original.foundByID = finderID;
+            original.foundByGuestID = guestFinderID;
+            original.finderWants = itemDetails.finderWants;
             original.ownerID = ownerID;
             original.guestOwnerID = guestOwnerID;
-            original.status = reportDetails.status;
-            original.storageLocation = reportDetails.storageLocation;
+            original.status = itemDetails.status;
+            original.storageLocation = itemDetails.storageLocation;
 
             await context.SaveChangesAsync();
+        }
+
+        //HELPER FUNCTION
+        private (int?, string?) FoundDataHelper(string? guestFirstName, 
+                                             string? guestLastName, 
+                                             string? guestPhone, 
+                                             string? guestEmail, 
+                                             string? username, 
+                                             int? DBGuestID)
+        {
+            int? guestID = null;
+            string? newID = null;
+            // Add new found guest if one does not already exist
+            if (guestFirstName != null && guestLastName != null)
+            {
+                if (DBGuestID == null)
+                {
+                    var guestResults = context.FoundGuest.Add(new FoundGuest
+                    {
+                        firstName = guestFirstName,
+                        lastName = guestLastName,
+                        phoneNumber = guestPhone,
+                        emailAddress = guestEmail,
+                    });
+
+                    context.SaveChanges();
+
+                    guestID = guestResults.Entity.ID;
+                }
+                // Update Found Guest if guestID is not null
+                else
+                {
+                    var originalGuest = context.FoundGuest.Find(DBGuestID);
+
+                    if (originalGuest == null)
+                    {
+                        throw new ResourceNotFoundException() { ExceptionMessage = "The Found Guest was not found" };
+                    }
+
+                    originalGuest.firstName = guestFirstName;
+                    originalGuest.lastName = guestLastName;
+                    originalGuest.phoneNumber = guestPhone;
+                    originalGuest.emailAddress = guestEmail;
+
+                    context.SaveChanges();
+
+                    guestID = DBGuestID;
+                }
+
+            }
+            // Delete Guest if there was one already in the database
+            else if (DBGuestID != null)
+            {
+                var originalGuest = context.FoundGuest.Find(DBGuestID);
+
+                if (originalGuest == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The Found Guest was not found" };
+                }
+
+                context.FoundGuest.Remove(originalGuest);
+            }
+
+            if (username != null)
+            {
+                newID = accountService.GetAccountByUsername(username).GordonID;
+            }
+
+            return (guestID, newID);
         }
 
         /// <summary>

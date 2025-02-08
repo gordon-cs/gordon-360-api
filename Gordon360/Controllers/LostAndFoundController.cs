@@ -190,7 +190,7 @@ namespace Gordon360.Controllers
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            await lostAndFoundService.UpdateFoundItemReportAsync(itemId, FoundItemDetails, authenticatedUserUsername);
+            await lostAndFoundService.UpdateFoundItemAsync(itemId, FoundItemDetails, authenticatedUserUsername);
 
             return Ok();
         }
