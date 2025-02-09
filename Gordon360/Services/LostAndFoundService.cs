@@ -110,7 +110,7 @@ namespace Gordon360.Services
                     missingID = newReportResults.Entity.ID,
                     firstName = reportDetails.firstName,
                     lastName = reportDetails.lastName,
-                    phoneNumber = reportDetails.phone, 
+                    phoneNumber = reportDetails.phone,
                     emailAddress = reportDetails.email,
                 });
 
@@ -151,7 +151,7 @@ namespace Gordon360.Services
             }
 
             // If the reports does not belong to the user, and the user is not an admin
-            if (missingItemReport.submitterID != idNum && !hasFullPermissions(username)) 
+            if (missingItemReport.submitterID != idNum && !hasFullPermissions(username))
             {
                 throw new UnauthorizedAccessException("Cannot modify a report that doesn't belong to you!");
             }
@@ -245,7 +245,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
             }
-            
+
             // If a non-admin user attempts to update the status of a report
             if (original.submitterID != idNum && !hasFullPermissions(username))
             {
@@ -300,25 +300,71 @@ namespace Gordon360.Services
         /// Get all missing item reports
         /// Throw unauthorized access exception if the user doesn't have admin permissions
         /// </summary>
+        /// <param name="color">The selected color for filtering reports</param>
+        /// <param name="category">The selected category for filtering reports</param>
+        /// <param name="keywords">The selected keywords for filtering by keywords</param>
+        /// <param name="status">The selected status for filtering reports</param>
         /// <param name="username">The username of the person making the request</param>
+        /// <param name="lastId">The ID of the last fetched report to start from for pagination</param>
+        /// <param name="pageSize">The size of the page to fetch for pagination</param>
         /// <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
         /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
-        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username)
+        public IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username,
+                                                                          int? lastId,
+                                                                          int? pageSize,
+                                                                          string? status,
+                                                                          string? color,
+                                                                          string? category,
+                                                                          string? keywords)
         {
             if (!hasFullPermissions(username))
             {
                 throw new UnauthorizedAccessException();
             }
 
+            // Initialize database query to get all missing items ordered by date lost
+            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderByDescending(item => item.ID);
+
+            // Add filters to query based on provided filters
+            if (status is not null)
+            {
+                missingItems = missingItems.Where(x => x.status == status);
+            }
+            if (color is not null)
+            {
+                missingItems = missingItems.Where(x => x.colors.Contains(color));
+            }
+            if (category is not null)
+            {
+                missingItems = missingItems.Where(x => x.category == category);
+            }
+            if (keywords is not null)
+            {
+                missingItems = missingItems.Where(x => (x.firstName + " " + x.lastName).Contains(keywords)
+                                                    || x.description.Contains(keywords) 
+                                                    || x.locationLost.Contains(keywords));
+            }
+
+            // Finally paginate filtered reports, based on the last ID the frontend received, and the size of the page to get
+            if (lastId is not null)
+            {
+                missingItems = missingItems.Where(item => item.ID < lastId);
+            }
+            if (pageSize is int pageLength)
+            {
+                missingItems = missingItems.Take(pageLength);
+            }
+
             // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
-            // Only performs a single SQL query to the db, so much more performant than alternative solutions
-            return context.MissingItemData
-                .GroupJoin(context.ActionsTakenData.OrderBy(action => action.actionDate),
-                    missingItem => missingItem.ID,
-                    action => action.missingID,
-                    (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
+            // Using a group join results in the use of a single SQL query to the db, so is much more performant than
+            // alternative solutions.
+            return missingItems
+                      .GroupJoin(context.ActionsTakenData.OrderBy(action => action.actionDate),
+                          missingItem => missingItem.ID,
+                          action => action.missingID,
+                          (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
         }
-        
+
         /// <summary>
         /// Gets a Missing by id, only allowed if it belongs to the username, or the user is an admin
         /// </summary>
