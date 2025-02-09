@@ -581,8 +581,7 @@ namespace Gordon360.Services
                 // If this is an admin user, get the items for the requested username
                 return context.FoundItemData
                .Where(x => x.submitterUsername == requestedUsername)
-               .GroupJoin(context.FoundActionsTakenData
-               .Where(x => x.isPublic),
+               .GroupJoin(context.FoundActionsTakenData,
                    foundItem => foundItem.ID,
                    action => action.foundID,
                    (foundItem, action) => FoundItemViewModel.From(foundItem, action));
@@ -597,8 +596,7 @@ namespace Gordon360.Services
 
                 return context.FoundItemData
                .Where(x => x.submitterUsername == requestedUsername)
-               .GroupJoin(context.FoundActionsTakenData
-               .Where(x => x.isPublic),
+               .GroupJoin(context.FoundActionsTakenData,
                    foundItem => foundItem.ID,
                    action => action.foundID,
                    (foundItem, action) => FoundItemViewModel.From(foundItem, action));

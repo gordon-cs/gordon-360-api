@@ -246,6 +246,13 @@ namespace Gordon360.Services
         IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false, bool elevatedPermissions = false);
         public string CreateFoundItem(FoundItemViewModel reportDetails, string username);
         public int CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
+        IEnumerable<FoundItemViewModel> GetFoundItems(string requestedUsername, string requestorUsername);
+        IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
+                                                                   string? status,
+                                                                   string? color,
+                                                                   string? category,
+                                                                   string? ID,
+                                                                   string? keywords);
         public FoundItemViewModel GetFoundItem(string foundItemID, string username);
     }
 
