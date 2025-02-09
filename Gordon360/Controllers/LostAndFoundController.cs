@@ -212,5 +212,30 @@ namespace Gordon360.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Update Found Item Report with the given id with given data
+        /// </summary>
+        /// <param name="foundItemId">The id of the report to update</param>
+        /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
+        [HttpPost]
+        [Route("founditems/{foundItemId}/actionstaken")]
+        public ActionResult<int> CreateFoundActionTaken(string foundItemId, [FromBody] FoundActionsTakenViewModel FoundActionsTaken)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            int actionId = lostAndFoundService.CreateFoundActionTaken(foundItemId, FoundActionsTaken, authenticatedUserUsername);
+
+            return Ok(actionId);
+        }
+        
+        [HttpGet]
+        [Route(("founditems/{itemID}"))]
+        public ActionResult<FoundItemViewModel> GetFoundItem(string itemID)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            return Ok(lostAndFoundService.GetFoundItem(itemID, authenticatedUserUsername));
+        }
     }
 }
