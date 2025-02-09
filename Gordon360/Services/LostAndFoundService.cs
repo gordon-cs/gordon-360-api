@@ -667,6 +667,7 @@ namespace Gordon360.Services
                           foundItem => foundItem.ID,
                           action => action.foundID,
                           (foundItem, action) => FoundItemViewModel.From(foundItem, action));
+        }
                           
         /// Create an action taken for the found item report with given id
         /// </summary>

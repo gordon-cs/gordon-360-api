@@ -221,6 +221,7 @@ namespace Gordon360.Controllers
             {
                 return NotFound();
             }
+        }
             
         /// Update Found Item Report with the given id with given data
         /// </summary>
