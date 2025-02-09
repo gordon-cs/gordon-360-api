@@ -193,8 +193,7 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - an http status code, with an array of FoundItem objects in the body </returns>
         [HttpGet]
         [Route("founditems")]
-        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItems(string? user = null,
-                                                                           string? status = null,
+        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItems(string? status = null,
                                                                            string? color = null,
                                                                            string? category = null,
                                                                            string? ID = null,
@@ -204,23 +203,9 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             // If no username specified in the query, get all items
-            if (user == null)
-            {
-                result = lostAndFoundService.GetFoundItemsAll(authenticatedUserUsername, status, color, category, ID, keywords);
-            }
-            else
-            {
-                result = lostAndFoundService.GetFoundItems(user, authenticatedUserUsername);
-            }
+            result = lostAndFoundService.GetFoundItemsAll(authenticatedUserUsername, status, color, category, ID, keywords);
 
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return NotFound();
-            }
+            return Ok(result);
         }
             
         /// Update Found Item Report with the given id with given data
