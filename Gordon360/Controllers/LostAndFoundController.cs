@@ -97,8 +97,8 @@ namespace Gordon360.Controllers
         public ActionResult<IEnumerable<MissingItemReportViewModel>> GetMissingItems(string? user = null,
                                                                                      int? lastId = null,
                                                                                      int? pageSize = null,
-                                                                                     string? status = null, 
-                                                                                     string? color = null, 
+                                                                                     string? status = null,
+                                                                                     string? color = null,
                                                                                      string? category = null,
                                                                                      string? keywords = null)
         {
@@ -114,7 +114,7 @@ namespace Gordon360.Controllers
             {
                 result = lostAndFoundService.GetMissingItems(user, authenticatedUserUsername);
             }
-            
+
             if (result != null)
             {
                 return Ok(result);
@@ -180,7 +180,65 @@ namespace Gordon360.Controllers
             return Ok(reportID);
         }
 
+        /// Update Found Item with the given id with given data
+        /// </summary>
+        /// <param name="itemId">The id of the report to update</param>
+        /// <param name="FoundItemDetails">The found item details passed by the front end</param>
+        /// <returns>ObjectResult - the http status code result of the action</returns>
+        [HttpPut]
+        [Route(("founditems/{itemId}"))]
+        public async Task<ActionResult> UpdateFoundItem(string itemId, [FromBody] FoundItemViewModel FoundItemDetails)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            await lostAndFoundService.UpdateFoundItemAsync(itemId, FoundItemDetails, authenticatedUserUsername);
+
+            return Ok();
+        }
+
         /// <summary>
+        /// Update the status of the found item report with given id to the given status text
+        /// </summary>
+        /// <param name="itemId">The id of the report to update</param>
+        /// <param name="status"></param>
+        /// <returns>ObjectResult - the http status code result of the action</returns>
+        [HttpPut]
+        [Route("founditems/{itemId}/{status}")]
+        public async Task<ActionResult> UpdateFoundStatus(string itemId, string status)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            await lostAndFoundService.UpdateFoundStatusAsync(itemId, status, authenticatedUserUsername);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Update Found Item Report with the given id with given data
+        /// </summary>
+        /// <param name="foundItemId">The id of the report to update</param>
+        /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
+        [HttpPost]
+        [Route("founditems/{foundItemId}/actionstaken")]
+        public ActionResult<int> CreateFoundActionTaken(string foundItemId, [FromBody] FoundActionsTakenViewModel FoundActionsTaken)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            int actionId = lostAndFoundService.CreateFoundActionTaken(foundItemId, FoundActionsTaken, authenticatedUserUsername);
+
+            return Ok(actionId);
+        }
+        
+        [HttpGet]
+        [Route(("founditems/{itemID}"))]
+        public ActionResult<FoundItemViewModel> GetFoundItem(string itemID)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            return Ok(lostAndFoundService.GetFoundItem(itemID, authenticatedUserUsername));
+        }
+        
+         /// <summary>
         /// Get the list of found items for the currently authenticated user.
         /// </summary>
         /// <param name="color">The selected color for filtering items</param>
@@ -206,30 +264,6 @@ namespace Gordon360.Controllers
             result = lostAndFoundService.GetFoundItemsAll(authenticatedUserUsername, status, color, category, ID, keywords);
 
             return Ok(result);
-        }
-            
-        /// Update Found Item Report with the given id with given data
-        /// </summary>
-        /// <param name="foundItemId">The id of the report to update</param>
-        /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
-        [HttpPost]
-        [Route("founditems/{foundItemId}/actionstaken")]
-        public ActionResult<int> CreateFoundActionTaken(string foundItemId, [FromBody] FoundActionsTakenViewModel FoundActionsTaken)
-        {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-
-            int actionId = lostAndFoundService.CreateFoundActionTaken(foundItemId, FoundActionsTaken, authenticatedUserUsername);
-
-            return Ok(actionId);
-        }
-        
-        [HttpGet]
-        [Route(("founditems/{itemID}"))]
-        public ActionResult<FoundItemViewModel> GetFoundItem(string itemID)
-        {
-            var authenticatedUserUsername = AuthUtils.GetUsername(User);
-
-            return Ok(lostAndFoundService.GetFoundItem(itemID, authenticatedUserUsername));
         }
     }
 }

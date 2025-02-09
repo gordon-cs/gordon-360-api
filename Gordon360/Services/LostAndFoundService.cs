@@ -492,7 +492,7 @@ namespace Gordon360.Services
             {
                 finderID = accountService.GetAccountByUsername(FoundItemDetails.finderUsername).GordonID;
             }
-            else if (FoundItemDetails.finderFirstName != null || FoundItemDetails.finderLastName != null)
+            else if (FoundItemDetails.finderFirstName != null && FoundItemDetails.finderLastName != null)
             {
                 var guestFinderResults = context.FoundGuest.Add(new FoundGuest
                 {
@@ -514,7 +514,7 @@ namespace Gordon360.Services
             {
                 ownerID = accountService.GetAccountByUsername(FoundItemDetails.ownerUsername).GordonID;
             }
-            else if (FoundItemDetails.ownerFirstName != null || FoundItemDetails.ownerLastName != null)
+            else if (FoundItemDetails.ownerFirstName != null && FoundItemDetails.ownerLastName != null)
             {
                 var guestOwnerResults = context.FoundGuest.Add(new FoundGuest
                 {
@@ -705,6 +705,173 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException();
             }
             return report;
+        }
+
+        /// <summary>
+        /// Update a found item with given id, to the given report detail data.
+        /// </summary>
+        /// <param name="itemID">The id of the found item to modify</param>
+        /// <param name="itemDetails">The new object to update to</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>None</returns>
+        /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
+        /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
+        /// <exception cref="UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user</exception>
+        public async Task UpdateFoundItemAsync(string itemID, FoundItemViewModel itemDetails, string username)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+
+            var original = await context.FoundItems.FindAsync(itemID);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Found Item Report was not found" };
+            }
+
+            (int? guestFinderID, string? finderID) = FoundDataHelper(itemDetails.finderFirstName,
+                            itemDetails.finderLastName,
+                            itemDetails.finderPhone,
+                            itemDetails.finderEmail,
+                            itemDetails.finderUsername,
+                            original.foundByGuestID);
+
+            (int? guestOwnerID, string? ownerID) = FoundDataHelper(itemDetails.ownerFirstName,
+                            itemDetails.ownerLastName,
+                            itemDetails.ownerPhone,
+                            itemDetails.ownerEmail,
+                            itemDetails.ownerUsername,
+                            original.guestOwnerID);
+
+            original.matchingMissingID = itemDetails.matchingMissingID;
+            original.category = itemDetails.category;
+            original.colors = string.Join(",", itemDetails.colors);
+            original.brand = itemDetails.brand;
+            original.description = itemDetails.description;
+            original.locationFound = itemDetails.locationFound;
+            original.dateFound = itemDetails.dateFound;
+            original.dateCreated = itemDetails.dateCreated;
+            original.foundByID = finderID;
+            original.foundByGuestID = guestFinderID;
+            original.finderWants = itemDetails.finderWants;
+            original.ownerID = ownerID;
+            original.guestOwnerID = guestOwnerID;
+            original.status = itemDetails.status;
+            original.storageLocation = itemDetails.storageLocation;
+
+            await context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Helper function to edit FoundGuest table
+        /// </summary>
+        /// <param name="guestFirstName">The guest first name</param>
+        /// <param name="guestLastName">The guest last name</param>
+        /// <param name="guestPhone">The guest phone number</param>
+        /// <param name="guestEmail">The guest phone number</param>
+        /// <param name="username">The username of the guest</param>
+        /// <param name="DBGuestID">The ID of the guest</param>
+        /// <returns>
+        /// guestID, newID
+        /// </returns>
+        /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
+        private (int?, string?) FoundDataHelper(string? guestFirstName, 
+                                             string? guestLastName, 
+                                             string? guestPhone, 
+                                             string? guestEmail, 
+                                             string? username, 
+                                             int? DBGuestID)
+        {
+            int? guestID = null;
+            string? newID = null;
+            if (guestFirstName != null && guestLastName != null)
+            {
+                // Add new found guest if one does not already exist
+                if (DBGuestID == null)
+                {
+                    var guestResults = context.FoundGuest.Add(new FoundGuest
+                    {
+                        firstName = guestFirstName,
+                        lastName = guestLastName,
+                        phoneNumber = guestPhone,
+                        emailAddress = guestEmail,
+                    });
+
+                    context.SaveChanges();
+
+                    guestID = guestResults.Entity.ID;
+                }
+                // Update Found Guest if guestID is not null
+                else
+                {
+                    var originalGuest = context.FoundGuest.Find(DBGuestID);
+
+                    if (originalGuest == null)
+                    {
+                        throw new ResourceNotFoundException() { ExceptionMessage = "The Found Guest was not found" };
+                    }
+
+                    originalGuest.firstName = guestFirstName;
+                    originalGuest.lastName = guestLastName;
+                    originalGuest.phoneNumber = guestPhone;
+                    originalGuest.emailAddress = guestEmail;
+
+                    context.SaveChanges();
+
+                    guestID = DBGuestID;
+                }
+
+            }
+            // Delete Guest if there was one already in the database
+            else if (DBGuestID != null)
+            {
+                var originalGuest = context.FoundGuest.Find(DBGuestID);
+
+                if (originalGuest == null)
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "The Found Guest was not found" };
+                }
+
+                context.FoundGuest.Remove(originalGuest);
+            }
+
+            if (username != null)
+            {
+                newID = accountService.GetAccountByUsername(username).GordonID;
+            }
+
+            return (guestID, newID);
+        }
+
+        /// <summary>
+        /// Update the status of a found report with given id, to the given status message
+        ///     Status text must be in the set of allowed statuses, "Active", "Expired", "Deleted", "Found"
+        /// </summary>
+        /// <param name="foundItemID">The id of the found item to modify</param>
+        /// <param name="status">The new status</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>None</returns>
+        /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
+        /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
+        public async Task UpdateFoundStatusAsync(string foundItemID, string status, string username)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+
+            var original = await context.FoundItems.FindAsync(foundItemID);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
+            }
+
+            original.status = status;
+
+            await context.SaveChangesAsync();
         }
     }
 }
