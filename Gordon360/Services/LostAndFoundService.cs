@@ -3,7 +3,6 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Graph;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -466,6 +465,14 @@ namespace Gordon360.Services
             return actionsList.Select(x => (ActionsTakenViewModel)x);
         }
 
+        /// <summary>
+        /// Create a new found item
+        /// </summary>
+        /// <param name="FoundItemDetails">The details of the report to create</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>String - The ID tag number of the created found item</returns>
+        /// <exception cref="ResourceNotFoundException">Attemps by a non-admin user to create found items will
+        /// throw a not found exception</exception>
         public string CreateFoundItem(FoundItemViewModel FoundItemDetails, string username)
         {
             if (!hasFullPermissions(username))
