@@ -3,7 +3,6 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Graph;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -466,6 +465,14 @@ namespace Gordon360.Services
             return actionsList.Select(x => (ActionsTakenViewModel)x);
         }
 
+        /// <summary>
+        /// Create a new found item
+        /// </summary>
+        /// <param name="FoundItemDetails">The details of the report to create</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>String - The ID tag number of the created found item</returns>
+        /// <exception cref="ResourceNotFoundException">Attemps by a non-admin user to create found items will
+        /// throw a not found exception</exception>
         public string CreateFoundItem(FoundItemViewModel FoundItemDetails, string username)
         {
             if (!hasFullPermissions(username))
@@ -567,7 +574,7 @@ namespace Gordon360.Services
             return reportID + (numReportsToday + 1);
         }
 
-        /// <summary>
+
         /// Create an action taken for the found item report with given id
         /// </summary>
         /// <param name="foundItemId">The id of the found item to add an action to</param>
@@ -612,39 +619,6 @@ namespace Gordon360.Services
             int foundActionTakenID = newFoundActionTaken.Entity.ID;
 
             return foundActionTakenID;
-        }
-
-        /// Gets a found item by ID, only allowed for admin users
-        /// </summary>
-        /// <param name="foundItemID">The ID of the found item</param>
-        /// <param name="username">The username of the person making the request</param>
-        /// <returns>A Found Item object</returns>
-        /// <exception cref="ResourceNotFoundException">If the report with given ID doesn't exist or the user
-        /// doesn't have permissions to read it</exception>
-        public FoundItemViewModel GetFoundItem(string foundItemID, string username)
-        {
-            if (!hasFullPermissions(username))
-            {
-                throw new ResourceNotFoundException();
-            }
-
-            FoundItemViewModel report;
-            
-            var data = context.FoundItemData.FirstOrDefault(x => x.ID == foundItemID);
-            if (data != null)
-            {
-                report = (FoundItemViewModel)data;
-
-                // Get the list of all admin actions on this report, and add them to the report.
-                report.adminActions = context.FoundActionsTakenData.Where(x => x.foundID == foundItemID)
-                                                                    .Select(x => (FoundActionsTakenViewModel)x);
-            }
-            else
-            {
-                // If no such report exists
-                throw new ResourceNotFoundException();
-            }
-            return report;
         }
 
         /// <summary>
@@ -812,6 +786,101 @@ namespace Gordon360.Services
             original.status = status;
 
             await context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Gets a found item by ID, only allowed for admin users
+        /// </summary>
+        /// <param name="foundItemID">The ID of the found item</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>A Found Item object</returns>
+        /// <exception cref="ResourceNotFoundException">If the report with given ID doesn't exist or the user
+        /// doesn't have permissions to read it</exception>
+        public FoundItemViewModel GetFoundItem(string foundItemID, string username)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+
+            FoundItemViewModel report;
+
+            var data = context.FoundItemData.FirstOrDefault(x => x.ID == foundItemID);
+            if (data != null)
+            {
+                report = (FoundItemViewModel)data;
+
+                // Get the list of all admin actions on this report, and add them to the report.
+                report.adminActions = context.FoundActionsTakenData.Where(x => x.foundID == foundItemID)
+                                                                    .Select(x => (FoundActionsTakenViewModel)x);
+            }
+            else
+            {
+                // If no such report exists
+                throw new ResourceNotFoundException();
+            }
+            return report;
+        }
+
+        /// <summary>
+        /// Get all found items
+        /// Throw unauthorized access exception if the user doesn't have admin permissions
+        /// </summary>
+        /// <param name="color">The selected color for filtering items</param>
+        /// <param name="category">The selected category for filtering items</param>
+        /// <param name="ID">The selected tag number/id for filtering by tag number</param>
+        /// <param name="keywords">The selected keywords for filtering by keywords</param>
+        /// <param name="status">The selected status for filtering items</param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>An enumerable of Found Items, from the Found Item Data view</returns>
+        /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
+        public IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
+                                                                          string? status,
+                                                                          string? color,
+                                                                          string? category,
+                                                                          string? ID,
+                                                                          string? keywords)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            // Initialize database query to get all found items ordered by date found descending
+            IQueryable<FoundItemData> foundItems = context.FoundItemData.OrderByDescending(item => item.dateCreated);
+
+            // Add filters to query based on provided filters
+            if (status is not null)
+            {
+                foundItems = foundItems.Where(x => x.status == status);
+            }
+            if (color is not null)
+            {
+                foundItems = foundItems.Where(x => x.colors.Contains(color));
+            }
+            if (category is not null)
+            {
+                foundItems = foundItems.Where(x => x.category == category);
+            }
+            if (ID is not null)
+            {
+                foundItems = foundItems.Where(x => x.ID.Contains(ID));
+            }
+            if (keywords is not null)
+            {
+                foundItems = foundItems.Where(x => (x.ownerFirstName + " " + x.ownerLastName).Contains(keywords)
+                                                    || x.description.Contains(keywords)
+                                                    || x.locationFound.Contains(keywords));
+            }
+
+            // Perform a group join to create a FoundItemViewModel with actions taken data for each report
+            // Using a group join results in the use of a single SQL query to the db, so is much more performant than
+            // alternative solutions.
+            return foundItems
+                      .GroupJoin(context.FoundActionsTakenData.OrderBy(action => action.actionDate),
+                          foundItem => foundItem.ID,
+                          action => action.foundID,
+                          (foundItem, action) => FoundItemViewModel.From(foundItem, action));
         }
     }
 }

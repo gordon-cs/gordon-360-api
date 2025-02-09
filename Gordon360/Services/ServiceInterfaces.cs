@@ -4,10 +4,8 @@ using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using RecIMActivityViewModel = Gordon360.Models.ViewModels.RecIM.ActivityViewModel;
@@ -246,6 +244,12 @@ namespace Gordon360.Services
         IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false, bool elevatedPermissions = false);
         public string CreateFoundItem(FoundItemViewModel reportDetails, string username);
         public int CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
+        IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
+                                                                   string? status,
+                                                                   string? color,
+                                                                   string? category,
+                                                                   string? ID,
+                                                                   string? keywords);
         public FoundItemViewModel GetFoundItem(string foundItemID, string username);
         Task UpdateFoundItemAsync(string id, FoundItemViewModel itemDetails, string username);
         Task UpdateFoundStatusAsync(string id, string status, string username);

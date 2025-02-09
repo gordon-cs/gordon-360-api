@@ -8,5 +8,7 @@ public partial class CCTContext : DbContext
     {
         modelBuilder.Entity<MissingItemData>().HasKey("ID");
         modelBuilder.Entity<ActionsTakenData>().HasKey("ID");
+        modelBuilder.Entity<FoundItemData>().HasKey("ID");
+        modelBuilder.Entity<FoundActionsTakenData>().HasKey("ID");
     }
 }
