@@ -6,6 +6,7 @@ using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Threading.Tasks;
 
 
@@ -199,7 +200,27 @@ namespace Gordon360.Controllers
                                                                            string? ID = null,
                                                                            string? keywords = null)
         {
-            
+            IEnumerable<FoundItemViewModel> result;
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            // If no username specified in the query, get all items
+            if (user == null)
+            {
+                result = lostAndFoundService.GetFoundItemsAll(authenticatedUserUsername, status, color, category, ID, keywords);
+            }
+            else
+            {
+                result = lostAndFoundService.GetFoundItems(user, authenticatedUserUsername);
+            }
+
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

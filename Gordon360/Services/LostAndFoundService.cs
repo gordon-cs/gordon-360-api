@@ -575,7 +575,34 @@ namespace Gordon360.Services
         /// <exception cref="ResourceNotFoundException">If a user requests items they are not permitted to access</exception>
         public IEnumerable<FoundItemViewModel> GetFoundItems(string requestedUsername, string requestorUsername)
         {
-            
+            if (hasFullPermissions(requestorUsername))
+            {
+                // If this is an admin user, get the items for the requested username
+                return context.FoundItemData
+               .Where(x => x.submitterUsername == requestedUsername)
+               .GroupJoin(context.FoundActionsTakenData
+               .Where(x => x.isPublic),
+                   foundItem => foundItem.ID,
+                   action => action.foundID,
+                   (foundItem, action) => FoundItemViewModel.From(foundItem, action));
+            }
+            else
+            {
+                // If a non-admin user requests the items of someone else
+                if (!requestorUsername.Equals(requestedUsername, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "No found items could be found" };
+                }
+
+                return context.FoundItemData
+               .Where(x => x.submitterUsername == requestedUsername)
+               .GroupJoin(context.FoundActionsTakenData
+               .Where(x => x.isPublic),
+                   foundItem => foundItem.ID,
+                   action => action.foundID,
+                   (foundItem, action) => FoundItemViewModel.From(foundItem, action));
+
+            }
         }
 
         /// <summary>
