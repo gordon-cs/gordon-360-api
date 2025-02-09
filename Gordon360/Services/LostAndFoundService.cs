@@ -323,8 +323,8 @@ namespace Gordon360.Services
                 throw new UnauthorizedAccessException();
             }
 
-            // Initialize database query to get all missing items ordered by id
-            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderBy(item => item.ID);
+            // Initialize database query to get all missing items ordered by date lost
+            IQueryable<MissingItemData> missingItems = context.MissingItemData.OrderByDescending(item => item.ID);
 
             // Add filters to query based on provided filters
             if (status is not null)
@@ -341,9 +341,7 @@ namespace Gordon360.Services
             }
             if (keywords is not null) 
             {
-                missingItems = missingItems.Where(x => x.firstName.Contains(keywords) 
-                                                    || x.lastName.Contains(keywords) 
-                                                    || (x.firstName + " " + x.lastName).Contains(keywords)
+                missingItems = missingItems.Where(x => (x.firstName + " " + x.lastName).Contains(keywords)
                                                     || x.description.Contains(keywords) 
                                                     || x.locationLost.Contains(keywords));
             }
@@ -351,11 +349,10 @@ namespace Gordon360.Services
             // Finally paginate filtered reports, based on the last ID the frontend received, and the size of the page to get
             if (lastId is not null)
             {
-                missingItems = missingItems.Where(item => item.ID > lastId);
+                missingItems = missingItems.Where(item => item.ID < lastId);
             }
-            if (pageSize is not null)
+            if (pageSize is int pageLength)
             {
-                int pageLength = pageSize ?? default(int);
                 missingItems = missingItems.Take(pageLength);
             }
 
