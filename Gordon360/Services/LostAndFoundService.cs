@@ -652,9 +652,7 @@ namespace Gordon360.Services
             }
             if (keywords is not null)
             {
-                foundItems = foundItems.Where(x => x.ownerFirstName.Contains(keywords)
-                                                    || x.ownerLastName.Contains(keywords)
-                                                    || (x.ownerFirstName + " " + x.ownerLastName).Contains(keywords)
+                foundItems = foundItems.Where(x => (x.ownerFirstName + " " + x.ownerLastName).Contains(keywords)
                                                     || x.description.Contains(keywords)
                                                     || x.locationFound.Contains(keywords));
             }
