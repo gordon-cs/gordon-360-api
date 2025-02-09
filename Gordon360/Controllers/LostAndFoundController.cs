@@ -183,6 +183,7 @@ namespace Gordon360.Controllers
         /// Update Found Item with the given id with given data
         /// </summary>
         /// <param name="itemId">The id of the report to update</param>
+        /// <param name="FoundItemDetails">The found item details passed by the front end</param>
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
         [Route(("founditems/{itemId}"))]

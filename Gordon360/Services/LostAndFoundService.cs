@@ -623,7 +623,19 @@ namespace Gordon360.Services
             await context.SaveChangesAsync();
         }
 
-        //HELPER FUNCTION
+        /// <summary>
+        /// Helper function to edit FoundGuest table
+        /// </summary>
+        /// <param name="guestFirstName">The guest first name</param>
+        /// <param name="guestLastName">The guest last name</param>
+        /// <param name="guestPhone">The guest phone number</param>
+        /// <param name="guestEmail">The guest phone number</param>
+        /// <param name="username">The username of the guest</param>
+        /// <param name="DBGuestID">The ID of the guest</param>
+        /// <returns>
+        /// guestID, newID
+        /// </returns>
+        /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
         private (int?, string?) FoundDataHelper(string? guestFirstName, 
                                              string? guestLastName, 
                                              string? guestPhone, 
@@ -633,9 +645,9 @@ namespace Gordon360.Services
         {
             int? guestID = null;
             string? newID = null;
-            // Add new found guest if one does not already exist
             if (guestFirstName != null && guestLastName != null)
             {
+                // Add new found guest if one does not already exist
                 if (DBGuestID == null)
                 {
                     var guestResults = context.FoundGuest.Add(new FoundGuest

@@ -28,8 +28,6 @@ namespace Gordon360.Models.ViewModels
 
         public DateTime dateCreated { get; set; }
 
-        public string? foundByID { get; set; }
-
         public int? foundByGuestID { get; set; }
 
         public int? guestOwnerID { get; set; }

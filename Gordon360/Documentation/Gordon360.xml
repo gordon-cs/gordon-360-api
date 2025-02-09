@@ -357,6 +357,7 @@
             Update Found Item with the given id with given data
             </summary>
             <param name="itemId">The id of the report to update</param>
+            <param name="FoundItemDetails">The found item details passed by the front end</param>
             <returns>ObjectResult - the http status code result of the action</returns>
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateFoundStatus(System.String,System.String)">
@@ -2028,6 +2029,21 @@
             <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If not account can be found for the requesting user</exception>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
             <exception cref="T:System.UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.FoundDataHelper(System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Helper function to edit FoundGuest table
+            </summary>
+            <param name="guestFirstName">The guest first name</param>
+            <param name="guestLastName">The guest last name</param>
+            <param name="guestPhone">The guest phone number</param>
+            <param name="guestEmail">The guest phone number</param>
+            <param name="username">The username of the guest</param>
+            <param name="DBGuestID">The ID of the guest</param>
+            <returns>
+            guestID, newID
+            </returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.UpdateFoundStatusAsync(System.String,System.String,System.String)">
             <summary>
