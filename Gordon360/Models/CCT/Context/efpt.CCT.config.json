@@ -75,6 +75,18 @@
          "ObjectType": 0
       },
       {
+         "Name": "[LostAndFound].[FoundActionsTaken]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[FoundGuest]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[LostAndFound].[FoundItems]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[LostAndFound].[GuestUsers]",
          "ObjectType": 0
       },
@@ -284,6 +296,14 @@
       },
       {
          "Name": "[LostAndFound].[ActionsTakenData]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[LostAndFound].[FoundActionsTakenData]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[LostAndFound].[FoundItemData]",
          "ObjectType": 3
       },
       {

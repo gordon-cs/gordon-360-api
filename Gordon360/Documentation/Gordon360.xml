@@ -352,6 +352,55 @@
             <param name="missingItemId">The id of the report to get</param>
             <returns>ObjectResult - an http status code, with a list of Actions Taken objects </returns>
         </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.CreateFoundItemReport(Gordon360.Models.ViewModels.FoundItemViewModel)">
+            <summary>
+            Create a new found item.
+            </summary>
+            <param name="FoundItemDetails">The data of the found item to create</param>
+            <returns>ObjectResult - the http status code result of the action, with the ID of the created found item</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.CreateFoundActionTaken(System.String,Gordon360.Models.ViewModels.FoundActionsTakenViewModel)">
+            <summary>
+            Create a new action for the found item with given ID.
+            </summary>
+            <param name="foundItemId">The id of the report to add an action to</param>
+            <param name="FoundActionsTaken">The data for the new action</param>
+            <returns>ObjectResult - the http status code result of the action, with the ID of the created action taken</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateFoundItem(System.String,Gordon360.Models.ViewModels.FoundItemViewModel)">
+            <summary>
+            Update a found item with the given id with given data.
+            </summary>
+            <param name="itemId">The id of the item to update</param>
+            <param name="FoundItemDetails">The found data to update the item with</param>
+            <returns>ObjectResult - the http status code result of the action</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.UpdateFoundStatus(System.String,System.String)">
+            <summary>
+            Update the status of the found item with given id to the given status text.
+            </summary>
+            <param name="itemId">The id of the item to update</param>
+            <param name="status">The new status of the item</param>
+            <returns>ObjectResult - the http status code result of the action</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetFoundItem(System.String)">
+            <summary>
+            Get a single found item with given ID, including it's actions taken.
+            </summary>
+            <param name="itemID">The tag ID of the item to get</param>
+            <returns>ObjectResult - the http status code result of the action, with the found item</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetFoundItems(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Get the list of found items, filtered by the provided filters.
+            </summary>
+            <param name="color">The selected color for filtering items</param>
+            <param name="category">The selected category for filtering items</param>
+            <param name="ID">The selected tag number/id for filtering by tag number</param>
+            <param name="keywords">The selected keywords for filtering by items</param>
+            <param name="status">The selected status for filtering items</param>
+            <returns>ObjectResult - an http status code, with an array of FoundItem objects in the body </returns>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
@@ -2001,6 +2050,80 @@
             <returns>An ActionsTaken[], or null if no item matches the id</returns>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Attemps by a non-admin user to get actions for 
             a report which doesn't belong to them will yield an ResourceNotFoundException</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.CreateFoundItem(Gordon360.Models.ViewModels.FoundItemViewModel,System.String)">
+            <summary>
+            Create a new found item
+            </summary>
+            <param name="FoundItemDetails">The details of the report to create</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>String - The ID tag number of the created found item</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Attemps by a non-admin user to create found items will
+            throw a not found exception</exception>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.LostAndFoundService.CreateFoundActionTaken(System.String,Gordon360.Models.ViewModels.FoundActionsTakenViewModel,System.String)" -->
+        <member name="M:Gordon360.Services.LostAndFoundService.UpdateFoundItemAsync(System.String,Gordon360.Models.ViewModels.FoundItemViewModel,System.String)">
+            <summary>
+            Update a found item with given id, to the given report detail data.
+            </summary>
+            <param name="itemID">The id of the found item to modify</param>
+            <param name="itemDetails">The new object to update to</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>None</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If not account can be found for the requesting user</exception>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
+            <exception cref="T:System.UnauthorizedAccessException">If the report to be modified doesn't belong to the requesting user</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.FoundDataHelper(System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Helper function to edit FoundGuest table
+            </summary>
+            <param name="guestFirstName">The guest first name</param>
+            <param name="guestLastName">The guest last name</param>
+            <param name="guestPhone">The guest phone number</param>
+            <param name="guestEmail">The guest phone number</param>
+            <param name="username">The username of the guest</param>
+            <param name="DBGuestID">The ID of the guest</param>
+            <returns>
+            guestID, newID
+            </returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.UpdateFoundStatusAsync(System.String,System.String,System.String)">
+            <summary>
+            Update the status of a found report with given id, to the given status message
+                Status text must be in the set of allowed statuses, "Active", "Expired", "Deleted", "Found"
+            </summary>
+            <param name="foundItemID">The id of the found item to modify</param>
+            <param name="status">The new status</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>None</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If not account can be found for the requesting user</exception>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItem(System.String,System.String)">
+            <summary>
+            Gets a found item by ID, only allowed for admin users
+            </summary>
+            <param name="foundItemID">The ID of the found item</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>A Found Item object</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the report with given ID doesn't exist or the user
+            doesn't have permissions to read it</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItemsAll(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Get all found items
+            Throw unauthorized access exception if the user doesn't have admin permissions
+            </summary>
+            <param name="color">The selected color for filtering items</param>
+            <param name="category">The selected category for filtering items</param>
+            <param name="ID">The selected tag number/id for filtering by tag number</param>
+            <param name="keywords">The selected keywords for filtering by keywords</param>
+            <param name="status">The selected status for filtering items</param>
+            <param name="username">The username of the person making the request</param>
+            <returns>An enumerable of Found Items, from the Found Item Data view</returns>
+            <exception cref="T:System.UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
