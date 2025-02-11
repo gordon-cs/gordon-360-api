@@ -1915,9 +1915,12 @@
         </member>
         <member name="M:Gordon360.Services.EventService.GetFirstEventDate">
             <summary>
-             Helper function to determine the current academic year
+            Get the first date of events for the current period, for use in querying the 25Live API
+            
+            During the regular undergrad school year, this is the middle of August (roughly the start of the fall term)
+            During the summer, this the middle of May (roughly the end of the spring term)
             </summary>
-            <returns></returns>
+            <returns>The first date of events we care about, in 'yyyyMMdd' format (e.g. '20250815' for August 15th, 2025)</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
@@ -2140,6 +2143,7 @@
             </summary>
             <param name="idNum">The ID of the student</param>
             <returns>True if the student is a resident</returns>
+        </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
             <summary>
             Check if the user has full admin permissions in the system
