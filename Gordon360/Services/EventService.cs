@@ -94,7 +94,8 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     public static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
     {
         using var client = new HttpClient();
-        client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
+        client.Timeout = TimeSpan.FromSeconds(200);
+        client.DefaultRequestHeaders.Add("User-Agent", "Gordon360/1.0.0");
 
         var response = await client.GetAsync(AllEventsURL);
         if (response != null && response.IsSuccessStatusCode)
