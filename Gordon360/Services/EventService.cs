@@ -51,7 +51,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     /// <returns>All Public Events</returns>
     public IEnumerable<EventViewModel> GetPublicEvents()
     {
-        return Events.Where(e => e.IsPublic);
+        return Events.Where(e => e.IsPublic).OrderBy(e => e.StartDate);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     /// <returns>All CLAW Events</returns>
     public IEnumerable<EventViewModel> GetCLAWEvents()
     {
-        return Events.Where(e => e.HasCLAWCredit);
+        return Events.Where(e => e.HasCLAWCredit).OrderBy(e => e.StartDate);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
                        from liveEvent in liveEvents.DefaultIfEmpty()
                        select new AttendedEventViewModel(liveEvent, chapelEvent);
 
-        return attendedEvents;
+        return attendedEvents.OrderBy(e => e.StartDate);
     }
 
     public static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
