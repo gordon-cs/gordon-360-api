@@ -126,26 +126,26 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     }
 
     /// <summary>
-    ///  Helper function to determine the current academic year
+    /// Get the first date of events for the current period, for use in querying the 25Live API
+    /// 
+    /// During the regular undergrad school year, this is the middle of August (roughly the start of the fall term)
+    /// During the summer, this the middle of May (roughly the end of the spring term)
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The first date of events we care about, in 'yyyyMMdd' format (e.g. '20250815' for August 15th, 2025)</returns>
     private static string GetFirstEventDate()
     {
-        //Beginning date of fall semester (MM/DD)
-        var fallDate = "0815";
-        //Beginning date of summer (MM/DD)
-        var summerDate = "0515";
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
 
-        // We need to determine what the current date is
-        DateTime today = DateTime.Today;
-        if (today.Month < 06)
+        DateOnly firstEventDate = today.Month switch
         {
-            return (today.Year - 1).ToString() + fallDate;
-        }
-        else if (today.Month > 07)
-        {
-            return today.Year.ToString() + fallDate;
-        }
-        return today.Year.ToString() + summerDate;
+            // In the Spring, the First Event Date is August 15th of the previous calendar year (i.e. the start of the fall semester)
+            < 6 => new DateOnly(today.Year - 1, 8, 15),
+            // In the fall, the First Event Date is August 15th of the current calendar year (i.e. the start of the fall semester)
+            > 7 => new DateOnly(today.Year, 8, 15),
+            // In the Summer, the First Event Date is May 15th of the current calendar year (i.e. ~ the start of the summer semester)
+            6 or 7 => new DateOnly(today.Year, 5, 15),
+        };
+
+        return firstEventDate.ToString("yyyyMMdd");
     }
 }
