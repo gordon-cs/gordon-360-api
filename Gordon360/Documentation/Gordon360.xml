@@ -445,12 +445,18 @@
             <param name="status"></param>
             <returns>ObjectResult - the http status code result of the action</returns>
         </member>
-        <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItems(System.String)">
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItems(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <summary>
             Get the list of missing item reports for the currently authenticated user.
             </summary>
+            <param name="color">The selected color for filtering reports</param>
+            <param name="category">The selected category for filtering reports</param>
+            <param name="keywords">The selected keywords for filtering by keywords</param>
+            <param name="status">The selected status for filtering reports</param>
             <param name="user">Query parameter, default is null and route will get all missing items, or if user is set
             route will get missing items for the authenticated user</param>
+            <param name="lastId">The ID of the last fetched report to start from for pagination</param>
+            <param name="pageSize">The size of the page to fetch for pagination</param>
             <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItem(System.Int32)">
@@ -1909,9 +1915,12 @@
         </member>
         <member name="M:Gordon360.Services.EventService.GetFirstEventDate">
             <summary>
-             Helper function to determine the current academic year
+            Get the first date of events for the current period, for use in querying the 25Live API
+            
+            During the regular undergrad school year, this is the middle of August (roughly the start of the fall term)
+            During the summer, this the middle of May (roughly the end of the spring term)
             </summary>
-            <returns></returns>
+            <returns>The first date of events we care about, in 'yyyyMMdd' format (e.g. '20250815' for August 15th, 2025)</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
@@ -2134,6 +2143,7 @@
             </summary>
             <param name="idNum">The ID of the student</param>
             <returns>True if the student is a resident</returns>
+        </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
             <summary>
             Check if the user has full admin permissions in the system
@@ -2201,12 +2211,18 @@
             <returns>an Enumerable of Missing Item Reports containing all missing item reports</returns>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If a user requests reports they are not permitted to access</exception>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll(System.String)">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <summary>
             Get all missing item reports
             Throw unauthorized access exception if the user doesn't have admin permissions
             </summary>
+            <param name="color">The selected color for filtering reports</param>
+            <param name="category">The selected category for filtering reports</param>
+            <param name="keywords">The selected keywords for filtering by keywords</param>
+            <param name="status">The selected status for filtering reports</param>
             <param name="username">The username of the person making the request</param>
+            <param name="lastId">The ID of the last fetched report to start from for pagination</param>
+            <param name="pageSize">The size of the page to fetch for pagination</param>
             <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
             <exception cref="T:System.UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
         </member>
