@@ -1187,25 +1187,6 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
-    /// Marks a task not completed
-    /// </summary>
-    /// <param name="taskID">the ID of the task to update</param>
-    /// <returns>True if marked not completed</returns>
-    public async Task<bool> IncompleteTaskAsync(int taskID)
-    {
-        var existingTask = await context.Hall_Task_Occurrence.FindAsync(taskID);
-
-        existingTask.CompletedDate = null;
-        existingTask.CompletedBy = null;
-        existingTask.IsComplete = false;
-
-        context.Hall_Task_Occurrence.Update(existingTask);
-        await context.SaveChangesAsync();
-
-        return true;
-    }
-
-    /// <summary>
     /// Gets the list of active tasks
     /// </summary>
     /// <param name="hallId">the ID of the hall to get tasks for</param>

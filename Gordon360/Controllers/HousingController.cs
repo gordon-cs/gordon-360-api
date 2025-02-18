@@ -688,31 +688,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Marks a task not completed
-    /// </summary>
-    /// <param name="taskID">the ID of the task to update</param>
-    /// <returns>True if marked not completed</returns>
-    [HttpPatch("halls/task/Incomplete/{taskID}")]
-    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK_COMPLETE)]
-    public async Task<IActionResult> IncompleteTask(int taskID)
-    {
-
-        try
-        {
-            var result = await housingService.IncompleteTaskAsync(taskID);
-            if (!result)
-            {
-                return NotFound("Task not found.");
-            }
-            return Ok(new { Message = "Task marked as not completed successfully." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while marking the task not completed.", Details = ex.Message });
-        }
-    }
-
-    /// <summary>
     /// Gets the list of active tasks
     /// </summary>
     /// <param name="hallId">the ID of the hall to get tasks for</param>

@@ -404,10 +404,9 @@
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetRACurrentHalls(System.String)">
             <summary>
-            Gets the on-call RA's current halls
+            Gets the on-call RA's current halls.
             </summary>
-            <param name="userName">The username of the ra</param>
-            <returns>The RA's current halls</returns>
+            <returns>The Building codes the RA is checked in to</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.IsRAOnCall(System.String)">
             <summary>
@@ -452,13 +451,6 @@
             <param name="taskID">the ID of the task to update</param>
             <param name="CompletedBy">The ID of the RA completing the task</param>
             <returns>True if completed</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.HousingController.IncompleteTask(System.Int32)">
-            <summary>
-            Marks a task not completed
-            </summary>
-            <param name="taskID">the ID of the task to update</param>
-            <returns>True if marked not completed</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetActiveTasksForHall(System.String)">
             <summary>
@@ -2193,10 +2185,9 @@
         </member>
         <member name="M:Gordon360.Services.HousingService.GetOnCallRAHallsAsync(System.String)">
             <summary>
-            Gets the on-call RA's current halls
+            Gets the on-call RAs for all halls.
             </summary>
-            <param name="userName">The username of the ra</param>
-            <returns>The RA's current halls</returns>
+            <returns>The RAs on call</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.IsRAOnCallAsync(System.String)">
             <summary>
@@ -2241,13 +2232,6 @@
             <param name="taskID">the ID of the task to update</param>
             <param name="CompletedBy">The ID of the RA completing the task</param>
             <returns>True if completed</returns>
-        </member>
-        <member name="M:Gordon360.Services.HousingService.IncompleteTaskAsync(System.Int32)">
-            <summary>
-            Marks a task not completed
-            </summary>
-            <param name="taskID">the ID of the task to update</param>
-            <returns>True if marked not completed</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetActiveTasksForHallAsync(System.String)">
             <summary>
