@@ -249,6 +249,7 @@ namespace Gordon360.Services
         Task<HallTaskViewModel> UpdateTaskAsync(int taskID, HallTaskViewModel task);
         Task<bool> DeleteTaskAsync(int taskID);
         Task<bool> CompleteTaskAsync(int taskID, string CompletedBy);
+        Task<bool> IncompleteTaskAsync(int taskID);
         Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId);
         Task<List<DailyTaskViewModel>> GetTasksForHallAsync(string hallId);
 
