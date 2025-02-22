@@ -2241,11 +2241,25 @@
             <returns>The list of daily tasks</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CreateStatusEventAsync(Gordon360.Models.ViewModels.RA_StatusEventsViewModel)">
-            <summary>
-            Creates a new status event for an RA's schedule
-            </summary>
-            <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
-            <returns>The created status event</returns>
+             <summary>
+             Creates a new status event for an RA's schedule
+             </summary>
+             <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+             Swagger is showing the time inputs in a tick format but the below works and should be used
+             {
+            "statusID": 0,
+            "raID": "RA123",
+            "statusName": "On Duty",
+            "isRecurring": true,
+            "frequency": "Weekly",
+            "interval": 1,
+            "start_Time": "08:00:00",
+            "end_Time": "09:00:00",
+            "startDate": "2025-02-21",
+            "endDate": "2025-02-21",
+            "createdDate": "2025-02-21T07:45:00Z"
+            }
+             <returns>The created status event</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.DeleteStatusEventAsync(System.Int32)">
             <summary>

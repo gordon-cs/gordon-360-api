@@ -91,10 +91,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[RA_Status_Event_Occurrence]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[Housing].[RA_Status_Events]",
          "ObjectType": 0
       },
@@ -319,11 +315,11 @@
          "ObjectType": 3
       },
       {
-         "Name": "[Housing].[CurrentStatusEvents]",
+         "Name": "[Housing].[CurrentTasks]",
          "ObjectType": 3
       },
       {
-         "Name": "[Housing].[CurrentTasks]",
+         "Name": "[Housing].[Daily_RA_Events]",
          "ObjectType": 3
       },
       {
@@ -448,6 +444,7 @@
    "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
+   "UseDatabaseNamesForRoutines": true,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
@@ -466,5 +463,6 @@
    "UseSchemaFolders": true,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
-   "UseT4": false
+   "UseT4": false,
+   "UseT4Split": false
 }

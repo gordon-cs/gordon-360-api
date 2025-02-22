@@ -9,6 +9,7 @@ public class DailyStatusEventsViewModel
     public int StatusID { get; set; }
     public string RaID { get; set; }
     public string StatusName { get; set; }
-    public DateTime? CompletedDate { get; set; }
-    public DateTime? OccurDate { get; set; }
+    public TimeSpan Start_Time { get; set; }
+    public TimeSpan End_Time { get; set;}
+
 }

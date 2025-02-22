@@ -32,10 +32,14 @@ public partial class RA_Status_Events
 
     public int? Interval { get; set; }
 
-    [Column(TypeName = "datetime")]
+    public TimeSpan? Start_Time { get; set; }
+
+    public TimeSpan? End_Time { get; set; }
+
+    [Column(TypeName = "date")]
     public DateTime Start_Date { get; set; }
 
-    [Column(TypeName = "datetime")]
+    [Column(TypeName = "date")]
     public DateTime? End_Date { get; set; }
 
     [Column(TypeName = "datetime")]

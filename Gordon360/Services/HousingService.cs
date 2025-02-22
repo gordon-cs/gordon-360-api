@@ -1062,7 +1062,7 @@ public class HousingService(CCTContext context) : IHousingService
             HallID = newTask.Hall_ID,
             IsRecurring = newTask.Is_Recurring,
             Frequency = newTask.Frequency,
-            Interval = newTask.Interval,
+            Interval = (int)newTask.Interval,
             StartDate = newTask.Start_Date,
             EndDate = newTask.End_Date,
             CreatedDate = newTask.Created_Date
@@ -1103,7 +1103,7 @@ public class HousingService(CCTContext context) : IHousingService
             HallID = existingTask.Hall_ID,
             IsRecurring = existingTask.Is_Recurring,
             Frequency = existingTask.Frequency,
-            Interval = existingTask.Interval,
+            Interval = (int)existingTask.Interval,
             StartDate = existingTask.Start_Date,
             EndDate = existingTask.End_Date,
             CreatedDate = existingTask.Created_Date
@@ -1165,7 +1165,7 @@ public class HousingService(CCTContext context) : IHousingService
                 HallID = t.Hall_ID,
                 IsRecurring = t.Is_Recurring,
                 Frequency = t.Frequency,
-                Interval = t.Interval,
+                Interval = (int)t.Interval,
                 StartDate = t.Start_Date,
                 EndDate = t.End_Date,
                 CreatedDate = t.Created_Date
@@ -1203,8 +1203,22 @@ public class HousingService(CCTContext context) : IHousingService
     /// Creates a new status event for an RA's schedule
     /// </summary>
     /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
-    /// <returns>The created status event</returns>
-    public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status)
+    /// Swagger is showing the time inputs in a tick format but the below works and should be used
+    /// {
+    ///"statusID": 0,
+    ///"raID": "RA123",
+    ///"statusName": "On Duty",
+    ///"isRecurring": true,
+    ///"frequency": "Weekly",
+    ///"interval": 1,
+    ///"start_Time": "08:00:00",
+    ///"end_Time": "09:00:00",
+    ///"startDate": "2025-02-21",
+    ///"endDate": "2025-02-21",
+    ///"createdDate": "2025-02-21T07:45:00Z"
+    ///}
+/// <returns>The created status event</returns>
+public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status)
     {
         var newStatus = new RA_Status_Events
         {
@@ -1213,6 +1227,8 @@ public class HousingService(CCTContext context) : IHousingService
             Is_Recurring = status.IsRecurring,
             Frequency = status.Frequency,
             Interval = status.Interval,
+            Start_Time = status.Start_Time,
+            End_Time = status.End_Time,
             Start_Date = status.StartDate,
             End_Date = status.EndDate,
             Created_Date = DateTime.UtcNow
@@ -1229,6 +1245,8 @@ public class HousingService(CCTContext context) : IHousingService
             IsRecurring = newStatus.Is_Recurring,
             Frequency = newStatus.Frequency,
             Interval = (int)newStatus.Interval,
+            Start_Time = newStatus.Start_Time,
+            End_Time = newStatus.End_Time,
             StartDate = newStatus.Start_Date,
             EndDate = newStatus.End_Date,
             CreatedDate = newStatus.Created_Date
@@ -1262,15 +1280,15 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>The list of daily status events</returns>
     public async Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raID)
     {
-        var statusEvents = await context.CurrentStatusEvents
+        var statusEvents = await context.Daily_RA_Events
             .Where(s => s.Ra_ID == raID)
             .Select(s => new DailyStatusEventsViewModel
             {
                 StatusID = s.Status_ID,
                 RaID = s.Ra_ID,
                 StatusName = s.Status_Name,
-                CompletedDate = s.Completed_Date,
-                OccurDate = s.Occur_Date
+                Start_Time = (TimeSpan)s.Start_Time,
+                End_Time = (TimeSpan)s.End_Time
             })
             .ToListAsync();
 
@@ -1278,7 +1296,7 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
 
-  
+
 
 
 }

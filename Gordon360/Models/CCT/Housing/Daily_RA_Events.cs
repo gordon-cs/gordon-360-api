@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT;
 
 [Keyless]
-public partial class CurrentStatusEvents
+public partial class Daily_RA_Events
 {
     public int Status_ID { get; set; }
 
@@ -23,11 +23,24 @@ public partial class CurrentStatusEvents
     [Unicode(false)]
     public string Status_Name { get; set; }
 
-    [Column(TypeName = "datetime")]
-    public DateTime Occur_Date { get; set; }
+    public bool Is_Recurring { get; set; }
 
-    public bool Is_Complete { get; set; }
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Frequency { get; set; }
+
+    public int? Interval { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime Start_Date { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime? End_Date { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime? Completed_Date { get; set; }
+    public DateTime Created_Date { get; set; }
+
+    public TimeSpan Start_Time { get; set; }
+
+    public TimeSpan End_Time { get; set; }
 }

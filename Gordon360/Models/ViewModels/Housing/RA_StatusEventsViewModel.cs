@@ -12,9 +12,9 @@ public class RA_StatusEventsViewModel
     public bool IsRecurring { get; set; }
     public string Frequency { get; set; }
     public int Interval { get; set; }
+    public TimeSpan? Start_Time { get; set; }
+    public TimeSpan? End_Time { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.Now;
-    public DateTime? CompletedDate { get; set;}
-    public DateTime? OccurDate { get; set; }
 }

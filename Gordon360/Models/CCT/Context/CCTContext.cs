@@ -48,13 +48,13 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Countries> Countries { get; set; }
 
-    public virtual DbSet<CurrentStatusEvents> CurrentStatusEvents { get; set; }
-
     public virtual DbSet<CurrentTasks> CurrentTasks { get; set; }
 
     public virtual DbSet<Current_On_Call> Current_On_Call { get; set; }
 
     public virtual DbSet<CustomParticipant> CustomParticipant { get; set; }
+
+    public virtual DbSet<Daily_RA_Events> Daily_RA_Events { get; set; }
 
     public virtual DbSet<DiningInfo> DiningInfo { get; set; }
 
@@ -136,8 +136,6 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RA_Pref_Contact> RA_Pref_Contact { get; set; }
 
-    public virtual DbSet<RA_Status_Event_Occurrence> RA_Status_Event_Occurrence { get; set; }
-
     public virtual DbSet<RA_Status_Events> RA_Status_Events { get; set; }
 
     public virtual DbSet<RA_Students> RA_Students { get; set; }
@@ -192,6 +190,8 @@ public partial class CCTContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("GORDON\\Ross.Clark");
+
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
             entity.ToView("ACCOUNT", "dbo");
@@ -298,11 +298,6 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.CTY).IsFixedLength();
         });
 
-        modelBuilder.Entity<CurrentStatusEvents>(entity =>
-        {
-            entity.ToView("CurrentStatusEvents", "Housing");
-        });
-
         modelBuilder.Entity<CurrentTasks>(entity =>
         {
             entity.ToView("CurrentTasks", "Housing");
@@ -324,6 +319,11 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.UsernameNavigation).WithOne(p => p.CustomParticipant)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__CustomPar__Usern__70D3A237");
+        });
+
+        modelBuilder.Entity<Daily_RA_Events>(entity =>
+        {
+            entity.ToView("Daily_RA_Events", "Housing");
         });
 
         modelBuilder.Entity<DiningInfo>(entity =>
@@ -613,15 +613,9 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.Ra_ID).HasName("PK__RA_Pref___9530636C18757ADA");
         });
 
-        modelBuilder.Entity<RA_Status_Event_Occurrence>(entity =>
-        {
-            entity.HasKey(e => e.Occur_ID).HasName("PK__RA_Statu__0A37E7861E6BD7B5");
-            entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC90008321");
-        });
-
         modelBuilder.Entity<RA_Status_Events>(entity =>
         {
-            entity.HasKey(e => e.Status_ID).HasName("PK__RA_Statu__519009ACDEFADB93");
+            entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC813D76B1");
 
             entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
         });
