@@ -331,6 +331,8 @@ public class StateYourBusiness : ActionFilterAttribute
 
                     return false;
                 }
+            case Resource.HOUSING_ON_CALL_RA:
+                return (user_groups.Contains(AuthGroup.RA));
             case Resource.NEWS:
                 {
                     return true;
@@ -409,8 +411,10 @@ public class StateYourBusiness : ActionFilterAttribute
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
             case Resource.HOUSING_ON_CALL_RA:
                 return (user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HallInfoViewer) || 
-                    user_groups.Contains(AuthGroup.HousingAdmin));
+                    user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RA));
             case Resource.HOUSING_HALL_TASK:
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+            case Resource.HOUSING_RA_STATUS_EVENT:
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
             case Resource.NEWS:
                 return user_groups.Contains(AuthGroup.NewsAdmin);
@@ -527,6 +531,8 @@ public class StateYourBusiness : ActionFilterAttribute
             case Resource.HOUSING_HALL_TASK:
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
             case Resource.HOUSING_HALL_TASK_COMPLETE:
+                return (user_groups.Contains(AuthGroup.RA));
+            case Resource.HOUSING_RA_STATUS_EVENT:
                 return (user_groups.Contains(AuthGroup.RA));
             case Resource.ADMIN:
                 return false;
@@ -889,6 +895,8 @@ public class StateYourBusiness : ActionFilterAttribute
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
             case Resource.HOUSING_HALL_TASK:
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+            case Resource.HOUSING_RA_STATUS_EVENT:
+                return (user_groups.Contains(AuthGroup.RA));
             case Resource.NEWS:
                 {
                     if (context.ActionArguments["newsID"] is int newsID)

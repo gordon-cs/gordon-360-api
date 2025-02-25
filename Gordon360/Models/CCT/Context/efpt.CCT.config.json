@@ -91,7 +91,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[Recurrence]",
+         "Name": "[Housing].[RA_Status_Events]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[ResRooms]",
          "ObjectType": 0
       },
       {
@@ -315,6 +319,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Housing].[Daily_RA_Events]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[Housing].[Halls]",
          "ObjectType": 3
       },
@@ -332,6 +340,10 @@
       },
       {
          "Name": "[Housing].[ResidentialStatus_View]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Unassigned_Rooms]",
          "ObjectType": 3
       },
       {

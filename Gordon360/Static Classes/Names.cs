@@ -27,6 +27,7 @@ public static class Resource
     public const string HOUSING_ON_CALL_RA = "Information about on-call Resident Advisors";
     public const string HOUSING_HALL_TASK = "Info related to tasks for a Hall";
     public const string HOUSING_HALL_TASK_COMPLETE = "Info related to a tasks status";
+    public const string HOUSING_RA_STATUS_EVENT = "Info related to status events for an RA";
     public const string ERROR_LOG = "The error log resource";
     public const string NEWS = "A student news resource";
     public const string NEWS_APPROVAL = "The approval of a student news resource";

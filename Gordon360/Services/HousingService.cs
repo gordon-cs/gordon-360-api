@@ -13,6 +13,7 @@ using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Gordon360.Services;
 
@@ -578,32 +579,6 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
-    /// Creates a new status event for an RA schedule
-    /// </summary>
-    /// <param name="model">The RA_Status_ScheduleViewModel variables</param>
-    /// <param name="raId">The ID of the ra checking in</param>
-    /// <returns>The created RA_Status_Schedule object</returns>
-    public async Task<RA_Status_Schedule> CreateStatusAsync( RA_Status_ScheduleViewModel model, string raId)
-    {
-        // Create a RA_Schedule_Status object
-        var newStatus = new RA_Status_Schedule
-        {
-            Sched_ID = model.Sched_ID,
-            Ra_ID = raId,
-            Status_name = model.Status_name,
-            Start_time = model.Start_time,
-            End_time = model.End_time,
-            Is_Recurring = model.Is_Recurring
-        };
-
-        // Add to the context and save changes
-        context.RA_Status_Schedule.Add(newStatus);
-        await context.SaveChangesAsync();
-
-        return newStatus;
-    }
-
-    /// <summary>
     /// Deletes a Room Range
     /// </summary>
     /// <param name="rangeId">The ID of the room range to delete</param>
@@ -780,6 +755,24 @@ public class HousingService(CCTContext context) : IHousingService
             .ToListAsync();
 
         return roomRanges;
+    }
+
+    /// <summary>
+    /// Retrieves all rooms missing a range.
+    /// </summary>
+    /// <returns>A list of rooms.</returns>
+    public async Task<List<MissedRoomsViewModel>> GetMissedRoomsAsync()
+    {
+        var rooms = await context.Unassigned_Rooms
+            .Select(r => new MissedRoomsViewModel
+            {
+                Room_Name = r.Room_Name,
+                Building_Code = r.Building_Code,
+                Room_Number = r.Room_Number
+            })
+            .ToListAsync();
+
+        return rooms;
     }
 
     /// <summary>
@@ -1009,6 +1002,19 @@ public class HousingService(CCTContext context) : IHousingService
             return onCallRAs;
         }
 
+    /// <summary>
+    /// Gets the on-call RA's current halls
+    /// </summary>
+    /// <param name="userName">The username of the ra</param>
+    /// <returns>The RA's current halls</returns>
+    public async Task<List<string>> GetOnCallRAHallsAsync(string userName)
+    {
+        return await context.Current_On_Call
+            .Where(oncall => oncall.RA_UserName == userName)
+            .Select(oncall => oncall.Hall_ID)
+            .ToListAsync();
+    }
+
 
     /// <summary>
     /// Checks if an RA is currently on call.
@@ -1069,7 +1075,7 @@ public class HousingService(CCTContext context) : IHousingService
             HallID = newTask.Hall_ID,
             IsRecurring = newTask.Is_Recurring,
             Frequency = newTask.Frequency,
-            Interval = newTask.Interval,
+            Interval = (int)newTask.Interval,
             StartDate = newTask.Start_Date,
             EndDate = newTask.End_Date,
             CreatedDate = newTask.Created_Date
@@ -1110,7 +1116,7 @@ public class HousingService(CCTContext context) : IHousingService
             HallID = existingTask.Hall_ID,
             IsRecurring = existingTask.Is_Recurring,
             Frequency = existingTask.Frequency,
-            Interval = existingTask.Interval,
+            Interval = (int)existingTask.Interval,
             StartDate = existingTask.Start_Date,
             EndDate = existingTask.End_Date,
             CreatedDate = existingTask.Created_Date
@@ -1155,6 +1161,25 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Marks a task not completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <returns>True if marked not completed</returns>
+    public async Task<bool> IncompleteTaskAsync(int taskID)
+    {
+        var existingTask = await context.Hall_Task_Occurrence.FindAsync(taskID);
+
+        existingTask.CompletedDate = null;
+        existingTask.CompletedBy = null;
+        existingTask.IsComplete = false;
+
+        context.Hall_Task_Occurrence.Update(existingTask);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
     /// Gets the list of active tasks
     /// </summary>
     /// <param name="hallId">the ID of the hall to get tasks for</param>
@@ -1171,7 +1196,7 @@ public class HousingService(CCTContext context) : IHousingService
                 HallID = t.Hall_ID,
                 IsRecurring = t.Is_Recurring,
                 Frequency = t.Frequency,
-                Interval = t.Interval,
+                Interval = (int)t.Interval,
                 StartDate = t.Start_Date,
                 EndDate = t.End_Date,
                 CreatedDate = t.Created_Date
@@ -1204,6 +1229,105 @@ public class HousingService(CCTContext context) : IHousingService
 
         return tasks;
     }
+
+    /// <summary>
+    /// Creates a new status event for an RA's schedule
+    /// </summary>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// Swagger is showing the time inputs in a tick format but the below works and should be used
+    /// {
+    ///"statusID": 0,
+    ///"raID": "RA123",
+    ///"statusName": "On Duty",
+    ///"isRecurring": true,
+    ///"frequency": "Weekly",
+    ///"interval": 1,
+    ///"start_Time": "08:00:00",
+    ///"end_Time": "09:00:00",
+    ///"startDate": "2025-02-21",
+    ///"endDate": "2025-02-21",
+    ///"createdDate": "2025-02-21T07:45:00Z"
+    ///}
+/// <returns>The created status event</returns>
+public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status)
+    {
+        var newStatus = new RA_Status_Events
+        {
+            Ra_ID = status.RaID,
+            Status_Name = status.StatusName,
+            Is_Recurring = status.IsRecurring,
+            Frequency = status.Frequency,
+            Interval = status.Interval,
+            Start_Time = status.Start_Time,
+            End_Time = status.End_Time,
+            Start_Date = status.StartDate,
+            End_Date = status.EndDate,
+            Created_Date = DateTime.UtcNow
+        };
+
+        await context.RA_Status_Events.AddAsync(newStatus);
+        await context.SaveChangesAsync();
+
+        return new RA_StatusEventsViewModel
+        {
+            StatusID = newStatus.Status_ID,
+            RaID = newStatus.Ra_ID,
+            StatusName = newStatus.Status_Name,
+            IsRecurring = newStatus.Is_Recurring,
+            Frequency = newStatus.Frequency,
+            Interval = (int)newStatus.Interval,
+            Start_Time = newStatus.Start_Time,
+            End_Time = newStatus.End_Time,
+            StartDate = newStatus.Start_Date,
+            EndDate = newStatus.End_Date,
+            CreatedDate = newStatus.Created_Date
+        };
+    }
+
+    /// <summary>
+    /// Deletes a status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to delete</param>
+    /// <returns>True if deleted</returns>
+    public async Task<bool> DeleteStatusEventAsync(int statusID)
+    {
+        var existingStatus = await context.RA_Status_Events
+            .FirstOrDefaultAsync(s => s.Status_ID == statusID);
+
+        if (existingStatus == null)
+        {
+            return false;
+        }
+
+        existingStatus.End_Date = DateTime.UtcNow.Date; // Mark status as ended
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the list of daily status events for an RA
+    /// </summary>
+    /// <param name="raID"> The ID of the RA</param>
+    /// <returns>The list of daily status events</returns>
+    public async Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raID)
+    {
+        var statusEvents = await context.Daily_RA_Events
+            .Where(s => s.Ra_ID == raID)
+            .Select(s => new DailyStatusEventsViewModel
+            {
+                StatusID = s.Status_ID,
+                RaID = s.Ra_ID,
+                StatusName = s.Status_Name,
+                Start_Time = (TimeSpan)s.Start_Time,
+                End_Time = (TimeSpan)s.End_Time
+            })
+            .ToListAsync();
+
+        return statusEvents;
+    }
+
+
+
 
 
 }
