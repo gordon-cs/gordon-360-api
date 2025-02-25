@@ -227,7 +227,6 @@ namespace Gordon360.Services
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
         Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model);
-        Task<RA_Status_Schedule> CreateStatusAsync(RA_Status_ScheduleViewModel model, string raId);
         Task<bool> DeleteRoomRangeAsync(int rangeId);
         Task<Hall_Assignment_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId);
         Task<bool> DeleteAssignmentAsync(int rangeId);
@@ -252,6 +251,9 @@ namespace Gordon360.Services
         Task<bool> IncompleteTaskAsync(int taskID);
         Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId);
         Task<List<DailyTaskViewModel>> GetTasksForHallAsync(string hallId);
+        Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status);
+        Task<bool> DeleteStatusEventAsync(int statusID);
+        Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raID);
 
 
     }

@@ -8,24 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("Hall_Tasks", Schema = "Housing")]
-public partial class Hall_Tasks
+[Table("RA_Status_Events", Schema = "Housing")]
+public partial class RA_Status_Events
 {
     [Key]
-    public int Task_ID { get; set; }
+    public int Status_ID { get; set; }
 
     [Required]
-    [StringLength(255)]
+    [StringLength(10)]
     [Unicode(false)]
-    public string Name { get; set; }
-
-    [Unicode(false)]
-    public string Description { get; set; }
+    public string Ra_ID { get; set; }
 
     [Required]
-    [StringLength(50)]
+    [StringLength(20)]
     [Unicode(false)]
-    public string Hall_ID { get; set; }
+    public string Status_Name { get; set; }
 
     public bool Is_Recurring { get; set; }
 
@@ -35,15 +32,16 @@ public partial class Hall_Tasks
 
     public int? Interval { get; set; }
 
-    [Column(TypeName = "datetime")]
+    public TimeSpan? Start_Time { get; set; }
+
+    public TimeSpan? End_Time { get; set; }
+
+    [Column(TypeName = "date")]
     public DateTime Start_Date { get; set; }
 
-    [Column(TypeName = "datetime")]
+    [Column(TypeName = "date")]
     public DateTime? End_Date { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime Created_Date { get; set; }
-
-    [InverseProperty("Task")]
-    public virtual ICollection<Hall_Task_Occurrence> Hall_Task_Occurrence { get; set; } = new List<Hall_Task_Occurrence>();
 }

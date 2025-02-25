@@ -91,15 +91,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[RA_Status]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[Housing].[RA_Status_Schedule]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[Housing].[Recurrence]",
+         "Name": "[Housing].[RA_Status_Events]",
          "ObjectType": 0
       },
       {
@@ -324,6 +316,10 @@
       },
       {
          "Name": "[Housing].[CurrentTasks]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Daily_RA_Events]",
          "ObjectType": 3
       },
       {

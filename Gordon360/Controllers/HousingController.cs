@@ -453,28 +453,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(contactInfo);
     }
 
-
-    /// <summary>
-    /// Creates a new status event for an RA schedule
-    /// </summary>
-    /// <param name="Status_Sched">The ViewModel that contains the Schedule ID and RA ID</param>
-    /// <param name="raId">the id of the RA setting a status</param>
-    /// <returns>The created RA_Status_Schedule object</returns>
-    [HttpPost("ras/{raId}/status")]
-    public async Task<ActionResult<RA_Status_Schedule>> CreateStatus( [FromBody] RA_Status_ScheduleViewModel Status_Sched, [FromRoute] string raId)
-    {
-        try
-        {
-            var newStatus = await housingService.CreateStatusAsync(Status_Sched,raId);
-            return Created("Status event created successfully.", newStatus);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-
     /// <summary>
     /// Checks an RA in
     /// </summary>
@@ -757,7 +735,70 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Creates a new status event for an RA's schedule
+    /// </summary>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The created status event</returns>
+    [HttpPost]
+    [Route("ras/status-event")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> CreateStatusEvent([FromBody] RA_StatusEventsViewModel status)
+    {
+        try
+        {
+            var result = await housingService.CreateStatusEventAsync(status);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while creating the status event.", Details = ex.Message });
+        }
+    }
 
+    /// <summary>
+    /// Deletes a status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to delete</param>
+    /// <returns>True if deleted</returns>
+    [HttpDelete]
+    [Route("ras/status-event/{statusID}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> DeleteStatusEvent(int statusID)
+    {
+        try
+        {
+            var result = await housingService.DeleteStatusEventAsync(statusID);
+            if (!result)
+            {
+                return NotFound("Status event cannot be found.");
+            }
+            return Ok(new { Message = "Status event has been deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while deleting the status event.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of daily status events for an RA
+    /// </summary>
+    /// <param name="raID"> The ID of the RA</param>
+    /// <returns>The list of daily status events</returns>
+    [HttpGet("ras/{raID}/daily-status-events")]
+    public async Task<IActionResult> GetStatusEventsForRA(string raID)
+    {
+        try
+        {
+            var result = await housingService.GetStatusEventsForRAAsync(raID);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while fething the RA's status events.", Details = ex.Message });
+        }
+    }
 
 
 }
