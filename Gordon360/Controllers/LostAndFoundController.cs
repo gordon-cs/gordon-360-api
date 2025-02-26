@@ -3,6 +3,7 @@ using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -246,7 +247,7 @@ namespace Gordon360.Controllers
 
             return Ok(lostAndFoundService.GetFoundItem(itemID, authenticatedUserUsername));
         }
-        
+
         /// <summary>
         /// Get the list of found items, filtered by the provided filters.
         /// </summary>
@@ -255,10 +256,12 @@ namespace Gordon360.Controllers
         /// <param name="ID">The selected tag number/id for filtering by tag number</param>
         /// <param name="keywords">The selected keywords for filtering by items</param>
         /// <param name="status">The selected status for filtering items</param>
+        /// <param name="latestDate">The latest date created that the list of reports should include</param>
         /// <returns>ObjectResult - an http status code, with an array of FoundItem objects in the body </returns>
         [HttpGet]
         [Route("founditems")]
-        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItems(string? status = null,
+        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItems(DateTime? latestDate = null,
+                                                                           string? status = null,
                                                                            string? color = null,
                                                                            string? category = null,
                                                                            string? ID = null,
@@ -268,7 +271,7 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             // If no username specified in the query, get all items
-            result = lostAndFoundService.GetFoundItemsAll(authenticatedUserUsername, status, color, category, ID, keywords);
+            result = lostAndFoundService.GetFoundItemsAll(authenticatedUserUsername, latestDate, status, color, category, ID, keywords);
 
             return Ok(result);
         }

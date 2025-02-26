@@ -829,14 +829,16 @@ namespace Gordon360.Services
         /// <param name="keywords">The selected keywords for filtering by keywords</param>
         /// <param name="status">The selected status for filtering items</param>
         /// <param name="username">The username of the person making the request</param>
+        /// <param name="latestDate">The latest date that should be accepted for a query</param>
         /// <returns>An enumerable of Found Items, from the Found Item Data view</returns>
         /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
         public IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
-                                                                          string? status,
-                                                                          string? color,
-                                                                          string? category,
-                                                                          string? ID,
-                                                                          string? keywords)
+                                                                DateTime? latestDate,
+                                                                string? status,
+                                                                string? color,
+                                                                string? category,
+                                                                string? ID,
+                                                                string? keywords)
         {
             if (!hasFullPermissions(username))
             {
@@ -847,6 +849,10 @@ namespace Gordon360.Services
             IQueryable<FoundItemData> foundItems = context.FoundItemData.OrderByDescending(item => item.dateCreated);
 
             // Add filters to query based on provided filters
+            if (latestDate is not null)
+            {
+                foundItems = foundItems.Where(x => x.dateCreated <= latestDate);
+            }
             if (status is not null)
             {
                 foundItems = foundItems.Where(x => x.status == status);
