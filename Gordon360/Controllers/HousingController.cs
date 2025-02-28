@@ -615,17 +615,17 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Deletes a task
+    /// Disables a task
     /// </summary>
-    /// <param name="taskID">The ID of the task to delete</param>
-    /// <returns>True if deleted</returns>
+    /// <param name="taskID">The ID of the task to disable</param>
+    /// <returns>True if disable</returns>
     [HttpDelete("halls/task/{taskID}")]
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_HALL_TASK)]
-    public async Task<IActionResult> DeleteTask(int taskID)
+    public async Task<IActionResult> DisableTask(int taskID)
     {
         try
         {
-            var result = await housingService.DeleteTaskAsync(taskID);
+            var result = await housingService.DisableTaskAsync(taskID);
             if (!result)
             {
                 return NotFound("Task not found.");

@@ -246,7 +246,7 @@ namespace Gordon360.Services
         Task<bool> IsStudentResidentialAsync(int idNum);
         Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task);
         Task<HallTaskViewModel> UpdateTaskAsync(int taskID, HallTaskViewModel task);
-        Task<bool> DeleteTaskAsync(int taskID);
+        Task<bool> DisableTaskAsync(int taskID);
         Task<bool> CompleteTaskAsync(int taskID, string CompletedBy);
         Task<bool> IncompleteTaskAsync(int taskID);
         Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId);

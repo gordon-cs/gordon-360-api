@@ -430,12 +430,12 @@
             <param name="task">The HallTaskViewModel object containing necessary info</param>
             <returns>The created task</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.DeleteTask(System.Int32)">
+        <member name="M:Gordon360.Controllers.HousingController.DisableTask(System.Int32)">
             <summary>
-            Deletes a task
+            Disables a task
             </summary>
-            <param name="taskID">The ID of the task to delete</param>
-            <returns>True if deleted</returns>
+            <param name="taskID">The ID of the task to disable</param>
+            <returns>True if disable</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.CompleteTask(System.Int32,System.String)">
             <summary>
@@ -2232,12 +2232,12 @@
             <param name="task">The HallTaskViewModel object containing necessary info</param>
             <returns>The created task</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.DeleteTaskAsync(System.Int32)">
+        <member name="M:Gordon360.Services.HousingService.DisableTaskAsync(System.Int32)">
             <summary>
-            Deletes a task
+            Disables a task
             </summary>
-            <param name="taskID">The ID of the task to delete</param>
-            <returns>True if deleted</returns>
+            <param name="taskID">The ID of the task to disable</param>
+            <returns>True if disable</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CompleteTaskAsync(System.Int32,System.String)">
             <summary>
