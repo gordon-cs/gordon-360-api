@@ -1187,7 +1187,7 @@ public class HousingService(CCTContext context) : IHousingService
     public async Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId)
     {
         var tasks = await context.Hall_Tasks
-            .Where(t => t.Hall_ID == hallId && (!t.End_Date.HasValue || t.End_Date >= DateTime.UtcNow))
+            .Where(t => t.Hall_ID == hallId && (!t.End_Date.HasValue || t.End_Date.Value.Date >= DateTime.Now.Date))
             .Select(t => new HallTaskViewModel
             {
                 TaskID = t.Task_ID,
