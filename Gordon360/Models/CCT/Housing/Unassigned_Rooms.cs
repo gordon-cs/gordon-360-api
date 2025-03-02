@@ -8,17 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("Hall_Task_Recurrence", Schema = "Housing")]
-public partial class Hall_Task_Recurrence
+[Keyless]
+public partial class Unassigned_Rooms
 {
+    [Required]
+    [StringLength(50)]
+    [Unicode(false)]
+    public string Room_Name { get; set; }
+
     [Required]
     [StringLength(10)]
     [Unicode(false)]
-    public string Recur_ID { get; set; }
+    public string Building_Code { get; set; }
 
-    [Key]
-    public int Task_ID { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? Next_Occurance { get; set; }
+    public int Room_Number { get; set; }
 }

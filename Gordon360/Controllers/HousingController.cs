@@ -269,6 +269,18 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Retrieves all rooms with no associated ranges.
+    /// </summary>
+    /// <returns>A list of rooms.</returns>
+    [HttpGet("roomranges/missedrooms")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ROOM_RANGE)]
+    public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetMissedRooms()
+    {
+        var roomRanges = await housingService.GetMissedRoomsAsync();
+        return Ok(roomRanges);
+    }
+
+    /// <summary>
     /// Deletes a Room Range
     /// </summary>
     /// <param name="rangeId">The ID of the room range to delete</param>
@@ -441,28 +453,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(contactInfo);
     }
 
-
-    /// <summary>
-    /// Creates a new status event for an RA schedule
-    /// </summary>
-    /// <param name="Status_Sched">The ViewModel that contains the Schedule ID and RA ID</param>
-    /// <param name="raId">the id of the RA setting a status</param>
-    /// <returns>The created RA_Status_Schedule object</returns>
-    [HttpPost("ras/{raId}/status")]
-    public async Task<ActionResult<RA_Status_Schedule>> CreateStatus( [FromBody] RA_Status_ScheduleViewModel Status_Sched, [FromRoute] string raId)
-    {
-        try
-        {
-            var newStatus = await housingService.CreateStatusAsync(Status_Sched,raId);
-            return Created("Status event created successfully.", newStatus);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-
     /// <summary>
     /// Checks an RA in
     /// </summary>
@@ -526,6 +516,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Gets the on-call RA's current halls
+    /// </summary>
+    /// <param name="userName">The username of the ra</param>
+    /// <returns>The RA's current halls</returns>
+    [HttpGet("halls/on-calls/{userName}/locations")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ON_CALL_RA)]
+    public async Task<ActionResult<List<string>>> GetRACurrentHalls([FromRoute] string userName)
+    {
+        var Halls = await housingService.GetOnCallRAHallsAsync(userName);
+
+        if (Halls == null || !Halls.Any())
+        {
+            return NotFound("No check-in locations found");
+        }
+
+        return Ok(Halls);
+    }
+
+    /// <summary>
     /// Checks if an RA is currently on call.
     /// </summary>
     /// <param name="raId">The ID of the RA</param>
@@ -558,7 +567,238 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Creates a new task for the given hall
+    /// </summary>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    [HttpPost]
+    [Route("halls/task")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> CreateTask([FromBody] HallTaskViewModel task)
+    {
 
+        try
+        {
+            var result = await housingService.CreateTaskAsync(task);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while creating the task.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Updates the task by the given ID
+    /// </summary>
+    /// <param name="taskID">The HallTaskViewModel object containing necessary info</param>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    [HttpPatch("halls/task/{taskID}")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> UpdateTask(int taskID, [FromBody] HallTaskViewModel task)
+    {
+        try
+        {
+            var result = await housingService.UpdateTaskAsync(taskID, task);
+            if (result == null)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while updating the task.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Disables a task
+    /// </summary>
+    /// <param name="taskID">The ID of the task to disable</param>
+    /// <returns>True if disable</returns>
+    [HttpDelete("halls/task/{taskID}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> DisableTask(int taskID)
+    {
+        try
+        {
+            var result = await housingService.DisableTaskAsync(taskID);
+            if (!result)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(new { Message = "Task deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while deleting the task.", Details = ex.Message });
+        }
+    }
+
+
+    /// <summary>
+    /// Marks a task completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <param name="CompletedBy">The ID of the RA completing the task</param>
+    /// <returns>True if completed</returns>
+    [HttpPatch("halls/task/Complete/{taskID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK_COMPLETE)]
+    public async Task<IActionResult> CompleteTask(int taskID, [FromBody] string CompletedBy)
+    {
+
+        try
+        {
+            var result = await housingService.CompleteTaskAsync(taskID, CompletedBy);
+            if (!result)
+            {
+                return NotFound("Task not found or already completed.");
+            }
+            return Ok(new { Message = "Task marked as completed successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while completing the task.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Marks a task not completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <returns>True if marked not completed</returns>
+    [HttpPatch("halls/task/Incomplete/{taskID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK_COMPLETE)]
+    public async Task<IActionResult> IncompleteTask(int taskID)
+    {
+
+        try
+        {
+            var result = await housingService.IncompleteTaskAsync(taskID);
+            if (!result)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(new { Message = "Task marked as not completed successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while marking the task not completed.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of active tasks
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of tasks</returns>
+    [HttpGet("Halls/{hallId}/ActiveTasks")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> GetActiveTasksForHall(string hallId)
+    {
+        if (string.IsNullOrEmpty(hallId))
+        {
+            return BadRequest("Hall ID is required.");
+        }
+
+        try
+        {
+            var tasks = await housingService.GetActiveTasksForHallAsync(hallId);
+            return Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while fetching tasks.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of daily tasks for a hall
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of daily tasks</returns>
+    [HttpGet("Halls/{hallId}/DailyTasks")]
+    public async Task<IActionResult> GetTasksForHall(string hallId)
+    {
+
+        try
+        {
+            var tasks = await housingService.GetTasksForHallAsync(hallId);
+            return Ok(tasks);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while fetching tasks.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Creates a new status event for an RA's schedule
+    /// </summary>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The created status event</returns>
+    [HttpPost]
+    [Route("ras/status-event")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> CreateStatusEvent([FromBody] RA_StatusEventsViewModel status)
+    {
+        try
+        {
+            var result = await housingService.CreateStatusEventAsync(status);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while creating the status event.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Deletes a status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to delete</param>
+    /// <returns>True if deleted</returns>
+    [HttpDelete]
+    [Route("ras/status-event/{statusID}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> DeleteStatusEvent(int statusID)
+    {
+        try
+        {
+            var result = await housingService.DeleteStatusEventAsync(statusID);
+            if (!result)
+            {
+                return NotFound("Status event cannot be found.");
+            }
+            return Ok(new { Message = "Status event has been deleted successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while deleting the status event.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of daily status events for an RA
+    /// </summary>
+    /// <param name="raID"> The ID of the RA</param>
+    /// <returns>The list of daily status events</returns>
+    [HttpGet("ras/{raID}/daily-status-events")]
+    public async Task<IActionResult> GetStatusEventsForRA(string raID)
+    {
+        try
+        {
+            var result = await housingService.GetStatusEventsForRAAsync(raID);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while fething the RA's status events.", Details = ex.Message });
+        }
+    }
 
 
 }

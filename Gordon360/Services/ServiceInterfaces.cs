@@ -227,7 +227,6 @@ namespace Gordon360.Services
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
         Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model);
-        Task<RA_Status_Schedule> CreateStatusAsync(RA_Status_ScheduleViewModel model, string raId);
         Task<bool> DeleteRoomRangeAsync(int rangeId);
         Task<Hall_Assignment_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId);
         Task<bool> DeleteAssignmentAsync(int rangeId);
@@ -236,13 +235,25 @@ namespace Gordon360.Services
         Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync();
         Task<List<RA_StudentsViewModel>> GetAllRAsAsync();
         Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync();
+        Task<List<MissedRoomsViewModel>> GetMissedRoomsAsync();
         Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod);
         Task<RA_ContactPreference> GetPreferredContactAsync(string raId);
         Task<bool> RA_CheckinAsync(string[] HallIDs, string raId);
         Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string hallId);
         Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync();
+        Task<List<string>> GetOnCallRAHallsAsync(string userName);
         Task<bool> IsRAOnCallAsync(string raId);
         Task<bool> IsStudentResidentialAsync(int idNum);
+        Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task);
+        Task<HallTaskViewModel> UpdateTaskAsync(int taskID, HallTaskViewModel task);
+        Task<bool> DisableTaskAsync(int taskID);
+        Task<bool> CompleteTaskAsync(int taskID, string CompletedBy);
+        Task<bool> IncompleteTaskAsync(int taskID);
+        Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId);
+        Task<List<DailyTaskViewModel>> GetTasksForHallAsync(string hallId);
+        Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status);
+        Task<bool> DeleteStatusEventAsync(int statusID);
+        Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raID);
 
 
     }
