@@ -1061,7 +1061,7 @@ public class HousingService(CCTContext context) : IHousingService
             Interval = task.Interval,
             Start_Date = task.StartDate,
             End_Date = task.EndDate,
-            Created_Date = DateTime.UtcNow
+            Created_Date = DateTime.Now
         };
 
         await context.Hall_Tasks.AddAsync(newTask);
@@ -1135,7 +1135,7 @@ public class HousingService(CCTContext context) : IHousingService
         {
             return false;
         }
-        existingTask.End_Date = DateTime.UtcNow;
+        existingTask.End_Date = DateTime.Now.AddDays(-1);
         await context.SaveChangesAsync();
         return true;
     }
@@ -1150,7 +1150,7 @@ public class HousingService(CCTContext context) : IHousingService
     {
         var existingTask = await context.Hall_Task_Occurrence.FindAsync(taskID);
 
-        existingTask.CompletedDate = DateTime.UtcNow;
+        existingTask.CompletedDate = DateTime.Now;
         existingTask.CompletedBy = CompletedBy;
         existingTask.IsComplete = true;
 
@@ -1262,7 +1262,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             End_Time = status.End_Time,
             Start_Date = status.StartDate,
             End_Date = status.EndDate,
-            Created_Date = DateTime.UtcNow
+            Created_Date = DateTime.Now
         };
 
         await context.RA_Status_Events.AddAsync(newStatus);
@@ -1299,7 +1299,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             return false;
         }
 
-        existingStatus.End_Date = DateTime.UtcNow.Date; // Mark status as ended
+        existingStatus.End_Date = DateTime.Now.Date.AddDays(-1); // Mark status as ended
         await context.SaveChangesAsync();
         return true;
     }
