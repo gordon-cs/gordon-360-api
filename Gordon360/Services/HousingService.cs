@@ -1067,6 +1067,22 @@ public class HousingService(CCTContext context) : IHousingService
         await context.Hall_Tasks.AddAsync(newTask);
         await context.SaveChangesAsync();
 
+        // Check if task starts today and add to Task_Occurrence
+        if (newTask.Start_Date.Date == DateTime.Now.Date)
+        {
+            var newOccurrence = new Hall_Task_Occurrence
+            {
+                Task_ID = newTask.Task_ID,
+                OccurDate = DateTime.Now.Date,
+                IsComplete = false,
+                CompletedBy = null,
+                CompletedDate = null
+            };
+
+            await context.Hall_Task_Occurrence.AddAsync(newOccurrence);
+            await context.SaveChangesAsync();
+        }
+
         return new HallTaskViewModel
         {
             TaskID = newTask.Task_ID,
