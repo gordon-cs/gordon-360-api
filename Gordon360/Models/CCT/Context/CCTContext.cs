@@ -142,6 +142,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RD_Info> RD_Info { get; set; }
 
+    public virtual DbSet<RD_OnCall_Today> RD_OnCall_Today { get; set; }
+
+    public virtual DbSet<RD_On_Call> RD_On_Call { get; set; }
+
     public virtual DbSet<REQUEST> REQUEST { get; set; }
 
     public virtual DbSet<RequestView> RequestView { get; set; }
@@ -190,6 +194,7 @@ public partial class CCTContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("GORDON\\Ross.Clark");
 
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
@@ -632,6 +637,18 @@ public partial class CCTContext : DbContext
 
             entity.Property(e => e.BuildingCode).IsFixedLength();
             entity.Property(e => e.HallName).IsFixedLength();
+        });
+
+        modelBuilder.Entity<RD_OnCall_Today>(entity =>
+        {
+            entity.ToView("RD_OnCall_Today", "Housing");
+        });
+
+        modelBuilder.Entity<RD_On_Call>(entity =>
+        {
+            entity.HasKey(e => e.Record_ID).HasName("PK__RD_On_Ca__603A0C605596CACA");
+
+            entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<REQUEST>(entity =>

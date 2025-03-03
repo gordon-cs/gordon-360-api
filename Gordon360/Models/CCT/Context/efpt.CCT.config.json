@@ -95,6 +95,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[RD_On_Call]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[Housing].[ResRooms]",
          "ObjectType": 0
       },
@@ -336,6 +340,10 @@
       },
       {
          "Name": "[Housing].[RD_Info]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RD_OnCall_Today]",
          "ObjectType": 3
       },
       {

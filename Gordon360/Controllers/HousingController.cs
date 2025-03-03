@@ -370,6 +370,151 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(rdInfo);
     }
 
+    [HttpGet("rds/all")]
+    public async Task<IActionResult> GetRDss()
+    {
+        try
+        {
+            var rdList = await housingService.GetRDsAsync();
+
+            if (rdList == null || !rdList.Any())
+            {
+                return NotFound("No RDs found.");
+            }
+
+            return Ok(rdList);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Creates or updates an RD's on-call assignment.
+    /// </summary>
+    /// <param name="rdId">The ID of the Resident Director (RD)</param>
+    /// <param name="startDate">The start date of the on-call period</param>
+    /// <param name="endDate">The end date of the on-call period</param>
+    /// <returns>True if the on-call assignment was successfully set</returns>
+    [HttpPost("rds/{rdId}/on-call")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> SetRdOnCall([FromRoute] int rdId, [FromQuery] DateTime startDate,[FromQuery] DateTime endDate)
+    {
+        if (startDate > endDate)
+        {
+            return BadRequest("Start date cannot be after end date.");
+        }
+
+        var OnCall = new RD_On_Call_Create
+        {
+            RD_ID = rdId,
+            Start_Date = startDate,
+            End_Date = endDate
+        };
+
+        try
+        {
+            var createdOnCall = await housingService.CreateRdOnCallAsync(OnCall);
+            return Ok("RD on-call assignment set successfully.");
+        }
+        catch (BadInputException ex)
+        {
+            return BadRequest(ex.ExceptionMessage);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while setting the RD on-call assignment.");
+        }
+    }
+
+    [HttpPatch("rds/oncall/{recordId}")]
+    public async Task<IActionResult> PatchRdOnCall(int recordId, [FromBody] RD_On_Call_Create updatedOnCall)
+    {
+        try
+        {
+            if (updatedOnCall == null)
+            {
+                return BadRequest("Invalid data provided.");
+            }
+
+            var rdInfo = await housingService.UpdateRdOnCallAsync(recordId, updatedOnCall);
+
+            if (rdInfo == null)
+            {
+                return NotFound($"No RD found with record ID: {recordId}");
+            }
+
+            return Ok(rdInfo); // Return updated RD information
+        }
+        catch (BadInputException ex)
+        {
+            return BadRequest(ex.ExceptionMessage);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    [HttpDelete("rds/oncall/{recordId}")]
+    public async Task<IActionResult> DeleteRDOnCallById(int recordId)
+    {
+        try
+        {
+            bool deleted = await housingService.DeleteRDOnCallById(recordId);
+
+            if (!deleted)
+            {
+                return NotFound($"No RD found with record ID: {recordId}");
+            }
+
+            return NoContent(); // 204 No Content on successful delete
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Retrieves the Rd OnCall
+    /// </summary>
+    /// <returns>Returns the RDs details if found, otherwise null. </returns>
+    [HttpGet("rds/oncall")]
+    public async Task<IActionResult> GetRDOnCall()
+    {
+        try
+        {
+            var rdInfo = await housingService.GetRDOnCall();
+            return Ok(rdInfo);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);  // Return 404 if no RD is found
+        }
+    }
+
+    [HttpGet("rds/oncall/active")]
+    public async Task<IActionResult> GetActiveRDOnCalls()
+    {
+        try
+        {
+            var activeRDs = await housingService.GetActiveRDOnCallsAsync();
+
+            if (activeRDs == null || !activeRDs.Any())
+            {
+                return NotFound("No active RD on-call records found.");
+            }
+
+            return Ok(activeRDs);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
     /// <summary>
     /// Retrieves the RA assigned to a resident based on their room number and hall ID.
     /// </summary>
