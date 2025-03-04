@@ -679,6 +679,12 @@ public class HousingService(CCTContext context) : IHousingService
         return hallRD;
     }
 
+    /// <summary>
+    /// Retrieves a distinct list of all RDs with their IDs and names.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of RD_StudentsViewModel objects containing RD IDs and names.
+    /// </returns>
     public async Task<List<RD_StudentsViewModel>> GetRDsAsync()
     {
         var rdList = await context.RD_Info
@@ -694,9 +700,9 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
-    /// Creates or updates an RD's on-call assignment.
+    /// Creates an RD's on-call assignment.
     /// </summary>
-    /// <param name="OnCall">The ID of the Resident Director (RD)</param>
+    /// <param name="OnCall">The ID of the RD</param>
     /// <returns>The created RD on-call assignment</returns>
     public async Task<RdOnCallGetView> CreateRdOnCallAsync(RD_On_Call_Create OnCall)
     {
@@ -710,8 +716,6 @@ public class HousingService(CCTContext context) : IHousingService
         .AnyAsync(r => r.Start_Date <= OnCall.End_Date && r.End_Date >= OnCall.Start_Date);
 
         if (overlapExists)
-
-            if (overlapExists)
         {
             throw new BadInputException() { ExceptionMessage = "An existing on-call record overlaps with the given dates." };
         }
@@ -738,6 +742,14 @@ public class HousingService(CCTContext context) : IHousingService
         };
     }
 
+    /// <summary>
+    /// Updates an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+    /// <param name="updatedOnCall">The updated RD on-call details.</param>
+    /// <returns>
+    /// Returns an updated RdOnCallGetView object if successful.
+    /// </returns>
     public async Task<RdOnCallGetView> UpdateRdOnCallAsync(int recordId, RD_On_Call_Create updatedOnCall)
     {
         var existingOnCall = await context.RD_On_Call
@@ -756,7 +768,6 @@ public class HousingService(CCTContext context) : IHousingService
         // Check for overlapping RD on-call records
         bool overlapExists = await context.RD_On_Call
         .AnyAsync(r => r.Start_Date <= updatedOnCall.End_Date && r.End_Date >= updatedOnCall.Start_Date);
-        if (overlapExists)
 
             if (overlapExists)
             {
@@ -802,6 +813,13 @@ public class HousingService(CCTContext context) : IHousingService
         };
     }
 
+    /// <summary>
+    /// Deletes an RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+    /// <returns>
+    /// Returns true if the record was successfully deleted.
+    /// </returns>
     public async Task<bool> DeleteRDOnCallById(int recordId)
     {
         var rdEntry = await context.RD_On_Call
@@ -836,6 +854,13 @@ public class HousingService(CCTContext context) : IHousingService
         return rd;
     }
 
+    /// <summary>
+    /// Retrieves a list of active RD on-call records where the end date is today or in the future.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of active RD on-call records
+    /// If no active records are found, an empty list is returned.
+    /// </returns>
     public async Task<List<RdOnCallGetView>> GetActiveRDOnCallsAsync()
     {
         var today = DateTime.Now.Date;

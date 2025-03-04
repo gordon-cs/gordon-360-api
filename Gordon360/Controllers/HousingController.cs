@@ -370,6 +370,11 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(rdInfo);
     }
 
+
+    /// <summary>
+    /// Retrieve a list of all RDs.
+    /// </summary>
+    /// <returns>Returns a list of all RDs if found</returns>
     [HttpGet("rds/all")]
     public async Task<IActionResult> GetRDss()
     {
@@ -391,7 +396,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Creates or updates an RD's on-call assignment.
+    /// Creates  an RD's on-call assignment.
     /// </summary>
     /// <param name="rdId">The ID of the Resident Director (RD)</param>
     /// <param name="startDate">The start date of the on-call period</param>
@@ -428,6 +433,15 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+
+    /// <summary>
+    /// Updates an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+    /// <param name="updatedOnCall">The updated RD on-call details.</param>
+    /// <returns>
+    /// Returns the updated RD on-call details if successful.
+    /// </returns>
     [HttpPatch("rds/oncall/{recordId}")]
     public async Task<IActionResult> PatchRdOnCall(int recordId, [FromBody] RD_On_Call_Create updatedOnCall)
     {
@@ -457,6 +471,12 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Deletes an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+    /// <returns>
+    /// </returns>
     [HttpDelete("rds/oncall/{recordId}")]
     public async Task<IActionResult> DeleteRDOnCallById(int recordId)
     {
@@ -495,6 +515,12 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Retrieves a list of currently active RD on-call records.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of active RD on-call records if found.
+    /// </returns>
     [HttpGet("rds/oncall/active")]
     public async Task<IActionResult> GetActiveRDOnCalls()
     {
