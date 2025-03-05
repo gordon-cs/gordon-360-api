@@ -767,6 +767,7 @@ public class HousingService(CCTContext context) : IHousingService
 
         // Check for overlapping RD on-call records
         bool overlapExists = await context.RD_On_Call
+        .Where(r => r.Record_ID != recordId)
         .AnyAsync(r => r.Start_Date <= updatedOnCall.End_Date && r.End_Date >= updatedOnCall.Start_Date);
 
             if (overlapExists)

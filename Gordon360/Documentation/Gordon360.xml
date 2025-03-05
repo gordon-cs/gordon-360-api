@@ -342,20 +342,52 @@
             <param name="hallId">The ID of the hall.</param>
             <returns>Returns the RD's details if found, otherwise null.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRDss">
+            <summary>
+            Retrieve a list of all RDs.
+            </summary>
+            <returns>Returns a list of all RDs if found</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.SetRdOnCall(System.Int32,System.DateTime,System.DateTime)">
             <summary>
-            Creates or updates an RD's on-call assignment.
+            Creates  an RD's on-call assignment.
             </summary>
             <param name="rdId">The ID of the Resident Director (RD)</param>
             <param name="startDate">The start date of the on-call period</param>
             <param name="endDate">The end date of the on-call period</param>
             <returns>True if the on-call assignment was successfully set</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.PatchRdOnCall(System.Int32,Gordon360.Models.ViewModels.RD_On_Call_Create)">
+            <summary>
+            Updates an existing RD on-call record by its record ID.
+            </summary>
+            <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+            <param name="updatedOnCall">The updated RD on-call details.</param>
+            <returns>
+            Returns the updated RD on-call details if successful.
+            </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteRDOnCallById(System.Int32)">
+            <summary>
+            Deletes an existing RD on-call record by its record ID.
+            </summary>
+            <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+            <returns>
+            </returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetRDOnCall">
             <summary>
             Retrieves the Rd OnCall
             </summary>
             <returns>Returns the RDs details if found, otherwise null. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetActiveRDOnCalls">
+            <summary>
+            Retrieves a list of currently active RD on-call records.
+            </summary>
+            <returns>
+            Returns a list of active RD on-call records if found.
+            </returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetResidentRA(System.String,System.String)">
             <summary>
@@ -2140,18 +2172,54 @@
             <param name="hallId">The ID of the hall.</param>
             <returns>Returns the RD's details if found, otherwise null.</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetRDsAsync">
+            <summary>
+            Retrieves a distinct list of all RDs with their IDs and names.
+            </summary>
+            <returns>
+            Returns a list of RD_StudentsViewModel objects containing RD IDs and names.
+            </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.CreateRdOnCallAsync(Gordon360.Models.ViewModels.RD_On_Call_Create)">
             <summary>
-            Creates or updates an RD's on-call assignment.
+            Creates an RD's on-call assignment.
             </summary>
-            <param name="OnCall">The ID of the Resident Director (RD)</param>
+            <param name="OnCall">The ID of the RD</param>
             <returns>The created RD on-call assignment</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateRdOnCallAsync(System.Int32,Gordon360.Models.ViewModels.RD_On_Call_Create)">
+            <summary>
+            Updates an existing RD on-call record by its record ID.
+            </summary>
+            <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+            <param name="updatedOnCall">The updated RD on-call details.</param>
+            <returns>
+            Returns an updated RdOnCallGetView object if successful.
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteRDOnCallById(System.Int32)">
+            <summary>
+            Deletes an RD on-call record by its record ID.
+            </summary>
+            <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+            <returns>
+            Returns true if the record was successfully deleted.
+            </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetRDOnCall">
             <summary>
             Retrieves the RD on call
             </summary>
             <returns>info for the RD.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetActiveRDOnCallsAsync">
+            <summary>
+            Retrieves a list of active RD on-call records where the end date is today or in the future.
+            </summary>
+            <returns>
+            Returns a list of active RD on-call records
+            If no active records are found, an empty list is returned.
+            </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetResidentRAAsync(System.String,System.String)">
             <summary>
