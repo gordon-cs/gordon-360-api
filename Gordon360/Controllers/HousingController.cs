@@ -376,6 +376,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns>Returns a list of all RDs if found</returns>
     [HttpGet("rds/all")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
     public async Task<IActionResult> GetRDss()
     {
         try
@@ -443,6 +444,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// Returns the updated RD on-call details if successful.
     /// </returns>
     [HttpPatch("rds/oncall/{recordId}")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_RD_ON_CALL)]
     public async Task<IActionResult> PatchRdOnCall(int recordId, [FromBody] RD_On_Call_Create updatedOnCall)
     {
         try
@@ -478,6 +480,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns>
     /// </returns>
     [HttpDelete("rds/oncall/{recordId}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RD_ON_CALL)]
     public async Task<IActionResult> DeleteRDOnCallById(int recordId)
     {
         try
@@ -502,6 +505,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// </summary>
     /// <returns>Returns the RDs details if found, otherwise null. </returns>
     [HttpGet("rds/oncall")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_RD_ON_CALL)]
     public async Task<IActionResult> GetRDOnCall()
     {
         try
@@ -522,6 +526,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// Returns a list of active RD on-call records if found.
     /// </returns>
     [HttpGet("rds/oncall/active")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
     public async Task<IActionResult> GetActiveRDOnCalls()
     {
         try
