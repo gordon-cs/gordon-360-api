@@ -11,7 +11,6 @@ namespace Gordon360.Models.CCT;
 [Keyless]
 public partial class RD_OnCall_Today
 {
-    [Column("RD Email")]
     [StringLength(50)]
     [Unicode(false)]
     public string RD_Email { get; set; }
@@ -29,4 +28,8 @@ public partial class RD_OnCall_Today
 
     [Column(TypeName = "date")]
     public DateTime End_Date { get; set; }
+
+    [StringLength(86)]
+    [Unicode(false)]
+    public string RD_Photo { get; set; }
 }

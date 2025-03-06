@@ -848,7 +848,8 @@ public class HousingService(CCTContext context) : IHousingService
             {
                 RD_Email = r.RD_Email,
                 RD_Id = r.RDId,
-                RD_Name = r.RDName
+                RD_Name = r.RDName,
+                RD_Photo = r.RD_Photo
             })
             .FirstOrDefaultAsync();
 
