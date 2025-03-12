@@ -390,7 +390,7 @@
             <param name="itemID">The tag ID of the item to get</param>
             <returns>ObjectResult - the http status code result of the action, with the found item</returns>
         </member>
-        <member name="M:Gordon360.Controllers.LostAndFoundController.GetFoundItems(System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetFoundItems(System.Nullable{System.DateTime},System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Get the list of found items, filtered by the provided filters.
             </summary>
@@ -399,6 +399,7 @@
             <param name="ID">The selected tag number/id for filtering by tag number</param>
             <param name="keywords">The selected keywords for filtering by items</param>
             <param name="status">The selected status for filtering items</param>
+            <param name="latestDate">The latest date created that the list of reports should include</param>
             <returns>ObjectResult - an http status code, with an array of FoundItem objects in the body </returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
@@ -1951,7 +1952,14 @@
             Check if the user has full admin permissions in the system
             </summary>
             <param name="username">the UPN of the user</param>
-            <returns></returns>
+            <returns>Boolean, whether the user has full admin permissions</returns>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.hasKioskPermissions(System.String)">
+            <summary>
+            Check if the user has kiosk permissions in the system
+            </summary>
+            <param name="username">the UPN of the user</param>
+            <returns>Boolean, whether the user has kiosk permissions</returns>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.CreateMissingItemReport(Gordon360.Models.ViewModels.MissingItemReportViewModel,System.String)">
             <summary>
@@ -2111,7 +2119,7 @@
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the report with given ID doesn't exist or the user
             doesn't have permissions to read it</exception>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItemsAll(System.String,System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItemsAll(System.String,System.Nullable{System.DateTime},System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Get all found items
             Throw unauthorized access exception if the user doesn't have admin permissions
@@ -2122,6 +2130,7 @@
             <param name="keywords">The selected keywords for filtering by keywords</param>
             <param name="status">The selected status for filtering items</param>
             <param name="username">The username of the person making the request</param>
+            <param name="latestDate">The latest date that should be accepted for a query</param>
             <returns>An enumerable of Found Items, from the Found Item Data view</returns>
             <exception cref="T:System.UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
         </member>
