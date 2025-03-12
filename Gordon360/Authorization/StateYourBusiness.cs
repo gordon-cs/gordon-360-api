@@ -333,6 +333,8 @@ public class StateYourBusiness : ActionFilterAttribute
                 }
             case Resource.HOUSING_ON_CALL_RA:
                 return (user_groups.Contains(AuthGroup.RA));
+            case Resource.HOUSING_RA_ASSIGNMENT:
+                return (user_groups.Contains(AuthGroup.RA));
             case Resource.NEWS:
                 {
                     return true;

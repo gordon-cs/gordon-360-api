@@ -235,6 +235,7 @@ namespace Gordon360.Services
         Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync();
         Task<List<RA_StudentsViewModel>> GetAllRAsAsync();
         Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync();
+        Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsByRAIdAsync(string raId);
         Task<List<MissedRoomsViewModel>> GetMissedRoomsAsync();
         Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod);
         Task<RA_ContactPreference> GetPreferredContactAsync(string raId);

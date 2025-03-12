@@ -339,6 +339,26 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Retrieves the list of room range assignments for a given RA_ID.
+    /// </summary>
+    /// <param name="raId">The RA_ID of the assigned RA.</param>
+    /// <returns>Returns a list of assigned ranges for the specified RA.</returns>
+    [HttpGet]
+    [Route("roomrangeassignments/{raId}")]
+    [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.HOUSING_RA_ASSIGNMENT)]
+    public async Task<IActionResult> GetRangeAssignmentsByRAId(string raId)
+    {
+        var rangeAssignments = await housingService.GetRangeAssignmentsByRAIdAsync(raId);
+
+        if (rangeAssignments.Count() == 0)
+        {
+            return NotFound($"No Assigned Ranges found for RA ID {raId}");
+        }
+
+        return Ok(rangeAssignments);
+    }
+
+    /// <summary>
     /// Deletes an RA range assignment
     /// </summary>
     /// <param name="rangeId">The Room range of the assignment to delete</param>
