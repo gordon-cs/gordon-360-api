@@ -178,7 +178,7 @@ namespace Gordon360.Services
             }
 
             // If the reports does not belong to the user, and the user is not an admin
-            if (missingItemReport.submitterID != idNum && !hasFullPermissions(username)) 
+            if (missingItemReport.submitterID != idNum && !hasFullPermissions(username) && !hasKioskPermissions(username)) 
             {
                 throw new UnauthorizedAccessException("Cannot modify a report that doesn't belong to you!");
             }
