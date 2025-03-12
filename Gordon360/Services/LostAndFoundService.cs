@@ -19,7 +19,7 @@ namespace Gordon360.Services
         /// Check if the user has full admin permissions in the system
         /// </summary>
         /// <param name="username">the UPN of the user</param>
-        /// <returns></returns>
+        /// <returns>Boolean, whether the user has full admin permissions</returns>
         private bool hasFullPermissions(string username)
         {
             IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
@@ -51,6 +51,30 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Check if the user has kiosk permissions in the system
+        /// </summary>
+        /// <param name="username">the UPN of the user</param>
+        /// <returns>Boolean, whether the user has kiosk permissions</returns>
+        private bool hasKioskPermissions(string username)
+        {
+            IEnumerable<Enums.AuthGroup> userGroups = Authorization.AuthUtils.GetGroups(username);
+            bool isKiosk;
+
+            // AD permission issues can, in rare cases, lead to errors enumerating userGroups:
+            try
+            {
+                isKiosk = userGroups.Contains(Enums.AuthGroup.LostAndFoundAssist);
+            }
+            catch (NoMatchingPrincipalException e)
+            {
+                Log.Error("NoMatchingPrincipleException encountered and handled when searching for LostAndFoundDevelopers group on USER UPN " + username + " EXCEPTION: " + e);
+                // If we fail to get the admin group, default to false.
+                isKiosk = false;
+            }
+            return isKiosk;
+        }
+
+        /// <summary>
         /// Create a new missing item report, for the submitter in the details, or the authenticated user if that is null.
         /// </summary>
         /// <param name="reportDetails"></param>
@@ -61,7 +85,9 @@ namespace Gordon360.Services
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username)
         {
             // If a general user attempts to create a missing item report for someone else, or for a guest user
-            if (!hasFullPermissions(username) && (reportDetails.submitterUsername.ToLower() != username.ToLower() || reportDetails.forGuest))
+            if (!hasFullPermissions(username) && 
+                !hasKioskPermissions(username) && 
+                (reportDetails.submitterUsername.ToLower() != username.ToLower() || reportDetails.forGuest))
             {
                 throw new ResourceCreationException() { ExceptionMessage = "Cannot create missing item report for someone else." };
             }
@@ -795,7 +821,7 @@ namespace Gordon360.Services
         /// doesn't have permissions to read it</exception>
         public FoundItemViewModel GetFoundItem(string foundItemID, string username)
         {
-            if (!hasFullPermissions(username))
+            if (!hasFullPermissions(username) && !hasKioskPermissions(username))
             {
                 throw new ResourceNotFoundException();
             }
@@ -840,7 +866,7 @@ namespace Gordon360.Services
                                                                 string? ID,
                                                                 string? keywords)
         {
-            if (!hasFullPermissions(username))
+            if (!hasFullPermissions(username) && !hasKioskPermissions(username))
             {
                 throw new UnauthorizedAccessException();
             }
