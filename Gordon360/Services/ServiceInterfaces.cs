@@ -254,6 +254,14 @@ namespace Gordon360.Services
         public FoundItemViewModel GetFoundItem(string foundItemID, string username);
         Task UpdateFoundItemAsync(string id, FoundItemViewModel itemDetails, string username);
         Task UpdateFoundStatusAsync(string id, string status, string username);
+        public (int totalCount, int filteredCount) GetMissingItemsCount(
+            string username,
+            string? status,
+            string? color,
+            string? category,
+            string? keywords
+        );
+
     }
 
 

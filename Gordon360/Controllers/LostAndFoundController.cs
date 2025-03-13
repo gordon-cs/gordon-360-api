@@ -275,5 +275,18 @@ namespace Gordon360.Controllers
 
             return Ok(result);
         }
+
+        // API endpoint to get counts of missing item reports.
+        // This returns an object with 'totalCount' (total missing reports) and 
+        // 'filteredCount' (the count after applying the provided filters).
+        [HttpGet]
+        [Route("missingitems/count")]
+        public ActionResult<object> GetMissingItemsCount(string? status = null, string? color = null, string? category = null, string? keywords = null)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var counts = lostAndFoundService.GetMissingItemsCount(authenticatedUserUsername, status, color, category, keywords);
+            return Ok(new { totalCount = counts.totalCount, filteredCount = counts.filteredCount });
+        }
+
     }
 }

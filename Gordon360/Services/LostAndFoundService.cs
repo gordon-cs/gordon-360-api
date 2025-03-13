@@ -911,5 +911,49 @@ namespace Gordon360.Services
                           action => action.foundID,
                           (foundItem, action) => FoundItemViewModel.From(foundItem, action));
         }
+
+        // Service method to retrieve counts of missing item reports.
+        // It returns a tuple containing the total count of missing items and 
+        // the count after applying the provided filter parameters
+
+        public (int totalCount, int filteredCount) GetMissingItemsCount(
+             string username,
+             string? status,
+             string? color,
+             string? category,
+             string? keywords
+         )
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            int totalCount = context.MissingItemData.Count();
+
+            IQueryable<MissingItemData> query = context.MissingItemData;
+            if (status is not null)
+            {
+                query = query.Where(x => x.status == status);
+            }
+            if (color is not null)
+            {
+                query = query.Where(x => x.colors.Contains(color));
+            }
+            if (category is not null)
+            {
+                query = query.Where(x => x.category == category);
+            }
+            if (keywords is not null)
+            {
+                query = query.Where(x =>
+                    (x.firstName + " " + x.lastName).Contains(keywords) ||
+                    x.description.Contains(keywords) ||
+                    x.locationLost.Contains(keywords));
+            }
+            int filteredCount = query.Count();
+
+            return (totalCount, filteredCount);
+        }
     }
 }
