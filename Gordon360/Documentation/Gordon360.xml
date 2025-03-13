@@ -352,6 +352,16 @@
             <param name="missingItemId">The id of the report to get</param>
             <returns>ObjectResult - an http status code, with a list of Actions Taken objects </returns>
         </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItemsCount(System.String,System.String,System.String,System.String)">
+            <summary>
+              API endpoint to get counts of missing item reports.
+            </summary>
+            <param name="status"></param>
+            <param name="color"></param>
+            <param name="category"></param>
+            <param name="keywords"></param>
+            <returns>Int - The number of missing items under the provided filters</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.CreateFoundItemReport(Gordon360.Models.ViewModels.FoundItemViewModel)">
             <summary>
             Create a new found item.
@@ -2058,6 +2068,18 @@
             <returns>An ActionsTaken[], or null if no item matches the id</returns>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Attemps by a non-admin user to get actions for 
             a report which doesn't belong to them will yield an ResourceNotFoundException</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsCount(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Service method to retrieve counts of missing item reports.
+            </summary>
+            <param name="username"></param>
+            <param name="status"></param>
+            <param name="color"></param>
+            <param name="category"></param>
+            <param name="keywords"></param>
+            <returns>Count of missing items after applying filters</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException"></exception>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.CreateFoundItem(Gordon360.Models.ViewModels.FoundItemViewModel,System.String)">
             <summary>
