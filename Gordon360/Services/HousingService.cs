@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
 
 namespace Gordon360.Services;
 
@@ -676,6 +677,209 @@ public class HousingService(CCTContext context) : IHousingService
         }
 
         return hallRD;
+    }
+
+    /// <summary>
+    /// Retrieves a distinct list of all RDs with their IDs and names.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of RD_StudentsViewModel objects containing RD IDs and names.
+    /// </returns>
+    public async Task<List<RD_StudentsViewModel>> GetRDsAsync()
+    {
+        var rdList = await context.RD_Info
+            .Select(rd => new RD_StudentsViewModel
+            {
+                RD_Id = rd.RDId,
+                RD_Name = rd.RDName
+            })
+            .Distinct()
+            .ToListAsync();
+
+        return rdList;
+    }
+
+    /// <summary>
+    /// Creates an RD's on-call assignment.
+    /// </summary>
+    /// <param name="OnCall">The ID of the RD</param>
+    /// <returns>The created RD on-call assignment</returns>
+    public async Task<RdOnCallGetView> CreateRdOnCallAsync(RD_On_Call_Create OnCall)
+    {
+        if (OnCall.Start_Date > OnCall.End_Date)
+        {
+            throw new BadInputException() { ExceptionMessage = "Start date cannot be after end date." };
+        }
+
+        // Check for overlapping RD on-call records
+        bool overlapExists = await context.RD_On_Call
+        .AnyAsync(r => r.Start_Date <= OnCall.End_Date && r.End_Date >= OnCall.Start_Date);
+
+        if (overlapExists)
+        {
+            throw new BadInputException() { ExceptionMessage = "An existing on-call record overlaps with the given dates." };
+        }
+
+        // Create a new RD on-call record
+        var newOnCall = new RD_On_Call
+        {
+            RD_ID = OnCall.RD_ID,
+            Start_Date = OnCall.Start_Date,
+            End_Date = OnCall.End_Date,
+            Created_Date = DateTime.Now
+        };
+
+        context.RD_On_Call.Add(newOnCall);
+        await context.SaveChangesAsync();
+
+        return new RdOnCallGetView
+        {
+            Record_ID = newOnCall.Record_ID,
+            RD_ID = newOnCall.RD_ID,
+            Start_Date = newOnCall.Start_Date,
+            End_Date = newOnCall.End_Date,
+            Created_Date = newOnCall.Created_Date
+        };
+    }
+
+    /// <summary>
+    /// Updates an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+    /// <param name="updatedOnCall">The updated RD on-call details.</param>
+    /// <returns>
+    /// Returns an updated RdOnCallGetView object if successful.
+    /// </returns>
+    public async Task<RdOnCallGetView> UpdateRdOnCallAsync(int recordId, RD_On_Call_Create updatedOnCall)
+    {
+        var existingOnCall = await context.RD_On_Call
+            .FirstOrDefaultAsync(r => r.Record_ID == recordId);
+
+        if (existingOnCall == null)
+        {
+            return null; // RD entry not found
+        }
+
+        if (updatedOnCall.Start_Date > updatedOnCall.End_Date)
+        {
+            throw new BadInputException() { ExceptionMessage = "Start date cannot be after end date." };
+        }
+
+        // Check for overlapping RD on-call records
+        bool overlapExists = await context.RD_On_Call
+        .Where(r => r.Record_ID != recordId)
+        .AnyAsync(r => r.Start_Date <= updatedOnCall.End_Date && r.End_Date >= updatedOnCall.Start_Date);
+
+            if (overlapExists)
+            {
+                throw new BadInputException() { ExceptionMessage = "An existing on-call record overlaps with the given dates." };
+            }
+
+        bool isUpdated = false;
+
+        // Update fields only if the new value is different from the existing value
+        if (updatedOnCall.RD_ID != existingOnCall.RD_ID)
+        {
+            existingOnCall.RD_ID = updatedOnCall.RD_ID;
+            isUpdated = true;
+        }
+
+        if (updatedOnCall.Start_Date != existingOnCall.Start_Date)
+        {
+            existingOnCall.Start_Date = updatedOnCall.Start_Date;
+            isUpdated = true;
+        }
+
+        if (updatedOnCall.End_Date != existingOnCall.End_Date)
+        {
+            existingOnCall.End_Date = updatedOnCall.End_Date;
+            isUpdated = true;
+        }
+
+        if (!isUpdated)
+        {
+            throw new BadInputException() { ExceptionMessage = "No changes detected." };
+        }
+
+
+        await context.SaveChangesAsync();
+
+        return new RdOnCallGetView
+        {
+            Record_ID = existingOnCall.Record_ID,
+            RD_ID = existingOnCall.RD_ID,
+            Start_Date = existingOnCall.Start_Date,
+            End_Date = existingOnCall.End_Date,
+            Created_Date = existingOnCall.Created_Date,
+        };
+    }
+
+    /// <summary>
+    /// Deletes an RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+    /// <returns>
+    /// Returns true if the record was successfully deleted.
+    /// </returns>
+    public async Task<bool> DeleteRDOnCallById(int recordId)
+    {
+        var rdEntry = await context.RD_On_Call
+            .FirstOrDefaultAsync(r => r.Record_ID == recordId);
+
+        if (rdEntry == null)
+        {
+            return false;
+        }
+
+        context.RD_On_Call.Remove(rdEntry);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Retrieves the RD on call
+    /// </summary>
+    /// <returns>info for the RD.</returns>
+    public async Task<RD_StudentsViewModel> GetRDOnCall()
+    {
+        var rd = await context.RD_OnCall_Today
+            .Select(r => new RD_StudentsViewModel
+            {
+                RD_Email = r.RD_Email,
+                RD_Id = r.RDId,
+                RD_Name = r.RDName,
+                RD_Photo = r.RD_Photo
+            })
+            .FirstOrDefaultAsync();
+
+        return rd;
+    }
+
+    /// <summary>
+    /// Retrieves a list of active RD on-call records where the end date is today or in the future.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of active RD on-call records
+    /// If no active records are found, an empty list is returned.
+    /// </returns>
+    public async Task<List<RdOnCallGetView>> GetActiveRDOnCallsAsync()
+    {
+        var today = DateTime.Now.Date;
+
+        var activeRDs = await context.RD_On_Call
+            .Where(r => r.End_Date >= today)
+            .Select(r => new RdOnCallGetView
+            {
+                Record_ID = r.Record_ID,
+                RD_ID = r.RD_ID,
+                Start_Date = r.Start_Date,
+                End_Date = r.End_Date,
+                Created_Date = r.Created_Date,
+            })
+            .ToListAsync();
+
+        return activeRDs;
     }
 
     /// <summary>

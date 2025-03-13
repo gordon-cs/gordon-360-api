@@ -10,4 +10,5 @@ using System.Collections.Generic;
         public string RD_Email { get; set; }
         public string RD_Id { get; set; }
         public string RD_Name { get; set; }
+        public string RD_Photo { get; set;}
     }
