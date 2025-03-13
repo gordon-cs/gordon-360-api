@@ -1455,6 +1455,20 @@ public class HousingService(CCTContext context) : IHousingService
 /// <returns>The created status event</returns>
 public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status)
     {
+
+        bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
+        existing.Ra_ID == status.RaID &&
+        (
+            (status.StartDate <= existing.End_Date && status.EndDate >= existing.Start_Date) &&
+            (status.Start_Time < existing.End_Time && status.End_Time > existing.Start_Time)
+        )
+    );
+
+        if (hasOverlap)
+        {
+            throw new InvalidOperationException("A conflicting status event already exists for this RA.");
+        }
+
         var newStatus = new RA_Status_Events
         {
             Ra_ID = status.RaID,
@@ -1466,7 +1480,9 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             End_Time = status.End_Time,
             Start_Date = status.StartDate,
             End_Date = status.EndDate,
-            Created_Date = DateTime.Now
+            Created_Date = DateTime.Now,
+            Available = status.Available,
+
         };
 
         await context.RA_Status_Events.AddAsync(newStatus);
@@ -1484,7 +1500,8 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             End_Time = newStatus.End_Time,
             StartDate = newStatus.Start_Date,
             EndDate = newStatus.End_Date,
-            CreatedDate = newStatus.Created_Date
+            CreatedDate = newStatus.Created_Date,
+            Available = newStatus.Available
         };
     }
 
@@ -1504,6 +1521,8 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
         }
 
         existingStatus.End_Date = DateTime.Now.Date.AddDays(-1); // Mark status as ended
+        existingStatus.End_Time = DateTime.Now.TimeOfDay;
+        
         await context.SaveChangesAsync();
         return true;
     }
@@ -1523,12 +1542,43 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
                 RaID = s.Ra_ID,
                 StatusName = s.Status_Name,
                 Start_Time = (TimeSpan)s.Start_Time,
-                End_Time = (TimeSpan)s.End_Time
+                End_Time = (TimeSpan)s.End_Time,
+                Available = s.Available
             })
             .ToListAsync();
 
         return statusEvents;
     }
+
+    /// <summary>
+    /// Gets the active statuses for a given RA.
+    /// </summary>
+    /// <param name="raId">The ID of the RA.</param>
+    /// <returns>A list of active statuses or a 404 if none exist.</returns>
+    public async Task<List<RA_StatusEventsViewModel>> GetActiveStatusesByRAIdAsync(string raId)
+    {
+        var activeStatuses = await context.RA_Status_Events
+            .Where(status => status.Ra_ID == raId && status.End_Date >= DateTime.Now.Date)
+            .Select(status => new RA_StatusEventsViewModel
+            {
+                StatusID = status.Status_ID,
+                RaID = status.Ra_ID,
+                StatusName = status.Status_Name,
+                IsRecurring = status.Is_Recurring,
+                Frequency = status.Frequency,
+                Interval = status.Interval ?? 0,
+                Start_Time = status.Start_Time,
+                End_Time = status.End_Time,
+                StartDate = status.Start_Date,
+                EndDate = status.End_Date,
+                CreatedDate = status.Created_Date,
+                Available = status.Available
+            })
+            .ToListAsync();
+
+        return activeStatuses;
+    }
+
 
 
 

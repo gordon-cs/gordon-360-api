@@ -11,5 +11,6 @@ public class DailyStatusEventsViewModel
     public string StatusName { get; set; }
     public TimeSpan Start_Time { get; set; }
     public TimeSpan End_Time { get; set;}
+    public bool Available { get; set; }
 
 }

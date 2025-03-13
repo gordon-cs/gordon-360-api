@@ -44,4 +44,6 @@ public partial class RA_Status_Events
 
     [Column(TypeName = "datetime")]
     public DateTime Created_Date { get; set; }
+
+    public bool Available { get; set; }
 }

@@ -976,5 +976,24 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Gets the active statuses for a given RA.
+    /// </summary>
+    /// <param name="raId">The ID of the RA.</param>
+    /// <returns>A list of active statuses or a 404 if none exist.</returns>
+    [HttpGet]
+    [Route("ras/{raId}/active-status-events")]
+    public async Task<IActionResult> GetActiveStatusesByRAId(string raId)
+    {
+        var activeStatuses = await housingService.GetActiveStatusesByRAIdAsync(raId);
+
+        if (activeStatuses == null || !activeStatuses.Any())
+        {
+            return NotFound($"No active statuses found for RA ID {raId}");
+        }
+
+        return Ok(activeStatuses);
+    }
+
 
 }
