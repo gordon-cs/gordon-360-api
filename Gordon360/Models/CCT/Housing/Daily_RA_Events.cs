@@ -40,7 +40,9 @@ public partial class Daily_RA_Events
     [Column(TypeName = "datetime")]
     public DateTime Created_Date { get; set; }
 
-    public TimeSpan Start_Time { get; set; }
+    public TimeSpan? Start_Time { get; set; }
 
-    public TimeSpan End_Time { get; set; }
+    public TimeSpan? End_Time { get; set; }
+
+    public bool Available { get; set; }
 }

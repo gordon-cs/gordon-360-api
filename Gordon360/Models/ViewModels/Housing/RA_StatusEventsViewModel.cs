@@ -17,4 +17,5 @@ public class RA_StatusEventsViewModel
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public bool Available { get; set; }
 }
