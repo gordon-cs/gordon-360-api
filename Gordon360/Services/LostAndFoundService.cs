@@ -959,5 +959,65 @@ namespace Gordon360.Services
                           action => action.foundID,
                           (foundItem, action) => FoundItemViewModel.From(foundItem, action));
         }
+        /// <summary>
+        /// Service method to retrieve counts of found items.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="latestDate"></param>
+        /// <param name="status"></param>
+        /// <param name="color"></param>
+        /// <param name="category"></param>
+        /// <param name="keywords"></param>
+        /// <returns>Count of found items after applying filters</returns>
+        /// <exception cref="ResourceNotFoundException"></exception>
+        public int GetFoundItemsCount(
+             string username,
+             DateTime? latestDate,
+             string? status,
+             string? color,
+             string? category,
+             string? ID,
+             string? keywords
+         )
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+
+            // Initialize database query to get all found items
+            IQueryable<FoundItemData> query = context.FoundItemData;
+
+            // Add filters to query based on provided filters
+            if (latestDate is not null)
+            {
+                query = query.Where(x => x.dateCreated <= latestDate);
+            }
+            if (status is not null)
+            {
+                query = query.Where(x => x.status == status);
+            }
+            if (color is not null)
+            {
+                query = query.Where(x => x.colors.Contains(color));
+            }
+            if (category is not null)
+            {
+                query = query.Where(x => x.category == category);
+            }
+            if (ID is not null)
+            {
+                query = query.Where(x => x.ID.Contains(ID));
+            }
+            if (keywords is not null)
+            {
+                query = query.Where(x => (x.ownerFirstName + " " + x.ownerLastName).Contains(keywords)
+                                                    || x.description.Contains(keywords)
+                                                    || x.locationFound.Contains(keywords));
+            }
+            int filteredCount = query.Count();
+
+            return filteredCount;
+        }
     }
 }

@@ -292,5 +292,24 @@ namespace Gordon360.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        ///   API endpoint to get counts of found items.
+        /// </summary>
+        /// <param name="latestDate"></param>
+        /// <param name="status"></param>
+        /// <param name="color"></param>
+        /// <param name="category"></param>
+        /// <param name="ID"></param>
+        /// <param name="keywords"></param>
+        /// <returns>Int - The number of found items under the provided filters</returns>
+        [HttpGet]
+        [Route("founditems/count")]
+        public ActionResult<object> GetFoundItemsCount(DateTime? latestDate = null, string? status = null, string? color = null, string? category = null, string? ID = null, string? keywords = null)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var count = lostAndFoundService.GetFoundItemsCount(authenticatedUserUsername, latestDate, status, color, category, ID, keywords);
+            return Ok(count);
+        }
     }
 }
