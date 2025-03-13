@@ -230,7 +230,7 @@ namespace Gordon360.Services
             }
 
             // If the report doesn't belong to the requesting user
-            if (original.submitterID != idNum)
+            if (original.submitterID != idNum && !hasFullPermissions(username))
             {
                 throw new UnauthorizedAccessException("Cannot modify a report that doesn't belong to you!");
             }
