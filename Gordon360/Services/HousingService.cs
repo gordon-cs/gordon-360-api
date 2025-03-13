@@ -1313,6 +1313,36 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
         return statusEvents;
     }
 
+    /// <summary>
+    /// Gets the active statuses for a given RA.
+    /// </summary>
+    /// <param name="raId">The ID of the RA.</param>
+    /// <returns>A list of active statuses or a 404 if none exist.</returns>
+    public async Task<List<RA_StatusEventsViewModel>> GetActiveStatusesByRAIdAsync(string raId)
+    {
+        var activeStatuses = await context.RA_Status_Events
+            .Where(status => status.Ra_ID == raId && status.End_Date >= DateTime.Now.Date)
+            .Select(status => new RA_StatusEventsViewModel
+            {
+                StatusID = status.Status_ID,
+                RaID = status.Ra_ID,
+                StatusName = status.Status_Name,
+                IsRecurring = status.Is_Recurring,
+                Frequency = status.Frequency,
+                Interval = status.Interval ?? 0,
+                Start_Time = status.Start_Time,
+                End_Time = status.End_Time,
+                StartDate = status.Start_Date,
+                EndDate = status.End_Date,
+                CreatedDate = status.Created_Date,
+                Available = status.Available
+            })
+            .ToListAsync();
+
+        return activeStatuses;
+    }
+
+
 
 
 
