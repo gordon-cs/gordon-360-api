@@ -352,6 +352,16 @@
             <param name="missingItemId">The id of the report to get</param>
             <returns>ObjectResult - an http status code, with a list of Actions Taken objects </returns>
         </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItemsCount(System.String,System.String,System.String,System.String)">
+            <summary>
+              API endpoint to get counts of missing item reports.
+            </summary>
+            <param name="status"></param>
+            <param name="color"></param>
+            <param name="category"></param>
+            <param name="keywords"></param>
+            <returns>Int - The number of missing items under the provided filters</returns>
+        </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.CreateFoundItemReport(Gordon360.Models.ViewModels.FoundItemViewModel)">
             <summary>
             Create a new found item.
@@ -401,6 +411,18 @@
             <param name="status">The selected status for filtering items</param>
             <param name="latestDate">The latest date created that the list of reports should include</param>
             <returns>ObjectResult - an http status code, with an array of FoundItem objects in the body </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetFoundItemsCount(System.Nullable{System.DateTime},System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+              API endpoint to get counts of found items.
+            </summary>
+            <param name="latestDate"></param>
+            <param name="status"></param>
+            <param name="color"></param>
+            <param name="category"></param>
+            <param name="ID"></param>
+            <param name="keywords"></param>
+            <returns>Int - The number of found items under the provided filters</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -2059,6 +2081,18 @@
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Attemps by a non-admin user to get actions for 
             a report which doesn't belong to them will yield an ResourceNotFoundException</exception>
         </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsCount(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Service method to retrieve counts of missing item reports.
+            </summary>
+            <param name="username"></param>
+            <param name="status"></param>
+            <param name="color"></param>
+            <param name="category"></param>
+            <param name="keywords"></param>
+            <returns>Count of missing items after applying filters</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException"></exception>
+        </member>
         <member name="M:Gordon360.Services.LostAndFoundService.CreateFoundItem(Gordon360.Models.ViewModels.FoundItemViewModel,System.String)">
             <summary>
             Create a new found item
@@ -2133,6 +2167,19 @@
             <param name="latestDate">The latest date that should be accepted for a query</param>
             <returns>An enumerable of Found Items, from the Found Item Data view</returns>
             <exception cref="T:System.UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItemsCount(System.String,System.Nullable{System.DateTime},System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Service method to retrieve counts of found items.
+            </summary>
+            <param name="username"></param>
+            <param name="latestDate"></param>
+            <param name="status"></param>
+            <param name="color"></param>
+            <param name="category"></param>
+            <param name="keywords"></param>
+            <returns>Count of found items after applying filters</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException"></exception>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>

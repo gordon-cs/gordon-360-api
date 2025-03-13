@@ -242,6 +242,13 @@ namespace Gordon360.Services
         Task UpdateReportStatusAsync(int id, string status, string username);
         MissingItemReportViewModel? GetMissingItem(int id, string username);
         IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false, bool elevatedPermissions = false);
+        public int GetMissingItemsCount(
+            string username,
+            string? status,
+            string? color,
+            string? category,
+            string? keywords
+        );
         public string CreateFoundItem(FoundItemViewModel reportDetails, string username);
         public int CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
         IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
@@ -254,6 +261,15 @@ namespace Gordon360.Services
         public FoundItemViewModel GetFoundItem(string foundItemID, string username);
         Task UpdateFoundItemAsync(string id, FoundItemViewModel itemDetails, string username);
         Task UpdateFoundStatusAsync(string id, string status, string username);
+        public int GetFoundItemsCount(
+             string username,
+             DateTime? latestDate,
+             string? status,
+             string? color,
+             string? category,
+             string? ID,
+             string? keywords
+         );
     }
 
 
