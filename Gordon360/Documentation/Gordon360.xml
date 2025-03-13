@@ -342,6 +342,53 @@
             <param name="hallId">The ID of the hall.</param>
             <returns>Returns the RD's details if found, otherwise null.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRDss">
+            <summary>
+            Retrieve a list of all RDs.
+            </summary>
+            <returns>Returns a list of all RDs if found</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.SetRdOnCall(System.Int32,System.DateTime,System.DateTime)">
+            <summary>
+            Creates  an RD's on-call assignment.
+            </summary>
+            <param name="rdId">The ID of the Resident Director (RD)</param>
+            <param name="startDate">The start date of the on-call period</param>
+            <param name="endDate">The end date of the on-call period</param>
+            <returns>True if the on-call assignment was successfully set</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.PatchRdOnCall(System.Int32,Gordon360.Models.ViewModels.RD_On_Call_Create)">
+            <summary>
+            Updates an existing RD on-call record by its record ID.
+            </summary>
+            <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+            <param name="updatedOnCall">The updated RD on-call details.</param>
+            <returns>
+            Returns the updated RD on-call details if successful.
+            </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.DeleteRDOnCallById(System.Int32)">
+            <summary>
+            Deletes an existing RD on-call record by its record ID.
+            </summary>
+            <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRDOnCall">
+            <summary>
+            Retrieves the Rd OnCall
+            </summary>
+            <returns>Returns the RDs details if found, otherwise null. </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetActiveRDOnCalls">
+            <summary>
+            Retrieves a list of currently active RD on-call records.
+            </summary>
+            <returns>
+            Returns a list of active RD on-call records if found.
+            </returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.GetResidentRA(System.String,System.String)">
             <summary>
             Retrieves the RA assigned to a resident based on their room number and hall ID.
@@ -394,6 +441,13 @@
             </summary>
             <returns>The RAs on call with their details</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRACurrentHalls(System.String)">
+            <summary>
+            Gets the on-call RA's current halls
+            </summary>
+            <param name="userName">The username of the ra</param>
+            <returns>The RA's current halls</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.IsRAOnCall(System.String)">
             <summary>
             Checks if an RA is currently on call.
@@ -423,12 +477,12 @@
             <param name="task">The HallTaskViewModel object containing necessary info</param>
             <returns>The created task</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.DeleteTask(System.Int32)">
+        <member name="M:Gordon360.Controllers.HousingController.DisableTask(System.Int32)">
             <summary>
-            Deletes a task
+            Disables a task
             </summary>
-            <param name="taskID">The ID of the task to delete</param>
-            <returns>True if deleted</returns>
+            <param name="taskID">The ID of the task to disable</param>
+            <returns>True if disable</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.CompleteTask(System.Int32,System.String)">
             <summary>
@@ -437,6 +491,13 @@
             <param name="taskID">the ID of the task to update</param>
             <param name="CompletedBy">The ID of the RA completing the task</param>
             <returns>True if completed</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.IncompleteTask(System.Int32)">
+            <summary>
+            Marks a task not completed
+            </summary>
+            <param name="taskID">the ID of the task to update</param>
+            <returns>True if marked not completed</returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetActiveTasksForHall(System.String)">
             <summary>
@@ -2111,6 +2172,55 @@
             <param name="hallId">The ID of the hall.</param>
             <returns>Returns the RD's details if found, otherwise null.</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetRDsAsync">
+            <summary>
+            Retrieves a distinct list of all RDs with their IDs and names.
+            </summary>
+            <returns>
+            Returns a list of RD_StudentsViewModel objects containing RD IDs and names.
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.CreateRdOnCallAsync(Gordon360.Models.ViewModels.RD_On_Call_Create)">
+            <summary>
+            Creates an RD's on-call assignment.
+            </summary>
+            <param name="OnCall">The ID of the RD</param>
+            <returns>The created RD on-call assignment</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateRdOnCallAsync(System.Int32,Gordon360.Models.ViewModels.RD_On_Call_Create)">
+            <summary>
+            Updates an existing RD on-call record by its record ID.
+            </summary>
+            <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+            <param name="updatedOnCall">The updated RD on-call details.</param>
+            <returns>
+            Returns an updated RdOnCallGetView object if successful.
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.DeleteRDOnCallById(System.Int32)">
+            <summary>
+            Deletes an RD on-call record by its record ID.
+            </summary>
+            <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+            <returns>
+            Returns true if the record was successfully deleted.
+            </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetRDOnCall">
+            <summary>
+            Retrieves the RD on call
+            </summary>
+            <returns>info for the RD.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetActiveRDOnCallsAsync">
+            <summary>
+            Retrieves a list of active RD on-call records where the end date is today or in the future.
+            </summary>
+            <returns>
+            Returns a list of active RD on-call records
+            If no active records are found, an empty list is returned.
+            </returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.GetResidentRAAsync(System.String,System.String)">
             <summary>
             Retrieves the RA assigned to a resident based on their room number and hall ID.
@@ -2182,6 +2292,13 @@
             </summary>
             <returns>The RAs on call</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetOnCallRAHallsAsync(System.String)">
+            <summary>
+            Gets the on-call RA's current halls
+            </summary>
+            <param name="userName">The username of the ra</param>
+            <returns>The RA's current halls</returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.IsRAOnCallAsync(System.String)">
             <summary>
             Checks if an RA is currently on call.
@@ -2211,12 +2328,12 @@
             <param name="task">The HallTaskViewModel object containing necessary info</param>
             <returns>The created task</returns>
         </member>
-        <member name="M:Gordon360.Services.HousingService.DeleteTaskAsync(System.Int32)">
+        <member name="M:Gordon360.Services.HousingService.DisableTaskAsync(System.Int32)">
             <summary>
-            Deletes a task
+            Disables a task
             </summary>
-            <param name="taskID">The ID of the task to delete</param>
-            <returns>True if deleted</returns>
+            <param name="taskID">The ID of the task to disable</param>
+            <returns>True if disable</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CompleteTaskAsync(System.Int32,System.String)">
             <summary>
@@ -2225,6 +2342,13 @@
             <param name="taskID">the ID of the task to update</param>
             <param name="CompletedBy">The ID of the RA completing the task</param>
             <returns>True if completed</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.IncompleteTaskAsync(System.Int32)">
+            <summary>
+            Marks a task not completed
+            </summary>
+            <param name="taskID">the ID of the task to update</param>
+            <returns>True if marked not completed</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetActiveTasksForHallAsync(System.String)">
             <summary>

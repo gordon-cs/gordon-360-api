@@ -231,6 +231,12 @@ namespace Gordon360.Services
         Task<Hall_Assignment_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId);
         Task<bool> DeleteAssignmentAsync(int rangeId);
         Task<RD_StudentsViewModel> GetResidentRDAsync(string hallId);
+        Task<List<RD_StudentsViewModel>> GetRDsAsync();
+        Task<RdOnCallGetView> CreateRdOnCallAsync(RD_On_Call_Create OnCall);
+        Task<bool> DeleteRDOnCallById(int recordId);
+        Task<RdOnCallGetView> UpdateRdOnCallAsync(int recordId, RD_On_Call_Create updatedOnCall);
+        Task<RD_StudentsViewModel> GetRDOnCall();
+        Task<List<RdOnCallGetView>> GetActiveRDOnCallsAsync();
         Task<RA_StudentsViewModel> GetResidentRAAsync(string hallId, string roomNumber);
         Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync();
         Task<List<RA_StudentsViewModel>> GetAllRAsAsync();
@@ -241,12 +247,14 @@ namespace Gordon360.Services
         Task<bool> RA_CheckinAsync(string[] HallIDs, string raId);
         Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string hallId);
         Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync();
+        Task<List<string>> GetOnCallRAHallsAsync(string userName);
         Task<bool> IsRAOnCallAsync(string raId);
         Task<bool> IsStudentResidentialAsync(int idNum);
         Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task);
         Task<HallTaskViewModel> UpdateTaskAsync(int taskID, HallTaskViewModel task);
-        Task<bool> DeleteTaskAsync(int taskID);
+        Task<bool> DisableTaskAsync(int taskID);
         Task<bool> CompleteTaskAsync(int taskID, string CompletedBy);
+        Task<bool> IncompleteTaskAsync(int taskID);
         Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId);
         Task<List<DailyTaskViewModel>> GetTasksForHallAsync(string hallId);
         Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status);

@@ -370,6 +370,182 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(rdInfo);
     }
 
+
+    /// <summary>
+    /// Retrieve a list of all RDs.
+    /// </summary>
+    /// <returns>Returns a list of all RDs if found</returns>
+    [HttpGet("rds/all")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetRDss()
+    {
+        try
+        {
+            var rdList = await housingService.GetRDsAsync();
+
+            if (rdList == null || !rdList.Any())
+            {
+                return NotFound("No RDs found.");
+            }
+
+            return Ok(rdList);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Creates  an RD's on-call assignment.
+    /// </summary>
+    /// <param name="rdId">The ID of the Resident Director (RD)</param>
+    /// <param name="startDate">The start date of the on-call period</param>
+    /// <param name="endDate">The end date of the on-call period</param>
+    /// <returns>True if the on-call assignment was successfully set</returns>
+    [HttpPost("rds/{rdId}/on-call")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> SetRdOnCall([FromRoute] int rdId, [FromQuery] DateTime startDate,[FromQuery] DateTime endDate)
+    {
+        if (startDate > endDate)
+        {
+            return BadRequest("Start date cannot be after end date.");
+        }
+
+        var OnCall = new RD_On_Call_Create
+        {
+            RD_ID = rdId,
+            Start_Date = startDate,
+            End_Date = endDate
+        };
+
+        try
+        {
+            var createdOnCall = await housingService.CreateRdOnCallAsync(OnCall);
+            return Ok("RD on-call assignment set successfully.");
+        }
+        catch (BadInputException ex)
+        {
+            return BadRequest(ex.ExceptionMessage);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while setting the RD on-call assignment.");
+        }
+    }
+
+
+    /// <summary>
+    /// Updates an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+    /// <param name="updatedOnCall">The updated RD on-call details.</param>
+    /// <returns>
+    /// Returns the updated RD on-call details if successful.
+    /// </returns>
+    [HttpPatch("rds/oncall/{recordId}")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> PatchRdOnCall(int recordId, [FromBody] RD_On_Call_Create updatedOnCall)
+    {
+        try
+        {
+            if (updatedOnCall == null)
+            {
+                return BadRequest("Invalid data provided.");
+            }
+
+            var rdInfo = await housingService.UpdateRdOnCallAsync(recordId, updatedOnCall);
+
+            if (rdInfo == null)
+            {
+                return NotFound($"No RD found with record ID: {recordId}");
+            }
+
+            return Ok(rdInfo); // Return updated RD information
+        }
+        catch (BadInputException ex)
+        {
+            return BadRequest(ex.ExceptionMessage);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Deletes an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+    /// <returns>
+    /// </returns>
+    [HttpDelete("rds/oncall/{recordId}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> DeleteRDOnCallById(int recordId)
+    {
+        try
+        {
+            bool deleted = await housingService.DeleteRDOnCallById(recordId);
+
+            if (!deleted)
+            {
+                return NotFound($"No RD found with record ID: {recordId}");
+            }
+
+            return NoContent(); // 204 No Content on successful delete
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Retrieves the Rd OnCall
+    /// </summary>
+    /// <returns>Returns the RDs details if found, otherwise null. </returns>
+    [HttpGet("rds/oncall")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetRDOnCall()
+    {
+        try
+        {
+            var rdInfo = await housingService.GetRDOnCall();
+            return Ok(rdInfo);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);  // Return 404 if no RD is found
+        }
+    }
+
+    /// <summary>
+    /// Retrieves a list of currently active RD on-call records.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of active RD on-call records if found.
+    /// </returns>
+    [HttpGet("rds/oncall/active")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetActiveRDOnCalls()
+    {
+        try
+        {
+            var activeRDs = await housingService.GetActiveRDOnCallsAsync();
+
+            if (activeRDs == null || !activeRDs.Any())
+            {
+                return NotFound("No active RD on-call records found.");
+            }
+
+            return Ok(activeRDs);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
     /// <summary>
     /// Retrieves the RA assigned to a resident based on their room number and hall ID.
     /// </summary>
@@ -516,6 +692,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Gets the on-call RA's current halls
+    /// </summary>
+    /// <param name="userName">The username of the ra</param>
+    /// <returns>The RA's current halls</returns>
+    [HttpGet("halls/on-calls/{userName}/locations")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ON_CALL_RA)]
+    public async Task<ActionResult<List<string>>> GetRACurrentHalls([FromRoute] string userName)
+    {
+        var Halls = await housingService.GetOnCallRAHallsAsync(userName);
+
+        if (Halls == null || !Halls.Any())
+        {
+            return NotFound("No check-in locations found");
+        }
+
+        return Ok(Halls);
+    }
+
+    /// <summary>
     /// Checks if an RA is currently on call.
     /// </summary>
     /// <param name="raId">The ID of the RA</param>
@@ -596,17 +791,17 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
-    /// Deletes a task
+    /// Disables a task
     /// </summary>
-    /// <param name="taskID">The ID of the task to delete</param>
-    /// <returns>True if deleted</returns>
+    /// <param name="taskID">The ID of the task to disable</param>
+    /// <returns>True if disable</returns>
     [HttpDelete("halls/task/{taskID}")]
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_HALL_TASK)]
-    public async Task<IActionResult> DeleteTask(int taskID)
+    public async Task<IActionResult> DisableTask(int taskID)
     {
         try
         {
-            var result = await housingService.DeleteTaskAsync(taskID);
+            var result = await housingService.DisableTaskAsync(taskID);
             if (!result)
             {
                 return NotFound("Task not found.");
@@ -643,6 +838,31 @@ public class HousingController(CCTContext context, IProfileService profileServic
         catch (Exception ex)
         {
             return StatusCode(500, new { Message = "An error occurred while completing the task.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Marks a task not completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <returns>True if marked not completed</returns>
+    [HttpPatch("halls/task/Incomplete/{taskID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK_COMPLETE)]
+    public async Task<IActionResult> IncompleteTask(int taskID)
+    {
+
+        try
+        {
+            var result = await housingService.IncompleteTaskAsync(taskID);
+            if (!result)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(new { Message = "Task marked as not completed successfully." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while marking the task not completed.", Details = ex.Message });
         }
     }
 
