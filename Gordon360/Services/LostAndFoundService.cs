@@ -894,7 +894,7 @@ namespace Gordon360.Services
         ///     Update the associated missing report for the found item
         /// </summary>
         /// <param name="foundItemID">The id of the found item to modify</param>
-        /// <param name="missingItemID"></param>
+        /// <param name="missingReportID"></param>
         /// <param name="username">The username of the person making the request</param>
         /// <returns>None</returns>
         /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
