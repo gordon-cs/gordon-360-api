@@ -328,6 +328,13 @@
             </summary>
             <returns>Returns a list of all assignments</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetRangeAssignmentsByRAId(System.String)">
+            <summary>
+            Retrieves the list of room range assignments for a given RA_ID.
+            </summary>
+            <param name="raId">The RA_ID of the assigned RA.</param>
+            <returns>Returns a list of assigned ranges for the specified RA.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.DeleteAssignment(System.Int32)">
             <summary>
             Deletes an RA range assignment
@@ -2252,6 +2259,13 @@
             Retrieves the list of all assignments.
             </summary>
             <returns>Returns a list of all assignments</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetRangeAssignmentsByRAIdAsync(System.String)">
+            <summary>
+            Retrieves the list of range assignments for a given RA_ID.
+            </summary>
+            <param name="raId">The RA_ID of the assigned RA.</param>
+            <returns>Returns a list of assigned ranges for the specified RA.</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.SetPreferredContactMethodAsync(System.String,System.String)">
             <summary>

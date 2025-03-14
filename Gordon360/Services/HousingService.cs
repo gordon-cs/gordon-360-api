@@ -1026,6 +1026,34 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Retrieves the list of range assignments for a given RA_ID.
+    /// </summary>
+    /// <param name="raId">The RA_ID of the assigned RA.</param>
+    /// <returns>Returns a list of assigned ranges for the specified RA.</returns>
+    public async Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsByRAIdAsync(string raId)
+    {
+        var assignments = await context.RA_Assigned_Ranges_View
+            .Where(assignment => assignment.RA_ID == raId)
+            .Select(assignment => new RA_Assigned_RangesViewModel
+            {
+                RA_ID = assignment.RA_ID,
+                Fname = assignment.Fname,
+                Lname = assignment.Lname,
+                Hall_Name = assignment.Hall_Name,
+                Room_Start = assignment.Room_Start,
+                Room_End = assignment.Room_End,
+                Range_ID = assignment.Range_ID,
+                Hall_ID = assignment.Hall_ID
+            })
+            .ToListAsync();
+
+        return assignments;
+    }
+
+
+
+
+    /// <summary>
     /// Sets or updates an RA's preferred contact method
     /// </summary>
     /// <param name="raId">The ID of the RA</param>
