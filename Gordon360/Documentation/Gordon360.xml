@@ -527,6 +527,14 @@
             <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
             <returns>The created status event</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.UpdateStatusEvent(System.Int32,Gordon360.Models.ViewModels.RA_StatusEventsViewModel)">
+            <summary>
+            Updates an existing status event for an RA's schedule
+            </summary>
+            <param name="statusID">The ID of the status event to update</param>
+            <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+            <returns>The updated status event</returns>
+        </member>
         <member name="M:Gordon360.Controllers.HousingController.DeleteStatusEvent(System.Int32)">
             <summary>
             Deletes a status event for an RA's schedule
@@ -540,6 +548,13 @@
             </summary>
             <param name="raID"> The ID of the RA</param>
             <returns>The list of daily status events</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetActiveStatusesByRAId(System.String)">
+            <summary>
+            Gets the active statuses for a given RA.
+            </summary>
+            <param name="raId">The ID of the RA.</param>
+            <returns>A list of active statuses or a 404 if none exist.</returns>
         </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
@@ -2406,12 +2421,27 @@
             <param name="statusID">The ID of the status event to delete</param>
             <returns>True if deleted</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.UpdateStatusEventAsync(System.Int32,Gordon360.Models.ViewModels.RA_StatusEventsViewModel)">
+            <summary>
+            Updates the RA status event by the given ID
+            </summary>
+            <param name="statusID">The ID of the status event to update</param>
+            <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+            <returns>The updated status event</returns>
+        </member>
         <member name="M:Gordon360.Services.HousingService.GetStatusEventsForRAAsync(System.String)">
             <summary>
             Gets the list of daily status events for an RA
             </summary>
             <param name="raID"> The ID of the RA</param>
             <returns>The list of daily status events</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetActiveStatusesByRAIdAsync(System.String)">
+            <summary>
+            Gets the active statuses for a given RA.
+            </summary>
+            <param name="raId">The ID of the RA.</param>
+            <returns>A list of active statuses or a 404 if none exist.</returns>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
             <summary>
