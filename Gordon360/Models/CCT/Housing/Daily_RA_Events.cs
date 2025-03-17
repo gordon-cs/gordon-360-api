@@ -45,5 +45,4 @@ public partial class Daily_RA_Events
     public TimeSpan? End_Time { get; set; }
 
     public bool Available { get; set; }
-  
 }
