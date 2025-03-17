@@ -194,7 +194,7 @@ public partial class CCTContext : DbContext
 
             entity.HasOne(d => d.missing).WithMany(p => p.ActionsTaken)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ActionsTa__missi__11606D5A");
+                .HasConstraintName("FK__ActionsTa__missi__365CE7DF");
         });
 
         modelBuilder.Entity<ActionsTakenData>(entity =>
@@ -348,7 +348,7 @@ public partial class CCTContext : DbContext
         {
             entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC2792138BD9");
 
-            entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__4B8D0EEF");
+            entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__37510C18");
         });
 
         modelBuilder.Entity<GuestUsers>(entity =>
@@ -357,7 +357,7 @@ public partial class CCTContext : DbContext
 
             entity.HasOne(d => d.missing).WithMany(p => p.GuestUsers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__GuestUser__missi__0E8400AF");
+                .HasConstraintName("FK__GuestUser__missi__3568C3A6");
         });
 
         modelBuilder.Entity<Housing_Applicants>(entity =>
@@ -479,7 +479,9 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<MissingReports>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__MissingR__3214EC27985CEC3D");
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC271C4C78EB");
+
+            entity.HasOne(d => d.matchingFound).WithMany(p => p.MissingReports).HasConstraintName("FK__MissingRe__match__38453051");
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>

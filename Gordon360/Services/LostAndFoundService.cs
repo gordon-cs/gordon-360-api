@@ -3,6 +3,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Graph;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -230,7 +231,7 @@ namespace Gordon360.Services
             }
 
             // If the report doesn't belong to the requesting user
-            if (original.submitterID != idNum)
+            if (original.submitterID != idNum && !hasFullPermissions(username))
             {
                 throw new UnauthorizedAccessException("Cannot modify a report that doesn't belong to you!");
             }
@@ -280,6 +281,36 @@ namespace Gordon360.Services
             }
 
             original.status = status;
+
+            await context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        ///     Update the associated found item for a missing item report
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="foundID"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task UpdateReportAssociatedFoundItemAsync(int id, string foundID, string username)
+        {
+            // Get requesting user's ID number
+            var idNum = accountService.GetAccountByUsername(username).GordonID;
+
+            var original = await context.MissingReports.FindAsync(id);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
+            }
+
+            // If a non-admin user attempts to update the associated found item of a report
+            if (original.submitterID != idNum && !hasFullPermissions(username))
+            {
+                throw new UnauthorizedAccessException("Cannot modify a report that doesn't belong to you!");
+            }
+
+            original.matchingFoundID = foundID;
 
             await context.SaveChangesAsync();
         }
@@ -855,6 +886,34 @@ namespace Gordon360.Services
             }
 
             original.status = status;
+
+            await context.SaveChangesAsync();
+        }
+
+        /// <summary>
+        ///     Update the associated missing report for the found item
+        /// </summary>
+        /// <param name="foundItemID">The id of the found item to modify</param>
+        /// <param name="missingReportID"></param>
+        /// <param name="username">The username of the person making the request</param>
+        /// <returns>None</returns>
+        /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
+        /// <exception cref="ResourceNotFoundException">If the found item with given id cannot be found in the database</exception>
+        public async Task UpdateFoundAssociatedMissingReportAsync(string foundItemID, int missingReportID, string username)
+        {
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
+
+            var original = await context.FoundItems.FindAsync(foundItemID);
+
+            if (original == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
+            }
+
+            original.matchingMissingID = missingReportID;
 
             await context.SaveChangesAsync();
         }

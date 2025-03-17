@@ -19,6 +19,10 @@ public partial class MissingReports
     [Unicode(false)]
     public string submitterID { get; set; }
 
+    [StringLength(10)]
+    [Unicode(false)]
+    public string matchingFoundID { get; set; }
+
     public bool forGuest { get; set; }
 
     [Required]
@@ -70,4 +74,8 @@ public partial class MissingReports
 
     [InverseProperty("missing")]
     public virtual ICollection<GuestUsers> GuestUsers { get; set; } = new List<GuestUsers>();
+
+    [ForeignKey("matchingFoundID")]
+    [InverseProperty("MissingReports")]
+    public virtual FoundItems matchingFound { get; set; }
 }

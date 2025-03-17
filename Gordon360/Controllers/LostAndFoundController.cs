@@ -79,6 +79,23 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Update the status of the item report with given id to the given status text
+        /// </summary>
+        /// <param name="missingItemId">The id of the report to update</param>
+        /// <param name="status"></param>
+        /// <returns>ObjectResult - the http status code result of the action</returns>
+        [HttpPut]
+        [Route("missingitems/{missingItemId}/linkItem/{foundItemID}")]
+        public async Task<ActionResult> UpdateReportAssociatedFoundItem(int missingItemId, string foundItemID)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            await lostAndFoundService.UpdateReportAssociatedFoundItemAsync(missingItemId, foundItemID, authenticatedUserUsername);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Get the list of missing item reports for the currently authenticated user.
         /// </summary>
         /// <param name="color">The selected color for filtering reports</param>
@@ -247,6 +264,17 @@ namespace Gordon360.Controllers
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
             await lostAndFoundService.UpdateFoundStatusAsync(itemId, status, authenticatedUserUsername);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("founditems/{itemId}/linkReport/{missingReportID}")]
+        public async Task<ActionResult> UpdateFoundAssociatedMissingReport(string itemId, int missingReportID)
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+
+            await lostAndFoundService.UpdateFoundAssociatedMissingReportAsync(itemId, missingReportID, authenticatedUserUsername);
 
             return Ok();
         }
