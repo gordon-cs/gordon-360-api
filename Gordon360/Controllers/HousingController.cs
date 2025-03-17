@@ -953,6 +953,38 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Updates an existing status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to update</param>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The updated status event</returns>
+    [HttpPatch]
+    [Route("ras/status-event/{statusID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> UpdateStatusEvent(int statusID, [FromBody] RA_StatusEventsViewModel status)
+    {
+        try
+        {
+            var result = await housingService.UpdateStatusEventAsync(statusID, status);
+
+            if (result == null)
+            {
+                return NotFound(new { Message = "Status event not found." });
+            }
+
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while updating the status event.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
     /// Deletes a status event for an RA's schedule
     /// </summary>
     /// <param name="statusID">The ID of the status event to delete</param>

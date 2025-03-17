@@ -1572,6 +1572,68 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
     }
 
     /// <summary>
+    /// Updates the RA status event by the given ID
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to update</param>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The updated status event</returns>
+    public async Task<RA_StatusEventsViewModel> UpdateStatusEventAsync(int statusID, RA_StatusEventsViewModel status)
+    {
+        var existingStatus = await context.RA_Status_Events.FindAsync(statusID);
+        if (existingStatus == null)
+        {
+            return null;
+        }
+
+        // Check for overlapping status events
+        bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
+            existing.Ra_ID == status.RaID &&
+            existing.Status_ID != statusID && // Exclude the current status event
+            (
+                (status.StartDate <= existing.End_Date && status.EndDate >= existing.Start_Date) &&
+                (status.Start_Time < existing.End_Time && status.End_Time > existing.Start_Time)
+            )
+        );
+
+        if (hasOverlap)
+        {
+            throw new InvalidOperationException("A conflicting status event already exists for this RA.");
+        }
+
+        // Update the existing status event
+        existingStatus.Status_Name = status.StatusName;
+        existingStatus.Is_Recurring = status.IsRecurring;
+        existingStatus.Frequency = status.Frequency;
+        existingStatus.Interval = status.Interval;
+        existingStatus.Start_Time = status.Start_Time;
+        existingStatus.End_Time = status.End_Time;
+        existingStatus.Start_Date = status.StartDate;
+        existingStatus.End_Date = status.EndDate;
+        existingStatus.Available = status.Available;
+
+        context.RA_Status_Events.Update(existingStatus);
+        await context.SaveChangesAsync();
+
+        // Return the updated status event
+        return new RA_StatusEventsViewModel
+        {
+            StatusID = existingStatus.Status_ID,
+            RaID = existingStatus.Ra_ID,
+            StatusName = existingStatus.Status_Name,
+            IsRecurring = existingStatus.Is_Recurring,
+            Frequency = existingStatus.Frequency,
+            Interval = (int)existingStatus.Interval,
+            Start_Time = existingStatus.Start_Time,
+            End_Time = existingStatus.End_Time,
+            StartDate = existingStatus.Start_Date,
+            EndDate = existingStatus.End_Date,
+            CreatedDate = existingStatus.Created_Date,
+            Available = existingStatus.Available
+        };
+    }
+
+
+    /// <summary>
     /// Gets the list of daily status events for an RA
     /// </summary>
     /// <param name="raID"> The ID of the RA</param>
