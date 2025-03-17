@@ -1649,6 +1649,8 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
                 StatusName = s.Status_Name,
                 Start_Time = (TimeSpan)s.Start_Time,
                 End_Time = (TimeSpan)s.End_Time,
+                Start_Date = s.Start_Date,
+                End_Date = s.End_Date,
                 Available = s.Available
             })
             .ToListAsync();
