@@ -6,8 +6,8 @@ using System.Collections.Generic;
 public class RA_Assigned_RangesViewModel
 {
     public string RA_ID { get; set; }
-    public string Fname { get; set; }
-    public string Lname { get; set; }
+    public string First_Name { get; set; }
+    public string Last_Name { get; set; }
     public string Hall_Name { get; set; }
     public int Room_Start { get; set; }
     public int Room_End { get; set; }
