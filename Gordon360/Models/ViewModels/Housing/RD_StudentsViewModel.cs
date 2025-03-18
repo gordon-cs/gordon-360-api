@@ -8,7 +8,7 @@ using System.Collections.Generic;
         public string Hall_Name { get; set; }
         public string Building_Code { get; set; }
         public string RD_Email { get; set; }
-        public string RD_Id { get; set; }
+        public string RD_ID { get; set; }
         public string RD_Name { get; set; }
         public string RD_Photo { get; set;}
     }

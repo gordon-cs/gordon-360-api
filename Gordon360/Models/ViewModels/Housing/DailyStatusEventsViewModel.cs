@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels;
 public class DailyStatusEventsViewModel
 {
     public int Status_ID { get; set; }
-    public string Ra_ID { get; set; }
+    public string RA_ID { get; set; }
     public string Status_Name { get; set; }
     public TimeSpan Start_Time { get; set; }
     public TimeSpan End_Time { get; set;}

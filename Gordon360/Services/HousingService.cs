@@ -666,7 +666,7 @@ public class HousingService(CCTContext context) : IHousingService
                 Hall_Name = rd.HallName,
                 Building_Code = rd.BuildingCode,
                 RD_Email = rd.RD_Email,
-                RD_Id = rd.RDId,
+                RD_ID = rd.RDId,
                 RD_Name = rd.RDName
             })
             .FirstOrDefaultAsync();
@@ -690,7 +690,7 @@ public class HousingService(CCTContext context) : IHousingService
         var rdList = await context.RD_Info
             .Select(rd => new RD_StudentsViewModel
             {
-                RD_Id = rd.RDId,
+                RD_ID = rd.RDId,
                 RD_Name = rd.RDName
             })
             .Distinct()
@@ -847,7 +847,7 @@ public class HousingService(CCTContext context) : IHousingService
             .Select(r => new RD_StudentsViewModel
             {
                 RD_Email = r.RD_Email,
-                RD_Id = r.RDId,
+                RD_ID = r.RDId,
                 RD_Name = r.RDName,
                 RD_Photo = r.RD_Photo
             })
@@ -1012,8 +1012,8 @@ public class HousingService(CCTContext context) : IHousingService
             .Select(assignment => new RA_Assigned_RangesViewModel
             {
                 RA_ID = assignment.RA_ID,
-                F_name = assignment.Fname,
-                L_name = assignment.Lname,
+                First_Name = assignment.Fname,
+                Last_Name = assignment.Lname,
                 Hall_Name = assignment.Hall_Name,
                 Room_Start = assignment.Room_Start,
                 Room_End = assignment.Room_End,
@@ -1037,8 +1037,8 @@ public class HousingService(CCTContext context) : IHousingService
             .Select(assignment => new RA_Assigned_RangesViewModel
             {
                 RA_ID = assignment.RA_ID,
-                F_name = assignment.Fname,
-                L_name = assignment.Lname,
+                First_Name = assignment.Fname,
+                Last_Name = assignment.Lname,
                 Hall_Name = assignment.Hall_Name,
                 Room_Start = assignment.Room_Start,
                 Room_End = assignment.Room_End,
@@ -1107,7 +1107,7 @@ public class HousingService(CCTContext context) : IHousingService
         // default contact to be phone
         var Contact = new RA_ContactPreference
         {
-            Ra_ID = raId,
+            RA_ID = raId,
             Preferred_Contact_Method = "phone",
             Contact = ra?.PhoneNumber ?? "Phone number not found"
         };
@@ -1129,7 +1129,7 @@ public class HousingService(CCTContext context) : IHousingService
                     // Generate Teams link using the email
                     Contact = new RA_ContactPreference
                     {
-                        Ra_ID = raId,
+                        RA_ID = raId,
                         Preferred_Contact_Method = "teams",
                         Contact = $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}"
                     };
@@ -1160,7 +1160,7 @@ public class HousingService(CCTContext context) : IHousingService
                 Room_Number = ra.RoomNumber,
                 RA_Name = ra.RA_Name,
                 Preferred_Contact = ra.PreferredContact,
-                Check_in_time = ra.Check_in_time,
+                Check_In_Time = ra.Check_in_time,
                 RD_Email = ra.RD_Email,
                 RD_Name = ra.RD_Name,
                 RA_UserName = ra.RA_UserName,
@@ -1222,7 +1222,7 @@ public class HousingService(CCTContext context) : IHousingService
                     Hall_Name = oncall.Hall_Name,
                     RA_Name = oncall.RA_Name,
                     Preferred_Contact = oncall.PreferredContact,
-                    Check_in_time = oncall.Check_in_time,
+                    Check_In_Time = oncall.Check_in_time,
                     RD_Email = oncall.RD_Email,
                     RA_UserName = oncall.RA_UserName,
                     RD_UserName = oncall.RD_UserName,
@@ -1501,7 +1501,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
     {
 
         bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
-        existing.Ra_ID == status.Ra_ID &&
+        existing.Ra_ID == status.RA_ID &&
         (
             (status.Start_Date <= existing.End_Date && status.End_Date >= existing.Start_Date) &&
             (status.Start_Time < existing.End_Time && status.End_Time > existing.Start_Time)
@@ -1515,7 +1515,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
 
         var newStatus = new RA_Status_Events
         {
-            Ra_ID = status.Ra_ID,
+            Ra_ID = status.RA_ID,
             Status_Name = status.Status_Name,
             Is_Recurring = status.Is_Recurring,
             Frequency = status.Frequency,
@@ -1535,7 +1535,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
         return new RA_StatusEventsViewModel
         {
             Status_ID = newStatus.Status_ID,
-            Ra_ID = newStatus.Ra_ID,
+            RA_ID = newStatus.Ra_ID,
             Status_Name = newStatus.Status_Name,
             Is_Recurring = newStatus.Is_Recurring,
             Frequency = newStatus.Frequency,
@@ -1587,7 +1587,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
 
         // Check for overlapping status events
         bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
-            existing.Ra_ID == status.Ra_ID &&
+            existing.Ra_ID == status.RA_ID &&
             existing.Status_ID != statusID && // Exclude the current status event
             (
                 (status.Start_Date <= existing.End_Date && status.End_Date >= existing.Start_Date) &&
@@ -1618,7 +1618,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
         return new RA_StatusEventsViewModel
         {
             Status_ID = existingStatus.Status_ID,
-            Ra_ID = existingStatus.Ra_ID,
+            RA_ID = existingStatus.Ra_ID,
             Status_Name = existingStatus.Status_Name,
             Is_Recurring = existingStatus.Is_Recurring,
             Frequency = existingStatus.Frequency,
@@ -1645,7 +1645,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             .Select(s => new DailyStatusEventsViewModel
             {
                 Status_ID = s.Status_ID,
-                Ra_ID = s.Ra_ID,
+                RA_ID = s.Ra_ID,
                 Status_Name = s.Status_Name,
                 Start_Time = (TimeSpan)s.Start_Time,
                 End_Time = (TimeSpan)s.End_Time,
@@ -1670,7 +1670,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             .Select(status => new RA_StatusEventsViewModel
             {
                 Status_ID = status.Status_ID,
-                Ra_ID = status.Ra_ID,
+                RA_ID = status.Ra_ID,
                 Status_Name = status.Status_Name,
                 Is_Recurring = status.Is_Recurring,
                 Frequency = status.Frequency,

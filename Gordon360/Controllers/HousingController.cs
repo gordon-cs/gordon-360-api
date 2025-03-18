@@ -312,7 +312,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         try
         {
-            var assignedRange = await housingService.AssignRaToRoomRangeAsync(assignment.Range_ID, assignment.Ra_ID);
+            var assignedRange = await housingService.AssignRaToRoomRangeAsync(assignment.Range_ID, assignment.RA_ID);
             return Created("RA assigned to room range successfully.", assignedRange);
         }
         catch (InvalidOperationException ex)

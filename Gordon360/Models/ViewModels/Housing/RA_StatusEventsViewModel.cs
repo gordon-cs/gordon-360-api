@@ -7,7 +7,7 @@ namespace Gordon360.Models.ViewModels;
 public class RA_StatusEventsViewModel
 {
     public int Status_ID { get; set; }
-    public string Ra_ID { get; set; }
+    public string RA_ID { get; set; }
     public string Status_Name { get; set; }
     public bool Is_Recurring { get; set; }
     public string Frequency { get; set; }
