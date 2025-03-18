@@ -6,16 +6,16 @@ using System.Collections.Generic;
 namespace Gordon360.Models.ViewModels;
 public class RA_StatusEventsViewModel
 {
-    public int StatusID { get; set; }
-    public string RaID { get; set; }
-    public string StatusName { get; set; }
-    public bool IsRecurring { get; set; }
+    public int Status_ID { get; set; }
+    public string Ra_ID { get; set; }
+    public string Status_Name { get; set; }
+    public bool Is_Recurring { get; set; }
     public string Frequency { get; set; }
     public int Interval { get; set; }
     public TimeSpan? Start_Time { get; set; }
     public TimeSpan? End_Time { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime Start_Date { get; set; }
+    public DateTime? End_Date { get; set; }
+    public DateTime Created_Date { get; set; } = DateTime.Now;
     public bool Available { get; set; }
 }

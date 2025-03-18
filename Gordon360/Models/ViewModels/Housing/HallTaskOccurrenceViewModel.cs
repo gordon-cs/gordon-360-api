@@ -6,11 +6,11 @@ using System.Collections.Generic;
 namespace Gordon360.Models.ViewModels;
 public class HallTaskOccurrenceViewModel
 {
-    public int OccurID { get; set; }
-    public int TaskID { get; set; }
-    public DateTime OccurDate { get; set; }
-    public bool IsComplete { get; set; }
-    public string CompletedBy { get; set; }
-    public DateTime? CompletedDate { get; set; }
+    public int Occur_ID { get; set; }
+    public int Task_ID { get; set; }
+    public DateTime Occur_Date { get; set; }
+    public bool Is_Complete { get; set; }
+    public string Completed_By { get; set; }
+    public DateTime? Completed_Date { get; set; }
 }
 
