@@ -10,7 +10,7 @@ public class RA_StatusEventsViewModel
     public string RA_ID { get; set; }
     public string Status_Name { get; set; }
     public bool Is_Recurring { get; set; }
-    public string Days_Of_Week { get; set; }
+    public string? Days_Of_Week { get; set; }
     public TimeSpan? Start_Time { get; set; }
     public TimeSpan? End_Time { get; set; }
     public DateTime Start_Date { get; set; }
