@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
+using System.Net.NetworkInformation;
 
 namespace Gordon360.Services;
 
@@ -1283,6 +1284,11 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>The created task</returns>
     public async Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task)
     {
+
+        if (task.End_Date < task.Start_Date)
+        {
+            throw new InvalidOperationException("A task cannot end before it begins.");
+        }
         var newTask = new Hall_Tasks
         {
             Name = task.Name,
@@ -1342,6 +1348,11 @@ public class HousingService(CCTContext context) : IHousingService
         if (existingTask == null)
         {
             return null;
+        }
+
+        if (task.End_Date < task.Start_Date)
+        {
+            throw new InvalidOperationException("A task cannot end before it begins.");
         }
 
         existingTask.Name = task.Name;
@@ -1482,23 +1493,14 @@ public class HousingService(CCTContext context) : IHousingService
     /// Creates a new status event for an RA's schedule
     /// </summary>
     /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
-    /// Swagger is showing the time inputs in a tick format but the below works and should be used
-    /// {
-    ///"statusID": 0,
-    ///"raID": "RA123",
-    ///"statusName": "On Duty",
-    ///"isRecurring": true,
-    ///"frequency": "Weekly",
-    ///"interval": 1,
-    ///"start_Time": "08:00:00",
-    ///"end_Time": "09:00:00",
-    ///"startDate": "2025-02-21",
-    ///"endDate": "2025-02-21",
-    ///"createdDate": "2025-02-21T07:45:00Z"
-    ///}
 /// <returns>The created status event</returns>
 public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status)
     {
+
+        if (status.End_Date < status.Start_Date || status.End_Time < status.Start_Time)
+        {
+            throw new InvalidOperationException("A status cannot end before it begins.");
+        }
 
         bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
         existing.Ra_ID == status.RA_ID &&
@@ -1518,12 +1520,11 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             Ra_ID = status.RA_ID,
             Status_Name = status.Status_Name,
             Is_Recurring = status.Is_Recurring,
-            Frequency = status.Frequency,
-            Interval = status.Interval,
+            DaysOfWeek = status.Days_Of_Week,
             Start_Time = status.Start_Time,
             End_Time = status.End_Time,
             Start_Date = status.Start_Date,
-            End_Date = status.End_Date,
+            End_Date = (DateTime)status.End_Date,
             Created_Date = DateTime.Now,
             Available = status.Available,
 
@@ -1538,8 +1539,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             RA_ID = newStatus.Ra_ID,
             Status_Name = newStatus.Status_Name,
             Is_Recurring = newStatus.Is_Recurring,
-            Frequency = newStatus.Frequency,
-            Interval = (int)newStatus.Interval,
+            Days_Of_Week = newStatus.DaysOfWeek,
             Start_Time = newStatus.Start_Time,
             End_Time = newStatus.End_Time,
             Start_Date = newStatus.Start_Date,
@@ -1585,6 +1585,11 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             return null;
         }
 
+        if (status.End_Date < status.Start_Date || status.End_Time <status.Start_Time)
+        {
+            throw new InvalidOperationException("A status cannot end before it begins.");
+        }
+
         // Check for overlapping status events
         bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
             existing.Ra_ID == status.RA_ID &&
@@ -1603,12 +1608,11 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
         // Update the existing status event
         existingStatus.Status_Name = status.Status_Name;
         existingStatus.Is_Recurring = status.Is_Recurring;
-        existingStatus.Frequency = status.Frequency;
-        existingStatus.Interval = status.Interval;
+        existingStatus.DaysOfWeek = status.Days_Of_Week;
         existingStatus.Start_Time = status.Start_Time;
         existingStatus.End_Time = status.End_Time;
         existingStatus.Start_Date = status.Start_Date;
-        existingStatus.End_Date = status.End_Date;
+        existingStatus.End_Date = (DateTime)status.End_Date;
         existingStatus.Available = status.Available;
 
         context.RA_Status_Events.Update(existingStatus);
@@ -1621,8 +1625,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
             RA_ID = existingStatus.Ra_ID,
             Status_Name = existingStatus.Status_Name,
             Is_Recurring = existingStatus.Is_Recurring,
-            Frequency = existingStatus.Frequency,
-            Interval = (int)existingStatus.Interval,
+            Days_Of_Week = existingStatus.DaysOfWeek,
             Start_Time = existingStatus.Start_Time,
             End_Time = existingStatus.End_Time,
             Start_Date = existingStatus.Start_Date,
@@ -1673,8 +1676,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
                 RA_ID = status.Ra_ID,
                 Status_Name = status.Status_Name,
                 Is_Recurring = status.Is_Recurring,
-                Frequency = status.Frequency,
-                Interval = status.Interval ?? 0,
+                Days_Of_Week = status.DaysOfWeek,
                 Start_Time = status.Start_Time,
                 End_Time = status.End_Time,
                 Start_Date = status.Start_Date,
