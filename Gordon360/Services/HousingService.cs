@@ -1645,6 +1645,7 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
     {
         var statusEvents = await context.Daily_RA_Events
             .Where(s => s.Ra_ID == raID)
+            .OrderBy(s => s.Start_Time)  
             .Select(s => new DailyStatusEventsViewModel
             {
                 Status_ID = s.Status_ID,
