@@ -974,10 +974,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
 
             return Ok(result);
         }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { Message = ex.Message });
-        }
         catch (Exception ex)
         {
             return StatusCode(500, new { Message = "An error occurred while updating the status event.", Details = ex.Message });
