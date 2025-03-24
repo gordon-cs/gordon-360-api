@@ -9,21 +9,19 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT;
 
 [Keyless]
-public partial class Daily_RA_Events
+public partial class RD_OnCall_Today
 {
-    public int Status_ID { get; set; }
-
-    [Required]
-    [StringLength(10)]
-    [Unicode(false)]
-    public string Ra_ID { get; set; }
-
-    [Required]
     [StringLength(50)]
     [Unicode(false)]
-    public string Status_Name { get; set; }
+    public string RD_Email { get; set; }
 
-    public bool Is_Recurring { get; set; }
+    [StringLength(10)]
+    public string RDId { get; set; }
+
+    [Required]
+    [StringLength(46)]
+    [Unicode(false)]
+    public string RDName { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime Start_Date { get; set; }
@@ -31,12 +29,7 @@ public partial class Daily_RA_Events
     [Column(TypeName = "date")]
     public DateTime End_Date { get; set; }
 
-    [Column(TypeName = "datetime")]
-    public DateTime Created_Date { get; set; }
-
-    public TimeSpan? Start_Time { get; set; }
-
-    public TimeSpan? End_Time { get; set; }
-
-    public bool Available { get; set; }
+    [StringLength(86)]
+    [Unicode(false)]
+    public string RD_Photo { get; set; }
 }

@@ -142,6 +142,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<RD_Info> RD_Info { get; set; }
 
+    public virtual DbSet<RD_OnCall_Today> RD_OnCall_Today { get; set; }
+
+    public virtual DbSet<RD_On_Call> RD_On_Call { get; set; }
+
     public virtual DbSet<REQUEST> REQUEST { get; set; }
 
     public virtual DbSet<RequestView> RequestView { get; set; }
@@ -217,7 +221,7 @@ public partial class CCTContext : DbContext
 
             entity.HasOne(d => d.missing).WithMany(p => p.ActionsTaken)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__ActionsTa__missi__11606D5A");
+                .HasConstraintName("FK__ActionsTa__missi__365CE7DF");
         });
 
         modelBuilder.Entity<ActionsTakenData>(entity =>
@@ -323,6 +327,8 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Daily_RA_Events>(entity =>
         {
             entity.ToView("Daily_RA_Events", "Housing");
+
+            entity.Property(e => e.Status_ID).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<DiningInfo>(entity =>
@@ -366,7 +372,7 @@ public partial class CCTContext : DbContext
 
             entity.HasOne(d => d.missing).WithMany(p => p.GuestUsers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__GuestUser__missi__0E8400AF");
+                .HasConstraintName("FK__GuestUser__missi__3568C3A6");
         });
 
         modelBuilder.Entity<Hall_Assignment_Ranges>(entity =>
@@ -517,7 +523,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<MissingReports>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__MissingR__3214EC27985CEC3D");
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC271C4C78EB");
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>
@@ -614,7 +620,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<RA_Status_Events>(entity =>
         {
-            entity.HasKey(e => e.Status_ID).HasName("PK__tmp_ms_x__519009AC813D76B1");
+            entity.HasKey(e => e.Status_ID).HasName("PK__RA_Statu__519009ACBC52F0C7");
 
             entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
         });
@@ -632,6 +638,18 @@ public partial class CCTContext : DbContext
 
             entity.Property(e => e.BuildingCode).IsFixedLength();
             entity.Property(e => e.HallName).IsFixedLength();
+        });
+
+        modelBuilder.Entity<RD_OnCall_Today>(entity =>
+        {
+            entity.ToView("RD_OnCall_Today", "Housing");
+        });
+
+        modelBuilder.Entity<RD_On_Call>(entity =>
+        {
+            entity.HasKey(e => e.Record_ID).HasName("PK__RD_On_Ca__603A0C605596CACA");
+
+            entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<REQUEST>(entity =>

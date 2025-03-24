@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
+using System.Net.NetworkInformation;
 
 namespace Gordon360.Services;
 
@@ -662,10 +664,10 @@ public class HousingService(CCTContext context) : IHousingService
             .Where(rd => rd.BuildingCode == hallId)
             .Select(rd => new RD_StudentsViewModel
             {
-                HallName = rd.HallName,
-                BuildingCode = rd.BuildingCode,
+                Hall_Name = rd.HallName,
+                Building_Code = rd.BuildingCode,
                 RD_Email = rd.RD_Email,
-                RD_Id = rd.RDId,
+                RD_ID = rd.RDId,
                 RD_Name = rd.RDName
             })
             .FirstOrDefaultAsync();
@@ -676,6 +678,209 @@ public class HousingService(CCTContext context) : IHousingService
         }
 
         return hallRD;
+    }
+
+    /// <summary>
+    /// Retrieves a distinct list of all RDs with their IDs and names.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of RD_StudentsViewModel objects containing RD IDs and names.
+    /// </returns>
+    public async Task<List<RD_StudentsViewModel>> GetRDsAsync()
+    {
+        var rdList = await context.RD_Info
+            .Select(rd => new RD_StudentsViewModel
+            {
+                RD_ID = rd.RDId,
+                RD_Name = rd.RDName
+            })
+            .Distinct()
+            .ToListAsync();
+
+        return rdList;
+    }
+
+    /// <summary>
+    /// Creates an RD's on-call assignment.
+    /// </summary>
+    /// <param name="OnCall">The ID of the RD</param>
+    /// <returns>The created RD on-call assignment</returns>
+    public async Task<RdOnCallGetView> CreateRdOnCallAsync(RD_On_Call_Create OnCall)
+    {
+        if (OnCall.Start_Date > OnCall.End_Date)
+        {
+            throw new BadInputException() { ExceptionMessage = "Start date cannot be after end date." };
+        }
+
+        // Check for overlapping RD on-call records
+        bool overlapExists = await context.RD_On_Call
+        .AnyAsync(r => r.Start_Date <= OnCall.End_Date && r.End_Date >= OnCall.Start_Date);
+
+        if (overlapExists)
+        {
+            throw new BadInputException() { ExceptionMessage = "An existing on-call record overlaps with the given dates." };
+        }
+
+        // Create a new RD on-call record
+        var newOnCall = new RD_On_Call
+        {
+            RD_ID = OnCall.RD_ID,
+            Start_Date = OnCall.Start_Date,
+            End_Date = OnCall.End_Date,
+            Created_Date = DateTime.Now
+        };
+
+        context.RD_On_Call.Add(newOnCall);
+        await context.SaveChangesAsync();
+
+        return new RdOnCallGetView
+        {
+            Record_ID = newOnCall.Record_ID,
+            RD_ID = newOnCall.RD_ID,
+            Start_Date = newOnCall.Start_Date,
+            End_Date = newOnCall.End_Date,
+            Created_Date = newOnCall.Created_Date
+        };
+    }
+
+    /// <summary>
+    /// Updates an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+    /// <param name="updatedOnCall">The updated RD on-call details.</param>
+    /// <returns>
+    /// Returns an updated RdOnCallGetView object if successful.
+    /// </returns>
+    public async Task<RdOnCallGetView> UpdateRdOnCallAsync(int recordId, RD_On_Call_Create updatedOnCall)
+    {
+        var existingOnCall = await context.RD_On_Call
+            .FirstOrDefaultAsync(r => r.Record_ID == recordId);
+
+        if (existingOnCall == null)
+        {
+            return null; // RD entry not found
+        }
+
+        if (updatedOnCall.Start_Date > updatedOnCall.End_Date)
+        {
+            throw new BadInputException() { ExceptionMessage = "Start date cannot be after end date." };
+        }
+
+        // Check for overlapping RD on-call records
+        bool overlapExists = await context.RD_On_Call
+        .Where(r => r.Record_ID != recordId)
+        .AnyAsync(r => r.Start_Date <= updatedOnCall.End_Date && r.End_Date >= updatedOnCall.Start_Date);
+
+            if (overlapExists)
+            {
+                throw new BadInputException() { ExceptionMessage = "An existing on-call record overlaps with the given dates." };
+            }
+
+        bool isUpdated = false;
+
+        // Update fields only if the new value is different from the existing value
+        if (updatedOnCall.RD_ID != existingOnCall.RD_ID)
+        {
+            existingOnCall.RD_ID = updatedOnCall.RD_ID;
+            isUpdated = true;
+        }
+
+        if (updatedOnCall.Start_Date != existingOnCall.Start_Date)
+        {
+            existingOnCall.Start_Date = updatedOnCall.Start_Date;
+            isUpdated = true;
+        }
+
+        if (updatedOnCall.End_Date != existingOnCall.End_Date)
+        {
+            existingOnCall.End_Date = updatedOnCall.End_Date;
+            isUpdated = true;
+        }
+
+        if (!isUpdated)
+        {
+            throw new BadInputException() { ExceptionMessage = "No changes detected." };
+        }
+
+
+        await context.SaveChangesAsync();
+
+        return new RdOnCallGetView
+        {
+            Record_ID = existingOnCall.Record_ID,
+            RD_ID = existingOnCall.RD_ID,
+            Start_Date = existingOnCall.Start_Date,
+            End_Date = existingOnCall.End_Date,
+            Created_Date = existingOnCall.Created_Date,
+        };
+    }
+
+    /// <summary>
+    /// Deletes an RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+    /// <returns>
+    /// Returns true if the record was successfully deleted.
+    /// </returns>
+    public async Task<bool> DeleteRDOnCallById(int recordId)
+    {
+        var rdEntry = await context.RD_On_Call
+            .FirstOrDefaultAsync(r => r.Record_ID == recordId);
+
+        if (rdEntry == null)
+        {
+            return false;
+        }
+
+        context.RD_On_Call.Remove(rdEntry);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Retrieves the RD on call
+    /// </summary>
+    /// <returns>info for the RD.</returns>
+    public async Task<RD_StudentsViewModel> GetRDOnCall()
+    {
+        var rd = await context.RD_OnCall_Today
+            .Select(r => new RD_StudentsViewModel
+            {
+                RD_Email = r.RD_Email,
+                RD_ID = r.RDId,
+                RD_Name = r.RDName,
+                RD_Photo = r.RD_Photo
+            })
+            .FirstOrDefaultAsync();
+
+        return rd;
+    }
+
+    /// <summary>
+    /// Retrieves a list of active RD on-call records where the end date is today or in the future.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of active RD on-call records
+    /// If no active records are found, an empty list is returned.
+    /// </returns>
+    public async Task<List<RdOnCallGetView>> GetActiveRDOnCallsAsync()
+    {
+        var today = DateTime.Now.Date;
+
+        var activeRDs = await context.RD_On_Call
+            .Where(r => r.End_Date >= today)
+            .Select(r => new RdOnCallGetView
+            {
+                Record_ID = r.Record_ID,
+                RD_ID = r.RD_ID,
+                Start_Date = r.Start_Date,
+                End_Date = r.End_Date,
+                Created_Date = r.Created_Date,
+            })
+            .ToListAsync();
+
+        return activeRDs;
     }
 
     /// <summary>
@@ -713,15 +918,15 @@ public class HousingService(CCTContext context) : IHousingService
             .Where(ra => ra.ID == assignedRAID)
             .Select(ra => new RA_StudentsViewModel
             {
-                FirstName = ra.FirstName,
-                LastName = ra.LastName,
+                First_Name = ra.FirstName,
+                Last_Name = ra.LastName,
                 Dorm = ra.Dorm,
                 BLDG_Code = ra.BLDG_Code,
-                RoomNumber = ra.RoomNumber,
+                Room_Number = ra.RoomNumber,
                 Email = ra.Email,
-                PhoneNumber = ra.PhoneNumber,
+                Phone_Number = ra.PhoneNumber,
                 ID = ra.ID,
-                PhotoURL = ra.PhotoURL
+                Photo_URL = ra.PhotoURL
             })
             .FirstOrDefaultAsync();
 
@@ -733,7 +938,7 @@ public class HousingService(CCTContext context) : IHousingService
         // Fetch and include the preferred contact method for the RA
         var preferredContact = await GetPreferredContactAsync(assignedRA.ID);
 
-        assignedRA.PreferredContact = preferredContact.Contact;
+        assignedRA.Preferred_Contact = preferredContact.Contact;
 
         return assignedRA;
     }
@@ -747,7 +952,7 @@ public class HousingService(CCTContext context) : IHousingService
         var roomRanges = await context.Hall_Assignment_Ranges
             .Select(r => new HallAssignmentRangeViewModel
             {
-                RangeID = r.Range_ID,
+                Range_ID = r.Range_ID,
                 Hall_ID = r.Hall_ID,
                 Room_Start = r.Room_Start,
                 Room_End = r.Room_End
@@ -784,13 +989,13 @@ public class HousingService(CCTContext context) : IHousingService
         var RAs = await context.RA_Students
             .Select(ra => new RA_StudentsViewModel
             {
-                FirstName = ra.FirstName,
-                LastName = ra.LastName,
+                First_Name = ra.FirstName,
+                Last_Name = ra.LastName,
                 Dorm = ra.Dorm,
                 BLDG_Code = ra.BLDG_Code,
-                RoomNumber = ra.RoomNumber,
+                Room_Number = ra.RoomNumber,
                 Email = ra.Email,
-                PhoneNumber = ra.PhoneNumber,
+                Phone_Number = ra.PhoneNumber,
                 ID = ra.ID
             })
             .ToListAsync();
@@ -808,8 +1013,8 @@ public class HousingService(CCTContext context) : IHousingService
             .Select(assignment => new RA_Assigned_RangesViewModel
             {
                 RA_ID = assignment.RA_ID,
-                Fname = assignment.Fname,
-                Lname = assignment.Lname,
+                First_Name = assignment.Fname,
+                Last_Name = assignment.Lname,
                 Hall_Name = assignment.Hall_Name,
                 Room_Start = assignment.Room_Start,
                 Room_End = assignment.Room_End,
@@ -820,6 +1025,34 @@ public class HousingService(CCTContext context) : IHousingService
 
         return Assignments;
     }
+
+    /// <summary>
+    /// Retrieves the list of range assignments for a given RA_ID.
+    /// </summary>
+    /// <param name="raId">The RA_ID of the assigned RA.</param>
+    /// <returns>Returns a list of assigned ranges for the specified RA.</returns>
+    public async Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsByRAIdAsync(string raId)
+    {
+        var assignments = await context.RA_Assigned_Ranges_View
+            .Where(assignment => assignment.RA_ID == raId)
+            .Select(assignment => new RA_Assigned_RangesViewModel
+            {
+                RA_ID = assignment.RA_ID,
+                First_Name = assignment.Fname,
+                Last_Name = assignment.Lname,
+                Hall_Name = assignment.Hall_Name,
+                Room_Start = assignment.Room_Start,
+                Room_End = assignment.Room_End,
+                Range_ID = assignment.Range_ID,
+                Hall_ID = assignment.Hall_ID
+            })
+            .ToListAsync();
+
+        return assignments;
+    }
+
+
+
 
     /// <summary>
     /// Sets or updates an RA's preferred contact method
@@ -875,8 +1108,8 @@ public class HousingService(CCTContext context) : IHousingService
         // default contact to be phone
         var Contact = new RA_ContactPreference
         {
-            Ra_ID = raId,
-            PreferredContactMethod = "phone",
+            RA_ID = raId,
+            Preferred_Contact_Method = "phone",
             Contact = ra?.PhoneNumber ?? "Phone number not found"
         };
 
@@ -897,8 +1130,8 @@ public class HousingService(CCTContext context) : IHousingService
                     // Generate Teams link using the email
                     Contact = new RA_ContactPreference
                     {
-                        Ra_ID = raId,
-                        PreferredContactMethod = "teams",
+                        RA_ID = raId,
+                        Preferred_Contact_Method = "teams",
                         Contact = $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}"
                     };
 
@@ -925,10 +1158,10 @@ public class HousingService(CCTContext context) : IHousingService
             {
                 Hall_ID = ra.Hall_ID,
                 Hall_Name = ra.Hall_Name,
-                RoomNumber = ra.RoomNumber,
+                Room_Number = ra.RoomNumber,
                 RA_Name = ra.RA_Name,
-                PreferredContact = ra.PreferredContact,
-                Check_in_time = ra.Check_in_time,
+                Preferred_Contact = ra.PreferredContact,
+                Check_In_Time = ra.Check_in_time,
                 RD_Email = ra.RD_Email,
                 RD_Name = ra.RD_Name,
                 RA_UserName = ra.RA_UserName,
@@ -989,8 +1222,8 @@ public class HousingService(CCTContext context) : IHousingService
                     Hall_ID = oncall.Hall_ID,
                     Hall_Name = oncall.Hall_Name,
                     RA_Name = oncall.RA_Name,
-                    PreferredContact = oncall.PreferredContact,
-                    Check_in_time = oncall.Check_in_time,
+                    Preferred_Contact = oncall.PreferredContact,
+                    Check_In_Time = oncall.Check_in_time,
                     RD_Email = oncall.RD_Email,
                     RA_UserName = oncall.RA_UserName,
                     RD_UserName = oncall.RD_UserName,
@@ -1051,34 +1284,55 @@ public class HousingService(CCTContext context) : IHousingService
     /// <returns>The created task</returns>
     public async Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task)
     {
+
+        if (task.End_Date < task.Start_Date)
+        {
+            throw new InvalidOperationException("A task cannot end before it begins.");
+        }
         var newTask = new Hall_Tasks
         {
             Name = task.Name,
             Description = task.Description,
-            Hall_ID = task.HallID,
-            Is_Recurring = task.IsRecurring,
+            Hall_ID = task.Hall_ID,
+            Is_Recurring = task.Is_Recurring,
             Frequency = task.Frequency,
             Interval = task.Interval,
-            Start_Date = task.StartDate,
-            End_Date = task.EndDate,
+            Start_Date = task.Start_Date,
+            End_Date = task.End_Date,
             Created_Date = DateTime.Now
         };
 
+        // Check if task starts today and add to Task_Occurrence
+        if (newTask.Start_Date.Date == DateTime.Now.Date)
+        {
+            var newOccurrence = new Hall_Task_Occurrence
+            {
+                Task_ID = newTask.Task_ID,
+                OccurDate = DateTime.Now.Date,
+                IsComplete = false,
+                CompletedBy = null,
+                CompletedDate = null
+            };
+
+            newTask.Hall_Task_Occurrence = [newOccurrence];
+        }
+
         await context.Hall_Tasks.AddAsync(newTask);
         await context.SaveChangesAsync();
+  
 
         return new HallTaskViewModel
         {
-            TaskID = newTask.Task_ID,
+            Task_ID = newTask.Task_ID,
             Name = newTask.Name,
             Description = newTask.Description,
-            HallID = newTask.Hall_ID,
-            IsRecurring = newTask.Is_Recurring,
+            Hall_ID = newTask.Hall_ID,
+            Is_Recurring = newTask.Is_Recurring,
             Frequency = newTask.Frequency,
             Interval = (int)newTask.Interval,
-            StartDate = newTask.Start_Date,
-            EndDate = newTask.End_Date,
-            CreatedDate = newTask.Created_Date
+            Start_Date = newTask.Start_Date,
+            End_Date = newTask.End_Date,
+            Created_Date = newTask.Created_Date
         };
     }
 
@@ -1096,30 +1350,35 @@ public class HousingService(CCTContext context) : IHousingService
             return null;
         }
 
+        if (task.End_Date < task.Start_Date)
+        {
+            throw new InvalidOperationException("A task cannot end before it begins.");
+        }
+
         existingTask.Name = task.Name;
         existingTask.Description = task.Description;
-        existingTask.Hall_ID = task.HallID;
-        existingTask.Is_Recurring = task.IsRecurring;
+        existingTask.Hall_ID = task.Hall_ID;
+        existingTask.Is_Recurring = task.Is_Recurring;
         existingTask.Frequency = task.Frequency;
         existingTask.Interval = task.Interval;
-        existingTask.Start_Date = task.StartDate;
-        existingTask.End_Date = task.EndDate;
+        existingTask.Start_Date = task.Start_Date;
+        existingTask.End_Date = task.End_Date;
 
         context.Hall_Tasks.Update(existingTask);
         await context.SaveChangesAsync();
 
         return new HallTaskViewModel
         {
-            TaskID = existingTask.Task_ID,
+            Task_ID = existingTask.Task_ID,
             Name = existingTask.Name,
             Description = existingTask.Description,
-            HallID = existingTask.Hall_ID,
-            IsRecurring = existingTask.Is_Recurring,
+            Hall_ID = existingTask.Hall_ID,
+            Is_Recurring = existingTask.Is_Recurring,
             Frequency = existingTask.Frequency,
             Interval = (int)existingTask.Interval,
-            StartDate = existingTask.Start_Date,
-            EndDate = existingTask.End_Date,
-            CreatedDate = existingTask.Created_Date
+            Start_Date = existingTask.Start_Date,
+            End_Date = existingTask.End_Date,
+            Created_Date = existingTask.Created_Date
         };
     }
 
@@ -1190,16 +1449,16 @@ public class HousingService(CCTContext context) : IHousingService
             .Where(t => t.Hall_ID == hallId && (!t.End_Date.HasValue || t.End_Date.Value.Date >= DateTime.Now.Date))
             .Select(t => new HallTaskViewModel
             {
-                TaskID = t.Task_ID,
+                Task_ID = t.Task_ID,
                 Name = t.Name,
                 Description = t.Description,
-                HallID = t.Hall_ID,
-                IsRecurring = t.Is_Recurring,
+                Hall_ID = t.Hall_ID,
+                Is_Recurring = t.Is_Recurring,
                 Frequency = t.Frequency,
                 Interval = (int)t.Interval,
-                StartDate = t.Start_Date,
-                EndDate = t.End_Date,
-                CreatedDate = t.Created_Date
+                Start_Date = t.Start_Date,
+                End_Date = t.End_Date,
+                Created_Date = t.Created_Date
             })
             .ToListAsync();
 
@@ -1217,13 +1476,13 @@ public class HousingService(CCTContext context) : IHousingService
             .Where(t => t.Hall_ID == hallId)
             .Select(t => new DailyTaskViewModel
             {
-                TaskID = t.Task_ID,
+                Task_ID = t.Task_ID,
                 Name = t.Name,
                 Description = t.Description,
-                HallID = t.Hall_ID,
-                CompletedDate = t.CompletedDate,
-                CompletedBy = t.CompletedBy,
-                OccurDate = t.OccurDate
+                Hall_ID = t.Hall_ID,
+                Completed_Date = t.CompletedDate,
+                Completed_By = t.CompletedBy,
+                Occur_Date = t.OccurDate
             })
             .ToListAsync();
 
@@ -1234,35 +1493,41 @@ public class HousingService(CCTContext context) : IHousingService
     /// Creates a new status event for an RA's schedule
     /// </summary>
     /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
-    /// Swagger is showing the time inputs in a tick format but the below works and should be used
-    /// {
-    ///"statusID": 0,
-    ///"raID": "RA123",
-    ///"statusName": "On Duty",
-    ///"isRecurring": true,
-    ///"frequency": "Weekly",
-    ///"interval": 1,
-    ///"start_Time": "08:00:00",
-    ///"end_Time": "09:00:00",
-    ///"startDate": "2025-02-21",
-    ///"endDate": "2025-02-21",
-    ///"createdDate": "2025-02-21T07:45:00Z"
-    ///}
 /// <returns>The created status event</returns>
 public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status)
     {
+
+        if (status.End_Date < status.Start_Date || status.End_Time < status.Start_Time)
+        {
+            throw new InvalidOperationException("A status cannot end before it begins.");
+        }
+
+        bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
+        existing.Ra_ID == status.RA_ID &&
+        (
+            (status.Start_Date <= existing.End_Date && status.End_Date >= existing.Start_Date) &&
+            (status.Start_Time < existing.End_Time && status.End_Time > existing.Start_Time)
+        )
+    );
+
+        if (hasOverlap)
+        {
+            throw new InvalidOperationException("A conflicting status event already exists for this RA.");
+        }
+
         var newStatus = new RA_Status_Events
         {
-            Ra_ID = status.RaID,
-            Status_Name = status.StatusName,
-            Is_Recurring = status.IsRecurring,
-            Frequency = status.Frequency,
-            Interval = status.Interval,
+            Ra_ID = status.RA_ID,
+            Status_Name = status.Status_Name,
+            Is_Recurring = status.Is_Recurring,
+            DaysOfWeek = status.Days_Of_Week,
             Start_Time = status.Start_Time,
             End_Time = status.End_Time,
-            Start_Date = status.StartDate,
-            End_Date = status.EndDate,
-            Created_Date = DateTime.Now
+            Start_Date = status.Start_Date,
+            End_Date = (DateTime)status.End_Date,
+            Created_Date = DateTime.Now,
+            Available = status.Available,
+
         };
 
         await context.RA_Status_Events.AddAsync(newStatus);
@@ -1270,17 +1535,17 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
 
         return new RA_StatusEventsViewModel
         {
-            StatusID = newStatus.Status_ID,
-            RaID = newStatus.Ra_ID,
-            StatusName = newStatus.Status_Name,
-            IsRecurring = newStatus.Is_Recurring,
-            Frequency = newStatus.Frequency,
-            Interval = (int)newStatus.Interval,
+            Status_ID = newStatus.Status_ID,
+            RA_ID = newStatus.Ra_ID,
+            Status_Name = newStatus.Status_Name,
+            Is_Recurring = newStatus.Is_Recurring,
+            Days_Of_Week = newStatus.DaysOfWeek,
             Start_Time = newStatus.Start_Time,
             End_Time = newStatus.End_Time,
-            StartDate = newStatus.Start_Date,
-            EndDate = newStatus.End_Date,
-            CreatedDate = newStatus.Created_Date
+            Start_Date = newStatus.Start_Date,
+            End_Date = newStatus.End_Date,
+            Created_Date = newStatus.Created_Date,
+            Available = newStatus.Available
         };
     }
 
@@ -1300,9 +1565,76 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
         }
 
         existingStatus.End_Date = DateTime.Now.Date.AddDays(-1); // Mark status as ended
+        existingStatus.End_Time = DateTime.Now.TimeOfDay;
+        
         await context.SaveChangesAsync();
         return true;
     }
+
+    /// <summary>
+    /// Updates the RA status event by the given ID
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to update</param>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The updated status event</returns>
+    public async Task<RA_StatusEventsViewModel> UpdateStatusEventAsync(int statusID, RA_StatusEventsViewModel status)
+    {
+        var existingStatus = await context.RA_Status_Events.FindAsync(statusID);
+        if (existingStatus == null)
+        {
+            return null;
+        }
+
+        if (status.End_Date < status.Start_Date || status.End_Time <status.Start_Time)
+        {
+            throw new InvalidOperationException("A status cannot end before it begins.");
+        }
+
+        // Check for overlapping status events
+        bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
+            existing.Ra_ID == status.RA_ID &&
+            existing.Status_ID != statusID && // Exclude the current status event
+            (
+                (status.Start_Date <= existing.End_Date && status.End_Date >= existing.Start_Date) &&
+                (status.Start_Time < existing.End_Time && status.End_Time > existing.Start_Time)
+            )
+        );
+
+        if (hasOverlap)
+        {
+            throw new InvalidOperationException("A conflicting status event already exists for this RA.");
+        }
+
+        // Update the existing status event
+        existingStatus.Status_Name = status.Status_Name;
+        existingStatus.Is_Recurring = status.Is_Recurring;
+        existingStatus.DaysOfWeek = status.Days_Of_Week;
+        existingStatus.Start_Time = status.Start_Time;
+        existingStatus.End_Time = status.End_Time;
+        existingStatus.Start_Date = status.Start_Date;
+        existingStatus.End_Date = (DateTime)status.End_Date;
+        existingStatus.Available = status.Available;
+
+        context.RA_Status_Events.Update(existingStatus);
+        await context.SaveChangesAsync();
+
+        // Return the updated status event
+        return new RA_StatusEventsViewModel
+        {
+            Status_ID = existingStatus.Status_ID,
+            RA_ID = existingStatus.Ra_ID,
+            Status_Name = existingStatus.Status_Name,
+            Is_Recurring = existingStatus.Is_Recurring,
+            Days_Of_Week = existingStatus.DaysOfWeek,
+            Start_Time = existingStatus.Start_Time,
+            End_Time = existingStatus.End_Time,
+            Start_Date = existingStatus.Start_Date,
+            End_Date = existingStatus.End_Date,
+            Created_Date = existingStatus.Created_Date,
+            Available = existingStatus.Available
+        };
+    }
+
 
     /// <summary>
     /// Gets the list of daily status events for an RA
@@ -1313,18 +1645,51 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
     {
         var statusEvents = await context.Daily_RA_Events
             .Where(s => s.Ra_ID == raID)
+            .OrderBy(s => s.Start_Time)  
             .Select(s => new DailyStatusEventsViewModel
             {
-                StatusID = s.Status_ID,
-                RaID = s.Ra_ID,
-                StatusName = s.Status_Name,
+                Status_ID = s.Status_ID,
+                RA_ID = s.Ra_ID,
+                Status_Name = s.Status_Name,
                 Start_Time = (TimeSpan)s.Start_Time,
-                End_Time = (TimeSpan)s.End_Time
+                End_Time = (TimeSpan)s.End_Time,
+                Start_Date = s.Start_Date,
+                End_Date = s.End_Date,
+                Available = s.Available
             })
             .ToListAsync();
 
         return statusEvents;
     }
+
+    /// <summary>
+    /// Gets the active statuses for a given RA.
+    /// </summary>
+    /// <param name="raId">The ID of the RA.</param>
+    /// <returns>A list of active statuses or a 404 if none exist.</returns>
+    public async Task<List<RA_StatusEventsViewModel>> GetActiveStatusesByRAIdAsync(string raId)
+    {
+        var activeStatuses = await context.RA_Status_Events
+            .Where(status => status.Ra_ID == raId && status.End_Date >= DateTime.Now.Date)
+            .Select(status => new RA_StatusEventsViewModel
+            {
+                Status_ID = status.Status_ID,
+                RA_ID = status.Ra_ID,
+                Status_Name = status.Status_Name,
+                Is_Recurring = status.Is_Recurring,
+                Days_Of_Week = status.DaysOfWeek,
+                Start_Time = status.Start_Time,
+                End_Time = status.End_Time,
+                Start_Date = status.Start_Date,
+                End_Date = status.End_Date,
+                Created_Date = status.Created_Date,
+                Available = status.Available
+            })
+            .ToListAsync();
+
+        return activeStatuses;
+    }
+
 
 
 

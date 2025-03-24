@@ -8,22 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Keyless]
-public partial class Daily_RA_Events
+[Table("RD_On_Call", Schema = "Housing")]
+public partial class RD_On_Call
 {
-    public int Status_ID { get; set; }
+    [Key]
+    public int Record_ID { get; set; }
 
-    [Required]
-    [StringLength(10)]
-    [Unicode(false)]
-    public string Ra_ID { get; set; }
-
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Status_Name { get; set; }
-
-    public bool Is_Recurring { get; set; }
+    public int RD_ID { get; set; }
 
     [Column(TypeName = "date")]
     public DateTime Start_Date { get; set; }
@@ -33,10 +24,4 @@ public partial class Daily_RA_Events
 
     [Column(TypeName = "datetime")]
     public DateTime Created_Date { get; set; }
-
-    public TimeSpan? Start_Time { get; set; }
-
-    public TimeSpan? End_Time { get; set; }
-
-    public bool Available { get; set; }
 }

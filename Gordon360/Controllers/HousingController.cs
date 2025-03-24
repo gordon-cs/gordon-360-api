@@ -312,7 +312,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         try
         {
-            var assignedRange = await housingService.AssignRaToRoomRangeAsync(assignment.Range_ID, assignment.Ra_ID);
+            var assignedRange = await housingService.AssignRaToRoomRangeAsync(assignment.Range_ID, assignment.RA_ID);
             return Created("RA assigned to room range successfully.", assignedRange);
         }
         catch (InvalidOperationException ex)
@@ -336,6 +336,26 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return NotFound("No Assigned Ranges");
         }
         return Ok(RangeAssignments);
+    }
+
+    /// <summary>
+    /// Retrieves the list of room range assignments for a given RA_ID.
+    /// </summary>
+    /// <param name="raId">The RA_ID of the assigned RA.</param>
+    /// <returns>Returns a list of assigned ranges for the specified RA.</returns>
+    [HttpGet]
+    [Route("roomrangeassignments/{raId}")]
+    [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.HOUSING_RA_ASSIGNMENT)]
+    public async Task<IActionResult> GetRangeAssignmentsByRAId(string raId)
+    {
+        var rangeAssignments = await housingService.GetRangeAssignmentsByRAIdAsync(raId);
+
+        if (rangeAssignments.Count() == 0)
+        {
+            return NotFound($"No Assigned Ranges found for RA ID {raId}");
+        }
+
+        return Ok(rangeAssignments);
     }
 
     /// <summary>
@@ -368,6 +388,182 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         var rdInfo = await housingService.GetResidentRDAsync(hallId);
         return Ok(rdInfo);
+    }
+
+
+    /// <summary>
+    /// Retrieve a list of all RDs.
+    /// </summary>
+    /// <returns>Returns a list of all RDs if found</returns>
+    [HttpGet("rds/all")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetRDss()
+    {
+        try
+        {
+            var rdList = await housingService.GetRDsAsync();
+
+            if (rdList == null || !rdList.Any())
+            {
+                return NotFound("No RDs found.");
+            }
+
+            return Ok(rdList);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Creates  an RD's on-call assignment.
+    /// </summary>
+    /// <param name="rdId">The ID of the Resident Director (RD)</param>
+    /// <param name="startDate">The start date of the on-call period</param>
+    /// <param name="endDate">The end date of the on-call period</param>
+    /// <returns>True if the on-call assignment was successfully set</returns>
+    [HttpPost("rds/{rdId}/on-call")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> SetRdOnCall([FromRoute] int rdId, [FromQuery] DateTime startDate,[FromQuery] DateTime endDate)
+    {
+        if (startDate > endDate)
+        {
+            return BadRequest("Start date cannot be after end date.");
+        }
+
+        var OnCall = new RD_On_Call_Create
+        {
+            RD_ID = rdId,
+            Start_Date = startDate,
+            End_Date = endDate
+        };
+
+        try
+        {
+            var createdOnCall = await housingService.CreateRdOnCallAsync(OnCall);
+            return Ok("RD on-call assignment set successfully.");
+        }
+        catch (BadInputException ex)
+        {
+            return BadRequest(ex.ExceptionMessage);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while setting the RD on-call assignment.");
+        }
+    }
+
+
+    /// <summary>
+    /// Updates an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+    /// <param name="updatedOnCall">The updated RD on-call details.</param>
+    /// <returns>
+    /// Returns the updated RD on-call details if successful.
+    /// </returns>
+    [HttpPatch("rds/oncall/{recordId}")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> PatchRdOnCall(int recordId, [FromBody] RD_On_Call_Create updatedOnCall)
+    {
+        try
+        {
+            if (updatedOnCall == null)
+            {
+                return BadRequest("Invalid data provided.");
+            }
+
+            var rdInfo = await housingService.UpdateRdOnCallAsync(recordId, updatedOnCall);
+
+            if (rdInfo == null)
+            {
+                return NotFound($"No RD found with record ID: {recordId}");
+            }
+
+            return Ok(rdInfo); // Return updated RD information
+        }
+        catch (BadInputException ex)
+        {
+            return BadRequest(ex.ExceptionMessage);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Deletes an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+    /// <returns>
+    /// </returns>
+    [HttpDelete("rds/oncall/{recordId}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> DeleteRDOnCallById(int recordId)
+    {
+        try
+        {
+            bool deleted = await housingService.DeleteRDOnCallById(recordId);
+
+            if (!deleted)
+            {
+                return NotFound($"No RD found with record ID: {recordId}");
+            }
+
+            return NoContent(); // 204 No Content on successful delete
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Retrieves the Rd OnCall
+    /// </summary>
+    /// <returns>Returns the RDs details if found, otherwise null. </returns>
+    [HttpGet("rds/oncall")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetRDOnCall()
+    {
+        try
+        {
+            var rdInfo = await housingService.GetRDOnCall();
+            return Ok(rdInfo);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);  // Return 404 if no RD is found
+        }
+    }
+
+    /// <summary>
+    /// Retrieves a list of currently active RD on-call records.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of active RD on-call records if found.
+    /// </returns>
+    [HttpGet("rds/oncall/active")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetActiveRDOnCalls()
+    {
+        try
+        {
+            var activeRDs = await housingService.GetActiveRDOnCallsAsync();
+
+            if (activeRDs == null || !activeRDs.Any())
+            {
+                return NotFound("No active RD on-call records found.");
+            }
+
+            return Ok(activeRDs);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -757,6 +953,34 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Updates an existing status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to update</param>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The updated status event</returns>
+    [HttpPatch]
+    [Route("ras/status-event/{statusID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> UpdateStatusEvent(int statusID, [FromBody] RA_StatusEventsViewModel status)
+    {
+        try
+        {
+            var result = await housingService.UpdateStatusEventAsync(statusID, status);
+
+            if (result == null)
+            {
+                return NotFound(new { Message = "Status event not found." });
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "An error occurred while updating the status event.", Details = ex.Message });
+        }
+    }
+
+    /// <summary>
     /// Deletes a status event for an RA's schedule
     /// </summary>
     /// <param name="statusID">The ID of the status event to delete</param>
@@ -798,6 +1022,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
         {
             return StatusCode(500, new { Message = "An error occurred while fething the RA's status events.", Details = ex.Message });
         }
+    }
+
+    /// <summary>
+    /// Gets the active statuses for a given RA.
+    /// </summary>
+    /// <param name="raId">The ID of the RA.</param>
+    /// <returns>A list of active statuses or a 404 if none exist.</returns>
+    [HttpGet]
+    [Route("ras/{raId}/active-status-events")]
+    public async Task<IActionResult> GetActiveStatusesByRAId(string raId)
+    {
+        var activeStatuses = await housingService.GetActiveStatusesByRAIdAsync(raId);
+
+        if (activeStatuses == null || !activeStatuses.Any())
+        {
+            return NotFound($"No active statuses found for RA ID {raId}");
+        }
+
+        return Ok(activeStatuses);
     }
 
 
