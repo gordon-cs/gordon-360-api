@@ -15,6 +15,7 @@ using System;
 using Gordon360.Exceptions;
 using System.Collections.Generic;
 
+
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
@@ -429,7 +430,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         if (startDate > endDate)
         {
-            return BadRequest("Start date cannot be after end date.");
+            return BadRequest( new { message = "Start date cannot be after end date." });
         }
 
         var OnCall = new RD_On_Call_Create
@@ -442,15 +443,15 @@ public class HousingController(CCTContext context, IProfileService profileServic
         try
         {
             var createdOnCall = await housingService.CreateRdOnCallAsync(OnCall);
-            return Ok("RD on-call assignment set successfully.");
+            return Ok(new { message = "RD on-call assignment set successfully." });
         }
         catch (BadInputException ex)
         {
-            return BadRequest(ex.ExceptionMessage);
+            return BadRequest( new { message = ex.ExceptionMessage });
         }
         catch (Exception)
         {
-            return StatusCode(500, "An error occurred while setting the RD on-call assignment.");
+            return StatusCode(500, new { message = "An error occurred while setting the RD on-call assignment." });
         }
     }
 
@@ -471,7 +472,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
         {
             if (updatedOnCall == null)
             {
-                return BadRequest("Invalid data provided.");
+                return BadRequest(new { message = "Invalid data provided." });
             }
 
             var rdInfo = await housingService.UpdateRdOnCallAsync(recordId, updatedOnCall);
@@ -485,7 +486,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
         catch (BadInputException ex)
         {
-            return BadRequest(ex.ExceptionMessage);
+            return BadRequest(new { message = ex.ExceptionMessage });
         }
         catch (Exception ex)
         {
