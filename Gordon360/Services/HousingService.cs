@@ -1671,6 +1671,8 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
     {
         var activeStatuses = await context.RA_Status_Events
             .Where(status => status.Ra_ID == raId && status.End_Date >= DateTime.Now.Date)
+            .OrderBy(status => status.Start_Date)
+            .ThenBy(status => status.Start_Time)
             .Select(status => new RA_StatusEventsViewModel
             {
                 Status_ID = status.Status_ID,
