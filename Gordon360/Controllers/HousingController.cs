@@ -400,8 +400,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
     public async Task<IActionResult> GetRDs()
     {
-        try
-        {
             var rdList = await housingService.GetRDsAsync();
 
             if (rdList == null || !rdList.Any())
@@ -410,11 +408,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
             }
 
             return Ok(rdList);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"An error occurred: {ex.Message}");
-        }
     }
 
     /// <summary>
@@ -448,10 +441,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
         catch (BadInputException ex)
         {
             return BadRequest( new { message = ex.ExceptionMessage });
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, new { message = "An error occurred while setting the RD on-call assignment." });
         }
     }
 
@@ -488,10 +477,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
         {
             return BadRequest(new { message = ex.ExceptionMessage });
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"An error occurred: {ex.Message}");
-        }
     }
 
     /// <summary>
@@ -504,8 +489,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RD_ON_CALL)]
     public async Task<IActionResult> DeleteRDOnCallById(int recordId)
     {
-        try
-        {
             bool deleted = await housingService.DeleteRDOnCallById(recordId);
 
             if (!deleted)
@@ -514,11 +497,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
             }
 
             return NoContent(); // 204 No Content on successful delete
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"An error occurred: {ex.Message}");
-        }
     }
 
     /// <summary>
@@ -550,8 +528,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
     public async Task<IActionResult> GetActiveRDOnCalls()
     {
-        try
-        {
             var activeRDs = await housingService.GetActiveRDOnCallsAsync();
 
             if (activeRDs == null || !activeRDs.Any())
@@ -560,11 +536,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
             }
 
             return Ok(activeRDs);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"An error occurred: {ex.Message}");
-        }
     }
 
     /// <summary>
@@ -660,19 +631,13 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RA_CHECKIN)]
     public async Task<ActionResult<bool>> RA_Checkin([FromRoute] string raId,[FromBody] string[] HallIDs)
     {
-        try
-        {
             var checkedIn = await housingService.RA_CheckinAsync(HallIDs, raId);
             if (checkedIn)
             {
                 return Created("RA checked in successfully.", checkedIn);
             }
             return BadRequest("Failed to check in RA.");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+
     }
 
     /// <summary>
@@ -775,15 +740,8 @@ public class HousingController(CCTContext context, IProfileService profileServic
     public async Task<IActionResult> CreateTask([FromBody] HallTaskViewModel task)
     {
 
-        try
-        {
             var result = await housingService.CreateTaskAsync(task);
             return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while creating the task.", Details = ex.Message });
-        }
     }
 
     /// <summary>
@@ -796,19 +754,13 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_HALL_TASK)]
     public async Task<IActionResult> UpdateTask(int taskID, [FromBody] HallTaskViewModel task)
     {
-        try
-        {
+
             var result = await housingService.UpdateTaskAsync(taskID, task);
             if (result == null)
             {
                 return NotFound("Task not found.");
             }
             return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while updating the task.", Details = ex.Message });
-        }
     }
 
     /// <summary>
@@ -820,19 +772,13 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_HALL_TASK)]
     public async Task<IActionResult> DisableTask(int taskID)
     {
-        try
-        {
+
             var result = await housingService.DisableTaskAsync(taskID);
             if (!result)
             {
                 return NotFound("Task not found.");
             }
             return Ok(new { Message = "Task deleted successfully." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while deleting the task.", Details = ex.Message });
-        }
     }
 
 
@@ -847,19 +793,12 @@ public class HousingController(CCTContext context, IProfileService profileServic
     public async Task<IActionResult> CompleteTask(int taskID, [FromBody] string CompletedBy)
     {
 
-        try
-        {
             var result = await housingService.CompleteTaskAsync(taskID, CompletedBy);
             if (!result)
             {
                 return NotFound("Task not found or already completed.");
             }
             return Ok(new { Message = "Task marked as completed successfully." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while completing the task.", Details = ex.Message });
-        }
     }
 
     /// <summary>
@@ -872,19 +811,13 @@ public class HousingController(CCTContext context, IProfileService profileServic
     public async Task<IActionResult> IncompleteTask(int taskID)
     {
 
-        try
-        {
             var result = await housingService.IncompleteTaskAsync(taskID);
             if (!result)
             {
                 return NotFound("Task not found.");
             }
             return Ok(new { Message = "Task marked as not completed successfully." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while marking the task not completed.", Details = ex.Message });
-        }
+
     }
 
     /// <summary>
@@ -901,15 +834,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return BadRequest("Hall ID is required.");
         }
 
-        try
-        {
             var tasks = await housingService.GetActiveTasksForHallAsync(hallId);
             return Ok(tasks);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while fetching tasks.", Details = ex.Message });
-        }
+
     }
 
     /// <summary>
@@ -921,15 +848,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
     public async Task<IActionResult> GetTasksForHall(string hallId)
     {
 
-        try
-        {
             var tasks = await housingService.GetTasksForHallAsync(hallId);
             return Ok(tasks);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while fetching tasks.", Details = ex.Message });
-        }
+
     }
 
     /// <summary>
@@ -942,15 +863,10 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS_EVENT)]
     public async Task<IActionResult> CreateStatusEvent([FromBody] RA_StatusEventsViewModel status)
     {
-        try
-        {
+
             var result = await housingService.CreateStatusEventAsync(status);
             return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while creating the status event.", Details = ex.Message });
-        }
+
     }
 
     /// <summary>
@@ -964,8 +880,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS_EVENT)]
     public async Task<IActionResult> UpdateStatusEvent(int statusID, [FromBody] RA_StatusEventsViewModel status)
     {
-        try
-        {
+
             var result = await housingService.UpdateStatusEventAsync(statusID, status);
 
             if (result == null)
@@ -974,11 +889,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
             }
 
             return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while updating the status event.", Details = ex.Message });
-        }
     }
 
     /// <summary>
@@ -991,19 +901,14 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
     public async Task<IActionResult> DeleteStatusEvent(int statusID)
     {
-        try
-        {
+
             var result = await housingService.DeleteStatusEventAsync(statusID);
             if (!result)
             {
                 return NotFound("Status event cannot be found.");
             }
             return Ok(new { Message = "Status event has been deleted successfully." });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while deleting the status event.", Details = ex.Message });
-        }
+
     }
 
     /// <summary>
@@ -1014,15 +919,9 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [HttpGet("ras/{raID}/daily-status-events")]
     public async Task<IActionResult> GetStatusEventsForRA(string raID)
     {
-        try
-        {
+ 
             var result = await housingService.GetStatusEventsForRAAsync(raID);
             return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { Message = "An error occurred while fething the RA's status events.", Details = ex.Message });
-        }
     }
 
     /// <summary>
