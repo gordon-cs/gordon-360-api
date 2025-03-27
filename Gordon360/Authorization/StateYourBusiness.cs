@@ -194,7 +194,7 @@ public class StateYourBusiness : ActionFilterAttribute
             case Resource.HOUSING_ON_CALL_RA:
                 return (user_groups.Contains(AuthGroup.Student));
             case Resource.HOUSING_RD_ON_CALL:
-                return (user_groups.Contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.HallInfoViewer));
             case Resource.NEWS:
                 return true;
             case Resource.STUDENT_SCHEDULE:

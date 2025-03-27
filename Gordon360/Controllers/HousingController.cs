@@ -398,7 +398,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     /// <returns>Returns a list of all RDs if found</returns>
     [HttpGet("rds/all")]
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
-    public async Task<IActionResult> GetRDss()
+    public async Task<IActionResult> GetRDs()
     {
         try
         {
