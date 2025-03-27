@@ -272,7 +272,13 @@ namespace Gordon360.Services
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
         public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
         IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
-        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username);
+        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, 
+                                                                   int? lastId, 
+                                                                   int? pageSize, 
+                                                                   string? status, 
+                                                                   string? color, 
+                                                                   string? category, 
+                                                                   string? keywords);
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
         Task UpdateReportStatusAsync(int id, string status, string username);
         MissingItemReportViewModel? GetMissingItem(int id, string username);
@@ -287,7 +293,7 @@ namespace Gordon360.Services
         Task<EnrollmentCheckinHolds> GetHoldsAsync(string id);
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
-        Task<bool> GetStatusAsync(string id);
+        Task<bool> GetStatusAsync(string username);
     }
 
     namespace RecIM

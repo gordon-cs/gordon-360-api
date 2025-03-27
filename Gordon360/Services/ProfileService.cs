@@ -80,7 +80,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         // Test accounts always have current date and time as birthday, so
         // treat this the same as no birthday
         // Comment this out to see "happy birthday" banner in test accounts
-        var lifetime = DateTime.Now - (DateTime) birthdate;
+        var lifetime = DateTime.Now - (DateTime)birthdate;
         if (lifetime.Days < 1) // no valid user was born within the last 24 hours
         {
             return impossible_birthdate;
@@ -236,41 +236,49 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 
         if (original == null)
         {
-            await context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE { username = username, calendar = content.calendar, facebook = content.facebook, twitter = content.twitter, instagram = content.instagram, linkedin = content.linkedin, handshake = content.handshake, PlannedGradYear = content.PlannedGradYear });
-
+            await context.CUSTOM_PROFILE.AddAsync(new CUSTOM_PROFILE
+            {
+                username = username,
+                calendar = content.calendar,
+                facebook = content.facebook,
+                twitter = content.twitter,
+                instagram = content.instagram,
+                linkedin = content.linkedin,
+                handshake = content.handshake,
+                PlannedGradYear = content.PlannedGradYear,
+                SMSOptedIn = content.SMSOptedIn,
+            });
         }
         else
         {
-
             switch (type)
             {
-
                 case "calendar":
                     original.calendar = content.calendar;
                     break;
-
                 case "facebook":
                     original.facebook = content.facebook;
                     break;
-
                 case "twitter":
                     original.twitter = content.twitter;
                     break;
-
                 case "instagram":
                     original.instagram = content.instagram;
                     break;
-
                 case "linkedin":
                     original.linkedin = content.linkedin;
                     break;
-
                 case "handshake":
                     original.handshake = content.handshake;
                     break;
                 case "plannedGradYear":
                     original.PlannedGradYear = content.PlannedGradYear;
                     break;
+                case "SMSOptedIn":
+                    original.SMSOptedIn = content.SMSOptedIn;
+                    break;
+                default:
+                    throw new NotSupportedException($"Unrecognized custom profile setting {type}");
             }
         }
 
