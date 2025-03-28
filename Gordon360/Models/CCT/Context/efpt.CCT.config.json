@@ -75,7 +75,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[Hall_Task_Recurrence]",
+         "Name": "[Housing].[Hall_Task_Occurrence]",
          "ObjectType": 0
       },
       {
@@ -91,15 +91,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[RA_Status]",
+         "Name": "[Housing].[RA_Status_Events]",
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[RA_Status_Schedule]",
+         "Name": "[Housing].[RD_On_Call]",
          "ObjectType": 0
       },
       {
-         "Name": "[Housing].[Recurrence]",
+         "Name": "[Housing].[ResRooms]",
          "ObjectType": 0
       },
       {
@@ -319,6 +319,14 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Housing].[CurrentTasks]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Daily_RA_Events]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[Housing].[Halls]",
          "ObjectType": 3
       },
@@ -335,7 +343,15 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Housing].[RD_OnCall_Today]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[Housing].[ResidentialStatus_View]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Unassigned_Rooms]",
          "ObjectType": 3
       },
       {

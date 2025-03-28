@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
     public class RA_StudentsViewModel
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string First_Name { get; set; }
+        public string Last_Name { get; set; }
         public string Dorm { get; set; }
         public string BLDG_Code { get; set; }
-        public string RoomNumber { get; set; }
+        public string Room_Number { get; set; }
         public string Email { get; set; }
-        public string PhoneNumber { get; set; }
+        public string Phone_Number { get; set; }
         public string ID { get; set; }
-        public string PhotoURL { get; set; }
-        public string PreferredContact { get; set; }
+        public string Photo_URL { get; set; }
+        public string Preferred_Contact { get; set; }
 }

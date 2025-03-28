@@ -15,6 +15,7 @@ using System;
 using Gordon360.Exceptions;
 using System.Collections.Generic;
 
+
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
@@ -269,6 +270,18 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Retrieves all rooms with no associated ranges.
+    /// </summary>
+    /// <returns>A list of rooms.</returns>
+    [HttpGet("roomranges/missedrooms")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ROOM_RANGE)]
+    public async Task<ActionResult<List<HallAssignmentRangeViewModel>>> GetMissedRooms()
+    {
+        var roomRanges = await housingService.GetMissedRoomsAsync();
+        return Ok(roomRanges);
+    }
+
+    /// <summary>
     /// Deletes a Room Range
     /// </summary>
     /// <param name="rangeId">The ID of the room range to delete</param>
@@ -300,7 +313,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         try
         {
-            var assignedRange = await housingService.AssignRaToRoomRangeAsync(assignment.Range_ID, assignment.Ra_ID);
+            var assignedRange = await housingService.AssignRaToRoomRangeAsync(assignment.Range_ID, assignment.RA_ID);
             return Created("RA assigned to room range successfully.", assignedRange);
         }
         catch (InvalidOperationException ex)
@@ -324,6 +337,26 @@ public class HousingController(CCTContext context, IProfileService profileServic
             return NotFound("No Assigned Ranges");
         }
         return Ok(RangeAssignments);
+    }
+
+    /// <summary>
+    /// Retrieves the list of room range assignments for a given RA_ID.
+    /// </summary>
+    /// <param name="raId">The RA_ID of the assigned RA.</param>
+    /// <returns>Returns a list of assigned ranges for the specified RA.</returns>
+    [HttpGet]
+    [Route("roomrangeassignments/{raId}")]
+    [StateYourBusiness(operation = Operation.READ_PARTIAL, resource = Resource.HOUSING_RA_ASSIGNMENT)]
+    public async Task<IActionResult> GetRangeAssignmentsByRAId(string raId)
+    {
+        var rangeAssignments = await housingService.GetRangeAssignmentsByRAIdAsync(raId);
+
+        if (rangeAssignments.Count() == 0)
+        {
+            return NotFound($"No Assigned Ranges found for RA ID {raId}");
+        }
+
+        return Ok(rangeAssignments);
     }
 
     /// <summary>
@@ -356,6 +389,153 @@ public class HousingController(CCTContext context, IProfileService profileServic
     {
         var rdInfo = await housingService.GetResidentRDAsync(hallId);
         return Ok(rdInfo);
+    }
+
+
+    /// <summary>
+    /// Retrieve a list of all RDs.
+    /// </summary>
+    /// <returns>Returns a list of all RDs if found</returns>
+    [HttpGet("rds/all")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetRDs()
+    {
+            var rdList = await housingService.GetRDsAsync();
+
+            if (rdList == null || !rdList.Any())
+            {
+                return NotFound("No RDs found.");
+            }
+
+            return Ok(rdList);
+    }
+
+    /// <summary>
+    /// Creates  an RD's on-call assignment.
+    /// </summary>
+    /// <param name="rdId">The ID of the Resident Director (RD)</param>
+    /// <param name="startDate">The start date of the on-call period</param>
+    /// <param name="endDate">The end date of the on-call period</param>
+    /// <returns>True if the on-call assignment was successfully set</returns>
+    [HttpPost("rds/{rdId}/on-call")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> SetRdOnCall([FromRoute] int rdId, [FromQuery] DateTime startDate,[FromQuery] DateTime endDate)
+    {
+        if (startDate > endDate)
+        {
+            return BadRequest( new { message = "Start date cannot be after end date." });
+        }
+
+        var OnCall = new RD_On_Call_Create
+        {
+            RD_ID = rdId,
+            Start_Date = startDate,
+            End_Date = endDate
+        };
+
+        try
+        {
+            var createdOnCall = await housingService.CreateRdOnCallAsync(OnCall);
+            return Ok(new { message = "RD on-call assignment set successfully." });
+        }
+        catch (BadInputException ex)
+        {
+            return BadRequest( new { message = ex.ExceptionMessage });
+        }
+    }
+
+
+    /// <summary>
+    /// Updates an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+    /// <param name="updatedOnCall">The updated RD on-call details.</param>
+    /// <returns>
+    /// Returns the updated RD on-call details if successful.
+    /// </returns>
+    [HttpPatch("rds/oncall/{recordId}")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> PatchRdOnCall(int recordId, [FromBody] RD_On_Call_Create updatedOnCall)
+    {
+        try
+        {
+            if (updatedOnCall == null)
+            {
+                return BadRequest(new { message = "Invalid data provided." });
+            }
+
+            var rdInfo = await housingService.UpdateRdOnCallAsync(recordId, updatedOnCall);
+
+            if (rdInfo == null)
+            {
+                return NotFound($"No RD found with record ID: {recordId}");
+            }
+
+            return Ok(rdInfo); // Return updated RD information
+        }
+        catch (BadInputException ex)
+        {
+            return BadRequest(new { message = ex.ExceptionMessage });
+        }
+    }
+
+    /// <summary>
+    /// Deletes an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+    /// <returns>
+    /// </returns>
+    [HttpDelete("rds/oncall/{recordId}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> DeleteRDOnCallById(int recordId)
+    {
+            bool deleted = await housingService.DeleteRDOnCallById(recordId);
+
+            if (!deleted)
+            {
+                return NotFound($"No RD found with record ID: {recordId}");
+            }
+
+            return NoContent(); // 204 No Content on successful delete
+    }
+
+    /// <summary>
+    /// Retrieves the Rd OnCall
+    /// </summary>
+    /// <returns>Returns the RDs details if found, otherwise null. </returns>
+    [HttpGet("rds/oncall")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetRDOnCall()
+    {
+        try
+        {
+            var rdInfo = await housingService.GetRDOnCall();
+            return Ok(rdInfo);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);  // Return 404 if no RD is found
+        }
+    }
+
+    /// <summary>
+    /// Retrieves a list of currently active RD on-call records.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of active RD on-call records if found.
+    /// </returns>
+    [HttpGet("rds/oncall/active")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_RD_ON_CALL)]
+    public async Task<IActionResult> GetActiveRDOnCalls()
+    {
+            var activeRDs = await housingService.GetActiveRDOnCallsAsync();
+
+            if (activeRDs == null || !activeRDs.Any())
+            {
+                return NotFound("No active RD on-call records found.");
+            }
+
+            return Ok(activeRDs);
     }
 
     /// <summary>
@@ -441,28 +621,6 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(contactInfo);
     }
 
-
-    /// <summary>
-    /// Creates a new status event for an RA schedule
-    /// </summary>
-    /// <param name="Status_Sched">The ViewModel that contains the Schedule ID and RA ID</param>
-    /// <param name="raId">the id of the RA setting a status</param>
-    /// <returns>The created RA_Status_Schedule object</returns>
-    [HttpPost("ras/{raId}/status")]
-    public async Task<ActionResult<RA_Status_Schedule>> CreateStatus( [FromBody] RA_Status_ScheduleViewModel Status_Sched, [FromRoute] string raId)
-    {
-        try
-        {
-            var newStatus = await housingService.CreateStatusAsync(Status_Sched,raId);
-            return Created("Status event created successfully.", newStatus);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-
     /// <summary>
     /// Checks an RA in
     /// </summary>
@@ -473,19 +631,13 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.RA_CHECKIN)]
     public async Task<ActionResult<bool>> RA_Checkin([FromRoute] string raId,[FromBody] string[] HallIDs)
     {
-        try
-        {
             var checkedIn = await housingService.RA_CheckinAsync(HallIDs, raId);
             if (checkedIn)
             {
                 return Created("RA checked in successfully.", checkedIn);
             }
             return BadRequest("Failed to check in RA.");
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+
     }
 
     /// <summary>
@@ -526,6 +678,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
     }
 
     /// <summary>
+    /// Gets the on-call RA's current halls
+    /// </summary>
+    /// <param name="userName">The username of the ra</param>
+    /// <returns>The RA's current halls</returns>
+    [HttpGet("halls/on-calls/{userName}/locations")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_ON_CALL_RA)]
+    public async Task<ActionResult<List<string>>> GetRACurrentHalls([FromRoute] string userName)
+    {
+        var Halls = await housingService.GetOnCallRAHallsAsync(userName);
+
+        if (Halls == null || !Halls.Any())
+        {
+            return NotFound("No check-in locations found");
+        }
+
+        return Ok(Halls);
+    }
+
+    /// <summary>
     /// Checks if an RA is currently on call.
     /// </summary>
     /// <param name="raId">The ID of the RA</param>
@@ -558,7 +729,219 @@ public class HousingController(CCTContext context, IProfileService profileServic
         }
     }
 
+    /// <summary>
+    /// Creates a new task for the given hall
+    /// </summary>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    [HttpPost]
+    [Route("halls/task")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> CreateTask([FromBody] HallTaskViewModel task)
+    {
 
+            var result = await housingService.CreateTaskAsync(task);
+            return Ok(result);
+    }
+
+    /// <summary>
+    /// Updates the task by the given ID
+    /// </summary>
+    /// <param name="taskID">The HallTaskViewModel object containing necessary info</param>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    [HttpPatch("halls/task/{taskID}")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> UpdateTask(int taskID, [FromBody] HallTaskViewModel task)
+    {
+
+            var result = await housingService.UpdateTaskAsync(taskID, task);
+            if (result == null)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(result);
+    }
+
+    /// <summary>
+    /// Disables a task
+    /// </summary>
+    /// <param name="taskID">The ID of the task to disable</param>
+    /// <returns>True if disable</returns>
+    [HttpDelete("halls/task/{taskID}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> DisableTask(int taskID)
+    {
+
+            var result = await housingService.DisableTaskAsync(taskID);
+            if (!result)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(new { Message = "Task deleted successfully." });
+    }
+
+
+    /// <summary>
+    /// Marks a task completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <param name="CompletedBy">The ID of the RA completing the task</param>
+    /// <returns>True if completed</returns>
+    [HttpPatch("halls/task/Complete/{taskID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK_COMPLETE)]
+    public async Task<IActionResult> CompleteTask(int taskID, [FromBody] string CompletedBy)
+    {
+
+            var result = await housingService.CompleteTaskAsync(taskID, CompletedBy);
+            if (!result)
+            {
+                return NotFound("Task not found or already completed.");
+            }
+            return Ok(new { Message = "Task marked as completed successfully." });
+    }
+
+    /// <summary>
+    /// Marks a task not completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <returns>True if marked not completed</returns>
+    [HttpPatch("halls/task/Incomplete/{taskID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_HALL_TASK_COMPLETE)]
+    public async Task<IActionResult> IncompleteTask(int taskID)
+    {
+
+            var result = await housingService.IncompleteTaskAsync(taskID);
+            if (!result)
+            {
+                return NotFound("Task not found.");
+            }
+            return Ok(new { Message = "Task marked as not completed successfully." });
+
+    }
+
+    /// <summary>
+    /// Gets the list of active tasks
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of tasks</returns>
+    [HttpGet("Halls/{hallId}/ActiveTasks")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_HALL_TASK)]
+    public async Task<IActionResult> GetActiveTasksForHall(string hallId)
+    {
+        if (string.IsNullOrEmpty(hallId))
+        {
+            return BadRequest("Hall ID is required.");
+        }
+
+            var tasks = await housingService.GetActiveTasksForHallAsync(hallId);
+            return Ok(tasks);
+
+    }
+
+    /// <summary>
+    /// Gets the list of daily tasks for a hall
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of daily tasks</returns>
+    [HttpGet("Halls/{hallId}/DailyTasks")]
+    public async Task<IActionResult> GetTasksForHall(string hallId)
+    {
+
+            var tasks = await housingService.GetTasksForHallAsync(hallId);
+            return Ok(tasks);
+
+    }
+
+    /// <summary>
+    /// Creates a new status event for an RA's schedule
+    /// </summary>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The created status event</returns>
+    [HttpPost]
+    [Route("ras/status-event")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> CreateStatusEvent([FromBody] RA_StatusEventsViewModel status)
+    {
+
+            var result = await housingService.CreateStatusEventAsync(status);
+            return Ok(result);
+
+    }
+
+    /// <summary>
+    /// Updates an existing status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to update</param>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The updated status event</returns>
+    [HttpPatch]
+    [Route("ras/status-event/{statusID}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> UpdateStatusEvent(int statusID, [FromBody] RA_StatusEventsViewModel status)
+    {
+
+            var result = await housingService.UpdateStatusEventAsync(statusID, status);
+
+            if (result == null)
+            {
+                return NotFound(new { Message = "Status event not found." });
+            }
+
+            return Ok(result);
+    }
+
+    /// <summary>
+    /// Deletes a status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to delete</param>
+    /// <returns>True if deleted</returns>
+    [HttpDelete]
+    [Route("ras/status-event/{statusID}")]
+    [StateYourBusiness(operation = Operation.DELETE, resource = Resource.HOUSING_RA_STATUS_EVENT)]
+    public async Task<IActionResult> DeleteStatusEvent(int statusID)
+    {
+
+            var result = await housingService.DeleteStatusEventAsync(statusID);
+            if (!result)
+            {
+                return NotFound("Status event cannot be found.");
+            }
+            return Ok(new { Message = "Status event has been deleted successfully." });
+
+    }
+
+    /// <summary>
+    /// Gets the list of daily status events for an RA
+    /// </summary>
+    /// <param name="raID"> The ID of the RA</param>
+    /// <returns>The list of daily status events</returns>
+    [HttpGet("ras/{raID}/daily-status-events")]
+    public async Task<IActionResult> GetStatusEventsForRA(string raID)
+    {
+ 
+            var result = await housingService.GetStatusEventsForRAAsync(raID);
+            return Ok(result);
+    }
+
+    /// <summary>
+    /// Gets the active statuses for a given RA.
+    /// </summary>
+    /// <param name="raId">The ID of the RA.</param>
+    /// <returns>A list of active statuses or a 404 if none exist.</returns>
+    [HttpGet]
+    [Route("ras/{raId}/active-status-events")]
+    public async Task<IActionResult> GetActiveStatusesByRAId(string raId)
+    {
+        var activeStatuses = await housingService.GetActiveStatusesByRAIdAsync(raId);
+
+        if (activeStatuses == null || !activeStatuses.Any())
+        {
+            return NotFound($"No active statuses found for RA ID {raId}");
+        }
+
+        return Ok(activeStatuses);
+    }
 
 
 }

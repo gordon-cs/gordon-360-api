@@ -39,7 +39,6 @@ public partial class Current_On_Call
     [Unicode(false)]
     public string RD_Email { get; set; }
 
-    [Required]
     [StringLength(46)]
     [Unicode(false)]
     public string RD_Name { get; set; }
