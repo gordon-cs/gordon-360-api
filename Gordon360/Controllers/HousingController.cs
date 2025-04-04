@@ -943,5 +943,39 @@ public class HousingController(CCTContext context, IProfileService profileServic
         return Ok(activeStatuses);
     }
 
+    /// <summary>
+    /// Gets a phone number
+    /// </summary>
+    /// <param name="PhoneName">The type of contact needed</param>
+    /// <returns> Returns phone number</returns>
+    [HttpGet("rds/contact/{PhoneName}")]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.HOUSING_PHONE_NUMBERS)]
+    public async Task<IActionResult> GetStuLifeContact([FromRoute] string PhoneName)
+    {
+        var contact = await housingService.GetStuLifeContactByPhoneNameAsync(PhoneName);
+        if (contact != null)
+        {
+            return Ok(contact);
+        }
+        else
+        {
+            return BadRequest(new { message = "Failed to retrieve contact" });
+        }
+    }
+
+    /// <summary>
+    /// sets a phone number
+    /// </summary>
+    /// <param name="PhoneName">name of entry</param>
+    /// <param name="PhoneNumber">phone number to update</param>
+    /// <returns> complete </returns>
+    [HttpPatch("rds/contact/{PhoneName}/{PhoneNumber}")]
+    [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING_PHONE_NUMBERS)]
+    public async Task<IActionResult> GetStuLifeContact([FromRoute] string PhoneName, [FromRoute] string PhoneNumber)
+    {
+        var result = await housingService.SetStuLifePhoneNumberAsync(PhoneName,PhoneNumber);
+        return Ok(result);
+    }
+
 
 }

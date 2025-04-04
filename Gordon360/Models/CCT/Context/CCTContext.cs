@@ -178,6 +178,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Statistic> Statistic { get; set; }
 
+    public virtual DbSet<StuLifePhoneNumbers> StuLifePhoneNumbers { get; set; }
+
     public virtual DbSet<Student> Student { get; set; }
 
     public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
@@ -743,6 +745,11 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.ParticipantTeam).WithMany(p => p.Statistic)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Statistic_ParticipantTeam");
+        });
+
+        modelBuilder.Entity<StuLifePhoneNumbers>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__StuLifeP__3214EC2744511943");
         });
 
         modelBuilder.Entity<Student>(entity =>

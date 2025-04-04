@@ -556,6 +556,21 @@
             <param name="raId">The ID of the RA.</param>
             <returns>A list of active statuses or a 404 if none exist.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetStuLifeContact(System.String)">
+            <summary>
+            Gets a phone number
+            </summary>
+            <param name="PhoneName">The type of contact needed</param>
+            <returns> Returns phone number</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetStuLifeContact(System.String,System.String)">
+            <summary>
+            sets a phone number
+            </summary>
+            <param name="PhoneName">name of entry</param>
+            <param name="PhoneNumber">phone number to update</param>
+            <returns> complete </returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
@@ -2437,6 +2452,21 @@
             </summary>
             <param name="raId">The ID of the RA.</param>
             <returns>A list of active statuses or a 404 if none exist.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetStuLifeContactByPhoneNameAsync(System.String)">
+            <summary>
+            Gets the Student Life contact by phone name.
+            </summary>
+            <param name="phoneName">The name of the phone contact.</param>
+            <returns>The contact phone number or null if not found.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.SetStuLifePhoneNumberAsync(System.String,System.String)">
+            <summary>
+            Updates or sets the Student Life phone number for a given name.
+            </summary>
+            <param name="PhoneName">The phone name</param>
+            <param name="PhoneNumber">new number.</param>
+            <returns>A task representing the asynchronous operation.</returns>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
             <summary>
