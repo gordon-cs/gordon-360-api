@@ -349,7 +349,7 @@
             <param name="hallId">The ID of the hall.</param>
             <returns>Returns the RD's details if found, otherwise null.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.HousingController.GetRDss">
+        <member name="M:Gordon360.Controllers.HousingController.GetRDs">
             <summary>
             Retrieve a list of all RDs.
             </summary>
@@ -556,6 +556,21 @@
             <param name="raId">The ID of the RA.</param>
             <returns>A list of active statuses or a 404 if none exist.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetStuLifeContact(System.String)">
+            <summary>
+            Gets a phone number
+            </summary>
+            <param name="PhoneName">The type of contact needed</param>
+            <returns> Returns phone number</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetStuLifeContact(System.String,System.String)">
+            <summary>
+            sets a phone number
+            </summary>
+            <param name="PhoneName">name of entry</param>
+            <param name="PhoneNumber">phone number to update</param>
+            <returns> complete </returns>
+        </member>
         <member name="M:Gordon360.Controllers.LogController.Post(System.String)">
             <summary>Create a new error log item to be added to database</summary>
             <param name="error_message">The error message containing all required and relevant information</param>
@@ -591,12 +606,18 @@
             <param name="status"></param>
             <returns>ObjectResult - the http status code result of the action</returns>
         </member>
-        <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItems(System.String)">
+        <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItems(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <summary>
             Get the list of missing item reports for the currently authenticated user.
             </summary>
+            <param name="color">The selected color for filtering reports</param>
+            <param name="category">The selected category for filtering reports</param>
+            <param name="keywords">The selected keywords for filtering by keywords</param>
+            <param name="status">The selected status for filtering reports</param>
             <param name="user">Query parameter, default is null and route will get all missing items, or if user is set
             route will get missing items for the authenticated user</param>
+            <param name="lastId">The ID of the last fetched report to start from for pagination</param>
+            <param name="pageSize">The size of the page to fetch for pagination</param>
             <returns>ObjectResult - an http status code, with an array of MissingItem objects in the body </returns>
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItem(System.Int32)">
@@ -1640,7 +1661,7 @@
             </summary>
             
         </member>
-        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IProfileService,Gordon360.Services.IAccountService)">
             <summary>
             Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
             </summary>
@@ -1664,7 +1685,7 @@
         <member name="M:Gordon360.Services.AcademicCheckInService.PutCellPhoneAsync(System.String,Gordon360.Models.ViewModels.MobilePhoneUpdateViewModel)">
             <summary> Stores the cellphone preferences for the current user </summary>
             <param name="data"> The phone number object for the user </param>
-            <param name="id"> The id of the student to be updated </param>
+            <param name="username"> The username of the student to be updated </param>
             <returns> The stored data </returns>
         </member>
         <member name="M:Gordon360.Services.AcademicCheckInService.PutDemographicAsync(System.String,Gordon360.Models.ViewModels.AcademicCheckInViewModel)">
@@ -2055,9 +2076,12 @@
         </member>
         <member name="M:Gordon360.Services.EventService.GetFirstEventDate">
             <summary>
-             Helper function to determine the current academic year
+            Get the first date of events for the current period, for use in querying the 25Live API
+            
+            During the regular undergrad school year, this is the middle of August (roughly the start of the fall term)
+            During the summer, this the middle of May (roughly the end of the spring term)
             </summary>
-            <returns></returns>
+            <returns>The first date of events we care about, in 'yyyyMMdd' format (e.g. '20250815' for August 15th, 2025)</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
@@ -2429,6 +2453,21 @@
             <param name="raId">The ID of the RA.</param>
             <returns>A list of active statuses or a 404 if none exist.</returns>
         </member>
+        <member name="M:Gordon360.Services.HousingService.GetStuLifeContactByPhoneNameAsync(System.String)">
+            <summary>
+            Gets the Student Life contact by phone name.
+            </summary>
+            <param name="phoneName">The name of the phone contact.</param>
+            <returns>The contact phone number or null if not found.</returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.SetStuLifePhoneNumberAsync(System.String,System.String)">
+            <summary>
+            Updates or sets the Student Life phone number for a given name.
+            </summary>
+            <param name="PhoneName">The phone name</param>
+            <param name="PhoneNumber">new number.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
         <member name="M:Gordon360.Services.LostAndFoundService.hasFullPermissions(System.String)">
             <summary>
             Check if the user has full admin permissions in the system
@@ -2496,12 +2535,18 @@
             <returns>an Enumerable of Missing Item Reports containing all missing item reports</returns>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If a user requests reports they are not permitted to access</exception>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll(System.String)">
+        <member name="M:Gordon360.Services.LostAndFoundService.GetMissingItemsAll(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
             <summary>
             Get all missing item reports
             Throw unauthorized access exception if the user doesn't have admin permissions
             </summary>
+            <param name="color">The selected color for filtering reports</param>
+            <param name="category">The selected category for filtering reports</param>
+            <param name="keywords">The selected keywords for filtering by keywords</param>
+            <param name="status">The selected status for filtering reports</param>
             <param name="username">The username of the person making the request</param>
+            <param name="lastId">The ID of the last fetched report to start from for pagination</param>
+            <param name="pageSize">The size of the page to fetch for pagination</param>
             <returns>An enumerable of Missing Item Reports, from the Missing Item Data view</returns>
             <exception cref="T:System.UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
         </member>

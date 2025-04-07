@@ -46,11 +46,10 @@ public class AcademicCheckInController(IAcademicCheckInService academicCheckInSe
     public async Task<ActionResult> PutCellPhoneAsync([FromBody] MobilePhoneUpdateViewModel data)
     {
         var username = AuthUtils.GetUsername(User);
-        var id = accountService.GetAccountByUsername(username).GordonID;
 
         try
         {
-            await academicCheckInService.PutCellPhoneAsync(id, data);
+            await academicCheckInService.PutCellPhoneAsync(username, data);
             return Ok();
         }
         catch (System.Exception e)

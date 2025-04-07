@@ -103,6 +103,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[StuLifePhoneNumbers]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[LostAndFound].[ActionsTaken]",
          "ObjectType": 0
       },

@@ -1671,6 +1671,8 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
     {
         var activeStatuses = await context.RA_Status_Events
             .Where(status => status.Ra_ID == raId && status.End_Date >= DateTime.Now.Date)
+            .OrderBy(status => status.Start_Date)
+            .ThenBy(status => status.Start_Time)
             .Select(status => new RA_StatusEventsViewModel
             {
                 Status_ID = status.Status_ID,
@@ -1690,6 +1692,52 @@ public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEven
         return activeStatuses;
     }
 
+    /// <summary>
+    /// Gets the Student Life contact by phone name.
+    /// </summary>
+    /// <param name="phoneName">The name of the phone contact.</param>
+    /// <returns>The contact phone number or null if not found.</returns>
+    public async Task<string> GetStuLifeContactByPhoneNameAsync(string phoneName)
+    {
+        var phoneNumber = await context.StuLifePhoneNumbers
+            .Where(p => p.PhoneName == phoneName)
+            .Select(p => p.PhoneNumber)
+            .FirstOrDefaultAsync();
+
+        return phoneNumber;
+    }
+
+    /// <summary>
+    /// Updates or sets the Student Life phone number for a given name.
+    /// </summary>
+    /// <param name="PhoneName">The phone name</param>
+    /// <param name="PhoneNumber">new number.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public async Task<bool> SetStuLifePhoneNumberAsync(string PhoneName, string PhoneNumber)
+    {
+        var contact = await context.StuLifePhoneNumbers
+            .FirstOrDefaultAsync(p => p.PhoneName ==PhoneName);
+
+        if (contact == null)
+        {
+            // Create new entry if it doesn't exist
+            contact = new StuLifePhoneNumbers
+            {
+                PhoneName = PhoneName,
+                PhoneNumber = PhoneNumber
+            };
+
+            context.StuLifePhoneNumbers.Add(contact);
+        }
+        else
+        {
+            // Update existing phone number
+            contact.PhoneNumber = PhoneNumber;
+        }
+
+        await context.SaveChangesAsync();
+        return true;
+    }
 
 
 
