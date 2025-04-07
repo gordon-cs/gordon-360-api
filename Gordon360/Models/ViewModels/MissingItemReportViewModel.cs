@@ -9,6 +9,8 @@ namespace Gordon360.Models.ViewModels
     {
         public int? recordID { get; set; }
 
+        public string? matchingFoundID {  get; set; }
+
         public string? firstName { get; set; }
 
         public string? lastName { get; set; }
@@ -48,6 +50,7 @@ namespace Gordon360.Models.ViewModels
         public static implicit operator MissingItemReportViewModel(CCT.MissingItemData MissingReportDBModel) => new MissingItemReportViewModel
         {
             recordID = MissingReportDBModel.ID,
+            matchingFoundID = MissingReportDBModel.matchingFoundID,
             firstName = MissingReportDBModel.firstName,
             lastName = MissingReportDBModel.lastName,
             category = MissingReportDBModel.category,
@@ -71,6 +74,7 @@ namespace Gordon360.Models.ViewModels
             => new MissingItemReportViewModel
         {
             recordID = MissingReportDBModel.ID,
+            matchingFoundID = MissingReportDBModel.matchingFoundID,
             firstName = MissingReportDBModel.firstName,
             lastName = MissingReportDBModel.lastName,
             category = MissingReportDBModel.category,
