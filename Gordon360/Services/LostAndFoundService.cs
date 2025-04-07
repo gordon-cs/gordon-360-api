@@ -292,7 +292,7 @@ namespace Gordon360.Services
         /// <param name="foundID"></param>
         /// <param name="username"></param>
         /// <returns></returns>
-        public async Task UpdateReportAssociatedFoundItemAsync(int id, string foundID, string username)
+        public async Task UpdateReportAssociatedFoundItemAsync(int id, string? foundID, string username)
         {
             // Get requesting user's ID number
             var idNum = accountService.GetAccountByUsername(username).GordonID;
@@ -899,7 +899,7 @@ namespace Gordon360.Services
         /// <returns>None</returns>
         /// <exception cref="ResourceCreationException">If not account can be found for the requesting user</exception>
         /// <exception cref="ResourceNotFoundException">If the found item with given id cannot be found in the database</exception>
-        public async Task UpdateFoundAssociatedMissingReportAsync(string foundItemID, int missingReportID, string username)
+        public async Task UpdateFoundAssociatedMissingReportAsync(string foundItemID, int? missingReportID, string username)
         {
             if (!hasFullPermissions(username))
             {

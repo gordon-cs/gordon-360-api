@@ -82,11 +82,11 @@ namespace Gordon360.Controllers
         /// Update the status of the item report with given id to the given status text
         /// </summary>
         /// <param name="missingItemId">The id of the report to update</param>
-        /// <param name="status"></param>
+        /// <param name="foundItemID"></param>
         /// <returns>ObjectResult - the http status code result of the action</returns>
         [HttpPut]
-        [Route("missingitems/{missingItemId}/linkItem/{foundItemID}")]
-        public async Task<ActionResult> UpdateReportAssociatedFoundItem(int missingItemId, string foundItemID)
+        [Route("missingitems/{missingItemId}/linkItem/{foundItemID?}")]
+        public async Task<ActionResult> UpdateReportAssociatedFoundItem(int missingItemId, string? foundItemID = null)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
@@ -269,8 +269,8 @@ namespace Gordon360.Controllers
         }
 
         [HttpPut]
-        [Route("founditems/{itemId}/linkReport/{missingReportID}")]
-        public async Task<ActionResult> UpdateFoundAssociatedMissingReport(string itemId, int missingReportID)
+        [Route("founditems/{itemId}/linkReport/{missingReportID?}")]
+        public async Task<ActionResult> UpdateFoundAssociatedMissingReport(string itemId, int? missingReportID = null)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 

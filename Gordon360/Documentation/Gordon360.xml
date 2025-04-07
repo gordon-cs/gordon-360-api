@@ -329,7 +329,7 @@
             Update the status of the item report with given id to the given status text
             </summary>
             <param name="missingItemId">The id of the report to update</param>
-            <param name="status"></param>
+            <param name="foundItemID"></param>
             <returns>ObjectResult - the http status code result of the action</returns>
         </member>
         <member name="M:Gordon360.Controllers.LostAndFoundController.GetMissingItems(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String)">
@@ -2160,7 +2160,7 @@
             <exception cref="T:Gordon360.Exceptions.ResourceCreationException">If not account can be found for the requesting user</exception>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
         </member>
-        <member name="M:Gordon360.Services.LostAndFoundService.UpdateFoundAssociatedMissingReportAsync(System.String,System.Int32,System.String)">
+        <member name="M:Gordon360.Services.LostAndFoundService.UpdateFoundAssociatedMissingReportAsync(System.String,System.Nullable{System.Int32},System.String)">
             <summary>
                 Update the associated missing report for the found item
             </summary>
