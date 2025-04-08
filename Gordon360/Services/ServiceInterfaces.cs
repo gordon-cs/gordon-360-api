@@ -263,7 +263,8 @@ namespace Gordon360.Services
         Task<RA_StatusEventsViewModel> UpdateStatusEventAsync(int statusID, RA_StatusEventsViewModel status);
         Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raID);
         Task<List<RA_StatusEventsViewModel>> GetActiveStatusesByRAIdAsync(string raId);
-
+        Task<string> GetStuLifeContactByPhoneNameAsync(string phoneName);
+        Task<bool> SetStuLifePhoneNumberAsync(string PhoneName, string PhoneNumber);
 
     }
 
