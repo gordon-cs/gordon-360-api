@@ -953,6 +953,48 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Get the list of found items assigned to the specified owner.
+        /// </summary>
+        /// <param name="requestedUsername">
+        /// The username (GordonID) of the owner whose found items are requested.
+        /// </param>
+        /// <param name="requestorUsername">
+        /// The username (GordonID) of the user making the request.
+        /// </param>
+        /// <returns>
+        /// An enumerable of FoundItemViewModel objects matching the owner.
+        /// </returns>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown if a non-admin tries to retrieve found items for a user other than themselves.
+        /// </exception>
+        public IEnumerable<FoundItemViewModel> GetFoundItemsByOwner(string requestedUsername, string requestorUsername)
+        {
+            // Non-admin users may only fetch found items for themselves.
+            if (!hasFullPermissions(requestorUsername))
+            {
+                if (!requestedUsername.Equals(requestorUsername, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ResourceNotFoundException() { ExceptionMessage = "No found items were found for this owner." };
+                }
+            }
+
+            // Query FoundItemData for items where the ownerID matches the requested username.
+            // (For a Gordon person owner, ownerID is set using the GordonID retrieved via the account service.)
+            var foundItems = context.FoundItemData
+                                    .Where(x => x.ownerID == requestedUsername)
+                                    .OrderByDescending(x => x.dateCreated);
+
+            // Group join with FoundActionsTakenData to include actions taken for each found item.
+            return foundItems.GroupJoin(
+                        context.FoundActionsTakenData.OrderBy(action => action.actionDate),
+                        foundItem => foundItem.ID,
+                        action => action.foundID,
+                        (foundItem, actions) => FoundItemViewModel.From(foundItem, actions)
+                   );
+        }
+
+
+        /// <summary>
         /// Get all found items
         /// Throw unauthorized access exception if the user doesn't have admin permissions
         /// </summary>
