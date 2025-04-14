@@ -950,6 +950,59 @@ namespace Gordon360.Services
         }
 
         /// <summary>
+        /// Get the list of found items assigned to the specified owner.
+        /// </summary>
+        /// <param name="requestedUsername">
+        /// The username (GordonID) of the owner whose found items are requested.
+        /// </param>
+        /// <param name="requestorUsername">
+        /// The username (GordonID) of the user making the request.
+        /// </param>
+        /// <returns>
+        /// An enumerable of FoundItemViewModel objects matching the owner.
+        /// </returns>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown if a non-admin tries to retrieve found items for a user other than themselves.
+        /// </exception>
+        public IEnumerable<FoundItemViewModel> GetFoundItemsByOwner(string requestedUsername, string requestorUsername)
+        {
+            // If the requestor is not an admin (or kiosk), they may only fetch found items for themselves.
+            if (!hasFullPermissions(requestorUsername) && !hasKioskPermissions(requestorUsername))
+            {
+                if (!requestedUsername.Equals(requestorUsername, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ResourceNotFoundException()
+                    {
+                        ExceptionMessage = "Not authorized to view found items for the requested user."
+                    };
+                }
+            }
+
+            // Query FoundItemData for items where the ownerID matches the requested username.
+            var foundItems = context.FoundItemData
+                                    .Where(x => x.ownerID == requestedUsername)
+                                    .OrderByDescending(x => x.dateCreated);
+
+            // If the requestor has elevated permissions (admin or kiosk), return found items with admin actions.
+            if (hasFullPermissions(requestorUsername) || hasKioskPermissions(requestorUsername))
+            {
+                return foundItems.GroupJoin(
+                            context.FoundActionsTakenData.OrderBy(a => a.actionDate),
+                            foundItem => foundItem.ID,
+                            action => action.foundID,
+                            (foundItem, actions) => FoundItemViewModel.From(foundItem, actions)
+                       );
+            }
+            else
+            {
+                // For general users, do not include any admin actions.
+                return foundItems.Select(foundItem => FoundItemViewModel.From(foundItem, Enumerable.Empty<FoundActionsTakenData>()));
+            }
+        }
+
+
+
+        /// <summary>
         /// Get all found items
         /// Throw unauthorized access exception if the user doesn't have admin permissions
         /// </summary>

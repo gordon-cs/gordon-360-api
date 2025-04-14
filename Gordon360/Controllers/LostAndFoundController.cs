@@ -202,6 +202,46 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Get the list of found items assigned to the specified owner.
+        /// If the "owner" query parameter is not provided, this returns items for the currently authenticated user.
+        /// </summary>
+        /// <param name="owner">
+        /// Optional query parameter to filter by owner. If null or empty, uses the authenticated user's username.
+        /// </param>
+        /// <returns>
+        /// An HTTP result containing an array of FoundItemViewModel objects if found; otherwise, NotFound.
+        /// </returns>
+        [HttpGet]
+        [Route("founditems/owner")]
+        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItemsByOwner(string? owner = null)
+        {
+            // Retrieve the username of the currently authenticated user.
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            IEnumerable<FoundItemViewModel> result;
+
+            // If no owner is specified, default to the authenticated user.
+            if (string.IsNullOrWhiteSpace(owner))
+            {
+                result = lostAndFoundService.GetFoundItemsByOwner(authenticatedUserUsername, authenticatedUserUsername);
+            }
+            else
+            {
+                result = lostAndFoundService.GetFoundItemsByOwner(owner, authenticatedUserUsername);
+            }
+
+            // Return the result if found, otherwise return a NotFound response.
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+        /// <summary>
         /// Create a new found item.
         /// </summary>
         /// <param name="FoundItemDetails">The data of the found item to create</param>
