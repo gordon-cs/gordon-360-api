@@ -15,24 +15,35 @@ public partial class Hall_Tasks
     public int Task_ID { get; set; }
 
     [Required]
-    [StringLength(100)]
+    [StringLength(255)]
     [Unicode(false)]
-    public string Task_Name { get; set; }
+    public string Name { get; set; }
+
+    [Unicode(false)]
+    public string Description { get; set; }
 
     [Required]
-    [StringLength(100)]
+    [StringLength(50)]
     [Unicode(false)]
     public string Hall_ID { get; set; }
 
-    public DateTime Task_Date { get; set; }
-
     public bool Is_Recurring { get; set; }
 
-    public bool Is_Completed { get; set; }
-
-    public DateTime? Completed_At { get; set; }
-
-    [StringLength(10)]
+    [StringLength(50)]
     [Unicode(false)]
-    public string Completed_By { get; set; }
+    public string Frequency { get; set; }
+
+    public int? Interval { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime Start_Date { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? End_Date { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime Created_Date { get; set; }
+
+    [InverseProperty("Task")]
+    public virtual ICollection<Hall_Task_Occurrence> Hall_Task_Occurrence { get; set; } = new List<Hall_Task_Occurrence>();
 }

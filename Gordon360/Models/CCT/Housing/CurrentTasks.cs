@@ -8,25 +8,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("RA_Status", Schema = "Housing")]
-public partial class RA_Status
+[Keyless]
+public partial class CurrentTasks
 {
-    [Key]
-    public int Status_ID { get; set; }
+    public int Task_ID { get; set; }
 
-    [Required]
-    [StringLength(10)]
+    [StringLength(255)]
     [Unicode(false)]
-    public string Ra_ID { get; set; }
+    public string Name { get; set; }
 
-    [Required]
+    [Unicode(false)]
+    public string Description { get; set; }
+
     [StringLength(50)]
     [Unicode(false)]
-    public string Status_name { get; set; }
+    public string Hall_ID { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime Start_Time { get; set; }
+    public DateTime OccurDate { get; set; }
+
+    public bool IsComplete { get; set; }
+
+    [StringLength(255)]
+    [Unicode(false)]
+    public string CompletedBy { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime? End_Time { get; set; }
+    public DateTime? CompletedDate { get; set; }
 }

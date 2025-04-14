@@ -8,17 +8,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("Hall_Task_Recurrence", Schema = "Housing")]
-public partial class Hall_Task_Recurrence
+[Table("RD_On_Call", Schema = "Housing")]
+public partial class RD_On_Call
 {
-    [Required]
-    [StringLength(10)]
-    [Unicode(false)]
-    public string Recur_ID { get; set; }
-
     [Key]
-    public int Task_ID { get; set; }
+    public int Record_ID { get; set; }
+
+    public int RD_ID { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime Start_Date { get; set; }
+
+    [Column(TypeName = "date")]
+    public DateTime End_Date { get; set; }
 
     [Column(TypeName = "datetime")]
-    public DateTime? Next_Occurance { get; set; }
+    public DateTime Created_Date { get; set; }
 }
