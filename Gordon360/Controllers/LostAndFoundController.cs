@@ -101,6 +101,7 @@ namespace Gordon360.Controllers
         /// <param name="color">The selected color for filtering reports</param>
         /// <param name="category">The selected category for filtering reports</param>
         /// <param name="keywords">The selected keywords for filtering by keywords</param>
+        /// <param name="lastCheckedDate"></param>
         /// <param name="status">The selected status for filtering reports</param>
         /// <param name="user">Query parameter, default is null and route will get all missing items, or if user is set
         /// route will get missing items for the authenticated user</param>
@@ -115,7 +116,8 @@ namespace Gordon360.Controllers
                                                                                      string? status = null,
                                                                                      string? color = null,
                                                                                      string? category = null,
-                                                                                     string? keywords = null)
+                                                                                     string? keywords = null,
+                                                                                     DateTime? lastCheckedDate = null)
         {
             IEnumerable<MissingItemReportViewModel> result;
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
@@ -123,7 +125,7 @@ namespace Gordon360.Controllers
             // If no username specified in the query, get all items
             if (user == null)
             {
-                result = lostAndFoundService.GetMissingItemsAll(authenticatedUserUsername, lastId, pageSize, status, color, category, keywords);
+                result = lostAndFoundService.GetMissingItemsAll(authenticatedUserUsername, lastId, pageSize, status, color, category, keywords, lastCheckedDate);
             }
             else
             {
