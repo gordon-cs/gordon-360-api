@@ -870,22 +870,40 @@ namespace Gordon360.Services
         /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
         public async Task UpdateFoundStatusAsync(string foundItemID, string status, string username)
         {
-            if (!hasFullPermissions(username))
-            {
-                throw new ResourceNotFoundException();
-            }
-
             var original = await context.FoundItems.FindAsync(foundItemID);
 
             if (original == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Found Item Report was not found" };
+            }
+
+            // Convert the requesting user's username (e.g., "first.last") to the unique ID using the account service.
+            var requesterAccount = accountService.GetAccountByUsername(username);
+            if (requesterAccount == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The requesting user's account was not found." };
+            }
+            var requesterGordonID = requesterAccount.GordonID;
+            Log.Information("UpdateFoundStatusAsync: original.ownerID: {OwnerID}, requesterGordonID: {RequesterID}", original.ownerID, requesterGordonID);
+
+            // If the user does not have full permissions, allow update only if the found item belongs to them.
+            if (!hasFullPermissions(username))
+            {
+                // Compare the found item's ownerID with the unique id (GordonID) from the account.
+                if (!string.Equals(original.ownerID, requesterGordonID, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ResourceNotFoundException()
+                    {
+                        ExceptionMessage = "User is not authorized to update the status of this found item."
+                    };
+                }
             }
 
             original.status = status;
-
             await context.SaveChangesAsync();
         }
+
+
 
         /// <summary>
         ///     Update the associated missing report for the found item
