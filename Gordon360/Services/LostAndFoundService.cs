@@ -294,20 +294,17 @@ namespace Gordon360.Services
         /// <returns></returns>
         public async Task UpdateReportAssociatedFoundItemAsync(int id, string? foundID, string username)
         {
-            // Get requesting user's ID number
-            var idNum = accountService.GetAccountByUsername(username).GordonID;
+            // If a non-admin user attempts to update the associated found item of a report
+            if (!hasFullPermissions(username))
+            {
+                throw new ResourceNotFoundException();
+            }
 
             var original = await context.MissingReports.FindAsync(id);
 
             if (original == null)
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
-            }
-
-            // If a non-admin user attempts to update the associated found item of a report
-            if (original.submitterID != idNum && !hasFullPermissions(username))
-            {
-                throw new UnauthorizedAccessException("Cannot modify a report that doesn't belong to you!");
             }
 
             original.matchingFoundID = foundID;
