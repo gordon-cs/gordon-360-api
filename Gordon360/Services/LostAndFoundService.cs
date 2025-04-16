@@ -996,9 +996,16 @@ namespace Gordon360.Services
                 }
             }
 
+            var requestedAccount = accountService.GetAccountByUsername(requestedUsername);
+            if (requestedAccount == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The requesting user's account was not found." };
+            }
+            var requestedGordonID = requestedAccount.GordonID;
+
             // Query FoundItemData for items where the ownerID matches the requested username.
             var foundItems = context.FoundItemData
-                                    .Where(x => x.ownerID == requestedUsername)
+                                    .Where(x => x.ownerID == requestedGordonID)
                                     .OrderByDescending(x => x.dateCreated);
 
             // If the requestor has elevated permissions (admin or kiosk), return found items with admin actions.
