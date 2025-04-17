@@ -76,7 +76,7 @@ public class StateYourBusiness : ActionFilterAttribute
         user_name = AuthUtils.GetUsername(authenticatedUser);
         user_groups = AuthUtils.GetGroups(authenticatedUser);
 
-        if (user_groups.Contains(AuthGroup.SiteAdmin) || user_groups.Contains(AuthGroup.HousingDeveloper))
+        if (user_groups.Contains(AuthGroup.SiteAdmin))
         {
             await next();
             return;
@@ -190,13 +190,13 @@ public class StateYourBusiness : ActionFilterAttribute
                 }
             case Resource.HOUSING_CONTACT_PREFERENCE:
                 return (user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) ||
-                    user_groups.Contains(AuthGroup.HallInfoViewer) || user_groups.Contains(AuthGroup.Student));
+                    user_groups.Contains(AuthGroup.HallInfoViewer) || user_groups.Contains(AuthGroup.Student)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_ON_CALL_RA:
-                return (user_groups.Contains(AuthGroup.Student));
+                return (user_groups.Contains(AuthGroup.Student)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RD_ON_CALL:
-                return (user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.HallInfoViewer));
+                return (user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.HallInfoViewer)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_PHONE_NUMBERS:
-                return (user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.HallInfoViewer));
+                return (user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.HallInfoViewer)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.NEWS:
                 return true;
             case Resource.STUDENT_SCHEDULE:
@@ -336,9 +336,9 @@ public class StateYourBusiness : ActionFilterAttribute
                     return false;
                 }
             case Resource.HOUSING_ON_CALL_RA:
-                return (user_groups.Contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RA_ASSIGNMENT:
-                return (user_groups.Contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.NEWS:
                 {
                     return true;
@@ -412,18 +412,18 @@ public class StateYourBusiness : ActionFilterAttribute
                     return false;
                 }
             case Resource.HOUSING_ROOM_RANGE:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RA_ASSIGNMENT:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_ON_CALL_RA:
                 return (user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HallInfoViewer) || 
-                    user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RA));
+                    user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RA)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RD_ON_CALL:
-                return ((user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)));
+                return ((user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD))|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_HALL_TASK:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RA_STATUS_EVENT:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.NEWS:
                 return user_groups.Contains(AuthGroup.NewsAdmin);
             case Resource.RECIM:
@@ -529,23 +529,23 @@ public class StateYourBusiness : ActionFilterAttribute
                     return false;
                 }
             case Resource.HOUSING_ROOM_RANGE:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RA_ASSIGNMENT:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_CONTACT_PREFERENCE:
-                return (user_groups.Contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.RA_CHECKIN:
-                return (user_groups.Contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RD_ON_CALL:
-                return ((user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)));
+                return ((user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD))|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_HALL_TASK:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_HALL_TASK_COMPLETE:
-                return (user_groups.Contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RA_STATUS_EVENT:
-                return (user_groups.Contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_PHONE_NUMBERS:
-                return (user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin));
+                return (user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.ADMIN:
                 return false;
             case Resource.ERROR_LOG:
@@ -677,9 +677,9 @@ public class StateYourBusiness : ActionFilterAttribute
                     return false;
                 }
             case Resource.HOUSING_HALL_TASK:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RD_ON_CALL:
-                return ((user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)));
+                return ((user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD))|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.PROFILE:
                 {
                     // User is admin
@@ -904,15 +904,15 @@ public class StateYourBusiness : ActionFilterAttribute
                     return false;
                 }
             case Resource.HOUSING_ROOM_RANGE:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RA_ASSIGNMENT:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RD_ON_CALL:
-                return ((user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)));
+                return ((user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD))|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_HALL_TASK:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_RA_STATUS_EVENT:
-                return (user_groups.Contains(AuthGroup.RA));
+                return (user_groups.Contains(AuthGroup.RA)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.NEWS:
                 {
                     if (context.ActionArguments["newsID"] is int newsID)
