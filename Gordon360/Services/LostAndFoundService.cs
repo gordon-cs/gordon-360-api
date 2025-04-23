@@ -425,15 +425,16 @@ namespace Gordon360.Services
             if (lastCheckedDate is not null)
             {
                 missingItemView = missingItemView.Where(missingItem =>
-                    missingItem.adminActions
-                        .Where(x => x.action == "Checked")
-                        .OrderByDescending(x => x.actionDate)
+                    missingItem.adminActions != null &&
+                        missingItem.adminActions
+                        .Where(action => action.action == "Checked")
+                        .OrderByDescending(action => action.actionDate)
                         .FirstOrDefault() != null && missingItem.adminActions
-                        .Where(x => x.action == "Checked")
+                        .Where(action => action.action == "Checked")
                         .OrderByDescending(x => x.actionDate)
-                        .FirstOrDefault().actionDate < lastCheckedDate);
+                        .FirstOrDefault().actionDate < lastCheckedDate || 
+                        missingItem.adminActions.Where(action => action.action == "Checked").FirstOrDefault() == null);
             }
-
             return missingItemView;
         }
 
