@@ -273,6 +273,9 @@ namespace Gordon360.Services
              string? ID,
              string? keywords
          );
+
+        IEnumerable<FoundItemViewModel> GetFoundItemsByOwner(string requestedUsername, string requestorUsername);
+
     }
 
 
