@@ -888,22 +888,40 @@ namespace Gordon360.Services
         /// <exception cref="ResourceNotFoundException">If the found item report with given id cannot be found in the database</exception>
         public async Task UpdateFoundStatusAsync(string foundItemID, string status, string username)
         {
-            if (!hasFullPermissions(username))
-            {
-                throw new ResourceNotFoundException();
-            }
-
             var original = await context.FoundItems.FindAsync(foundItemID);
 
             if (original == null)
             {
-                throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
+                throw new ResourceNotFoundException() { ExceptionMessage = "The Found Item Report was not found" };
+            }
+
+            // Convert the requesting user's username (e.g., "first.last") to the unique ID using the account service.
+            var requesterAccount = accountService.GetAccountByUsername(username);
+            if (requesterAccount == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The requesting user's account was not found." };
+            }
+            var requesterGordonID = requesterAccount.GordonID;
+            Log.Information("UpdateFoundStatusAsync: original.ownerID: {OwnerID}, requesterGordonID: {RequesterID}", original.ownerID, requesterGordonID);
+
+            // If the user does not have full permissions, allow update only if the found item belongs to them.
+            if (!hasFullPermissions(username))
+            {
+                // Compare the found item's ownerID with the unique id (GordonID) from the account.
+                if (!string.Equals(original.ownerID, requesterGordonID, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ResourceNotFoundException()
+                    {
+                        ExceptionMessage = "User is not authorized to update the status of this found item."
+                    };
+                }
             }
 
             original.status = status;
-
             await context.SaveChangesAsync();
         }
+
+
 
         /// <summary>
         ///     Update the associated missing report for the found item
@@ -966,6 +984,66 @@ namespace Gordon360.Services
             }
             return report;
         }
+
+        /// <summary>
+        /// Get the list of found items assigned to the specified owner.
+        /// </summary>
+        /// <param name="requestedUsername">
+        /// The username (GordonID) of the owner whose found items are requested.
+        /// </param>
+        /// <param name="requestorUsername">
+        /// The username (GordonID) of the user making the request.
+        /// </param>
+        /// <returns>
+        /// An enumerable of FoundItemViewModel objects matching the owner.
+        /// </returns>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown if a non-admin tries to retrieve found items for a user other than themselves.
+        /// </exception>
+        public IEnumerable<FoundItemViewModel> GetFoundItemsByOwner(string requestedUsername, string requestorUsername)
+        {
+            // If the requestor is not an admin (or kiosk), they may only fetch found items for themselves.
+            if (!hasFullPermissions(requestorUsername) && !hasKioskPermissions(requestorUsername))
+            {
+                if (!requestedUsername.Equals(requestorUsername, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ResourceNotFoundException()
+                    {
+                        ExceptionMessage = "Not authorized to view found items for the requested user."
+                    };
+                }
+            }
+
+            var requestedAccount = accountService.GetAccountByUsername(requestedUsername);
+            if (requestedAccount == null)
+            {
+                throw new ResourceNotFoundException() { ExceptionMessage = "The requesting user's account was not found." };
+            }
+            var requestedGordonID = requestedAccount.GordonID;
+
+            // Query FoundItemData for items where the ownerID matches the requested username.
+            var foundItems = context.FoundItemData
+                                    .Where(x => x.ownerID == requestedGordonID)
+                                    .OrderByDescending(x => x.dateCreated);
+
+            // If the requestor has elevated permissions (admin or kiosk), return found items with admin actions.
+            if (hasFullPermissions(requestorUsername) || hasKioskPermissions(requestorUsername))
+            {
+                return foundItems.GroupJoin(
+                            context.FoundActionsTakenData.OrderBy(a => a.actionDate),
+                            foundItem => foundItem.ID,
+                            action => action.foundID,
+                            (foundItem, actions) => FoundItemViewModel.From(foundItem, actions)
+                       );
+            }
+            else
+            {
+                // For general users, do not include any admin actions.
+                return foundItems.Select(foundItem => FoundItemViewModel.From(foundItem, Enumerable.Empty<FoundActionsTakenData>()));
+            }
+        }
+
+
 
         /// <summary>
         /// Get all found items

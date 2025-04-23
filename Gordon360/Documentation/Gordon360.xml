@@ -371,6 +371,7 @@
             <param name="keywords"></param>
             <returns>Int - The number of missing items under the provided filters</returns>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Controllers.LostAndFoundController.GetFoundItemsByOwner(System.String)" -->
         <member name="M:Gordon360.Controllers.LostAndFoundController.CreateFoundItemReport(Gordon360.Models.ViewModels.FoundItemViewModel)">
             <summary>
             Create a new found item.
@@ -2183,6 +2184,23 @@
             <returns>A Found Item object</returns>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">If the report with given ID doesn't exist or the user
             doesn't have permissions to read it</exception>
+        </member>
+        <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItemsByOwner(System.String,System.String)">
+            <summary>
+            Get the list of found items assigned to the specified owner.
+            </summary>
+            <param name="requestedUsername">
+            The username (GordonID) of the owner whose found items are requested.
+            </param>
+            <param name="requestorUsername">
+            The username (GordonID) of the user making the request.
+            </param>
+            <returns>
+            An enumerable of FoundItemViewModel objects matching the owner.
+            </returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown if a non-admin tries to retrieve found items for a user other than themselves.
+            </exception>
         </member>
         <member name="M:Gordon360.Services.LostAndFoundService.GetFoundItemsAll(System.String,System.Nullable{System.DateTime},System.String,System.String,System.String,System.String,System.String)">
             <summary>
