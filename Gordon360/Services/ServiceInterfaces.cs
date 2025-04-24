@@ -237,7 +237,8 @@ namespace Gordon360.Services
                                                                    string? status, 
                                                                    string? color, 
                                                                    string? category, 
-                                                                   string? keywords);
+                                                                   string? keywords,
+                                                                   DateTime? lastCheckedDate);
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
         Task UpdateReportStatusAsync(int id, string status, string username);
         Task UpdateReportAssociatedFoundItemAsync(int id, string? foundID, string username);

@@ -358,6 +358,8 @@ namespace Gordon360.Services
         /// <param name="color">The selected color for filtering reports</param>
         /// <param name="category">The selected category for filtering reports</param>
         /// <param name="keywords">The selected keywords for filtering by keywords</param>
+        /// <param name="lastCheckedDate">The last checked date to filter by, only returning reports 
+        /// last checked before this date</param>
         /// <param name="status">The selected status for filtering reports</param>
         /// <param name="username">The username of the person making the request</param>
         /// <param name="lastId">The ID of the last fetched report to start from for pagination</param>
@@ -370,7 +372,8 @@ namespace Gordon360.Services
                                                                           string? status, 
                                                                           string? color, 
                                                                           string? category, 
-                                                                          string? keywords)
+                                                                          string? keywords,
+                                                                          DateTime? lastCheckedDate)
         {
             if (!hasFullPermissions(username))
             {
@@ -413,11 +416,26 @@ namespace Gordon360.Services
             // Perform a group join to create a MissingItemReportViewModel with actions taken data for each report
             // Using a group join results in the use of a single SQL query to the db, so is much more performant than
             // alternative solutions.
-            return missingItems
+            IEnumerable<MissingItemReportViewModel> missingItemView = missingItems
                       .GroupJoin(context.ActionsTakenData.OrderBy(action => action.actionDate),
                           missingItem => missingItem.ID,
                           action => action.missingID,
                           (missingItem, action) => MissingItemReportViewModel.From(missingItem, action));
+
+            if (lastCheckedDate is not null)
+            {
+                missingItemView = missingItemView.Where(missingItem =>
+                    missingItem.adminActions is not null &&
+                        missingItem.adminActions
+                        .Where(action => action.action == "Checked")
+                        .OrderByDescending(action => action.actionDate)
+                        .FirstOrDefault() is not null && missingItem.adminActions
+                        .Where(action => action.action == "Checked")
+                        .OrderByDescending(x => x.actionDate)
+                        .FirstOrDefault().actionDate < lastCheckedDate || 
+                        missingItem.adminActions.Where(action => action.action == "Checked").FirstOrDefault() is null);
+            }
+            return missingItemView;
         }
 
         /// <summary>
@@ -1039,7 +1057,8 @@ namespace Gordon360.Services
         /// <param name="username">The username of the person making the request</param>
         /// <param name="latestDate">The latest date that should be accepted for a query</param>
         /// <returns>An enumerable of Found Items, from the Found Item Data view</returns>
-        /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts to use</exception>
+        /// <exception cref="UnauthorizedAccessException">If a user without admin permissions attempts
+        /// to use</exception>
         public IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
                                                                 DateTime? latestDate,
                                                                 string? status,
@@ -1092,6 +1111,7 @@ namespace Gordon360.Services
                           foundItem => foundItem.ID,
                           action => action.foundID,
                           (foundItem, action) => FoundItemViewModel.From(foundItem, action));
+            
         }
         /// <summary>
         /// Service method to retrieve counts of found items.
