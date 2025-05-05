@@ -71,6 +71,42 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Housing].[Hall_Assignment_Ranges]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Hall_Task_Occurrence]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[Hall_Tasks]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_On_Call]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Pref_Contact]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RA_Status_Events]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[RD_On_Call]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[ResRooms]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Housing].[StuLifePhoneNumbers]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[LostAndFound].[ActionsTaken]",
          "ObjectType": 0
       },
@@ -295,6 +331,46 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Housing].[Current_On_Call]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[CurrentTasks]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Daily_RA_Events]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Halls]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RA_Assigned_Ranges_View]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RA_Students]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RD_Info]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[RD_OnCall_Today]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[ResidentialStatus_View]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[Housing].[Unassigned_Rooms]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[LostAndFound].[ActionsTakenData]",
          "ObjectType": 3
       },
@@ -400,6 +476,7 @@
    "UseAsyncStoredProcedureCalls": true,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": true,
+   "UseDatabaseNamesForRoutines": true,
    "UseDateOnlyTimeOnly": false,
    "UseDbContextSplitting": false,
    "UseDecimalDataAnnotationForSprocResult": true,
@@ -418,5 +495,6 @@
    "UseSchemaFolders": true,
    "UseSchemaNamespaces": false,
    "UseSpatial": false,
-   "UseT4": false
+   "UseT4": false,
+   "UseT4Split": false
 }

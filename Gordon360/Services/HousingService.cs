@@ -1,7 +1,9 @@
 using Gordon360.Models.CCT.Context;
 using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
+using System.Threading.Tasks;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.ViewModels.Housing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,11 @@ using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Gordon360.Static.Names;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
+using System.Net.NetworkInformation;
 
 namespace Gordon360.Services;
 
@@ -531,4 +538,1209 @@ public class HousingService(CCTContext context) : IHousingService
         context.SaveChanges();
         return true;
     }
+
+    /// <summary>
+    /// Creates a new hall assignment range if it does not overlap with any existing ranges
+    /// </summary>
+    /// <param name="model">The ViewModel that contains the hall ID and room range</param>
+    /// <returns>The created Hall_Assignment_Ranges object</returns>
+    public async Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model)
+    {
+
+
+        // Check if Room_End is greater than Room_Start
+        if (model.Room_End <= model.Room_Start)
+        {
+            throw new BadInputException() { ExceptionMessage = "Room_End must be greater than Room_Start." };
+        }
+        // Check if there is any overlapping room ranges in the same hall
+        var overlappingRange = await context.Hall_Assignment_Ranges
+            .AnyAsync(r => r.Hall_ID == model.Hall_ID
+                && ((r.Room_Start <= model.Room_Start && r.Room_End >= model.Room_Start) ||
+                    (r.Room_Start <= model.Room_End && r.Room_End >= model.Room_End)));
+
+        if (overlappingRange)
+        {
+            throw new InvalidOperationException("The room range overlaps with an existing range in this hall.");
+        }
+
+        // Create a new Hall_Assignment_Ranges object
+        var newRange = new Hall_Assignment_Ranges
+        {
+            Hall_ID = model.Hall_ID,
+            Room_Start = model.Room_Start,
+            Room_End = model.Room_End,
+            Assigned_RA = null
+        };
+
+        // Add to the context and save changes
+        context.Hall_Assignment_Ranges.Add(newRange);
+        await context.SaveChangesAsync();
+
+        return newRange;
+    }
+
+    /// <summary>
+    /// Deletes a Room Range
+    /// </summary>
+    /// <param name="rangeId">The ID of the room range to delete</param>
+    /// <returns> Returns if completed</returns>
+    public async Task<bool> DeleteRoomRangeAsync(int rangeId)
+    {
+        // Find the room range by ID
+        var roomRange = await context.Hall_Assignment_Ranges.FindAsync(rangeId);
+
+
+        if (roomRange == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "Room range not found." };
+        }
+
+        context.Hall_Assignment_Ranges.Remove(roomRange);
+
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+
+    /// <summary>
+    /// Assigns an RA to a room range if no RA is currently assigned
+    /// </summary>
+    /// <param name="rangeId">The ID of the room range</param>
+    /// <param name="raId">The ID of the RA to assign</param>
+    /// <returns>The created RA_Assigned_Ranges object</returns>
+    public async Task<Hall_Assignment_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId)
+    {
+        // Check if a different RA is already assigned to the range
+        var existingAssignment = await context.Hall_Assignment_Ranges
+            .Where(r => r.Range_ID == rangeId).FirstOrDefaultAsync();
+
+        if (existingAssignment.Assigned_RA != null)
+        {
+            throw new InvalidOperationException("This room range already has an RA assigned.");
+        }
+
+        // Create the new RA assignment
+        existingAssignment.Assigned_RA = raId;
+
+        await context.SaveChangesAsync();
+
+        return existingAssignment;
+    }
+
+    /// <summary>
+    /// Deletes an RA range assignment
+    /// </summary>
+    /// <param name="rangeId">The Room range of the assignment to delete</param>
+    /// <returns> Returns if completed</returns>
+    public async Task<bool> DeleteAssignmentAsync(int rangeId)
+    {
+        // Find the assignment by range id
+        var Assigment = await context.Hall_Assignment_Ranges
+                                    .FirstOrDefaultAsync(r => r.Range_ID == rangeId);
+
+        if (Assigment == null)
+        {
+            throw new ResourceNotFoundException() { ExceptionMessage = "Assignment not found." };
+        }
+
+        Assigment.Assigned_RA = null;
+
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Retrieve the RD of the resident's hall based on their hall ID.
+    /// </summary>
+    /// <param name="hallId">The ID of the hall.</param>
+    /// <returns>Returns the RD's details if found, otherwise null.</returns>
+    public async Task<RD_StudentsViewModel> GetResidentRDAsync(string hallId)
+    {
+        // Get the full details of the RD for the specified hall
+        var hallRD = await context.RD_Info
+            .Where(rd => rd.BuildingCode == hallId)
+            .Select(rd => new RD_StudentsViewModel
+            {
+                Hall_Name = rd.HallName,
+                Building_Code = rd.BuildingCode,
+                RD_Email = rd.RD_Email,
+                RD_ID = rd.RDId,
+                RD_Name = rd.RDName
+            })
+            .FirstOrDefaultAsync();
+
+        if (hallRD == null)
+        {
+            throw new InvalidOperationException("No RD found for the specified hall.");
+        }
+
+        return hallRD;
+    }
+
+    /// <summary>
+    /// Retrieves a distinct list of all RDs with their IDs and names.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of RD_StudentsViewModel objects containing RD IDs and names.
+    /// </returns>
+    public async Task<List<RD_StudentsViewModel>> GetRDsAsync()
+    {
+        var rdList = await context.RD_Info
+            .Select(rd => new RD_StudentsViewModel
+            {
+                RD_ID = rd.RDId,
+                RD_Name = rd.RDName
+            })
+            .Distinct()
+            .ToListAsync();
+
+        return rdList;
+    }
+
+    /// <summary>
+    /// Creates an RD's on-call assignment.
+    /// </summary>
+    /// <param name="OnCall">The ID of the RD</param>
+    /// <returns>The created RD on-call assignment</returns>
+    public async Task<RdOnCallGetView> CreateRdOnCallAsync(RD_On_Call_Create OnCall)
+    {
+        if (OnCall.Start_Date > OnCall.End_Date)
+        {
+            throw new BadInputException() { ExceptionMessage = "Start date cannot be after end date." };
+        }
+
+        // Check for overlapping RD on-call records
+        bool overlapExists = await context.RD_On_Call
+        .AnyAsync(r => r.Start_Date <= OnCall.End_Date && r.End_Date >= OnCall.Start_Date);
+
+        if (overlapExists)
+        {
+            throw new BadInputException() { ExceptionMessage = "An existing on-call record overlaps with the given dates." };
+        }
+
+        // Create a new RD on-call record
+        var newOnCall = new RD_On_Call
+        {
+            RD_ID = OnCall.RD_ID,
+            Start_Date = OnCall.Start_Date,
+            End_Date = OnCall.End_Date,
+            Created_Date = DateTime.Now
+        };
+
+        context.RD_On_Call.Add(newOnCall);
+        await context.SaveChangesAsync();
+
+        return new RdOnCallGetView
+        {
+            Record_ID = newOnCall.Record_ID,
+            RD_ID = newOnCall.RD_ID,
+            Start_Date = newOnCall.Start_Date,
+            End_Date = newOnCall.End_Date,
+            Created_Date = newOnCall.Created_Date
+        };
+    }
+
+    /// <summary>
+    /// Updates an existing RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to update.</param>
+    /// <param name="updatedOnCall">The updated RD on-call details.</param>
+    /// <returns>
+    /// Returns an updated RdOnCallGetView object if successful.
+    /// </returns>
+    public async Task<RdOnCallGetView> UpdateRdOnCallAsync(int recordId, RD_On_Call_Create updatedOnCall)
+    {
+        var existingOnCall = await context.RD_On_Call
+            .FirstOrDefaultAsync(r => r.Record_ID == recordId);
+
+        if (existingOnCall == null)
+        {
+            return null; // RD entry not found
+        }
+
+        if (updatedOnCall.Start_Date > updatedOnCall.End_Date)
+        {
+            throw new BadInputException() { ExceptionMessage = "Start date cannot be after end date." };
+        }
+
+        // Check for overlapping RD on-call records
+        bool overlapExists = await context.RD_On_Call
+        .Where(r => r.Record_ID != recordId)
+        .AnyAsync(r => r.Start_Date <= updatedOnCall.End_Date && r.End_Date >= updatedOnCall.Start_Date);
+
+            if (overlapExists)
+            {
+                throw new BadInputException() { ExceptionMessage = "An existing on-call record overlaps with the given dates." };
+            }
+
+        bool isUpdated = false;
+
+        // Update fields only if the new value is different from the existing value
+        if (updatedOnCall.RD_ID != existingOnCall.RD_ID)
+        {
+            existingOnCall.RD_ID = updatedOnCall.RD_ID;
+            isUpdated = true;
+        }
+
+        if (updatedOnCall.Start_Date != existingOnCall.Start_Date)
+        {
+            existingOnCall.Start_Date = updatedOnCall.Start_Date;
+            isUpdated = true;
+        }
+
+        if (updatedOnCall.End_Date != existingOnCall.End_Date)
+        {
+            existingOnCall.End_Date = updatedOnCall.End_Date;
+            isUpdated = true;
+        }
+
+        if (!isUpdated)
+        {
+            throw new BadInputException() { ExceptionMessage = "No changes detected." };
+        }
+
+
+        await context.SaveChangesAsync();
+
+        return new RdOnCallGetView
+        {
+            Record_ID = existingOnCall.Record_ID,
+            RD_ID = existingOnCall.RD_ID,
+            Start_Date = existingOnCall.Start_Date,
+            End_Date = existingOnCall.End_Date,
+            Created_Date = existingOnCall.Created_Date,
+        };
+    }
+
+    /// <summary>
+    /// Deletes an RD on-call record by its record ID.
+    /// </summary>
+    /// <param name="recordId">The unique identifier of the RD on-call record to delete.</param>
+    /// <returns>
+    /// Returns true if the record was successfully deleted.
+    /// </returns>
+    public async Task<bool> DeleteRDOnCallById(int recordId)
+    {
+        var rdEntry = await context.RD_On_Call
+            .FirstOrDefaultAsync(r => r.Record_ID == recordId);
+
+        if (rdEntry == null)
+        {
+            return false;
+        }
+
+        context.RD_On_Call.Remove(rdEntry);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Retrieves the RD on call
+    /// </summary>
+    /// <returns>info for the RD.</returns>
+    public async Task<RD_StudentsViewModel> GetRDOnCall()
+    {
+        var rd = await context.RD_OnCall_Today
+            .Select(r => new RD_StudentsViewModel
+            {
+                RD_Email = r.RD_Email,
+                RD_ID = r.RDId,
+                RD_Name = r.RDName,
+                RD_Photo = r.RD_Photo
+            })
+            .FirstOrDefaultAsync();
+
+        return rd;
+    }
+
+    /// <summary>
+    /// Retrieves a list of active RD on-call records where the end date is today or in the future.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of active RD on-call records
+    /// If no active records are found, an empty list is returned.
+    /// </returns>
+    public async Task<List<RdOnCallGetView>> GetActiveRDOnCallsAsync()
+    {
+        var today = DateTime.Now.Date;
+
+        var activeRDs = await context.RD_On_Call
+            .Where(r => r.End_Date >= today)
+            .Select(r => new RdOnCallGetView
+            {
+                Record_ID = r.Record_ID,
+                RD_ID = r.RD_ID,
+                Start_Date = r.Start_Date,
+                End_Date = r.End_Date,
+                Created_Date = r.Created_Date,
+            })
+            .ToListAsync();
+
+        return activeRDs;
+    }
+
+    /// <summary>
+    /// Retrieves the RA assigned to a resident based on their room number and hall ID.
+    /// </summary>
+    /// <param name="hallId">The ID of the hall.</param>
+    /// <param name="roomNumber">The resident's room number.</param>
+    /// <returns>Returns the RA's details if found, otherwise throws an exception.</returns>
+    public async Task<RA_StudentsViewModel> GetResidentRAAsync(string hallId, string roomNumber)
+    {
+        // Query the room range within the specified hall that contains the room number
+        var roomRange = await context.Hall_Assignment_Ranges
+            .FirstOrDefaultAsync(r => r.Hall_ID == hallId
+                && r.Room_Start <= int.Parse(roomNumber)
+                && r.Room_End >= int.Parse(roomNumber));
+
+        if (roomRange == null)
+        {
+            throw new InvalidOperationException("No RA found for the provided room number in the specified hall.");
+        }
+
+        // Find the RA assigned to that room range
+        var assignedRAID = await context.Hall_Assignment_Ranges
+            .Where(ra => ra.Range_ID == roomRange.Range_ID)
+            .Select(ra => ra.Assigned_RA)
+            .FirstOrDefaultAsync();
+
+        if (assignedRAID == null)
+        {
+            throw new InvalidOperationException("No RA assigned to this room range.");
+        }
+
+        // Get the full details of the RA assigned to the room range
+        var assignedRA = await context.RA_Students
+            .Where(ra => ra.ID == assignedRAID)
+            .Select(ra => new RA_StudentsViewModel
+            {
+                First_Name = ra.FirstName,
+                Last_Name = ra.LastName,
+                Dorm = ra.Dorm,
+                BLDG_Code = ra.BLDG_Code,
+                Room_Number = ra.RoomNumber,
+                Email = ra.Email,
+                Phone_Number = ra.PhoneNumber,
+                ID = ra.ID,
+                Photo_URL = ra.PhotoURL
+            })
+            .FirstOrDefaultAsync();
+
+        if (assignedRA == null)
+        {
+            throw new InvalidOperationException("RA details could not be retrieved.");
+        }
+
+        // Fetch and include the preferred contact method for the RA
+        var preferredContact = await GetPreferredContactAsync(assignedRA.ID);
+
+        assignedRA.Preferred_Contact = preferredContact.Contact;
+
+        return assignedRA;
+    }
+
+    /// <summary>
+    /// Retrieves all room ranges.
+    /// </summary>
+    /// <returns>A list of room ranges.</returns>
+    public async Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync()
+    {
+        var roomRanges = await context.Hall_Assignment_Ranges
+            .Select(r => new HallAssignmentRangeViewModel
+            {
+                Range_ID = r.Range_ID,
+                Hall_ID = r.Hall_ID,
+                Room_Start = r.Room_Start,
+                Room_End = r.Room_End
+            })
+            .ToListAsync();
+
+        return roomRanges;
+    }
+
+    /// <summary>
+    /// Retrieves all rooms missing a range.
+    /// </summary>
+    /// <returns>A list of rooms.</returns>
+    public async Task<List<MissedRoomsViewModel>> GetMissedRoomsAsync()
+    {
+        var rooms = await context.Unassigned_Rooms
+            .Select(r => new MissedRoomsViewModel
+            {
+                Room_Name = r.Room_Name,
+                Building_Code = r.Building_Code,
+                Room_Number = r.Room_Number
+            })
+            .ToListAsync();
+
+        return rooms;
+    }
+
+    /// <summary>
+    /// Retrieves a list of all RAs.
+    /// </summary>
+    /// <returns>Returns a list of RA_StudentsViewModel containing information about each RA</returns>
+    public async Task<List<RA_StudentsViewModel>> GetAllRAsAsync()
+    {
+        var RAs = await context.RA_Students
+            .Select(ra => new RA_StudentsViewModel
+            {
+                First_Name = ra.FirstName,
+                Last_Name = ra.LastName,
+                Dorm = ra.Dorm,
+                BLDG_Code = ra.BLDG_Code,
+                Room_Number = ra.RoomNumber,
+                Email = ra.Email,
+                Phone_Number = ra.PhoneNumber,
+                ID = ra.ID
+            })
+            .ToListAsync();
+
+        return RAs;
+    }
+
+    /// <summary>
+    /// Retrieves the list of all assignments.
+    /// </summary>
+    /// <returns>Returns a list of all assignments</returns>
+    public async Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync()
+    {
+        var Assignments = await context.RA_Assigned_Ranges_View
+            .Select(assignment => new RA_Assigned_RangesViewModel
+            {
+                RA_ID = assignment.RA_ID,
+                First_Name = assignment.Fname,
+                Last_Name = assignment.Lname,
+                Hall_Name = assignment.Hall_Name,
+                Room_Start = assignment.Room_Start,
+                Room_End = assignment.Room_End,
+                Range_ID = assignment.Range_ID,
+                Hall_ID = assignment.Hall_ID
+            })
+            .ToListAsync();
+
+        return Assignments;
+    }
+
+    /// <summary>
+    /// Retrieves the list of range assignments for a given RA_ID.
+    /// </summary>
+    /// <param name="raId">The RA_ID of the assigned RA.</param>
+    /// <returns>Returns a list of assigned ranges for the specified RA.</returns>
+    public async Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsByRAIdAsync(string raId)
+    {
+        var assignments = await context.RA_Assigned_Ranges_View
+            .Where(assignment => assignment.RA_ID == raId)
+            .Select(assignment => new RA_Assigned_RangesViewModel
+            {
+                RA_ID = assignment.RA_ID,
+                First_Name = assignment.Fname,
+                Last_Name = assignment.Lname,
+                Hall_Name = assignment.Hall_Name,
+                Room_Start = assignment.Room_Start,
+                Room_End = assignment.Room_End,
+                Range_ID = assignment.Range_ID,
+                Hall_ID = assignment.Hall_ID
+            })
+            .ToListAsync();
+
+        return assignments;
+    }
+
+
+
+
+    /// <summary>
+    /// Sets or updates an RA's preferred contact method
+    /// </summary>
+    /// <param name="raId">The ID of the RA</param>
+    /// <param name="preferredContactMethod">The contact method (e.g., "Phone", "Teams")</param>
+    /// <returns>True if the contact method was successfully set</returns>
+    public async Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod)
+    {
+        // Check if the RA already has a contact preference in the CCT model
+        var existingPreference = await context.RA_Pref_Contact
+            .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+
+        if (existingPreference != null)
+        {
+            // Update the existing preference
+            existingPreference.Pref_contact = preferredContactMethod;
+            context.RA_Pref_Contact.Update(existingPreference);
+        }
+        else
+        {
+            // Create a new preference using the CCT entity
+            context.RA_Pref_Contact.Add(new RA_Pref_Contact
+            {
+                Ra_ID = raId,
+                Pref_contact = preferredContactMethod
+            });
+        }
+
+        // Save changes to the database
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    /// <summary>
+    /// Retrieves the preferred contact information for an RA based on their contact preference.
+    /// If the RA has a contact preference set, it will return either their phone number or a Microsoft Teams link 
+    /// with their email embedded. If no preference exists, the method defaults to returning the RA's phone number.
+    /// </summary>
+    /// <param name="raId">The ID of the RA whose contact information is being requested.</param>
+    /// <returns>A string containing the preferred contact information (phone number or Teams link) or a default 
+    /// phone number if no preference is set.</returns>
+    public async Task<RA_ContactPreference> GetPreferredContactAsync(string raId)
+    {
+        // Check if there is a preferred contact method for the given RA
+        var contactPreference = await context.RA_Pref_Contact
+            .FirstOrDefaultAsync(cp => cp.Ra_ID == raId);
+
+        //find ra by id
+        var ra = await context.RA_Students
+                    .FirstOrDefaultAsync(r => r.ID == raId);
+
+        // default contact to be phone
+        var Contact = new RA_ContactPreference
+        {
+            RA_ID = raId,
+            Preferred_Contact_Method = "phone",
+            Contact = ra?.PhoneNumber ?? "Phone number not found"
+        };
+
+
+        if (contactPreference != null)
+        {
+            // Determine the preferred method and get corresponding contact info
+            if (contactPreference.Pref_contact == "phone")
+            {
+                    return Contact;
+            }
+            else if (contactPreference.Pref_contact == "teams")
+            {
+                // Fetch RA's email from the RA_Students table
+
+                if (ra?.Email != null)
+                {
+                    // Generate Teams link using the email
+                    Contact = new RA_ContactPreference
+                    {
+                        RA_ID = raId,
+                        Preferred_Contact_Method = "teams",
+                        Contact = $"https://teams.microsoft.com/l/chat/0/0?users={ra.Email}"
+                    };
+
+                    return Contact; //unable to generate teams link, default to phone
+                }
+            }
+        }
+
+            // If no preference exists, return the phone number by default
+            return Contact;
+    }
+
+
+    /// <summary>
+    /// Gets the on-call RA's ID for specified hall.
+    /// </summary>
+    /// <param name="Hall_ID">The ID of the hall</param>
+    /// <returns>The ID of the on-call RA, or null if no RA is currently on call</returns>
+    public async Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string Hall_ID)
+    {
+        var onCallRA = await context.Current_On_Call 
+            .Where(ra => ra.Hall_ID == Hall_ID)  // Filter by Hall_ID and only active check-ins
+            .Select(ra => new RA_On_Call_GetViewModel
+            {
+                Hall_ID = ra.Hall_ID,
+                Hall_Name = ra.Hall_Name,
+                Room_Number = ra.RoomNumber,
+                RA_Name = ra.RA_Name,
+                Preferred_Contact = ra.PreferredContact,
+                Check_In_Time = ra.Check_in_time,
+                RD_Email = ra.RD_Email,
+                RD_Name = ra.RD_Name,
+                RA_UserName = ra.RA_UserName,
+                RD_UserName = ra.RD_UserName,
+                RA_Photo = ra.RA_Photo
+            })
+            .FirstOrDefaultAsync();
+
+        return onCallRA;
+    }
+
+    /// <summary>
+    /// Checks an RA in
+    /// </summary>
+    /// <param name="Ra_ID">Id of the ra checking in</param>
+    ///<param name="Hall_IDs">The Hall(s) the RA is checking into</param>
+    /// <returns>true if RA checked in successfully</returns>
+    public async Task<bool> RA_CheckinAsync(string[] Hall_IDs, string Ra_ID)
+    {
+        foreach (string hallId in Hall_IDs)
+        {
+            // Check if there is an existing RA checked into this hall without an end time
+            var existingRA = await context.RA_On_Call
+                .Where(r => r.Hall_ID == hallId && r.Check_out_time == null)
+                .FirstOrDefaultAsync();
+
+            // If an existing RA is found, set their Check_out_time to the current time
+            if (existingRA != null)
+            {
+                existingRA.Check_out_time = DateTime.Now;
+                context.RA_On_Call.Update(existingRA);
+            }
+
+            // Add the new RA check-in record with no check-out time
+            var newCheckin = new RA_On_Call
+            {
+                Ra_ID = Ra_ID,
+                Hall_ID = hallId,
+                Check_in_time = DateTime.Now,
+                Check_out_time = null // RA has an active checkin
+            };
+            context.RA_On_Call.Add(newCheckin);
+        }
+
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+        /// <summary>
+        /// Gets the on-call RAs for all halls.
+        /// </summary>
+        /// <returns>The RAs on call</returns>
+        public async Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync()
+        {
+            var onCallRAs = await context.Current_On_Call
+                .Select(oncall => new RA_On_Call_GetViewModel
+                {
+                    Hall_ID = oncall.Hall_ID,
+                    Hall_Name = oncall.Hall_Name,
+                    RA_Name = oncall.RA_Name,
+                    Preferred_Contact = oncall.PreferredContact,
+                    Check_In_Time = oncall.Check_in_time,
+                    RD_Email = oncall.RD_Email,
+                    RA_UserName = oncall.RA_UserName,
+                    RD_UserName = oncall.RD_UserName,
+                    RD_Name = oncall.RD_Name,
+                    RA_Photo = oncall.RA_Photo
+                })
+                .ToListAsync();
+        
+            return onCallRAs;
+        }
+
+    /// <summary>
+    /// Gets the on-call RA's current halls
+    /// </summary>
+    /// <param name="userName">The username of the ra</param>
+    /// <returns>The RA's current halls</returns>
+    public async Task<List<string>> GetOnCallRAHallsAsync(string userName)
+    {
+        return await context.Current_On_Call
+            .Where(oncall => oncall.RA_UserName == userName)
+            .Select(oncall => oncall.Hall_ID)
+            .ToListAsync();
+    }
+
+
+    /// <summary>
+    /// Checks if an RA is currently on call.
+    /// </summary>
+    /// <param name="raId">The ID of the RA</param>
+    /// <returns>True if the RA is on call, false otherwise</returns>
+    public async Task<bool> IsRAOnCallAsync(string raId)
+    {
+        // Check if the RA is currently on call
+        var isOnCall = await context.RA_On_Call
+            .AnyAsync(ra => ra.Ra_ID == raId && ra.Check_out_time == null);
+
+        return isOnCall;
+    }
+    /// <summary>
+    /// Checks if a student is residential
+    /// </summary>
+    /// <param name="idNum">The ID of the student</param>
+    /// <returns>True if the student is a resident</returns>
+    public async Task<bool> IsStudentResidentialAsync(int idNum)
+    {
+        var isRes = await context.ResidentialStatus_View
+                                .Where(s => s.Student_ID == idNum)
+                                .Select(s => s.Is_Residential)
+                                .FirstOrDefaultAsync();
+
+        return isRes ?? false;
+    }
+
+    /// <summary>
+    /// Creates a new task for the given hall
+    /// </summary>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    public async Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task)
+    {
+
+        if (task.End_Date < task.Start_Date)
+        {
+            throw new InvalidOperationException("A task cannot end before it begins.");
+        }
+        var newTask = new Hall_Tasks
+        {
+            Name = task.Name,
+            Description = task.Description,
+            Hall_ID = task.Hall_ID,
+            Is_Recurring = task.Is_Recurring,
+            Frequency = task.Frequency,
+            Interval = task.Interval,
+            Start_Date = task.Start_Date,
+            End_Date = task.End_Date,
+            Created_Date = DateTime.Now
+        };
+
+        // Check if task starts today and add to Task_Occurrence
+        if (newTask.Start_Date.Date == DateTime.Now.Date)
+        {
+            var newOccurrence = new Hall_Task_Occurrence
+            {
+                Task_ID = newTask.Task_ID,
+                OccurDate = DateTime.Now.Date,
+                IsComplete = false,
+                CompletedBy = null,
+                CompletedDate = null
+            };
+
+            newTask.Hall_Task_Occurrence = [newOccurrence];
+        }
+
+        await context.Hall_Tasks.AddAsync(newTask);
+        await context.SaveChangesAsync();
+  
+
+        return new HallTaskViewModel
+        {
+            Task_ID = newTask.Task_ID,
+            Name = newTask.Name,
+            Description = newTask.Description,
+            Hall_ID = newTask.Hall_ID,
+            Is_Recurring = newTask.Is_Recurring,
+            Frequency = newTask.Frequency,
+            Interval = (int)newTask.Interval,
+            Start_Date = newTask.Start_Date,
+            End_Date = newTask.End_Date,
+            Created_Date = newTask.Created_Date
+        };
+    }
+
+    /// <summary>
+    /// Updates the task by the given ID
+    /// </summary>
+    /// <param name="taskID">The HallTaskViewModel object containing necessary info</param>
+    /// <param name="task">The HallTaskViewModel object containing necessary info</param>
+    /// <returns>The created task</returns>
+    public async Task<HallTaskViewModel> UpdateTaskAsync(int taskID, HallTaskViewModel task)
+    {
+        var existingTask = await context.Hall_Tasks.FindAsync(taskID);
+        if (existingTask == null)
+        {
+            return null;
+        }
+
+        if (task.End_Date < task.Start_Date)
+        {
+            throw new InvalidOperationException("A task cannot end before it begins.");
+        }
+
+        existingTask.Name = task.Name;
+        existingTask.Description = task.Description;
+        existingTask.Hall_ID = task.Hall_ID;
+        existingTask.Is_Recurring = task.Is_Recurring;
+        existingTask.Frequency = task.Frequency;
+        existingTask.Interval = task.Interval;
+        existingTask.Start_Date = task.Start_Date;
+        existingTask.End_Date = task.End_Date;
+
+        context.Hall_Tasks.Update(existingTask);
+        await context.SaveChangesAsync();
+
+        return new HallTaskViewModel
+        {
+            Task_ID = existingTask.Task_ID,
+            Name = existingTask.Name,
+            Description = existingTask.Description,
+            Hall_ID = existingTask.Hall_ID,
+            Is_Recurring = existingTask.Is_Recurring,
+            Frequency = existingTask.Frequency,
+            Interval = (int)existingTask.Interval,
+            Start_Date = existingTask.Start_Date,
+            End_Date = existingTask.End_Date,
+            Created_Date = existingTask.Created_Date
+        };
+    }
+
+    /// <summary>
+    /// Disables a task
+    /// </summary>
+    /// <param name="taskID">The ID of the task to disable</param>
+    /// <returns>True if disable</returns>
+    public async Task<bool> DisableTaskAsync(int taskID)
+    {
+        var existingTask = await context.Hall_Tasks.FindAsync(taskID);
+        if (existingTask == null)
+        {
+            return false;
+        }
+        existingTask.End_Date = DateTime.Now.AddDays(-1);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    /// <summary>
+    /// Marks a task completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <param name="CompletedBy">The ID of the RA completing the task</param>
+    /// <returns>True if completed</returns>
+    public async Task<bool> CompleteTaskAsync(int taskID, string CompletedBy)
+    {
+        var existingTask = await context.Hall_Task_Occurrence.FindAsync(taskID);
+
+        existingTask.CompletedDate = DateTime.Now;
+        existingTask.CompletedBy = CompletedBy;
+        existingTask.IsComplete = true;
+
+        context.Hall_Task_Occurrence.Update(existingTask);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Marks a task not completed
+    /// </summary>
+    /// <param name="taskID">the ID of the task to update</param>
+    /// <returns>True if marked not completed</returns>
+    public async Task<bool> IncompleteTaskAsync(int taskID)
+    {
+        var existingTask = await context.Hall_Task_Occurrence.FindAsync(taskID);
+
+        existingTask.CompletedDate = null;
+        existingTask.CompletedBy = null;
+        existingTask.IsComplete = false;
+
+        context.Hall_Task_Occurrence.Update(existingTask);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Gets the list of active tasks
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of tasks</returns>
+    public async Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId)
+    {
+        var tasks = await context.Hall_Tasks
+            .Where(t => t.Hall_ID == hallId && (!t.End_Date.HasValue || t.End_Date.Value.Date >= DateTime.Now.Date))
+            .Select(t => new HallTaskViewModel
+            {
+                Task_ID = t.Task_ID,
+                Name = t.Name,
+                Description = t.Description,
+                Hall_ID = t.Hall_ID,
+                Is_Recurring = t.Is_Recurring,
+                Frequency = t.Frequency,
+                Interval = (int)t.Interval,
+                Start_Date = t.Start_Date,
+                End_Date = t.End_Date,
+                Created_Date = t.Created_Date
+            })
+            .ToListAsync();
+
+        return tasks;
+    }
+
+    /// <summary>
+    /// Gets the list of daily tasks for a hall
+    /// </summary>
+    /// <param name="hallId">the ID of the hall to get tasks for</param>
+    /// <returns>The list of daily tasks</returns>
+    public async Task<List<DailyTaskViewModel>> GetTasksForHallAsync(string hallId)
+    {
+        var tasks = await context.CurrentTasks
+            .Where(t => t.Hall_ID == hallId)
+            .Select(t => new DailyTaskViewModel
+            {
+                Task_ID = t.Task_ID,
+                Name = t.Name,
+                Description = t.Description,
+                Hall_ID = t.Hall_ID,
+                Completed_Date = t.CompletedDate,
+                Completed_By = t.CompletedBy,
+                Occur_Date = t.OccurDate
+            })
+            .ToListAsync();
+
+        return tasks;
+    }
+
+    /// <summary>
+    /// Creates a new status event for an RA's schedule
+    /// </summary>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+/// <returns>The created status event</returns>
+public async Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status)
+    {
+
+        if (status.End_Date < status.Start_Date || status.End_Time < status.Start_Time)
+        {
+            throw new InvalidOperationException("A status cannot end before it begins.");
+        }
+
+        bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
+        existing.Ra_ID == status.RA_ID &&
+        (
+            (status.Start_Date <= existing.End_Date && status.End_Date >= existing.Start_Date) &&
+            (status.Start_Time < existing.End_Time && status.End_Time > existing.Start_Time)
+        )
+    );
+
+        if (hasOverlap)
+        {
+            throw new InvalidOperationException("A conflicting status event already exists for this RA.");
+        }
+
+        var newStatus = new RA_Status_Events
+        {
+            Ra_ID = status.RA_ID,
+            Status_Name = status.Status_Name,
+            Is_Recurring = status.Is_Recurring,
+            DaysOfWeek = status.Days_Of_Week,
+            Start_Time = status.Start_Time,
+            End_Time = status.End_Time,
+            Start_Date = status.Start_Date,
+            End_Date = (DateTime)status.End_Date,
+            Created_Date = DateTime.Now,
+            Available = status.Available,
+
+        };
+
+        await context.RA_Status_Events.AddAsync(newStatus);
+        await context.SaveChangesAsync();
+
+        return new RA_StatusEventsViewModel
+        {
+            Status_ID = newStatus.Status_ID,
+            RA_ID = newStatus.Ra_ID,
+            Status_Name = newStatus.Status_Name,
+            Is_Recurring = newStatus.Is_Recurring,
+            Days_Of_Week = newStatus.DaysOfWeek,
+            Start_Time = newStatus.Start_Time,
+            End_Time = newStatus.End_Time,
+            Start_Date = newStatus.Start_Date,
+            End_Date = newStatus.End_Date,
+            Created_Date = newStatus.Created_Date,
+            Available = newStatus.Available
+        };
+    }
+
+    /// <summary>
+    /// Deletes a status event for an RA's schedule
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to delete</param>
+    /// <returns>True if deleted</returns>
+    public async Task<bool> DeleteStatusEventAsync(int statusID)
+    {
+        var existingStatus = await context.RA_Status_Events
+            .FirstOrDefaultAsync(s => s.Status_ID == statusID);
+
+        if (existingStatus == null)
+        {
+            return false;
+        }
+
+        existingStatus.End_Date = DateTime.Now.Date.AddDays(-1); // Mark status as ended
+        existingStatus.End_Time = DateTime.Now.TimeOfDay;
+        
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    /// <summary>
+    /// Updates the RA status event by the given ID
+    /// </summary>
+    /// <param name="statusID">The ID of the status event to update</param>
+    /// <param name="status">The RA_StatusEventsViewModel object containing necessary info</param>
+    /// <returns>The updated status event</returns>
+    public async Task<RA_StatusEventsViewModel> UpdateStatusEventAsync(int statusID, RA_StatusEventsViewModel status)
+    {
+        var existingStatus = await context.RA_Status_Events.FindAsync(statusID);
+        if (existingStatus == null)
+        {
+            return null;
+        }
+
+        if (status.End_Date < status.Start_Date || status.End_Time <status.Start_Time)
+        {
+            throw new InvalidOperationException("A status cannot end before it begins.");
+        }
+
+        // Check for overlapping status events
+        bool hasOverlap = await context.RA_Status_Events.AnyAsync(existing =>
+            existing.Ra_ID == status.RA_ID &&
+            existing.Status_ID != statusID && // Exclude the current status event
+            (
+                (status.Start_Date <= existing.End_Date && status.End_Date >= existing.Start_Date) &&
+                (status.Start_Time < existing.End_Time && status.End_Time > existing.Start_Time)
+            )
+        );
+
+        if (hasOverlap)
+        {
+            throw new InvalidOperationException("A conflicting status event already exists for this RA.");
+        }
+
+        // Update the existing status event
+        existingStatus.Status_Name = status.Status_Name;
+        existingStatus.Is_Recurring = status.Is_Recurring;
+        existingStatus.DaysOfWeek = status.Days_Of_Week;
+        existingStatus.Start_Time = status.Start_Time;
+        existingStatus.End_Time = status.End_Time;
+        existingStatus.Start_Date = status.Start_Date;
+        existingStatus.End_Date = (DateTime)status.End_Date;
+        existingStatus.Available = status.Available;
+
+        context.RA_Status_Events.Update(existingStatus);
+        await context.SaveChangesAsync();
+
+        // Return the updated status event
+        return new RA_StatusEventsViewModel
+        {
+            Status_ID = existingStatus.Status_ID,
+            RA_ID = existingStatus.Ra_ID,
+            Status_Name = existingStatus.Status_Name,
+            Is_Recurring = existingStatus.Is_Recurring,
+            Days_Of_Week = existingStatus.DaysOfWeek,
+            Start_Time = existingStatus.Start_Time,
+            End_Time = existingStatus.End_Time,
+            Start_Date = existingStatus.Start_Date,
+            End_Date = existingStatus.End_Date,
+            Created_Date = existingStatus.Created_Date,
+            Available = existingStatus.Available
+        };
+    }
+
+
+    /// <summary>
+    /// Gets the list of daily status events for an RA
+    /// </summary>
+    /// <param name="raID"> The ID of the RA</param>
+    /// <returns>The list of daily status events</returns>
+    public async Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raID)
+    {
+        var statusEvents = await context.Daily_RA_Events
+            .Where(s => s.Ra_ID == raID)
+            .OrderBy(s => s.Start_Time)  
+            .Select(s => new DailyStatusEventsViewModel
+            {
+                Status_ID = s.Status_ID,
+                RA_ID = s.Ra_ID,
+                Status_Name = s.Status_Name,
+                Start_Time = (TimeSpan)s.Start_Time,
+                End_Time = (TimeSpan)s.End_Time,
+                Start_Date = s.Start_Date,
+                End_Date = s.End_Date,
+                Available = s.Available
+            })
+            .ToListAsync();
+
+        return statusEvents;
+    }
+
+    /// <summary>
+    /// Gets the active statuses for a given RA.
+    /// </summary>
+    /// <param name="raId">The ID of the RA.</param>
+    /// <returns>A list of active statuses or a 404 if none exist.</returns>
+    public async Task<List<RA_StatusEventsViewModel>> GetActiveStatusesByRAIdAsync(string raId)
+    {
+        var activeStatuses = await context.RA_Status_Events
+            .Where(status => status.Ra_ID == raId && status.End_Date >= DateTime.Now.Date)
+            .OrderBy(status => status.Start_Date)
+            .ThenBy(status => status.Start_Time)
+            .Select(status => new RA_StatusEventsViewModel
+            {
+                Status_ID = status.Status_ID,
+                RA_ID = status.Ra_ID,
+                Status_Name = status.Status_Name,
+                Is_Recurring = status.Is_Recurring,
+                Days_Of_Week = status.DaysOfWeek,
+                Start_Time = status.Start_Time,
+                End_Time = status.End_Time,
+                Start_Date = status.Start_Date,
+                End_Date = status.End_Date,
+                Created_Date = status.Created_Date,
+                Available = status.Available
+            })
+            .ToListAsync();
+
+        return activeStatuses;
+    }
+
+    /// <summary>
+    /// Gets the Student Life contact by phone name.
+    /// </summary>
+    /// <param name="phoneName">The name of the phone contact.</param>
+    /// <returns>The contact phone number or null if not found.</returns>
+    public async Task<string> GetStuLifeContactByPhoneNameAsync(string phoneName)
+    {
+        var phoneNumber = await context.StuLifePhoneNumbers
+            .Where(p => p.PhoneName == phoneName)
+            .Select(p => p.PhoneNumber)
+            .FirstOrDefaultAsync();
+
+        return phoneNumber;
+    }
+
+    /// <summary>
+    /// Updates or sets the Student Life phone number for a given name.
+    /// </summary>
+    /// <param name="PhoneName">The phone name</param>
+    /// <param name="PhoneNumber">new number.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public async Task<bool> SetStuLifePhoneNumberAsync(string PhoneName, string PhoneNumber)
+    {
+        var contact = await context.StuLifePhoneNumbers
+            .FirstOrDefaultAsync(p => p.PhoneName ==PhoneName);
+
+        if (contact == null)
+        {
+            // Create new entry if it doesn't exist
+            contact = new StuLifePhoneNumbers
+            {
+                PhoneName = PhoneName,
+                PhoneNumber = PhoneNumber
+            };
+
+            context.StuLifePhoneNumbers.Add(contact);
+        }
+        else
+        {
+            // Update existing phone number
+            contact.PhoneNumber = PhoneNumber;
+        }
+
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+
+
+
+
 }

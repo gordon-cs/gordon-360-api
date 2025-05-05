@@ -138,7 +138,7 @@ namespace Gordon360.Services
                     missingID = newReportResults.Entity.ID,
                     firstName = reportDetails.firstName,
                     lastName = reportDetails.lastName,
-                    phoneNumber = reportDetails.phone, 
+                    phoneNumber = reportDetails.phone,
                     emailAddress = reportDetails.email,
                 });
 
@@ -273,7 +273,7 @@ namespace Gordon360.Services
             {
                 throw new ResourceNotFoundException() { ExceptionMessage = "The Missing Item Report was not found" };
             }
-            
+
             // If a non-admin user attempts to update the status of a report
             if (original.submitterID != idNum && !hasFullPermissions(username))
             {
@@ -392,11 +392,11 @@ namespace Gordon360.Services
             {
                 missingItems = missingItems.Where(x => x.colors.Contains(color));
             }
-            if (category is not null) 
-            { 
+            if (category is not null)
+            {
                 missingItems = missingItems.Where(x => x.category == category);
             }
-            if (keywords is not null) 
+            if (keywords is not null)
             {
                 missingItems = missingItems.Where(x => (x.firstName + " " + x.lastName).Contains(keywords)
                                                     || x.description.Contains(keywords) 
