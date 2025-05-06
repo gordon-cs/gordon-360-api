@@ -15,9 +15,13 @@ public partial class MissingReports
     public int ID { get; set; }
 
     [Required]
-    [StringLength(255)]
+    [StringLength(63)]
     [Unicode(false)]
     public string submitterID { get; set; }
+
+    [StringLength(10)]
+    [Unicode(false)]
+    public string matchingFoundID { get; set; }
 
     public bool forGuest { get; set; }
 
@@ -36,7 +40,7 @@ public partial class MissingReports
     public string brand { get; set; }
 
     [Required]
-    [StringLength(255)]
+    [StringLength(511)]
     [Unicode(false)]
     public string description { get; set; }
 
@@ -65,6 +69,13 @@ public partial class MissingReports
     [InverseProperty("missing")]
     public virtual ICollection<ActionsTaken> ActionsTaken { get; set; } = new List<ActionsTaken>();
 
+    [InverseProperty("matchingMissing")]
+    public virtual ICollection<FoundItems> FoundItems { get; set; } = new List<FoundItems>();
+
     [InverseProperty("missing")]
     public virtual ICollection<GuestUsers> GuestUsers { get; set; } = new List<GuestUsers>();
+
+    [ForeignKey("matchingFoundID")]
+    [InverseProperty("MissingReports")]
+    public virtual FoundItems matchingFound { get; set; }
 }

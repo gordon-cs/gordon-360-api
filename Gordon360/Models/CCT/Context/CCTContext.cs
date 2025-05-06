@@ -64,6 +64,16 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<FacStaff> FacStaff { get; set; }
 
+    public virtual DbSet<FoundActionsTaken> FoundActionsTaken { get; set; }
+
+    public virtual DbSet<FoundActionsTakenData> FoundActionsTakenData { get; set; }
+
+    public virtual DbSet<FoundGuest> FoundGuest { get; set; }
+
+    public virtual DbSet<FoundItemData> FoundItemData { get; set; }
+
+    public virtual DbSet<FoundItems> FoundItems { get; set; }
+
     public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
     public virtual DbSet<Hall_Assignment_Ranges> Hall_Assignment_Ranges { get; set; }
@@ -368,6 +378,37 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.BuildingDescription).IsFixedLength();
         });
 
+        modelBuilder.Entity<FoundActionsTaken>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC2744C7D4F3");
+
+            entity.HasOne(d => d.found).WithMany(p => p.FoundActionsTaken)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__FoundActi__found__0000D72E");
+        });
+
+        modelBuilder.Entity<FoundActionsTakenData>(entity =>
+        {
+            entity.ToView("FoundActionsTakenData", "LostAndFound");
+        });
+
+        modelBuilder.Entity<FoundGuest>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__FoundGue__3214EC275E423367");
+        });
+
+        modelBuilder.Entity<FoundItemData>(entity =>
+        {
+            entity.ToView("FoundItemData", "LostAndFound");
+        });
+
+        modelBuilder.Entity<FoundItems>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC2792138BD9");
+
+            entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__37510C18");
+        });
+
         modelBuilder.Entity<GuestUsers>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__GuestUse__3214EC2774F2F95F");
@@ -526,6 +567,7 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<MissingReports>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC271C4C78EB");
+            entity.HasOne(d => d.matchingFound).WithMany(p => p.MissingReports).HasConstraintName("FK__MissingRe__match__38453051");
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>
