@@ -215,20 +215,20 @@ namespace Gordon360.Controllers
         /// </returns>
         [HttpGet]
         [Route("founditems/owner")]
-        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItemsByOwner(string? username = null)
+        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItemsByOwner(string? owner = null)
         {
             // Retrieve the username of the currently authenticated user.
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             IEnumerable<FoundItemViewModel> result;
 
             // If no owner is specified, default to the authenticated user.
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(owner))
             {
                 result = lostAndFoundService.GetFoundItemsByOwner(authenticatedUserUsername, authenticatedUserUsername);
             }
             else
             {
-                result = lostAndFoundService.GetFoundItemsByOwner(username, authenticatedUserUsername);
+                result = lostAndFoundService.GetFoundItemsByOwner(owner, authenticatedUserUsername);
             }
 
             // Return the result if found, otherwise return a NotFound response.

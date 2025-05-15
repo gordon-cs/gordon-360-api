@@ -1023,23 +1023,25 @@ namespace Gordon360.Services
 
             // Query FoundItemData for items where the ownerID matches the requested username.
             var foundItems = context.FoundItemData
-                                    .Where(x => x.ownerID == requestedGordonID)
-                                    .OrderByDescending(x => x.dateCreated);
+                            .Where(x => x.ownerID == requestedGordonID)
+                            .OrderByDescending(x => x.dateCreated);
 
-            // If the requestor has elevated permissions (admin or kiosk), return found items with admin actions.
             if (hasFullPermissions(requestorUsername) || hasKioskPermissions(requestorUsername))
             {
                 return foundItems.GroupJoin(
-                            context.FoundActionsTakenData.OrderBy(a => a.actionDate),
-                            foundItem => foundItem.ID,
-                            action => action.foundID,
-                            (foundItem, actions) => FoundItemViewModel.From(foundItem, actions)
-                       );
+                    context.FoundActionsTakenData.OrderBy(a => a.actionDate),
+                    foundItem => foundItem.ID,
+                    action => action.foundID,
+                    (foundItem, actions) => FoundItemViewModel.From(foundItem, actions)
+                );
             }
             else
             {
-                // For general users, do not include any admin actions.
-                return foundItems.Select(foundItem => FoundItemViewModel.From(foundItem, Enumerable.Empty<FoundActionsTakenData>()));
+                // materialize and project client‑side
+                var foundList = foundItems.ToList();
+                var emptyActions = new List<FoundActionsTakenData>();
+                return foundList
+                  .Select(fi => FoundItemViewModel.From(fi, emptyActions));
             }
         }
 
