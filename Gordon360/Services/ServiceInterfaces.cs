@@ -5,7 +5,6 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Models.ViewModels.Housing;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -279,11 +278,45 @@ namespace Gordon360.Services
                                                                    string? status, 
                                                                    string? color, 
                                                                    string? category, 
-                                                                   string? keywords);
+                                                                   string? keywords,
+                                                                   DateTime? lastCheckedDate);
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
         Task UpdateReportStatusAsync(int id, string status, string username);
+        Task UpdateReportAssociatedFoundItemAsync(int id, string? foundID, string username);
         MissingItemReportViewModel? GetMissingItem(int id, string username);
         IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false, bool elevatedPermissions = false);
+        public int GetMissingItemsCount(
+            string username,
+            string? status,
+            string? color,
+            string? category,
+            string? keywords
+        );
+        public string CreateFoundItem(FoundItemViewModel reportDetails, string username);
+        public int CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
+        IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
+                                                         DateTime? latestDate,
+                                                         string? status,
+                                                         string? color,
+                                                         string? category,
+                                                         string? ID,
+                                                         string? keywords);
+        public FoundItemViewModel GetFoundItem(string foundItemID, string username);
+        Task UpdateFoundItemAsync(string id, FoundItemViewModel itemDetails, string username);
+        Task UpdateFoundStatusAsync(string id, string status, string username);
+        Task UpdateFoundAssociatedMissingReportAsync(string foundItemID, int? missingReportID, string username);
+        public int GetFoundItemsCount(
+             string username,
+             DateTime? latestDate,
+             string? status,
+             string? color,
+             string? category,
+             string? ID,
+             string? keywords
+         );
+
+        IEnumerable<FoundItemViewModel> GetFoundItemsByOwner(string requestedUsername, string requestorUsername);
+
     }
 
 

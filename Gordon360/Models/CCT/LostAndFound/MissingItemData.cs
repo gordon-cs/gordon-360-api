@@ -14,9 +14,13 @@ public partial class MissingItemData
     public int ID { get; set; }
 
     [Required]
-    [StringLength(255)]
+    [StringLength(63)]
     [Unicode(false)]
     public string submitterID { get; set; }
+
+    [StringLength(10)]
+    [Unicode(false)]
+    public string matchingFoundID { get; set; }
 
     public bool forGuest { get; set; }
 
@@ -35,7 +39,7 @@ public partial class MissingItemData
     public string brand { get; set; }
 
     [Required]
-    [StringLength(255)]
+    [StringLength(511)]
     [Unicode(false)]
     public string description { get; set; }
 

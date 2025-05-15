@@ -8,20 +8,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("ActionsTaken", Schema = "LostAndFound")]
-public partial class ActionsTaken
+[Keyless]
+public partial class FoundActionsTakenData
 {
-    [Key]
     public int ID { get; set; }
 
-    public int missingID { get; set; }
+    [Required]
+    [StringLength(10)]
+    [Unicode(false)]
+    public string foundID { get; set; }
 
     [Required]
     [StringLength(255)]
     [Unicode(false)]
     public string action { get; set; }
 
-    [Column(TypeName = "datetime")]
+    [Column(TypeName = "date")]
     public DateTime actionDate { get; set; }
 
     [Required]
@@ -29,14 +31,7 @@ public partial class ActionsTaken
     [Unicode(false)]
     public string actionNote { get; set; }
 
-    [Required]
-    [StringLength(63)]
+    [StringLength(50)]
     [Unicode(false)]
-    public string submitterID { get; set; }
-
-    public bool isPublic { get; set; }
-
-    [ForeignKey("missingID")]
-    [InverseProperty("ActionsTaken")]
-    public virtual MissingReports missing { get; set; }
+    public string AD_Username { get; set; }
 }
