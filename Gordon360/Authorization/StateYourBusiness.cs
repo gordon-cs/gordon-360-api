@@ -425,7 +425,7 @@ public class StateYourBusiness : ActionFilterAttribute
             case Resource.HOUSING_RA_STATUS_EVENT:
                 return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.HOUSING_PHONE_NUMBERS:
-                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.HousingDeveloper));
+                return (user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.HallInfoViewer) || user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.NEWS:
                 return user_groups.Contains(AuthGroup.NewsAdmin);
             case Resource.RECIM:
