@@ -3087,12 +3087,12 @@
             <param name="username">username</param>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.GetMailboxInformation(System.String)">
+        <member name="M:Gordon360.Services.ProfileService.GetMailboxCombination(System.String)">
             <summary>
             get mailbox information (contains box combination)
             </summary>
             <param name="username">The current user's username</param>
-            <returns>MailboxViewModel with the combination</returns>
+            <returns>MailboxCombinationViewModel with the combination</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetBirthdate(System.String)">
             <summary>

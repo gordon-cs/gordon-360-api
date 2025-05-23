@@ -51,15 +51,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// get mailbox information (contains box combination)
     /// </summary>
     /// <param name="username">The current user's username</param>
-    /// <returns>MailboxViewModel with the combination</returns>
-    public MailboxViewModel GetMailboxInformation(string username)
+    /// <returns>MailboxCombinationViewModel with the combination</returns>
+    public MailboxCombinationViewModel? GetMailboxCombination(string username)
     {
-        var mailboxNumber =
-            context.Student
-            .FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
-            .Mail_Location;
-
-        return context.Mailboxes.FirstOrDefault(m => m.BoxNo == mailboxNumber);
+        return context.Mailboxes
+            .Where(m => m.HolderUsername == username)
+            .Select(m => m.Combination)
+            .Select(MailboxCombinationViewModel.From)
+            .FirstOrDefault();
     }
 
     /// <summary>
