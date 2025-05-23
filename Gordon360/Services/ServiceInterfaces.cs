@@ -23,7 +23,7 @@ namespace Gordon360.Services
         StudentProfileViewModel? GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel? GetAlumniProfileByUsername(string username);
-        MailboxViewModel GetMailboxInformation(string username);
+        MailboxCombinationViewModel? GetMailboxCombination(string username);
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
