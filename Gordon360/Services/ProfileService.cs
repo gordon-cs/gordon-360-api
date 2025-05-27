@@ -1,16 +1,18 @@
 ﻿using Gordon360.Exceptions;
+using Gordon360.Extensions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace Gordon360.Services;
@@ -419,35 +421,35 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 
     public ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo)
     {
-        var profile = new JObject();
+        var profile = new JsonObject();
         var personType = "";
 
         if (student != null)
         {
-            MergeProfile(profile, JObject.FromObject(student));
+            profile.Merge(JsonSerializer.SerializeToNode(student)!);
             personType += "stu";
         }
 
         if (alumni != null)
         {
-            MergeProfile(profile, JObject.FromObject(alumni));
+            profile.Merge(JsonSerializer.SerializeToNode(alumni)!);
             personType += "alu";
         }
 
         if (faculty != null)
         {
-            MergeProfile(profile, JObject.FromObject(faculty));
+            profile.Merge(JsonSerializer.SerializeToNode(faculty)!);
             personType += "fac";
         }
 
         if (customInfo != null)
         {
-            MergeProfile(profile, JObject.FromObject(customInfo));
+            profile.Merge(JsonSerializer.SerializeToNode(customInfo)!);
         }
 
         profile.Add("PersonType", personType);
 
-        return profile.ToObject<ProfileViewModel>();
+        return JsonSerializer.Deserialize<ProfileViewModel>(profile);
     }
 
     public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
@@ -496,15 +498,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         }
 
         smtpClient.Send(message);
-    }
-
-    private static JObject MergeProfile(JObject profile, JObject profileInfo)
-    {
-        profile.Merge(profileInfo, new JsonMergeSettings
-        {
-            MergeArrayHandling = MergeArrayHandling.Union
-        });
-        return profile;
     }
 
     public IEnumerable<string> GetMailStopsAsync()

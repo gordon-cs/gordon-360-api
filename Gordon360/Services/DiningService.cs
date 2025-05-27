@@ -2,7 +2,6 @@
 using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Data;
 using System.IO;
@@ -10,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Nodes;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -96,7 +96,6 @@ public class DiningService : IDiningService
 
             // Get the response.  
             WebResponse response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
 
             // Get the stream containing content returned by the server.  
             dataStream = response.GetResponseStream();
@@ -104,12 +103,8 @@ public class DiningService : IDiningService
             // Read the content. 
             StreamReader reader = new StreamReader(dataStream);
             string responseFromServer = reader.ReadToEnd();
-            JObject json = JObject.Parse(responseFromServer);
-            string balance = json["balance"].ToString();
-
-            // Display the content.  
-            Console.WriteLine(responseFromServer);
-            Console.WriteLine("Balance: " + balance);
+            JsonNode? json = JsonNode.Parse(responseFromServer);
+            string balance = json?["balance"]?.GetValue<string>() ?? "0";
 
             // Clean up the streams.  
             reader.Close();

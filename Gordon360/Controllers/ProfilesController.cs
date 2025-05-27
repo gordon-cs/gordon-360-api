@@ -9,7 +9,6 @@ using Gordon360.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -225,11 +224,10 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("image")]
-    public async Task<ActionResult<JObject>> GetMyImgAsync()
+    public async Task<ActionResult<ProfileImageViewModel>> GetMyImgAsync()
     {
         var username = AuthUtils.GetUsername(User);
         var photoModel = await profileService.GetPhotoPathAsync(username);
-        JObject result = new JObject();
 
         if (photoModel == null) //There is no preferred or ID image
         {
@@ -241,8 +239,7 @@ public class ProfilesController(IProfileService profileService,
                 extension = Path.GetExtension(file);
             }
             string unapproved_img = await GetProfileImageOrDefault(unapprovedFilePath + unapprovedFileName + extension);
-            result.Add("def", unapproved_img);
-            return Ok(result);
+            return Ok(new ProfileImageViewModel(def: unapproved_img, pref: null));
         }
 
         string prefImgPath = config["PREFERRED_IMAGE_PATH"] + photoModel.Pref_Img_Name;
@@ -250,13 +247,13 @@ public class ProfilesController(IProfileService profileService,
         if (string.IsNullOrEmpty(photoModel.Pref_Img_Name) || !System.IO.File.Exists(prefImgPath)) //check file existence for prefferred image.
         {
             var defaultImgPath = config["DEFAULT_IMAGE_PATH"] + photoModel.Img_Name;
-            result.Add("def", await GetProfileImageOrDefault(defaultImgPath));
-            return Ok(result);
+            string img =  await GetProfileImageOrDefault(defaultImgPath);
+            return Ok(new ProfileImageViewModel(def: img, pref: null));
         }
         else
         {
-            result.Add("pref", await GetProfileImageOrDefault(prefImgPath));
-            return Ok(result);
+            string pref_img = await GetProfileImageOrDefault(prefImgPath);
+            return Ok(new ProfileImageViewModel(def: null, pref: pref_img));
         }
     }
 
@@ -264,16 +261,15 @@ public class ProfilesController(IProfileService profileService,
     /// <returns>The profile image(s) that the authenticated user is allowed to see, if any</returns>
     [HttpGet]
     [Route("image/{username}")]
-    public async Task<ActionResult<JObject>> GetImgAsync(string username)
+    public async Task<ActionResult<ProfileImageViewModel>> GetImgAsync(string username)
     {
         var photoInfo = await profileService.GetPhotoPathAsync(username);
-        JObject result = new JObject();
 
         //return default image if no photo info found for this user.
         if (photoInfo == null)
         {
-            result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
-            return Ok(result);
+            string def_img = await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]);
+            return Ok(new ProfileImageViewModel(def: def_img, pref: null));
         }
 
         var preferredImagePath = string.IsNullOrEmpty(photoInfo.Pref_Img_Name) ? null : config["PREFERRED_IMAGE_PATH"] + photoInfo.Pref_Img_Name;
@@ -282,31 +278,35 @@ public class ProfilesController(IProfileService profileService,
         var viewerGroups = AuthUtils.GetGroups(User);
         if (viewerGroups.Contains(AuthGroup.FacStaff))
         {
+            string def_img = await GetProfileImageOrDefault(defaultImagePath);
+            ProfileImageViewModel result = new(def_img, null);
             if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
             {
-                result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
+                string pref_img = await GetProfileImageOrDefault(preferredImagePath);
+                result = result with { pref = pref_img };
             }
-            result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
             return Ok(result);
 
         }
         else
         if (viewerGroups.Contains(AuthGroup.Student))
         {
+            ProfileImageViewModel result = new(def: null, pref: null);
             if (accountService.GetAccountByUsername(username).show_pic == 1)
             {
                 if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
                 {
-                    result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
+                    string pref_img = await GetProfileImageOrDefault(preferredImagePath);
+                    result = result with { pref = pref_img };
                 }
                 else
                 {
-                    result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
+                    result = result with { def = await GetProfileImageOrDefault(defaultImagePath) };
                 }
             }
             else
             {
-                result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
+                result = result with { def = await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]) };
             }
             return Ok(result);
         }
