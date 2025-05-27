@@ -219,11 +219,11 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("mailbox-information")]
-    public ActionResult<MailboxViewModel> GetMailInfo()
+    public ActionResult<MailboxCombinationViewModel?> GetMailInfo()
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = profileService.GetMailboxInformation(username);
+        var result = profileService.GetMailboxCombination(username);
         return Ok(result);
     }
 

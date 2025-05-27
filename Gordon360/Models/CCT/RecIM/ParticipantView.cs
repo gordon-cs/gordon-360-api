@@ -42,4 +42,8 @@ public partial class ParticipantView
     public string LastName { get; set; }
 
     public int CurrentStatus { get; set; }
+
+    [StringLength(45)]
+    [Unicode(false)]
+    public string Hall { get; set; }
 }
