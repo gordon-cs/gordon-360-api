@@ -286,11 +286,22 @@ public class AccountService(CCTContext context) : IAccountService
 
     public ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts)
     {
-        var normalizedlastName = lastName.Replace(".", "");
+        string Normalize(string name) =>
+            new string(name?.Where(char.IsLetterOrDigit).ToArray()).ToLower();
+
+
+        var normalizedLastName = Normalize(lastName);
+
         return accounts.AsParallel()
-            .Select(account => (matchKey: account.MatchSearch(firstName, normalizedlastName), account))
+            .Select(account =>
+            {
+                var matchKey = account.MatchSearch(firstName, normalizedLastName);
+                return (matchKey, account);
+            })
             .Where(pair => pair.matchKey is not null)
             .OrderBy(pair => pair.matchKey)
             .Select(pair => pair.account);
     }
+
+
 }
