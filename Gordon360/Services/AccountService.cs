@@ -147,11 +147,15 @@ public class AccountService(CCTContext context) : IAccountService
 
         if (lastname is not null)
         {
+
             accounts = accounts.Where(a =>
-                a.LastName.StartsWithIgnoreCase(lastname)
-                || a.MaidenName.StartsWithIgnoreCase(lastname)
-            );
+               a.LastName.StartsWithIgnoreCase(lastname)
+             || a.MaidenName.StartsWithIgnoreCase(lastname)
+              || (!string.IsNullOrEmpty(a.Email) &&a.Email.IndexOf('.')>=0 && a.Email.Split('.')[1].StartsWithIgnoreCase(lastname))
+          );
         }
+            
+           
 
         if (major is not null)
         {
