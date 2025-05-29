@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Gordon360.Models.ViewModels;
 
@@ -10,49 +11,59 @@ public class BasicInfoViewModel
     public string Nickname { get; set; }
     public string MaidenName { get; set; }
 
+
+    private static string NormalizeName(string input) =>
+        new string(input?.Where(char.IsLetterOrDigit).ToArray() ?? Array.Empty<char>()).ToLower();
+
     private bool FirstNameEquals(string matchString)
     {
-        return FirstName?.ToLower() == matchString;
+        return NormalizeName(FirstName) == NormalizeName(matchString);
     }
 
     private bool FirstNameStartsWith(string searchString)
     {
-        return FirstName?.ToLower()?.StartsWith(searchString) ?? false;
+        return NormalizeName(FirstName).StartsWith(NormalizeName(searchString));
     }
 
     private bool FirstNameContains(string searchString)
     {
-        return FirstName?.ToLower()?.Contains(searchString) ?? false;
+        return NormalizeName(FirstName).Contains(NormalizeName(searchString));
     }
 
     private bool LastNameEquals(string matchString)
     {
-        return LastName?.ToLower() == matchString;
+        return NormalizeName(LastName) == NormalizeName(matchString);
+    }
+
+    private bool LastNameNoSpecialCharacterEquals(string matchString)
+    {
+        // You can keep this method, but it is effectively same as LastNameEquals now.
+        return NormalizeName(LastName) == NormalizeName(matchString);
     }
 
     private bool LastNameStartsWith(string searchString)
     {
-        return LastName?.ToLower()?.StartsWith(searchString) ?? false;
+        return NormalizeName(LastName).StartsWith(NormalizeName(searchString));
     }
 
     private bool LastNameContains(string searchString)
     {
-        return LastName?.ToLower()?.Contains(searchString) ?? false;
+        return NormalizeName(LastName).Contains(NormalizeName(searchString));
     }
 
     private bool UsernameFirstNameStartsWith(string searchString)
     {
-        return GetFirstNameFromUsername()?.StartsWith(searchString) ?? false;
+        return NormalizeName(GetFirstNameFromUsername()).StartsWith(NormalizeName(searchString));
     }
 
     private bool UsernameLastNameStartsWith(string searchString)
     {
-        return GetLastNameFromUsername()?.StartsWith(searchString) ?? false;
+        return NormalizeName(GetLastNameFromUsername()).StartsWith(NormalizeName(searchString));
     }
 
     private bool UsernameContains(string searchString)
     {
-        return UserName?.ToLower()?.Contains(searchString) ?? false;
+        return NormalizeName(UserName).Contains(NormalizeName(searchString));
     }
 
     private string GetFirstNameFromUsername()
@@ -62,37 +73,37 @@ public class BasicInfoViewModel
 
     private string GetLastNameFromUsername()
     {
-        return UserName.Contains('.') ? UserName?.Split('.')?[1] ?? "" : "";
+        return UserName?.Contains('.') == true ? UserName.Split('.')[1] : "";
     }
 
     private bool NicknameEquals(string matchString)
     {
-        return Nickname?.ToLower() == matchString;
+        return NormalizeName(Nickname) == NormalizeName(matchString);
     }
 
     private bool NicknameStartsWith(string searchString)
     {
-        return Nickname?.ToLower().StartsWith(searchString) ?? false;
+        return NormalizeName(Nickname).StartsWith(NormalizeName(searchString));
     }
 
     private bool NicknameContains(string searchString)
     {
-        return Nickname?.ToLower().Contains(searchString) ?? false;
+        return NormalizeName(Nickname).Contains(NormalizeName(searchString));
     }
 
     private bool MaidenNameEquals(string matchString)
     {
-        return MaidenName?.ToLower() == matchString;
+        return NormalizeName(MaidenName) == NormalizeName(matchString);
     }
 
     private bool MaidenNameStartsWith(string searchString)
     {
-        return MaidenName?.ToLower().StartsWith(searchString) ?? false;
+        return NormalizeName(MaidenName).StartsWith(NormalizeName(searchString));
     }
 
     private bool MaidenNameContains(string searchString)
     {
-        return MaidenName?.ToLower().Contains(searchString) ?? false;
+        return NormalizeName(MaidenName).Contains(NormalizeName(searchString));
     }
 
     /// <summary>
@@ -130,6 +141,7 @@ public class BasicInfoViewModel
     {
         (string, int)? match = this switch
         {
+            _ when LastNameNoSpecialCharacterEquals(search) => (LastName, 15),
             _ when FirstNameEquals(search) => (FirstName, 0),
             _ when NicknameEquals(search) => (Nickname, 1),
             _ when LastNameEquals(search) => (LastName, 2),
@@ -203,6 +215,7 @@ public class BasicInfoViewModel
 
         (string, int)? lastname = this switch
         {
+            _ when LastNameNoSpecialCharacterEquals(lastnameSearch) => (LastName, 15),
             _ when LastNameEquals(lastnameSearch) => (LastName, 2),
             _ when MaidenNameEquals(lastnameSearch) => (MaidenName, 3),
             _ when LastNameStartsWith(lastnameSearch) => (LastName, 6),
