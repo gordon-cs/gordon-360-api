@@ -98,6 +98,7 @@ public class AccountsController(IAccountService accountService) : GordonControll
     /// <param name="department"></param>   
     /// <param name="building"></param> 
     /// <param name="involvement"></param>
+    /// <param name="gender"></param>
     /// <returns> All accounts meeting some or all of the parameter</returns>
     [HttpGet]
     [Route("advanced-people-search")]
@@ -117,7 +118,8 @@ public class AccountsController(IAccountService accountService) : GordonControll
         string? country,
         string? department,
         string? building,
-        string? involvement)
+        string? involvement,
+        string? gender)
     {
         Log.Information("Advanced People Search with params {Params}", HttpContext.Request.Query);
 
@@ -141,7 +143,8 @@ public class AccountsController(IAccountService accountService) : GordonControll
             country,
             department,
             building,
-            involvement);
+            involvement,
+            gender);
 
         // Return all of the profile views
         return Ok(searchResults);
