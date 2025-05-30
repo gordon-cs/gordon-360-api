@@ -15,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json; // TODO: Remove
+
 
 
 namespace Gordon360.Authorization;
@@ -201,7 +203,18 @@ public class StateYourBusiness : ActionFilterAttribute
                 return true;
             case Resource.STUDENT_SCHEDULE:
                 if (context.ActionArguments["username"] is string viewed_username)
-                    return user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(viewed_username).AccountType.EqualsIgnoreCase("FACULTY");
+                {
+                    Console.WriteLine(context.ActionArguments);
+                    Console.WriteLine("Testing context ************************************************");
+                    IDictionary<string, object> dict = context.ActionArguments;
+
+                    foreach (var key in dict.Keys)
+                    {
+                        Console.WriteLine(key);
+                    }
+
+                    return true; //user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(viewed_username).AccountType.EqualsIgnoreCase("FACULTY");
+                }
                 return false;
             default: return false;
 

@@ -18,6 +18,8 @@ public class UserCoursesViewModel
     public string SATURDAY_CDE { get; set; }
     public TimeSpan? BEGIN_TIME { get; set; }
     public TimeSpan? END_TIME { get; set; }
+    public DateTime? BEGIN_DATE { get; set; }
+    public DateTime? END_DATE { get; set; }
     public string Role { get; set; }
     public static implicit operator UserCoursesViewModel(UserCourses course)
     {
@@ -55,6 +57,8 @@ public class UserCoursesViewModel
             SATURDAY_CDE = course.SATURDAY_CDE,
             BEGIN_TIME = course.BEGIN_TIME,
             END_TIME = course.END_TIME,
+            BEGIN_DATE = course.BEGIN_DATE,
+            END_DATE = course.END_DATE,
             Role = course.Role
         };
 

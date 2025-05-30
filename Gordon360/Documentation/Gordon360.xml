@@ -3260,6 +3260,13 @@
             <param name="username">The AD Username of the user</param>
             <returns>CoursesBySessionViewModel if found, null if not found</returns>
         </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllInstructorCoursesAsync(System.String)">
+            <summary>
+            Fetch the classes that are taught by this user
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        </member>
         <member name="M:Gordon360.Services.ServicesExtensions.Add360Services(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
             Add our Gordon 360 Services as scoped services to the dependency injection container.
