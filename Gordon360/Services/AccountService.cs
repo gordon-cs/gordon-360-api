@@ -155,8 +155,6 @@ public class AccountService(CCTContext context) : IAccountService
                     && a.Email.Split('.')[1].StartsWithIgnoreCase(lastname))
             );
         }
-            
-           
 
         if (major is not null)
         {
