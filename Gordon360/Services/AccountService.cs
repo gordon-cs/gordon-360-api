@@ -150,8 +150,8 @@ public class AccountService(CCTContext context) : IAccountService
         {
             accounts = accounts.Where(a =>
                a.LastName.StartsWithIgnoreCase(lastname)
-             || a.MaidenName.StartsWithIgnoreCase(lastname)
-              || (!string.IsNullOrEmpty(a.Email) &&a.Email.IndexOf('.')>=0 && a.Email.Split('.')[1].StartsWithIgnoreCase(lastname))
+               || a.MaidenName.StartsWithIgnoreCase(lastname)
+               || (!string.IsNullOrEmpty(a.Email) &&a.Email.IndexOf('.')>=0 && a.Email.Split('.')[1].StartsWithIgnoreCase(lastname))
           );
         }
             
