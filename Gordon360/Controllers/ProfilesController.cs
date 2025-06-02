@@ -635,7 +635,7 @@ public class ProfilesController(IProfileService profileService,
     [Route("{username}/graduation")]
     public ActionResult<GraduationViewModel?> GetGraduationInfo(string username)
     {
-        var graduationInfo = _profileService.GetGraduationInfo(username);
+        var graduationInfo = profileService.GetGraduationInfo(username);
         if (graduationInfo == null)
         {
             return NotFound("Graduation information not found.");
