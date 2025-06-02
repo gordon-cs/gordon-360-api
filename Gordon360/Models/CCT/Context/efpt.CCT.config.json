@@ -291,6 +291,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[Graduation]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[InvolvementOffering]",
          "ObjectType": 3
       },

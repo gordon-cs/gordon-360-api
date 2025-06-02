@@ -74,6 +74,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<FoundItems> FoundItems { get; set; }
 
+    public virtual DbSet<Graduation> Graduation { get; set; }
+
     public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
     public virtual DbSet<Hall_Assignment_Ranges> Hall_Assignment_Ranges { get; set; }
@@ -408,6 +410,11 @@ public partial class CCTContext : DbContext
 
             entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__37510C18");
         });
+
+        modelBuilder.Entity<Graduation>(entity =>
+        {
+            entity.HasKey(e => e.ID_NUM).HasName()
+        })
 
         modelBuilder.Entity<GuestUsers>(entity =>
         {
