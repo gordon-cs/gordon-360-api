@@ -413,8 +413,13 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<Graduation>(entity =>
         {
-            entity.HasKey(e => e.ID_NUM).HasName()
-        })
+            entity.HasNoKey(); // Graduation is keyless
+            entity.ToView("Graduation", "dbo"); // Map to the correct database view or table
+            entity.Property(e => e.ID_NUM).HasColumnName("ID_NUM");
+            entity.Property(e => e.WHEN_GRAD).HasColumnName("WHEN_GRAD").HasMaxLength(4000).IsUnicode(false);
+            entity.Property(e => e.HAS_GRADUATED).HasColumnName("HAS_GRADUATED").HasMaxLength(1).IsUnicode(false);
+            entity.Property(e => e.GRAD_FLAG).HasColumnName("GRAD_FLAG").HasMaxLength(3).IsUnicode(false);
+        });
 
         modelBuilder.Entity<GuestUsers>(entity =>
         {
