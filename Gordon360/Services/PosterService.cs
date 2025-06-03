@@ -147,7 +147,7 @@ public class PosterService(CCTContext context,
         if (serverAddress.Contains("localhost"))
             serverAddress += '/';
         //temporarily using rec-im until we have our own folder
-        var url = $"{serverAddress}browseable/uploads/recim/team/{filename}";
+        var url = $"browseable/uploads/recim/team/{filename}";
         return url;
     }
 
