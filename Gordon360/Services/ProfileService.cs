@@ -461,11 +461,15 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             personType += "stu";
 
             // Add graduation info if the student exists
-            var graduationInfo = GetGraduationInfo(((StudentProfileViewModel)student).AD_Username);
-            if (graduationInfo != null)
+            if (student is StudentProfileViewModel studentProfile)
             {
-                MergeProfile(profile, JObject.FromObject(graduationInfo));
+                var graduationInfo = GetGraduationInfo(((StudentProfileViewModel)student).AD_Username);
+                if (graduationInfo != null)
+                {
+                    MergeProfile(profile, JObject.FromObject(graduationInfo));
+                }
             }
+            
         }
 
         if (alumni != null)

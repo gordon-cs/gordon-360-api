@@ -1031,6 +1031,11 @@
             </summary>
             <returns> All Mail Destinations</returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetGraduationInfo(System.String)">
+            <summary> Gets the graduation information of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Graduation information of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.Boolean})">
             <summary>Gets a list of all Activities by parameter </summary>
             <param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
@@ -3201,6 +3206,13 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetGraduationInfo(System.String)">
+            <summary>
+            Get graduation information for a student
+            </summary>
+            <param name="username">The username of the student</param>
+            <returns>GraduationViewModel containing graduation details</returns>
         </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>

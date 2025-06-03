@@ -274,3 +274,4 @@ secrets.config
 
 # Logs
 Gordon360/Logs/*
+/Gordon360/Properties/launchSettings.json
