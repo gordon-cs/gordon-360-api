@@ -48,6 +48,7 @@ public static class Resource
     public const string RECIM_SURFACE = "RecIM Surfaces/Playing fields/Locations";
     public const string LOST_AND_FOUND_MISSING_REPORT = "Lost and Found missing item reports";
     public const string STUDENT_SCHEDULE = "A student's schedule events";
+    public const string GRADUATION = "A student's graduation information";
 
     // Partial resources, to be targetted by Operation.READ_PARTIAL
     public const string MEMBERSHIP_REQUEST_BY_ACTIVITY = "Membership Request Resources associated with an activity";

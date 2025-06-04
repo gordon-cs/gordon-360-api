@@ -633,6 +633,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns> Graduation information of the given user. </returns>
     [HttpGet]
     [Route("{username}/graduation")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.GRADUATION)]
     public ActionResult<GraduationViewModel?> GetGraduationInfo(string username)
     {
         var graduationInfo = profileService.GetGraduationInfo(username);
