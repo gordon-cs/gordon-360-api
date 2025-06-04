@@ -441,9 +441,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         // Map the graduation data to a ViewModel
         return new GraduationViewModel
         {
-            ID = student.ID,
-            FirstName = student.FirstName,
-            LastName = student.LastName,
             WhenGraduated = graduation.WHEN_GRAD,
             HasGraduated = graduation.HAS_GRADUATED == "Y",
             GraduationFlag = graduation.GRAD_FLAG
@@ -459,17 +456,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         {
             MergeProfile(profile, JObject.FromObject(student));
             personType += "stu";
-
-            // Add graduation info if the student exists
-            if (student is StudentProfileViewModel studentProfile)
-            {
-                var graduationInfo = GetGraduationInfo(((StudentProfileViewModel)student).AD_Username);
-                if (graduationInfo != null)
-                {
-                    MergeProfile(profile, JObject.FromObject(graduationInfo));
-                }
-            }
-            
         }
 
         if (alumni != null)
