@@ -153,9 +153,24 @@ public class PosterService(CCTContext context,
 
     public async Task<PosterViewModel> DeletePosterAsync(int posterID)
     {
-        var poster = await UpdatePosterAsync(posterID, new PosterPatchViewModel{ Status = "Deleted" });
-        return poster;
+        var poster = await context.Poster
+            .Include(p => p.Status)
+            .FirstOrDefaultAsync(p => p.ID == posterID);
 
+        if (poster == null)
+            throw new ResourceNotFoundException { ExceptionMessage = $"Poster with ID: {posterID} not found" };
+
+        if (!string.IsNullOrEmpty(poster.ImagePath))
+        {
+            var imagePath = GetImagePath(Path.GetFileName(poster.ImagePath));
+            ImageUtils.DeleteImage(imagePath);
+        }
+
+        context.Poster.Remove(poster);
+        await context.SaveChangesAsync();
+
+        return (PosterViewModel)poster;
     }
+
 
 }
