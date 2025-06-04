@@ -1,5 +1,6 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Enums;
+using Gordon360.Extensions.System;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
@@ -23,7 +24,18 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
-        IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+        var groups = AuthUtils.GetGroups(User);
+        var authenticatedUsername = AuthUtils.GetUsername(User);
+
+        IEnumerable<CoursesBySessionViewModel> result;
+        if (authenticatedUsername.EqualsIgnoreCase(username) || groups.Contains(AuthGroup.FacStaff))
+        {
+            result = await scheduleService.GetAllCoursesAsync(username);
+        }
+        else
+        {
+            result = await scheduleService.GetAllInstructorCoursesAsync(username);
+        }
         return Ok(result);
 
     }

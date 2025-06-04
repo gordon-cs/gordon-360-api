@@ -201,7 +201,7 @@ public class StateYourBusiness : ActionFilterAttribute
                 return true;
             case Resource.STUDENT_SCHEDULE:
                 if (context.ActionArguments["username"] is string viewed_username)
-                    return user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(viewed_username).AccountType.EqualsIgnoreCase("FACULTY");
+                    return true;
                 return false;
             default: return false;
 
