@@ -204,7 +204,9 @@ public class StateYourBusiness : ActionFilterAttribute
                     return user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(viewed_username).AccountType.EqualsIgnoreCase("FACULTY");
                 return false;
             case Resource.GRADUATION:
-                return context.ActionArguments["username"] is string grad_username && grad_username.EqualsIgnoreCase(user_name);
+                {
+                    return context.ActionArguments["username"] is string username && username.EqualsIgnoreCase(user_name);
+                }
             default: return false;
 
         }

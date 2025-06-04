@@ -424,15 +424,8 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>GraduationViewModel containing graduation details</returns>
     public GraduationViewModel? GetGraduationInfo(string username)
     {
-        // Find the student by username
-        var student = context.Student.FirstOrDefault(s => s.AD_Username.ToLower() == username.ToLower());
-        if (student == null)
-        {
-            throw new ResourceNotFoundException { ExceptionMessage = "Student not found." };
-        }
-
-        // Find the graduation record by student ID
-        var graduation = context.Graduation.FirstOrDefault(g => g.ID_NUM == int.Parse(student.ID));
+        // Find the graduation record directly by AD_Username
+        var graduation = context.Graduation.FirstOrDefault(g => g.AD_Username.ToLower() == username.ToLower());
         if (graduation == null)
         {
             return null; // Graduation info might not exist for all students

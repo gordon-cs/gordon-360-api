@@ -13,6 +13,10 @@ public partial class Graduation
 {
     public int? ID_NUM { get; set; }
 
+    [StringLength(50)]
+    [Unicode(false)]
+    public string AD_Username { get; set; }
+
     [StringLength(4000)]
     [Unicode(false)]
     public string WHEN_GRAD { get; set; }
