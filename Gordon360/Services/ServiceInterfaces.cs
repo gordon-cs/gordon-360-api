@@ -86,7 +86,8 @@ namespace Gordon360.Services
             string? country,
             string? department,
             string? building,
-            string? involvement);
+            string? involvement,
+            string? gender);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
         ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
