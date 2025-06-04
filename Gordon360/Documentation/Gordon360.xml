@@ -1649,6 +1649,7 @@
             <param name="timeZoneID">String timezoneinfo location</param>
             <returns>Converted DateTime with kind UTC</returns>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Extensions.SystemTextJsonMergeExtensions.Merge(System.Text.Json.Nodes.JsonNode,System.Text.Json.Nodes.JsonNode)" -->
         <member name="P:Gordon360.Models.CCT.Clifton_Strengths.Private">
             <summary>
             Whether the user wants their strengths to be private (not shown to other users)
