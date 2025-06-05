@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Gordon360.Services;
 
-public class EventCacheRefreshService(IMemoryCache cache) : IHostedService, IDisposable
+public sealed class EventCacheRefreshService(IMemoryCache cache) : IHostedService, IDisposable
 {
     private Timer? _timer = null;
 

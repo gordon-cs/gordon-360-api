@@ -20,6 +20,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<AccountPhotoURL> AccountPhotoURL { get; set; }
 
+    public virtual DbSet<ActionsTaken> ActionsTaken { get; set; }
+
+    public virtual DbSet<ActionsTakenData> ActionsTakenData { get; set; }
+
     public virtual DbSet<Activity> Activity { get; set; }
 
     public virtual DbSet<ActivityStatus> ActivityStatus { get; set; }
@@ -44,7 +48,13 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Countries> Countries { get; set; }
 
+    public virtual DbSet<CurrentTasks> CurrentTasks { get; set; }
+
+    public virtual DbSet<Current_On_Call> Current_On_Call { get; set; }
+
     public virtual DbSet<CustomParticipant> CustomParticipant { get; set; }
+
+    public virtual DbSet<Daily_RA_Events> Daily_RA_Events { get; set; }
 
     public virtual DbSet<DiningInfo> DiningInfo { get; set; }
 
@@ -53,6 +63,26 @@ public partial class CCTContext : DbContext
     public virtual DbSet<EmergencyContact> EmergencyContact { get; set; }
 
     public virtual DbSet<FacStaff> FacStaff { get; set; }
+
+    public virtual DbSet<FoundActionsTaken> FoundActionsTaken { get; set; }
+
+    public virtual DbSet<FoundActionsTakenData> FoundActionsTakenData { get; set; }
+
+    public virtual DbSet<FoundGuest> FoundGuest { get; set; }
+
+    public virtual DbSet<FoundItemData> FoundItemData { get; set; }
+
+    public virtual DbSet<FoundItems> FoundItems { get; set; }
+
+    public virtual DbSet<GuestUsers> GuestUsers { get; set; }
+
+    public virtual DbSet<Hall_Assignment_Ranges> Hall_Assignment_Ranges { get; set; }
+
+    public virtual DbSet<Hall_Task_Occurrence> Hall_Task_Occurrence { get; set; }
+
+    public virtual DbSet<Hall_Tasks> Hall_Tasks { get; set; }
+
+    public virtual DbSet<Halls> Halls { get; set; }
 
     public virtual DbSet<Housing_Applicants> Housing_Applicants { get; set; }
 
@@ -88,6 +118,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Minors> Minors { get; set; }
 
+    public virtual DbSet<MissingItemData> MissingItemData { get; set; }
+
+    public virtual DbSet<MissingReports> MissingReports { get; set; }
+
     public virtual DbSet<PART_DEF> PART_DEF { get; set; }
 
     public virtual DbSet<Participant> Participant { get; set; }
@@ -110,9 +144,29 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<PrivType> PrivType { get; set; }
 
+    public virtual DbSet<RA_Assigned_Ranges_View> RA_Assigned_Ranges_View { get; set; }
+
+    public virtual DbSet<RA_On_Call> RA_On_Call { get; set; }
+
+    public virtual DbSet<RA_Pref_Contact> RA_Pref_Contact { get; set; }
+
+    public virtual DbSet<RA_Status_Events> RA_Status_Events { get; set; }
+
+    public virtual DbSet<RA_Students> RA_Students { get; set; }
+
+    public virtual DbSet<RD_Info> RD_Info { get; set; }
+
+    public virtual DbSet<RD_OnCall_Today> RD_OnCall_Today { get; set; }
+
+    public virtual DbSet<RD_On_Call> RD_On_Call { get; set; }
+
     public virtual DbSet<REQUEST> REQUEST { get; set; }
 
     public virtual DbSet<RequestView> RequestView { get; set; }
+
+    public virtual DbSet<ResRooms> ResRooms { get; set; }
+
+    public virtual DbSet<ResidentialStatus_View> ResidentialStatus_View { get; set; }
 
     public virtual DbSet<RoleType> RoleType { get; set; }
 
@@ -138,6 +192,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Statistic> Statistic { get; set; }
 
+    public virtual DbSet<StuLifePhoneNumbers> StuLifePhoneNumbers { get; set; }
+
     public virtual DbSet<Student> Student { get; set; }
 
     public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
@@ -148,13 +204,16 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<TeamStatus> TeamStatus { get; set; }
 
+    public virtual DbSet<Unassigned_Rooms> Unassigned_Rooms { get; set; }
+
     public virtual DbSet<UserCourses> UserCourses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
-            entity.ToView("ACCOUNT");
+            entity.ToView("ACCOUNT", "dbo");
         });
 
         modelBuilder.Entity<ACT_INFO>(entity =>
@@ -169,7 +228,21 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<AccountPhotoURL>(entity =>
         {
-            entity.ToView("AccountPhotoURL");
+            entity.ToView("AccountPhotoURL", "dbo");
+        });
+
+        modelBuilder.Entity<ActionsTaken>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__ActionsT__3214EC2722EC236F");
+
+            entity.HasOne(d => d.missing).WithMany(p => p.ActionsTaken)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ActionsTa__missi__365CE7DF");
+        });
+
+        modelBuilder.Entity<ActionsTakenData>(entity =>
+        {
+            entity.ToView("ActionsTakenData", "LostAndFound");
         });
 
         modelBuilder.Entity<Activity>(entity =>
@@ -213,21 +286,21 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<Alumni>(entity =>
         {
-            entity.ToView("Alumni");
+            entity.ToView("Alumni", "dbo");
 
             entity.Property(e => e.grad_student).IsFixedLength();
         });
 
         modelBuilder.Entity<CM_SESSION_MSTR>(entity =>
         {
-            entity.ToView("CM_SESSION_MSTR");
+            entity.ToView("CM_SESSION_MSTR", "dbo");
 
             entity.Property(e => e.SESS_CDE).IsFixedLength();
         });
 
         modelBuilder.Entity<ChapelEvent>(entity =>
         {
-            entity.ToView("ChapelEvent");
+            entity.ToView("ChapelEvent", "dbo");
         });
 
         modelBuilder.Entity<Clifton_Strengths>(entity =>
@@ -239,9 +312,21 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<Countries>(entity =>
         {
-            entity.ToView("Countries");
+            entity.ToView("Countries", "dbo");
 
             entity.Property(e => e.CTY).IsFixedLength();
+        });
+
+        modelBuilder.Entity<CurrentTasks>(entity =>
+        {
+            entity.ToView("CurrentTasks", "Housing");
+        });
+
+        modelBuilder.Entity<Current_On_Call>(entity =>
+        {
+            entity.ToView("Current_On_Call", "Housing");
+
+            entity.Property(e => e.Hall_Name).IsFixedLength();
         });
 
         modelBuilder.Entity<CustomParticipant>(entity =>
@@ -255,9 +340,16 @@ public partial class CCTContext : DbContext
                 .HasConstraintName("FK__CustomPar__Usern__70D3A237");
         });
 
+        modelBuilder.Entity<Daily_RA_Events>(entity =>
+        {
+            entity.ToView("Daily_RA_Events", "Housing");
+
+            entity.Property(e => e.Status_ID).ValueGeneratedOnAdd();
+        });
+
         modelBuilder.Entity<DiningInfo>(entity =>
         {
-            entity.ToView("DiningInfo");
+            entity.ToView("DiningInfo", "dbo");
 
             entity.Property(e => e.ChoiceDescription).IsFixedLength();
             entity.Property(e => e.SessionCode).IsFixedLength();
@@ -265,7 +357,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<EmergencyContact>(entity =>
         {
-            entity.ToView("EmergencyContact");
+            entity.ToView("EmergencyContact", "dbo");
 
             entity.Property(e => e.AddressAddrCode).IsFixedLength();
             entity.Property(e => e.ApprowVersion)
@@ -285,9 +377,78 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<FacStaff>(entity =>
         {
-            entity.ToView("FacStaff");
+            entity.ToView("FacStaff", "dbo");
 
             entity.Property(e => e.BuildingDescription).IsFixedLength();
+        });
+
+        modelBuilder.Entity<FoundActionsTaken>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC2744C7D4F3");
+
+            entity.HasOne(d => d.found).WithMany(p => p.FoundActionsTaken)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__FoundActi__found__0000D72E");
+        });
+
+        modelBuilder.Entity<FoundActionsTakenData>(entity =>
+        {
+            entity.ToView("FoundActionsTakenData", "LostAndFound");
+        });
+
+        modelBuilder.Entity<FoundGuest>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__FoundGue__3214EC275E423367");
+        });
+
+        modelBuilder.Entity<FoundItemData>(entity =>
+        {
+            entity.ToView("FoundItemData", "LostAndFound");
+        });
+
+        modelBuilder.Entity<FoundItems>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC2792138BD9");
+
+            entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__37510C18");
+        });
+
+        modelBuilder.Entity<GuestUsers>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__GuestUse__3214EC2774F2F95F");
+
+            entity.HasOne(d => d.missing).WithMany(p => p.GuestUsers)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__GuestUser__missi__3568C3A6");
+        });
+
+        modelBuilder.Entity<Hall_Assignment_Ranges>(entity =>
+        {
+            entity.HasKey(e => e.Range_ID).HasName("PK__Hall_Ass__918829E78BFD242E");
+        });
+
+        modelBuilder.Entity<Hall_Task_Occurrence>(entity =>
+        {
+            entity.HasKey(e => e.Occur_ID).HasName("PK__Hall_Tas__0A37E7864ADCDBF0");
+
+            entity.HasOne(d => d.Task).WithMany(p => p.Hall_Task_Occurrence)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Hall_Task_Occurrence_Task_ID");
+        });
+
+        modelBuilder.Entity<Hall_Tasks>(entity =>
+        {
+            entity.HasKey(e => e.Task_ID).HasName("PK__Hall_Tas__716F4ACDF2AEF15C");
+
+            entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
+        });
+
+        modelBuilder.Entity<Halls>(entity =>
+        {
+            entity.ToView("Halls", "Housing");
+
+            entity.Property(e => e.BuildingCode).IsFixedLength();
+            entity.Property(e => e.HallName).IsFixedLength();
         });
 
         modelBuilder.Entity<Housing_Applicants>(entity =>
@@ -304,7 +465,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<InvolvementOffering>(entity =>
         {
-            entity.ToView("InvolvementOffering");
+            entity.ToView("InvolvementOffering", "dbo");
 
             entity.Property(e => e.ActivityCode).IsFixedLength();
             entity.Property(e => e.ActivityDescription).IsFixedLength();
@@ -326,12 +487,12 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<Mailboxes>(entity =>
         {
-            entity.ToView("Mailboxes");
+            entity.ToView("Mailboxes", "dbo");
         });
 
         modelBuilder.Entity<Majors>(entity =>
         {
-            entity.ToView("Majors");
+            entity.ToView("Majors", "dbo");
         });
 
         modelBuilder.Entity<Match>(entity =>
@@ -392,19 +553,30 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<MembershipView>(entity =>
         {
-            entity.ToView("MembershipView");
+            entity.ToView("MembershipView", "dbo");
 
             entity.Property(e => e.ActivityDescription).IsFixedLength();
         });
 
         modelBuilder.Entity<Minors>(entity =>
         {
-            entity.ToView("Minors");
+            entity.ToView("Minors", "dbo");
+        });
+
+        modelBuilder.Entity<MissingItemData>(entity =>
+        {
+            entity.ToView("MissingItemData", "LostAndFound");
+        });
+
+        modelBuilder.Entity<MissingReports>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC271C4C78EB");
+            entity.HasOne(d => d.matchingFound).WithMany(p => p.MissingReports).HasConstraintName("FK__MissingRe__match__38453051");
         });
 
         modelBuilder.Entity<PART_DEF>(entity =>
         {
-            entity.ToView("PART_DEF");
+            entity.ToView("PART_DEF", "dbo");
 
             entity.Property(e => e.PART_CDE).IsFixedLength();
             entity.Property(e => e.PART_DESC).IsFixedLength();
@@ -473,7 +645,59 @@ public partial class CCTContext : DbContext
         {
             entity.ToView("ParticipantView", "RecIM");
 
+            entity.Property(e => e.Hall).IsFixedLength();
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
+        });
+
+        modelBuilder.Entity<RA_Assigned_Ranges_View>(entity =>
+        {
+            entity.ToView("RA_Assigned_Ranges_View", "Housing");
+
+            entity.Property(e => e.Hall_Name).IsFixedLength();
+        });
+
+        modelBuilder.Entity<RA_On_Call>(entity =>
+        {
+            entity.HasKey(e => e.Record_ID).HasName("PK__tmp_ms_x__603A0C60046D3031");
+        });
+
+        modelBuilder.Entity<RA_Pref_Contact>(entity =>
+        {
+            entity.HasKey(e => e.Ra_ID).HasName("PK__RA_Pref___9530636C18757ADA");
+        });
+
+        modelBuilder.Entity<RA_Status_Events>(entity =>
+        {
+            entity.HasKey(e => e.Status_ID).HasName("PK__RA_Statu__519009ACBC52F0C7");
+
+            entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
+        });
+
+        modelBuilder.Entity<RA_Students>(entity =>
+        {
+            entity.ToView("RA_Students", "Housing");
+
+            entity.Property(e => e.Dorm).IsFixedLength();
+        });
+
+        modelBuilder.Entity<RD_Info>(entity =>
+        {
+            entity.ToView("RD_Info", "Housing");
+
+            entity.Property(e => e.BuildingCode).IsFixedLength();
+            entity.Property(e => e.HallName).IsFixedLength();
+        });
+
+        modelBuilder.Entity<RD_OnCall_Today>(entity =>
+        {
+            entity.ToView("RD_OnCall_Today", "Housing");
+        });
+
+        modelBuilder.Entity<RD_On_Call>(entity =>
+        {
+            entity.HasKey(e => e.Record_ID).HasName("PK__RD_On_Ca__603A0C605596CACA");
+
+            entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
         });
 
         modelBuilder.Entity<Poster>(entity =>
@@ -500,10 +724,18 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<RequestView>(entity =>
         {
-            entity.ToView("RequestView");
+            entity.ToView("RequestView", "dbo");
 
             entity.Property(e => e.ActivityDescription).IsFixedLength();
             entity.Property(e => e.ParticipationDescription).IsFixedLength();
+        });
+
+        modelBuilder.Entity<ResidentialStatus_View>(entity =>
+        {
+            entity.ToView("ResidentialStatus_View", "Housing");
+
+            entity.Property(e => e.Latest_Session).IsFixedLength();
+            entity.Property(e => e.Residency_Status).IsFixedLength();
         });
 
         modelBuilder.Entity<Series>(entity =>
@@ -562,7 +794,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<States>(entity =>
         {
-            entity.ToView("States");
+            entity.ToView("States", "dbo");
         });
 
         modelBuilder.Entity<Statistic>(entity =>
@@ -574,9 +806,14 @@ public partial class CCTContext : DbContext
                 .HasConstraintName("FK_Statistic_ParticipantTeam");
         });
 
+        modelBuilder.Entity<StuLifePhoneNumbers>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__StuLifeP__3214EC2744511943");
+        });
+
         modelBuilder.Entity<Student>(entity =>
         {
-            entity.ToView("Student");
+            entity.ToView("Student", "dbo");
 
             entity.Property(e => e.BuildingDescription).IsFixedLength();
         });
@@ -608,9 +845,14 @@ public partial class CCTContext : DbContext
                 .HasConstraintName("FK_Team_TeamStatus");
         });
 
+        modelBuilder.Entity<Unassigned_Rooms>(entity =>
+        {
+            entity.ToView("Unassigned_Rooms", "Housing");
+        });
+
         modelBuilder.Entity<UserCourses>(entity =>
         {
-            entity.ToView("UserCourses");
+            entity.ToView("UserCourses", "dbo");
 
             entity.Property(e => e.BLDG_CDE).IsFixedLength();
             entity.Property(e => e.CRS_CDE).IsFixedLength();
@@ -627,7 +869,7 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.WEDNESDAY_CDE).IsFixedLength();
             entity.Property(e => e.YR_CDE).IsFixedLength();
         });
-        modelBuilder.HasSequence("Information_Change_Request_Seq");
+        modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");
 
         OnModelCreatingPartial(modelBuilder);
     }

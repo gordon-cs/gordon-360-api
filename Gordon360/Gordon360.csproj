@@ -39,6 +39,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <Configurations>Debug;Release</Configurations>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
