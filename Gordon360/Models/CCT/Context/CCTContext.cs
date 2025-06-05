@@ -698,7 +698,8 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.Record_ID).HasName("PK__RD_On_Ca__603A0C605596CACA");
 
             entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
-        })
+        });
+
         modelBuilder.Entity<Poster>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK_Posters");

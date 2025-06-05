@@ -241,7 +241,7 @@ namespace Gordon360.Models.CCT.Context
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {
@@ -252,32 +252,6 @@ namespace Gordon360.Models.CCT.Context
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<FINALIZATION_GET_FINALIZATION_STATUSResult>("EXEC @returnValue = [dbo].[FINALIZATION_GET_FINALIZATION_STATUS] @UserID = @UserID", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
-        public virtual async Task<List<FINALIZATION_GETHOLDSBYIDResult>> FINALIZATION_GETHOLDSBYIDAsync(int? ID_NUM, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "ID_NUM",
-                    Value = ID_NUM ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<FINALIZATION_GETHOLDSBYIDResult>("EXEC @returnValue = [dbo].[FINALIZATION_GETHOLDSBYID] @ID_NUM = @ID_NUM", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
