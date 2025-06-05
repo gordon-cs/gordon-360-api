@@ -331,6 +331,19 @@ namespace Gordon360.Services
         Task<bool> GetStatusAsync(string username);
     }
 
+    public interface IPosterService
+    {
+        IEnumerable<PosterViewModel> GetPosters();
+        IEnumerable<PosterViewModel> GetCurrentPosters();
+        IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username);
+        IEnumerable<string> GetPosterStatuses();
+        IEnumerable<PosterViewModel> GetPostersByActivityCode(string activityCode);
+        PosterViewModel GetPosterByID(int posterID);
+        Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster);
+        Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster);
+        Task<PosterViewModel> DeletePosterAsync(int posterID);
+    }
+
     namespace RecIM
     {
         public interface IRecIMService

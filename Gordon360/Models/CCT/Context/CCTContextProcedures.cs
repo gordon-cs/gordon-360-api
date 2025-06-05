@@ -258,6 +258,7 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
+
         public virtual async Task<List<FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult>> FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDAsync(string UserID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
