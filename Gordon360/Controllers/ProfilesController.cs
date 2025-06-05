@@ -627,4 +627,20 @@ public class ProfilesController(IProfileService profileService,
         var mail_stops = profileService.GetMailStopsAsync();
         return Ok(mail_stops);
     }
+
+    /// <summary> Gets the graduation information of a particular user </summary>
+    /// <param name="username"> The username for which to retrieve info </param>
+    /// <returns> Graduation information of the given user. </returns>
+    [HttpGet]
+    [Route("{username}/graduation")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.GRADUATION)]
+    public ActionResult<GraduationViewModel?> GetGraduationInfo(string username)
+    {
+        var graduationInfo = profileService.GetGraduationInfo(username);
+        if (graduationInfo == null)
+        {
+            return NotFound("Graduation information not found.");
+        }
+        return Ok(graduationInfo);
+    }
 }
