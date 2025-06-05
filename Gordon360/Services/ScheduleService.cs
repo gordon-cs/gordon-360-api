@@ -21,15 +21,23 @@ public class ScheduleService(CCTContext context, ISessionService sessionService)
     public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username)
     {
         List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
-
         IEnumerable<SessionViewModel> sessions = sessionService.GetAll();
-        IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
+        IEnumerable<CoursesBySessionViewModel> undergrad_CoursesBySession = sessions
+
             .GroupJoin(courses,
                        s => s.SessionCode,
                        c => c.SessionCode,
                        (session, courses) => new CoursesBySessionViewModel(session, courses))
             .Where(cbs => cbs.AllCourses.Any());
+        IEnumerable<CoursesBySessionViewModel> grad_CoursesByTermCode = courses
+            .Where(c => string.IsNullOrEmpty(c.SessionCode))
+            .GroupBy(c => c.YearTermCode)
+            .Select(g => new CoursesBySessionViewModel(g.Key, g.ToList()));
+        var combined = undergrad_CoursesBySession.Concat(grad_CoursesByTermCode)
+            .ToList();
 
-        return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
+        return combined
+            .OrderByDescending(cbs => cbs.AllCourses.FirstOrDefault()?.YearTermCode)
+            .ToList();
     }
 }

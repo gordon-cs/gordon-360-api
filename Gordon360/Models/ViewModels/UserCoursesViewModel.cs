@@ -19,6 +19,28 @@ public class UserCoursesViewModel
     public TimeSpan? BEGIN_TIME { get; set; }
     public TimeSpan? END_TIME { get; set; }
     public string Role { get; set; }
+    public string TRM_CDE { get; set; }
+    public string YR_CDE { get; set; }
+
+
+
+    public string YearTermCode => string.IsNullOrEmpty(SessionCode) 
+        ? $"{YR_CDE}-{TRM_CDE}"
+        : SessionCode;
+    public static string FormatYearAndTerm(string year, string term)
+    {
+        string termLabel = term switch
+        {
+            "SF" => "Graduate Summer/Fall",
+            "WS" => "Graduate Winter/Spring",
+            _ => term 
+        };
+
+        return $"{year} {termLabel}";
+    }
+    
+
+
     public static implicit operator UserCoursesViewModel(UserCourses course)
     {
         var code = course.YR_CDE;
@@ -37,6 +59,7 @@ public class UserCoursesViewModel
                 code = (Int32.Parse(code) + 1).ToString() + "05";
                 break;
             default:
+                code = null;
                 break;
         }
 
@@ -55,7 +78,9 @@ public class UserCoursesViewModel
             SATURDAY_CDE = course.SATURDAY_CDE,
             BEGIN_TIME = course.BEGIN_TIME,
             END_TIME = course.END_TIME,
-            Role = course.Role
+            Role = course.Role,
+            TRM_CDE = course.TRM_CDE,
+            YR_CDE =course.YR_CDE
         };
 
         return vm;
