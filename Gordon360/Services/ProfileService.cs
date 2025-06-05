@@ -1,9 +1,13 @@
-﻿using Gordon360.Exceptions;
+﻿using Gordon360.Authorization;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,6 +15,7 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Gordon360.Services;
@@ -304,27 +309,26 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
     /// <summary>
-    /// mobile phone number setting
+    /// Updates mobile phone number 
     /// </summary>
-    /// <param name="username"> The username for the user whose phone is to be updated </param>
-    /// <param name="newMobilePhoneNumber">The new number to update the user's phone number to</param>
+    /// <param name="username">The username for the user whose number is updated</param>
+    /// <param name="newMobilePhoneNumber">The phone number to update to the user's phone number</param>
+    /// <returns>updated student profile by there username</returns>
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
         var profile = GetStudentProfileByUsername(username);
         if (profile == null)
         {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+            throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
+        
         }
-
-        var result = await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, profile.MobilePhone);
-
-        // Update value in cached data
-        var student = context.Student.FirstOrDefault(x => x.ID == profile.ID);
+        var formattedNumber = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
+        await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, formattedNumber);
+        var student = await context.Student.FirstOrDefaultAsync(x => x.ID == profile.ID);
         if (student != null)
         {
-            student.MobilePhone = profile.MobilePhone;
+            student.MobilePhone = formattedNumber;
         }
-
         return profile;
     }
 
