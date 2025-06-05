@@ -2,6 +2,7 @@
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.ViewModels.Housing;
 using Gordon360.Models.ViewModels.RecIM;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -22,7 +23,7 @@ namespace Gordon360.Services
         StudentProfileViewModel? GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel? GetAlumniProfileByUsername(string username);
-        MailboxViewModel GetMailboxInformation(string username);
+        MailboxCombinationViewModel? GetMailboxCombination(string username);
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
@@ -85,7 +86,8 @@ namespace Gordon360.Services
             string? country,
             string? department,
             string? building,
-            string? involvement);
+            string? involvement,
+            string? gender);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
         ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
@@ -224,16 +226,109 @@ namespace Gordon360.Services
         int EditApplication(string username, string sess_cde, int applicationID, string newEditorUsername, List<ApartmentApplicantViewModel> newApartmentApplicants, List<ApartmentChoiceViewModel> newApartmentChoices);
         bool ChangeApplicationEditor(string username, int applicationID, string newEditorUsername);
         bool ChangeApplicationDateSubmitted(int applicationID);
+        Task<Hall_Assignment_Ranges> CreateRoomRangeAsync(HallAssignmentRangeViewModel model);
+        Task<bool> DeleteRoomRangeAsync(int rangeId);
+        Task<Hall_Assignment_Ranges> AssignRaToRoomRangeAsync(int rangeId, string raId);
+        Task<bool> DeleteAssignmentAsync(int rangeId);
+        Task<RD_StudentsViewModel> GetResidentRDAsync(string hallId);
+        Task<List<RD_StudentsViewModel>> GetRDsAsync();
+        Task<RdOnCallGetView> CreateRdOnCallAsync(RD_On_Call_Create OnCall);
+        Task<bool> DeleteRDOnCallById(int recordId);
+        Task<RdOnCallGetView> UpdateRdOnCallAsync(int recordId, RD_On_Call_Create updatedOnCall);
+        Task<RD_StudentsViewModel> GetRDOnCall();
+        Task<List<RdOnCallGetView>> GetActiveRDOnCallsAsync();
+        Task<RA_StudentsViewModel> GetResidentRAAsync(string hallId, string roomNumber);
+        Task<List<HallAssignmentRangeViewModel>> GetAllRoomRangesAsync();
+        Task<List<RA_StudentsViewModel>> GetAllRAsAsync();
+        Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsAsync();
+        Task<List<RA_Assigned_RangesViewModel>> GetRangeAssignmentsByRAIdAsync(string raId);
+        Task<List<MissedRoomsViewModel>> GetMissedRoomsAsync();
+        Task<bool> SetPreferredContactMethodAsync(string raId, string preferredContactMethod);
+        Task<RA_ContactPreference> GetPreferredContactAsync(string raId);
+        Task<bool> RA_CheckinAsync(string[] HallIDs, string raId);
+        Task<RA_On_Call_GetViewModel> GetOnCallRAAsync(string hallId);
+        Task<List<RA_On_Call_GetViewModel>> GetOnCallRAAllHallsAsync();
+        Task<List<string>> GetOnCallRAHallsAsync(string userName);
+        Task<bool> IsRAOnCallAsync(string raId);
+        Task<bool> IsStudentResidentialAsync(int idNum);
+        Task<HallTaskViewModel> CreateTaskAsync(HallTaskViewModel task);
+        Task<HallTaskViewModel> UpdateTaskAsync(int taskID, HallTaskViewModel task);
+        Task<bool> DisableTaskAsync(int taskID);
+        Task<bool> CompleteTaskAsync(int taskID, string CompletedBy);
+        Task<bool> IncompleteTaskAsync(int taskID);
+        Task<List<HallTaskViewModel>> GetActiveTasksForHallAsync(string hallId);
+        Task<List<DailyTaskViewModel>> GetTasksForHallAsync(string hallId);
+        Task<RA_StatusEventsViewModel> CreateStatusEventAsync(RA_StatusEventsViewModel status);
+        Task<bool> DeleteStatusEventAsync(int statusID);
+        Task<RA_StatusEventsViewModel> UpdateStatusEventAsync(int statusID, RA_StatusEventsViewModel status);
+        Task<List<DailyStatusEventsViewModel>> GetStatusEventsForRAAsync(string raID);
+        Task<List<RA_StatusEventsViewModel>> GetActiveStatusesByRAIdAsync(string raId);
+        Task<string> GetStuLifeContactByPhoneNameAsync(string phoneName);
+        Task<bool> SetStuLifePhoneNumberAsync(string PhoneName, string PhoneNumber);
+
     }
+
+    public interface ILostAndFoundService
+    {
+        public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
+        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
+        IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
+        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, 
+                                                                   int? lastId, 
+                                                                   int? pageSize, 
+                                                                   string? status, 
+                                                                   string? color, 
+                                                                   string? category, 
+                                                                   string? keywords,
+                                                                   DateTime? lastCheckedDate);
+        Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
+        Task UpdateReportStatusAsync(int id, string status, string username);
+        Task UpdateReportAssociatedFoundItemAsync(int id, string? foundID, string username);
+        MissingItemReportViewModel? GetMissingItem(int id, string username);
+        IEnumerable<ActionsTakenViewModel> GetActionsTaken(int id, string username, bool getPublicOnly = false, bool elevatedPermissions = false);
+        public int GetMissingItemsCount(
+            string username,
+            string? status,
+            string? color,
+            string? category,
+            string? keywords
+        );
+        public string CreateFoundItem(FoundItemViewModel reportDetails, string username);
+        public int CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
+        IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
+                                                         DateTime? latestDate,
+                                                         string? status,
+                                                         string? color,
+                                                         string? category,
+                                                         string? ID,
+                                                         string? keywords);
+        public FoundItemViewModel GetFoundItem(string foundItemID, string username);
+        Task UpdateFoundItemAsync(string id, FoundItemViewModel itemDetails, string username);
+        Task UpdateFoundStatusAsync(string id, string status, string username);
+        Task UpdateFoundAssociatedMissingReportAsync(string foundItemID, int? missingReportID, string username);
+        public int GetFoundItemsCount(
+             string username,
+             DateTime? latestDate,
+             string? status,
+             string? color,
+             string? category,
+             string? ID,
+             string? keywords
+         );
+
+        IEnumerable<FoundItemViewModel> GetFoundItemsByOwner(string requestedUsername, string requestorUsername);
+
+    }
+
 
     public interface IAcademicCheckInService
     {
-        Task<AcademicCheckInViewModel> PutCellPhoneAsync(string id, AcademicCheckInViewModel data);
+        Task PutCellPhoneAsync(string id, MobilePhoneUpdateViewModel data);
         Task<EmergencyContactViewModel> PutEmergencyContactAsync(EmergencyContactViewModel data, string id, string username);
-        Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(string id);
+        Task<EnrollmentCheckinHolds> GetHoldsAsync(string id);
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
-        Task<bool> GetStatusAsync(string id);
+        Task<bool> GetStatusAsync(string username);
     }
 
     public interface IPosterService
@@ -303,7 +398,7 @@ namespace Gordon360.Services
             IEnumerable<LookupViewModel>? GetTeamLookup(string type);
             double GetTeamSportsmanshipScore(int teamID);
             IEnumerable<TeamExtendedViewModel> GetTeams(bool active);
-            TeamExtendedViewModel GetTeamByID(int teamID);
+            TeamExtendedViewModel GetTeamByID(int teamID, bool isAdminView = false);
             IEnumerable<TeamExtendedViewModel> GetTeamInvitesByParticipantUsername(string username);
             ParticipantTeamViewModel GetParticipantTeam(int teamID, string username);
             Task<TeamViewModel> PostTeamAsync(TeamUploadViewModel newTeam, string username);
@@ -327,7 +422,7 @@ namespace Gordon360.Services
             bool GetParticipantIsCustom(string username);
             IEnumerable<BasicInfoViewModel> GetAllCustomParticipantsBasicInfo();
             IEnumerable<ParticipantStatusExtendedViewModel> GetParticipantStatusHistory(string username);
-            ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null);
+            ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null, bool isAdminView = false);
             AccountViewModel GetUnaffiliatedAccountByUsername(string username);
             IEnumerable<MatchExtendedViewModel> GetParticipantMatches(string username);
             IEnumerable<TeamExtendedViewModel> GetParticipantTeams(string username);
