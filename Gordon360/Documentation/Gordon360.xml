@@ -2117,7 +2117,7 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService)">
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,Gordon360.Services.ISessionService)">
             <summary>
             Service that allows for event control
             </summary>
@@ -2148,6 +2148,13 @@
             </summary>
             <returns>All CLAW Events</returns>
         </member>
+        <member name="M:Gordon360.Services.EventService.GetFinalExamEventsForUser(System.String)">
+            <summary>
+            Select only events that are Final Exams for users' all courses
+            </summary>
+            <param name="username"> The student's AD Username</param>
+            <returns>All Final Exam Events for the user</returns>
+        </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
             Returns all attended events for a student in a specific term
@@ -2164,6 +2171,19 @@
             During the summer, this the middle of May (roughly the end of the spring term)
             </summary>
             <returns>The first date of events we care about, in 'yyyyMMdd' format (e.g. '20250815' for August 15th, 2025)</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.NormalizeSpaces(System.String)">
+            <summary>
+            Get the input string and normalize it by removing extra spaces
+            </summary>
+            <param name="input"></param>
+            <returns>Removes extra spaces and join the input</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.GetFinalExamsUrlForCurrentSession">
+            <summary>
+            Get the URL for fetching final exams for the current session (type_id = 55 is final exams)
+            </summary>
+            <returns>Final exams URL for the current session</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
