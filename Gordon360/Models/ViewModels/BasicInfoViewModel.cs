@@ -35,12 +35,6 @@ public class BasicInfoViewModel
         return NormalizeName(LastName) == NormalizeName(matchString);
     }
 
-    private bool LastNameNoSpecialCharacterEquals(string matchString)
-    {
-        // You can keep this method, but it is effectively same as LastNameEquals now.
-        return NormalizeName(LastName) == NormalizeName(matchString);
-    }
-
     private bool LastNameStartsWith(string searchString)
     {
         return NormalizeName(LastName).StartsWith(NormalizeName(searchString));
@@ -141,7 +135,6 @@ public class BasicInfoViewModel
     {
         (string, int)? match = this switch
         {
-            _ when LastNameNoSpecialCharacterEquals(search) => (LastName, 15),
             _ when FirstNameEquals(search) => (FirstName, 0),
             _ when NicknameEquals(search) => (Nickname, 1),
             _ when LastNameEquals(search) => (LastName, 2),
@@ -215,7 +208,6 @@ public class BasicInfoViewModel
 
         (string, int)? lastname = this switch
         {
-            _ when LastNameNoSpecialCharacterEquals(lastnameSearch) => (LastName, 15),
             _ when LastNameEquals(lastnameSearch) => (LastName, 2),
             _ when MaidenNameEquals(lastnameSearch) => (MaidenName, 3),
             _ when LastNameStartsWith(lastnameSearch) => (LastName, 6),
