@@ -43,6 +43,19 @@ public class PosterService(CCTContext context,
             .ThenBy(p => p.ExpirationDate);
     }
 
+
+
+    public IEnumerable<PosterViewModel> GetCurrentPostersByActivityCode(string activityCode)
+    {
+        return GetPosters()
+            .Where(p => p.ExpirationDate > DateTime.Now 
+            && p.Status == "Visible" 
+            && p.VisibleDate < DateTime.Now 
+            && p.ClubCode == activityCode)
+            .OrderByDescending(p => p.Priority)
+            .ThenBy(p => p.ExpirationDate);
+    }
+
     //currently will only get posters if someone is signed up for a club, can be modified to include all posters but prioritize 
     //personalized posters
     public IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username)

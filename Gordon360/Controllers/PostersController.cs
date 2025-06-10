@@ -44,6 +44,17 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     }
 
     /// <summary>
+    /// Gets all non-expired posters by activity code
+    /// </summary>
+    [HttpGet]
+    [Route("current/activity/{activityCode}")]
+    public ActionResult<IEnumerable<PosterViewModel>> GetCurrentPostersByActivityCode(string activityCode)
+    {
+       var res = posterService.GetCurrentPostersByActivityCode(activityCode);
+       return Ok(res);
+    }
+
+    /// <summary>
     /// Get personalized posters based on student's activities
     /// </summary>
     /// <param name="username"></param>
