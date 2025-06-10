@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using System;
 
 namespace Gordon360.Models.ViewModels;
 
@@ -34,6 +35,7 @@ public record FacultyStaffProfileViewModel
     string Gender,
     string Email,
     string Type,
+    DateTime FirstHireDt,
     string AD_Username,
     string office_hours,
     int? preferred_photo,
@@ -81,6 +83,7 @@ public record FacultyStaffProfileViewModel
             fac.Gender ?? "",
             fac.Email ?? "",
             fac.Type ?? "",
+            fac.FirstHireDt ?? DateTime.MinValue,
             fac.AD_Username ?? "",
             fac.office_hours ?? "",
             fac.preferred_photo,
