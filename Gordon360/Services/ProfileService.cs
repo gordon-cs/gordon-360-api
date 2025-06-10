@@ -312,7 +312,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// Updates mobile phone number 
     /// </summary>
     /// <param name="username">The username for the user whose number is updated</param>
-    /// <param name="newMobilePhoneNumber">The phone number to update to the user's phone number</param>
+    /// <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
     /// <returns>updated student profile by there username</returns>
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
@@ -322,12 +322,12 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
         
         }
-        var formattedNumber = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
-        await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, formattedNumber);
+        var digitsOnly = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
+        await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, digitsOnly);
         var student = await context.Student.FirstOrDefaultAsync(x => x.ID == profile.ID);
         if (student != null)
         {
-            student.MobilePhone = formattedNumber;
+            student.MobilePhone = digitsOnly;
         }
         return profile;
     }
