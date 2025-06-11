@@ -81,9 +81,9 @@ public class EventsController(IEventService eventService) : GordonControllerBase
 
     [HttpGet]
     [Route("finalexams/{username}")]
-    public ActionResult<IEnumerable<EventViewModel>> GetFinalExamEventsForUser(string username)
+    public async Task<ActionResult<IEnumerable<EventViewModel>>> GetFinalExamEventsForUser(string username)
     {
-        var result = eventService.GetFinalExamEventsForUser(username);
+        var result = await eventService.GetFinalExamEventsForUser(username);
         if (result == null)
         {
             return NotFound();

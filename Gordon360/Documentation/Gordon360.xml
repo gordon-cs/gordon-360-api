@@ -2150,10 +2150,10 @@
         </member>
         <member name="M:Gordon360.Services.EventService.GetFinalExamEventsForUser(System.String)">
             <summary>
-            Select only events that are Final Exams for users' all courses
+            Select only events that are Final Exams for users' current session
             </summary>
             <param name="username"> The student's AD Username</param>
-            <returns>All Final Exam Events for the user</returns>
+            <returns>All Final Exam Events for the users' current session</returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>

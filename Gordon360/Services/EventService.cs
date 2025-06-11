@@ -35,6 +35,8 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
 
     private IEnumerable<EventViewModel> Events => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events) ?? [];
 
+    private const string DateFormat = "yyyyMMdd";
+
     /// <summary>
     /// Access the memory stream created by the cached task and parse it into events
     /// Splits events with multiple repeated occurrences into individual records for each occurrence
@@ -64,22 +66,31 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     }
 
     /// <summary>
-    /// Select only events that are Final Exams for users' all courses
+    /// Select only events that are Final Exams for users' current session
     /// </summary>
     /// <param name="username"> The student's AD Username</param>
-    /// <returns>All Final Exam Events for the user</returns>
-    public IEnumerable<EventViewModel> GetFinalExamEventsForUser(string username)
+    /// <returns>All Final Exam Events for the users' current session</returns>
+    public async Task<IEnumerable<EventViewModel>> GetFinalExamEventsForUser(string username)
     {
-        // Get all courses for the user
-        var coursesBySession = scheduleService.GetAllCoursesAsync(username).GetAwaiter().GetResult();
-        var userCourseCodes = coursesBySession
-            .SelectMany(session => session.AllCourses)
-            .Select(course => NormalizeSpaces(course.CRS_CDE))
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var session = sessionService.GetCurrentSession().SessionCode;
+        string yrCde = session.Substring(0, 4);
+        string termCde = session.Substring(4, 2);
+
+        // Get all courses of current term for the user
+        var coursesBySession = await scheduleService.GetAllCoursesAsync(username);
+        var matchingSessions = coursesBySession
+            .Where(s => s.SessionCode == $"{yrCde}{termCde}")
+            .ToList();
+
+        var userCourseCodes = matchingSessions
+            .SelectMany(s => s.AllCourses)
+            .Select(c => NormalizeSpaces(c.CRS_CDE))
+            .Distinct()
+            .ToList();
 
         // Fetch all final exams (ID=55)
         var finalExamsUrl = GetFinalExamsUrlForCurrentSession();
-        var allFinalExams = FetchFinalExamsAsync(finalExamsUrl).GetAwaiter().GetResult();
+        var allFinalExams = await FetchFinalExamsAsync(finalExamsUrl);
 
         // Filter final exams to only those matching user's course codes
         var userFinalExams = allFinalExams
@@ -93,7 +104,8 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
             )
             .OrderBy(e => e.StartDate);
 
-        return userFinalExams;
+        return allFinalExams.OrderBy(e => e.StartDate);
+        ;
     }
 
     /// <summary>
@@ -228,7 +240,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     private string GetFinalExamsUrlForCurrentSession()
     {
         var session = sessionService.GetCurrentSession();
-        string startDate = session.SessionBeginDate?.ToString("yyyyMMdd") ?? DateTime.Now.ToString("yyyyMMdd");
+        string startDate = session.SessionBeginDate?.ToString(DateFormat) ?? DateTime.Now.ToString(DateFormat);
         return $"https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=55&state=2&end_after={startDate}&scope=extended";
     }
 }
