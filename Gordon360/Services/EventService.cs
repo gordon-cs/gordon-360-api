@@ -104,7 +104,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
             )
             .OrderBy(e => e.StartDate);
 
-        return allFinalExams.OrderBy(e => e.StartDate);
+        return userFinalExams;
         ;
     }
 
