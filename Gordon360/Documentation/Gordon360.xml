@@ -51,6 +51,11 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetCurrentPostersByActivityCode(System.String)">
+            <summary>
+            Gets all non-expired posters by activity code
+            </summary>
+        </member>
         <member name="M:Gordon360.Controllers.Api.PostersController.GetPersonalizedPosters(System.String)">
             <summary>
             Get personalized posters based on student's activities
