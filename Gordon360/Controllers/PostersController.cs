@@ -132,11 +132,11 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     /// <exception cref="NotImplementedException"></exception>
     [HttpPatch]
     [Route("{posterID}")]
-    public async Task<ActionResult<PosterViewModel>> UpdatePoster(int posterID,PosterPatchViewModel updatedPoster)
+    public async Task<ActionResult<PosterViewModel>> UpdatePoster(int posterID, [FromBody] PosterPatchViewModel updatedPoster)
     {
-            var poster = await posterService.UpdatePosterAsync(posterID, updatedPoster);
-            return CreatedAtAction(nameof(GetPosterByID), new { posterID = poster.ID }, updatedPoster);
-     }
+        var poster = await posterService.UpdatePosterAsync(posterID, updatedPoster);
+        return CreatedAtAction(nameof(GetPosterByID), new { posterID = poster.ID }, updatedPoster);
+    }
 
     /// <summary>
     /// Delete specified poster by ID

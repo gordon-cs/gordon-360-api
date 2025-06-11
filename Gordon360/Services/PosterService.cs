@@ -15,6 +15,7 @@ using Gordon360.Utilities;
 using Microsoft.Graph;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Graph.TermStore;
 
@@ -102,6 +103,8 @@ public class PosterService(CCTContext context,
     }
 
     public async Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster)
+
+
     {
         var poster = context.Poster.Find(posterID);
         if (poster == null) throw new ResourceNotFoundException
@@ -114,18 +117,18 @@ public class PosterService(CCTContext context,
 
         if (updatedPoster.Status is not null)
             poster.StatusID = context.PosterStatus
-               .Where(ps => String.Equals(ps.Status, updatedPoster.Status, StringComparison.CurrentCultureIgnoreCase))
-               .FirstOrDefault()?
-               .ID ?? poster.StatusID;
+            .Where(ps => ps.Status.ToLower() == updatedPoster.Status.ToLower())
+            .FirstOrDefault()?
+            .ID ?? poster.StatusID;
 
-        if (updatedPoster.ImagePath is not null)
+
+        if (updatedPoster.ImagePath is not null && updatedPoster.ImagePath.StartsWith("data:image"))
         {
-            // ImageUtils.GetImageFormat checks whether the image type is valid (jpg/jpeg/png)
             var (extension, format, data) = ImageUtils.GetImageFormat(updatedPoster.ImagePath);
 
             string? imagePath = null;
 
-            if (poster.ImagePath is not null && updatedPoster.ImagePath is null)
+            if (poster.ImagePath is not null)
             {
                 imagePath = GetImagePath(Path.GetFileName(poster.ImagePath));
                 ImageUtils.DeleteImage(imagePath);
@@ -133,7 +136,6 @@ public class PosterService(CCTContext context,
             }
             else
             {
-                // Use a unique alphanumeric GUID string as the file name
                 var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
                 imagePath = GetImagePath(filename);
                 var url = GetImageURL(filename);
@@ -141,6 +143,7 @@ public class PosterService(CCTContext context,
                 ImageUtils.UploadImage(imagePath, data, format);
             }
         }
+
 
         await context.SaveChangesAsync();
 
