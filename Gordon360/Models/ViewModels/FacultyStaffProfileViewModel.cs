@@ -35,7 +35,7 @@ public record FacultyStaffProfileViewModel
     string Gender,
     string Email,
     string Type,
-    DateTime FirstHireDt,
+    DateTime? FirstHireDt,
     string AD_Username,
     string office_hours,
     int? preferred_photo,
