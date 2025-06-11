@@ -89,7 +89,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
             .ToList();
 
         // Fetch all final exams (ID=55)
-        var finalExamsUrl = GetFinalExamsUrlForCurrentSession();
+        var finalExamsUrl = GetFinalExamsUrlForCurrentTerm();
         var allFinalExams = await FetchFinalExamsAsync(finalExamsUrl);
 
         // Filter final exams to only those matching user's course codes
@@ -237,10 +237,21 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     /// Get the URL for fetching final exams for the current session (type_id = 55 is final exams)
     /// </summary>
     /// <returns>Final exams URL for the current session</returns>
-    private string GetFinalExamsUrlForCurrentSession()
+    private string GetFinalExamsUrlForCurrentTerm()
     {
-        var session = sessionService.GetCurrentSession();
-        string startDate = session.SessionBeginDate?.ToString(DateFormat) ?? DateTime.Now.ToString(DateFormat);
+        // Get today's date
+        var today = DateTime.Now;
+
+        // Find the most recent term whose begin date is in the past
+        var currentTerm = context.YearTermTable
+            .Where(t => t.TRM_BEGIN_DTE <= today &&
+                (t.TRM_CDE == "FA" || t.TRM_CDE == "SP"))
+            .OrderByDescending(t => t.TRM_BEGIN_DTE)
+            .FirstOrDefault();
+
+        string startDate = currentTerm?.TRM_BEGIN_DTE?.ToString(DateFormat) ?? today.ToString(DateFormat);
+
         return $"https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=55&state=2&end_after={startDate}&scope=extended";
     }
+
 }

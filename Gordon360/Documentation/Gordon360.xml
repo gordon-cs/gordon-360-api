@@ -2179,7 +2179,7 @@
             <param name="input"></param>
             <returns>Removes extra spaces and join the input</returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetFinalExamsUrlForCurrentSession">
+        <member name="M:Gordon360.Services.EventService.GetFinalExamsUrlForCurrentTerm">
             <summary>
             Get the URL for fetching final exams for the current session (type_id = 55 is final exams)
             </summary>
