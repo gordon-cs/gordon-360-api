@@ -162,4 +162,28 @@ public class AdvancedSearchController(CCTContext context) : GordonControllerBase
         return Ok(involvements);
     }
 
+    /// <summary>
+    /// Return a list of genders excluding unknown.
+    /// </summary>
+    /// <returns> All genders</returns>
+    [HttpGet]
+    [Route("gender")]
+    public ActionResult<IEnumerable<string>> GetGender()
+    {
+        var studentGender = context.Student.Select(s => s.Gender);
+        var facstaffGender = context.FacStaff.Select(fs => fs.Gender);
+        var alumniGender = context.Alumni.Select(a => a.Gender);
+        var genderCodes = studentGender
+                               .Union(facstaffGender)
+                               .Union(alumniGender)
+                               .Where(s => s != null && s != "U")
+                               .Distinct();
+        var genderList = genderCodes
+                               .Select(g => new { 
+                                       value = g,
+                                       label = g == "F" ? "Female" : g == "M" ? "Male" : g
+                               })
+                               .OrderBy(g => g.label);
+        return Ok(genderList);
+    }
 }

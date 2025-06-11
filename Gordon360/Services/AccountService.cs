@@ -99,6 +99,7 @@ public class AccountService(CCTContext context) : IAccountService
     /// <param name="department">The department search param</param>
     /// <param name="building">The building search param</param>
     /// <param name="involvement">The involvement search param</param>
+    /// <param name="gender">The gender search param</param>
     /// <returns>The accounts from the provided list that match the given search params</returns>
     public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
         IEnumerable<AdvancedSearchViewModel> accounts,
@@ -116,7 +117,8 @@ public class AccountService(CCTContext context) : IAccountService
         string? country,
         string? department,
         string? building,
-        string? involvement)
+        string? involvement,
+        string? gender)
     {
         // Accept common town abbreviations in advanced people search
         // East = E, West = W, South = S, North = N
@@ -142,7 +144,8 @@ public class AccountService(CCTContext context) : IAccountService
         {
             accounts = accounts.Where(a =>
                 a.FirstName.StartsWithIgnoreCase(firstname)
-                || a.NickName.StartsWithIgnoreCase(firstname));
+                || a.NickName.StartsWithIgnoreCase(firstname)
+                || a.Email.StartsWithIgnoreCase(firstname));
         }
 
         if (lastname is not null)
@@ -150,6 +153,8 @@ public class AccountService(CCTContext context) : IAccountService
             accounts = accounts.Where(a =>
                 a.LastName.StartsWithIgnoreCase(lastname)
                 || a.MaidenName.StartsWithIgnoreCase(lastname)
+                || (!string.IsNullOrEmpty(a.Email) &&a.Email.IndexOf('.')>=0 
+                    && a.Email.Split('.')[1].StartsWithIgnoreCase(lastname))
             );
         }
 
@@ -189,6 +194,7 @@ public class AccountService(CCTContext context) : IAccountService
             var members = context.MembershipView.Where(mv => mv.ActivityDescription == involvement && mv.Privacy != true);
             accounts = accounts.Join(members, a => a.AD_Username, mv => mv.Username, (a, mv) => a).Distinct();
         }
+        if (gender is not null) accounts = accounts.Where(a => a.Gender.StartsWithIgnoreCase(gender));
 
         return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
     }
