@@ -32,4 +32,24 @@ public class ScheduleService(CCTContext context, ISessionService sessionService)
 
         return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
     }
+
+    /// <summary>
+    /// Fetch the classes that are taught by this user
+    /// </summary>
+    /// <param name="username">The AD Username of the user</param>
+    /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
+    public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username)
+    {
+        List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username && x.Role == "Instructor").Select(c => (UserCoursesViewModel)c).ToListAsync();
+
+        IEnumerable<SessionViewModel> sessions = sessionService.GetAll();
+        IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
+            .GroupJoin(courses,
+                       s => s.SessionCode,
+                       c => c.SessionCode,
+                       (session, courses) => new CoursesBySessionViewModel(session, courses))
+            .Where(cbs => cbs.AllCourses.Any());
+
+        return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
+    }
 }
