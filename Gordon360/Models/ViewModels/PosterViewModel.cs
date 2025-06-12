@@ -21,13 +21,13 @@ public class PosterViewModel
         PosterViewModel vm = new PosterViewModel
         {
             ID = p.ID,
-            ClubCode = p.ACT_CDE.Trim(),
+            ClubCode = p.ACT_CDE?.Trim(),
             Title = p.Title,
             Description = p.Description ?? "",
             ImagePath = p.ImagePath,
             VisibleDate = p.VisibleDate,
             ExpirationDate = p.ExpirationDate,
-            Status = p.Status.Status,
+            Status = p.Status != null ? p.Status.Status.ToString() : "0",
             Priority = p.Priority
         };
 
