@@ -203,6 +203,12 @@ public class StateYourBusiness : ActionFilterAttribute
                 if (context.ActionArguments["username"] is string viewed_username)
                     return user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(viewed_username).AccountType.EqualsIgnoreCase("FACULTY");
                 return false;
+            case Resource.GRADUATION:
+                {
+                    if (context.ActionArguments["username"] is string username)
+                        return user_groups.Contains(AuthGroup.Advisors) || username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(username).AccountType.EqualsIgnoreCase("FACULTY");
+                    return false;
+                }
             default: return false;
 
         }
