@@ -880,7 +880,7 @@
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfile(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfileAsync(System.String)">
             <summary>Get public profile info for a user</summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
@@ -890,6 +890,12 @@
              <returns>
              All advisors of the given student.  For each advisor,
              provides first name, last name, and username.
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetPrivacySettingAsync(System.String)">
+            <summary>Get the privacy settings of a particular user</summary>
+             <returns>
+             All privacy settings of the given user.
              </returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetCliftonStrengths_DEPRECATED(System.String)">
@@ -972,6 +978,19 @@
             </summary>
             <param name="value">office hours</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateUserPrivacyAsync(Gordon360.Models.ViewModels.UserPrivacyUpdateViewModel)">
+            <summary>
+            Set visibility of some piece of personal data for user.
+            </summary>
+            <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyUpdateViewModel)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetVisibilityGroup">
+            <summary>
+            Return a list visibility groups.
+            </summary>
+            <returns> All visibility groups (Public, FacStaff, Private)</returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMailStop(System.String)">
             <summary>
@@ -3164,6 +3183,28 @@
             <param name="type"></param>
             <param name="content"></param>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.ImposePrivacySettings(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.ProfileViewModel)">
+            <summary>
+            convert combined profile to public profile based on individual privacy settings
+            </summary>
+            <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
+            <param name="profile">combined profile of the person being searched</param>
+            <returns>public profile of the person based on individual privacy settings</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetPrivacySettingAsync(System.String)">
+            <summary>
+            Get profile fields and visibility settings for a specific user
+            </summary>
+            <param name="username">AD username</param>
+            <returns>List of field and visibility privacy settings for a specific user</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateUserPrivacyAsync(System.String,Gordon360.Models.ViewModels.UserPrivacyUpdateViewModel)">
+            <summary>
+            Set privacy setting of some piece of personal data for user.
+            </summary>
+            <param name="username">AD Username</param>
+            <param name="userPrivacy">User Privacy Update View Model</param>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>
             privacy setting of mobile phone.
@@ -3209,6 +3250,20 @@
             </summary>
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.MarkAsPrivate(Gordon360.Models.ViewModels.CombinedProfileViewModel,System.String)">
+            <summary>
+            Change a ProfileItem's privacy setting to true
+            </summary>
+            <param name="profile">Combined profile containing element to update</param>
+            <param name="field">The profile element to update</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.MakePrivate(Gordon360.Models.ViewModels.CombinedProfileViewModel,System.String)">
+            <summary>
+            Change a ProfileItem to be null (remove it from the profile)
+            </summary>
+            <param name="profile">Combined profile containing element to make null</param>
+            <param name="field">The profile element to make null</param>
         </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>
@@ -3322,6 +3377,11 @@
             Helper method that gets the current session we are in.
             </summary>
             <returns>The session code of the current session</returns>
+        </member>
+        <member name="T:Gordon360.Static.Methods.ProfileItem">
+            <summary>
+            Profile item class contining a single profile datum and privacy flag.
+            </summary>
         </member>
         <member name="M:Gordon360.Utilities.ImageUtils.DeleteImage(System.String)">
             <summary>

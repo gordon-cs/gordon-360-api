@@ -3,6 +3,7 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
+using Gordon360.Static.Methods;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,12 +12,22 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Gordon360.Enums;
 
 namespace Gordon360.Services;
 
 public class ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
+    // These three-character strings are valid substrings for the PersonType
+    // field in the profile. These are used in the UI and so cannot be changed
+    // here unless the correspondin change is made in the UI.
+    const string FACSTAFF_PROFILE = "fac";
+    const string STUDENT_PROFILE = "stu";
+    const string ALUMNI_PROFILE = "alu";
+
     /// <summary>
     /// get student profile info
     /// </summary>
@@ -284,6 +295,114 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         await context.SaveChangesAsync();
     }
 
+
+    /// <summary>
+    /// convert combined profile to public profile based on individual privacy settings
+    /// </summary>
+    /// <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
+    /// <param name="profile">combined profile of the person being searched</param>
+    /// <returns>public profile of the person based on individual privacy settings</returns>
+    public CombinedProfileViewModel ImposePrivacySettings
+        (IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
+    {
+        // Convert profile from record to class so we can modify its elements
+        CombinedProfileViewModel restricted_profile = (CombinedProfileViewModel) profile;
+
+        // Privacy settings are generally heirarchical from bypassing all
+        // privacy settings to honoring all privacy settings:
+        //   SiteAdmin & Police -> FacStaff -> Students -> Alumni
+
+        // Find the account belonging to person whose profile we are accessing and get their
+        // privacy settings
+        var account = accountService.GetAccountByUsername(restricted_profile.AD_Username);
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+
+        // Determing the viewer and profile user types
+        bool viewerIsSiteAdmin = viewerGroups.Contains(AuthGroup.SiteAdmin);
+        bool viewerIsPolice = viewerGroups.Contains(AuthGroup.Police);
+        bool viewerIsFacStaff = viewerGroups.Contains(AuthGroup.FacStaff);
+        bool viewerIsStudent = viewerGroups.Contains(AuthGroup.Student);
+        bool viewerIsAlumni = viewerGroups.Contains(AuthGroup.Alumni);
+        bool profileIsFacStaff = restricted_profile.PersonType.Contains(FACSTAFF_PROFILE);
+        bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
+        bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
+
+        foreach (UserPrivacy_Settings row in privacy)
+        {
+            if ((viewerIsSiteAdmin || viewerIsPolice) && row.Visibility != "Public")
+            {
+                MarkAsPrivate(restricted_profile, row.Field);
+            }
+            else if (viewerIsFacStaff)
+            {
+                if (profileIsFacStaff && row.Visibility == "Private")
+                {
+                    MakePrivate(restricted_profile, row.Field);
+                }
+                else if ((profileIsStudent || profileIsAlumni) && row.Visibility != "Public")
+                {
+                    MarkAsPrivate(restricted_profile, row.Field);
+                }
+            }
+            else if (viewerIsStudent && row.Visibility != "Public")
+            {
+                MakePrivate(restricted_profile, row.Field);
+            }
+            else if (viewerIsAlumni && row.Visibility != "Public")
+            {
+                MakePrivate(restricted_profile, row.Field);
+            }
+        }
+
+        return restricted_profile;
+    }
+
+    /// <summary>
+    /// Get profile fields and visibility settings for a specific user
+    /// </summary>
+    /// <param name="username">AD username</param>
+    /// <returns>List of field and visibility privacy settings for a specific user</returns>
+    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username)
+    {
+        var account = accountService.GetAccountByUsername(username);
+
+        // select all privacy settings
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID).Select(up_s => (UserPrivacyViewModel)up_s);
+
+        return privacy;
+    }
+
+    /// <summary>
+    /// Set privacy setting of some piece of personal data for user.
+    /// </summary>
+    /// <param name="username">AD Username</param>
+    /// <param name="userPrivacy">User Privacy Update View Model</param>
+    public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel userPrivacy)
+    {
+        var account = accountService.GetAccountByUsername(username);
+        foreach (string field in userPrivacy.Field)
+        {
+            var user = context.UserPrivacy_Settings.FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == field);
+            if (user is null)
+            {
+                var privacy = new UserPrivacy_Settings
+                {
+                    gordon_id = account.GordonID,
+                    Field = field,
+                    Visibility = userPrivacy.VisibilityGroup
+                }; ;
+                await context.UserPrivacy_Settings.AddAsync(privacy);
+            }
+            else
+            {
+                user.Visibility = userPrivacy.VisibilityGroup;
+            }
+        }
+
+        context.SaveChanges();
+    }
+
+
     /// <summary>
     /// privacy setting of mobile phone.
     /// </summary>
@@ -425,19 +544,19 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         if (student != null)
         {
             MergeProfile(profile, JObject.FromObject(student));
-            personType += "stu";
+            personType += STUDENT_PROFILE;
         }
 
         if (alumni != null)
         {
             MergeProfile(profile, JObject.FromObject(alumni));
-            personType += "alu";
+            personType += ALUMNI_PROFILE;
         }
 
         if (faculty != null)
         {
             MergeProfile(profile, JObject.FromObject(faculty));
-            personType += "fac";
+            personType += FACSTAFF_PROFILE;
         }
 
         if (customInfo != null)
@@ -511,5 +630,48 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     {
         return webSQLContext.Mailstops.Select(m => m.code)
                        .OrderBy(d => d);
+    }
+
+    /// <summary>
+    /// Change a ProfileItem's privacy setting to true
+    /// </summary>
+    /// <param name="profile">Combined profile containing element to update</param>
+    /// <param name="field">The profile element to update</param>
+    private static void MarkAsPrivate(CombinedProfileViewModel profile, string field)
+    {
+        // Profile element will be returned to UI, but should be marked as private
+        // since the authenticated user is only seeing because they are authorized
+        // to do so.
+        Type cpvm = new CombinedProfileViewModel().GetType();
+        try
+        {
+            PropertyInfo prop = cpvm.GetProperty(field);
+            ProfileItem profile_item = (ProfileItem) prop.GetValue(profile);
+            profile_item.isPrivate = true;
+            prop.SetValue(profile, profile_item);
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Change a ProfileItem to be null (remove it from the profile)
+    /// </summary>
+    /// <param name="profile">Combined profile containing element to make null</param>
+    /// <param name="field">The profile element to make null</param>
+    private static void MakePrivate(CombinedProfileViewModel profile, string field)
+    {
+        // remove profile element if it should not be sent to the UI
+        try
+        {
+            Type cpvm = new CombinedProfileViewModel().GetType();
+            cpvm.GetProperty(field).SetValue(profile, null);
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Message);
+        }
     }
 }
