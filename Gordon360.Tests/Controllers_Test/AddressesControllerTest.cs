@@ -1,3 +1,5 @@
+namespace Gordon360.Tests.Controllers_Test;
+
 public class AddressesControllerTests
 {
     [Fact]

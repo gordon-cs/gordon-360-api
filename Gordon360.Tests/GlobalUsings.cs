@@ -14,4 +14,8 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 global using Gordon360.Services;
 global using Microsoft.Data.Sqlite;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using System.Security.Claims;
+
 
