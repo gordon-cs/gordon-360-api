@@ -12,10 +12,8 @@ namespace Gordon360.Services;
 /// Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
 /// </summary>
 	/// 
-public class AcademicCheckInService(CCTContext context) : IAcademicCheckInService
+public partial class AcademicCheckInService(CCTContext context, IProfileService profileService, IAccountService accountService) : IAcademicCheckInService
 {
-
-
     /// <summary> Stores the emergency contact information of a particular user </summary>
     /// <param name="data"> The object that stores the contact info </param>
     /// <param name="id"> The students id number</param>
@@ -72,16 +70,19 @@ public class AcademicCheckInService(CCTContext context) : IAcademicCheckInServic
 
     /// <summary> Stores the cellphone preferences for the current user </summary>
     /// <param name="data"> The phone number object for the user </param>
-    /// <param name="id"> The id of the student to be updated </param>
+    /// <param name="username"> The username of the student to be updated </param>
     /// <returns> The stored data </returns>
-    public async Task<AcademicCheckInViewModel> PutCellPhoneAsync(string id, AcademicCheckInViewModel data)
+    public async Task PutCellPhoneAsync(string username, MobilePhoneUpdateViewModel data)
     {
-        var result = await context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, data.NoPhone);
-        if (result == null)
+        await profileService.UpdateCustomProfileAsync(username, "SMSOptedIn", new Models.CCT.CUSTOM_PROFILE { username = username, SMSOptedIn = data.SMSOptedIn });
+
+        string id = accountService.GetAccountByUsername(username).GordonID;
+        var result = await context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, NoneProvided: false);
+
+        if (result == null || result.Any(r => r.Success != true))
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
         }
-        return data;
     }
 
     /// <summary> Stores the demographic data (race and ethnicity) of the current user </summary>
@@ -100,30 +101,17 @@ public class AcademicCheckInService(CCTContext context) : IAcademicCheckInServic
 
     /// <summary> Gets the holds of the user with the given ID </summary>
     /// <param name="id"> The id of the user whose holds are to be found </param>
-    /// <returns> The stored data </returns>
-    public async Task<IEnumerable<AcademicCheckInViewModel>> GetHoldsAsync(string id)
+    /// <returns>Data about any holds the user has</returns>
+    public async Task<EnrollmentCheckinHolds> GetHoldsAsync(string id)
     {
-        var result = await context.Procedures.FINALIZATION_GETHOLDSBYIDAsync(int.Parse(id));
+        var result = await context.Procedures.GetEnrollmentCheckinHoldsAsync(int.Parse(id));
 
-        if (result == null)
+        if (result == null || result.Count != 1)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
         }
 
-        return result.Select(x => new AcademicCheckInViewModel
-        {
-            FinancialHold = x.FinancialHold ?? false,
-            HighSchoolHold = x.HighSchoolHold ?? false,
-            MedicalHold = x.MedicalHold ?? false,
-            MajorHold = x.MajorHold ?? false,
-            RegistrarHold = x.RegistrarHold ?? false,
-            LaVidaHold = x.LaVidaHold ?? false,
-            MustRegisterForClasses = x.MustRegisterForClasses ?? false,
-            NewStudent = x.NewStudent,
-            FinancialHoldText = x.FinancialHoldText,
-            MeetingDate = x.MeetingDate,
-            MeetingLocations = x.MeetingLocations
-        });
+        return new EnrollmentCheckinHolds(result.Single());
     }
 
     /// <summary> Sets the user as having been checked in </summary>
@@ -160,7 +148,7 @@ public class AcademicCheckInService(CCTContext context) : IAcademicCheckInServic
     private static string FormatNumber(string phoneNum)
     {
         phoneNum = phoneNum.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("-", "");
-        if (Regex.IsMatch(phoneNum, @"\+?[0-9]*"))
+        if (PhoneNumberRegex().IsMatch(phoneNum))
         {
             return phoneNum;
         }
@@ -170,5 +158,6 @@ public class AcademicCheckInService(CCTContext context) : IAcademicCheckInServic
         }
     }
 
-
+    [GeneratedRegex(@"^\+?\d*$")]
+    private static partial Regex PhoneNumberRegex();
 }

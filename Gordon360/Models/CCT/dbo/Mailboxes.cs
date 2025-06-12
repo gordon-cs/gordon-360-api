@@ -27,5 +27,7 @@ public partial class Mailboxes
     [Unicode(false)]
     public string Type { get; set; }
 
-    public int? HolderAccountId { get; set; }
+    [StringLength(50)]
+    [Unicode(false)]
+    public string HolderUsername { get; set; }
 }

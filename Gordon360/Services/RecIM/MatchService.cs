@@ -166,7 +166,7 @@ public class MatchService(CCTContext context, IParticipantService participantSer
                         Status = mt.Status.Description,
                         Participant = mt.Team.ParticipantTeam
                             .Where(pt => !new int[] { 0, 1, 2 }.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
-                            .Select(pt => participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
+                            .Select(pt => participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description, false)),
                     })
             }).FirstOrDefault();
             return multiTeamMatch;
@@ -229,7 +229,7 @@ public class MatchService(CCTContext context, IParticipantService participantSer
                         Status = mt.Status.Description,
                         Participant = mt.Team.ParticipantTeam
                             .Where(pt => !new int[] {0,1,2}.Contains(pt.RoleTypeID)) //roletype is either deleted, invalid, invited to join
-                            .Select(pt => participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description)),
+                            .Select(pt => participantService.GetParticipantByUsername(pt.ParticipantUsername, pt.RoleType.Description, false)),
                         MatchHistory = context.MatchTeam.Where(_mt => _mt.TeamID == mt.TeamID && _mt.Match.StatusID == 6)
                             .OrderByDescending(mt => mt.Match.StartTime)
                             .Take(5)

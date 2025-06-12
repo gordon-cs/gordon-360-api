@@ -34,7 +34,12 @@ public class TeamsController(ITeamService teamService, IActivityService activity
     [Route("{teamID}")]
     public ActionResult<TeamExtendedViewModel> GetTeamByID(int teamID)
     {
-        var team = teamService.GetTeamByID(teamID);
+
+        var viewerUsername = AuthUtils.GetUsername(User);
+        var viewerParticipation = participantService.GetParticipantByUsername(viewerUsername);
+        var isAdmin = viewerParticipation?.IsAdmin == true || AuthUtils.UserIsInGroup(User, Enums.AuthGroup.RecIMSuperAdmin);
+
+        var team = teamService.GetTeamByID(teamID, isAdmin);
 
         if (team == null)
         {

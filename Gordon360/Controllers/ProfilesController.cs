@@ -189,12 +189,11 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("mailbox-information")]
-    [Route("mailbox-combination")] // 2024-06-26: Route Deprecated - remove once UI has been updated
-    public ActionResult<MailboxViewModel> GetMailInfo()
+    public ActionResult<MailboxCombinationViewModel?> GetMailInfo()
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = profileService.GetMailboxInformation(username);
+        var result = profileService.GetMailboxCombination(username);
         return Ok(result);
     }
 

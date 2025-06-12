@@ -56,9 +56,13 @@ public class ParticipantService(CCTContext context) : IParticipantService
         return account;
     }
 
-    public ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null)
+    public ParticipantExtendedViewModel? GetParticipantByUsername(string username, string? roleType = null, bool isAdminView = false)
     {
-        ParticipantExtendedViewModel? participant = context.ParticipantView.FirstOrDefault(pv => pv.Username == username);
+        ParticipantExtendedViewModel? participant = context.ParticipantView
+            .Where(pv => pv.Username == username)
+            .Select(pv => ParticipantExtendedViewModel.From(pv, isAdminView))
+            .FirstOrDefault();
+
         if (participant is null) return null;
 
         participant.Role = roleType;

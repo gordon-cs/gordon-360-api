@@ -36,4 +36,6 @@ public partial class CUSTOM_PROFILE
     [StringLength(4)]
     [Unicode(false)]
     public string PlannedGradYear { get; set; }
+
+    public bool SMSOptedIn { get; set; }
 }
