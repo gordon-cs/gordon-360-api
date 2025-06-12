@@ -142,6 +142,7 @@ namespace Gordon360.Services
     {
         SessionViewModel Get(string sessionCode);
         SessionViewModel GetCurrentSession();
+        SessionViewModel GetCurrentSessionForFinalExams();
         double[] GetDaysLeft();
         IEnumerable<SessionViewModel> GetAll();
     }

@@ -1560,6 +1560,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.SessionsController.GetCurrentSessionForFinalExams">
+            <summary>
+            Gets the most recent academic session that is either Spring or Fall
+            </summary>
+            <returns>The current session used to fetch final exams</returns>
+        </member>
         <member name="M:Gordon360.Controllers.SessionsController.GetDaysLeftInSemester">
             <summary>
             Gets the days left in the current session

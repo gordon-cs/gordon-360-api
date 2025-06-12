@@ -73,7 +73,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     /// <returns>All Final Exam Events for the users' current session</returns>
     public async Task<IEnumerable<EventViewModel>> GetFinalExamEventsForUser(string username)
     {
-        var session = sessionService.GetCurrentSession().SessionCode;
+        var session = sessionService.GetCurrentSessionForFinalExams().SessionCode;
         string yrCde = session.Substring(0, 4);
         string termCde = session.Substring(4, 2);
 
