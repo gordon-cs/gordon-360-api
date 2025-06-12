@@ -18,12 +18,12 @@ namespace Gordon360.Controllers.Api;
 public class PostersController(IPosterService posterService) : GordonControllerBase
 {
     /// <summary>
-    /// Gets available posters
+    /// Gets all posters that havent been deleted
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [HttpGet]
-    [Route("")]
+    [Route("all")]
     public ActionResult<IEnumerable<PosterViewModel>> GetPosters()
     {
         var res = posterService.GetPosters();
@@ -36,7 +36,7 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [HttpGet]
-    [Route("current")]
+    [Route("")]
     public ActionResult<IEnumerable<PosterViewModel>> GetCurrentPosters()
     {
         var res = posterService.GetCurrentPosters();
@@ -47,7 +47,7 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     /// Gets all non-expired posters by activity code
     /// </summary>
     [HttpGet]
-    [Route("current/activity/{activityCode}")]
+    [Route("activity/{activityCode}")]
     public ActionResult<IEnumerable<PosterViewModel>> GetCurrentPostersByActivityCode(string activityCode)
     {
        var res = posterService.GetCurrentPostersByActivityCode(activityCode);
@@ -55,13 +55,13 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     }
 
     /// <summary>
-    /// Get personalized posters based on student's activities
+    /// Get all non-deleted personalized posters based on student's activities
     /// </summary>
     /// <param name="username"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [HttpGet]
-    [Route("{username}")]
+    [Route("all/{username}")]
     public ActionResult<IEnumerable<PosterViewModel>> GetPersonalizedPosters(string username)
     {
         var res = posterService.GetPersonalizedPostersByUsername(username);
@@ -69,13 +69,13 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     }
 
     /// <summary>
-    /// Get posters by activity code
+    /// Get all not-deleted posters by activity code
     /// </summary>
     /// <param name="activityCode"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [HttpGet]
-    [Route("activity/{activityCode}")]
+    [Route("all/activity/{activityCode}")]
     public ActionResult<IEnumerable<PosterViewModel>> GetActivityPosters(string activityCode)
     {
         var res = posterService.GetPostersByActivityCode(activityCode);
@@ -88,7 +88,7 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [HttpGet]
-    [Route("lookup")]
+    [Route("all/lookup")]
     public ActionResult<IEnumerable<string>> GetPosterStatuses()
     {
         var res = posterService.GetPosterStatuses();
