@@ -97,6 +97,11 @@ try
     builder.Services.AddScoped<ServerUtils, ServerUtils>();
 
     builder.Services.AddMemoryCache();
+    builder.Services.AddHttpClient<IEventService, EventService>(client =>
+    {
+        client.Timeout = TimeSpan.FromSeconds(200);
+        client.DefaultRequestHeaders.Add("User-Agent", "Gordon360/1.0.0");
+    });
 
     var app = builder.Build();
 

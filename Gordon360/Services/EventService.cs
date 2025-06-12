@@ -21,9 +21,9 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service that allows for event control
 /// </summary>
-public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService, IScheduleService scheduleService, ISessionService sessionService) : IEventService
+public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService, IScheduleService scheduleService, ISessionService sessionService, HttpClient httpClient) : IEventService
 {
-
+    
     /**
      * URL to retrieve events from the 25Live API. 
      * event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
@@ -33,6 +33,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
      */
     private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
 
+    private readonly HttpClient _httpClient = httpClient;
     private IEnumerable<EventViewModel> Events => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events) ?? [];
 
     private const string DateFormat = "yyyyMMdd";
@@ -171,11 +172,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
 
     private async Task<IEnumerable<EventViewModel>> FetchFinalExamsAsync(string finalExamsUrl)
     {
-        using var client = new HttpClient();
-        client.Timeout = TimeSpan.FromSeconds(200);
-        client.DefaultRequestHeaders.Add("User-Agent", "Gordon360/1.0.0");
-
-        var response = await client.GetAsync(finalExamsUrl);
+        var response = await _httpClient.GetAsync(finalExamsUrl);
         if (response != null && response.IsSuccessStatusCode)
         {
             var content = await response.Content.ReadAsStringAsync();
