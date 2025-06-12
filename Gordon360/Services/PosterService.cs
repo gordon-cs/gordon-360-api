@@ -152,20 +152,26 @@ public class PosterService(CCTContext context,
 
     private string GetImagePath(string filename)
     {
-        return Path.Combine(webHostEnvironment.ContentRootPath, "browseable", "uploads", "recim", "team", filename);
+        var directoryPath = Path.Combine(webHostEnvironment.ContentRootPath, "browseable", "uploads", "posters", "images");
+
+        if (!System.IO.Directory.Exists(directoryPath))
+        {
+            System.IO.Directory.CreateDirectory(directoryPath);
+        }
+
+        return Path.Combine(directoryPath, filename);
     }
+
 
     private string GetImageURL(string filename)
     {
         var serverAddress = serverUtils.GetAddress();
         if (serverAddress is not string) throw new Exception("Could not upload poster: Server Address is null");
 
-        if (serverAddress.Contains("localhost"))
-            serverAddress += '/';
-        //temporarily using rec-im until we have our own folder
-        var url = $"browseable/uploads/recim/team/{filename}";
+        var url = $"browseable/uploads/posters/images/{filename}";
         return url;
     }
+
 
     public async Task<PosterViewModel> DeletePosterAsync(int posterID)
     {
