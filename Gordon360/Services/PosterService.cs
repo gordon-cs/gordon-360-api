@@ -210,22 +210,6 @@ public class PosterService(CCTContext context,
         return (PosterViewModel)poster;
     }
 
-    public async Task<int> DeleteExpiredPostersAsync()
-    {
-        var cutoffDate = DateTime.Now.AddDays(-14);
-
-        var expiredPosterIDs = await context.Poster
-            .Where(p => p.ExpirationDate < cutoffDate)
-            .Select(p => p.ID)
-            .ToListAsync();
-
-        foreach (var id in expiredPosterIDs)
-        {
-            await DeletePosterAsync(id);
-        }
-
-        return expiredPosterIDs.Count;
-    }
 
 
 
