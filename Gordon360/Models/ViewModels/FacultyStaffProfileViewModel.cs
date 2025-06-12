@@ -83,7 +83,7 @@ public record FacultyStaffProfileViewModel
             fac.Gender ?? "",
             fac.Email ?? "",
             fac.Type ?? "",
-            fac.FirstHireDt ?? DateTime.MinValue,
+            fac.FirstHireDt,
             fac.AD_Username ?? "",
             fac.office_hours ?? "",
             fac.preferred_photo,

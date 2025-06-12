@@ -127,7 +127,7 @@ public record StudentProfileViewModel
             stu.grad_student ?? "",
             stu.GradDate ?? "",
             stu.PlannedGradYear ?? "",
-            stu.Entrance_Date ?? DateTime.MinValue,
+            stu.Entrance_Date,
             stu.MobilePhone ?? "",
             stu.IsMobilePhonePrivate == 1 ? true : false,
             stu.AD_Username ?? "", // Just in case some random record has a null email field

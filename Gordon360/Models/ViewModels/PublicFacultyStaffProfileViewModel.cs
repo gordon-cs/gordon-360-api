@@ -67,7 +67,7 @@ public class PublicFacultyStaffProfileViewModel
             JobTitle = fac.JobTitle ?? "",
             SpouseName = fac.SpouseName ?? "",
             Type = fac.Type ?? "",
-            FirstHireDt = fac.FirstHireDt ?? DateTime.MinValue,
+            FirstHireDt = fac.FirstHireDt,
             Dept = fac.Dept ?? "",
             Email = fac.Email ?? "",
             Gender = fac.Gender ?? "",

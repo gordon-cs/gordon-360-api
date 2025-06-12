@@ -75,7 +75,7 @@ public class PublicStudentProfileViewModel
             Minor1Description = stu.Minor1Description ?? "",
             Minor2Description = stu.Minor2Description ?? "",
             Minor3Description = stu.Minor3Description ?? "",
-            Entrance_Date = stu.Entrance_Date ?? DateTime.MinValue
+            Entrance_Date = stu.Entrance_Date
 
         };
         if (vm.IsMobilePhonePrivate)
