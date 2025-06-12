@@ -194,5 +194,39 @@ public class PosterService(CCTContext context,
         return (PosterViewModel)poster;
     }
 
+    public async Task<PosterViewModel> HidePosterAsync(int posterID)
+    {
+        var poster = await context.Poster
+            .Include(p => p.Status)  // <-- include Status here
+            .FirstOrDefaultAsync(p => p.ID == posterID);
+
+        if (poster == null)
+            throw new ResourceNotFoundException { ExceptionMessage = $"Poster with ID: {posterID} not found" };
+
+        poster.ExpirationDate = DateTime.Now;
+
+        await context.SaveChangesAsync();
+
+        return (PosterViewModel)poster;
+    }
+
+    public async Task<int> DeleteExpiredPostersAsync()
+    {
+        var cutoffDate = DateTime.Now.AddDays(-14);
+
+        var expiredPosterIDs = await context.Poster
+            .Where(p => p.ExpirationDate < cutoffDate)
+            .Select(p => p.ID)
+            .ToListAsync();
+
+        foreach (var id in expiredPosterIDs)
+        {
+            await DeletePosterAsync(id);
+        }
+
+        return expiredPosterIDs.Count;
+    }
+
+
 
 }

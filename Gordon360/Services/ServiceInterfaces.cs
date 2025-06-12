@@ -343,6 +343,8 @@ namespace Gordon360.Services
         Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster);
         Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster);
         Task<PosterViewModel> DeletePosterAsync(int posterID);
+        Task<PosterViewModel> HidePosterAsync(int posterID);
+
     }
 
     namespace RecIM

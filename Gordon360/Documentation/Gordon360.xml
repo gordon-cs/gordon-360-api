@@ -39,7 +39,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.PostersController.GetPosters">
             <summary>
-            Gets available posters
+            Gets all posters that havent been deleted
             </summary>
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
@@ -58,7 +58,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.PostersController.GetPersonalizedPosters(System.String)">
             <summary>
-            Get personalized posters based on student's activities
+            Get all non-deleted personalized posters based on student's activities
             </summary>
             <param name="username"></param>
             <returns></returns>
@@ -66,7 +66,7 @@
         </member>
         <member name="M:Gordon360.Controllers.Api.PostersController.GetActivityPosters(System.String)">
             <summary>
-            Get posters by activity code
+            Get all not-deleted posters by activity code
             </summary>
             <param name="activityCode"></param>
             <returns></returns>
@@ -111,6 +111,14 @@
             <param name="posterID"></param>
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.HidePoster(System.Int32)">
+             <summary>
+             Changes ExpirationDate to the current moment to effectively 
+            "hide" specific poster from view
+            </summary>
+            <returns></returns>
+             <exception cref="T:System.NotImplementedException"></exception>
         </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>

@@ -152,5 +152,29 @@ public class PostersController(IPosterService posterService) : GordonControllerB
         return Ok(res);
     }
 
+    /// <summary>
+    /// Changes ExpirationDate to the current moment to effectively 
+    ///"hide" specific poster from view
+    ///</summary>
+    ///<returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    [HttpPost("hide/{posterID}")]
+public async Task<IActionResult> HidePoster(int posterID)
+{
+    try
+    {
+        var result = await posterService.HidePosterAsync(posterID);
+        return Ok(result);
+    }
+    catch (ResourceNotFoundException e)
+    {
+        return NotFound(e.ExceptionMessage);
+    }
+    catch (Exception e)
+    {
+        return StatusCode(500, e.Message);
+    }
+}
+
 
 }
