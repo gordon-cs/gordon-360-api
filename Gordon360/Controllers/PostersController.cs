@@ -159,22 +159,22 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     ///<returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [HttpPost("hide/{posterID}")]
-public async Task<IActionResult> HidePoster(int posterID)
-{
-    try
+    public async Task<IActionResult> HidePoster(int posterID)
     {
-        var result = await posterService.HidePosterAsync(posterID);
-        return Ok(result);
+        try
+        {
+            var result = await posterService.HidePosterAsync(posterID);
+            return Ok(result);
+        }
+        catch (ResourceNotFoundException e)
+        {
+            return NotFound(e.ExceptionMessage);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
     }
-    catch (ResourceNotFoundException e)
-    {
-        return NotFound(e.ExceptionMessage);
-    }
-    catch (Exception e)
-    {
-        return StatusCode(500, e.Message);
-    }
-}
 
 
 }
