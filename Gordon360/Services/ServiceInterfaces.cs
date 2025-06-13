@@ -57,6 +57,8 @@ namespace Gordon360.Services
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();
         Task<IEnumerable<EventViewModel>> GetFinalExamEventsForUser(string username);
+        Task<IEnumerable<EventViewModel>> FetchEventsAsync();
+        Task FetchAndCacheFinalExamsAsync();
     }
 
     public interface IDiningService

@@ -33,8 +33,11 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
      */
     private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
 
+
+
     private readonly HttpClient _httpClient = httpClient;
     private IEnumerable<EventViewModel> Events => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events) ?? [];
+    private IEnumerable<EventViewModel> FinalExams => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.FinalExams) ?? [];
 
     private const string DateFormat = "yyyyMMdd";
 
@@ -74,13 +77,11 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     public async Task<IEnumerable<EventViewModel>> GetFinalExamEventsForUser(string username)
     {
         var session = sessionService.GetCurrentSessionForFinalExams().SessionCode;
-        string yrCde = session.Substring(0, 4);
-        string termCde = session.Substring(4, 2);
 
         // Get all courses of current term for the user
         var coursesBySession = await scheduleService.GetAllCoursesAsync(username);
         var matchingSessions = coursesBySession
-            .Where(s => s.SessionCode == $"{yrCde}{termCde}")
+            .Where(s => s.SessionCode == session)
             .ToList();
 
         var userCourseCodes = matchingSessions
@@ -90,8 +91,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
             .ToList();
 
         // Fetch all final exams (ID=55)
-        var finalExamsUrl = GetFinalExamsUrlForCurrentTerm();
-        var allFinalExams = await FetchFinalExamsAsync(finalExamsUrl);
+        var allFinalExams = FinalExams;
 
         // Filter final exams to only those matching user's course codes
         var userFinalExams = allFinalExams
@@ -137,7 +137,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         return attendedEvents.OrderBy(e => e.StartDate);
     }
 
-    public static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
+    public async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
     {
         using var client = new HttpClient();
         client.Timeout = TimeSpan.FromSeconds(200);
@@ -195,6 +195,13 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         {
             throw new ResourceNotFoundException();
         }
+    }
+
+    public async Task FetchAndCacheFinalExamsAsync()
+    {
+        var finalExamsUrl = GetFinalExamsUrlForCurrentTerm();
+        var finalExams = await FetchFinalExamsAsync(finalExamsUrl);
+        cache.Set(CacheKeys.FinalExams, finalExams);
     }
 
     /// <summary>
