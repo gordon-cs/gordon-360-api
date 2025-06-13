@@ -95,7 +95,7 @@ try
     builder.Services.Add360Services();
     builder.Services.AddHostedService<EventCacheRefreshService>();
     builder.Services.AddScoped<ServerUtils, ServerUtils>();
-
+    builder.Services.AddScoped<RegistrationService>();
     builder.Services.AddMemoryCache();
 
     var app = builder.Build();

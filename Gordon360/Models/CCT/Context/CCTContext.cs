@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT.Context;
@@ -203,6 +204,8 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Unassigned_Rooms> Unassigned_Rooms { get; set; }
 
     public virtual DbSet<UserCourses> UserCourses { get; set; }
+
+    public virtual DbSet<CourseRegistrationDate> CourseRegistrationDates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -831,6 +834,12 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Unassigned_Rooms>(entity =>
         {
             entity.ToView("Unassigned_Rooms", "Housing");
+        });
+
+        modelBuilder.Entity<CourseRegistrationDate>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView("CourseRegistrationDates", "dbo");
         });
 
         modelBuilder.Entity<UserCourses>(entity =>
