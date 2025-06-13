@@ -308,8 +308,8 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         // Convert profile from record to class so we can modify its elements
         CombinedProfileViewModel restricted_profile = (CombinedProfileViewModel) profile;
 
-        // Privacy settings are generally heirarchical from bypassing all
-        // privacy settings to honoring all privacy settings:
+        // Privacy settings are generally heirarchical from bypassing all privacy settings
+        // to honoring all privacy settings:
         //   SiteAdmin & Police -> FacStaff -> Students -> Alumni
 
         // Find the account belonging to person whose profile we are accessing and get their
@@ -335,9 +335,16 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             }
             else if (viewerIsFacStaff)
             {
-                if (profileIsFacStaff && row.Visibility == "Private")
+                if (profileIsFacStaff)
                 {
-                    MakePrivate(restricted_profile, row.Field);
+                    if (row.Visibility == "Private")
+                    {
+                        MakePrivate(restricted_profile, row.Field);
+                    }
+                    else if (row.Visibility == "FacStaff")
+                    {
+                        MarkAsPrivate(restricted_profile, row.Field);
+                    }
                 }
                 else if ((profileIsStudent || profileIsAlumni) && row.Visibility != "Public")
                 {
@@ -647,8 +654,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         {
             PropertyInfo prop = cpvm.GetProperty(field);
             ProfileItem profile_item = (ProfileItem) prop.GetValue(profile);
-            profile_item.isPrivate = true;
-            prop.SetValue(profile, profile_item);
+            if (profile_item != null)
+            {
+                profile_item.isPrivate = true;
+                prop.SetValue(profile, profile_item);
+            }
         }
         catch (Exception e)
         {

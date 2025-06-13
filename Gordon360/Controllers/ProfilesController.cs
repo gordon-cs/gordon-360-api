@@ -132,7 +132,7 @@ public class ProfilesController(IProfileService profileService,
     [HttpGet]
     [Route("{username}/privacy_setting")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-    public ActionResult<IEnumerable<UserPrivacyGetViewModel>> GetPrivacySettingAsync(string username)
+    public ActionResult<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingAsync(string username)
     {
         var privacy = profileService.GetPrivacySettingAsync(username);
 

@@ -8,8 +8,6 @@ namespace Gordon360.Models.ViewModels
     // VisibilityGroup: the group that the user wanted to be seen by (Public, Private, FacStaff)
     public class UserPrivacyViewModel
     {
-        public string Field { get; set; }
-        public string VisibilityGroup { get; set; }
         public static implicit operator UserPrivacyViewModel(UserPrivacy_Settings up_s)
         {
             return new UserPrivacyViewModel
@@ -18,5 +16,7 @@ namespace Gordon360.Models.ViewModels
                 VisibilityGroup = up_s.Visibility
             };
         }
+        public string Field { get; set; }
+        public string VisibilityGroup { get; set; }
     }
 }
