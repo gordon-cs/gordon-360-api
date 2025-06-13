@@ -84,6 +84,8 @@ public class PosterService(CCTContext context,
     {
         return GetPosters().Where(p => p.ID == posterID).FirstOrDefault();
     }
+
+
     public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
     {
         var poster = newPoster.ToPoster();
@@ -132,7 +134,11 @@ public class PosterService(CCTContext context,
             {
                 imagePath = GetImagePath(Path.GetFileName(poster.ImagePath));
                 ImageUtils.DeleteImage(imagePath);
-                poster.ImagePath = updatedPoster.ImagePath;
+                var filename = $"{Guid.NewGuid():N}.{extension}";
+                poster.ImagePath = GetImageURL(filename);
+                imagePath = GetImagePath(filename);
+
+                ImageUtils.UploadImage(imagePath, data, format);
             }
             else
             {
