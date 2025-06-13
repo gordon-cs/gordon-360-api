@@ -17,6 +17,8 @@ public class PublicFacultyStaffProfileViewModel
     public string OnCampusPhone { get; set; }
     public string OnCampusPrivatePhone { get; set; }
     public string OnCampusFax { get; set; }
+    public string HomeStreet1 { get; set; }
+    public string HomeStreet2 { get; set; }
     public string HomePhone { get; set; }
     public string HomeCity { get; set; }
     public string HomeState { get; set; }
@@ -59,6 +61,8 @@ public class PublicFacultyStaffProfileViewModel
             OnCampusPhone = fac.OnCampusPhone ?? "",
             OnCampusPrivatePhone = fac.OnCampusPrivatePhone ?? "",
             OnCampusFax = fac.OnCampusFax ?? "",
+            HomeStreet1 = fac.HomeStreet1 ?? "",
+            HomeStreet2 = fac.HomeStreet2 ?? "",
             HomePhone = fac.HomePhone ?? "",
             HomeCity = fac.HomeCity ?? "",
             HomeState = fac.HomeState ?? "",
