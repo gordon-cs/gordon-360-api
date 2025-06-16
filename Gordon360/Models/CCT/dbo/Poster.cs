@@ -19,11 +19,11 @@ public partial class Poster
 
     [Required]
     [StringLength(64)]
-    [Unicode(false)]
+    [Unicode(true)]
     public string Title { get; set; }
 
     [StringLength(256)]
-    [Unicode(false)]
+    [Unicode(true)]
     public string Description { get; set; }
 
     [Required]
