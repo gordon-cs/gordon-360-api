@@ -1,82 +1,148 @@
-/*using Xunit;
+using Xunit;
 using Moq;
 using System.Security.Claims;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Gordon360.Controllers;
 using Gordon360.Services;
 using Gordon360.Models.ViewModels;
-using Gordon360.Enums;
-using Microsoft.Extensions.Configuration;
+using Xunit.Abstractions;
+using System.Collections.Generic;
 
 namespace Gordon360.Tests.Controllers_Test
 {
     public class ProfilesControllerTests
     {
-        private ProfilesController CreateControllerWithRoles(string[] roleStrings, out Mock<ProfileService> profileServiceMock)
+        private readonly ITestOutputHelper _output;
+
+        public ProfilesControllerTests(ITestOutputHelper output)
         {
-            profileServiceMock = new Mock<ProfileService> { CallBase = true }; // Use real ComposeProfile logic
+            _output = output;
+        }
 
-            var accountServiceMock = new Mock<IAccountService>();
-            var membershipServiceMock = new Mock<IMembershipService>();
-            var configMock = new Mock<IConfiguration>();
-
-            var claims = new List<Claim>();
-            foreach (var role in roleStrings)
+        private ClaimsPrincipal CreateUserWithGroup(string group)
+        {
+            var identity = new ClaimsIdentity(new[]
             {
-                claims.Add(new Claim("groups", role));
-            }
+                new Claim(ClaimTypes.Name, "testviewer"),
+                new Claim(ClaimTypes.Upn, "testviewer@gordon.edu"),
+                new Claim("groups", group)
+            }, "mock");
 
-            var identity = new ClaimsIdentity(claims, "mock");
-            var user = new ClaimsPrincipal(identity);
+            return new ClaimsPrincipal(identity);
+        }
+//rewrite a test for student viewing another student delete due to null error
 
-            var controller = new ProfilesController(
-                profileServiceMock.Object,
-                accountServiceMock.Object,
-                membershipServiceMock.Object,
-                configMock.Object
-            );
+        /*
+        [Fact]
+        public void GetUserProfile_AsFacStaff_ReturnsPublicFacStaffProfile()
+        {
+            var mockService = new Mock<IProfileService>();
+            var controller = new ProfilesController(mockService.Object, null, null, null);
+            var username = "targetuser";
 
-            controller.ControllerContext = new ControllerContext
-            {
-                HttpContext = new DefaultHttpContext { User = user }
-            };
+            var facultyProfile = new FacultyStaffProfileViewModel { FirstName = "TestFacStaff" };
+            var customProfile = new ProfileCustomViewModel();
+            var expectedProfile = new ProfileViewModel { FirstName = "TestFacStaff", PersonType = "fac" };
 
-            return controller;
+            mockService.Setup(s => s.GetStudentProfileByUsername(username)).Returns((StudentProfileViewModel?)null);
+            mockService.Setup(s => s.GetFacultyStaffProfileByUsername(username)).Returns(facultyProfile);
+            mockService.Setup(s => s.GetAlumniProfileByUsername(username)).Returns((AlumniProfileViewModel?)null);
+            mockService.Setup(s => s.GetCustomUserInfo(username)).Returns(customProfile);
+            mockService.Setup(s => s.ComposeProfile(null, null, facultyProfile, customProfile)).Returns(expectedProfile);
+
+            controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = CreateUserWithGroup("360-FacStaff-SG") } };
+
+            var result = controller.GetUserProfile(username);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var profile = Assert.IsType<ProfileViewModel>(okResult.Value);
+            Assert.Equal("TestFacStaff", profile.FirstName);
         }
 
         [Fact]
-        public void Student_ShouldNotSee_PrivateFacultyFields()
+        public void GetUserProfile_AsAlumni_ReturnsOnlyPublicAlumniProfile()
         {
-            var controller = CreateControllerWithRoles(new[] { "Student" }, out var profileServiceMock);
-            string username = "facultyuser";
+            var mockService = new Mock<IProfileService>();
+            var controller = new ProfilesController(mockService.Object, null, null, null);
+            var username = "targetuser";
 
-            var faculty = new FacultyStaffProfileViewModel(
-                "1", "Dr.", "Jane", "A", "Doe", "", "", "", "Math", "Jenks", "102", "1234", "5678", "9999",
-                "123 Elm St", "", "Boston", "MA", "02115", "USA", "555-0000", "", "123 Elm St", "", "Boston", "MA", "02115", "USA", "555-0000", "",
-                "2021", "Senior", "1", "B123", "", "", "No", "Math", "", "", "", "", "", "jane.doe@gordon.edu", "F", "No", "2025", "2025", "555-1234", true,
-                "jdoe", 1, 1, "USA", "Jenks Hall", "Math", "", "", "", "", "", "Box 10", 30, 28
-            );
+            var alumniProfile = new AlumniProfileViewModel { FirstName = "TestAlumni" };
+            var customProfile = new ProfileCustomViewModel();
+            var expectedProfile = new ProfileViewModel { FirstName = "TestAlumni", PersonType = "alu" };
 
-            var student = new Mock<StudentProfileViewModel>().Object;
-            var alumni = new Mock<AlumniProfileViewModel>().Object;
-            var custom = new Mock<CustomProfileViewModel>().Object;
+            mockService.Setup(s => s.GetStudentProfileByUsername(username)).Returns((StudentProfileViewModel?)null);
+            mockService.Setup(s => s.GetFacultyStaffProfileByUsername(username)).Returns((FacultyStaffProfileViewModel?)null);
+            mockService.Setup(s => s.GetAlumniProfileByUsername(username)).Returns(alumniProfile);
+            mockService.Setup(s => s.GetCustomUserInfo(username)).Returns(customProfile);
+            mockService.Setup(s => s.ComposeProfile(null, alumniProfile, null, customProfile)).Returns(expectedProfile);
 
-            profileServiceMock.Setup(p => p.GetFacultyStaffProfileByUsername(username)).Returns(faculty);
-            profileServiceMock.Setup(p => p.GetStudentProfileByUsername(username)).Returns(student);
-            profileServiceMock.Setup(p => p.GetAlumniProfileByUsername(username)).Returns(alumni);
-            profileServiceMock.Setup(p => p.GetCustomUserInfo(username)).Returns(custom);
+            controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = CreateUserWithGroup("360-Alumni-SG") } };
 
             var result = controller.GetUserProfile(username);
-            var ok = Assert.IsType<OkObjectResult>(result.Result);
-            var profile = Assert.IsType<ProfileViewModel>(ok.Value);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var profile = Assert.IsType<ProfileViewModel>(okResult.Value);
+            Assert.Equal("TestAlumni", profile.FirstName);
+        }*/
 
-            // Assert redaction logic
-            Assert.Equal("Private as requested.", profile.HomeCity);
-            Assert.Equal("", profile.HomePhone);
-            Assert.Equal("Private as requested.", profile.SpouseName);
+        [Fact]
+        public void GetUserProfile_AsFacStaffViewingStudent_ReturnsFullStudentProfile()
+        {
+            var mockService = new Mock<IProfileService>();
+            var controller = new ProfilesController(mockService.Object, null, null, null);
+            var username = "targetstudent";
+
+            var studentProfile = new StudentProfileViewModel(
+                ID: "1", Title: "Mr.", FirstName: "TestStudent", MiddleName: "M", LastName: "Student", Suffix: "Jr", MaidenName: "", NickName: "Testy",
+                OnOffCampus: "On", OnCampusBuilding: "Chase", OnCampusRoom: "201", OnCampusPhone: "555-1111", OnCampusPrivatePhone: "555-1112", OnCampusFax: "555-1113",
+                OffCampusStreet1: "1 Test St", OffCampusStreet2: "", OffCampusCity: "Wenham", OffCampusState: "MA", OffCampusPostalCode: "01984",
+                OffCampusCountry: "USA", OffCampusPhone: "", OffCampusFax: "", HomeStreet1: "2 Home St", HomeStreet2: "", HomeCity: "Wenham",
+                HomeState: "MA", HomePostalCode: "01984", HomeCountry: "USA", HomePhone: "555-2222", HomeFax: "", Cohort: "2022", Class: "Junior",
+                KeepPrivate: "N", Barcode: "B12345", AdvisorIDs: "", Married: "No", Commuter: "No", Major: "CS", Major2: "Math", Major3: "",
+                Minor1: "Physics", Minor2: "", Minor3: "", Email: "student@gordon.edu", Gender: "M", grad_student: "No", GradDate: "2026-05-01",
+                PlannedGradYear: "2026", MobilePhone: "555-3333", IsMobilePhonePrivate: false, AD_Username: "student1", show_pic: 1, preferred_photo: 1,
+                Country: "USA", BuildingDescription: "Chase Hall", Major1Description: "Computer Science", Major2Description: "Mathematics", Major3Description: "",
+                Minor1Description: "Physics", Minor2Description: "", Minor3Description: "", Mail_Location: "Box 456", ChapelRequired: 30, ChapelAttended: 29
+            );
+
+            var customProfile = new ProfileCustomViewModel();
+            var expectedProfile = new ProfileViewModel(
+                ID: "1", Title: "Mr.", FirstName: "TestStudent", MiddleName: "M", LastName: "Student", Suffix: "Jr", MaidenName: "", NickName: "Testy",
+                Email: "student@gordon.edu", Gender: "M", HomeStreet1: "2 Home St", HomeStreet2: "", HomeCity: "Wenham", HomeState: "MA", HomePostalCode: "01984",
+                HomeCountry: "USA", HomePhone: "555-2222", HomeFax: "", AD_Username: "student1", show_pic: 1, preferred_photo: 1, Country: "USA", Barcode: "B12345",
+                Facebook: "", Twitter: "", Instagram: "", LinkedIn: "", Handshake: "", Calendar: "", OnOffCampus: "On", OffCampusStreet1: "1 Test St",
+                OffCampusStreet2: "", OffCampusCity: "Wenham", OffCampusState: "MA", OffCampusPostalCode: "01984", OffCampusCountry: "USA", OffCampusPhone: "",
+                OffCampusFax: "", Major3: "", Major3Description: "", Minor1: "Physics", Minor1Description: "Physics", Minor2: "", Minor2Description: "",
+                Minor3: "", Minor3Description: "", GradDate: "2026-05-01", PlannedGradYear: "2026", MobilePhone: "555-3333", IsMobilePhonePrivate: false,
+                ChapelRequired: 30, ChapelAttended: 29, Cohort: "2022", Class: "Junior", AdvisorIDs: "", Married: "No", Commuter: "No", WebUpdate: "",
+                HomeEmail: "", MaritalStatus: "", College: "", ClassYear: "", PreferredClassYear: "", ShareName: "", ShareAddress: "", Major: "CS",
+                Major1Description: "Computer Science", Major2: "Math", Major2Description: "Mathematics", grad_student: "No", OnCampusDepartment: "",
+                Type: "stu", office_hours: "", Dept: "", Mail_Description: "", JobTitle: "", SpouseName: "", BuildingDescription: "Chase Hall",
+                Mail_Location: "Box 456", OnCampusBuilding: "Chase", OnCampusRoom: "201", OnCampusPhone: "555-1111", OnCampusPrivatePhone: "555-1112",
+                OnCampusFax: "555-1113", KeepPrivate: "N", PersonType: "stu"
+            );
+
+            mockService.Setup(s => s.GetStudentProfileByUsername(username)).Returns(studentProfile);
+            mockService.Setup(s => s.GetFacultyStaffProfileByUsername(username)).Returns((FacultyStaffProfileViewModel?)null);
+            mockService.Setup(s => s.GetAlumniProfileByUsername(username)).Returns((AlumniProfileViewModel?)null);
+            mockService.Setup(s => s.GetCustomUserInfo(username)).Returns(customProfile);
+            mockService.Setup(s => s.ComposeProfile(studentProfile, null, null, customProfile)).Returns(expectedProfile);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = CreateUserWithGroup("360-FacStaff-SG")
+                }
+            };
+
+            var result = controller.GetUserProfile(username);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var profile = Assert.IsType<ProfileViewModel>(okResult.Value);
+            Assert.Equal("TestStudent", profile.FirstName);
+            Assert.Equal("stu", profile.PersonType);
+            Assert.Equal("CS", profile.Major);
+            Assert.Equal("Mathematics", profile.Major2Description);
         }
+
     }
 }
-*/

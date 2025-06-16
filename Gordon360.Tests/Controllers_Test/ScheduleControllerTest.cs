@@ -1,13 +1,31 @@
+using Xunit;
+using Moq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Gordon360.Controllers;
+using Gordon360.Services;
+using Gordon360.Models.ViewModels;
+using Xunit.Abstractions;
+using Gordon360.Utilities;
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
+
 namespace Gordon360.Tests.Controllers_Test
 {
     public class ScheduleControllerTests
     {
-        [Fact]
-        public async Task GetAllCourses_WhenStudentTriesToAccessAnotherStudentSchedule_CallsGetAllInstructorCoursesAsync()
+        private readonly ITestOutputHelper _output;
+
+        public ScheduleControllerTests(ITestOutputHelper output)
         {
-            // Arrange
-            var mockService = new Mock<IScheduleService>();
-            var expectedCourses = new List<CoursesBySessionViewModel>
+            _output = output;
+        }
+
+        private List<CoursesBySessionViewModel> GetExpectedCourses()
+        {
+            return new List<CoursesBySessionViewModel>
             {
                 new CoursesBySessionViewModel(
                     "303308",
@@ -36,42 +54,89 @@ namespace Gordon360.Tests.Controllers_Test
                     }
                 )
             };
+        }
 
-            mockService.Setup(s => s.GetAllInstructorCoursesAsync("student2"))
-                       .ReturnsAsync(expectedCourses);
-
-            mockService.Setup(s => s.GetAllCoursesAsync("student2"))
-                       .ReturnsAsync(expectedCourses);
+        [Fact]
+        public async Task GetAllCourses_AsStudent_SeesInstructorCourses()
+        {
+            var mockService = new Mock<IScheduleService>();
+            var expectedCourses = GetExpectedCourses();
+            mockService.Setup(s => s.GetAllInstructorCoursesAsync("testuser")).ReturnsAsync(expectedCourses);
 
             var controller = new ScheduleController(mockService.Object);
-
             var identity = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, "student1"),
-                new Claim(ClaimTypes.Upn, "student1@gordon.edu"),
-                new Claim("groups", "Student")
+                new Claim(ClaimTypes.Name, "viewer"),
+                new Claim(ClaimTypes.Upn, "viewer@gordon.edu"),
+                new Claim("groups", "360-Student-SG")
             }, "mock");
-
-            var fakeUser = new ClaimsPrincipal(identity);
 
             controller.ControllerContext = new ControllerContext
             {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = fakeUser
-                }
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
             };
 
-            // Act
-            var result = await controller.GetAllCourses("student2");
-
-            // Assert
+            var result = await controller.GetAllCourses("testuser");
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedCourses = Assert.IsAssignableFrom<IEnumerable<CoursesBySessionViewModel>>(okResult.Value);
             Assert.Equal(expectedCourses, returnedCourses);
+            mockService.Verify(s => s.GetAllInstructorCoursesAsync("testuser"), Times.Once);
+            mockService.Verify(s => s.GetAllCoursesAsync("testuser"), Times.Never);
+        }
 
-            mockService.Verify(s => s.GetAllCoursesAsync(It.IsAny<string>()), Times.Never);
-            mockService.Verify(s => s.GetAllInstructorCoursesAsync("student2"), Times.Once);
+        [Fact]
+        public async Task GetAllCourses_AsFacStaff_SeesAllCourses()
+        {
+            var mockService = new Mock<IScheduleService>();
+            var expectedCourses = GetExpectedCourses();
+            mockService.Setup(s => s.GetAllCoursesAsync("testuser")).ReturnsAsync(expectedCourses);
+
+            var controller = new ScheduleController(mockService.Object);
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, "viewer"),
+                new Claim(ClaimTypes.Upn, "viewer@gordon.edu"),
+                new Claim("groups", "360-FacStaff-SG")
+            }, "mock");
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
+            };
+
+            var result = await controller.GetAllCourses("testuser");
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedCourses = Assert.IsAssignableFrom<IEnumerable<CoursesBySessionViewModel>>(okResult.Value);
+            Assert.Equal(expectedCourses, returnedCourses);
+            mockService.Verify(s => s.GetAllCoursesAsync("testuser"), Times.Once);
+            mockService.Verify(s => s.GetAllInstructorCoursesAsync("testuser"), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetAllCourses_WhenAuthenticatedUserEqualsTargetUser_SeesAllCourses()
+        {
+            var mockService = new Mock<IScheduleService>();
+            var expectedCourses = GetExpectedCourses();
+            mockService.Setup(s => s.GetAllCoursesAsync("testuser")).ReturnsAsync(expectedCourses);
+
+            var controller = new ScheduleController(mockService.Object);
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, "testuser"),
+                new Claim(ClaimTypes.Upn, "testuser@gordon.edu")
+            }, "mock");
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(identity) }
+            };
+
+            var result = await controller.GetAllCourses("testuser");
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedCourses = Assert.IsAssignableFrom<IEnumerable<CoursesBySessionViewModel>>(okResult.Value);
+            Assert.Equal(expectedCourses, returnedCourses);
+            mockService.Verify(s => s.GetAllCoursesAsync("testuser"), Times.Once);
+            mockService.Verify(s => s.GetAllInstructorCoursesAsync("testuser"), Times.Never);
         }
     }
 }
