@@ -113,10 +113,10 @@ public class PosterService(CCTContext context,
         if (poster == null) throw new ResourceNotFoundException
         { ExceptionMessage = $"Poster with ID: {posterID} not found" };
 
-        poster.Title = updatedPoster.Title ?? poster.Title;
-        poster.Description = updatedPoster.Description ?? poster.Description;
-        poster.VisibleDate = updatedPoster.VisibleDate ?? poster.VisibleDate;
-        poster.ExpirationDate = updatedPoster.ExpirationDate ?? poster.ExpirationDate;
+        poster.Title = updatedPoster.Title;
+        poster.Description = updatedPoster.Description;
+        poster.VisibleDate = updatedPoster.VisibleDate;
+        poster.ExpirationDate = updatedPoster.ExpirationDate;
 
         if (updatedPoster.Status is not null)
             poster.StatusID = context.PosterStatus
