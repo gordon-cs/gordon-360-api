@@ -17,10 +17,13 @@ public class PublicFacultyStaffProfileViewModel
     public string OnCampusPhone { get; set; }
     public string OnCampusPrivatePhone { get; set; }
     public string OnCampusFax { get; set; }
+    public string HomeStreet1 { get; set; }
+    public string HomeStreet2 { get; set; }
     public string HomePhone { get; set; }
     public string HomeCity { get; set; }
     public string HomeState { get; set; }
     public string HomeCountry { get; set; }
+    public string MobilePhone { get; set; }
     public string KeepPrivate { get; set; }
     public string JobTitle { get; set; }
     public string SpouseName { get; set; }
@@ -59,10 +62,13 @@ public class PublicFacultyStaffProfileViewModel
             OnCampusPhone = fac.OnCampusPhone ?? "",
             OnCampusPrivatePhone = fac.OnCampusPrivatePhone ?? "",
             OnCampusFax = fac.OnCampusFax ?? "",
+            HomeStreet1 = fac.HomeStreet1 ?? "",
+            HomeStreet2 = fac.HomeStreet2 ?? "",
             HomePhone = fac.HomePhone ?? "",
             HomeCity = fac.HomeCity ?? "",
             HomeState = fac.HomeState ?? "",
             HomeCountry = fac.HomeCountry ?? "",
+            MobilePhone = fac.MobilePhone ?? "",
             KeepPrivate = fac.KeepPrivate ?? "",
             JobTitle = fac.JobTitle ?? "",
             SpouseName = fac.SpouseName ?? "",
@@ -79,15 +85,6 @@ public class PublicFacultyStaffProfileViewModel
             Mail_Location = fac.Mail_Location ?? "",
             Mail_Description = fac.Mail_Description ?? ""
         };
-        if (vm.KeepPrivate.Contains('1'))
-        {
-            vm.HomeCity = "Private as requested.";
-            vm.HomeState = "";
-            vm.HomeCountry = "";
-            vm.SpouseName = "Private as requested.";
-            vm.Country = "";
-            vm.HomePhone = "";
-        }
         return vm;
     }
 }
