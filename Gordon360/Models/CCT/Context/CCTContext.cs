@@ -880,7 +880,7 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.ID).ValueGeneratedOnAdd();
         });
         
-        modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");  // JRS = before merge this did not have "dbo"
+        modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");
 
         OnModelCreatingPartial(modelBuilder);
     }
