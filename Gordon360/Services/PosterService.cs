@@ -86,6 +86,7 @@ public class PosterService(CCTContext context,
     }
 
 
+
     public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
     {
         var poster = newPoster.ToPoster();
