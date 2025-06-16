@@ -274,3 +274,6 @@ secrets.config
 
 # Logs
 Gordon360/Logs/*
+
+# Poster Images
+browseable/uploads/posters/images/*
