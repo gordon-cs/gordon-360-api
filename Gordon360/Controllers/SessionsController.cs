@@ -62,6 +62,25 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     }
 
     /// <summary>
+    /// Gets the most recent academic session that is either Spring or Fall
+    /// </summary>
+    /// <returns>The current session used to fetch final exams</returns>
+    [HttpGet]
+    [Route("currentFinals")]
+    [AllowAnonymous]
+    public ActionResult<SessionViewModel> GetCurrentSessionForFinalExams()
+    {
+        var currentFinalSession = sessionService.GetCurrentSessionForFinalExams();
+        if (currentFinalSession == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(currentFinalSession);
+    }
+
+
+    /// <summary>
     /// Gets the days left in the current session
     /// </summary>
     /// <returns></returns>

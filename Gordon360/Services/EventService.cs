@@ -21,9 +21,9 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service that allows for event control
 /// </summary>
-public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService) : IEventService
+public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService, IScheduleService scheduleService, ISessionService sessionService, HttpClient httpClient) : IEventService
 {
-
+    
     /**
      * URL to retrieve events from the 25Live API. 
      * event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
@@ -32,8 +32,14 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
      * state parameter fetches only confirmed events
      */
     private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
-    
+
+
+
+    private readonly HttpClient _httpClient = httpClient;
     private IEnumerable<EventViewModel> Events => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events) ?? [];
+    private IEnumerable<EventViewModel> FinalExams => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.FinalExams) ?? [];
+
+    private const string DateFormat = "yyyyMMdd";
 
     /// <summary>
     /// Access the memory stream created by the cached task and parse it into events
@@ -64,6 +70,46 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     }
 
     /// <summary>
+    /// Select only events that are Final Exams for users' current session
+    /// </summary>
+    /// <param name="username"> The student's AD Username</param>
+    /// <returns>All Final Exam Events for the users' current session</returns>
+    public async Task<IEnumerable<EventViewModel>> GetFinalExamEventsForUser(string username)
+    {
+        var session = sessionService.GetCurrentSessionForFinalExams().SessionCode;
+
+        // Get all courses of current term for the user
+        var coursesBySession = await scheduleService.GetAllCoursesAsync(username);
+        var matchingSessions = coursesBySession
+            .Where(s => s.SessionCode == session)
+            .ToList();
+
+        var userCourseCodes = matchingSessions
+            .SelectMany(s => s.AllCourses)
+            .Select(c => NormalizeSpaces(c.CRS_CDE))
+            .Distinct()
+            .ToList();
+
+        // Fetch all final exams (ID=55)
+        var allFinalExams = FinalExams;
+
+        // Filter final exams to only those matching user's course codes
+        var userFinalExams = allFinalExams
+            .Where(exam => 
+                exam.Event_Name != null &&
+                userCourseCodes.Any(code =>
+                    NormalizeSpaces(
+                        exam.Event_Name.Replace("EXAM:", "", StringComparison.OrdinalIgnoreCase))
+                    .StartsWith(code, StringComparison.OrdinalIgnoreCase)
+                )
+            )
+            .OrderBy(e => e.StartDate);
+
+        return userFinalExams;
+        ;
+    }
+
+    /// <summary>
     /// Returns all attended events for a student in a specific term
     /// </summary>
     /// <param name="username"> The student's AD Username</param>
@@ -91,7 +137,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         return attendedEvents.OrderBy(e => e.StartDate);
     }
 
-    public static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
+    public async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
     {
         using var client = new HttpClient();
         client.Timeout = TimeSpan.FromSeconds(200);
@@ -115,7 +161,6 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -123,6 +168,40 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         {
             throw new ResourceNotFoundException();
         }
+    }
+
+    private async Task<IEnumerable<EventViewModel>> FetchFinalExamsAsync(string finalExamsUrl)
+    {
+        var response = await _httpClient.GetAsync(finalExamsUrl);
+        if (response != null && response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var eventsXML = XDocument.Parse(content);
+                return eventsXML
+                    .Descendants(EventViewModel.r25 + "event")
+                    .SelectMany(
+                        elem => elem.Element(EventViewModel.r25 + "profile")?.Descendants(EventViewModel.r25 + "reservation"),
+                        (e, o) => new EventViewModel(e, o)
+                    );
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        else
+        {
+            throw new ResourceNotFoundException();
+        }
+    }
+
+    public async Task FetchAndCacheFinalExamsAsync()
+    {
+        var finalExamsUrl = GetFinalExamsUrlForCurrentTerm();
+        var finalExams = await FetchFinalExamsAsync(finalExamsUrl);
+        cache.Set(CacheKeys.FinalExams, finalExams);
     }
 
     /// <summary>
@@ -148,4 +227,35 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
 
         return firstEventDate.ToString("yyyyMMdd");
     }
+    /// <summary>
+    /// Get the input string and normalize it by removing extra spaces
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns>Removes extra spaces and join the input</returns>
+    private static string NormalizeSpaces(string input)
+    {
+        return string.Join(" ", input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    /// <summary>
+    /// Get the URL for fetching final exams for the current session (type_id = 55 is final exams)
+    /// </summary>
+    /// <returns>Final exams URL for the current session</returns>
+    private string GetFinalExamsUrlForCurrentTerm()
+    {
+        // Get today's date
+        var today = DateTime.Now;
+
+        // Find the most recent term whose begin date is in the past
+        var currentTerm = context.YearTermTable
+            .Where(t => t.TRM_BEGIN_DTE <= today &&
+                (t.TRM_CDE == "FA" || t.TRM_CDE == "SP"))
+            .OrderByDescending(t => t.TRM_BEGIN_DTE)
+            .FirstOrDefault();
+
+        string startDate = currentTerm?.TRM_BEGIN_DTE?.ToString(DateFormat) ?? today.ToString(DateFormat);
+
+        return $"https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=55&state=2&end_after={startDate}&scope=extended";
+    }
+
 }
