@@ -77,7 +77,6 @@ public class PublicStudentProfileViewModel
             Minor2Description = stu.Minor2Description ?? "",
             Minor3Description = stu.Minor3Description ?? "",
             Entrance_Date = stu.Entrance_Date
-
         };
 
         if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
