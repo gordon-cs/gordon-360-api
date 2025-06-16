@@ -3344,6 +3344,13 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetGraduationInfo(System.String)">
+            <summary>
+            Get graduation information for a student
+            </summary>
+            <param name="username">The username of the student</param>
+            <returns>GraduationViewModel containing graduation details</returns>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.MarkAsPrivate(Gordon360.Models.ViewModels.CombinedProfileViewModel,System.String)">
             <summary>
             Change a ProfileItem's privacy setting to true
@@ -3357,13 +3364,6 @@
             </summary>
             <param name="profile">Combined profile containing element to make null</param>
             <param name="field">The profile element to make null</param>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetGraduationInfo(System.String)">
-            <summary>
-            Get graduation information for a student
-            </summary>
-            <param name="username">The username of the student</param>
-            <returns>GraduationViewModel containing graduation details</returns>
         </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>

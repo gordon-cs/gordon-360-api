@@ -58,6 +58,7 @@ public class CombinedProfileViewModel
     public string Minor3Description { get; set; }
     public string GradDate { get; set; }
     public string PlannedGradYear { get; set; }
+    public DateTime? Entrance_Date { get; set; }
     public ProfileItem MobilePhone { get; set; }
     public bool IsMobilePhonePrivate { get; set; }
     public Nullable<int> ChapelRequired { get; set; }
@@ -91,6 +92,7 @@ public class CombinedProfileViewModel
     public string office_hours { get; set; }
     public string Dept { get; set; }
     public string Mail_Description { get; set; }
+    public DateTime? FirstHireDt { get; set; }
 
     // FacStaff and Alumni Only
     public string JobTitle { get; set; }
@@ -163,6 +165,7 @@ public class CombinedProfileViewModel
             Minor3Description = vm.Minor3Description,
             GradDate = vm.GradDate,
             PlannedGradYear = vm.PlannedGradYear,
+            Entrance_Date = vm.Entrance_Date,
             MobilePhone = vm.MobilePhone is null || vm.MobilePhone == "" ? null : new ProfileItem(vm.MobilePhone, PUBLIC),
             IsMobilePhonePrivate = vm.IsMobilePhonePrivate,
             ChapelRequired = vm.ChapelRequired,
@@ -196,6 +199,7 @@ public class CombinedProfileViewModel
             office_hours = vm. office_hours,
             Dept = vm.Dept,
             Mail_Description = vm.Mail_Description,
+            FirstHireDt = vm.FirstHireDt,
 
             // FacStaff and Alumni Only
             JobTitle = vm.JobTitle,
