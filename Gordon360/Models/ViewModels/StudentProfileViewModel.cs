@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using System;
 
 namespace Gordon360.Models.ViewModels;
 
@@ -51,6 +52,7 @@ public record StudentProfileViewModel
     string grad_student,
     string GradDate,
     string PlannedGradYear,
+    DateTime? Entrance_Date,
     string MobilePhone,
     bool IsMobilePhonePrivate,
     string AD_Username,
@@ -119,10 +121,11 @@ public record StudentProfileViewModel
             stu.Minor2 ?? "",
             stu.Minor3 ?? "",
             stu.Email ?? "",
-            stu.Gender ?? "",
+            stu.Gender ?? "",       
             stu.grad_student ?? "",
             stu.GradDate ?? "",
             stu.PlannedGradYear ?? "",
+            stu.Entrance_Date,
             stu.MobilePhone ?? "",
             stu.IsMobilePhonePrivate == 1 ? true : false,
             stu.AD_Username ?? "", // Just in case some random record has a null email field

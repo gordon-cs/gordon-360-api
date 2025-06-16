@@ -31,6 +31,7 @@ public class PublicFacultyStaffProfileViewModel
     public string Gender { get; set; }
     public string Email { get; set; }
     public string Type { get; set; }
+    public DateTime? FirstHireDt { get; set; }
     public string AD_Username { get; set; }
     public string office_hours { get; set; }
     public Nullable<int> preferred_photo { get; set; }
@@ -72,6 +73,7 @@ public class PublicFacultyStaffProfileViewModel
             JobTitle = fac.JobTitle ?? "",
             SpouseName = fac.SpouseName ?? "",
             Type = fac.Type ?? "",
+            FirstHireDt = fac.FirstHireDt,
             Dept = fac.Dept ?? "",
             Email = fac.Email ?? "",
             Gender = fac.Gender ?? "",

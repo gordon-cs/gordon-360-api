@@ -303,6 +303,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[Graduation]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[InvolvementOffering]",
          "ObjectType": 3
       },
@@ -496,6 +500,7 @@
    "UseHandleBars": false,
    "UseHierarchyId": false,
    "UseInflector": false,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,
