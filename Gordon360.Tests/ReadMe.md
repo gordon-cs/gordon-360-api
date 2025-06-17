@@ -15,6 +15,7 @@ This guide will walk you through how to write effective and maintainable unit te
 5. [Actual Test Demo](#5-actual-test-demo-)
 6. [ChatGPT Prompt Tips for Writing Tests](#6-chatgpt-prompt-tips-for-writing-tests-)
 7. [Test Dubugging Tips](#7-test-dubugging-tips-)
+8. [Automating Tests on Push with GitHub Actions](#8-automating-tests-on-push-with-github-actions-)
 
 ---
 
@@ -461,3 +462,66 @@ Carefully read the guidelines in this document if you want to avoid 90% of the f
 Happy testing!
 
 ---
+
+
+
+---
+
+
+
+## 8. Automating Tests on Push with GitHub Actions 🔄✅
+
+To ensure your controller tests run **automatically** every time code is pushed, we integrate them into a **CI pipeline using GitHub Actions**.
+
+### 🔧 Setup Instructions
+
+1. **Find or Create the Workflow File**
+
+Check if the file `.github/workflows/ci-cd.yml` already exists in your project. If not, create the following folder and file structure:
+
+```
+.github/workflows/ci-cd.yml
+```
+
+2. **Add the Following YAML Configuration** (or just add the test step if the file already exists)
+
+```yaml
+name: Continuous Integration & Deployment
+
+on: push
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+          cache: true
+          cache-dependency-path: Gordon360/packages.lock.json
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build
+
+      # ✅ Add this test step:
+      - name: Run Tests
+        run: dotnet test --no-build --verbosity normal
+```
+
+> ✅ This ensures all tests must pass before any deployment job continues.
+
+3. **Push to GitHub**
+
+After committing and pushing this file, GitHub will automatically run your tests with each new push. You can monitor progress in the **Actions tab** of your repository.
+
+
+
+---
+
