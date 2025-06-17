@@ -15,7 +15,7 @@ This guide will walk you through how to write effective and maintainable unit te
 5. [Actual Test Demo](#5-actual-test-demo-)
 6. [ChatGPT Prompt Tips for Writing Tests](#6-chatgpt-prompt-tips-for-writing-tests-)
 7. [Test Dubugging Tips](#7-test-dubugging-tips-)
-8. [Automating Tests on Push with GitHub Actions](#8-automating-tests-on-push-with-github-actions-)
+8. [Automating Tests with GitHub Actions and Git Hooks](#8-automating-tests-with-github-actions-and-git-hooks)
 
 ---
 
@@ -469,11 +469,23 @@ Happy testing!
 
 
 
-## 8. Automating Tests on Push with GitHub Actions 🔄✅
 
-To ensure your controller tests run **automatically** every time code is pushed, we integrate them into a **CI pipeline using GitHub Actions**.
 
-### 🔧 Setup Instructions
+
+## 8. Automating Tests with GitHub Actions and Git Hooks 🔄🪝
+
+To ensure your controller tests run **automatically**, you can use two approaches:
+
+- ☁️ **GitHub Actions**: runs tests remotely every time code is pushed to GitHub.
+- 💻 **Git Hooks**: runs tests locally before each commit.
+
+Both are important for enforcing test reliability and preventing broken code from being committed or deployed.
+
+---
+
+### ☁️ Option 1: Run Tests on Push with GitHub Actions
+
+#### 🔧 Setup Instructions
 
 1. **Find or Create the Workflow File**
 
@@ -521,7 +533,38 @@ jobs:
 
 After committing and pushing this file, GitHub will automatically run your tests with each new push. You can monitor progress in the **Actions tab** of your repository.
 
+---
 
+### 💻 Option 2: Run Tests Before Commit with Git Hook
+
+You can add a **pre-commit Git hook** that runs your unit tests before any commit is finalized.
+
+#### 🛠 Setup Instructions (PowerShell for Windows)
+
+```powershell
+# 1. Navigate to your repo root
+cd C:\\Users\\Philemon.Zhang\\Source\\Repos\\gordon-cs\\gordon-360-api
+
+# 2. Create the pre-commit hook file
+New-Item -ItemType File -Path .git/hooks/pre-commit 
+
+# 3. Add script to run tests before each commit
+@"
+#!/bin/sh
+echo "Running unit tests before commit..."
+
+dotnet test --no-build --verbosity quiet
+
+if [ $? -ne 0 ]; then
+  echo "Unit tests failed. Commit aborted."
+  exit 1
+else
+  echo "All tests passed. Proceeding with commit."
+fi
+"@ | Set-Content .git/hooks/pre-commit
+```
+
+> ⚠️ This only runs locally on your machine. Others won’t get it unless shared via tools like Husky.
 
 ---
 
