@@ -8,13 +8,13 @@ This guide will walk you through how to write effective and maintainable unit te
 
 ## 📂 Table of Contents 📘
 
-1. [Setting Up Test Environment](#1-setting-up-test-environment)
-2. [Moq Setup](#2-moq-setup)
-3. [xUnit and Test Structure Format](#3-xunit-and-test-structure-format)
-4. [Authentication Setup for Test Purposes](#4-authentication-setup-for-test-purposes)
-5. [Actual Test Demo](#5-actual-test-demo)
-6. [ChatGPT Prompt Tips for Writing Tests](#6-chatgpt-prompt-tips-for-writing-tests)
-7. [Test Dubugging Tips](#7-test-dubugging-tips)
+1. [Setting Up Test Environment](#1-setting-up-test-environment-️)
+2. [Moq Setup](#2-moq-setup-)
+3. [xUnit and Test Structure Format](#3-xunit-and-test-structure-format-)
+4. [Authentication Setup for Test Purposes](#4-authentication-setup-for-test-purposes-)
+5. [Actual Test Demo](#5-actual-test-demo-)
+6. [ChatGPT Prompt Tips for Writing Tests](#6-chatgpt-prompt-tips-for-writing-tests-)
+7. [Test Dubugging Tips](#7-test-dubugging-tips-)
 
 ---
 
