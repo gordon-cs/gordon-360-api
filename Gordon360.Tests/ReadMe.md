@@ -15,7 +15,7 @@ This guide will walk you through how to write effective and maintainable unit te
 5. [Actual Test Demo](#5-actual-test-demo-)
 6. [ChatGPT Prompt Tips for Writing Tests](#6-chatgpt-prompt-tips-for-writing-tests-)
 7. [Test Dubugging Tips](#7-test-dubugging-tips-)
-8. [Automating Tests with GitHub Actions and Git Hooks](#8-automating-tests-with-github-actions-and-git-hooks)
+8. [Automating Tests with GitHub Actions and Git Hooks](#8-automating-tests-with-github-actions-and-git-hooks-)
 
 ---
 
