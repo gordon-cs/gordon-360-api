@@ -417,6 +417,29 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         context.SaveChanges();
     }
 
+    /// <summary>
+    /// Get graduation information for a student
+    /// </summary>
+    /// <param name="username">The username of the student</param>
+    /// <returns>GraduationViewModel containing graduation details</returns>
+    public GraduationViewModel? GetGraduationInfo(string username)
+    {
+        // Find the graduation record directly by AD_Username
+        var graduation = context.Graduation.FirstOrDefault(g => g.AD_Username.ToLower() == username.ToLower());
+        if (graduation == null)
+        {
+            return null; // Graduation info might not exist for all students
+        }
+
+        // Map the graduation data to a ViewModel
+        return new GraduationViewModel
+        {
+            WhenGraduated = graduation.WHEN_GRAD,
+            HasGraduated = graduation.HAS_GRADUATED == "Y",
+            GraduationFlag = graduation.GRAD_FLAG
+        };
+    }
+
     public ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo)
     {
         var profile = new JObject();

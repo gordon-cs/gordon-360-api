@@ -30,6 +30,7 @@ public class AdvancedSearchViewModel
     public string ShareName { get; set; }
     public string PreferredClassYear { get; set; }
     public string ShareAddress { get; set; }
+    public string Gender { get; set; }
 
     public static implicit operator AdvancedSearchViewModel(Student s)
     {
@@ -60,7 +61,8 @@ public class AdvancedSearchViewModel
             Type = "Student",
             ShareName = "",
             PreferredClassYear = "",
-            ShareAddress = ""
+            ShareAddress = "",
+            Gender = s.Gender ?? ""
         };
     }
 
@@ -93,7 +95,8 @@ public class AdvancedSearchViewModel
             Type = fs.Type ?? "",
             ShareName = "",
             PreferredClassYear = "",
-            ShareAddress = ""
+            ShareAddress = "",
+            Gender = fs.Gender ?? ""
         };
     }
 
@@ -126,7 +129,8 @@ public class AdvancedSearchViewModel
             Type = "Alumni",
             ShareName = a.ShareName ?? "",
             PreferredClassYear = a.PreferredClassYear ?? "",
-            ShareAddress = a.ShareAddress ?? ""
+            ShareAddress = a.ShareAddress ?? "",
+            Gender = a.Gender ?? ""
         };
     }
 }

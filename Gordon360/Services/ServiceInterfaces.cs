@@ -27,6 +27,7 @@ namespace Gordon360.Services
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        GraduationViewModel? GetGraduationInfo(string username);
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
@@ -86,7 +87,8 @@ namespace Gordon360.Services
             string? country,
             string? department,
             string? building,
-            string? involvement);
+            string? involvement,
+            string? gender);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
         ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);

@@ -36,6 +36,7 @@ public class PublicStudentProfileViewModel
     public string Minor1Description { get; set; }
     public string Minor2Description { get; set; }
     public string Minor3Description { get; set; }
+    public DateTime? Entrance_Date { get; set; }
 
 
     public static implicit operator PublicStudentProfileViewModel(StudentProfileViewModel stu)
@@ -73,7 +74,8 @@ public class PublicStudentProfileViewModel
             Major3Description = stu.Major3Description ?? "",
             Minor1Description = stu.Minor1Description ?? "",
             Minor2Description = stu.Minor2Description ?? "",
-            Minor3Description = stu.Minor3Description ?? ""
+            Minor3Description = stu.Minor3Description ?? "",
+            Entrance_Date = stu.Entrance_Date
         };
         if (vm.IsMobilePhonePrivate)
         {
