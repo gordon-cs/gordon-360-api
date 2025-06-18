@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services
 {
-    public class YearTermTableService : IYearTermTableService
+    public class AcademicTermService : IAcademicTermService
     {
         private readonly CCTContext _context;
 
-        public YearTermTableService(CCTContext context)
+        public AcademicTermService(CCTContext context)
         {
             _context = context;
         }
