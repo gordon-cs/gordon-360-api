@@ -10,26 +10,30 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
 /// </summary>
-public class ScheduleService(CCTContext context, ISessionService sessionService) : IScheduleService
+public class ScheduleService(CCTContext context, IYearTermTableService yearTermTableService) : IScheduleService
 {
 
     /// <summary>
-    /// Fetch the session item whose id specified by the parameter
+    /// Fetch the term item whose id specified by the parameter
     /// </summary>
     /// <param name="username">The AD Username of the user</param>
-    /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
-    public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username)
+    /// <returns>CoursesByTermViewModel if found, null if not found</returns>
+    public async Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
+        List<UserCoursesViewModel> courses = await context.UserCourses
+            .Where(x => x.Username == username)
+            .Select(c => (UserCoursesViewModel)c)
+            .ToListAsync();
 
-        IEnumerable<SessionViewModel> sessions = sessionService.GetAll();
-        IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
+        IEnumerable<YearTermTableViewModel> terms = await yearTermTableService.GetAllTermsAsync();
+
+        var coursesByTerm = terms
             .GroupJoin(courses,
-                       s => s.SessionCode,
-                       c => c.SessionCode,
-                       (session, courses) => new CoursesBySessionViewModel(session, courses))
-            .Where(cbs => cbs.AllCourses.Any());
+                       term => new { term.YearCode, term.TermCode},
+                       course => new { YearCode = course.YR_CDE, TermCode = course.TRM_CDE },
+                       (term, matchingCourses) => new CoursesByTermViewModel(term, matchingCourses))
+            .Where(cbt => cbt.AllCourses.Any());
 
-        return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
+        return coursesByTerm.OrderByDescending(cbt => cbt.TermCode);
     }
 }

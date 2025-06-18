@@ -97,6 +97,7 @@ try
     builder.Services.AddScoped<ServerUtils, ServerUtils>();
 
     builder.Services.AddMemoryCache();
+    builder.Services.AddScoped<IYearTermTableService, YearTermTableService>();
 
     var app = builder.Build();
 
