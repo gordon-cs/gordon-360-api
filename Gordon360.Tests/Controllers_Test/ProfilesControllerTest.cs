@@ -101,7 +101,8 @@ namespace Gordon360.Tests.Controllers_Test
                 Minor1: "Physics", Minor2: "", Minor3: "", Email: "student@gordon.edu", Gender: "M", grad_student: "No", GradDate: "2026-05-01",
                 PlannedGradYear: "2026", MobilePhone: "555-3333", IsMobilePhonePrivate: false, AD_Username: "student1", show_pic: 1, preferred_photo: 1,
                 Country: "USA", BuildingDescription: "Chase Hall", Major1Description: "Computer Science", Major2Description: "Mathematics", Major3Description: "",
-                Minor1Description: "Physics", Minor2Description: "", Minor3Description: "", Mail_Location: "Box 456", ChapelRequired: 30, ChapelAttended: 29
+                Minor1Description: "Physics", Minor2Description: "", Minor3Description: "", Mail_Location: "Box 456", ChapelRequired: 30, ChapelAttended: 29,
+                Entrance_Date: System.DateTime.Now
             );
 
             var customProfile = new ProfileCustomViewModel();
@@ -118,7 +119,9 @@ namespace Gordon360.Tests.Controllers_Test
                 Major1Description: "Computer Science", Major2: "Math", Major2Description: "Mathematics", grad_student: "No", OnCampusDepartment: "",
                 Type: "stu", office_hours: "", Dept: "", Mail_Description: "", JobTitle: "", SpouseName: "", BuildingDescription: "Chase Hall",
                 Mail_Location: "Box 456", OnCampusBuilding: "Chase", OnCampusRoom: "201", OnCampusPhone: "555-1111", OnCampusPrivatePhone: "555-1112",
-                OnCampusFax: "555-1113", KeepPrivate: "N", PersonType: "stu"
+                OnCampusFax: "555-1113", KeepPrivate: "N", PersonType: "stu",
+                Entrance_Date: System.DateTime.Now,
+                FirstHireDt: System.DateTime.Now
             );
 
             mockService.Setup(s => s.GetStudentProfileByUsername(username)).Returns(studentProfile);
