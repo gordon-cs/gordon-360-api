@@ -458,4 +458,13 @@ namespace Gordon360.Services
         }
     }
 
+    public interface IMarketplaceService
+    {
+        IEnumerable<MarketplaceListingViewModel> GetAllListings();
+        MarketplaceListingViewModel? GetListingById(int listingId);
+        Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing);
+        Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUploadViewModel updatedListing);
+        Task DeleteListingAsync(int listingId);
+        Task<MarketplaceListingViewModel> ChangeListingStatusAsync(int listingId, string status);
+    }
 }
