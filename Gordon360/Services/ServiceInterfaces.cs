@@ -331,7 +331,7 @@ namespace Gordon360.Services
         Task<bool> GetStatusAsync(string username);
     }
 
-    public interface IYearTermTableService
+    public interface IAcademicTermService
     {
         Task<YearTermTable?> GetCurrentTermAsync();
         Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();

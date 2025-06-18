@@ -7,7 +7,7 @@ namespace Gordon360.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class YearTermTableController(IYearTermTableService service) : ControllerBase
+    public class AcademicTermController(IAcademicTermService service) : ControllerBase
     {
         [HttpGet("currentTerm")]
         public async Task<IActionResult> GetCurrentTerm()

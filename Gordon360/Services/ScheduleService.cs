@@ -10,7 +10,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
 /// </summary>
-public class ScheduleService(CCTContext context, IYearTermTableService yearTermTableService) : IScheduleService
+public class ScheduleService(CCTContext context, IAcademicTermService academicTermService) : IScheduleService
 {
 
     /// <summary>
@@ -25,7 +25,7 @@ public class ScheduleService(CCTContext context, IYearTermTableService yearTermT
             .Select(c => (UserCoursesViewModel)c)
             .ToListAsync();
 
-        IEnumerable<YearTermTableViewModel> terms = await yearTermTableService.GetAllTermsAsync();
+        IEnumerable<YearTermTableViewModel> terms = await academicTermService.GetAllTermsAsync();
 
         var coursesByTerm = terms
             .GroupJoin(courses,
