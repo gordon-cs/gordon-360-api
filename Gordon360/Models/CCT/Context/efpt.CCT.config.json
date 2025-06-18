@@ -59,6 +59,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[PostedItem]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[REQUEST]",
          "ObjectType": 0
       },

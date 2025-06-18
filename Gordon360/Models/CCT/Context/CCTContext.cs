@@ -140,6 +140,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
 
+    public virtual DbSet<PostedItem> PostedItem { get; set; }
+
     public virtual DbSet<PrivType> PrivType { get; set; }
 
     public virtual DbSet<RA_Assigned_Ranges_View> RA_Assigned_Ranges_View { get; set; }
