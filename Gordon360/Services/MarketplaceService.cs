@@ -4,6 +4,7 @@ using Gordon360.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Gordon360.Services
 {
@@ -14,7 +15,7 @@ namespace Gordon360.Services
         /// </summary>
         public IEnumerable<MarketplaceListingViewModel> GetAllListings()
         {
-            var listings = context.PostedItems.Select(item => (MarketplaceListingViewModel)item);
+            var listings = context.PostedItem.Select(item => (MarketplaceListingViewModel)item);
             return listings;
         }
 
@@ -23,7 +24,7 @@ namespace Gordon360.Services
         /// </summary>
         public MarketplaceListingViewModel GetListingById(int listingId)
         {
-            var listing = context.PostedItems.Find(listingId);
+            var listing = context.PostedItem.Find(listingId);
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
@@ -37,7 +38,7 @@ namespace Gordon360.Services
         public async Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing)
         {
             var listing = newListing.ToPostedItem();
-            context.PostedItems.Add(listing);
+            context.PostedItem.Add(listing);
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
         }
@@ -47,7 +48,7 @@ namespace Gordon360.Services
         /// </summary>
         public async Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUploadViewModel updatedListing)
         {
-            var listing = context.PostedItems.Find(listingId);
+            var listing = context.PostedItem.Find(listingId);
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
@@ -72,13 +73,13 @@ namespace Gordon360.Services
         /// </summary>
         public async Task DeleteListingAsync(int listingId)
         {
-            var listing = context.PostedItems.Find(listingId);
+            var listing = context.PostedItem.Find(listingId);
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
             }
 
-            context.PostedItems.Remove(listing);
+            context.PostedItem.Remove(listing);
             await context.SaveChangesAsync();
         }
 
@@ -87,7 +88,7 @@ namespace Gordon360.Services
         /// </summary>
         public async Task<MarketplaceListingViewModel> ChangeListingStatusAsync(int listingId, string status)
         {
-            var listing = context.PostedItems.Find(listingId);
+            var listing = context.PostedItem.Find(listingId);
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
