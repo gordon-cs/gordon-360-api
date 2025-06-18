@@ -382,10 +382,10 @@ public class AccountService(CCTContext context) : IAccountService
             students = context.Student;
         }
 
-        // Only Faculy and Staff can see Private students
+        // Only Faculty and Staff can see Private students
         if (!authGroups.Contains(AuthGroup.FacStaff))
         {
-            students = students.Where(s => s.KeepPrivate != "P");
+            students = students.Where(s => (s.KeepPrivate != "Y" && s.KeepPrivate != "P"));
         }
 
         IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
@@ -403,7 +403,13 @@ public class AccountService(CCTContext context) : IAccountService
         // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
         if (!string.IsNullOrEmpty(homeCity))
         {
-            facstaff = facstaff.Where(a => a.KeepPrivate == "0");
+            var homePrivacy = authGroups.Contains(AuthGroup.FacStaff)
+                ? context.UserPrivacy_Settings.Where(a => (a.Field == "HomeCity" && a.Visibility != "Private"))
+                : context.UserPrivacy_Settings.Where(a => (a.Field == "HomeCity" && a.Visibility != "Private" && a.Visibility != "FacStaff"));
+            facstaff = facstaff.Join(homePrivacy,
+                user => user.ID, privs => privs.gordon_id,
+                (user, privs) => user //new { id = user.ID, visibility = privs.Visibility, }
+            );
             alumni = alumni.Where(a => a.ShareAddress != "N");
         }
 
