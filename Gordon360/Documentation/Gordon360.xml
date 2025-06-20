@@ -723,6 +723,49 @@
             <param name="keywords"></param>
             <returns>Int - The number of found items under the provided filters</returns>
         </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetAllListings">
+            <summary>
+            Get all marketplace listings.
+            </summary>
+            <returns>List of all marketplace listings.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetListingById(System.Int32)">
+            <summary>
+            Get a specific marketplace listing by ID.
+            </summary>
+            <param name="listingId">The ID of the listing.</param>
+            <returns>The marketplace listing.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.CreateListing(Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel)">
+            <summary>
+            Create a new marketplace listing.
+            </summary>
+            <param name="newListing">The details of the new listing.</param>
+            <returns>The created listing.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.UpdateListing(System.Int32,Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel)">
+            <summary>
+            Update an existing marketplace listing.
+            </summary>
+            <param name="listingId">The ID of the listing to update.</param>
+            <param name="updatedListing">The updated listing details.</param>
+            <returns>The updated listing.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.DeleteListing(System.Int32)">
+            <summary>
+            Delete a marketplace listing.
+            </summary>
+            <param name="listingId">The ID of the listing to delete.</param>
+            <returns>Confirmation of deletion.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.ChangeListingStatus(System.Int32,System.String)">
+            <summary>
+            Change the status of a marketplace listing.
+            </summary>
+            <param name="listingId">The ID of the listing.</param>
+            <param name="status">The new status.</param>
+            <returns>The updated listing.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
@@ -2814,6 +2857,36 @@
             <param name="keywords"></param>
             <returns>Count of found items after applying filters</returns>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException"></exception>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.GetAllListings">
+            <summary>
+            Get all marketplace listings.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.GetListingById(System.Int32)">
+            <summary>
+            Get a specific marketplace listing by ID.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.CreateListingAsync(Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel)">
+            <summary>
+            Create a new marketplace listing.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.UpdateListingAsync(System.Int32,Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel)">
+            <summary>
+            Update an existing marketplace listing.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.DeleteListingAsync(System.Int32)">
+            <summary>
+            Delete a marketplace listing.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.ChangeListingStatusAsync(System.Int32,System.String)">
+            <summary>
+            Change the status of a marketplace listing.
+            </summary>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
