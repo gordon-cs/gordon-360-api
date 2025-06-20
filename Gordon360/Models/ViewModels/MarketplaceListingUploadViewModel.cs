@@ -13,22 +13,7 @@ namespace Gordon360.Models.ViewModels
         public string Detail { get; set; }
         public int ConditionId { get; set; }
         public int StatusId { get; set; }
-        public List<string> ImagePaths { get; set; }
-
-        public PostedItem ToPostedItem()
-        {
-            var postedItem = new PostedItem
-            {
-                PostedById = this.PostedById,
-                Name = this.Name,
-                Price = this.Price,
-                CategoryId = this.CategoryId,
-                Detail = this.Detail,
-                ConditionId = this.ConditionId,
-                StatusId = this.StatusId,
-                PostImage = this.ImagePaths?.Select(path => new PostImage { ImagePath = path }).ToList() ?? new List<PostImage>()
-            };
-            return postedItem;
-        }
+        // Accept base64 images from frontend
+        public List<string> ImagesBase64 { get; set; }
     }
 }

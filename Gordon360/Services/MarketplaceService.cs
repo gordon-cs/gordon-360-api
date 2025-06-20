@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System;
+using Gordon360.Utilities; // For ImageUtils
 
 namespace Gordon360.Services
 {
@@ -48,7 +50,32 @@ namespace Gordon360.Services
         /// </summary>
         public async Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing)
         {
-            var listing = newListing.ToPostedItem();
+            var listing = new PostedItem
+            {
+                PostedById = newListing.PostedById,
+                Name = newListing.Name,
+                Price = newListing.Price,
+                CategoryId = newListing.CategoryId,
+                Detail = newListing.Detail,
+                ConditionId = newListing.ConditionId,
+                StatusId = newListing.StatusId,
+                PostImage = new List<PostImage>()
+            };
+
+            if (newListing.ImagesBase64 != null)
+            {
+                foreach (var base64 in newListing.ImagesBase64)
+                {
+                    if (!string.IsNullOrWhiteSpace(base64) && base64.StartsWith("data:image"))
+                    {
+                        var format = ImageUtils.GetImageFormat(base64);
+                        var filename = $"{Guid.NewGuid()}.{format}";
+                        var url = ImageUtils.UploadImage(base64, filename, "marketplace/images");
+                        listing.PostImage.Add(new PostImage { ImagePath = url });
+                    }
+                }
+            }
+
             context.PostedItem.Add(listing);
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
@@ -74,13 +101,27 @@ namespace Gordon360.Services
             listing.ConditionId = updatedListing.ConditionId;
             listing.StatusId = updatedListing.StatusId;
 
-            // Update images
-            listing.PostImage.Clear();
-            if (updatedListing.ImagePaths != null)
+            // Remove old images from disk if needed
+            foreach (var img in listing.PostImage)
             {
-                foreach (var path in updatedListing.ImagePaths)
+                if (!string.IsNullOrEmpty(img.ImagePath))
                 {
-                    listing.PostImage.Add(new PostImage { ImagePath = path });
+                    ImageUtils.DeleteImage(img.ImagePath, "marketplace/images");
+                }
+            }
+            listing.PostImage.Clear();
+
+            if (updatedListing.ImagesBase64 != null)
+            {
+                foreach (var base64 in updatedListing.ImagesBase64)
+                {
+                    if (!string.IsNullOrWhiteSpace(base64) && base64.StartsWith("data:image"))
+                    {
+                        var format = ImageUtils.GetImageFormat(base64);
+                        var filename = $"{Guid.NewGuid()}.{format}";
+                        var url = ImageUtils.UploadImage(base64, filename, "marketplace/images");
+                        listing.PostImage.Add(new PostImage { ImagePath = url });
+                    }
                 }
             }
 
@@ -93,10 +134,21 @@ namespace Gordon360.Services
         /// </summary>
         public async Task DeleteListingAsync(int listingId)
         {
-            var listing = context.PostedItem.Find(listingId);
+            var listing = context.PostedItem
+                .Include(x => x.PostImage)
+                .FirstOrDefault(x => x.Id == listingId);
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
+            }
+
+            // Delete images from disk
+            foreach (var img in listing.PostImage)
+            {
+                if (!string.IsNullOrEmpty(img.ImagePath))
+                {
+                    ImageUtils.DeleteImage(img.ImagePath, "marketplace/images");
+                }
             }
 
             context.PostedItem.Remove(listing);
