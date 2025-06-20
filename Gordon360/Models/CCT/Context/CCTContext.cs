@@ -842,8 +842,6 @@ public partial class CCTContext : DbContext
             entity.ToView("Student", "dbo");
 
             entity.Property(e => e.BuildingDescription).IsFixedLength();
-            entity.Property(e => e.ENTRANCE_TRM).IsFixedLength();
-            entity.Property(e => e.ENTRANCE_YR).IsFixedLength();
         });
 
         modelBuilder.Entity<StudentNewsExpiration>(entity =>

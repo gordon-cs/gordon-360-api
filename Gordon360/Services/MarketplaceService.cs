@@ -1,3 +1,4 @@
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Exceptions;
@@ -113,7 +114,7 @@ namespace Gordon360.Services
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
             }
 
-            listing.ItemStatus = status;
+            listing.Status = status;
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
         }
