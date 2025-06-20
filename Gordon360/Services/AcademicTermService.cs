@@ -9,29 +9,22 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class AcademicTermService : IAcademicTermService
+public class AcademicTermService(CCTContext context) : IAcademicTermService
 {
-    private readonly CCTContext _context;
-
-    public AcademicTermService(CCTContext context)
-    {
-        _context = context;
-    }
 
     public async Task<YearTermTable?> GetCurrentTermAsync()
     {
-        var today = DateTime.Today;
+        var terms = await context.YearTermTable
+            .FromSqlRaw("EXEC dbo.GetCurrentTerm")
+            .AsNoTracking()
+            .ToListAsync();
 
-        return await _context.YearTermTable
-            .Where(t => t.TRM_BEGIN_DTE <= today &&
-                        (t.TRM_CDE == "FA" || t.TRM_CDE == "SP" || t.TRM_CDE == "SU"))
-            .OrderByDescending(t => t.TRM_BEGIN_DTE)
-            .FirstOrDefaultAsync();
+        return terms.FirstOrDefault();
     }
 
     public async Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync()
     {
-        var terms = await _context.YearTermTable
+        var terms = await context.YearTermTable
             .OrderByDescending(t => t.TRM_BEGIN_DTE)
             .ToListAsync();
 
