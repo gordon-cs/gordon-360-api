@@ -7,11 +7,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 using Gordon360.Utilities; // For ImageUtils
 
 namespace Gordon360.Services
 {
-    public class MarketplaceService(CCTContext context) : IMarketplaceService
+    public class MarketplaceService(
+        CCTContext context,
+        IWebHostEnvironment webHostEnvironment,
+        ServerUtils serverUtils
+    ) : IMarketplaceService
     {
         /// <summary>
         /// Get all marketplace listings.
@@ -212,7 +218,7 @@ namespace Gordon360.Services
 
         private string GetImagePath(string filename)
         {
-            var directoryPath = Path.Combine(AppContext.BaseDirectory, "browseable", "uploads", "marketplace", "images");
+            var directoryPath = Path.Combine(webHostEnvironment.ContentRootPath, "browseable", "uploads", "marketplace", "images");
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
@@ -222,7 +228,9 @@ namespace Gordon360.Services
 
         private string GetImageURL(string filename)
         {
-            // You may need to inject a serverUtils or similar to get the server address
+            // If you want a full URL, use serverUtils.GetAddress() here
+            // var serverAddress = serverUtils.GetAddress();
+            // return $"{serverAddress}/browseable/uploads/marketplace/images/{filename}";
             return $"browseable/uploads/marketplace/images/{filename}";
         }
     }
