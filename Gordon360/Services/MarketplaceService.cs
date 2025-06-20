@@ -68,9 +68,11 @@ namespace Gordon360.Services
                 {
                     if (!string.IsNullOrWhiteSpace(base64) && base64.StartsWith("data:image"))
                     {
-                        var format = ImageUtils.GetImageFormat(base64);
-                        var filename = $"{Guid.NewGuid()}.{format}";
-                        var url = ImageUtils.UploadImage(base64, filename, "marketplace/images");
+                        var (extension, format, data) = ImageUtils.GetImageFormat(base64);
+                        var filename = $"{Guid.NewGuid():N}.{extension}";
+                        var imagePath = GetImagePath(filename); // Save to disk
+                        var url = GetImageURL(filename);        // Store this in DB
+                        ImageUtils.UploadImage(imagePath, data, format);
                         listing.PostImage.Add(new PostImage { ImagePath = url });
                     }
                 }
@@ -106,7 +108,7 @@ namespace Gordon360.Services
             {
                 if (!string.IsNullOrEmpty(img.ImagePath))
                 {
-                    ImageUtils.DeleteImage(img.ImagePath, "marketplace/images");
+                    ImageUtils.DeleteImage(img.ImagePath);
                 }
             }
             listing.PostImage.Clear();
@@ -117,9 +119,11 @@ namespace Gordon360.Services
                 {
                     if (!string.IsNullOrWhiteSpace(base64) && base64.StartsWith("data:image"))
                     {
-                        var format = ImageUtils.GetImageFormat(base64);
-                        var filename = $"{Guid.NewGuid()}.{format}";
-                        var url = ImageUtils.UploadImage(base64, filename, "marketplace/images");
+                        var (extension, format, data) = ImageUtils.GetImageFormat(base64);
+                        var filename = $"{Guid.NewGuid():N}.{extension}";
+                        var imagePath = GetImagePath(filename); // Save to disk
+                        var url = GetImageURL(filename);        // Store this in DB
+                        ImageUtils.UploadImage(imagePath, data, format);
                         listing.PostImage.Add(new PostImage { ImagePath = url });
                     }
                 }
@@ -147,7 +151,7 @@ namespace Gordon360.Services
             {
                 if (!string.IsNullOrEmpty(img.ImagePath))
                 {
-                    ImageUtils.DeleteImage(img.ImagePath, "marketplace/images");
+                    ImageUtils.DeleteImage(img.ImagePath);
                 }
             }
 
@@ -204,6 +208,22 @@ namespace Gordon360.Services
                 query = query.Where(x => x.Price <= maxPrice.Value);
 
             return query.Select(item => (MarketplaceListingViewModel)item).ToList();
+        }
+
+        private string GetImagePath(string filename)
+        {
+            var directoryPath = Path.Combine(AppContext.BaseDirectory, "browseable", "uploads", "marketplace", "images");
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            return Path.Combine(directoryPath, filename);
+        }
+
+        private string GetImageURL(string filename)
+        {
+            // You may need to inject a serverUtils or similar to get the server address
+            return $"browseable/uploads/marketplace/images/{filename}";
         }
     }
 }
