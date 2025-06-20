@@ -6,6 +6,8 @@ namespace Gordon360.Models.ViewModels;
 public class UserCoursesViewModel
 {
     public string SessionCode { get; set; }
+    public string YR_CDE { get; set; }
+    public string TRM_CDE { get; set; } 
     public string CRS_CDE { get; set; }
     public string CRS_TITLE { get; set; }
     public string BLDG_CDE { get; set; }
@@ -43,6 +45,8 @@ public class UserCoursesViewModel
         UserCoursesViewModel vm = new UserCoursesViewModel
         {
             SessionCode = code,
+            YR_CDE = course.YR_CDE,
+            TRM_CDE = course.TRM_CDE,
             CRS_CDE = course.CRS_CDE,
             CRS_TITLE = course.CRS_TITLE,
             BLDG_CDE = course.BLDG_CDE,

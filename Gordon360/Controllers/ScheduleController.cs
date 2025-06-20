@@ -15,15 +15,15 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
 {
 
     /// <summary>
-    ///  Gets all session objects for a user
+    ///  Gets all term objects for a user
     /// </summary>
-    /// <returns>A IEnumerable of session objects as well as the schedules</returns>
+    /// <returns>A IEnumerable of term objects as well as the schedules</returns>
     [HttpGet]
     [Route("{username}/allcourses")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
-    public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
+    public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCourses(string username)
     {
-        IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+        IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesAsync(username);
         return Ok(result);
 
     }

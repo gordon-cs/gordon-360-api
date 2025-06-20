@@ -12,6 +12,7 @@ public static class ServicesExtensions
     public static IServiceCollection Add360Services(this IServiceCollection services)
     {
         services.AddScoped<IAcademicCheckInService, AcademicCheckInService>();
+        services.AddScoped<IAcademicTermService, AcademicTermService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IAddressesService, AddressesService>();
