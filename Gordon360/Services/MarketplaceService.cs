@@ -15,7 +15,12 @@ namespace Gordon360.Services
         /// </summary>
         public IEnumerable<MarketplaceListingViewModel> GetAllListings()
         {
-            var listings = context.PostedItem.Select(item => (MarketplaceListingViewModel)item);
+            var listings = context.PostedItem
+                .Include(x => x.Category)
+                .Include(x => x.Condition)
+                .Include(x => x.Status)
+                .Include(x => x.PostImage)
+                .Select(item => (MarketplaceListingViewModel)item);
             return listings;
         }
 
@@ -24,7 +29,12 @@ namespace Gordon360.Services
         /// </summary>
         public MarketplaceListingViewModel GetListingById(int listingId)
         {
-            var listing = context.PostedItem.Find(listingId);
+            var listing = context.PostedItem
+                .Include(x => x.Category)
+                .Include(x => x.Condition)
+                .Include(x => x.Status)
+                .Include(x => x.PostImage)
+                .FirstOrDefault(x => x.Id == listingId);
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
@@ -48,21 +58,30 @@ namespace Gordon360.Services
         /// </summary>
         public async Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUploadViewModel updatedListing)
         {
-            var listing = context.PostedItem.Find(listingId);
+            var listing = context.PostedItem
+                .Include(x => x.PostImage)
+                .FirstOrDefault(x => x.Id == listingId);
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
             }
 
-            listing.ItemName = updatedListing.ItemName;
-            listing.ItemPrice = updatedListing.ItemPrice;
-            listing.ItemCategory = updatedListing.ItemCategory;
-            listing.ItemDetail = updatedListing.ItemDetail;
-            listing.Condition = updatedListing.Condition;
-            listing.ItemStatus = updatedListing.ItemStatus;
-            listing.ImagePath1 = updatedListing.ImagePath1;
-            listing.ImagePath2 = updatedListing.ImagePath2 ?? string.Empty; // Handle null values
-            listing.ImagePath3 = updatedListing.ImagePath3 ?? string.Empty; // Handle null values
+            listing.Name = updatedListing.Name;
+            listing.Price = updatedListing.Price;
+            listing.CategoryId = updatedListing.CategoryId;
+            listing.Detail = updatedListing.Detail;
+            listing.ConditionId = updatedListing.ConditionId;
+            listing.StatusId = updatedListing.StatusId;
+
+            // Update images
+            listing.PostImage.Clear();
+            if (updatedListing.ImagePaths != null)
+            {
+                foreach (var path in updatedListing.ImagePaths)
+                {
+                    listing.PostImage.Add(new PostImage { ImagePath = path });
+                }
+            }
 
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
