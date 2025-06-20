@@ -59,10 +59,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[PostedItem]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[REQUEST]",
          "ObjectType": 0
       },
@@ -132,6 +128,26 @@
       },
       {
          "Name": "[LostAndFound].[MissingReports]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[ItemCategory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[ItemCondition]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[ItemStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[PostedItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[PostImage]",
          "ObjectType": 0
       },
       {
