@@ -466,5 +466,6 @@ namespace Gordon360.Services
         Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUploadViewModel updatedListing);
         Task DeleteListingAsync(int listingId);
         Task<MarketplaceListingViewModel> ChangeListingStatusAsync(int listingId, string status);
+        IEnumerable<MarketplaceListingViewModel> GetFilteredListings(int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice);
     }
 }

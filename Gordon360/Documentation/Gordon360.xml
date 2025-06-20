@@ -766,6 +766,16 @@
             <param name="status">The new status.</param>
             <returns>The updated listing.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetFilteredListings(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+            <summary>
+            Get marketplace listings filtered by category, status, and price.
+            </summary>
+            <param name="categoryId">Optional category ID.</param>
+            <param name="statusId">Optional status ID.</param>
+            <param name="minPrice">Optional minimum price.</param>
+            <param name="maxPrice">Optional maximum price.</param>
+            <returns>Filtered marketplace listings.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
@@ -2886,6 +2896,11 @@
         <member name="M:Gordon360.Services.MarketplaceService.ChangeListingStatusAsync(System.Int32,System.String)">
             <summary>
             Change the status of a marketplace listing.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.GetFilteredListings(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+            <summary>
+            Get filtered marketplace listings based on criteria.
             </summary>
         </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
