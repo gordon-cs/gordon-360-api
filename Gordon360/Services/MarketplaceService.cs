@@ -108,13 +108,21 @@ namespace Gordon360.Services
         /// </summary>
         public async Task<MarketplaceListingViewModel> ChangeListingStatusAsync(int listingId, string status)
         {
-            var listing = context.PostedItem.Find(listingId);
+            var listing = context.PostedItem
+                .Include(x => x.Status)
+                .FirstOrDefault(x => x.Id == listingId);
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
             }
 
-            listing.Status = status;
+            var statusEntity = context.ItemStatus.FirstOrDefault(s => s.StatusName == status);
+            if (statusEntity == null)
+            {
+                throw new ResourceNotFoundException { ExceptionMessage = "Status not found." };
+            }
+
+            listing.StatusId = statusEntity.Id;
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
         }
