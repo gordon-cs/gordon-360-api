@@ -126,5 +126,32 @@ namespace Gordon360.Services
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
         }
+
+        /// <summary>
+        /// Get filtered marketplace listings based on criteria.
+        /// </summary>
+        public IEnumerable<MarketplaceListingViewModel> GetFilteredListings(int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice)
+        {
+            var query = context.PostedItem
+                .Include(x => x.Category)
+                .Include(x => x.Condition)
+                .Include(x => x.Status)
+                .Include(x => x.PostImage)
+                .AsQueryable();
+
+            if (categoryId.HasValue)
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+
+            if (statusId.HasValue)
+                query = query.Where(x => x.StatusId == statusId.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(x => x.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(x => x.Price <= maxPrice.Value);
+
+            return query.Select(item => (MarketplaceListingViewModel)item).ToList();
+        }
     }
 }

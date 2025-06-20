@@ -93,5 +93,24 @@ namespace Gordon360.Controllers
             var result = await marketplaceService.ChangeListingStatusAsync(listingId, status);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get marketplace listings filtered by category, status, and price.
+        /// </summary>
+        /// <param name="categoryId">Optional category ID.</param>
+        /// <param name="statusId">Optional status ID.</param>
+        /// <param name="minPrice">Optional minimum price.</param>
+        /// <param name="maxPrice">Optional maximum price.</param>
+        /// <returns>Filtered marketplace listings.</returns>
+        [HttpGet("filter")]
+        public ActionResult<IEnumerable<MarketplaceListingViewModel>> GetFilteredListings(
+            [FromQuery] int? categoryId,
+            [FromQuery] int? statusId,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice)
+        {
+            var result = marketplaceService.GetFilteredListings(categoryId, statusId, minPrice, maxPrice);
+            return Ok(result);
+        }
     }
 }
