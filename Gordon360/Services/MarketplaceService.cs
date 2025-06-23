@@ -31,7 +31,26 @@ namespace Gordon360.Services
                 .Include(x => x.Condition)
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
-                .Select(item => (MarketplaceListingViewModel)item);
+        .Select(item => new MarketplaceListingViewModel
+        {
+            Id = item.Id,
+            PostedAt = item.PostedAt,
+            Name = item.Name,
+            Price = item.Price,
+            CategoryId = item.CategoryId,
+            CategoryName = item.Category.CategoryName,
+            Detail = item.Detail,
+            ConditionId = item.ConditionId,
+            ConditionName = item.Condition.ConditionName,
+            StatusId = item.StatusId,
+            StatusName = item.Status.StatusName,
+            ImagePaths = item.PostImage.Select(img => img.ImagePath).ToList(),
+            PosterUsername = context.ACCOUNT
+                .Where(a => a.gordon_id == item.PostedById.ToString())
+                .Select(a => a.AD_Username)
+                .FirstOrDefault()
+        })
+        .ToList();
             return listings;
         }
 
@@ -45,12 +64,31 @@ namespace Gordon360.Services
                 .Include(x => x.Condition)
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
-                .FirstOrDefault(x => x.Id == listingId);
+        .FirstOrDefault(x => x.Id == listingId);
+
             if (listing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
             }
-            return (MarketplaceListingViewModel)listing;
+
+            var account = context.ACCOUNT.FirstOrDefault(a => a.gordon_id == listing.PostedById.ToString());
+
+            return new MarketplaceListingViewModel
+            {
+                Id = listing.Id,
+                PostedAt = listing.PostedAt,
+                Name = listing.Name,
+                Price = listing.Price,
+                CategoryId = listing.CategoryId,
+                CategoryName = listing.Category?.CategoryName,
+                Detail = listing.Detail,
+                ConditionId = listing.ConditionId,
+                ConditionName = listing.Condition?.ConditionName,
+                StatusId = listing.StatusId,
+                StatusName = listing.Status?.StatusName,
+                ImagePaths = listing.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
+                PosterUsername = account?.AD_Username
+            };
         }
 
         /// <summary>

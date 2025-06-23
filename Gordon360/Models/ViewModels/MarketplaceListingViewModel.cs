@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
+
 
 namespace Gordon360.Models.ViewModels
 {
@@ -26,7 +28,6 @@ namespace Gordon360.Models.ViewModels
             return new MarketplaceListingViewModel
             {
                 Id = item.Id,
-                PostedById = item.PostedById,
                 PostedAt = item.PostedAt,
                 Name = item.Name,
                 Price = item.Price,
@@ -38,7 +39,6 @@ namespace Gordon360.Models.ViewModels
                 StatusId = item.StatusId,
                 StatusName = item.Status?.StatusName,
                 ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
-                PosterUsername = context.ACCOUNT.FirstOrDefault(a => a.gordon_id == item.PostedById.ToString()).AD_Username
             };
         }
     }
