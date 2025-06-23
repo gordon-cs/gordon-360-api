@@ -1,4 +1,5 @@
-﻿using Gordon360.Authorization;
+﻿using System;
+using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
@@ -13,6 +14,20 @@ namespace Gordon360.Controllers;
 [Route("api/[controller]")]
 public class ScheduleController(IScheduleService scheduleService) : GordonControllerBase
 {
+    /// <summary>
+    ///  Gets all session objects for a user
+    /// </summary>
+    /// <returns>A IEnumerable of session objects as well as the schedules</returns>
+    [HttpGet]
+    [Route("{username}/allcourses-by-session")]
+    [Obsolete("This method is deprecated. Use '/{username}/allcourses' which is grouped by term.")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
+    public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCoursesBySession(string username)
+    {
+        IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesBySessionAsync(username);
+        return Ok(result);
+
+    }
 
     /// <summary>
     ///  Gets all term objects for a user
@@ -23,7 +38,7 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
     public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCourses(string username)
     {
-        IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+        IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesByTermAsync(username);
         return Ok(result);
 
     }
