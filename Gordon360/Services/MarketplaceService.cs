@@ -108,7 +108,7 @@ namespace Gordon360.Services
                 CategoryId = newListing.CategoryId,
                 Detail = newListing.Detail,
                 ConditionId = newListing.ConditionId,
-                StatusId = newListing.StatusId,
+                StatusId = 1,
                 PostImage = new List<PostImage>()
             };
 
@@ -151,7 +151,6 @@ namespace Gordon360.Services
             listing.CategoryId = updatedListing.CategoryId;
             listing.Detail = updatedListing.Detail;
             listing.ConditionId = updatedListing.ConditionId;
-            listing.StatusId = updatedListing.StatusId;
 
             // Remove old images from disk if needed
             foreach (var img in listing.PostImage)
