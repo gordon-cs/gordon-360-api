@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Extensions.System;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
@@ -23,20 +22,7 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
-        var groups = AuthUtils.GetGroups(User);
-        var authenticatedUsername = AuthUtils.GetUsername(User);
-    
-
-        IEnumerable<CoursesBySessionViewModel> result;
-       if (authenticatedUsername.EqualsIgnoreCase(username) || groups.Contains(AuthGroup.FacStaff))
-        {
-            result = await scheduleService.GetAllCoursesAsync(username);
-        }
-        else
-        {
-            result = await scheduleService.GetAllInstructorCoursesAsync(username);
-        }
-
+        IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
 
         return Ok(result);
 
