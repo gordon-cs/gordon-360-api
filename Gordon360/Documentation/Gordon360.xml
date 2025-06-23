@@ -2878,7 +2878,7 @@
             Get a specific marketplace listing by ID.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MarketplaceService.CreateListingAsync(Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel)">
+        <member name="M:Gordon360.Services.MarketplaceService.CreateListingAsync(Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel,System.String)">
             <summary>
             Create a new marketplace listing.
             </summary>
