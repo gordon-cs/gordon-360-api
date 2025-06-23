@@ -10,13 +10,15 @@ using System;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Gordon360.Utilities; // For ImageUtils
+using Gordon360.Services; // For IAccountService
 
 namespace Gordon360.Services
 {
     public class MarketplaceService(
         CCTContext context,
         IWebHostEnvironment webHostEnvironment,
-        ServerUtils serverUtils
+        ServerUtils serverUtils,
+        IAccountService accountService // Inject this
     ) : IMarketplaceService
     {
         /// <summary>
@@ -54,11 +56,15 @@ namespace Gordon360.Services
         /// <summary>
         /// Create a new marketplace listing.
         /// </summary>
-        public async Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing)
+        public async Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing, string username)
         {
+            var account = accountService.GetAccountByUsername(username);
+            if (account == null)
+                throw new Exception("Account not found");
+
             var listing = new PostedItem
             {
-                PostedById = newListing.PostedById,
+                PostedById = int.Parse(account.GordonID), // Set automatically
                 Name = newListing.Name,
                 Price = newListing.Price,
                 CategoryId = newListing.CategoryId,

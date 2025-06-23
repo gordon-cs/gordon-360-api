@@ -6,7 +6,6 @@ namespace Gordon360.Models.ViewModels
 {
     public class MarketplaceListingUploadViewModel
     {
-        public int PostedById { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public int CategoryId { get; set; }

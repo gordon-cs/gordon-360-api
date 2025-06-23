@@ -49,7 +49,8 @@ namespace Gordon360.Controllers
         [Route("")]
         public async Task<ActionResult<MarketplaceListingViewModel>> CreateListing([FromBody] MarketplaceListingUploadViewModel newListing)
         {
-            var result = await marketplaceService.CreateListingAsync(newListing);
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var result = await marketplaceService.CreateListingAsync(newListing, authenticatedUserUsername);
             return CreatedAtAction(nameof(GetListingById), new { listingId = result.Id }, result);
         }
 

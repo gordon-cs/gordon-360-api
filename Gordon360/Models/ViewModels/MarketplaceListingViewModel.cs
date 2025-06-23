@@ -8,7 +8,6 @@ namespace Gordon360.Models.ViewModels
     public class MarketplaceListingViewModel
     {
         public int Id { get; set; }
-        public int PostedById { get; set; }
         public DateTime PostedAt { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
@@ -20,6 +19,7 @@ namespace Gordon360.Models.ViewModels
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public List<string> ImagePaths { get; set; }
+        public string PosterUsername { get; set;  }
 
         public static implicit operator MarketplaceListingViewModel(PostedItem item)
         {
@@ -37,7 +37,8 @@ namespace Gordon360.Models.ViewModels
                 ConditionName = item.Condition?.ConditionName,
                 StatusId = item.StatusId,
                 StatusName = item.Status?.StatusName,
-                ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>()
+                ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
+                PosterUsername = context.ACCOUNT.FirstOrDefault(a => a.gordon_id == item.PostedById.ToString()).AD_Username
             };
         }
     }
