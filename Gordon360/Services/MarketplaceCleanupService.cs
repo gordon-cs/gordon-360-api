@@ -1,9 +1,12 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Gordon360.Models.CCT.Context;
+using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
+using Gordon360.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Gordon360.Services;
 using System.Linq;
 
 public class MarketplaceCleanupService : BackgroundService
@@ -22,9 +25,9 @@ public class MarketplaceCleanupService : BackgroundService
             var now = DateTime.Now;
             var expired = _context.PostedItem
                 .Where(x =>
-                    (x.StatusID == 1 && x.PostedAt.AddDays(90) <= now) ||
-                    (x.StatusID == 2 && x.PostedAt.AddDays(30) <= now) ||
-                    (x.StatusID == 3 && x.PostedAt.AddDays(14) <= now)
+                    (x.StatusId == 1 && x.PostedAt.AddDays(90) <= now) ||
+                    (x.StatusId == 2 && x.PostedAt.AddDays(30) <= now) ||
+                    (x.StatusId == 3 && x.PostedAt.AddDays(14) <= now)
                 )
                 .ToList();
 
