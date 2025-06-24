@@ -8,14 +8,8 @@ using System.Linq;
 
 
 
-public class PosterCleanupService : BackgroundService
+public class PosterCleanupService(IServiceProvider _services) : BackgroundService
 {
-    private readonly IServiceProvider _services;
-
-    public PosterCleanupService(IServiceProvider services)
-    {
-        _services = services;
-    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -34,7 +28,7 @@ public class PosterCleanupService : BackgroundService
             }
 
             // Wait 24 hours
-            await Task.Delay(TimeSpan.FromDays(1), stoppingToken);
+            await Task.Delay(TimeSpan.FromDays(1));
         }
     }
 }
