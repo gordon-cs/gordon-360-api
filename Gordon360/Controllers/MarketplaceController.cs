@@ -64,6 +64,19 @@ namespace Gordon360.Controllers
         [Route("{listingId}")]
         public async Task<ActionResult<MarketplaceListingViewModel>> UpdateListing(int listingId, [FromBody] MarketplaceListingUploadViewModel updatedListing)
         {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
+            var listing = marketplaceService.GetListingById(listingId);
+            if (listing == null)
+                return NotFound();
+
+            // Only original poster or SiteAdmin can update
+            if (!string.Equals(listing.PosterUsername, authenticatedUserUsername, StringComparison.OrdinalIgnoreCase)
+                && !viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
+                return Forbid();
+            }
+
             var result = await marketplaceService.UpdateListingAsync(listingId, updatedListing);
             return Ok(result);
         }
@@ -77,6 +90,19 @@ namespace Gordon360.Controllers
         [Route("{listingId}")]
         public async Task<ActionResult> DeleteListing(int listingId)
         {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
+            var listing = marketplaceService.GetListingById(listingId);
+            if (listing == null)
+                return NotFound();
+
+            // Only original poster or SiteAdmin can delete
+            if (!string.Equals(listing.PosterUsername, authenticatedUserUsername, StringComparison.OrdinalIgnoreCase)
+                && !viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
+                return Forbid();
+            }
+
             await marketplaceService.DeleteListingAsync(listingId);
             return Ok();
         }
@@ -91,6 +117,19 @@ namespace Gordon360.Controllers
         [Route("{listingId}/status")]
         public async Task<ActionResult<MarketplaceListingViewModel>> ChangeListingStatus(int listingId, [FromBody] string status)
         {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var viewerGroups = AuthUtils.GetGroups(User);
+            var listing = marketplaceService.GetListingById(listingId);
+            if (listing == null)
+                return NotFound();
+
+            // Only original poster or SiteAdmin can change status
+            if (!string.Equals(listing.PosterUsername, authenticatedUserUsername, StringComparison.OrdinalIgnoreCase)
+                && !viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
+                return Forbid();
+            }
+
             var result = await marketplaceService.ChangeListingStatusAsync(listingId, status);
             return Ok(result);
         }

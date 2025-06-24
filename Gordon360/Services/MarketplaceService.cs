@@ -31,26 +31,27 @@ namespace Gordon360.Services
                 .Include(x => x.Condition)
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
-        .Select(item => new MarketplaceListingViewModel
-        {
-            Id = item.Id,
-            PostedAt = item.PostedAt,
-            Name = item.Name,
-            Price = item.Price,
-            CategoryId = item.CategoryId,
-            CategoryName = item.Category.CategoryName,
-            Detail = item.Detail,
-            ConditionId = item.ConditionId,
-            ConditionName = item.Condition.ConditionName,
-            StatusId = item.StatusId,
-            StatusName = item.Status.StatusName,
-            ImagePaths = item.PostImage.Select(img => img.ImagePath).ToList(),
-            PosterUsername = context.ACCOUNT
-                .Where(a => a.gordon_id == item.PostedById.ToString())
-                .Select(a => a.AD_Username)
-                .FirstOrDefault()
-        })
-        .ToList();
+                .Where(item => item.StatusId != 3) // Exclude statusid 3
+                .Select(item => new MarketplaceListingViewModel
+                {
+                    Id = item.Id,
+                    PostedAt = item.PostedAt,
+                    Name = item.Name,
+                    Price = item.Price,
+                    CategoryId = item.CategoryId,
+                    CategoryName = item.Category.CategoryName,
+                    Detail = item.Detail,
+                    ConditionId = item.ConditionId,
+                    ConditionName = item.Condition.ConditionName,
+                    StatusId = item.StatusId,
+                    StatusName = item.Status.StatusName,
+                    ImagePaths = item.PostImage.Select(img => img.ImagePath).ToList(),
+                    PosterUsername = context.ACCOUNT
+                        .Where(a => a.gordon_id == item.PostedById.ToString())
+                        .Select(a => a.AD_Username)
+                        .FirstOrDefault()
+                })
+                .ToList();
             return listings;
         }
 
@@ -228,6 +229,7 @@ namespace Gordon360.Services
             }
 
             listing.StatusId = statusEntity.Id;
+            listing.PostedAt = DateTime.Now;
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
         }
@@ -242,6 +244,7 @@ namespace Gordon360.Services
                 .Include(x => x.Condition)
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
+                .Where(x => x.StatusId != 3) // Exclude statusid 3
                 .AsQueryable();
 
             if (categoryId.HasValue)
