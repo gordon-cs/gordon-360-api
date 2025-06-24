@@ -38,7 +38,7 @@ public class MarketplaceCleanupService : BackgroundService
                 }
             }
 
-            await Task.Delay(TimeSpan.FromHours(1), stoppingToken); // Run every hour
+            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // Run every hour
         }
     }
 }
