@@ -84,8 +84,6 @@ public class PosterService(CCTContext context,
         return GetPosters().Where(p => p.ID == posterID).FirstOrDefault();
     }
 
-
-
     public async Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster)
     {
         var poster = newPoster.ToPoster();
