@@ -5,7 +5,6 @@ using Gordon360.Controllers;
 using Gordon360.Services;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
-using Gordon360.Tests.Fakes;
 using System.Linq;
 
 namespace Gordon360.Tests.Controllers_Test
@@ -21,10 +20,40 @@ namespace Gordon360.Tests.Controllers_Test
             _controller = new EventsController(_mockService.Object);
         }
 
+        private EventViewModel GetSampleEventViewModel() => new EventViewModel
+        {
+            Event_ID = "E1",
+            Event_Name = "Sample Event",
+            Event_Title = "Sample Title",
+            Event_Type_Name = "Type1",
+            HasCLAWCredit = true,
+            IsPublic = true,
+            Description = "Sample Description",
+            StartDate = "2024-01-01T10:00:00",
+            EndDate = "2024-01-01T12:00:00",
+            Location = "Chapel",
+            Organization = "Org1"
+        };
+
+        private AttendedEventViewModel GetSampleAttendedEventViewModel() => new AttendedEventViewModel
+        {
+            LiveID = "L1",
+            CHDate = System.DateTime.Now,
+            CHTermCD = "202401",
+            Required = 1,
+            Event_Name = "Attended Event",
+            Event_Title = "Attended Title",
+            Description = "Attended Description",
+            Organization = "Org2",
+            StartDate = "2024-02-01T10:00:00",
+            EndDate = "2024-02-01T12:00:00",
+            Location = "Auditorium"
+        };
+
         [Fact]
         public void GetEventsByTerm_ReturnsOkWithEvents()
         {
-            var attendedEvents = FakeData.CreateAttendedEventList(1);
+            var attendedEvents = new List<AttendedEventViewModel> { GetSampleAttendedEventViewModel() };
             _mockService.Setup(s => s.GetEventsForStudentByTerm(It.IsAny<string>(), "202401")).Returns(attendedEvents);
 
             var result = _controller.GetEventsByTerm("202401");
@@ -55,7 +84,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void GetEventsByTerm_ReturnsOkWithMultipleItems()
         {
-            var attendedEvents = FakeData.CreateAttendedEventList(2);
+            var attendedEvents = new List<AttendedEventViewModel> { GetSampleAttendedEventViewModel(), GetSampleAttendedEventViewModel() };
             _mockService.Setup(s => s.GetEventsForStudentByTerm(It.IsAny<string>(), "202401")).Returns(attendedEvents);
 
             var result = _controller.GetEventsByTerm("202401");
@@ -66,7 +95,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void GetAllEvents_ReturnsOkWithEvents()
         {
-            var events = FakeData.CreateEventList(1);
+            var events = new List<EventViewModel> { GetSampleEventViewModel() };
             _mockService.Setup(s => s.GetAllEvents()).Returns(events);
 
             var result = _controller.GetAllEvents();
@@ -97,7 +126,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void GetAllEvents_ReturnsOkWithMultipleItems()
         {
-            var events = FakeData.CreateEventList(2);
+            var events = new List<EventViewModel> { GetSampleEventViewModel(), GetSampleEventViewModel() };
             _mockService.Setup(s => s.GetAllEvents()).Returns(events);
 
             var result = _controller.GetAllEvents();
@@ -108,7 +137,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void GetAllChapelEvents_ReturnsOkWithEvents()
         {
-            var events = FakeData.CreateEventList(1);
+            var events = new List<EventViewModel> { GetSampleEventViewModel() };
             _mockService.Setup(s => s.GetCLAWEvents()).Returns(events);
 
             var result = _controller.GetAllChapelEvents();
@@ -139,7 +168,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void GetAllChapelEvents_ReturnsOkWithMultipleItems()
         {
-            var events = FakeData.CreateEventList(2);
+            var events = new List<EventViewModel> { GetSampleEventViewModel(), GetSampleEventViewModel() };
             _mockService.Setup(s => s.GetCLAWEvents()).Returns(events);
 
             var result = _controller.GetAllChapelEvents();
@@ -150,7 +179,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void GetAllPublicEvents_ReturnsOkWithEvents()
         {
-            var events = FakeData.CreateEventList(1);
+            var events = new List<EventViewModel> { GetSampleEventViewModel() };
             _mockService.Setup(s => s.GetPublicEvents()).Returns(events);
 
             var result = _controller.GetAllPublicEvents();
@@ -181,7 +210,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void GetAllPublicEvents_ReturnsOkWithMultipleItems()
         {
-            var events = FakeData.CreateEventList(2);
+            var events = new List<EventViewModel> { GetSampleEventViewModel(), GetSampleEventViewModel() };
             _mockService.Setup(s => s.GetPublicEvents()).Returns(events);
 
             var result = _controller.GetAllPublicEvents();
@@ -202,7 +231,7 @@ namespace Gordon360.Tests.Controllers_Test
                 HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() { User = user }
             };
 
-            var attendedEvents = FakeData.CreateAttendedEventList(1);
+            var attendedEvents = new List<AttendedEventViewModel> { GetSampleAttendedEventViewModel() };
             _mockService.Setup(s => s.GetEventsForStudentByTerm("testuser", "202401")).Returns(attendedEvents);
 
             // Act

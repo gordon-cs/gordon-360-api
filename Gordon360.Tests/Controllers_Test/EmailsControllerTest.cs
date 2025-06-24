@@ -5,7 +5,6 @@ using Gordon360.Controllers;
 using Gordon360.Services;
 using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
-using Gordon360.Tests.Fakes;
 
 namespace Gordon360.Tests.Controllers_Test
 {
@@ -20,10 +19,27 @@ namespace Gordon360.Tests.Controllers_Test
             _controller = new EmailsController(_mockService.Object);
         }
 
+        private EmailViewModel GetSampleEmailViewModel() => new EmailViewModel
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john.doe@gordon.edu",
+            Description = "Member"
+        };
+
+        private EmailContentViewModel GetSampleEmailContent() => new EmailContentViewModel
+        {
+            ToAddress = "recipient@gordon.edu",
+            FromAddress = "sender@gordon.edu",
+            Subject = "Test Subject",
+            Content = "Test Content",
+            Password = "password123"
+        };
+
         [Fact]
         public void GetEmailsForActivity_ReturnsOkWithEmails()
         {
-            var emails = FakeData.CreateEmailList(1);
+            var emails = new List<EmailViewModel> { GetSampleEmailViewModel() };
             _mockService.Setup(s => s.GetEmailsForActivity("ACT123", null, null)).Returns(emails);
 
             var result = _controller.GetEmailsForActivity("ACT123");
@@ -34,7 +50,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void DEPRECATED_GetEmailsForActivity_ReturnsOkWithEmails()
         {
-            var emails = FakeData.CreateEmailList(1);
+            var emails = new List<EmailViewModel> { GetSampleEmailViewModel() };
             _mockService.Setup(s => s.GetEmailsForActivity("ACT123", null, It.IsAny<List<string>>())).Returns(emails);
 
             var result = _controller.DEPRECATED_GetEmailsForActivity("ACT123", null, "Member");
@@ -45,14 +61,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void SendEmails_ReturnsOk()
         {
-            var email = new EmailContentViewModel
-            {
-                ToAddress = "recipient@gordon.edu",
-                FromAddress = "sender@gordon.edu",
-                Subject = "Test Subject",
-                Content = "Test Content",
-                Password = "password123"
-            };
+            var email = GetSampleEmailContent();
             _mockService.Setup(s => s.SendEmails(
                 It.IsAny<string[]>(),
                 email.FromAddress,
@@ -68,14 +77,7 @@ namespace Gordon360.Tests.Controllers_Test
         [Fact]
         public void SendEmailToActivity_ReturnsOk()
         {
-            var email = new EmailContentViewModel
-            {
-                ToAddress = "recipient@gordon.edu",
-                FromAddress = "sender@gordon.edu",
-                Subject = "Test Subject",
-                Content = "Test Content",
-                Password = "password123"
-            };
+            var email = GetSampleEmailContent();
             _mockService.Setup(s => s.SendEmailToActivity(
                 "ACT123",
                 "202401",
@@ -93,9 +95,11 @@ namespace Gordon360.Tests.Controllers_Test
         public void GetEmailsForActivity_WithMultipleParticipationTypes_ReturnsOkWithEmails()
         {
             var participationTypes = new List<string> { "Member", "Leader" };
-            var emails = FakeData.CreateEmailList(2);
-            emails[0].Description = "Member";
-            emails[1].Description = "Leader";
+            var emails = new List<EmailViewModel>
+            {
+                new EmailViewModel { FirstName = "John", LastName = "Doe", Email = "john.doe@gordon.edu", Description = "Member" },
+                new EmailViewModel { FirstName = "Jane", LastName = "Smith", Email = "jane.smith@gordon.edu", Description = "Leader" }
+            };
             _mockService.Setup(s => s.GetEmailsForActivity("ACT123", null, participationTypes)).Returns(emails);
 
             var result = _controller.GetEmailsForActivity("ACT123", null, participationTypes);

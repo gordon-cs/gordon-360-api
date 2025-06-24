@@ -94,9 +94,4 @@
     The following pre-build event is Windows-only. It generates version, hash, and date files for the build.
     Uncomment this block if you are building on Windows. Comment it out on macOS/Linux.
   -->
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell -Command \"(Get-Date).ToString('yyyy-MM-dd') | Out-File -Encoding ASCII %25tmp%25date.txt\"" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Exec Command="powershell -Command \"(git rev-parse --short HEAD) | Out-File -Encoding ASCII %25tmp%25hash.txt\"" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Exec Command="powershell -Command \"(Get-Content %25tmp%25date.txt) + ' ' + (Get-Content %25tmp%25hash.txt) | Out-File -Encoding ASCII version.txt\"" Condition=" '$(OS)' == 'Windows_NT' " />
-  </Target>
 </Project>
