@@ -94,7 +94,7 @@ try
 
     builder.Services.Add360Services();
     builder.Services.AddHostedService<EventCacheRefreshService>();
-    builder.services.AddHostedService<MarketplaceCleanupService>();
+    builder.Services.AddHostedService<MarketplaceCleanupService>();
     builder.Services.AddScoped<ServerUtils, ServerUtils>();
 
     builder.Services.AddMemoryCache();
