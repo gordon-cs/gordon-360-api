@@ -90,5 +90,21 @@ namespace Gordon360.Tests.Controllers_Test
             var result = _controller.SendEmailToActivity("ACT123", "202401", email);
             Assert.IsType<OkResult>(result);
         }
+
+        [Fact]
+        public void GetEmailsForActivity_WithMultipleParticipationTypes_ReturnsOkWithEmails()
+        {
+            var participationTypes = new List<string> { "Member", "Leader" };
+            var emails = new List<EmailViewModel>
+            {
+                new EmailViewModel { FirstName = "John", LastName = "Doe", Email = "john.doe@gordon.edu", Description = "Member" },
+                new EmailViewModel { FirstName = "Jane", LastName = "Smith", Email = "jane.smith@gordon.edu", Description = "Leader" }
+            };
+            _mockService.Setup(s => s.GetEmailsForActivity("ACT123", null, participationTypes)).Returns(emails);
+
+            var result = _controller.GetEmailsForActivity("ACT123", null, participationTypes);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(emails, okResult.Value);
+        }
     }
 } 

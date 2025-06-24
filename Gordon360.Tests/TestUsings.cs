@@ -1,3 +1,5 @@
+// This file will be renamed to TestUsings.cs
+// Add global using directives for common test namespaces
 
 global using Xunit;
 global using Moq;
@@ -18,5 +20,6 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using System.Security.Claims;
 global using Gordon360.Enums;
+global using Gordon360.Tests.Fakes;
 
 
