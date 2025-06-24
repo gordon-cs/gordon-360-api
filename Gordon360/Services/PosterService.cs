@@ -57,7 +57,8 @@ public class PosterService(CCTContext context,
             .ThenBy(p => p.ExpirationDate);
     }
 
-    //currently will only get posters if someone is signed up for a club, can be modified to include all posters but prioritize 
+    // Currently will only get posters if someone is signed up for a club.
+    // Can be modified to include all posters but prioritize personalized posters.
     //personalized posters
     public IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username)
     {
