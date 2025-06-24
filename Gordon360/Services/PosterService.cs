@@ -127,24 +127,17 @@ public class PosterService(CCTContext context,
 
             string? imagePath = null;
 
-            if (poster.ImagePath is not null)
+           if (poster.ImagePath is not null)
             {
-                imagePath = GetImagePath(Path.GetFileName(poster.ImagePath));
-                ImageUtils.DeleteImage(imagePath);
-                var filename = $"{Guid.NewGuid():N}.{extension}";
-                poster.ImagePath = GetImageURL(filename);
-                imagePath = GetImagePath(filename);
+                var oldImagePath = GetImagePath(Path.GetFileName(poster.ImagePath));
+                ImageUtils.DeleteImage(oldImagePath);
+            }
 
-                ImageUtils.UploadImage(imagePath, data, format);
-            }
-            else
-            {
-                var filename = $"{Guid.NewGuid().ToString("N")}.{extension}";
-                imagePath = GetImagePath(filename);
-                var url = GetImageURL(filename);
-                poster.ImagePath = url;
-                ImageUtils.UploadImage(imagePath, data, format);
-            }
+            var filename = $"{Guid.NewGuid():N}.{extension}";
+            poster.ImagePath = GetImageURL(filename);
+            imagePath = GetImagePath(filename);
+            ImageUtils.UploadImage(imagePath, data, format);
+
         }
 
 
