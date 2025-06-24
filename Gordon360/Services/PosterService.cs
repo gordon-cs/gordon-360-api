@@ -44,8 +44,6 @@ public class PosterService(CCTContext context,
             .ThenBy(p => p.ExpirationDate);
     }
 
-
-
     public IEnumerable<PosterViewModel> GetCurrentPostersByActivityCode(string activityCode)
     {
         return GetPosters()
