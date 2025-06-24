@@ -99,9 +99,8 @@ namespace Gordon360.Controllers
             if (listing == null)
                 return NotFound();
 
-            // Only original poster or SiteAdmin can delete
-            if (!string.Equals(listing.PosterUsername, authenticatedUserUsername, StringComparison.OrdinalIgnoreCase)
-                && !viewerGroups.Contains(AuthGroup.SiteAdmin))
+            // Only SiteAdmin can delete
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
             {
                 return Forbid();
             }
