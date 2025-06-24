@@ -52,31 +52,28 @@ namespace Gordon360.Services
             var holdResults = await _context.Procedures.GetEnrollmentCheckinHoldsAsync(studentID);
             var hold = holdResults?.FirstOrDefault();
 
-            // Step 4: Determine if the student has any kind of hold (including financial, medical, academic, etc.)
-            bool hasHolds = hold != null &&
+            // Step 4: Determine if there are any registration-blocking holds (these prevent registration)
+            bool hasBlockingHolds = hold != null &&
                 (hold.FinancialHold == true ||
                  hold.MedicalHold == true ||
-                 hold.MajorHold == true ||
-                 hold.HighSchoolHold == true ||
-                 hold.RegistrarHold == true ||
-                 hold.LaVidaHold == true ||
-                 hold.MustRegisterForClasses == true);
+                 hold.RegistrarHold == true);
 
-            // Step 5: Check if the current time is within the allowed registration window and the student has no holds
+            // Step 5: Determine eligibility based on registration window and blocking holds
             bool isEligible = record.StartDate <= now &&
                               now <= record.EndDate &&
-                              !hasHolds;
+                              !hasBlockingHolds;
 
-            // Step 6: Return the registration period view model
+            // Step 6: Return result
             return new RegistrationPeriodViewModel
             {
                 Term = record.TermDescription ?? "Unknown",
                 StartTime = record.StartDate ?? DateTime.MinValue,
                 EndTime = record.EndDate ?? DateTime.MinValue,
                 IsEligible = isEligible,
-                IsClearedToRegister = !hasHolds,
-                HasHolds = hasHolds
+                IsClearedToRegister = !hasBlockingHolds,
+                HasHolds = hasBlockingHolds // Only report holds that block registration
             };
+
         }
     }
 }
