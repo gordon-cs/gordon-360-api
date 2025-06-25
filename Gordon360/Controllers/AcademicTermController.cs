@@ -22,6 +22,18 @@ namespace Gordon360.Controllers
             var terms = await service.GetAllTermsAsync();
             return Ok(terms);
         }
-    }
 
+        [HttpGet("daysLeft")]
+        public async Task<IActionResult> GetDaysLeft()
+        {
+            var days = await service.GetDaysLeftAsync();
+
+            if (days == null || (days[0] == 0 && days[1] == 0))
+            {
+                return NotFound();
+            }
+
+            return Ok(days);
+        }
+    }
 }
