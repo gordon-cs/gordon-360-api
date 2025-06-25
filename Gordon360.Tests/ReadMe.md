@@ -58,7 +58,7 @@ Below we show how to create a test for the Profiles Controller.  The files assoc
 
 ```
 Gordon360.Tests/
-├── Controllers_Test/ create this folder only if not exists
+├── Controllers_Test/   # create this folder if it does not exist
 │   └── ProfilesControllerTests.cs # or any other controller you are testing
 ```
 
