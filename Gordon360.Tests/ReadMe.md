@@ -66,8 +66,8 @@ Gordon360.Tests/
 
 Ensure your the namespace needed in your test file are included in "TestUsings.cs":
 
-// ✅ Global using directives make these namespaces available across all test files
-// This reduces redundancy and keeps test files clean and focused
+# ✅ Global using directives make these namespaces available across all test files
+# This reduces redundancy and keeps test files clean and focused
 
 ```
 global using Xunit;
