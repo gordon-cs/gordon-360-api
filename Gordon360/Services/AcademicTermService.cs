@@ -12,15 +12,18 @@ namespace Gordon360.Services;
 public class AcademicTermService(CCTContext context) : IAcademicTermService
 {
 
-    public async Task<YearTermTable?> GetCurrentTermAsync()
+    public async Task<YearTermTableViewModel?> GetCurrentTermAsync()
     {
         var terms = await context.YearTermTable
             .FromSqlRaw("EXEC dbo.GetCurrentTerm")
             .AsNoTracking()
             .ToListAsync();
 
-        return terms.FirstOrDefault();
+        var currentTerm = terms.FirstOrDefault();
+
+        return currentTerm != null ? new YearTermTableViewModel(currentTerm) : null;
     }
+
 
     public async Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync()
     {

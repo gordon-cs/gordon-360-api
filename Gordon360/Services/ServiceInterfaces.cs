@@ -335,7 +335,7 @@ namespace Gordon360.Services
 
     public interface IAcademicTermService
     {
-        Task<YearTermTable?> GetCurrentTermAsync();
+        Task<YearTermTableViewModel?> GetCurrentTermAsync();
         Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
     }
 
