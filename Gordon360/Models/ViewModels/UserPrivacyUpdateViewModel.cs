@@ -2,10 +2,11 @@
 
 namespace Gordon360.Models.ViewModels
 {
-    // Field: list of fields where the user wants to update the privacy setting
+    // Field: field for which the visibility group will be updated
     //   (HomeStreet1, HomeStreet2, HomeCity, HomeState, HomeCountry, SpouseName,
     //   Country, HomePhone, MobilePhone)
-    // VisibilityGroup: the group that the user wants to be seen by (Public, Private, FacStaff)
+    // VisibilityGroup: The group of users that can see the information corresponding to Field
+    //   Currently a subset of Public, FacStaff, or Private
     public class UserPrivacyUpdateViewModel
     {
         public UserPrivacyUpdateViewModel(IEnumerable<string> field, string group)

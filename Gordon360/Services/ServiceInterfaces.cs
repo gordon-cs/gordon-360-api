@@ -27,7 +27,7 @@ namespace Gordon360.Services
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
-        IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username);
+        IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username);
         GraduationViewModel? GetGraduationInfo(string username);
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);

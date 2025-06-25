@@ -369,7 +369,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">AD username</param>
     /// <returns>List of field and visibility privacy settings for a specific user</returns>
-    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingAsync(string username)
+    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username)
     {
         var account = accountService.GetAccountByUsername(username);
 
