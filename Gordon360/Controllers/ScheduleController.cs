@@ -21,7 +21,6 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     /// <returns>A IEnumerable of session objects as well as the schedules</returns>
     [HttpGet]
     [Route("{username}/allcourses")]
-    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
         var groups = AuthUtils.GetGroups(User);

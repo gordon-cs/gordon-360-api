@@ -199,10 +199,6 @@ public class StateYourBusiness : ActionFilterAttribute
                 return (user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.HallInfoViewer)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.NEWS:
                 return true;
-            case Resource.STUDENT_SCHEDULE:
-                if (context.ActionArguments["username"] is string viewed_username)
-                    return true;
-                return false;
             default: return false;
 
         }
