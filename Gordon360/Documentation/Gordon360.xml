@@ -766,7 +766,7 @@
             <param name="status">The new status.</param>
             <returns>The updated listing.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MarketplaceController.GetFilteredListings(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetFilteredListings(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean)">
             <summary>
             Get marketplace listings filtered by category, status, and price.
             </summary>
@@ -774,6 +774,9 @@
             <param name="statusId">Optional status ID.</param>
             <param name="minPrice">Optional minimum price.</param>
             <param name="maxPrice">Optional maximum price.</param>
+            <param name="search">Optional search term.</param>
+            <param name="sortBy">Optional sort criteria.</param>
+            <param name="desc">Optional sort order (descending).</param>
             <returns>Filtered marketplace listings.</returns>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
@@ -2898,7 +2901,7 @@
             Change the status of a marketplace listing.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MarketplaceService.GetFilteredListings(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal})">
+        <member name="M:Gordon360.Services.MarketplaceService.GetFilteredListings(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean)">
             <summary>
             Get filtered marketplace listings based on criteria.
             </summary>

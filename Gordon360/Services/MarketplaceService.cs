@@ -283,7 +283,25 @@ namespace Gordon360.Services
                     break;
             }
 
-            return query.Select(item => (MarketplaceListingViewModel)item).ToList();
+            return query.Select(item => new MarketplaceListingViewModel
+            {
+                Id = item.Id,
+                PostedAt = item.PostedAt,
+                Name = item.Name,
+                Price = item.Price,
+                CategoryId = item.CategoryId,
+                CategoryName = item.Category.CategoryName,
+                Detail = item.Detail,
+                ConditionId = item.ConditionId,
+                ConditionName = item.Condition.ConditionName,
+                StatusId = item.StatusId,
+                StatusName = item.Status.StatusName,
+                ImagePaths = item.PostImage.Select(img => img.ImagePath).ToList(),
+                PosterUsername = context.ACCOUNT
+                    .Where(a => a.gordon_id == item.PostedById.ToString())
+                    .Select(a => a.AD_Username)
+                    .FirstOrDefault()
+            }).ToList();
         }
 
         private string GetImagePath(string filename)
