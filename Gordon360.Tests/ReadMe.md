@@ -19,9 +19,10 @@ This guide will walk you through how to write effective and maintainable unit te
 
 ---
 
-## 1. Setting Up Test Environment 🛠️
+## 1. Setting Up Test Environment 🛠️  
 
 To set up the test project in **Gordon360** from scratch:
+Remeber that Step1 to Step3 are only needed if you haven't set up the test project yet. If you already have a test project, skip to Step 4 to start.
 
 ### Step 1: Create the Test Project
 
@@ -54,27 +55,30 @@ dotnet add package Microsoft.AspNetCore.Http
 
 ### Step 4: Folder Structure
 
-Make sure your test class is in the appropriate folder:
+Make sure your test file is in the appropriate folder:
 
 ```
 Gordon360.Tests/
-├── Controllers_Test/
-│   └── ProfilesControllerTests.cs
+├── Controllers_Test/ create this folder only if not exists
+│   └── ProfilesControllerTests.cs # or any other controller you are testing
 ```
 
-### Step 5: Import Namespaces in Test Files
+### Step 5: Import Namespaces for Test Files
 
-Ensure your test file includes these namespaces:
+Ensure your the namespace needed in your test file are included in "TestUsings.cs":
 
-```csharp
-using Xunit;
-using Moq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using Gordon360.Controllers;
-using Gordon360.Services;
-using Gordon360.Models.ViewModels;
+// ✅ Global using directives make these namespaces available across all test files
+// This reduces redundancy and keeps test files clean and focused
+
+```
+global using Xunit;
+global using Moq;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Http;
+global using System.Security.Claims;
+global using Gordon360.Controllers;
+global using Gordon360.Services;
+global using Gordon360.Models.ViewModels;
 ```
 
 ### Step 6: Run Tests
@@ -391,11 +395,13 @@ public void GetUserProfile_AsStudent_ReturnsExpectedProfile()
 }
 ```
 
-### Improving Maintainability with Helper Methods
+## Helper Function Demo: Reusable Setup Code 🧰
 
-To avoid repeating lengthy setup code (like creating a full `StudentProfileViewModel` or injecting identity), define **helper methods** in a shared static class.
+To keep tests clean and reduce repetition, define helper methods to reuse across different test cases.
 
-#### Example: ViewModel Helper
+### ✅ ViewModel Helper Example
+
+Instead of manually writing the full `StudentProfileViewModel` every time, move it into a static helper:
 
 ```csharp
 public static class TestHelpers
@@ -404,32 +410,111 @@ public static class TestHelpers
     {
         return new StudentProfileViewModel
         {
-            // same as above...
+            ID = "1",
+            FirstName = "Test",
+            LastName = "Student",
+            Title = "Mr.",
+            MiddleName = "M",
+            Suffix = "Jr",
+            NickName = "Tester",
+            OnOffCampus = "On",
+            OnCampusBuilding = "Chase",
+            OnCampusRoom = "101",
+            OnCampusPhone = "555-1111",
+            OnCampusPrivatePhone = "555-1112",
+            OnCampusFax = "555-1113",
+            OffCampusStreet1 = "123 Main St",
+            OffCampusStreet2 = "",
+            OffCampusCity = "Wenham",
+            OffCampusState = "MA",
+            OffCampusPostalCode = "01984",
+            OffCampusCountry = "USA",
+            OffCampusPhone = "",
+            OffCampusFax = "",
+            HomeStreet1 = "456 Home St",
+            HomeStreet2 = "",
+            HomeCity = "Wenham",
+            HomeState = "MA",
+            HomePostalCode = "01984",
+            HomeCountry = "USA",
+            HomePhone = "555-2222",
+            HomeFax = ""
         };
     }
 }
 ```
 
-#### Example: Authentication Helper
+### ✅ Authentication Setup Helper Example
+
+Encapsulate the logic for injecting a user with a specific group claim into the controller:
 
 ```csharp
-public static void InjectAuthenticatedUser(Controller controller, string username, string group)
+public static class AuthTestHelper
 {
-    var identity = new ClaimsIdentity(new[]
+    public static void InjectAuthenticatedUser(Controller controller, string username, string group)
     {
-        new Claim(ClaimTypes.Name, username),
-        new Claim("groups", group)
-    }, "mock");
-
-    controller.ControllerContext = new ControllerContext
-    {
-        HttpContext = new DefaultHttpContext
+        var identity = new ClaimsIdentity(new[]
         {
-            User = new ClaimsPrincipal(identity)
-        }
-    };
+            new Claim(ClaimTypes.Name, username),
+            new Claim("groups", group)
+        }, "mock");
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(identity)
+            }
+        };
+    }
 }
 ```
+
+### ✅ How to Use in Test File (Full Demo)
+
+This example test class shows how to use both helper functions in a real-world test scenario for the `ProfilesController`.
+
+```csharp
+using Xunit;
+using Moq;
+using Microsoft.AspNetCore.Mvc;
+using Gordon360.Controllers;
+using Gordon360.Services;
+using Gordon360.Models.ViewModels;
+
+namespace Gordon360.Tests.Controllers_Test
+{
+    public class ProfilesControllerTests
+    {
+        [Fact]
+        public void GetUserProfile_AsStudent_ReturnsExpectedProfile()
+        {
+            // Arrange
+            var mockService = new Mock<IProfileService>();
+
+            // ✅ Use TestHelpers to create expected profile ViewModel
+            var expected = TestHelpers.CreateStudentProfileViewModel();
+            mockService.Setup(s => s.GetStudentProfile("targetuser")).Returns(expected);
+
+            var controller = new ProfilesController(mockService.Object, null, null, null);
+
+            // ✅ Use AuthTestHelper to inject mock authenticated user
+            AuthTestHelper.InjectAuthenticatedUser(controller, "viewer", "360-Student-SG");
+
+            // Act
+            var result = controller.GetProfile("targetuser");
+            var okResult = result as OkObjectResult;
+
+            // Assert
+            Assert.NotNull(okResult);
+            Assert.Equal(expected, okResult.Value);
+        }
+    }
+}
+```
+
+
+
 
 ---
 
@@ -543,7 +628,10 @@ You can add a **pre-commit Git hook** that runs your unit tests before any commi
 
 ```powershell
 # 1. Navigate to your repo root
-cd C:\\Users\\Philemon.Zhang\\Source\\Repos\\gordon-cs\\gordon-360-api
+cd path\to\your\repo # Replace with your actual repo path
+
+//if you are on virtual machine:
+cd C:\Users\User.Name(replace with your username)\Source\Repos\gordon-cs\gordon-360-api>
 
 # 2. Create the pre-commit hook file
 New-Item -ItemType File -Path .git/hooks/pre-commit 
