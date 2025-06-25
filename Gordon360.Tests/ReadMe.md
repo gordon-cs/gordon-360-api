@@ -55,7 +55,6 @@ dotnet add package Microsoft.AspNetCore.Http
 
 ### Step 4: Folder Structure
 Below we show how to create a test for the Profiles Controller.  The files associated with the tests need to be organized in a folder hierarchy under `Gordon360.Tests`.  In the case of Profiles Controller tests the hierarchy should look like
-Make sure your test file is in the appropriate folder:
 
 ```
 Gordon360.Tests/
