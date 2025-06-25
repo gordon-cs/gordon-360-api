@@ -149,9 +149,12 @@ namespace Gordon360.Controllers
             [FromQuery] int? categoryId,
             [FromQuery] int? statusId,
             [FromQuery] decimal? minPrice,
-            [FromQuery] decimal? maxPrice)
+            [FromQuery] decimal? maxPrice,
+            [FromQuery] string search,
+            [FromQuery] string sortBy,
+            [FromQuery] bool desc = false)
         {
-            var result = marketplaceService.GetFilteredListings(categoryId, statusId, minPrice, maxPrice);
+            var result = marketplaceService.GetFilteredListings(categoryId, statusId, minPrice, maxPrice, search, sortBy, desc);
             return Ok(result);
         }
     }

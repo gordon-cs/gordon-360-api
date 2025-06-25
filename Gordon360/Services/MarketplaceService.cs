@@ -32,6 +32,7 @@ namespace Gordon360.Services
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
                 .Where(item => item.StatusId != 3) // Exclude statusid 3
+                .OrderByDescending(item => item.Id)
                 .Select(item => new MarketplaceListingViewModel
                 {
                     Id = item.Id,
@@ -237,14 +238,16 @@ namespace Gordon360.Services
         /// <summary>
         /// Get filtered marketplace listings based on criteria.
         /// </summary>
-        public IEnumerable<MarketplaceListingViewModel> GetFilteredListings(int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice)
+        public IEnumerable<MarketplaceListingViewModel> GetFilteredListings(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string search = null, string sortBy = null, bool desc = false)
         {
             var query = context.PostedItem
                 .Include(x => x.Category)
                 .Include(x => x.Condition)
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
-                .Where(x => x.StatusId != 3) // Exclude statusid 3
+                .Where(x => x.StatusId != 3)
                 .AsQueryable();
 
             if (categoryId.HasValue)
@@ -258,6 +261,27 @@ namespace Gordon360.Services
 
             if (maxPrice.HasValue)
                 query = query.Where(x => x.Price <= maxPrice.Value);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(x => x.Name.Contains(search) || x.Detail.Contains(search));
+
+            // Sorting
+            switch (sortBy?.ToLower())
+            {
+                case "price":
+                    query = desc ? query.OrderByDescending(x => x.Price) : query.OrderBy(x => x.Price);
+                    break;
+                case "date":
+                case "postedat":
+                    query = desc ? query.OrderByDescending(x => x.PostedAt) : query.OrderBy(x => x.PostedAt);
+                    break;
+                case "name":
+                    query = desc ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name);
+                    break;
+                default:
+                    query = query.OrderByDescending(x => x.PostedAt); // Default: newest first
+                    break;
+            }
 
             return query.Select(item => (MarketplaceListingViewModel)item).ToList();
         }
