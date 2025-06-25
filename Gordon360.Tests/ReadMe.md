@@ -82,12 +82,19 @@ global using Gordon360.Models.ViewModels;
 ```
 
 ### Step 6: Run Tests
+go to your test project folder (Gordon360.Tests):
 
-You can run your tests using:
+```bash
+cd Gordon360.Tests
+```
+
+run your tests in terminal using:
 
 ```bash
 dotnet test
 ```
+
+
 
 ---
 
