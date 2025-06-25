@@ -19,26 +19,39 @@ public class MarketplaceCleanupService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            using (var scope = _serviceProvider.CreateScope())
+            try
             {
-                var context = scope.ServiceProvider.GetRequiredService<CCTContext>();
-                var now = DateTime.Now;
-                var expired = context.PostedItem
-                    .Where(x =>
-                        (x.StatusId == 1 && x.PostedAt.AddDays(90) <= now) ||
-                        (x.StatusId == 2 && x.PostedAt.AddDays(30) <= now) ||
-                        (x.StatusId == 3 && x.PostedAt.AddDays(14) <= now)
-                    )
-                    .ToList();
-
-                if (expired.Any())
+                using (var scope = _serviceProvider.CreateScope())
                 {
-                    context.PostedItem.RemoveRange(expired);
-                    await context.SaveChangesAsync();
+                    var context = scope.ServiceProvider.GetRequiredService<CCTContext>();
+                    var now = DateTime.Now;
+                    var expired = context.PostedItem
+                        .Where(x =>
+                            (x.StatusId == 1 && x.PostedAt.AddDays(90) <= now) ||
+                            (x.StatusId == 2 && x.PostedAt.AddDays(30) <= now) ||
+                            (x.StatusId == 3 && x.PostedAt.AddDays(14) <= now)
+                        )
+                        .ToList();
+
+                    foreach (var item in expired)
+                    {
+                        var images = context.PostImage.Where(img => img.PostedItemId == item.Id).ToList();
+                        context.PostImage.RemoveRange(images);
+                        context.PostedItem.Remove(item);
+                    }
+
+                    if (expired.Any())
+                    {
+                        await context.SaveChangesAsync();
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"MarketplaceCleanupService error: {ex}");
+            }
 
-            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // Run every hour
+            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // For testing
         }
     }
 }
