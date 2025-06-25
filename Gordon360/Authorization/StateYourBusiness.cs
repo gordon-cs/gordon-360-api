@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Gordon360.Authorization;
 
 /* Authorization Filter.
@@ -199,6 +198,16 @@ public class StateYourBusiness : ActionFilterAttribute
                 return (user_groups.Contains(AuthGroup.RA) || user_groups.Contains(AuthGroup.RD) || user_groups.Contains(AuthGroup.HousingAdmin) || user_groups.Contains(AuthGroup.HallInfoViewer)|| user_groups.Contains(AuthGroup.HousingDeveloper));
             case Resource.NEWS:
                 return true;
+            case Resource.STUDENT_SCHEDULE:
+                if (context.ActionArguments["username"] is string viewed_username)
+                    return user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(viewed_username).AccountType.EqualsIgnoreCase("FACULTY");
+                return false;
+            case Resource.GRADUATION:
+                {
+                    if (context.ActionArguments["username"] is string username)
+                        return user_groups.Contains(AuthGroup.Advisors) || username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(username).AccountType.EqualsIgnoreCase("FACULTY");
+                    return false;
+                }
             default: return false;
 
         }
