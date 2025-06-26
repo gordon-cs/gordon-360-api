@@ -1544,7 +1544,7 @@
             </summary>
             <returns>A IEnumerable of session objects as well as the schedules</returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTermAsync(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTerm(System.String)">
             <summary>
              Gets all term objects for a user
             </summary>

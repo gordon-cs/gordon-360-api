@@ -20,8 +20,8 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     /// </summary>
     /// <returns>A IEnumerable of session objects as well as the schedules</returns>
     [HttpGet]
-    [Route("{username}/allcourses-by-session")]
-    [Obsolete("This method is deprecated. Use '/{username}/allcourses' which is grouped by term.")]
+    [Route("{username}/allcourses")]
+    [Obsolete("This method is deprecated. Use '/{username}/allcourses-by-term' which is grouped by term.")]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
         var groups = AuthUtils.GetGroups(User);
@@ -45,9 +45,9 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     /// </summary>
     /// <returns>A IEnumerable of term objects as well as the schedules</returns>
     [HttpGet]
-    [Route("{username}/allcourses")]
+    [Route("{username}/allcourses-by-term")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
-    public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCoursesByTermAsync(string username)
+    public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCoursesByTerm(string username)
     {
         var groups = AuthUtils.GetGroups(User);
         var authenticatedUsername = AuthUtils.GetUsername(User);

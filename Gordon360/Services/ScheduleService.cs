@@ -18,7 +18,6 @@ public class ScheduleService(CCTContext context, ISessionService sessionService,
     /// </summary>
     /// <param name="username">The AD Username of the user</param>
     /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
-    [Obsolete("This method is deprecated. Use GetAllCoursesByTermAsync instead.")]
     public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username)
     {
         List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
@@ -39,7 +38,6 @@ public class ScheduleService(CCTContext context, ISessionService sessionService,
     /// </summary>
     /// <param name="username">The AD Username of the user</param>
     /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
-    [Obsolete]
     public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username)
     {
         List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username && x.Role == "Instructor").Select(c => (UserCoursesViewModel)c).ToListAsync();
