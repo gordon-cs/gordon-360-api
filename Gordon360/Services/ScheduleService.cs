@@ -55,6 +55,6 @@ public class ScheduleService(CCTContext context, ISessionService sessionService,
                        (term, matchingCourses) => new CoursesByTermViewModel(term, matchingCourses))
             .Where(cbt => cbt.AllCourses.Any());
 
-        return coursesByTerm.OrderByDescending(cbt => cbt.TermCode);
+        return coursesByTerm.OrderByDescending(cbt => cbt.TermBeginDate);
     }
 }
