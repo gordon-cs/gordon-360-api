@@ -56,6 +56,45 @@ namespace Gordon360.Services
             return listings;
         }
 
+        public IEnumerable<MarketplaceListingViewModel> GetUserListings(string username)
+        {
+            var account = accountService.GetAccountByUsername(username);
+            if (account == null) return new List<MarketplaceListingViewModel>();
+
+            int userId = int.Parse(account.GordonID);
+
+            var listings = context.PostedItem
+                .Include(x => x.Category)
+                .Include(x => x.Condition)
+                .Include(x => x.Status)
+                .Include(x => x.PostImage)
+                .Where(item => item.PostedById == userId)
+                .Where(item => item.StatusId != 3) // Exclude statusid 3
+                .OrderByDescending(item => item.Id)
+                .Select(item => new MarketplaceListingViewModel
+                {
+                    Id = item.Id,
+                    PostedAt = item.PostedAt,
+                    Name = item.Name,
+                    Price = item.Price,
+                    CategoryId = item.CategoryId,
+                    CategoryName = item.Category.CategoryName,
+                    Detail = item.Detail,
+                    ConditionId = item.ConditionId,
+                    ConditionName = item.Condition.ConditionName,
+                    StatusId = item.StatusId,
+                    StatusName = item.Status.StatusName,
+                    ImagePaths = item.PostImage.Select(img => img.ImagePath).ToList(),
+                    PosterUsername = context.ACCOUNT
+                        .Where(a => a.gordon_id == item.PostedById.ToString())
+                        .Select(a => a.AD_Username)
+                        .FirstOrDefault()
+                })
+                .ToList();
+
+            return listings;
+        }
+
         /// <summary>
         /// Get a specific marketplace listing by ID.
         /// </summary>

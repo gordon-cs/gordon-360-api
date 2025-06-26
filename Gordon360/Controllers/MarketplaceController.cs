@@ -167,6 +167,17 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
+        /// Get all listings for the authenticated user.
+        /// </summary>
+        [HttpGet("mylistings")]
+        public ActionResult<IEnumerable<MarketplaceListingViewModel>> GetMyListings()
+        {
+            var authenticatedUserUsername = AuthUtils.GetUsername(User);
+            var result = marketplaceService.GetUserListings(authenticatedUserUsername);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Get all item conditions.
         /// </summary>
         /// <returns>List of all item conditions.</returns>

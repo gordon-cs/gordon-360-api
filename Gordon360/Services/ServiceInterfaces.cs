@@ -461,6 +461,7 @@ namespace Gordon360.Services
     public interface IMarketplaceService
     {
         IEnumerable<MarketplaceListingViewModel> GetAllListings();
+        IEnumerable<MarketplaceListingViewModel> GetUserListings(string username);
         MarketplaceListingViewModel? GetListingById(int listingId);
         Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing, string username);
         Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUploadViewModel updatedListing);

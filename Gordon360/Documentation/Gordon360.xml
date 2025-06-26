@@ -781,6 +781,11 @@
             <param name="pageSize">Optional page size for pagination.</param>
             <returns>Filtered marketplace listings.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetMyListings">
+            <summary>
+            Get all listings for the authenticated user.
+            </summary>
+        </member>
         <member name="M:Gordon360.Controllers.MarketplaceController.GetConditions(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
             Get all item conditions.
