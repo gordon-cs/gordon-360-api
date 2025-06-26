@@ -1,12 +1,13 @@
 using Gordon360.Authorization;
 using Gordon360.Enums;
+using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers
@@ -159,6 +160,28 @@ namespace Gordon360.Controllers
         {
             var result = marketplaceService.GetFilteredListings(categoryId, statusId, minPrice, maxPrice, search, sortBy, desc);
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Get all item conditions.
+        /// </summary>
+        /// <returns>List of all item conditions.</returns>
+        [HttpGet("conditions")]
+        public ActionResult<IEnumerable<ItemCondition>> GetConditions([FromServices] CCTContext context)
+        {
+            var conditions = context.ItemCondition.OrderBy(c => c.Id).ToList();
+            return Ok(conditions);
+        }
+
+        /// <summary>
+        /// Get all item categories.
+        /// </summary>
+        /// <returns>List of all item categories.</returns>
+        [HttpGet("categories")]
+        public ActionResult<IEnumerable<ItemCategory>> GetCategories([FromServices] CCTContext context)
+        {
+            var categories = context.ItemCategory.OrderBy(c => c.Id).ToList();
+            return Ok(categories);
         }
     }
 }

@@ -779,6 +779,18 @@
             <param name="desc">Optional sort order (descending).</param>
             <returns>Filtered marketplace listings.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetConditions(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Get all item conditions.
+            </summary>
+            <returns>List of all item conditions.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetCategories(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Get all item categories.
+            </summary>
+            <returns>List of all item categories.</returns>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity
