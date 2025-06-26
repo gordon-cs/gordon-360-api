@@ -189,7 +189,9 @@ namespace Gordon360.Services
     public interface IScheduleService
     {
         [Obsolete("This method is deprecated. Use GetAllCoursesByTermAsync instead.")]
-        Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesBySessionAsync(string username);
+        Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
+        [Obsolete]
+        Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
         Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username);
     }
 

@@ -1538,13 +1538,13 @@
             <param name="membershipRequestID">The id of the membership request to delete</param>
             <returns>The deleted request as a RequestView</returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesBySession(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
             <summary>
              Gets all session objects for a user
             </summary>
             <returns>A IEnumerable of session objects as well as the schedules</returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTermAsync(System.String)">
             <summary>
              Gets all term objects for a user
             </summary>
@@ -3267,9 +3267,16 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesBySessionAsync(System.String)">
+        <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesAsync(System.String)">
             <summary>
             Fetch the session item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllInstructorCoursesAsync(System.String)">
+            <summary>
+            Fetch the classes that are taught by this user
             </summary>
             <param name="username">The AD Username of the user</param>
             <returns>CoursesBySessionViewModel if found, null if not found</returns>

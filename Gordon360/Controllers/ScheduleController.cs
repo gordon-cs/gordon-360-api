@@ -1,10 +1,11 @@
-﻿using System;
-using Gordon360.Authorization;
+﻿using Gordon360.Authorization;
 using Gordon360.Enums;
+using Gordon360.Extensions.System;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,10 +22,20 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     [HttpGet]
     [Route("{username}/allcourses-by-session")]
     [Obsolete("This method is deprecated. Use '/{username}/allcourses' which is grouped by term.")]
-    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
-    public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCoursesBySession(string username)
+    public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
-        IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesBySessionAsync(username);
+        var groups = AuthUtils.GetGroups(User);
+        var authenticatedUsername = AuthUtils.GetUsername(User);
+
+        IEnumerable<CoursesBySessionViewModel> result;
+        if (authenticatedUsername.EqualsIgnoreCase(username) || groups.Contains(AuthGroup.FacStaff))
+        {
+            result = await scheduleService.GetAllCoursesAsync(username);
+        }
+        else
+        {
+            result = await scheduleService.GetAllInstructorCoursesAsync(username);
+        }
         return Ok(result);
 
     }
@@ -36,9 +47,21 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     [HttpGet]
     [Route("{username}/allcourses")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
-    public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCourses(string username)
+    public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCoursesByTermAsync(string username)
     {
-        IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesByTermAsync(username);
+        var groups = AuthUtils.GetGroups(User);
+        var authenticatedUsername = AuthUtils.GetUsername(User);
+
+        IEnumerable<CoursesByTermViewModel> result;
+        if (authenticatedUsername.EqualsIgnoreCase(username) || groups.Contains(AuthGroup.FacStaff))
+        {
+            result = await scheduleService.GetAllCoursesByTermAsync(username);
+        }
+        else
+        {
+            result = Enumerable.Empty<CoursesByTermViewModel>();
+        }
+
         return Ok(result);
 
     }
