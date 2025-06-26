@@ -1,4 +1,6 @@
-﻿namespace Gordon360.Models.ViewModels;
+﻿using System;
+
+namespace Gordon360.Models.ViewModels;
 
 public record ProfileViewModel(
     // All Profiles
@@ -52,6 +54,7 @@ public record ProfileViewModel(
     string Minor3Description,
     string GradDate,
     string PlannedGradYear,
+    DateTime? Entrance_Date,
     string MobilePhone,
     bool IsMobilePhonePrivate,
     int? ChapelRequired,
@@ -80,6 +83,7 @@ public record ProfileViewModel(
     string grad_student,
 
     // FacStaff Only
+    DateTime? FirstHireDt,
     string? OnCampusDepartment,
     string? Type,
     string? office_hours,

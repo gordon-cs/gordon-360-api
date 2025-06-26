@@ -74,6 +74,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<FoundItems> FoundItems { get; set; }
 
+    public virtual DbSet<Graduation> Graduation { get; set; }
+
     public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
     public virtual DbSet<Hall_Assignment_Ranges> Hall_Assignment_Ranges { get; set; }
@@ -208,7 +210,6 @@ public partial class CCTContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
             entity.ToView("ACCOUNT", "dbo");
@@ -411,6 +412,16 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__37510C18");
         });
 
+        modelBuilder.Entity<Graduation>(entity =>
+        {
+            entity.HasNoKey(); // Graduation is keyless
+            entity.ToView("Graduation", "dbo"); // Map to the correct database view or table
+            entity.Property(e => e.ID_NUM).HasColumnName("ID_NUM");
+            entity.Property(e => e.WHEN_GRAD).HasColumnName("WHEN_GRAD").HasMaxLength(4000).IsUnicode(false);
+            entity.Property(e => e.HAS_GRADUATED).HasColumnName("HAS_GRADUATED").HasMaxLength(1).IsUnicode(false);
+            entity.Property(e => e.GRAD_FLAG).HasColumnName("GRAD_FLAG").HasMaxLength(3).IsUnicode(false);
+        });
+
         modelBuilder.Entity<GuestUsers>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__GuestUse__3214EC2774F2F95F");
@@ -569,6 +580,7 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<MissingReports>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC271C4C78EB");
+
             entity.HasOne(d => d.matchingFound).WithMany(p => p.MissingReports).HasConstraintName("FK__MissingRe__match__38453051");
         });
 

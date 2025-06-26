@@ -37,7 +37,6 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
             result = await scheduleService.GetAllInstructorCoursesAsync(username);
         }
         return Ok(result);
-
     }
 
     /// <summary>
@@ -63,7 +62,6 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
         }
 
         return Ok(result);
-
     }
 
     /// <summary>
