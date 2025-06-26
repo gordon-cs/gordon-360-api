@@ -468,6 +468,7 @@ namespace Gordon360.Services
         Task<MarketplaceListingViewModel> ChangeListingStatusAsync(int listingId, string status);
         IEnumerable<MarketplaceListingViewModel> GetFilteredListings(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null, string sortBy = null, bool desc = false);
+            string search = null, string sortBy = null, bool desc = false,
+            int page = 1, int pageSize = 20);
     }
 }

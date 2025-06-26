@@ -147,6 +147,8 @@ namespace Gordon360.Controllers
         /// <param name="search">Optional search term.</param>
         /// <param name="sortBy">Optional sort criteria.</param>
         /// <param name="desc">Optional sort order (descending).</param>
+        /// <param name="page">Optional page number for pagination.</param>
+        /// <param name="pageSize">Optional page size for pagination.</param>
         /// <returns>Filtered marketplace listings.</returns>
         [HttpGet("filter")]
         public ActionResult<IEnumerable<MarketplaceListingViewModel>> GetFilteredListings(
@@ -156,9 +158,11 @@ namespace Gordon360.Controllers
             [FromQuery] decimal? maxPrice,
             [FromQuery] string search = null,
             [FromQuery] string sortBy = null,
-            [FromQuery] bool desc = false)
+            [FromQuery] bool desc = false,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20)
         {
-            var result = marketplaceService.GetFilteredListings(categoryId, statusId, minPrice, maxPrice, search, sortBy, desc);
+            var result = marketplaceService.GetFilteredListings(categoryId, statusId, minPrice, maxPrice, search, sortBy, desc, page, pageSize);
             return Ok(result);
         }
 

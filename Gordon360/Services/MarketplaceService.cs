@@ -240,7 +240,8 @@ namespace Gordon360.Services
         /// </summary>
         public IEnumerable<MarketplaceListingViewModel> GetFilteredListings(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null, string sortBy = null, bool desc = false)
+            string search = null, string sortBy = null, bool desc = false,
+            int page = 1, int pageSize = 20)
         {
             var query = context.PostedItem
                 .Include(x => x.Category)
@@ -282,6 +283,9 @@ namespace Gordon360.Services
                     query = query.OrderByDescending(x => x.PostedAt); // Default: newest first
                     break;
             }
+
+            // Pagination
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
 
             return query.Select(item => new MarketplaceListingViewModel
             {
