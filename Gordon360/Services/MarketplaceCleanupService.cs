@@ -37,7 +37,7 @@ public class MarketplaceCleanupService : BackgroundService
                     {
                         var images = context.PostImage.Where(img => img.PostedItemId == item.Id).ToList();
                         context.PostImage.RemoveRange(images);
-                        context.PostedItem.Remove(item);
+                        //context.PostedItem.Remove(item);
                     }
 
                     if (expired.Any())
@@ -51,7 +51,7 @@ public class MarketplaceCleanupService : BackgroundService
                 Console.WriteLine($"MarketplaceCleanupService error: {ex}");
             }
 
-            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // For testing
+            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // For testing change Days to Minutes
         }
     }
 }

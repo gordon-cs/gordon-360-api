@@ -155,30 +155,30 @@ namespace Gordon360.Services
             listing.ConditionId = updatedListing.ConditionId;
 
             // Remove old images from disk if needed
-            foreach (var img in listing.PostImage)
-            {
-                if (!string.IsNullOrEmpty(img.ImagePath))
-                {
-                    ImageUtils.DeleteImage(img.ImagePath);
-                }
-            }
-            listing.PostImage.Clear();
+            //foreach (var img in listing.PostImage)
+            //{
+            //    if (!string.IsNullOrEmpty(img.ImagePath))
+            //    {
+            //        ImageUtils.DeleteImage(img.ImagePath);
+            //    }
+            //}
+            //listing.PostImage.Clear();
 
-            if (updatedListing.ImagesBase64 != null)
-            {
-                foreach (var base64 in updatedListing.ImagesBase64)
-                {
-                    if (!string.IsNullOrWhiteSpace(base64) && base64.StartsWith("data:image"))
-                    {
-                        var (extension, format, data) = ImageUtils.GetImageFormat(base64);
-                        var filename = $"{Guid.NewGuid():N}.{extension}";
-                        var imagePath = GetImagePath(filename); // Save to disk
-                        var url = GetImageURL(filename);        // Store this in DB
-                        ImageUtils.UploadImage(imagePath, data, format);
-                        listing.PostImage.Add(new PostImage { ImagePath = url });
-                    }
-                }
-            }
+            //if (updatedListing.ImagesBase64 != null)
+            //{
+            //    foreach (var base64 in updatedListing.ImagesBase64)
+            //    {
+            //        if (!string.IsNullOrWhiteSpace(base64) && base64.StartsWith("data:image"))
+            //        {
+            //            var (extension, format, data) = ImageUtils.GetImageFormat(base64);
+            //            var filename = $"{Guid.NewGuid():N}.{extension}";
+            //            var imagePath = GetImagePath(filename); // Save to disk
+            //            var url = GetImageURL(filename);        // Store this in DB
+            //            ImageUtils.UploadImage(imagePath, data, format);
+            //            listing.PostImage.Add(new PostImage { ImagePath = url });
+            //        }
+            //    }
+            //}
 
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
