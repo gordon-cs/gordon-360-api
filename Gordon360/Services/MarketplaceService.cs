@@ -212,6 +212,9 @@ namespace Gordon360.Services
             {
                 img.PostedItemId = newListing.Id;
             }
+
+            oldListing.StatusId = 3;
+
             await context.SaveChangesAsync();
 
             return (MarketplaceListingViewModel)newListing;
@@ -263,7 +266,6 @@ namespace Gordon360.Services
             }
 
             listing.StatusId = statusEntity.Id;
-            listing.PostedAt = DateTime.Now;
 
             // Set DeletedAt based on new status
             if (statusEntity.StatusName.Equals("Sold", StringComparison.OrdinalIgnoreCase))
