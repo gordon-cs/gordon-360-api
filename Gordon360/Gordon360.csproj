@@ -1,108 +1,108 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-	<Target Name="GetGitHash" BeforeTargets="WriteGitHash" Condition="'$(BuildHash)' == ''">
-		<PropertyGroup>
-			<VerFile>$(IntermediateOutputPath)gitver</VerFile>
-			<BuildFile>$(IntermediateOutputPath)buildtime</BuildFile>
-		</PropertyGroup>
-		<Exec Command="git -C $(ProjectDir) describe --long --always &gt; $(VerFile)" />
-		<Exec Command="echo $([System.DateTime]::UtcNow) &gt; $(BuildFile)" />
-		<ReadLinesFromFile File="$(VerFile)">
-			<Output TaskParameter="Lines" ItemName="GitVersion" />
-		</ReadLinesFromFile>
-		<ReadLinesFromFile File="$(BuildFile)">
-			<Output TaskParameter="Lines" ItemName="BuildTime" />
-		</ReadLinesFromFile>
-		<PropertyGroup>
-			<BuildHash>@(GitVersion)</BuildHash>
-			<BuildTime>@(BuildTime)</BuildTime>
-		</PropertyGroup>
-	</Target>
-	<Target Name="WriteGitHash" BeforeTargets="CoreCompile">
-		<PropertyGroup>
-			<CustomAssemblyInfoFile>$(IntermediateOutputPath)CustomAssemblyInfo.cs</CustomAssemblyInfoFile>
-		</PropertyGroup>
-		<ItemGroup>
-			<Compile Include="$(CustomAssemblyInfoFile)" />
-		</ItemGroup>
-		<ItemGroup>
-			<AssemblyAttributes Include="AssemblyMetadata">
-				<_Parameter1>GitHash</_Parameter1>
-				<_Parameter2>$(BuildHash)</_Parameter2>
-			</AssemblyAttributes>
-			<AssemblyAttributes Include="AssemblyMetadata">
-				<_Parameter1>BuildTime</_Parameter1>
-				<_Parameter2>$(BuildTime)</_Parameter2>
-			</AssemblyAttributes>
-		</ItemGroup>
-		<WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
-	</Target>
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<Configurations>Debug;Release</Configurations>
-		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<OutputPath>bin\</OutputPath>
-		<DocumentationFile>Documentation\Gordon360.xml</DocumentationFile>
-		<NoWarn>1591</NoWarn>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<OutputPath>bin\</OutputPath>
-	</PropertyGroup>
-	<ItemGroup>
-		<_WebToolingArtifacts Remove="Properties\PublishProfiles\Production.pubxml" />
-		<_WebToolingArtifacts Remove="Properties\PublishProfiles\Train.pubxml" />
-	</ItemGroup>
-	<ItemGroup>
-		<EmbeddedResource Include="version.txt">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</EmbeddedResource>
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="Models\CCT\Context\efpt.CCT.config.json.user" />
-	</ItemGroup>
-	<ItemGroup>
-		<Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Graph" Version="4.27.0" />
-		<PackageReference Include="Microsoft.Identity.Web" Version="1.23.1" />
-		<PackageReference Include="Serilog" Version="3.1.1" />
-		<PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
-		<PackageReference Include="Serilog.Formatting.Compact" Version="2.0.0" />
-		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
-		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.0" />
-	</ItemGroup>
-	<PropertyGroup>
-		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-	</PropertyGroup>
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="&quot;C:\Program Files\Git\bin\git.exe&quot; rev-parse --short HEAD &gt; %25tmp%25\hash.txt &amp; echo %25date%25 %25time%25 &gt; %25tmp%25\date.txt &amp; set /p hashvar=&lt;%25tmp%25\hash.txt &amp; set /p datevar=&lt;%25tmp%25\date.txt &amp; echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; &quot;$(ProjectDir)\version.txt&quot; &amp; del %25tmp%25\hash.txt &amp; del %25tmp%25\date.txt" />
-	</Target>
-	<PropertyGroup>
-		<PreBuildEvent>
-			"C:\Program Files\Git\bin\git.exe" rev-parse --short HEAD &gt; %25tmp%25\hash.txt
-			echo %25date%25 %25time%25 &gt; %25tmp%25\date.txt
-			set /p hashvar=&lt;%25tmp%25\hash.txt
-			set /p datevar=&lt;%25tmp%25\date.txt
-			echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; "$(ProjectDir)\version.txt"
-			del %25tmp%25\hash.txt
-			del %25tmp%25\date.txt
-		</PreBuildEvent>
-	</PropertyGroup>
-	<PropertyGroup />
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<UserSecretsId>6b677d3a-d64b-4693-bfe1-4883788ecf0f</UserSecretsId>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <Target Name="GetGitHash" BeforeTargets="WriteGitHash" Condition="'$(BuildHash)' == ''">
+    <PropertyGroup>
+      <VerFile>$(IntermediateOutputPath)gitver</VerFile>
+      <BuildFile>$(IntermediateOutputPath)buildtime</BuildFile>
+    </PropertyGroup>
+    <Exec Command="git -C $(ProjectDir) describe --long --always &gt; $(VerFile)" />
+    <Exec Command="echo $([System.DateTime]::UtcNow) &gt; $(BuildFile)" />
+    <ReadLinesFromFile File="$(VerFile)">
+      <Output TaskParameter="Lines" ItemName="GitVersion" />
+    </ReadLinesFromFile>
+    <ReadLinesFromFile File="$(BuildFile)">
+      <Output TaskParameter="Lines" ItemName="BuildTime" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <BuildHash>@(GitVersion)</BuildHash>
+      <BuildTime>@(BuildTime)</BuildTime>
+    </PropertyGroup>
+  </Target>
+  <Target Name="WriteGitHash" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <CustomAssemblyInfoFile>$(IntermediateOutputPath)CustomAssemblyInfo.cs</CustomAssemblyInfoFile>
+    </PropertyGroup>
+    <ItemGroup>
+      <Compile Include="$(CustomAssemblyInfoFile)" />
+    </ItemGroup>
+    <ItemGroup>
+      <AssemblyAttributes Include="AssemblyMetadata">
+        <_Parameter1>GitHash</_Parameter1>
+        <_Parameter2>$(BuildHash)</_Parameter2>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyMetadata">
+        <_Parameter1>BuildTime</_Parameter1>
+        <_Parameter2>$(BuildTime)</_Parameter2>
+      </AssemblyAttributes>
+    </ItemGroup>
+    <WriteCodeFragment Language="C#" OutputFile="$(CustomAssemblyInfoFile)" AssemblyAttributes="@(AssemblyAttributes)" />
+  </Target>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <Configurations>Debug;Release</Configurations>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>Documentation\Gordon360.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\Production.pubxml" />
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\Train.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="version.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Models\CCT\Context\efpt.CCT.config.json.user" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Graph" Version="4.27.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.23.1" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Serilog.Formatting.Compact" Version="2.0.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="8.0.0" />
+  </ItemGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="&quot;C:\Program Files\Git\bin\git.exe&quot; rev-parse --short HEAD &gt; %25tmp%25\hash.txt &amp; echo %25date%25 %25time%25 &gt; %25tmp%25\date.txt &amp; set /p hashvar=&lt;%25tmp%25\hash.txt &amp; set /p datevar=&lt;%25tmp%25\date.txt &amp; echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; &quot;$(ProjectDir)\version.txt&quot; &amp; del %25tmp%25\hash.txt &amp; del %25tmp%25\date.txt" />
+  </Target>
+  <PropertyGroup>
+    <PreBuildEvent>
+      "C:\Program Files\Git\bin\git.exe" rev-parse --short HEAD &gt; %25tmp%25\hash.txt
+      echo %25date%25 %25time%25 &gt; %25tmp%25\date.txt
+      set /p hashvar=&lt;%25tmp%25\hash.txt
+      set /p datevar=&lt;%25tmp%25\date.txt
+      echo Git Hash: %25hashvar%25; Build Time: %25datevar%25 &gt; "$(ProjectDir)\version.txt"
+      del %25tmp%25\hash.txt
+      del %25tmp%25\date.txt
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UserSecretsId>6b677d3a-d64b-4693-bfe1-4883788ecf0f</UserSecretsId>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 </Project>
