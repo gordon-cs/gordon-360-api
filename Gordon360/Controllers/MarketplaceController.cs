@@ -137,6 +137,21 @@ namespace Gordon360.Controllers
             return Ok(result);
         }
 
+
+
+
+        [HttpGet]
+        [Route("count")]
+        public IActionResult GetFilteredListingsCount(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string search = null)
+        {
+            var count = marketplaceService.GetFilteredListingsCount(categoryId, statusId, minPrice, maxPrice, search);
+            return Ok(count);
+        }
+
+
+
         /// <summary>
         /// Get marketplace listings filtered by category, status, and price.
         /// </summary>

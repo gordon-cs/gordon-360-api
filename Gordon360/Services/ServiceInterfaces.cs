@@ -471,5 +471,9 @@ namespace Gordon360.Services
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
             string search = null, string sortBy = null, bool desc = false,
             int page = 1, int pageSize = 20);
+        int GetFilteredListingsCount(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string search = null);
+
     }
 }

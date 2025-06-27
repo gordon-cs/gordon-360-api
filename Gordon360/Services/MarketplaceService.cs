@@ -347,6 +347,35 @@ namespace Gordon360.Services
             }).ToList();
         }
 
+
+        public int GetFilteredListingsCount(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string search = null)
+        {
+            var query = context.PostedItem
+                .Where(x => x.StatusId != 3)
+                .AsQueryable();
+
+            if (categoryId.HasValue)
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+
+            if (statusId.HasValue)
+                query = query.Where(x => x.StatusId == statusId.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(x => x.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(x => x.Price <= maxPrice.Value);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(x => x.Name.Contains(search) || x.Detail.Contains(search));
+
+            return query.Count();
+        }
+
+
+
         private string GetImagePath(string filename)
         {
             var directoryPath = Path.Combine(webHostEnvironment.ContentRootPath, "browseable", "uploads", "marketplace", "images");
