@@ -18,6 +18,8 @@ public partial class PostedItem
 
     public DateTime PostedAt { get; set; }
 
+    public DateTime? DeletedAt { get; set; }
+
     [Required]
     [StringLength(50)]
     public string Name { get; set; }

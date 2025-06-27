@@ -144,6 +144,7 @@ namespace Gordon360.Services
             var listing = new PostedItem
             {
                 PostedById = int.Parse(account.GordonID), // Set automatically
+                DeletedAt = DateTime.Now.AddDays(90),
                 Name = newListing.Name,
                 Price = newListing.Price,
                 CategoryId = newListing.CategoryId,
@@ -179,48 +180,41 @@ namespace Gordon360.Services
         /// </summary>
         public async Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUploadViewModel updatedListing)
         {
-            var listing = context.PostedItem
-                //.Include(x => x.PostImage)
+            var oldListing = context.PostedItem
+                .Include(x => x.PostImage)
                 .FirstOrDefault(x => x.Id == listingId);
-            if (listing == null)
+            if (oldListing == null)
             {
                 throw new ResourceNotFoundException { ExceptionMessage = "Listing not found." };
             }
 
-            listing.Name = updatedListing.Name;
-            listing.Price = updatedListing.Price;
-            listing.CategoryId = updatedListing.CategoryId;
-            listing.Detail = updatedListing.Detail;
-            listing.ConditionId = updatedListing.ConditionId;
+            // Create new listing with updated info, but keep original PostedAt
+            var newListing = new PostedItem
+            {
+                PostedById = oldListing.PostedById,
+                PostedAt = oldListing.PostedAt,
+                DeletedAt = DateTime.Now.AddDays(90),
+                Name = updatedListing.Name,
+                Price = updatedListing.Price,
+                CategoryId = updatedListing.CategoryId,
+                Detail = updatedListing.Detail,
+                ConditionId = updatedListing.ConditionId,
+                StatusId = oldListing.StatusId,
+                PostImage = new List<PostImage>()
+            };
 
-            // Remove old images from disk if needed
-            //foreach (var img in listing.PostImage)
-            //{
-            //    if (!string.IsNullOrEmpty(img.ImagePath))
-            //    {
-            //        ImageUtils.DeleteImage(img.ImagePath);
-            //    }
-            //}
-            //listing.PostImage.Clear();
+            context.PostedItem.Add(newListing);
+            await context.SaveChangesAsync(); // Save to get newListing.Id
 
-            //if (updatedListing.ImagesBase64 != null)
-            //{
-            //    foreach (var base64 in updatedListing.ImagesBase64)
-            //    {
-            //        if (!string.IsNullOrWhiteSpace(base64) && base64.StartsWith("data:image"))
-            //        {
-            //            var (extension, format, data) = ImageUtils.GetImageFormat(base64);
-            //            var filename = $"{Guid.NewGuid():N}.{extension}";
-            //            var imagePath = GetImagePath(filename); // Save to disk
-            //            var url = GetImageURL(filename);        // Store this in DB
-            //            ImageUtils.UploadImage(imagePath, data, format);
-            //            listing.PostImage.Add(new PostImage { ImagePath = url });
-            //        }
-            //    }
-            //}
-
+            // Move images from old post to new post
+            var images = context.PostImage.Where(img => img.PostedItemId == oldListing.Id).ToList();
+            foreach (var img in images)
+            {
+                img.PostedItemId = newListing.Id;
+            }
             await context.SaveChangesAsync();
-            return (MarketplaceListingViewModel)listing;
+
+            return (MarketplaceListingViewModel)newListing;
         }
 
         /// <summary>
@@ -270,6 +264,17 @@ namespace Gordon360.Services
 
             listing.StatusId = statusEntity.Id;
             listing.PostedAt = DateTime.Now;
+
+            // Set DeletedAt based on new status
+            if (statusEntity.StatusName.Equals("Sold", StringComparison.OrdinalIgnoreCase))
+            {
+                listing.DeletedAt = DateTime.Now.AddDays(30); // Sold: 30 days from now
+            }
+            else if (statusEntity.StatusName.Equals("Deleted", StringComparison.OrdinalIgnoreCase))
+            {
+                listing.DeletedAt = DateTime.Now; // Deleted: now
+            }
+
             await context.SaveChangesAsync();
             return (MarketplaceListingViewModel)listing;
         }

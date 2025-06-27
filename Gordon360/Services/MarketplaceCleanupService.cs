@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 public class MarketplaceCleanupService : BackgroundService
 {
@@ -25,19 +26,16 @@ public class MarketplaceCleanupService : BackgroundService
                 {
                     var context = scope.ServiceProvider.GetRequiredService<CCTContext>();
                     var now = DateTime.Now;
+                    // Find items whose images should be deleted (14 days after DeletedAt)
                     var expired = context.PostedItem
-                        .Where(x =>
-                            (x.StatusId == 1 && x.PostedAt.AddDays(90) <= now) ||
-                            (x.StatusId == 2 && x.PostedAt.AddDays(30) <= now) ||
-                            (x.StatusId == 3 && x.PostedAt.AddDays(14) <= now)
-                        )
+                        .Where(x => x.DeletedAt != null && x.DeletedAt.Value.AddDays(14) <= now)
+                        .Include(x => x.PostImage)
                         .ToList();
 
                     foreach (var item in expired)
                     {
                         var images = context.PostImage.Where(img => img.PostedItemId == item.Id).ToList();
                         context.PostImage.RemoveRange(images);
-                        //context.PostedItem.Remove(item);
                     }
 
                     if (expired.Any())
@@ -51,7 +49,7 @@ public class MarketplaceCleanupService : BackgroundService
                 Console.WriteLine($"MarketplaceCleanupService error: {ex}");
             }
 
-            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // For testing change Days to Minutes
+            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // For testing, change Days to Minutes
         }
     }
 }
