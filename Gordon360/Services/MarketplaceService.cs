@@ -214,6 +214,7 @@ namespace Gordon360.Services
             }
 
             oldListing.StatusId = 3;
+            oldListing.DeletedAt = DateTime.Now; // Mark old listing as deleted
 
             await context.SaveChangesAsync();
 
