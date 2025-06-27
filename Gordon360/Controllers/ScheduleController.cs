@@ -34,7 +34,6 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
         {
             result = await scheduleService.GetAllInstructorCoursesAsync(username);
         }
-
         return Ok(result);
 
     }
