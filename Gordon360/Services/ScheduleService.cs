@@ -33,7 +33,6 @@ public class ScheduleService(CCTContext context, ISessionService sessionService)
         return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
     }
 
-
     /// <summary>
     /// Fetch the classes that are taught by this user
     /// </summary>
@@ -54,4 +53,3 @@ public class ScheduleService(CCTContext context, ISessionService sessionService)
         return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
     }
 }
-
