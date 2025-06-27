@@ -32,7 +32,7 @@ namespace Gordon360.Services
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
                 .Where(item => item.StatusId != 3) // Exclude statusid 3
-                .OrderByDescending(item => item.Id)
+                .OrderByDescending(item => item.PostedAt)
                 .Select(item => new MarketplaceListingViewModel
                 {
                     Id = item.Id,
@@ -70,7 +70,7 @@ namespace Gordon360.Services
                 .Include(x => x.PostImage)
                 .Where(item => item.PostedById == userId)
                 .Where(item => item.StatusId != 3) // Exclude statusid 3
-                .OrderByDescending(item => item.Id)
+                .OrderByDescending(item => item.PostedAt)
                 .Select(item => new MarketplaceListingViewModel
                 {
                     Id = item.Id,
