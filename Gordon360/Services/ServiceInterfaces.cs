@@ -190,7 +190,10 @@ namespace Gordon360.Services
     public interface IScheduleService
     {
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
-          }
+
+        Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
+    }
+
 
     public interface IContentManagementService
     {
