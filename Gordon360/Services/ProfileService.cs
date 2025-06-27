@@ -1,14 +1,11 @@
-﻿using Gordon360.Authorization;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
-using Gordon360.Static.Methods; //JRS
-using Microsoft.AspNetCore.Mvc;
+using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -16,10 +13,9 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Reflection; //JRS
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Gordon360.Enums;
 
 namespace Gordon360.Services;
