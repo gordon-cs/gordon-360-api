@@ -221,9 +221,10 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<ItemCategory>> AddCategory([FromBody] string categoryName)
         {
             // Check if user is SiteAdmin
-            if (!User.IsInRole(AuthGroup.SiteAdmin))
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
                 return Forbid();
-
+            }
             if (string.IsNullOrWhiteSpace(categoryName))
                 return BadRequest("Category name cannot be empty.");
 
@@ -238,8 +239,10 @@ namespace Gordon360.Controllers
         public async Task<ActionResult<ItemCondition>> AddCondition([FromBody] string conditionName)
         {
             // Check if user is SiteAdmin
-            if (!User.IsInRole(AuthGroup.SiteAdmin))
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
                 return Forbid();
+            }
 
             if (string.IsNullOrWhiteSpace(conditionName))
                 return BadRequest("Condition name cannot be empty.");
