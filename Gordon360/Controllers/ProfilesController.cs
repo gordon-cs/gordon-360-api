@@ -455,7 +455,7 @@ public class ProfilesController(IProfileService profileService,
     }
 
     /// <summary>
-    /// Set visibility of some piece of personal data for user.
+    /// Set visibility group for some piece of personal data
     /// </summary>
     /// <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyUpdateViewModel)</param>
     /// <returns></returns>
@@ -470,7 +470,7 @@ public class ProfilesController(IProfileService profileService,
     }
 
     /// <summary>
-    /// Return a list visibility groups.
+    /// Return a list visibility groups
     /// </summary>
     /// <returns> All visibility groups (Public, FacStaff, Private)</returns>
     [HttpGet]
