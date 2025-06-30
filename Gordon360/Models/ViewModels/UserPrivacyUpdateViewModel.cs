@@ -2,6 +2,8 @@
 
 namespace Gordon360.Models.ViewModels
 {
+    // ViewModel for updating privacy settings
+
     // Field: field for which the visibility group will be updated
     //   (HomeStreet1, HomeStreet2, HomeCity, HomeState, HomeCountry, SpouseName,
     //   Country, HomePhone, MobilePhone)
