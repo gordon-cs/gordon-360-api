@@ -323,7 +323,7 @@ namespace Gordon360.Services
                 case "postedat":
                     query = desc ? query.OrderByDescending(x => x.PostedAt) : query.OrderBy(x => x.PostedAt);
                     break;
-                case "name":
+                case "title":
                     query = desc ? query.OrderByDescending(x => x.Name) : query.OrderBy(x => x.Name);
                     break;
                 default:
