@@ -69,7 +69,7 @@ public class ScheduleController(IProfileService profileService,
                (alumni != null &&
                 accountService.CanISeeAlumni(groups))))
         {
-            IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+            IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesByTermAsync(username);
             return Ok(result);
         }
         return Forbid();
