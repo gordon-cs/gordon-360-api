@@ -273,6 +273,10 @@ namespace Gordon360.Services
             {
                 listing.DeletedAt = DateTime.Now.AddDays(30); // Sold: 30 days from now
             }
+            else if (statusEntity.StatusName.Equals("For Sale", StringComparison.OrdinalIgnoreCase))
+            {
+                listing.DeletedAt = listing.PostedAt.AddDays(90);
+            }
             else if (statusEntity.StatusName.Equals("Deleted", StringComparison.OrdinalIgnoreCase))
             {
                 listing.DeletedAt = DateTime.Now; // Deleted: now
