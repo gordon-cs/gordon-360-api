@@ -324,7 +324,6 @@ namespace Gordon360.Services
                     query = desc ? query.OrderByDescending(x => x.Price) : query.OrderBy(x => x.Price);
                     break;
                 case "date":
-                case "postedat":
                     query = desc ? query.OrderByDescending(x => x.PostedAt) : query.OrderBy(x => x.PostedAt);
                     break;
                 case "title":
@@ -404,6 +403,28 @@ namespace Gordon360.Services
             // var serverAddress = serverUtils.GetAddress();
             // return $"{serverAddress}/browseable/uploads/marketplace/images/{filename}";
             return $"browseable/uploads/marketplace/images/{filename}";
+        }
+
+        public async Task<ItemCategory> AddCategoryAsync(string categoryName)
+        {
+            if (string.IsNullOrWhiteSpace(categoryName))
+                throw new ArgumentException("Category name cannot be empty.");
+
+            var category = new ItemCategory { CategoryName = categoryName };
+            context.ItemCategory.Add(category);
+            await context.SaveChangesAsync();
+            return category;
+        }
+
+        public async Task<ItemCondition> AddConditionAsync(string conditionName)
+        {
+            if (string.IsNullOrWhiteSpace(conditionName))
+                throw new ArgumentException("Condition name cannot be empty.");
+
+            var condition = new ItemCondition { ConditionName = conditionName };
+            context.ItemCondition.Add(condition);
+            await context.SaveChangesAsync();
+            return condition;
         }
     }
 }

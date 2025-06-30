@@ -213,5 +213,39 @@ namespace Gordon360.Controllers
             var categories = context.ItemCategory.OrderBy(c => c.Id).ToList();
             return Ok(categories);
         }
+
+        /// <summary>
+        /// Add a new item category.
+        /// </summary>
+        [HttpPost("categories")]
+        public async Task<ActionResult<ItemCategory>> AddCategory([FromBody] string categoryName)
+        {
+            // Check if user is SiteAdmin
+            if (!User.IsInRole(AuthGroup.SiteAdmin))
+                return Forbid();
+
+            if (string.IsNullOrWhiteSpace(categoryName))
+                return BadRequest("Category name cannot be empty.");
+
+            var category = await marketplaceService.AddCategoryAsync(categoryName);
+            return CreatedAtAction(nameof(GetCategories), new { id = category.Id }, category);
+        }
+
+        /// <summary>
+        /// Add a new item condition.
+        /// </summary>
+        [HttpPost("conditions")]
+        public async Task<ActionResult<ItemCondition>> AddCondition([FromBody] string conditionName)
+        {
+            // Check if user is SiteAdmin
+            if (!User.IsInRole(AuthGroup.SiteAdmin))
+                return Forbid();
+
+            if (string.IsNullOrWhiteSpace(conditionName))
+                return BadRequest("Condition name cannot be empty.");
+
+            var condition = await marketplaceService.AddConditionAsync(conditionName);
+            return CreatedAtAction(nameof(GetConditions), new { id = condition.Id }, condition);
+        }
     }
 }

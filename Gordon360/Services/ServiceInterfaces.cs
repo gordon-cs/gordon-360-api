@@ -483,6 +483,7 @@ namespace Gordon360.Services
         int GetFilteredListingsCount(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
             string search = null);
-
+        Task<ItemCategory> AddCategoryAsync(string categoryName);
+        Task<ItemCondition> AddConditionAsync(string conditionName);
     }
 }
