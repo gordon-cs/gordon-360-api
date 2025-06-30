@@ -3386,7 +3386,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>account information</returns>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesSerMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Scheduler does not currently handle overlaps
             eventually:
