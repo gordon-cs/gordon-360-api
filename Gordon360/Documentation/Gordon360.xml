@@ -1624,6 +1624,12 @@
             </summary>
             <returns>A IEnumerable of session objects as well as the schedules</returns>
         </member>
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTerm(System.String)">
+            <summary>
+             Gets all term objects for a user
+            </summary>
+            <returns>A IEnumerable of term objects as well as the schedules</returns>
+        </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
             <summary>
             Get whether the currently logged-in user can read student schedules
@@ -3288,10 +3294,11 @@
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumberAsync(System.String,System.String)">
             <summary>
-            mobile phone number setting
+            Updates mobile phone number for a student (assuming its pre-validated input)
             </summary>
-            <param name="username"> The username for the user whose phone is to be updated </param>
-            <param name="newMobilePhoneNumber">The new number to update the user's phone number to</param>
+            <param name="username">The username for the user</param>
+            <param name="newMobilePhoneNumber">The pre-validated new phone number</param>
+            <returns>updated student profile by there username</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateOfficeLocationAsync(System.String,System.String,System.String)">
             <summary>
@@ -3346,7 +3353,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>account information</returns>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+        <member name="M:Gordon360.Services.RecIM.SeriesSerMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Scheduler does not currently handle overlaps
             eventually:
@@ -3378,7 +3385,7 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService)">
+        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService,Gordon360.Services.IAcademicTermService)">
             <summary>
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
@@ -3389,6 +3396,20 @@
             </summary>
             <param name="username">The AD Username of the user</param>
             <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllInstructorCoursesAsync(System.String)">
+            <summary>
+            Fetch the classes that are taught by this user
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesByTermAsync(System.String)">
+            <summary>
+            Fetch the term item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesByTermViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.ServicesExtensions.Add360Services(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
