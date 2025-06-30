@@ -1,9 +1,11 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Enums;
+using Gordon360.Extensions.System;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,15 +17,43 @@ public class ScheduleController(IProfileService profileService,
                                 IScheduleService scheduleService,
                                 IAccountService accountService) : GordonControllerBase
 {
-
     /// <summary>
     ///  Gets all session objects for a user
     /// </summary>
     /// <returns>A IEnumerable of session objects as well as the schedules</returns>
     [HttpGet]
     [Route("{username}/allcourses")]
-    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
+    [Obsolete("This method is deprecated. Use '/{username}/allcourses-by-term' which is grouped by term.")]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
+    {
+        var groups = AuthUtils.GetGroups(User);
+        FacultyStaffProfileViewModel? fac = profileService.GetFacultyStaffProfileByUsername(username);
+        StudentProfileViewModel? student = profileService.GetStudentProfileByUsername(username);
+        AlumniProfileViewModel? alumni = profileService.GetAlumniProfileByUsername(username);
+        // Everyone can see faculty schedules.
+        // Some users can see student and alumni schedules,
+        // but check that they can see this student or alumni.
+        if ((fac != null) ||
+            (accountService.CanISeeStudentSchedule(groups) &&
+               (student != null &&
+                accountService.CanISeeThisStudent(groups, student)) ||
+               (alumni != null &&
+                accountService.CanISeeAlumni(groups))))
+        {
+            IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+            return Ok(result);
+        }
+        return Forbid();
+    }
+
+    /// <summary>
+    ///  Gets all term objects for a user
+    /// </summary>
+    /// <returns>A IEnumerable of term objects as well as the schedules</returns>
+    [HttpGet]
+    [Route("{username}/allcourses-by-term")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
+    public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCoursesByTerm(string username)
     {
         var groups = AuthUtils.GetGroups(User);
         FacultyStaffProfileViewModel? fac = profileService.GetFacultyStaffProfileByUsername(username);

@@ -212,6 +212,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<UserPrivacy_Visibility_Groups> UserPrivacy_Visibility_Groups { get; set; }
 
+    public virtual DbSet<YearTermTable> YearTermTable { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ACCOUNT>(entity =>

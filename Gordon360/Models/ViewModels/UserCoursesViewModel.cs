@@ -6,6 +6,8 @@ namespace Gordon360.Models.ViewModels;
 public class UserCoursesViewModel
 {
     public string SessionCode { get; set; }
+    public string YR_CDE { get; set; }
+    public string TRM_CDE { get; set; } 
     public string CRS_CDE { get; set; }
     public string CRS_TITLE { get; set; }
     public string BLDG_CDE { get; set; }
@@ -18,6 +20,9 @@ public class UserCoursesViewModel
     public string SATURDAY_CDE { get; set; }
     public TimeSpan? BEGIN_TIME { get; set; }
     public TimeSpan? END_TIME { get; set; }
+    public DateTime? BEGIN_DATE { get; set; }
+    public DateTime? END_DATE { get; set; }
+    public string SUB_TERM_CDE { get; set; }
     public string Role { get; set; }
     public static implicit operator UserCoursesViewModel(UserCourses course)
     {
@@ -43,6 +48,8 @@ public class UserCoursesViewModel
         UserCoursesViewModel vm = new UserCoursesViewModel
         {
             SessionCode = code,
+            YR_CDE = course.YR_CDE,
+            TRM_CDE = course.TRM_CDE,
             CRS_CDE = course.CRS_CDE,
             CRS_TITLE = course.CRS_TITLE,
             BLDG_CDE = course.BLDG_CDE,
@@ -55,6 +62,9 @@ public class UserCoursesViewModel
             SATURDAY_CDE = course.SATURDAY_CDE,
             BEGIN_TIME = course.BEGIN_TIME,
             END_TIME = course.END_TIME,
+            BEGIN_DATE = course.BEGIN_DATE,
+            END_DATE = course.END_DATE,
+            SUB_TERM_CDE = course.SUBTERM_DESC,
             Role = course.Role
         };
 
