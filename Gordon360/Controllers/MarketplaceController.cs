@@ -220,7 +220,7 @@ namespace Gordon360.Controllers
         [HttpPost("categories")]
         public async Task<ActionResult<ItemCategory>> AddCategory([FromBody] string categoryName)
         {
-            // Check if user is SiteAdmin
+            var viewerGroups = AuthUtils.GetGroups(User);
             if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
             {
                 return Forbid();
@@ -238,7 +238,7 @@ namespace Gordon360.Controllers
         [HttpPost("conditions")]
         public async Task<ActionResult<ItemCondition>> AddCondition([FromBody] string conditionName)
         {
-            // Check if user is SiteAdmin
+            var viewerGroups = AuthUtils.GetGroups(User);
             if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
             {
                 return Forbid();
