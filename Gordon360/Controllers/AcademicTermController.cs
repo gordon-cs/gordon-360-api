@@ -35,5 +35,12 @@ namespace Gordon360.Controllers
 
             return Ok(days);
         }
+
+        [HttpGet("undergradTerms")]
+        public async Task<IActionResult> GetUndergradTerms()
+        {
+            var terms = await service.GetUndergradTermsAsync();
+            return Ok(terms);
+        }
     }
 }

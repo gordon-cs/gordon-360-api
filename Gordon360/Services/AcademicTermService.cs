@@ -62,4 +62,14 @@ public class AcademicTermService(CCTContext context) : IAcademicTermService
         daysInTerm
         };
     }
+    public async Task<IEnumerable<YearTermTableViewModel>> GetUndergradTermsAsync()
+    {
+        var terms = await context.YearTermTable
+            .Where(t => t.TRM_CDE == "FA" || t.TRM_CDE == "SP" || t.TRM_CDE == "SU")
+            .OrderByDescending(t => t.TRM_BEGIN_DTE)
+            .ToListAsync();
+
+        return terms.Select(t => new YearTermTableViewModel(t));
+    }
+
 }
