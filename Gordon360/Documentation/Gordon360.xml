@@ -798,6 +798,16 @@
             </summary>
             <returns>List of all item categories.</returns>
         </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.AddCategory(System.String)">
+            <summary>
+            Add a new item category.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.AddCondition(System.String)">
+            <summary>
+            Add a new item condition.
+            </summary>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity

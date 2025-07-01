@@ -399,9 +399,6 @@ namespace Gordon360.Services
 
         private string GetImageURL(string filename)
         {
-            // If you want a full URL, use serverUtils.GetAddress() here
-            // var serverAddress = serverUtils.GetAddress();
-            // return $"{serverAddress}/browseable/uploads/marketplace/images/{filename}";
             return $"browseable/uploads/marketplace/images/{filename}";
         }
 
