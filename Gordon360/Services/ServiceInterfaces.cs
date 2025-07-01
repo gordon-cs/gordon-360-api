@@ -27,6 +27,7 @@ namespace Gordon360.Services
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        GraduationViewModel? GetGraduationInfo(string username);
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
@@ -89,7 +90,8 @@ namespace Gordon360.Services
             string? country,
             string? department,
             string? building,
-            string? involvement);
+            string? involvement,
+            string? gender);
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
         ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
@@ -192,6 +194,8 @@ namespace Gordon360.Services
     public interface IScheduleService
     {
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
+        Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
+        Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username);
     }
 
     public interface IContentManagementService
@@ -332,6 +336,13 @@ namespace Gordon360.Services
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
         Task<bool> GetStatusAsync(string username);
+    }
+
+    public interface IAcademicTermService
+    {
+        Task<YearTermTableViewModel?> GetCurrentTermAsync();
+        Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
+        Task<double[]> GetDaysLeftAsync();
     }
 
     namespace RecIM
