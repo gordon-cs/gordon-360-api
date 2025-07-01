@@ -62,4 +62,18 @@ public class AcademicTermService(CCTContext context) : IAcademicTermService
         daysInTerm
         };
     }
+
+    public async Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync()
+    {
+        var currentDate = DateTime.Now;
+
+        var finalExamTerm = await context.YearTermTable
+            .Where(t =>
+                currentDate > t.TRM_BEGIN_DTE &&
+                (t.TRM_CDE == "SP" || t.TRM_CDE == "FA"))
+            .OrderByDescending(t => t.TRM_BEGIN_DTE)
+            .FirstOrDefaultAsync();
+
+        return finalExamTerm != null ? new YearTermTableViewModel(finalExamTerm) : null;
+    }
 }

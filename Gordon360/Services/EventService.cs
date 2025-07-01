@@ -21,7 +21,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service that allows for event control
 /// </summary>
-public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService, IScheduleService scheduleService, ISessionService sessionService, HttpClient httpClient) : IEventService
+public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService, IScheduleService scheduleService, ISessionService sessionService, HttpClient httpClient, IAcademicTermService academicTermService) : IEventService
 {
     
     /**
@@ -70,22 +70,27 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     }
 
     /// <summary>
-    /// Select only events that are Final Exams for users' current session
+    /// Select only events that are Final Exams for users' current term
     /// </summary>
     /// <param name="username"> The student's AD Username</param>
-    /// <returns>All Final Exam Events for the users' current session</returns>
+    /// <returns>All Final Exam Events for the users' current term</returns>
     public async Task<IEnumerable<EventViewModel>> GetFinalExamEventsForUser(string username)
     {
-        var session = sessionService.GetCurrentSessionForFinalExams().SessionCode;
+        var term = await academicTermService.GetCurrentTermForFinalExamsAsync();
+
+        if (term == null)
+        {
+            return Enumerable.Empty<EventViewModel>();
+        }
 
         // Get all courses of current term for the user
-        var coursesBySession = await scheduleService.GetAllCoursesAsync(username);
-        var matchingSessions = coursesBySession
-            .Where(s => s.SessionCode == session)
+        var coursesByTerm = await scheduleService.GetAllCoursesByTermAsync(username);
+        var matchingTerms = coursesByTerm
+            .Where(t => t.YearCode == term.YearCode && t.TermCode == term.TermCode)
             .ToList();
 
-        var userCourseCodes = matchingSessions
-            .SelectMany(s => s.AllCourses)
+        var userCourseCodes = matchingTerms
+            .SelectMany(t => t.AllCourses)
             .Select(c => NormalizeSpaces(c.CRS_CDE))
             .Distinct()
             .ToList();
@@ -238,9 +243,9 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     }
 
     /// <summary>
-    /// Get the URL for fetching final exams for the current session (type_id = 55 is final exams)
+    /// Get the URL for fetching final exams for the current term (type_id = 55 is final exams)
     /// </summary>
-    /// <returns>Final exams URL for the current session</returns>
+    /// <returns>Final exams URL for the current term</returns>
     private string GetFinalExamsUrlForCurrentTerm()
     {
         // Get today's date

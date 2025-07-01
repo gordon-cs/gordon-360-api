@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 
 namespace Gordon360.Controllers
@@ -34,6 +36,24 @@ namespace Gordon360.Controllers
             }
 
             return Ok(days);
+        }
+
+        /// <summary>
+        /// Gets the most recent academic term that is either Spring or Fall
+        /// </summary>
+        /// <returns>The current term used to fetch final exams</returns>
+        [HttpGet]
+        [Route("currentFinalExamTerm")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetCurrentTermForFinalExams()
+        {
+            var currentFinalTerm = await service.GetCurrentTermForFinalExamsAsync();
+            if (currentFinalTerm == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(currentFinalTerm);
         }
     }
 }

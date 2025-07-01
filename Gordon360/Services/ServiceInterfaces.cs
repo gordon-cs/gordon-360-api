@@ -343,6 +343,7 @@ namespace Gordon360.Services
         Task<YearTermTableViewModel?> GetCurrentTermAsync();
         Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
         Task<double[]> GetDaysLeftAsync();
+        Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync();
     }
 
     namespace RecIM

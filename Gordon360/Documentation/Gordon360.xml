@@ -37,6 +37,12 @@
             <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
             <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
         </member>
+        <member name="M:Gordon360.Controllers.AcademicTermController.GetCurrentTermForFinalExams">
+            <summary>
+            Gets the most recent academic term that is either Spring or Fall
+            </summary>
+            <returns>The current term used to fetch final exams</returns>
+        </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
             Return a list of accounts matching some or all of <c>searchString</c>.
@@ -2142,7 +2148,7 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,Gordon360.Services.ISessionService,System.Net.Http.HttpClient)">
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,Gordon360.Services.ISessionService,System.Net.Http.HttpClient,Gordon360.Services.IAcademicTermService)">
             <summary>
             Service that allows for event control
             </summary>
@@ -2175,10 +2181,10 @@
         </member>
         <member name="M:Gordon360.Services.EventService.GetFinalExamEventsForUser(System.String)">
             <summary>
-            Select only events that are Final Exams for users' current session
+            Select only events that are Final Exams for users' current term
             </summary>
             <param name="username"> The student's AD Username</param>
-            <returns>All Final Exam Events for the users' current session</returns>
+            <returns>All Final Exam Events for the users' current term</returns>
         </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
@@ -2206,9 +2212,9 @@
         </member>
         <member name="M:Gordon360.Services.EventService.GetFinalExamsUrlForCurrentTerm">
             <summary>
-            Get the URL for fetching final exams for the current session (type_id = 55 is final exams)
+            Get the URL for fetching final exams for the current term (type_id = 55 is final exams)
             </summary>
-            <returns>Final exams URL for the current session</returns>
+            <returns>Final exams URL for the current term</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
@@ -3210,10 +3216,10 @@
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumberAsync(System.String,System.String)">
             <summary>
-            Updates mobile phone number for a student (assuming its pre-validated input)
+            Updates mobile phone number 
             </summary>
-            <param name="username">The username for the user</param>
-            <param name="newMobilePhoneNumber">The pre-validated new phone number</param>
+            <param name="username">The username for the user whose number is updated</param>
+            <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
             <returns>updated student profile by there username</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateOfficeLocationAsync(System.String,System.String,System.String)">
@@ -3269,7 +3275,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>account information</returns>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesSerMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Scheduler does not currently handle overlaps
             eventually:
