@@ -318,6 +318,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         var account = accountService.GetAccountByUsername(restricted_profile.AD_Username);
         var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
 
+        var fields = context.UserPrivacy_Fields; //.Select(up_f => up_v_g.Group).Distinct().Where(g => g != null);
+        // WORKING HERE -- thinking the foreach loop below should be over fields.  For each field we first try
+        // and get the visibility group info and use that but then fall back to model view data as noted in
+        // the comment below.
+
         // Determing the viewer and profile user types
         bool viewerIsSiteAdmin = viewerGroups.Contains(AuthGroup.SiteAdmin);
         bool viewerIsPolice = viewerGroups.Contains(AuthGroup.Police);
@@ -327,6 +332,27 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         bool profileIsFacStaff = restricted_profile.PersonType.Contains(FACSTAFF_PROFILE);
         bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
         bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
+
+        /*
+        TODO: When a visibilty field has not been initialized we need to maintain
+        backward compatibility with the previous system.  This means we should use
+        settings from the appropriate view model as noted below.
+
+        Student
+            no MobilePhone field -> use IsMobilePhonePrivate in profile
+
+        FacStaff
+            no HomeCity field -> use KeepPrivate
+            no HomeState field -> use KeepPrivate
+            no HomeStreet1 field -> use KeepPrivate
+            no HomeStreet2 field -> use KeepPrivate
+            no HomePhone field -> use KeepPrivate
+            no MobilePhone field -> use KeepPrivate
+            no SpouseName field -> use KeepPrivate
+
+        Aumni
+            no HomeCity, HomeState, HomeStreet1, HomeStreet2 -> use ShareAddress
+        */
 
         foreach (UserPrivacy_Settings row in privacy)
         {
