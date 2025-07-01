@@ -808,6 +808,16 @@
             Add a new item condition.
             </summary>
         </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.UpdateCategoryVisibility(System.String,System.Boolean)">
+            <summary>
+            Update an existing item category's visibility
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.UpdateConditionVisibility(System.String,System.Boolean)">
+            <summary>
+            Update an existing item condition's visibility
+            </summary>
+        </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Get all the memberships associated with a given activity

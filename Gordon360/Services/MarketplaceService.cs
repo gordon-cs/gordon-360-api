@@ -407,7 +407,7 @@ namespace Gordon360.Services
             if (string.IsNullOrWhiteSpace(categoryName))
                 throw new ArgumentException("Category name cannot be empty.");
 
-            var category = new ItemCategory { CategoryName = categoryName };
+            var category = new ItemCategory { CategoryName = categoryName, Visible = "Y" };
             context.ItemCategory.Add(category);
             await context.SaveChangesAsync();
             return category;
@@ -418,8 +418,32 @@ namespace Gordon360.Services
             if (string.IsNullOrWhiteSpace(conditionName))
                 throw new ArgumentException("Condition name cannot be empty.");
 
-            var condition = new ItemCondition { ConditionName = conditionName };
+            var condition = new ItemCondition { ConditionName = conditionName, Visible = "Y" };
             context.ItemCondition.Add(condition);
+            await context.SaveChangesAsync();
+            return condition;
+        }
+
+        public async Task<ItemCategory> UpdateCategoryVisibilityAsync(string categoryName, bool visible)
+        {
+            if (string.IsNullOrWhiteSpace(categoryName))
+                throw new ArgumentException("Category name cannot be empty.");
+            var category = context.ItemCategory.FirstOrDefault(c => c.CategoryName == categoryName);
+            if (category == null)
+                throw new ResourceNotFoundException { ExceptionMessage = "Category not found." };
+            category.Visible = visible ? "Y" : "N";
+            await context.SaveChangesAsync();
+            return category;
+        }
+
+        public async Task<ItemCondition> UpdateConditionVisibilityAsync(string conditionName, bool visible)
+        {
+            if (string.IsNullOrWhiteSpace(conditionName))
+                throw new ArgumentException("Condition name cannot be empty.");
+            var condition = context.ItemCondition.FirstOrDefault(c => c.ConditionName == conditionName);
+            if (condition == null)
+                throw new ResourceNotFoundException { ExceptionMessage = "Condition not found." };
+            condition.Visible = visible ? "Y" : "N";
             await context.SaveChangesAsync();
             return condition;
         }

@@ -220,11 +220,12 @@ namespace Gordon360.Controllers
         [HttpPost("categories")]
         public async Task<ActionResult<ItemCategory>> AddCategory([FromBody] string categoryName)
         {
-            var viewerGroups = AuthUtils.GetGroups(User);
-            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            {
-                return Forbid();
-            }
+            //var viewerGroups = AuthUtils.GetGroups(User);
+            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            //{
+            //    return Forbid();
+            //}
+
             if (string.IsNullOrWhiteSpace(categoryName))
                 return BadRequest("Category name cannot be empty.");
 
@@ -238,11 +239,11 @@ namespace Gordon360.Controllers
         [HttpPost("conditions")]
         public async Task<ActionResult<ItemCondition>> AddCondition([FromBody] string conditionName)
         {
-            var viewerGroups = AuthUtils.GetGroups(User);
-            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            {
-                return Forbid();
-            }
+            //var viewerGroups = AuthUtils.GetGroups(User);
+            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            //{
+            //    return Forbid();
+            //}
 
             if (string.IsNullOrWhiteSpace(conditionName))
                 return BadRequest("Condition name cannot be empty.");
@@ -250,5 +251,53 @@ namespace Gordon360.Controllers
             var condition = await marketplaceService.AddConditionAsync(conditionName);
             return CreatedAtAction(nameof(GetConditions), new { id = condition.Id }, condition);
         }
+
+        /// <summary>
+        /// Update an existing item category's visibility
+        /// </summary>
+        [HttpPut("categories/categoryName/{visibility}")]
+        public async Task<ActionResult<ItemCategory>> UpdateCategoryVisibility([FromBody] string categoryName, bool visibility)
+        {
+            //var viewerGroups = AuthUtils.GetGroups(User);
+            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            //{
+            //    return Forbid();
+            //}
+
+            if (string.IsNullOrWhiteSpace(categoryName))
+                return BadRequest("Condition name cannot be empty.");
+
+            var updatedCategory = await marketplaceService.UpdateCategoryVisibilityAsync(categoryName, visibility);
+            if (updatedCategory == null)
+            {
+                return NotFound($"Category with name {categoryName} not found.");
+            }
+            return Ok(updatedCategory);
+        }
+
+        /// <summary>
+        /// Update an existing item condition's visibility
+        /// </summary>
+        [HttpPut("conditions/conditionName/{visibility}")]
+        public async Task<ActionResult<ItemCondition>> UpdateConditionVisibility([FromBody] string conditionName, bool visibility)
+        {
+            //var viewerGroups = AuthUtils.GetGroups(User);
+            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            //{
+            //    return Forbid();
+            //}
+
+            if (string.IsNullOrWhiteSpace(conditionName))
+                return BadRequest("Condition name cannot be empty.");
+
+            var updatedCondition = await marketplaceService.UpdateConditionVisibilityAsync(conditionName, visibility);
+
+            if (updatedCondition == null)
+            {
+                return NotFound($"Condition with name {conditionName} not found.");
+            }
+            return Ok(updatedCondition);
+        }   
+
     }
 }

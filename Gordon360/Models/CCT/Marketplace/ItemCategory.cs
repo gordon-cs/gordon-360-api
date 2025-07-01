@@ -18,6 +18,10 @@ public partial class ItemCategory
     [StringLength(50)]
     public string CategoryName { get; set; }
 
+    [StringLength(1)]
+    [Unicode(false)]
+    public string Visible { get; set; }
+
     [InverseProperty("Category")]
     public virtual ICollection<PostedItem> PostedItem { get; set; } = new List<PostedItem>();
 }

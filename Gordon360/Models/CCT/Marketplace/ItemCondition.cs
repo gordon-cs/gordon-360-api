@@ -18,6 +18,10 @@ public partial class ItemCondition
     [StringLength(50)]
     public string ConditionName { get; set; }
 
+    [StringLength(1)]
+    [Unicode(false)]
+    public string Visible { get; set; }
+
     [InverseProperty("Condition")]
     public virtual ICollection<PostedItem> PostedItem { get; set; } = new List<PostedItem>();
 }

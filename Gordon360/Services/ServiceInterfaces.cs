@@ -485,5 +485,7 @@ namespace Gordon360.Services
             string search = null);
         Task<ItemCategory> AddCategoryAsync(string categoryName);
         Task<ItemCondition> AddConditionAsync(string conditionName);
+        Task<ItemCategory> UpdateCategoryVisibilityAsync(string categoryName, bool visibility);
+        Task<ItemCondition> UpdateConditionVisibilityAsync(string conditionName, bool visibility);
     }
 }
