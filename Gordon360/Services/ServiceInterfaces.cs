@@ -473,7 +473,7 @@ namespace Gordon360.Services
         IEnumerable<MarketplaceListingViewModel> GetUserListings(string username);
         MarketplaceListingViewModel? GetListingById(int listingId);
         Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing, string username);
-        Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUploadViewModel updatedListing);
+        Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUpdateViewModel updatedListing);
         Task DeleteListingAsync(int listingId);
         Task<MarketplaceListingViewModel> ChangeListingStatusAsync(int listingId, string status);
         IEnumerable<MarketplaceListingViewModel> GetFilteredListings(

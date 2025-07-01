@@ -743,7 +743,7 @@
             <param name="newListing">The details of the new listing.</param>
             <returns>The created listing.</returns>
         </member>
-        <member name="M:Gordon360.Controllers.MarketplaceController.UpdateListing(System.Int32,Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel)">
+        <member name="M:Gordon360.Controllers.MarketplaceController.UpdateListing(System.Int32,Gordon360.Models.ViewModels.MarketplaceListingUpdateViewModel)">
             <summary>
             Update an existing marketplace listing.
             </summary>
@@ -2921,7 +2921,7 @@
             Create a new marketplace listing.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MarketplaceService.UpdateListingAsync(System.Int32,Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel)">
+        <member name="M:Gordon360.Services.MarketplaceService.UpdateListingAsync(System.Int32,Gordon360.Models.ViewModels.MarketplaceListingUpdateViewModel)">
             <summary>
             Update an existing marketplace listing.
             </summary>

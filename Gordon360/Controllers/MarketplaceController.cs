@@ -66,7 +66,7 @@ namespace Gordon360.Controllers
         /// <returns>The updated listing.</returns>
         [HttpPut]
         [Route("{listingId}")]
-        public async Task<ActionResult<MarketplaceListingViewModel>> UpdateListing(int listingId, [FromBody] MarketplaceListingUploadViewModel updatedListing)
+        public async Task<ActionResult<MarketplaceListingViewModel>> UpdateListing(int listingId, [FromBody] MarketplaceListingUpdateViewModel updatedListing)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
             var viewerGroups = AuthUtils.GetGroups(User);
