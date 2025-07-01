@@ -178,7 +178,7 @@ namespace Gordon360.Services
         /// <summary>
         /// Update an existing marketplace listing.
         /// </summary>
-        public async Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUploadViewModel updatedListing)
+        public async Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUpdateViewModel updatedListing)
         {
             var oldListing = context.PostedItem
                 .Include(x => x.PostImage)
