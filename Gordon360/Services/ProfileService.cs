@@ -318,11 +318,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         var account = accountService.GetAccountByUsername(restricted_profile.AD_Username);
         var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
 
-        var fields = context.UserPrivacy_Fields; //.Select(up_f => up_v_g.Group).Distinct().Where(g => g != null);
-        // WORKING HERE -- thinking the foreach loop below should be over fields.  For each field we first try
-        // and get the visibility group info and use that but then fall back to model view data as noted in
-        // the comment below.
-
         // Determing the viewer and profile user types
         bool viewerIsSiteAdmin = viewerGroups.Contains(AuthGroup.SiteAdmin);
         bool viewerIsPolice = viewerGroups.Contains(AuthGroup.Police);
@@ -333,58 +328,68 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
         bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
 
-        /*
-        TODO: When a visibilty field has not been initialized we need to maintain
-        backward compatibility with the previous system.  This means we should use
-        settings from the appropriate view model as noted below.
+        // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
+        // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
+        // privacy settings in profile.
+        
+        // NOTE: The "old-style" privacy settings in the profile (e.g. IsMobilePhonePrivate)
+        // are set by HR or the student matriciulation process.  These settings will be used
+        // for 360 until the user chooses privacy settings in their profile.
 
-        Student
-            no MobilePhone field -> use IsMobilePhonePrivate in profile
-
-        FacStaff
-            no HomeCity field -> use KeepPrivate
-            no HomeState field -> use KeepPrivate
-            no HomeStreet1 field -> use KeepPrivate
-            no HomeStreet2 field -> use KeepPrivate
-            no HomePhone field -> use KeepPrivate
-            no MobilePhone field -> use KeepPrivate
-            no SpouseName field -> use KeepPrivate
-
-        Aumni
-            no HomeCity, HomeState, HomeStreet1, HomeStreet2 -> use ShareAddress
-        */
-
-        foreach (UserPrivacy_Settings row in privacy)
+        foreach (UserPrivacy_Fields f in  context.UserPrivacy_Fields) //fields)
         {
-            if ((viewerIsSiteAdmin || viewerIsPolice) && row.Visibility != "Public")
+            // Determine the visibility for the current privacy field
+            var visibility = privacy.FirstOrDefault(x => x.Field == f.Field)?.Visibility;
+            if (visibility is null)
             {
-                MarkAsPrivate(restricted_profile, row.Field);
+                if (profileIsStudent)
+                {
+                    visibility = ((restricted_profile.KeepPrivate == "Y" || restricted_profile.KeepPrivate == "P")
+                                    || (f.Field == "MobilePhone" && restricted_profile.IsMobilePhonePrivate))
+                        ? "Private"
+                        : "Public";
+                }
+                else if (profileIsFacStaff)
+                {
+                    visibility = restricted_profile.KeepPrivate == "1"
+                        ? "Private"
+                        : "Public";
+                }
+                else if (profileIsAlumni)
+                {
+                    visibility = (restricted_profile.ShareName == "N" 
+                                    || restricted_profile.ShareAddress == "N")
+                        ? "Private"
+                        : "Public";
+                }
+            }
+
+            // Enforce the visibility for the current privacy field
+            if ((viewerIsSiteAdmin || viewerIsPolice) && visibility != "Public")
+            {
+                MarkAsPrivate(restricted_profile, f.Field);
             }
             else if (viewerIsFacStaff)
             {
                 if (profileIsFacStaff)
                 {
-                    if (row.Visibility == "Private")
+                    if (visibility == "Private")
                     {
-                        MakePrivate(restricted_profile, row.Field);
+                        MakePrivate(restricted_profile, f.Field);
                     }
-                    else if (row.Visibility == "FacStaff")
+                    else if (visibility == "FacStaff")
                     {
-                        MarkAsPrivate(restricted_profile, row.Field);
+                        MarkAsPrivate(restricted_profile, f.Field);
                     }
                 }
-                else if ((profileIsStudent || profileIsAlumni) && row.Visibility != "Public")
+                else if ((profileIsStudent || profileIsAlumni) && visibility != "Public")
                 {
-                    MarkAsPrivate(restricted_profile, row.Field);
+                    MarkAsPrivate(restricted_profile, f.Field);
                 }
-            }
-            else if (viewerIsStudent && row.Visibility != "Public")
+            } 
+            else if ((viewerIsStudent || viewerIsAlumni) && visibility != "Public")
             {
-                MakePrivate(restricted_profile, row.Field);
-            }
-            else if (viewerIsAlumni && row.Visibility != "Public")
-            {
-                MakePrivate(restricted_profile, row.Field);
+                MakePrivate(restricted_profile, f.Field);
             }
         }
 
