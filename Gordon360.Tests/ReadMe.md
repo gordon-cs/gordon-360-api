@@ -142,9 +142,9 @@ This example means: *"When ******`GetStudentProfile("targetuser")`****** is call
 When mocking a return value, make sure the object you return is the **exact ViewModel type** expected by the controller (e.g., `StudentProfileViewModel`, `PublicStudentProfileViewModel`).
 If you pass the wrong type, the test may fail with casting or serialization errors.
 
-### Demo: Defining a Complete Expected Output
+### Demo: Defining a Complete Expected Output & ViewModel Construction
 
-When using `.Returns(expectedResult)`, you **must pass in a fully constructed object** with all required fields populated, especially if the controller expects to access them.
+When using `.Returns(expectedResult)` in Moq, you **must pass in a fully constructed object** with all required fields populated, especially if the controller expects to access them.
 
 ```csharp
 var expected = new StudentProfileViewModel
@@ -186,6 +186,60 @@ mockProfileService.Setup(s => s.GetStudentProfile("targetuser"))
 
 ➡️ **Important**: If you skip required fields and the controller tries to access them, the test will throw an error.
 
+#### ViewModel Construction: Input Requirements
+
+Some view models in this project are designed to be constructed from another view model or an entity model (database object), rather than through property initializers or a parameterless constructor.  
+**You must ensure that the input you provide matches the expected type and format required by the view model's constructor.**
+
+**General Rule:**  
+If a view model's constructor requires another model (entity or view model), you must create and fully populate that input object first, then pass it to the view model's constructor:
+
+```csharp
+var input = new SomeEntityOrViewModel { /* set properties */ };
+var viewModel = new SomeViewModel(input);
+```
+
+**You cannot:**
+- Use property initializers (e.g., `new SomeViewModel { ... }`) unless the view model supports it.
+- Use a parameterless constructor if the view model does not provide one.
+
+**Why?**  
+This ensures that all required data and mapping logic are handled in one place, and prevents runtime errors or unexpected behavior.
+
+**Tip:**  
+Always check the constructor signature of a view model before using it. If it requires another model as input, set up that input object with all necessary properties.
+
+##### Complete Example 1: Entity to ViewModel (YearTermTableViewModel)
+
+```csharp
+using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
+using System;
+
+// Step 1: Create the YearTermTable entity with all required properties
+var yearTermEntity = new YearTermTable
+{
+    YR_CDE = "2024",
+    TRM_CDE = "SP",
+    TRM_BEGIN_DTE = new DateTime(2024, 1, 10),
+    TRM_END_DTE = new DateTime(2024, 5, 10),
+    YR_TRM_DESC = "Spring 2024",
+    PRT_INPROG_ON_TRAN = "Y",
+    CENSUS_PERCENTAGE = 100,
+    SHOW_ON_WEB = "Y",
+    ONLINE_ADM_APP_OPEN = "Y",
+    PREREG_STS = "Y",
+    APPROWVERSION = new byte[] { 1 },
+    // Optional: Set other properties as needed
+};
+
+// Step 2: Pass the entity to the YearTermTableViewModel constructor
+var viewModel = new YearTermTableViewModel(yearTermEntity);
+
+// Now you can use viewModel in your test or application logic
+Console.WriteLine(viewModel.Description); // Output: Spring 2024
+```
+
 ### Using Parameters
 
 * Use `It.IsAny<T>()` when you want to allow any argument of a specific type:
@@ -207,6 +261,7 @@ mockService.Setup(s =>
 This allows the mock to respond differently depending on the input value.
 
 [Learn more about Moq](https://github.com/moq/moq4)
+
 
 ## 3. xUnit and Test Structure Format 🧱
 
@@ -519,59 +574,8 @@ namespace Gordon360.Tests.Controllers_Test
 }
 ```
 
-#### ViewModel Construction: Input Requirements
 
-Some view models in this project are designed to be constructed from another view model or an entity model (database object), rather than through property initializers or a parameterless constructor.  
-**You must ensure that the input you provide matches the expected type and format required by the view model's constructor.**
 
-**General Rule:**  
-If a view model's constructor requires another model (entity or view model), you must create and fully populate that input object first, then pass it to the view model's constructor:
-
-```csharp
-var input = new SomeEntityOrViewModel { /* set properties */ };
-var viewModel = new SomeViewModel(input);
-```
-
-**You cannot:**
-- Use property initializers (e.g., `new SomeViewModel { ... }`) unless the view model supports it.
-- Use a parameterless constructor if the view model does not provide one.
-
-**Why?**  
-This ensures that all required data and mapping logic are handled in one place, and prevents runtime errors or unexpected behavior.
-
-**Tip:**  
-Always check the constructor signature of a view model before using it. If it requires another model as input, set up that input object with all necessary properties.
-
-##### Complete Example: Entity to ViewModel (YearTermTableViewModel)
-
-```csharp
-using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels;
-using System;
-
-// Step 1: Create the YearTermTable entity with all required properties
-var yearTermEntity = new YearTermTable
-{
-    YR_CDE = "2024",
-    TRM_CDE = "SP",
-    TRM_BEGIN_DTE = new DateTime(2024, 1, 10),
-    TRM_END_DTE = new DateTime(2024, 5, 10),
-    YR_TRM_DESC = "Spring 2024",
-    PRT_INPROG_ON_TRAN = "Y",
-    CENSUS_PERCENTAGE = 100,
-    SHOW_ON_WEB = "Y",
-    ONLINE_ADM_APP_OPEN = "Y",
-    PREREG_STS = "Y",
-    APPROWVERSION = new byte[] { 1 },
-    // Optional: Set other properties as needed
-};
-
-// Step 2: Pass the entity to the YearTermTableViewModel constructor
-var viewModel = new YearTermTableViewModel(yearTermEntity);
-
-// Now you can use viewModel in your test or application logic
-Console.WriteLine(viewModel.Description); // Output: Spring 2024
-```
 
 ---
 
