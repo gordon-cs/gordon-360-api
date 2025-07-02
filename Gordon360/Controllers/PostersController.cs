@@ -135,7 +135,7 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     public async Task<ActionResult<PosterViewModel>> UpdatePoster(int posterID, [FromBody] PosterPatchViewModel updatedPoster)
     {
         var poster = await posterService.UpdatePosterAsync(posterID, updatedPoster);
-        return CreatedAtAction(nameof(GetPosterByID), new { posterID = poster.ID }, updatedPoster);
+        return CreatedAtAction(nameof(GetPosterByID), new { posterID = poster.ID }, poster);
     }
 
     /// <summary>

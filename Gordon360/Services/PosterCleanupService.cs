@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,27 +9,58 @@ using System.Linq;
 
 
 
-public class PosterCleanupService(IServiceProvider _services) : BackgroundService
+
+public class PosterCleanupService : BackgroundService
 {
+    private readonly ILogger<PosterCleanupService> _logger;
+    private int _executionCount;
+
+    private readonly IServiceProvider _services;
+
+    public PosterCleanupService(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    // public PosterCleanupService(ILogger<PosterCleanupService> logger)
+    // {
+    //     _logger = logger;
+    // }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        // _logger.LogInformation("Poster Cleanup Service running.");
+
+        // When the timer should have no due-time, then do the work once now.
+        await PosterCleanup();
+
+        using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
+
+        try
         {
-            using var scope = _services.CreateScope();
-            var posterService = scope.ServiceProvider.GetRequiredService<IPosterService>();
-
-            var posters = posterService.GetPosters()
-                .Where(p => p.ExpirationDate <= DateTime.Now.AddDays(-14))
-                .ToList();
-
-            foreach (var poster in posters)
+            while (await timer.WaitForNextTickAsync(stoppingToken))
             {
-                await posterService.DeletePosterAsync(poster.ID);
+                await PosterCleanup();
             }
+        }
+        catch (OperationCanceledException)
+        {
+            // _logger.LogInformation("Poster Cleanup Service is stopping.");
+        }
+    }
 
-            // Wait 24 hours
-            await Task.Delay(TimeSpan.FromDays(1));
+    private async Task PosterCleanup()
+    {
+        using var scope = _services.CreateScope();
+        var posterService = scope.ServiceProvider.GetRequiredService<IPosterService>();
+
+        var posters = posterService.GetPosters()
+            .Where(p => p.ExpirationDate <= DateTime.Now.AddMinutes(-1))
+            .ToList();
+
+        foreach (var poster in posters)
+        {
+            await posterService.DeletePosterAsync(poster.ID);
         }
     }
 }
