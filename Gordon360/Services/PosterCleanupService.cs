@@ -34,7 +34,7 @@ public class PosterCleanupService : BackgroundService
         // When the timer should have no due-time, then do the work once now.
         await PosterCleanup();
 
-        using PeriodicTimer timer = new(TimeSpan.FromMinutes(1));
+        using PeriodicTimer timer = new(TimeSpan.FromDays(1));
 
         try
         {
@@ -55,7 +55,7 @@ public class PosterCleanupService : BackgroundService
         var posterService = scope.ServiceProvider.GetRequiredService<IPosterService>();
 
         var posters = posterService.GetPosters()
-            .Where(p => p.ExpirationDate <= DateTime.Now.AddMinutes(-1))
+            .Where(p => p.ExpirationDate <= DateTime.Now.AddDays(-14))
             .ToList();
 
         foreach (var poster in posters)
