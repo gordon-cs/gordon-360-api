@@ -5,6 +5,7 @@ using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,13 +14,13 @@ namespace Gordon360.Controllers;
 [Route("api/[controller]")]
 public class ScheduleController(IScheduleService scheduleService) : GordonControllerBase
 {
-
     /// <summary>
     ///  Gets all session objects for a user
     /// </summary>
     /// <returns>A IEnumerable of session objects as well as the schedules</returns>
     [HttpGet]
     [Route("{username}/allcourses")]
+    [Obsolete("This method is deprecated. Use '/{username}/allcourses-by-term' which is grouped by term.")]
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
         var groups = AuthUtils.GetGroups(User);
@@ -35,7 +36,31 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
             result = await scheduleService.GetAllInstructorCoursesAsync(username);
         }
         return Ok(result);
+    }
 
+    /// <summary>
+    ///  Gets all term objects for a user
+    /// </summary>
+    /// <returns>A IEnumerable of term objects as well as the schedules</returns>
+    [HttpGet]
+    [Route("{username}/allcourses-by-term")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
+    public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCoursesByTerm(string username)
+    {
+        var groups = AuthUtils.GetGroups(User);
+        var authenticatedUsername = AuthUtils.GetUsername(User);
+
+        IEnumerable<CoursesByTermViewModel> result;
+        if (authenticatedUsername.EqualsIgnoreCase(username) || groups.Contains(AuthGroup.FacStaff))
+        {
+            result = await scheduleService.GetAllCoursesByTermAsync(username);
+        }
+        else
+        {
+            result = Enumerable.Empty<CoursesByTermViewModel>();
+        }
+
+        return Ok(result);
     }
 
     /// <summary>
