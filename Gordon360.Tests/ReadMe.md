@@ -314,7 +314,7 @@ This defines a user named "viewer" who belongs to the `360-Student-SG` group.
 
 ### Step 2: Insert Identity into Controller
 
-Manually assign the identity to the controller’s context:
+Manually assign the identity to the controller's context:
 
 ```csharp
 controller.ControllerContext = new ControllerContext
@@ -519,8 +519,59 @@ namespace Gordon360.Tests.Controllers_Test
 }
 ```
 
+#### ViewModel Construction: Input Requirements
 
+Some view models in this project are designed to be constructed from another view model or an entity model (database object), rather than through property initializers or a parameterless constructor.  
+**You must ensure that the input you provide matches the expected type and format required by the view model's constructor.**
 
+**General Rule:**  
+If a view model's constructor requires another model (entity or view model), you must create and fully populate that input object first, then pass it to the view model's constructor:
+
+```csharp
+var input = new SomeEntityOrViewModel { /* set properties */ };
+var viewModel = new SomeViewModel(input);
+```
+
+**You cannot:**
+- Use property initializers (e.g., `new SomeViewModel { ... }`) unless the view model supports it.
+- Use a parameterless constructor if the view model does not provide one.
+
+**Why?**  
+This ensures that all required data and mapping logic are handled in one place, and prevents runtime errors or unexpected behavior.
+
+**Tip:**  
+Always check the constructor signature of a view model before using it. If it requires another model as input, set up that input object with all necessary properties.
+
+##### Complete Example: Entity to ViewModel (YearTermTableViewModel)
+
+```csharp
+using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
+using System;
+
+// Step 1: Create the YearTermTable entity with all required properties
+var yearTermEntity = new YearTermTable
+{
+    YR_CDE = "2024",
+    TRM_CDE = "SP",
+    TRM_BEGIN_DTE = new DateTime(2024, 1, 10),
+    TRM_END_DTE = new DateTime(2024, 5, 10),
+    YR_TRM_DESC = "Spring 2024",
+    PRT_INPROG_ON_TRAN = "Y",
+    CENSUS_PERCENTAGE = 100,
+    SHOW_ON_WEB = "Y",
+    ONLINE_ADM_APP_OPEN = "Y",
+    PREREG_STS = "Y",
+    APPROWVERSION = new byte[] { 1 },
+    // Optional: Set other properties as needed
+};
+
+// Step 2: Pass the entity to the YearTermTableViewModel constructor
+var viewModel = new YearTermTableViewModel(yearTermEntity);
+
+// Now you can use viewModel in your test or application logic
+Console.WriteLine(viewModel.Description); // Output: Spring 2024
+```
 
 ---
 
@@ -553,15 +604,6 @@ Carefully read the guidelines in this document if you want to avoid 90% of the f
 Happy testing!
 
 ---
-
-
-
----
-
-
-
-
-
 
 ## 8. Automating Tests with GitHub Actions and Git Hooks 🔄🪝
 
@@ -658,7 +700,7 @@ fi
 "@ | Set-Content .git/hooks/pre-commit
 ```
 
-> ⚠️ This only runs locally on your machine. Others won’t get it unless shared via tools like Husky.
+> ⚠️ This only runs locally on your machine. Others won't get it unless shared via tools like Husky.
 
 ---
 
