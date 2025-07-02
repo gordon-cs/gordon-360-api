@@ -7,49 +7,55 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-public class MarketplaceCleanupService : BackgroundService
+public class MarketplaceCleanupService(IServiceProvider services) : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public MarketplaceCleanupService(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        using PeriodicTimer timer = new(TimeSpan.FromDays(1)); // Run every 24 hours
+
+        try
         {
-            try
+            do
             {
-                using (var scope = _serviceProvider.CreateScope())
+                await DoCleanupAsync(stoppingToken);
+            }
+            while (await timer.WaitForNextTickAsync(stoppingToken));
+        }
+        catch (OperationCanceledException)
+        {
+            // Service is stopping
+        }
+    }
+
+    private async Task DoCleanupAsync(CancellationToken stoppingToken)
+    {
+        try
+        {
+            using (var scope = services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CCTContext>();
+                var now = DateTime.Now;
+                // Find items whose images should be deleted (14 days after DeletedAt)
+                var expired = await context.PostedItem
+                    .Where(x => x.DeletedAt != null && x.DeletedAt.Value.AddDays(14) <= now)
+                    .Include(x => x.PostImage)
+                    .ToListAsync(stoppingToken);
+
+                foreach (var item in expired)
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<CCTContext>();
-                    var now = DateTime.Now;
-                    // Find items whose images should be deleted (14 days after DeletedAt)
-                    var expired = context.PostedItem
-                        .Where(x => x.DeletedAt != null && x.DeletedAt.Value.AddDays(14) <= now)
-                        .Include(x => x.PostImage)
-                        .ToList();
+                    var images = context.PostImage.Where(img => img.PostedItemId == item.Id).ToList();
+                    context.PostImage.RemoveRange(images);
+                }
 
-                    foreach (var item in expired)
-                    {
-                        var images = context.PostImage.Where(img => img.PostedItemId == item.Id).ToList();
-                        context.PostImage.RemoveRange(images);
-                    }
-
-                    if (expired.Any())
-                    {
-                        await context.SaveChangesAsync();
-                    }
+                if (expired.Any())
+                {
+                    await context.SaveChangesAsync(stoppingToken);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"MarketplaceCleanupService error: {ex}");
-            }
-
-            await Task.Delay(TimeSpan.FromDays(1), stoppingToken); // For testing, change Days to Minutes
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"MarketplaceCleanupService error: {ex}");
         }
     }
 }

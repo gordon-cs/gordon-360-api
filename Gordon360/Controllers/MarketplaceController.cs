@@ -220,11 +220,11 @@ namespace Gordon360.Controllers
         [HttpPost("categories")]
         public async Task<ActionResult<ItemCategory>> AddCategory([FromBody] string categoryName)
         {
-            //var viewerGroups = AuthUtils.GetGroups(User);
-            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            //{
-            //    return Forbid();
-            //}
+            var viewerGroups = AuthUtils.GetGroups(User);
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
+                return Forbid();
+            }
 
             if (string.IsNullOrWhiteSpace(categoryName))
                 return BadRequest("Category name cannot be empty.");
@@ -239,11 +239,11 @@ namespace Gordon360.Controllers
         [HttpPost("conditions")]
         public async Task<ActionResult<ItemCondition>> AddCondition([FromBody] string conditionName)
         {
-            //var viewerGroups = AuthUtils.GetGroups(User);
-            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            //{
-            //    return Forbid();
-            //}
+            var viewerGroups = AuthUtils.GetGroups(User);
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
+                return Forbid();
+            }
 
             if (string.IsNullOrWhiteSpace(conditionName))
                 return BadRequest("Condition name cannot be empty.");
@@ -258,11 +258,11 @@ namespace Gordon360.Controllers
         [HttpPut("categories/categoryName/{visibility}")]
         public async Task<ActionResult<ItemCategory>> UpdateCategoryVisibility([FromBody] string categoryName, bool visibility)
         {
-            //var viewerGroups = AuthUtils.GetGroups(User);
-            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            //{
-            //    return Forbid();
-            //}
+            var viewerGroups = AuthUtils.GetGroups(User);
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
+                return Forbid();
+            }
 
             if (string.IsNullOrWhiteSpace(categoryName))
                 return BadRequest("Condition name cannot be empty.");
@@ -281,11 +281,11 @@ namespace Gordon360.Controllers
         [HttpPut("conditions/conditionName/{visibility}")]
         public async Task<ActionResult<ItemCondition>> UpdateConditionVisibility([FromBody] string conditionName, bool visibility)
         {
-            //var viewerGroups = AuthUtils.GetGroups(User);
-            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            //{
-            //    return Forbid();
-            //}
+            var viewerGroups = AuthUtils.GetGroups(User);
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            {
+                return Forbid();
+            }
 
             if (string.IsNullOrWhiteSpace(conditionName))
                 return BadRequest("Condition name cannot be empty.");
