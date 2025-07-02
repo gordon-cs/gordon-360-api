@@ -207,8 +207,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<UserCourses> UserCourses { get; set; }
 
-    public virtual DbSet<YearTermTable> YearTermTable { get; set; }
-
+    public virtual DbSet<CourseRegistrationDate> CourseRegistrationDates { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ACCOUNT>(entity =>
