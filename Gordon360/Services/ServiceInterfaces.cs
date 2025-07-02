@@ -190,6 +190,8 @@ namespace Gordon360.Services
     public interface IScheduleService
     {
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
+        Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
+        Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username);
     }
 
     public interface IContentManagementService
@@ -345,6 +347,13 @@ namespace Gordon360.Services
         Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster);
         Task<PosterViewModel> DeletePosterAsync(int posterID);
         Task<PosterViewModel> HidePosterAsync(int posterID);
+    }
+
+    public interface IAcademicTermService
+    {
+        Task<YearTermTableViewModel?> GetCurrentTermAsync();
+        Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
+        Task<double[]> GetDaysLeftAsync();
 
     }
 

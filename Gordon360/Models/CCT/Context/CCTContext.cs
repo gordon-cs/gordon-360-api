@@ -210,9 +210,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<UserCourses> UserCourses { get; set; }
 
+    public virtual DbSet<YearTermTable> YearTermTable { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
             entity.ToView("ACCOUNT", "dbo");
@@ -583,6 +584,7 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<MissingReports>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC271C4C78EB");
+
             entity.HasOne(d => d.matchingFound).WithMany(p => p.MissingReports).HasConstraintName("FK__MissingRe__match__38453051");
         });
 

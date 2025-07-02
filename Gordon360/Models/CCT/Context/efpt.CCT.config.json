@@ -496,6 +496,7 @@
    "UseHandleBars": false,
    "UseHierarchyId": false,
    "UseInflector": false,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
    "UseLegacyPluralizer": false,
    "UseManyToManyEntity": false,
    "UseNoDefaultConstructor": false,
