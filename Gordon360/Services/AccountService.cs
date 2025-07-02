@@ -144,7 +144,8 @@ public class AccountService(CCTContext context) : IAccountService
         {
             accounts = accounts.Where(a =>
                 a.FirstName.StartsWithIgnoreCase(firstname)
-                || a.NickName.StartsWithIgnoreCase(firstname));
+                || a.NickName.StartsWithIgnoreCase(firstname)
+                || a.Email.StartsWithIgnoreCase(firstname));
         }
 
         if (lastname is not null)
@@ -152,6 +153,8 @@ public class AccountService(CCTContext context) : IAccountService
             accounts = accounts.Where(a =>
                 a.LastName.StartsWithIgnoreCase(lastname)
                 || a.MaidenName.StartsWithIgnoreCase(lastname)
+                || (!string.IsNullOrEmpty(a.Email) && a.Email.IndexOf('.') >= 0 
+                    && a.Email.Split('.')[1].StartsWithIgnoreCase(lastname))
             );
         }
 
@@ -289,10 +292,22 @@ public class AccountService(CCTContext context) : IAccountService
 
     public ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts)
     {
+        string Normalize(string name) =>
+            new string(name?.Where(char.IsLetterOrDigit).ToArray()).ToLower();
+
+
+        var normalizedLastName = Normalize(lastName);
+
         return accounts.AsParallel()
-            .Select(account => (matchKey: account.MatchSearch(firstName, lastName), account))
+            .Select(account =>
+            {
+                var matchKey = account.MatchSearch(firstName, normalizedLastName);
+                return (matchKey, account);
+            })
             .Where(pair => pair.matchKey is not null)
             .OrderBy(pair => pair.matchKey)
             .Select(pair => pair.account);
     }
+
+
 }

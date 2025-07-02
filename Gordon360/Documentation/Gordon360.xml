@@ -1038,6 +1038,11 @@
             </summary>
             <returns> All Mail Destinations</returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetGraduationInfo(System.String)">
+            <summary> Gets the graduation information of a particular user </summary>
+            <param name="username"> The username for which to retrieve info </param>
+            <returns> Graduation information of the given user. </returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.Boolean})">
             <summary>Gets a list of all Activities by parameter </summary>
             <param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
@@ -1543,6 +1548,12 @@
              Gets all session objects for a user
             </summary>
             <returns>A IEnumerable of session objects as well as the schedules</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTerm(System.String)">
+            <summary>
+             Gets all term objects for a user
+            </summary>
+            <returns>A IEnumerable of term objects as well as the schedules</returns>
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
             <summary>
@@ -3211,6 +3222,13 @@
             <param name="username">AD Username</param>
             <param name="value">Y or N</param>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.GetGraduationInfo(System.String)">
+            <summary>
+            Get graduation information for a student
+            </summary>
+            <param name="username">The username of the student</param>
+            <returns>GraduationViewModel containing graduation details</returns>
+        </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>
             this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
@@ -3225,7 +3243,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>account information</returns>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+        <member name="M:Gordon360.Services.RecIM.SeriesSerMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Scheduler does not currently handle overlaps
             eventually:
@@ -3257,7 +3275,7 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService)">
+        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService,Gordon360.Services.IAcademicTermService)">
             <summary>
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
@@ -3268,6 +3286,20 @@
             </summary>
             <param name="username">The AD Username of the user</param>
             <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllInstructorCoursesAsync(System.String)">
+            <summary>
+            Fetch the classes that are taught by this user
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesBySessionViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesByTermAsync(System.String)">
+            <summary>
+            Fetch the term item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesByTermViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.ServicesExtensions.Add360Services(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>

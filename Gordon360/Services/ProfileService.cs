@@ -312,7 +312,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// Updates mobile phone number 
     /// </summary>
     /// <param name="username">The username for the user whose number is updated</param>
-    /// <param name="newMobilePhoneNumber">The phone number to update to the user's phone number</param>
+    /// <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
     /// <returns>updated student profile by there username</returns>
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
@@ -322,12 +322,12 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
         
         }
-        var formattedNumber = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
-        await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, formattedNumber);
+        var digitsOnly = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
+        await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, digitsOnly);
         var student = await context.Student.FirstOrDefaultAsync(x => x.ID == profile.ID);
         if (student != null)
         {
-            student.MobilePhone = formattedNumber;
+            student.MobilePhone = digitsOnly;
         }
         return profile;
     }
@@ -419,6 +419,29 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         }
 
         context.SaveChanges();
+    }
+
+    /// <summary>
+    /// Get graduation information for a student
+    /// </summary>
+    /// <param name="username">The username of the student</param>
+    /// <returns>GraduationViewModel containing graduation details</returns>
+    public GraduationViewModel? GetGraduationInfo(string username)
+    {
+        // Find the graduation record directly by AD_Username
+        var graduation = context.Graduation.FirstOrDefault(g => g.AD_Username.ToLower() == username.ToLower());
+        if (graduation == null)
+        {
+            return null; // Graduation info might not exist for all students
+        }
+
+        // Map the graduation data to a ViewModel
+        return new GraduationViewModel
+        {
+            WhenGraduated = graduation.WHEN_GRAD,
+            HasGraduated = graduation.HAS_GRADUATED == "Y",
+            GraduationFlag = graduation.GRAD_FLAG
+        };
     }
 
     public ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo)
