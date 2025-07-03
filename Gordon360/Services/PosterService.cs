@@ -121,7 +121,6 @@ public class PosterService(CCTContext context,
             .ID ?? poster.StatusID;
         }
 
-
         if (updatedPoster.ImagePath is not null && updatedPoster.ImagePath.StartsWith("data:image"))
         {
             var (extension, format, data) = ImageUtils.GetImageFormat(updatedPoster.ImagePath);
