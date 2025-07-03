@@ -115,6 +115,7 @@ public class PosterService(CCTContext context,
         poster.ExpirationDate = updatedPoster.ExpirationDate;
 
         if (updatedPoster.Status is not null)
+        {
             poster.StatusID = context.PosterStatus
             .Where(ps => ps.Status.ToLower() == updatedPoster.Status.ToLower())
             .FirstOrDefault()?
