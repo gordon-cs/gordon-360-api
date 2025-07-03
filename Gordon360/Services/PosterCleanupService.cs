@@ -13,7 +13,6 @@ using System.Linq;
 public class PosterCleanupService : BackgroundService
 {
     //private readonly ILogger<PosterCleanupService> _logger;
-    private int _executionCount;
 
     private readonly IServiceProvider _services;
 
