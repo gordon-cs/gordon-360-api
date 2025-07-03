@@ -200,8 +200,10 @@ namespace Gordon360.Services
                 Detail = updatedListing.Detail,
                 ConditionId = updatedListing.ConditionId,
                 StatusId = oldListing.StatusId,
-                PostImage = new List<PostImage>()
+                PostImage = new List<PostImage>(),
             };
+
+            newListing.OriginalPostId = oldListing.OriginalPostId ?? oldListing.Id;
 
             context.PostedItem.Add(newListing);
             await context.SaveChangesAsync(); // Save to get newListing.Id

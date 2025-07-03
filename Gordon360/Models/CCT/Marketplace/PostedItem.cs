@@ -37,6 +37,8 @@ public partial class PostedItem
 
     public int StatusId { get; set; }
 
+    public int? OriginalPostId { get; set; }
+
     [ForeignKey("CategoryId")]
     [InverseProperty("PostedItem")]
     public virtual ItemCategory Category { get; set; }
