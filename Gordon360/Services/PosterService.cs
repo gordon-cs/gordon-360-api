@@ -137,7 +137,6 @@ public class PosterService(CCTContext context,
             poster.ImagePath = GetImageURL(filename);
             imagePath = GetImagePath(filename);
             ImageUtils.UploadImage(imagePath, data, format);
-
         }
 
         await context.SaveChangesAsync();
