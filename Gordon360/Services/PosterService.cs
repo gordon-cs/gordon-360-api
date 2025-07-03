@@ -119,6 +119,7 @@ public class PosterService(CCTContext context,
             .Where(ps => ps.Status.ToLower() == updatedPoster.Status.ToLower())
             .FirstOrDefault()?
             .ID ?? poster.StatusID;
+        }
 
 
         if (updatedPoster.ImagePath is not null && updatedPoster.ImagePath.StartsWith("data:image"))
