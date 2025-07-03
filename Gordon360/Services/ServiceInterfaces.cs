@@ -201,9 +201,11 @@ namespace Gordon360.Services
     public interface IScheduleService
     {
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
+
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
         Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username);
     }
+
 
     public interface IContentManagementService
     {
@@ -345,11 +347,27 @@ namespace Gordon360.Services
         Task<bool> GetStatusAsync(string username);
     }
 
+    public interface IPosterService
+    {
+        IEnumerable<PosterViewModel> GetPosters();
+        IEnumerable<PosterViewModel> GetCurrentPosters();
+        IEnumerable<PosterViewModel> GetCurrentPostersByActivityCode(string activityCode);
+        IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username);
+        IEnumerable<string> GetPosterStatuses();
+        IEnumerable<PosterViewModel> GetPostersByActivityCode(string activityCode);
+        PosterViewModel GetPosterByID(int posterID);
+        Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster);
+        Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster);
+        Task<PosterViewModel> DeletePosterAsync(int posterID);
+        Task<PosterViewModel> HidePosterAsync(int posterID);
+    }
+
     public interface IAcademicTermService
     {
         Task<YearTermTableViewModel?> GetCurrentTermAsync();
         Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
         Task<double[]> GetDaysLeftAsync();
+
     }
 
     namespace RecIM
