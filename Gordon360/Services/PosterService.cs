@@ -128,7 +128,7 @@ public class PosterService(CCTContext context,
 
             string? imagePath = null;
 
-           if (poster.ImagePath is not null)
+            if (poster.ImagePath is not null)
             {
                 var oldImagePath = GetImagePath(Path.GetFileName(poster.ImagePath));
                 ImageUtils.DeleteImage(oldImagePath);
