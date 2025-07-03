@@ -94,6 +94,7 @@ try
 
     builder.Services.Add360Services();
     builder.Services.AddHostedService<EventCacheRefreshService>();
+    builder.Services.AddHostedService<PosterCleanupService>();
     builder.Services.AddScoped<ServerUtils, ServerUtils>();
 
     builder.Services.AddMemoryCache();

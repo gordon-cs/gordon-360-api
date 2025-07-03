@@ -241,7 +241,7 @@ namespace Gordon360.Models.CCT.Context
                 SqlDbType = System.Data.SqlDbType.Int,
             };
 
-            var sqlParameters = new []
+            var sqlParameters = new[]
             {
                 new SqlParameter
                 {

@@ -140,6 +140,10 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
 
+    public virtual DbSet<Poster> Poster { get; set; }
+
+    public virtual DbSet<PosterStatus> PosterStatus { get; set; }
+
     public virtual DbSet<PrivType> PrivType { get; set; }
 
     public virtual DbSet<RA_Assigned_Ranges_View> RA_Assigned_Ranges_View { get; set; }
@@ -708,6 +712,19 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.Record_ID).HasName("PK__RD_On_Ca__603A0C605596CACA");
 
             entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
+        });
+
+        modelBuilder.Entity<Poster>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK_Posters");
+
+            entity.Property(e => e.ACT_CDE).IsFixedLength();
+
+            entity.HasOne(d => d.ACT_CDENavigation).WithMany(p => p.Poster).HasConstraintName("FK_Posters_ACT_INFO");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.Poster)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Posters_PosterStatus");
         });
 
         modelBuilder.Entity<REQUEST>(entity =>
