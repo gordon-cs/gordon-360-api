@@ -141,7 +141,6 @@ public class PosterService(CCTContext context,
 
         }
 
-
         await context.SaveChangesAsync();
 
         return poster;
