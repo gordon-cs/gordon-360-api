@@ -29,24 +29,27 @@ public class ScheduleController(IProfileService profileService,
         FacultyStaffProfileViewModel? fac = profileService.GetFacultyStaffProfileByUsername(username);
         StudentProfileViewModel? student = profileService.GetStudentProfileByUsername(username);
         AlumniProfileViewModel? alumni = profileService.GetAlumniProfileByUsername(username);
-        // Everyone can see faculty schedules.
-        // Some users can see student and alumni schedules,
-        // but check that they can see this student or alumni.
-        if ((fac != null) ||
-            (accountService.CanISeeStudentSchedule(groups) &&
-               (student != null &&
-                accountService.CanISeeThisStudent(groups, student)) ||
-               (alumni != null &&
-                accountService.CanISeeAlumni(groups))))
+
+        // Some users can see schedules of courses taken, as well as taught,
+        // so check to see if this user can see all courses for this person.
+        if ((accountService.CanISeeStudentSchedule(groups) &&
+               student != null &&
+               accountService.CanISeeThisStudent(groups, student)) ||
+            (alumni != null && accountService.CanISeeAlumni(groups)))
         {
-            IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+            IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesAsync(username);
             return Ok(result);
         }
-        return Forbid();
+        else
+        {
+            // Everyone can see schedules of courses taught.
+            IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllInstructorCoursesAsync(username);
+            return Ok(result);
+        }
     }
 
     /// <summary>
-    ///  Gets all term objects for a user
+    ///  Gets all visible course objects for a user, for all visible terms
     /// </summary>
     /// <returns>A IEnumerable of term objects as well as the schedules</returns>
     [HttpGet]
@@ -58,20 +61,22 @@ public class ScheduleController(IProfileService profileService,
         FacultyStaffProfileViewModel? fac = profileService.GetFacultyStaffProfileByUsername(username);
         StudentProfileViewModel? student = profileService.GetStudentProfileByUsername(username);
         AlumniProfileViewModel? alumni = profileService.GetAlumniProfileByUsername(username);
-        // Everyone can see faculty schedules.
-        // Some users can see student and alumni schedules,
-        // but check that they can see this student or alumni.
-        if ((fac != null) ||
-            (accountService.CanISeeStudentSchedule(groups) &&
-               (student != null &&
-                accountService.CanISeeThisStudent(groups, student)) ||
-               (alumni != null &&
-                accountService.CanISeeAlumni(groups))))
+
+        // Some users can see schedules of courses taken, as well as taught,
+        // so check to see if this user can see all courses for this person.
+        if ((accountService.CanISeeStudentSchedule(groups) &&
+               student != null && 
+               accountService.CanISeeThisStudent(groups, student)) ||
+            (alumni != null && accountService.CanISeeAlumni(groups)))
         {
             IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesByTermAsync(username);
             return Ok(result);
+        } else
+        {
+            // Everyone can see schedules of courses taught.
+            IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
+            return Ok(result);
         }
-        return Forbid();
     }
 
     /// <summary>
