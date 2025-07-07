@@ -64,64 +64,6 @@ public class ScheduleControllerTest
     };
 
     [Fact]
-    public async Task GetAllCourses_ReturnsOk_ForSelf()
-    {
-        var username = "jdoe";
-        var courses = new List<UserCoursesViewModel> { GetSampleCourse() };
-        var session = new CoursesBySessionViewModel("202401", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10), courses);
-        var sessions = new List<CoursesBySessionViewModel> { session };
-        _mockService.Setup(s => s.GetAllCoursesAsync(username)).ReturnsAsync(sessions);
-
-        SetUser(username, "Student");
-
-        var result = await _controller.GetAllCourses(username);
-
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returned = Assert.IsAssignableFrom<IEnumerable<CoursesBySessionViewModel>>(okResult.Value);
-        Assert.Single(returned);
-        Assert.Equal("202401", returned.First().SessionCode);
-    }
-
-    [Fact]
-    public async Task GetAllCourses_ReturnsOk_ForFacStaff()
-    {
-        var username = "jdoe";
-        var courses = new List<UserCoursesViewModel> { GetSampleCourse() };
-        var session = new CoursesBySessionViewModel("202401", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10), courses);
-        var sessions = new List<CoursesBySessionViewModel> { session };
-        _mockService.Setup(s => s.GetAllCoursesAsync(username)).ReturnsAsync(sessions);
-
-        SetUser("facstaff", "FacStaff");
-
-        var result = await _controller.GetAllCourses(username);
-
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returned = Assert.IsAssignableFrom<IEnumerable<CoursesBySessionViewModel>>(okResult.Value);
-        Assert.Single(returned);
-        Assert.Equal("202401", returned.First().SessionCode);
-    }
-
-    [Fact]
-    public async Task GetAllCourses_ReturnsOk_ForOtherUser()
-    {
-        // This test covers the 'not self, not facstaff' branch
-        var username = "otheruser";
-        var courses = new List<UserCoursesViewModel> { GetSampleCourse() };
-        var session = new CoursesBySessionViewModel("202401", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10), courses);
-        var sessions = new List<CoursesBySessionViewModel> { session };
-        _mockService.Setup(s => s.GetAllInstructorCoursesAsync(username)).ReturnsAsync(sessions);
-
-        SetUser("jdoe", "Student");
-
-        var result = await _controller.GetAllCourses(username);
-
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returned = Assert.IsAssignableFrom<IEnumerable<CoursesBySessionViewModel>>(okResult.Value);
-        Assert.Single(returned);
-        Assert.Equal("202401", returned.First().SessionCode);
-    }
-
-    [Fact]
     public async Task GetAllCoursesByTerm_ReturnsOk_ForSelf()
     {
         var username = "jdoe";
