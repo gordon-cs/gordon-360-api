@@ -523,6 +523,18 @@ namespace Gordon360.Services
             if (string.IsNullOrWhiteSpace(categoryName))
                 throw new ArgumentException("Category name cannot be empty.");
 
+            categoryName = categoryName.Trim();
+
+            if (categoryName.Length > 50)
+                throw new ArgumentException("Category name must be 50 characters or fewer.");
+            if (!categoryName.All(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)))
+                throw new ArgumentException("Category name can only contain letters, numbers, and spaces.");
+
+            bool exists = context.ItemCategory
+                .Any(c => c.CategoryName.ToLower() == categoryName.ToLower());
+            if (exists)
+                throw new ArgumentException("A category with this name already exists.");
+
             var category = new ItemCategory { CategoryName = categoryName, Visible = "Y" };
             context.ItemCategory.Add(category);
             await context.SaveChangesAsync();
@@ -533,6 +545,19 @@ namespace Gordon360.Services
         {
             if (string.IsNullOrWhiteSpace(conditionName))
                 throw new ArgumentException("Condition name cannot be empty.");
+
+            conditionName = conditionName.Trim();
+
+            if (conditionName.Length > 50)
+                throw new ArgumentException("Category name must be 50 characters or fewer.");
+            if (!conditionName.All(c => char.IsLetterOrDigit(c) || char.IsWhiteSpace(c)))
+                throw new ArgumentException("Category name can only contain letters, numbers, and spaces.");
+
+            bool exists = context.ItemCondition
+                .Any(c => conditionName.ToLower() == conditionName.ToLower());
+            if (exists)
+                throw new ArgumentException("A condition with this name already exists.");
+
 
             var condition = new ItemCondition { ConditionName = conditionName, Visible = "Y" };
             context.ItemCondition.Add(condition);
