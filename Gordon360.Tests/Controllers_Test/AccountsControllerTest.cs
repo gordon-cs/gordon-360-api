@@ -25,12 +25,13 @@ public class AccountsControllerTest
         _controller = new AccountsController(_mockAccountService.Object);
     }
 
-    private void SetUser(string username, string role)
+    private void SetUser(string username, string group)
     {
         var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.Upn, $"{username}@gordon.edu"),
             new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, role)
+            new Claim("groups", group) // Use full group name, e.g., "360-Student-SG"
         };
         var identity = new ClaimsIdentity(claims, "TestAuthType");
         var user = new ClaimsPrincipal(identity);
@@ -124,7 +125,7 @@ public class AccountsControllerTest
         _mockAccountService.Setup(s => s.GetAccountsToSearch(accountTypes, It.IsAny<IEnumerable<AuthGroup>>(), null)).Returns(accounts);
         _mockAccountService.Setup(s => s.AdvancedSearch(accounts, "Alex", "Johnson", null, null, null, null, null, null, null, null, null, null, null, null, null, null)).Returns(searchResults);
 
-        SetUser("ajohnson", "Student");
+        SetUser("ajohnson", "360-Student-SG");
 
         var result = await _controller.AdvancedPeopleSearchAsync(accountTypes, "Alex", "Johnson", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
@@ -144,7 +145,7 @@ public class AccountsControllerTest
         _mockAccountService.Setup(s => s.GetAccountsToSearch(accountTypes, It.IsAny<IEnumerable<AuthGroup>>(), null)).Returns(accounts);
         _mockAccountService.Setup(s => s.AdvancedSearch(accounts, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)).Returns(searchResults);
 
-        SetUser("ajohnson", "Student");
+        SetUser("ajohnson", "360-Student-SG");
 
         var result = await _controller.AdvancedPeopleSearchAsync(accountTypes, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
@@ -167,7 +168,7 @@ public class AccountsControllerTest
         _mockAccountService.Setup(s => s.GetAccountsToSearch(accountTypes, It.IsAny<IEnumerable<AuthGroup>>(), null)).Returns(accounts);
         _mockAccountService.Setup(s => s.AdvancedSearch(accounts, "Sam", "Faculty", null, null, null, null, null, null, null, null, null, null, null, null, null, null)).Returns(searchResults);
 
-        SetUser("sfaculty", "FacStaff");
+        SetUser("sfaculty", "360-FacStaff-SG");
 
         var result = await _controller.AdvancedPeopleSearchAsync(accountTypes, "Sam", "Faculty", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
@@ -192,7 +193,7 @@ public class AccountsControllerTest
         _mockAccountService.Setup(s => s.GetAccountsToSearch(accountTypes, It.IsAny<IEnumerable<AuthGroup>>(), null)).Returns(accounts);
         _mockAccountService.Setup(s => s.AdvancedSearch(accounts, "Alex", "Alum", null, null, null, null, null, null, null, null, null, null, null, null, null, null)).Returns(searchResults);
 
-        SetUser("aalum", "FacStaff"); // Use FacStaff for alumni search permissions
+        SetUser("aalum", "360-FacStaff-SG"); // Use FacStaff for alumni search permissions
 
         var result = await _controller.AdvancedPeopleSearchAsync(accountTypes, "Alex", "Alum", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
