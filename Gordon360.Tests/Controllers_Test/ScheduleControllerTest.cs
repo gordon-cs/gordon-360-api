@@ -28,6 +28,7 @@ public class ScheduleControllerTest
     {
         var claims = new List<Claim>
         {
+            new Claim(ClaimTypes.Upn, $"{username}@gordon.edu"),
             new Claim(ClaimTypes.Name, username),
             new Claim(ClaimTypes.Role, role)
         };

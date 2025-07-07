@@ -6,6 +6,8 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using Xunit;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Gordon360.Tests.Controllers_Test;
 
@@ -18,6 +20,22 @@ public class SessionsControllerTest
     {
         _mockService = new Mock<ISessionService>();
         _controller = new SessionsController(_mockService.Object);
+    }
+
+    private void SetUser(string username, string role)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Upn, $"{username}@gordon.edu"),
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role, role)
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuthType");
+        var user = new ClaimsPrincipal(identity);
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = user }
+        };
     }
 
     private static SessionViewModel GetSampleSession()
