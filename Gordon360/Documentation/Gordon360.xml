@@ -3277,10 +3277,10 @@
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumberAsync(System.String,System.String)">
             <summary>
-            Updates mobile phone number for a student (assuming its pre-validated input)
+            Updates mobile phone number 
             </summary>
-            <param name="username">The username for the user</param>
-            <param name="newMobilePhoneNumber">The pre-validated new phone number</param>
+            <param name="username">The username for the user whose number is updated</param>
+            <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
             <returns>updated student profile by there username</returns>
         </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateOfficeLocationAsync(System.String,System.String,System.String)">
@@ -3336,7 +3336,7 @@
             <param name="username">The AD username associated with the account.</param>
             <returns>account information</returns>
         </member>
-        <member name="M:Gordon360.Services.RecIM.SeriesSerMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
+        <member name="M:Gordon360.Services.RecIM.SeriesService.ScheduleMatchesAsync(System.Int32,Gordon360.Models.ViewModels.RecIM.UploadScheduleRequest)">
             <summary>
             Scheduler does not currently handle overlaps
             eventually:
