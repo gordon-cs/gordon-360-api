@@ -72,7 +72,7 @@ public class ScheduleControllerTest
         var terms = new List<CoursesByTermViewModel> { term };
         _mockService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
 
-        SetUser(username, "Student");
+        SetUser(username, "360-Student-SG");
 
         var result = await _controller.GetAllCoursesByTerm(username);
 
@@ -91,7 +91,7 @@ public class ScheduleControllerTest
         var terms = new List<CoursesByTermViewModel> { term };
         _mockService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
 
-        SetUser(username, "FacStaff");
+        SetUser(username, "360-FacStaff-SG");
 
         var result = await _controller.GetAllCoursesByTerm(username);
 
@@ -106,7 +106,18 @@ public class ScheduleControllerTest
     {
         // This test covers the 'not self, not facstaff' branch
         var username = "otheruser";
-        SetUser("jdoe", "Student");
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Upn, "someuser@gordon.edu"),
+            new Claim(ClaimTypes.Name, "someuser"),
+            new Claim("groups", "360-Student-SG")
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuthType");
+        var user = new ClaimsPrincipal(identity);
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = user }
+        };
 
         var result = await _controller.GetAllCoursesByTerm(username);
 
@@ -118,7 +129,7 @@ public class ScheduleControllerTest
     [Fact]
     public async Task GetCanReadStudentSchedules_ReturnsTrue_ForAdvisor()
     {
-        SetUser("advisor", "Advisors");
+        SetUser("advisor", "360-Advisors-SG");
 
         var result = await _controller.GetCanReadStudentSchedules();
 
@@ -129,7 +140,7 @@ public class ScheduleControllerTest
     [Fact]
     public async Task GetCanReadStudentSchedules_ReturnsFalse_ForNonAdvisor()
     {
-        SetUser("jdoe", "Student");
+        SetUser("jdoe", "360-Student-SG");
 
         var result = await _controller.GetCanReadStudentSchedules();
 

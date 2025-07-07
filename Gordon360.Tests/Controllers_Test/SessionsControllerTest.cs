@@ -82,7 +82,7 @@ public class SessionsControllerTest
         var session = GetSampleSession();
         _mockService.Setup(s => s.Get(username)).Returns(session);
 
-        SetUser(username, "Student");
+        SetUser(username, "360-Student-SG");
 
         var result = _controller.Get(username);
 
@@ -97,7 +97,7 @@ public class SessionsControllerTest
         var username = "notfound";
         _mockService.Setup(s => s.Get(username)).Returns((SessionViewModel)null);
 
-        SetUser(username, "Student");
+        SetUser(username, "360-Student-SG");
 
         var result = _controller.Get(username);
 
