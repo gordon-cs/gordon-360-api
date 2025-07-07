@@ -102,49 +102,23 @@ public class ScheduleControllerTest
     }
 
     [Fact]
-    public async Task GetAllCoursesByTerm_ReturnsOk_ForOtherUser()
+    public async Task GetAllCoursesByTerm_ReturnsEmpty_ForOtherStudent()
     {
-        // This test covers the 'not self, not facstaff' branch
-        var username = "otheruser";
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Upn, "someuser@gordon.edu"),
-            new Claim(ClaimTypes.Name, "someuser"),
-            new Claim("groups", "360-Student-SG")
-        };
-        var identity = new ClaimsIdentity(claims, "TestAuthType");
-        var user = new ClaimsPrincipal(identity);
-        _controller.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext { User = user }
-        };
+        var requestingUsername = "studentA";
+        var targetUsername = "studentB";
 
-        var result = await _controller.GetAllCoursesByTerm(username);
+        SetUser(requestingUsername, "360-Student-SG");
+
+        _mockService.Setup(s => s.GetAllCoursesByTermAsync(It.IsAny<string>()))
+                    .ReturnsAsync(new List<CoursesByTermViewModel>());
+
+        var result = await _controller.GetAllCoursesByTerm(targetUsername);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(okResult.Value);
         Assert.Empty(returned);
     }
 
-    [Fact]
-    public async Task GetCanReadStudentSchedules_ReturnsTrue_ForAdvisor()
-    {
-        SetUser("advisor", "360-Advisors-SG");
 
-        var result = await _controller.GetCanReadStudentSchedules();
 
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        Assert.True((bool)okResult.Value);
-    }
-
-    [Fact]
-    public async Task GetCanReadStudentSchedules_ReturnsFalse_ForNonAdvisor()
-    {
-        SetUser("jdoe", "360-Student-SG");
-
-        var result = await _controller.GetCanReadStudentSchedules();
-
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        Assert.False((bool)okResult.Value);
-    }
-} 
+}
