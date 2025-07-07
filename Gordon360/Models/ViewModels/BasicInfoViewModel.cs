@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Gordon360.Models.ViewModels;
@@ -10,7 +11,7 @@ public class BasicInfoViewModel
     public string UserName { get; set; }
     public string Nickname { get; set; }
     public string MaidenName { get; set; }
-
+    public IEnumerable<string>? Involvements { get; set; }
 
     private static string NormalizeName(string input) =>
         new string(input?.Where(char.IsLetterOrDigit).ToArray() ?? Array.Empty<char>()).ToLower();

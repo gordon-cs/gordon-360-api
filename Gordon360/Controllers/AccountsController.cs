@@ -60,6 +60,14 @@ public class AccountsController(IAccountService accountService) : GordonControll
         return Ok(searchResults);
     }
 
+    [HttpGet]
+    [Route("involvements/current")]
+    public async Task<ActionResult<IEnumerable<string>>> GetActiveInvolvementsForCurrentTerm()
+    {
+        var results = await accountService.GetActiveInvolvementNamesForCurrentTermAsync();
+        return Ok(results);
+    }
+
     /// <summary>
     /// Return a list of accounts matching some or all of the search parameter.
     /// </summary>
