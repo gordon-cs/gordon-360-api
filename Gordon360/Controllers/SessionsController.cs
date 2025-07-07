@@ -3,6 +3,7 @@ using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System;
 
 namespace Gordon360.Controllers;
 
@@ -68,6 +69,7 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     [HttpGet]
     [Route("currentFinals")]
     [AllowAnonymous]
+    [Obsolete]
     public ActionResult<SessionViewModel> GetCurrentSessionForFinalExams()
     {
         var currentFinalSession = sessionService.GetCurrentSessionForFinalExams();

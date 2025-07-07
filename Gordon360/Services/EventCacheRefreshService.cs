@@ -36,7 +36,6 @@ public sealed class EventCacheRefreshService(IServiceScopeFactory scopeFactory) 
             var events = await eventService.FetchEventsAsync();
             cache.Set(CacheKeys.Events, events);
 
-            await eventService.FetchAndCacheFinalExamsAsync();
         }
         catch (Exception ex)
         {

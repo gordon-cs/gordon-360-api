@@ -1,5 +1,6 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static_Classes;
 using Microsoft.Extensions.Caching.Memory;
@@ -10,7 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Gordon360.Models.CCT;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
@@ -69,24 +70,13 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         return Events.Where(e => e.HasCLAWCredit).OrderBy(e => e.StartDate);
     }
 
-    /// <summary>
-    /// Select only events that are Final Exams for users' current term
-    /// </summary>
-    /// <param name="username"> The student's AD Username</param>
-    /// <returns>All Final Exam Events for the users' current term</returns>
-    public async Task<IEnumerable<EventViewModel>> GetFinalExamEventsForUser(string username)
+    public async Task<IEnumerable<EventViewModel>> GetFinalExamsForUserByTermAsync(string username, DateTime termStart, DateTime termEnd, string yearCode, string termCode)
     {
-        var term = await academicTermService.GetCurrentTermForFinalExamsAsync();
+        var finalExams = await GetFinalExamsForTermAsync(termStart, termEnd, yearCode, termCode);
 
-        if (term == null)
-        {
-            return Enumerable.Empty<EventViewModel>();
-        }
-
-        // Get all courses of current term for the user
         var coursesByTerm = await scheduleService.GetAllCoursesByTermAsync(username);
         var matchingTerms = coursesByTerm
-            .Where(t => t.YearCode == term.YearCode && t.TermCode == term.TermCode)
+            .Where(t => t.YearCode == yearCode && t.TermCode == termCode)
             .ToList();
 
         var userCourseCodes = matchingTerms
@@ -95,23 +85,18 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
             .Distinct()
             .ToList();
 
-        // Fetch all final exams (ID=55)
-        var allFinalExams = FinalExams;
-
-        // Filter final exams to only those matching user's course codes
-        var userFinalExams = allFinalExams
-            .Where(exam => 
+        var userFinalExams = finalExams
+            .Where(exam =>
                 exam.Event_Name != null &&
                 userCourseCodes.Any(code =>
                     NormalizeSpaces(
                         exam.Event_Name.Replace("EXAM:", "", StringComparison.OrdinalIgnoreCase))
-                    .StartsWith(code, StringComparison.OrdinalIgnoreCase)
+                        .StartsWith(code, StringComparison.OrdinalIgnoreCase)
                 )
             )
             .OrderBy(e => e.StartDate);
 
         return userFinalExams;
-        ;
     }
 
     /// <summary>
@@ -202,13 +187,6 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         }
     }
 
-    public async Task FetchAndCacheFinalExamsAsync()
-    {
-        var finalExamsUrl = GetFinalExamsUrlForCurrentTerm();
-        var finalExams = await FetchFinalExamsAsync(finalExamsUrl);
-        cache.Set(CacheKeys.FinalExams, finalExams);
-    }
-
     /// <summary>
     /// Get the first date of events for the current period, for use in querying the 25Live API
     /// 
@@ -242,25 +220,24 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         return string.Join(" ", input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
     }
 
-    /// <summary>
-    /// Get the URL for fetching final exams for the current term (type_id = 55 is final exams)
-    /// </summary>
-    /// <returns>Final exams URL for the current term</returns>
-    private string GetFinalExamsUrlForCurrentTerm()
+    public async Task<IEnumerable<EventViewModel>> GetFinalExamsForTermAsync(DateTime termStart, DateTime termEnd, string yearCode, string termCode)
     {
-        // Get today's date
-        var today = DateTime.Now;
+        string formattedStart = termStart.ToString(DateFormat);
+        string formattedEnd = termEnd.ToString(DateFormat);
 
-        // Find the most recent term whose begin date is in the past
-        var currentTerm = context.YearTermTable
-            .Where(t => t.TRM_BEGIN_DTE <= today &&
-                (t.TRM_CDE == "FA" || t.TRM_CDE == "SP"))
-            .OrderByDescending(t => t.TRM_BEGIN_DTE)
-            .FirstOrDefault();
+        string url = $"https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=55&state=2&start_before={formattedEnd}&end_after={formattedStart}&scope=extended";
 
-        string startDate = currentTerm?.TRM_BEGIN_DTE?.ToString(DateFormat) ?? today.ToString(DateFormat);
+        string cacheKey = $"{CacheKeys.FinalExams}_{yearCode}{termCode}";
 
-        return $"https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=55&state=2&end_after={startDate}&scope=extended";
+        if (cache.TryGetValue(cacheKey, out IEnumerable<EventViewModel> cachedExams))
+        {
+            return cachedExams;
+        }
+
+        var finalExams = await FetchFinalExamsAsync(url);
+        cache.Set(cacheKey, finalExams);
+
+        return finalExams;
     }
 
 }

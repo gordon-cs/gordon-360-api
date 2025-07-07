@@ -2,6 +2,7 @@
 using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 
@@ -45,6 +46,7 @@ namespace Gordon360.Controllers
         [HttpGet]
         [Route("currentFinalExamTerm")]
         [AllowAnonymous]
+        [Obsolete]
         public async Task<IActionResult> GetCurrentTermForFinalExams()
         {
             var currentFinalTerm = await service.GetCurrentTermForFinalExamsAsync();

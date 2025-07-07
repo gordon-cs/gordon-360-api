@@ -5,8 +5,11 @@ using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Graph;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace Gordon360.Controllers;
 
@@ -81,9 +84,14 @@ public class EventsController(IEventService eventService) : GordonControllerBase
 
     [HttpGet]
     [Route("finalexams/{username}")]
-    public async Task<ActionResult<IEnumerable<EventViewModel>>> GetFinalExamEventsForUser(string username)
+    public async Task<ActionResult<IEnumerable<EventViewModel>>> GetFinalExamsForUserByTermAsync(
+        string username,
+        [FromQuery] DateTime termStart,
+        [FromQuery] DateTime termEnd,
+        [FromQuery] string yearCode,
+        [FromQuery] string termCode)
     {
-        var result = await eventService.GetFinalExamEventsForUser(username);
+        var result = await eventService.GetFinalExamsForUserByTermAsync(username, termStart, termEnd, yearCode, termCode);
         if (result == null)
         {
             return NotFound();

@@ -2179,13 +2179,6 @@
             </summary>
             <returns>All CLAW Events</returns>
         </member>
-        <member name="M:Gordon360.Services.EventService.GetFinalExamEventsForUser(System.String)">
-            <summary>
-            Select only events that are Final Exams for users' current term
-            </summary>
-            <param name="username"> The student's AD Username</param>
-            <returns>All Final Exam Events for the users' current term</returns>
-        </member>
         <member name="M:Gordon360.Services.EventService.GetEventsForStudentByTerm(System.String,System.String)">
             <summary>
             Returns all attended events for a student in a specific term
@@ -2209,12 +2202,6 @@
             </summary>
             <param name="input"></param>
             <returns>Removes extra spaces and join the input</returns>
-        </member>
-        <member name="M:Gordon360.Services.EventService.GetFinalExamsUrlForCurrentTerm">
-            <summary>
-            Get the URL for fetching final exams for the current term (type_id = 55 is final exams)
-            </summary>
-            <returns>Final exams URL for the current term</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
@@ -3329,6 +3316,13 @@
         <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesByTermAsync(System.String)">
             <summary>
             Fetch the term item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesByTermViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllInstructorCoursesByTermAsync(System.String)">
+            <summary>
+            Fetch the classes that are taught by this user
             </summary>
             <param name="username">The AD Username of the user</param>
             <returns>CoursesByTermViewModel if found, null if not found</returns>
