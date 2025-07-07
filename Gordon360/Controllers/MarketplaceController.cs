@@ -317,9 +317,9 @@ namespace Gordon360.Controllers
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 20)
         {
-            //var viewerGroups = AuthUtils.GetGroups(User);
-            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            //    return Forbid();
+            var viewerGroups = AuthUtils.GetGroups(User);
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+                return Forbid();
 
             var result = marketplaceService.GetAdminThreads(categoryId, statusId, minPrice, maxPrice, search, sortBy, desc, page, pageSize);
             return Ok(result);
@@ -332,9 +332,9 @@ namespace Gordon360.Controllers
         [HttpGet("admin/threads/{threadId}/history")]
         public ActionResult<IEnumerable<MarketplaceListingViewModel>> GetThreadEditHistory(int threadId)
         {
-            //var viewerGroups = AuthUtils.GetGroups(User);
-            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            //    return Forbid();
+            var viewerGroups = AuthUtils.GetGroups(User);
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+                return Forbid();
 
             var result = marketplaceService.GetThreadEditHistory(threadId);
             return Ok(result);
@@ -352,9 +352,9 @@ namespace Gordon360.Controllers
             [FromQuery] decimal? maxPrice,
             [FromQuery] string search = null)
         {
-            //var viewerGroups = AuthUtils.GetGroups(User);
-            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
-            //    return Forbid();
+            var viewerGroups = AuthUtils.GetGroups(User);
+            if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+                return Forbid();
 
             var count = marketplaceService.GetAdminThreadsCount(categoryId, statusId, minPrice, maxPrice, search);
             return Ok(count);
