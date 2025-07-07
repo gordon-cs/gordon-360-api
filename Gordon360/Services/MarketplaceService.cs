@@ -461,7 +461,9 @@ namespace Gordon360.Services
                 PosterUsername = context.ACCOUNT
                     .Where(a => a.gordon_id == item.PostedById.ToString())
                     .Select(a => a.AD_Username)
-                    .FirstOrDefault()
+                    .FirstOrDefault(),
+                ThreadId = item.OriginalPostId ?? item.Id
+                
             }).ToList();
         }
 
