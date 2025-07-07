@@ -496,22 +496,22 @@ namespace Gordon360.Services
         Task<MarketplaceListingViewModel> ChangeListingStatusAsync(int listingId, string status);
         IEnumerable<MarketplaceListingViewModel> GetFilteredListings(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null, string sortBy = null, bool desc = false,
+            string? search, string? sortBy, bool desc = false,
             int page = 1, int pageSize = 20);
         int GetFilteredListingsCount(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null);
+            string? search);
         Task<ItemCategory> AddCategoryAsync(string categoryName);
         Task<ItemCondition> AddConditionAsync(string conditionName);
         Task<ItemCategory> UpdateCategoryVisibilityAsync(string categoryName, bool visibility);
         Task<ItemCondition> UpdateConditionVisibilityAsync(string conditionName, bool visibility);
         IEnumerable<MarketplaceListingViewModel> GetAdminThreads(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null, string sortBy = null, bool desc = false,
+            string? search, string? sortBy, bool desc = false,
             int page = 1, int pageSize = 20);
         int GetAdminThreadsCount(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null);
+            string? search);
         IEnumerable<MarketplaceListingViewModel> GetThreadEditHistory(int threadId);
     }
 }

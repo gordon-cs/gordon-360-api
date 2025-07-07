@@ -293,7 +293,7 @@ namespace Gordon360.Services
         /// </summary>
         public IEnumerable<MarketplaceListingViewModel> GetFilteredListings(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null, string sortBy = null, bool desc = false,
+            string? search, string? sortBy, bool desc = false,
             int page = 1, int pageSize = 20)
         {
             var query = context.PostedItem
@@ -363,7 +363,7 @@ namespace Gordon360.Services
 
         public int GetFilteredListingsCount(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null)
+            string? search)
         {
             var query = context.PostedItem
                 .Where(x => x.StatusId != 3)
@@ -392,7 +392,7 @@ namespace Gordon360.Services
         /// </summary>
         public IEnumerable<MarketplaceListingViewModel> GetAdminThreads(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null, string sortBy = null, bool desc = false,
+            string? search, string? sortBy, bool desc = false,
             int page = 1, int pageSize = 20)
         {
             var query = context.PostedItem
@@ -566,7 +566,7 @@ namespace Gordon360.Services
 
         public int GetAdminThreadsCount(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null)
+            string? search)
         {
             var query = context.PostedItem
                 .Include(x => x.Category)

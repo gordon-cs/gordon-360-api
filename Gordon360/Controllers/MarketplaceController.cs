@@ -144,7 +144,7 @@ namespace Gordon360.Controllers
         [Route("count")]
         public IActionResult GetFilteredListingsCount(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string search = null)
+            string? search)
         {
             var count = marketplaceService.GetFilteredListingsCount(categoryId, statusId, minPrice, maxPrice, search);
             return Ok(count);
@@ -171,8 +171,8 @@ namespace Gordon360.Controllers
             [FromQuery] int? statusId,
             [FromQuery] decimal? minPrice,
             [FromQuery] decimal? maxPrice,
-            [FromQuery] string search = null,
-            [FromQuery] string sortBy = null,
+            [FromQuery] string? search,
+            [FromQuery] string? sortBy,
             [FromQuery] bool desc = false,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 20)
@@ -311,8 +311,8 @@ namespace Gordon360.Controllers
             [FromQuery] int? statusId,
             [FromQuery] decimal? minPrice,
             [FromQuery] decimal? maxPrice,
-            [FromQuery] string search = null,
-            [FromQuery] string sortBy = null,
+            [FromQuery] string? search,
+            [FromQuery] string? sortBy,
             [FromQuery] bool desc = false,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 20)
@@ -350,7 +350,7 @@ namespace Gordon360.Controllers
             [FromQuery] int? statusId,
             [FromQuery] decimal? minPrice,
             [FromQuery] decimal? maxPrice,
-            [FromQuery] string search = null)
+            [FromQuery] string? search)
         {
             var viewerGroups = AuthUtils.GetGroups(User);
             if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
