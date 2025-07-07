@@ -505,7 +505,7 @@ namespace Gordon360.Services
         Task<ItemCondition> AddConditionAsync(string conditionName);
         Task<ItemCategory> UpdateCategoryVisibilityAsync(string categoryName, bool visibility);
         Task<ItemCondition> UpdateConditionVisibilityAsync(string conditionName, bool visibility);
-        IEnumerable<MarketplaceListingViewModel> GetAdminThreads(
+        IEnumerable<MarketplaceAdminViewModel> GetAdminThreads(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
             string? search, string? sortBy, bool desc = false,
             int page = 1, int pageSize = 20);
