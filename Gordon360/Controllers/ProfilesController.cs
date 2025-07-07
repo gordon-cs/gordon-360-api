@@ -52,7 +52,7 @@ public class ProfilesController(IProfileService profileService,
     }
 
     /// <summary>Get another user's profile info.  The info returned depends
-    /// on the permissions of the current users, who is making the request.</summary>
+    /// on the permissions of the current user, who is making the request.</summary>
     /// <param name="username">username of the profile info</param>
     /// <returns></returns>
     [HttpGet]
