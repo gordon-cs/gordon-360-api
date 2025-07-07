@@ -24,7 +24,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 {
     // These three-character strings are valid substrings for the PersonType
     // field in the profile. These are used in the UI and so cannot be changed
-    // here unless the correspondin change is made in the UI.
+    // here unless the corresponding change is made in the UI.
     const string FACSTAFF_PROFILE = "fac";
     const string STUDENT_PROFILE = "stu";
     const string ALUMNI_PROFILE = "alu";
