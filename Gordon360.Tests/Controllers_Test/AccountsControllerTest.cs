@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Xunit;
 using Gordon360.Enums;
 using Gordon360.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Gordon360.Tests.Controllers_Test;
 
@@ -21,6 +23,21 @@ public class AccountsControllerTest
     {
         _mockAccountService = new Mock<IAccountService>();
         _controller = new AccountsController(_mockAccountService.Object);
+    }
+
+    private void SetUser(string username, string role)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Role, role)
+        };
+        var identity = new ClaimsIdentity(claims, "TestAuthType");
+        var user = new ClaimsPrincipal(identity);
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = user }
+        };
     }
 
     [Fact]
@@ -101,18 +118,13 @@ public class AccountsControllerTest
     public async Task AdvancedPeopleSearchAsync_ReturnsOk_WithResults()
     {
         var accountTypes = new List<string> { "student" };
-        var viewerGroups = new List<AuthGroup> { AuthGroup.Student };
         var accounts = new List<AdvancedSearchViewModel> { new AdvancedSearchViewModel { FirstName = "Alex", LastName = "Johnson", AD_Username = "ajohnson" } };
         var searchResults = new List<AdvancedSearchViewModel> { new AdvancedSearchViewModel { FirstName = "Alex", LastName = "Johnson", AD_Username = "ajohnson" } };
 
-        // Setup AuthUtils.GetGroups to return viewerGroups
-        // Since AuthUtils is static, we can't mock it directly. In a real test, use a wrapper or expose as DI. Here, just test the service call logic.
         _mockAccountService.Setup(s => s.GetAccountsToSearch(accountTypes, It.IsAny<IEnumerable<AuthGroup>>(), null)).Returns(accounts);
         _mockAccountService.Setup(s => s.AdvancedSearch(accounts, "Alex", "Johnson", null, null, null, null, null, null, null, null, null, null, null, null, null, null)).Returns(searchResults);
 
-        // Simulate HttpContext.Request.Query for logging (not tested here)
-        var controllerContext = new ControllerContext();
-        _controller.ControllerContext = controllerContext;
+        SetUser("ajohnson", "Student");
 
         var result = await _controller.AdvancedPeopleSearchAsync(accountTypes, "Alex", "Johnson", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
@@ -126,15 +138,13 @@ public class AccountsControllerTest
     public async Task AdvancedPeopleSearchAsync_ReturnsOk_WithEmptyResults_WhenNoMatch()
     {
         var accountTypes = new List<string> { "student" };
-        var viewerGroups = new List<AuthGroup> { AuthGroup.Student };
         var accounts = new List<AdvancedSearchViewModel>();
         var searchResults = new List<AdvancedSearchViewModel>();
 
         _mockAccountService.Setup(s => s.GetAccountsToSearch(accountTypes, It.IsAny<IEnumerable<AuthGroup>>(), null)).Returns(accounts);
         _mockAccountService.Setup(s => s.AdvancedSearch(accounts, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)).Returns(searchResults);
 
-        var controllerContext = new ControllerContext();
-        _controller.ControllerContext = controllerContext;
+        SetUser("ajohnson", "Student");
 
         var result = await _controller.AdvancedPeopleSearchAsync(accountTypes, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
@@ -147,7 +157,6 @@ public class AccountsControllerTest
     public async Task AdvancedPeopleSearchAsync_ReturnsOk_WithFacStaffResults()
     {
         var accountTypes = new List<string> { "facstaff" };
-        var viewerGroups = new List<AuthGroup> { AuthGroup.FacStaff };
         var accounts = new List<AdvancedSearchViewModel> {
             new AdvancedSearchViewModel { FirstName = "Sam", LastName = "Faculty", AD_Username = "sfaculty", Type = "FacStaff" }
         };
@@ -158,8 +167,7 @@ public class AccountsControllerTest
         _mockAccountService.Setup(s => s.GetAccountsToSearch(accountTypes, It.IsAny<IEnumerable<AuthGroup>>(), null)).Returns(accounts);
         _mockAccountService.Setup(s => s.AdvancedSearch(accounts, "Sam", "Faculty", null, null, null, null, null, null, null, null, null, null, null, null, null, null)).Returns(searchResults);
 
-        var controllerContext = new ControllerContext();
-        _controller.ControllerContext = controllerContext;
+        SetUser("sfaculty", "FacStaff");
 
         var result = await _controller.AdvancedPeopleSearchAsync(accountTypes, "Sam", "Faculty", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
@@ -174,7 +182,6 @@ public class AccountsControllerTest
     public async Task AdvancedPeopleSearchAsync_ReturnsOk_WithAlumniResults()
     {
         var accountTypes = new List<string> { "alumni" };
-        var viewerGroups = new List<AuthGroup> { AuthGroup.FacStaff };
         var accounts = new List<AdvancedSearchViewModel> {
             new AdvancedSearchViewModel { FirstName = "Alex", LastName = "Alum", AD_Username = "aalum", Type = "Alumni" }
         };
@@ -185,8 +192,7 @@ public class AccountsControllerTest
         _mockAccountService.Setup(s => s.GetAccountsToSearch(accountTypes, It.IsAny<IEnumerable<AuthGroup>>(), null)).Returns(accounts);
         _mockAccountService.Setup(s => s.AdvancedSearch(accounts, "Alex", "Alum", null, null, null, null, null, null, null, null, null, null, null, null, null, null)).Returns(searchResults);
 
-        var controllerContext = new ControllerContext();
-        _controller.ControllerContext = controllerContext;
+        SetUser("aalum", "FacStaff"); // Use FacStaff for alumni search permissions
 
         var result = await _controller.AdvancedPeopleSearchAsync(accountTypes, "Alex", "Alum", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
 
