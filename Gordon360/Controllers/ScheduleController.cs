@@ -58,7 +58,7 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
         }
         else
         {
-            result = Enumerable.Empty<CoursesByTermViewModel>();
+            result = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
         }
 
         return Ok(result);
