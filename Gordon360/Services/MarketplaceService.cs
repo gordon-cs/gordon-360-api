@@ -387,6 +387,120 @@ namespace Gordon360.Services
             return query.Count();
         }
 
+        /// <summary>
+        /// Get all marketplace threads for admin view (one row per thread, including deleted/expired).
+        /// </summary>
+        public IEnumerable<MarketplaceListingViewModel> GetAdminThreads(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string search = null, string sortBy = null, bool desc = false,
+            int page = 1, int pageSize = 20)
+        {
+            var query = context.PostedItem
+                .Include(x => x.Category)
+                .Include(x => x.Condition)
+                .Include(x => x.Status)
+                .Include(x => x.PostImage)
+                .AsQueryable();
+
+            // Filtering
+            if (categoryId.HasValue)
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+
+            if (statusId.HasValue)
+                query = query.Where(x => x.StatusId == statusId.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(x => x.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(x => x.Price <= maxPrice.Value);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(x => x.Name.Contains(search) || x.Detail.Contains(search));
+
+            // Group by thread (OriginalPostId or Id if null), select latest version per thread
+            var threads = query
+                .AsEnumerable() // Grouping with navigation properties must be done in memory
+                .GroupBy(x => x.OriginalPostId ?? x.Id)
+                .Select(g => g.OrderByDescending(x => x.Id).First());
+
+            // Sorting
+            switch (sortBy?.ToLower())
+            {
+                case "price":
+                    threads = desc ? threads.OrderByDescending(x => x.Price) : threads.OrderBy(x => x.Price);
+                    break;
+                case "date":
+                    threads = desc ? threads.OrderByDescending(x => x.PostedAt) : threads.OrderBy(x => x.PostedAt);
+                    break;
+                case "title":
+                    threads = desc ? threads.OrderByDescending(x => x.Name) : threads.OrderBy(x => x.Name);
+                    break;
+                default:
+                    threads = threads.OrderByDescending(x => x.PostedAt); // Default: newest first
+                    break;
+            }
+
+            // Pagination
+            threads = threads.Skip((page - 1) * pageSize).Take(pageSize);
+
+            return threads.Select(item => new MarketplaceListingViewModel
+            {
+                Id = item.Id,
+                PostedAt = item.PostedAt,
+                Name = item.Name,
+                Price = item.Price,
+                CategoryId = item.CategoryId,
+                CategoryName = item.Category?.CategoryName,
+                Detail = item.Detail,
+                ConditionId = item.ConditionId,
+                ConditionName = item.Condition?.ConditionName,
+                StatusId = item.StatusId,
+                StatusName = item.Status?.StatusName,
+                ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
+                PosterUsername = context.ACCOUNT
+                    .Where(a => a.gordon_id == item.PostedById.ToString())
+                    .Select(a => a.AD_Username)
+                    .FirstOrDefault()
+            }).ToList();
+        }
+
+        /// <summary>
+        /// Get the edit history for a thread (all versions, oldest to newest).
+        /// </summary>
+        public IEnumerable<MarketplaceListingViewModel> GetThreadEditHistory(int threadId)
+        {
+            var history = context.PostedItem
+              .Include(x => x.Category)
+              .Include(x => x.Condition)
+              .Include(x => x.Status)
+              .Include(x => x.PostImage)
+              .Where(x => x.OriginalPostId == threadId || x.Id == threadId)
+              .OrderBy(x => x.Id)
+              .Select(item => new MarketplaceListingViewModel
+              {
+                  Id = item.Id,
+                  PostedAt = item.PostedAt,
+                  Name = item.Name,
+                  Price = item.Price,
+                  CategoryId = item.CategoryId,
+                  CategoryName = item.Category.CategoryName,
+                  Detail = item.Detail,
+                  ConditionId = item.ConditionId,
+                  ConditionName = item.Condition.ConditionName,
+                  StatusId = item.StatusId,
+                  StatusName = item.Status.StatusName,
+                  ImagePaths = item.PostImage.Select(img => img.ImagePath).ToList(),
+                  PosterUsername = context.ACCOUNT
+                      .Where(a => a.gordon_id == item.PostedById.ToString())
+                      .Select(a => a.AD_Username)
+                      .FirstOrDefault()
+              })
+              .ToList();
+
+            return history;
+        }
+
 
 
         private string GetImagePath(string filename)
@@ -448,6 +562,41 @@ namespace Gordon360.Services
             condition.Visible = visible ? "Y" : "N";
             await context.SaveChangesAsync();
             return condition;
+        }
+
+        public int GetAdminThreadsCount(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string search = null)
+        {
+            var query = context.PostedItem
+                .Include(x => x.Category)
+                .Include(x => x.Condition)
+                .Include(x => x.Status)
+                .Include(x => x.PostImage)
+                .AsQueryable();
+
+            if (categoryId.HasValue)
+                query = query.Where(x => x.CategoryId == categoryId.Value);
+
+            if (statusId.HasValue)
+                query = query.Where(x => x.StatusId == statusId.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(x => x.Price >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(x => x.Price <= maxPrice.Value);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(x => x.Name.Contains(search) || x.Detail.Contains(search));
+
+            // Group by thread and count unique threads
+            var count = query
+                .AsEnumerable()
+                .GroupBy(x => x.OriginalPostId ?? x.Id)
+                .Count();
+
+            return count;
         }
     }
 }

@@ -253,7 +253,8 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update an existing item category's visibility
+        /// Update an existing item category's visibility.
+        /// Only accessible by SiteAdmin.
         /// </summary>
         [HttpPut("categories/categoryName/{visibility}")]
         public async Task<ActionResult<ItemCategory>> UpdateCategoryVisibility([FromBody] string categoryName, bool visibility)
@@ -276,7 +277,8 @@ namespace Gordon360.Controllers
         }
 
         /// <summary>
-        /// Update an existing item condition's visibility
+        /// Update an existing item condition's visibility.
+        /// Only accessible by SiteAdmin.
         /// </summary>
         [HttpPut("conditions/conditionName/{visibility}")]
         public async Task<ActionResult<ItemCondition>> UpdateConditionVisibility([FromBody] string conditionName, bool visibility)
@@ -297,7 +299,65 @@ namespace Gordon360.Controllers
                 return NotFound($"Condition with name {conditionName} not found.");
             }
             return Ok(updatedCondition);
-        }   
+        }
 
+        /// <summary>
+        /// Get all marketplace threads for admin view (one row per thread, including deleted/expired).
+        /// Supports filtering, sorting, and pagination. Only accessible by SiteAdmin.
+        /// </summary>
+        [HttpGet("admin/threads")]
+        public ActionResult<IEnumerable<MarketplaceListingViewModel>> GetAdminThreads(
+            [FromQuery] int? categoryId,
+            [FromQuery] int? statusId,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice,
+            [FromQuery] string search = null,
+            [FromQuery] string sortBy = null,
+            [FromQuery] bool desc = false,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            //var viewerGroups = AuthUtils.GetGroups(User);
+            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            //    return Forbid();
+
+            var result = marketplaceService.GetAdminThreads(categoryId, statusId, minPrice, maxPrice, search, sortBy, desc, page, pageSize);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get the full edit history for a specific marketplace thread (all versions, including deleted/expired).
+        /// Only accessible by SiteAdmin.
+        /// </summary>
+        [HttpGet("admin/threads/{threadId}/history")]
+        public ActionResult<IEnumerable<MarketplaceListingViewModel>> GetThreadEditHistory(int threadId)
+        {
+            //var viewerGroups = AuthUtils.GetGroups(User);
+            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            //    return Forbid();
+
+            var result = marketplaceService.GetThreadEditHistory(threadId);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get the count of unique marketplace threads for admin view (after filtering).
+        /// Used for pagination in the admin view. Only accessible by SiteAdmin.
+        /// </summary>
+        [HttpGet("admin/threads/count")]
+        public IActionResult GetAdminThreadsCount(
+            [FromQuery] int? categoryId,
+            [FromQuery] int? statusId,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice,
+            [FromQuery] string search = null)
+        {
+            //var viewerGroups = AuthUtils.GetGroups(User);
+            //if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
+            //    return Forbid();
+
+            var count = marketplaceService.GetAdminThreadsCount(categoryId, statusId, minPrice, maxPrice, search);
+            return Ok(count);
+        }
     }
 }

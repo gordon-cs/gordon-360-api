@@ -276,12 +276,12 @@ namespace Gordon360.Services
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
         public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
         IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
-        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, 
-                                                                   int? lastId, 
-                                                                   int? pageSize, 
-                                                                   string? status, 
-                                                                   string? color, 
-                                                                   string? category, 
+        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username,
+                                                                   int? lastId,
+                                                                   int? pageSize,
+                                                                   string? status,
+                                                                   string? color,
+                                                                   string? category,
                                                                    string? keywords,
                                                                    DateTime? lastCheckedDate);
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
@@ -487,5 +487,13 @@ namespace Gordon360.Services
         Task<ItemCondition> AddConditionAsync(string conditionName);
         Task<ItemCategory> UpdateCategoryVisibilityAsync(string categoryName, bool visibility);
         Task<ItemCondition> UpdateConditionVisibilityAsync(string conditionName, bool visibility);
+        IEnumerable<MarketplaceListingViewModel> GetAdminThreads(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string search = null, string sortBy = null, bool desc = false,
+            int page = 1, int pageSize = 20);
+        int GetAdminThreadsCount(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string search = null);
+        IEnumerable<MarketplaceListingViewModel> GetThreadEditHistory(int threadId);
     }
 }

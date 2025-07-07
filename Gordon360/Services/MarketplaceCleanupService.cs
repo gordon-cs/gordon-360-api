@@ -47,6 +47,15 @@ public class MarketplaceCleanupService(IServiceProvider services) : BackgroundSe
                     context.PostImage.RemoveRange(images);
                 }
 
+                var deleted = await context.PostedItem
+                    .Where(x => x.DeletedAt != null && x.DeletedAt.Value <= now)
+                    .ToListAsync(stoppingToken);
+
+                foreach (var item in deleted)
+                {
+                    item.StatusId = 3;
+                }
+
                 if (expired.Any())
                 {
                     await context.SaveChangesAsync(stoppingToken);
