@@ -85,13 +85,13 @@ public class ScheduleControllerTest
     [Fact]
     public async Task GetAllCoursesByTerm_ReturnsOk_ForFacStaff()
     {
-        var username = "jdoe";
+        var username = "facstaff";
         var courses = new List<UserCoursesViewModel> { GetSampleCourse() };
         var term = new CoursesByTermViewModel("2024", "SP", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10), courses);
         var terms = new List<CoursesByTermViewModel> { term };
         _mockService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
 
-        SetUser("facstaff", "FacStaff");
+        SetUser(username, "FacStaff");
 
         var result = await _controller.GetAllCoursesByTerm(username);
 

@@ -78,10 +78,13 @@ public class SessionsControllerTest
     [Fact]
     public void Get_ById_ReturnsOk_WhenSessionExists()
     {
+        var username = "jdoe";
         var session = GetSampleSession();
-        _mockService.Setup(s => s.Get("202401")).Returns(session);
+        _mockService.Setup(s => s.Get(username)).Returns(session);
 
-        var result = _controller.Get("202401");
+        SetUser(username, "Student");
+
+        var result = _controller.Get(username);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsType<SessionViewModel>(okResult.Value);
@@ -91,9 +94,12 @@ public class SessionsControllerTest
     [Fact]
     public void Get_ById_ReturnsNotFound_WhenSessionDoesNotExist()
     {
-        _mockService.Setup(s => s.Get("notfound")).Returns((SessionViewModel)null);
+        var username = "notfound";
+        _mockService.Setup(s => s.Get(username)).Returns((SessionViewModel)null);
 
-        var result = _controller.Get("notfound");
+        SetUser(username, "Student");
+
+        var result = _controller.Get(username);
 
         Assert.IsType<NotFoundResult>(result.Result);
     }
