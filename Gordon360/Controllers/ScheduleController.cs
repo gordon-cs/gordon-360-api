@@ -37,13 +37,13 @@ public class ScheduleController(IProfileService profileService,
                accountService.CanISeeThisStudent(groups, student)) ||
             (alumni != null && accountService.CanISeeAlumni(groups)))
         {
-            IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+            IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
             return Ok(result);
         }
         else
         {
             // Everyone can see schedules of courses taught.
-            IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllInstructorCoursesAsync(username);
+            IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllInstructorCoursesAsync(username);
             return Ok(result);
         }
     }
