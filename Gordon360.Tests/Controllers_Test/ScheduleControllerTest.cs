@@ -24,13 +24,13 @@ public class ScheduleControllerTest
         _controller = new ScheduleController(_mockService.Object);
     }
 
-    private void SetUser(string username, string role)
+    private void SetUser(string username, string group)
     {
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Upn, $"{username}@gordon.edu"),
             new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, role)
+            new Claim("groups", group)
         };
         var identity = new ClaimsIdentity(claims, "TestAuthType");
         var user = new ClaimsPrincipal(identity);
