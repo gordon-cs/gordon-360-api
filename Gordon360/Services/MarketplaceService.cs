@@ -390,7 +390,7 @@ namespace Gordon360.Services
         /// <summary>
         /// Get all marketplace threads for admin view (one row per thread, including deleted/expired).
         /// </summary>
-        public IEnumerable<MarketplaceListingViewModel> GetAdminThreads(
+        public IEnumerable<MarketplaceAdminViewModel> GetAdminThreads(
             int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
             string? search, string? sortBy, bool desc = false,
             int page = 1, int pageSize = 20)
@@ -444,7 +444,7 @@ namespace Gordon360.Services
             // Pagination
             threads = threads.Skip((page - 1) * pageSize).Take(pageSize);
 
-            return threads.Select(item => new MarketplaceListingViewModel
+            return threads.Select(item => new MarketplaceAdminViewModel
             {
                 Id = item.Id,
                 PostedAt = item.PostedAt,
