@@ -959,7 +959,7 @@
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfileAsync(System.String)">
             <summary>Get another user's profile info.  The info returned depends
-            on the permissions of the current users, who is making the request.</summary>
+            on the permissions of the current user, who is making the request.</summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
@@ -1648,7 +1648,7 @@
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTerm(System.String)">
             <summary>
-             Gets all term objects for a user
+             Gets all visible course objects for a user, for all visible terms
             </summary>
             <returns>A IEnumerable of term objects as well as the schedules</returns>
         </member>
@@ -2013,6 +2013,14 @@
             user making the request.</param>
             <returns>True if the user making the request is authorized to see
             profile information for alumni, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeAlumniSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            course schedule information for alumni.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            course schedule information for alumni, and false otherwise.</returns>
         </member>
         <member name="M:Gordon360.Services.AccountService.VisibleToMeStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
             <summary>Restrict info about a student to those fields which are potentially
@@ -3533,6 +3541,13 @@
         <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesByTermAsync(System.String)">
             <summary>
             Fetch the term item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesByTermViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllInstructorCoursesByTermAsync(System.String)">
+            <summary>
+            Fetch the classes that are taught by this user
             </summary>
             <param name="username">The AD Username of the user</param>
             <returns>CoursesByTermViewModel if found, null if not found</returns>
