@@ -171,6 +171,19 @@ public class AccountService(CCTContext context) : IAccountService
                viewerGroups.Contains(AuthGroup.Alumni);
     }
 
+    /// <summary>Indicates whether a user making a request is authorized to see
+    /// course schedule information for alumni.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the 
+    /// user making the request.</param>
+    /// <returns>True if the user making the request is authorized to see
+    /// course schedule information for alumni, and false otherwise.</returns>
+    public bool CanISeeAlumniSchedule(IEnumerable<AuthGroup> viewerGroups)
+    {
+        return viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+               viewerGroups.Contains(AuthGroup.Police) ||
+               viewerGroups.Contains(AuthGroup.FacStaff);
+    }
+
     /// <summary>Restrict info about a student to those fields which are potentially
     /// viewable by the user making the request.  Actual visibility may also depend
     /// on privacy choices made by the user whose data is being viewed.  Note that 

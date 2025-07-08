@@ -32,10 +32,11 @@ public class ScheduleController(IProfileService profileService,
 
         // Some users can see schedules of courses taken, as well as taught,
         // so check to see if this user can see all courses for this person.
-        if ((accountService.CanISeeStudentSchedule(groups) &&
+        if ((AuthUtils.GetUsername(User).EqualsIgnoreCase(username)) ||
+            (accountService.CanISeeStudentSchedule(groups) &&
                student != null &&
                accountService.CanISeeThisStudent(groups, student)) ||
-            (alumni != null && accountService.CanISeeAlumni(groups)))
+            (accountService.CanISeeAlumniSchedule(groups) && alumni != null))
         {
             IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
             return Ok(result);
@@ -64,10 +65,11 @@ public class ScheduleController(IProfileService profileService,
 
         // Some users can see schedules of courses taken, as well as taught,
         // so check to see if this user can see all courses for this person.
-        if ((accountService.CanISeeStudentSchedule(groups) &&
-               student != null && 
+        if ((AuthUtils.GetUsername(User).EqualsIgnoreCase(username)) ||
+            (accountService.CanISeeStudentSchedule(groups) &&
+               student != null &&
                accountService.CanISeeThisStudent(groups, student)) ||
-            (alumni != null && accountService.CanISeeAlumni(groups)))
+            (accountService.CanISeeAlumniSchedule(groups) && alumni != null))
         {
             IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesByTermAsync(username);
             return Ok(result);
