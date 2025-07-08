@@ -99,6 +99,36 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         return userFinalExams;
     }
 
+    public async Task<IEnumerable<EventViewModel>> GetFinalExamsForInstructorByTermAsync(string username, DateTime termStart, DateTime termEnd, string yearCode, string termCode)
+    {
+        var finalExams = await GetFinalExamsForTermAsync(termStart, termEnd, yearCode, termCode);
+
+        var instructorCoursesByTerm = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
+        var matchingTerms = instructorCoursesByTerm
+            .Where(t => t.YearCode == yearCode && t.TermCode == termCode)
+            .ToList();
+
+        var instructorCourseCodes = matchingTerms
+            .SelectMany(t => t.AllCourses)
+            .Select(c => NormalizeSpaces(c.CRS_CDE))
+            .Distinct()
+            .ToList();
+
+        var instructorFinalExams = finalExams
+            .Where(exam =>
+                exam.Event_Name != null &&
+                instructorCourseCodes.Any(code =>
+                    NormalizeSpaces(
+                        exam.Event_Name.Replace("EXAM:", "", StringComparison.OrdinalIgnoreCase))
+                        .StartsWith(code, StringComparison.OrdinalIgnoreCase)
+                )
+            )
+            .OrderBy(e => e.StartDate);
+
+        return instructorFinalExams;
+    }
+
+
     /// <summary>
     /// Returns all attended events for a student in a specific term
     /// </summary>

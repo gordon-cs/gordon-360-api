@@ -1,4 +1,5 @@
 ﻿using Gordon360.Authorization;
+using Gordon360.Enums;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
@@ -10,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Linq;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Controllers;
 
@@ -91,10 +94,17 @@ public class EventsController(IEventService eventService) : GordonControllerBase
         [FromQuery] string yearCode,
         [FromQuery] string termCode)
     {
-        var result = await eventService.GetFinalExamsForUserByTermAsync(username, termStart, termEnd, yearCode, termCode);
-        if (result == null)
+        var groups = AuthUtils.GetGroups(User);
+        var authenticatedUsername = AuthUtils.GetUsername(User);
+
+        IEnumerable<EventViewModel> result;
+        if (authenticatedUsername.EqualsIgnoreCase(username) || groups.Contains(AuthGroup.FacStaff))
         {
-            return NotFound();
+            result = await eventService.GetFinalExamsForUserByTermAsync(username, termStart, termEnd, yearCode, termCode);
+        }
+        else
+        {
+            result = await eventService.GetFinalExamsForInstructorByTermAsync(username, termStart, termEnd, yearCode, termCode);
         }
         return Ok(result);
     }
