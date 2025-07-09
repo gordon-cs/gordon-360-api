@@ -34,32 +34,68 @@ public class AcademicTermService(CCTContext context) : IAcademicTermService
         return terms.Select(t => new YearTermTableViewModel(t));
     }
 
-    // Return the days left in the semester, and the total days in the current term
-    public async Task<double[]> GetDaysLeftAsync()
+    public async Task<DaysLeftViewModel> GetDaysLeftAsync()
     {
-        var currentTerm =  await GetCurrentTermAsync();
+        var today = DateTime.Today;
 
-        if (currentTerm == null || currentTerm.EndDate == null || currentTerm.BeginDate == null)
+        var allTerms = await GetAllTermsAsync();
+
+        var relevantTerms = allTerms
+            .Where(t => t.TermCode is "FA" or "SP" or "SU")
+            .OrderBy(t => t.BeginDate)
+            .ToList();
+
+        for (int i = 0; i < relevantTerms.Count; i++)
         {
-            // If no current term or dates are missing, return 0's
-            return new double[] { 0, 0 };
+            var term = relevantTerms[i];
+
+            if (term.BeginDate.HasValue && term.EndDate.HasValue)
+            {
+                var start = term.BeginDate.Value.Date;
+                var end = term.EndDate.Value.Date;
+
+                if (today >= start && today <= end)
+                {
+                    int totalDays = (end - start).Days + 1;
+                    int daysLeft = (end - today).Days + 1;
+                    string label = $"{term.Description}";
+
+                    return new DaysLeftViewModel
+                    {
+                        DaysLeft = daysLeft,
+                        TotalDays = totalDays,
+                        TermLabel = label
+                    };
+                }
+                if (i < relevantTerms.Count - 1)
+                {
+                    var nextTerm = relevantTerms[i + 1];
+                    if (term.EndDate.HasValue && nextTerm.BeginDate.HasValue)
+                    {
+                        var gapStart = term.EndDate.Value.Date.AddDays(1);
+                        var gapEnd = nextTerm.BeginDate.Value.Date.AddDays(-1);
+
+                        if (today >= gapStart && today <= gapEnd)
+                        {
+                            int totalDays = (gapEnd - gapStart).Days + 1;
+                            int daysLeft = (gapEnd - today).Days + 1;
+
+                            return new DaysLeftViewModel
+                            {
+                                DaysLeft = daysLeft,
+                                TotalDays = totalDays,
+                                TermLabel = $"Break before {nextTerm.Description}"
+                            };
+                        }
+                    }
+                }
+            }
         }
-
-        DateTime termEnd = currentTerm.EndDate.Value;
-        DateTime termBegin = currentTerm.BeginDate.Value;
-        DateTime startTime = DateTime.Today;
-
-        double daysLeft = (termEnd - startTime).TotalDays;
-        // Account for possible negative value in between sessions
-        daysLeft = daysLeft < 0 ? 0 : daysLeft;
-
-        double daysInTerm = (termEnd - termBegin).TotalDays;
-
-        return new double[2] {
-        // Days left in semester
-        daysLeft,
-        // Total days in the semester
-        daysInTerm
+        return new DaysLeftViewModel
+        {
+            DaysLeft = 0,
+            TotalDays = 0,
+            TermLabel = "Break"
         };
     }
 }

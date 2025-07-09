@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+﻿using Gordon360.Models.ViewModels;
 using Gordon360.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 
 namespace Gordon360.Controllers
@@ -23,17 +25,13 @@ namespace Gordon360.Controllers
             return Ok(terms);
         }
 
-        [HttpGet("daysLeft")]
-        public async Task<IActionResult> GetDaysLeft()
+        [HttpGet]
+        [Route("daysleft")]
+        [AllowAnonymous]
+        public async Task<ActionResult<DaysLeftViewModel>> GetDaysLeft()
         {
-            var days = await service.GetDaysLeftAsync();
-
-            if (days == null || (days[0] == 0 && days[1] == 0))
-            {
-                return NotFound();
-            }
-
-            return Ok(days);
+            var result = await service.GetDaysLeftAsync();
+            return Ok(result);
         }
     }
 }
