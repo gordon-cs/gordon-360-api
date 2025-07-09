@@ -139,6 +139,26 @@
          "ObjectType": 0
       },
       {
+         "Name": "[Marketplace].[ItemCategory]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[ItemCondition]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[ItemStatus]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[PostedItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[Marketplace].[PostImage]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[RecIM].[Activity]",
          "ObjectType": 0
       },
