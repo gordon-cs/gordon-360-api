@@ -70,7 +70,15 @@ public class NewsService(MyGordonContext context, CCTContext contextCCT, IWebHos
 
     public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
     {
-        return context.StudentNewsCategory.OrderBy(c => c.SortOrder).Select<StudentNewsCategory, StudentNewsCategoryViewModel>(c => c);
+        var excludedCategoryIds = new[] { 2, 3 };
+        return context.StudentNewsCategory
+            .Where(c => !excludedCategoryIds.Contains(c.categoryID))
+            .Select(c => new StudentNewsCategoryViewModel
+            {
+                categoryID = c.categoryID,
+                categoryName = c.categoryName
+            })
+            .ToList();
     }
 
     public IEnumerable<StudentNewsViewModel> GetNewsUnapproved()
