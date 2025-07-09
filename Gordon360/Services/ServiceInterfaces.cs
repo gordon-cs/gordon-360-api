@@ -193,6 +193,7 @@ namespace Gordon360.Services
 
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
         Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username);
+        Task<IEnumerable<CoursesByTermViewModel>> GetAllInstructorCoursesByTermAsync(string username);
     }
 
 
