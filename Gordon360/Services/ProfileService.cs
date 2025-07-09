@@ -707,11 +707,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         try
         {
             PropertyInfo prop = cpvm.GetProperty(field);
-            ProfileItem profile_item = (ProfileItem) prop.GetValue(profile);
+            ProfileItem<string> profile_item = (ProfileItem<string>) prop.GetValue(profile);
             if (profile_item != null)
             {
-                profile_item.isPrivate = true;
-                prop.SetValue(profile, profile_item);
+                prop.SetValue(profile, new ProfileItem<string>(profile_item.Value, true));
             }
         }
         catch (Exception e)

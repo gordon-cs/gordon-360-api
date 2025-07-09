@@ -11,25 +11,25 @@ public class CombinedProfileViewModel
 
     public string ID { get; set; }
     public string Title { get; set; }
-    public ProfileItem FirstName { get; set; }
-    public ProfileItem MiddleName { get; set; }
-    public ProfileItem LastName { get; set; }
-    public ProfileItem Suffix { get; set; }
-    public ProfileItem MaidenName { get; set; }
-    public ProfileItem NickName { get; set; }
+    public ProfileItem<string> FirstName { get; set; }
+    public ProfileItem<string> MiddleName { get; set; }
+    public ProfileItem<string> LastName { get; set; }
+    public ProfileItem<string> Suffix { get; set; }
+    public ProfileItem<string> MaidenName { get; set; }
+    public ProfileItem<string> NickName { get; set; }
     public string Email { get; set; }
     public string Gender { get; set; }
-    public ProfileItem HomeStreet1 { get; set; }
-    public ProfileItem HomeStreet2 { get; set; }
-    public ProfileItem HomeCity { get; set; }
-    public ProfileItem HomeState { get; set; }
-    public ProfileItem HomePostalCode { get; set; }
-    public ProfileItem HomeCountry { get; set; }
-    public ProfileItem HomePhone { get; set; }
+    public ProfileItem<string> HomeStreet1 { get; set; }
+    public ProfileItem<string> HomeStreet2 { get; set; }
+    public ProfileItem<string> HomeCity { get; set; }
+    public ProfileItem<string> HomeState { get; set; }
+    public ProfileItem<string> HomePostalCode { get; set; }
+    public ProfileItem<string> HomeCountry { get; set; }
+    public ProfileItem<string> HomePhone { get; set; }
     public string AD_Username { get; set; } // Leave as string
     public Nullable<int> show_pic { get; set; }
     public Nullable<int> preferred_photo { get; set; }
-    public ProfileItem Country { get; set; }
+    public ProfileItem<string> Country { get; set; }
     public string Barcode { get; set; }
     public string Facebook { get; set; }
     public string Twitter { get; set; }
@@ -59,7 +59,7 @@ public class CombinedProfileViewModel
     public string GradDate { get; set; }
     public string PlannedGradYear { get; set; }
     public DateTime? Entrance_Date { get; set; }
-    public ProfileItem MobilePhone { get; set; }
+    public ProfileItem<string> MobilePhone { get; set; }
     public bool IsMobilePhonePrivate { get; set; }
     public Nullable<int> ChapelRequired { get; set; }
     public Nullable<int> ChapelAttended { get; set; }
@@ -71,7 +71,7 @@ public class CombinedProfileViewModel
 
     // Alumni Only
     public string WebUpdate { get; set; }
-    public ProfileItem HomeEmail { get; set; }
+    public ProfileItem<string> HomeEmail { get; set; }
     public string MaritalStatus { get; set; }
     public string College { get; set; }
     public string ClassYear { get; set; }
@@ -96,7 +96,7 @@ public class CombinedProfileViewModel
 
     // FacStaff and Alumni Only
     public string JobTitle { get; set; }
-    public ProfileItem SpouseName { get; set; }
+    public ProfileItem<string> SpouseName { get; set; }
 
     // FacStaff and Student Only
     public string BuildingDescription { get; set; }
@@ -118,25 +118,25 @@ public class CombinedProfileViewModel
             // All Profiles
             ID = vm.ID,
             Title = vm.Title,
-            FirstName = vm.FirstName is null || vm.FirstName == "" ? null : new ProfileItem(vm.FirstName, PUBLIC),
-            MiddleName = vm.MiddleName is null || vm.MiddleName == "" ? null : new ProfileItem(vm.MiddleName, PUBLIC),
-            LastName = vm.LastName is null || vm.LastName == "" ? null : new ProfileItem(vm.LastName, PUBLIC),
-            Suffix = vm.Suffix is null || vm.Suffix == "" ? null : new ProfileItem(vm.Suffix, PUBLIC),
-            MaidenName = vm.MaidenName is null || vm.MaidenName == "" ? null : new ProfileItem(vm.MaidenName, PUBLIC),
-            NickName = vm.NickName is null || vm.NickName == "" ? null : new ProfileItem(vm.NickName, PUBLIC),
+            FirstName = vm.FirstName is null || vm.FirstName == "" ? null : new ProfileItem<string>(vm.FirstName, PUBLIC),
+            MiddleName = vm.MiddleName is null || vm.MiddleName == "" ? null : new ProfileItem<string>(vm.MiddleName, PUBLIC),
+            LastName = vm.LastName is null || vm.LastName == "" ? null : new ProfileItem<string>(vm.LastName, PUBLIC),
+            Suffix = vm.Suffix is null || vm.Suffix == "" ? null : new ProfileItem<string>(vm.Suffix, PUBLIC),
+            MaidenName = vm.MaidenName is null || vm.MaidenName == "" ? null : new ProfileItem<string>(vm.MaidenName, PUBLIC),
+            NickName = vm.NickName is null || vm.NickName == "" ? null : new ProfileItem<string>(vm.NickName, PUBLIC),
             Email = vm.Email,
             Gender = vm.Gender,
-            HomeStreet1 = vm.HomeStreet1 is null || vm.HomeStreet1 == "" ? null : new ProfileItem(vm.HomeStreet1, PUBLIC),
-            HomeStreet2 = vm.HomeStreet2 is null || vm.HomeStreet2 == "" ? null : new ProfileItem(vm.HomeStreet2, PUBLIC),
-            HomeCity =  vm.HomeCity is null || vm.HomeCity == "" ? null : new ProfileItem(vm.HomeCity, PUBLIC),
-            HomeState = vm.HomeState is null || vm.HomeState == "" ? null : new ProfileItem(vm.HomeState, PUBLIC),
-            HomePostalCode = vm.HomePostalCode is null || vm.HomePostalCode == "" ? null : new ProfileItem(vm.HomePostalCode, PUBLIC),
-            HomeCountry = vm.HomeCountry is null || vm.HomeCountry == "" ? null : new ProfileItem(vm.HomeCountry, PUBLIC),
-            HomePhone = vm.HomePhone is null || vm.HomePhone == "" ? null : new ProfileItem(vm.HomePhone, PUBLIC),
+            HomeStreet1 = vm.HomeStreet1 is null || vm.HomeStreet1 == "" ? null : new ProfileItem<string>(vm.HomeStreet1, PUBLIC),
+            HomeStreet2 = vm.HomeStreet2 is null || vm.HomeStreet2 == "" ? null : new ProfileItem<string>(vm.HomeStreet2, PUBLIC),
+            HomeCity =  vm.HomeCity is null || vm.HomeCity == "" ? null : new ProfileItem<string>(vm.HomeCity, PUBLIC),
+            HomeState = vm.HomeState is null || vm.HomeState == "" ? null : new ProfileItem<string>(vm.HomeState, PUBLIC),
+            HomePostalCode = vm.HomePostalCode is null || vm.HomePostalCode == "" ? null : new ProfileItem<string>(vm.HomePostalCode, PUBLIC),
+            HomeCountry = vm.HomeCountry is null || vm.HomeCountry == "" ? null : new ProfileItem<string>(vm.HomeCountry, PUBLIC),
+            HomePhone = vm.HomePhone is null || vm.HomePhone == "" ? null : new ProfileItem<string>(vm.HomePhone, PUBLIC),
             AD_Username = vm.AD_Username,
             show_pic = vm.show_pic,
             preferred_photo = vm.preferred_photo,
-            Country = vm.Country is null || vm.Country == "" ? null : new ProfileItem(vm.Country, PUBLIC),
+            Country = vm.Country is null || vm.Country == "" ? null : new ProfileItem<string>(vm.Country, PUBLIC),
             Barcode = vm.Barcode,
             Facebook = vm.Facebook,
             Twitter = vm.Twitter,
@@ -166,7 +166,7 @@ public class CombinedProfileViewModel
             GradDate = vm.GradDate,
             PlannedGradYear = vm.PlannedGradYear,
             Entrance_Date = vm.Entrance_Date,
-            MobilePhone = vm.MobilePhone is null || vm.MobilePhone == "" ? null : new ProfileItem(vm.MobilePhone, PUBLIC),
+            MobilePhone = vm.MobilePhone is null || vm.MobilePhone == "" ? null : new ProfileItem<string>(vm.MobilePhone, PUBLIC),
             IsMobilePhonePrivate = vm.IsMobilePhonePrivate,
             ChapelRequired = vm.ChapelRequired,
             ChapelAttended = vm.ChapelAttended,
@@ -178,7 +178,7 @@ public class CombinedProfileViewModel
 
             // Alumni Only
             WebUpdate = vm. WebUpdate,
-            HomeEmail = vm.HomeEmail is null || vm.HomeEmail == "" ? null : new ProfileItem(vm.HomeEmail, PUBLIC),
+            HomeEmail = vm.HomeEmail is null || vm.HomeEmail == "" ? null : new ProfileItem<string>(vm.HomeEmail, PUBLIC),
             MaritalStatus = vm.MaritalStatus,
             College = vm.College,
             ClassYear = vm.ClassYear,
@@ -203,7 +203,7 @@ public class CombinedProfileViewModel
 
             // FacStaff and Alumni Only
             JobTitle = vm.JobTitle,
-            SpouseName = vm.SpouseName is null || vm.SpouseName == "" ? null : new ProfileItem(vm.SpouseName, PUBLIC),
+            SpouseName = vm.SpouseName is null || vm.SpouseName == "" ? null : new ProfileItem<string>(vm.SpouseName, PUBLIC),
 
             // FacStaff and Student Only
             BuildingDescription = vm.BuildingDescription,

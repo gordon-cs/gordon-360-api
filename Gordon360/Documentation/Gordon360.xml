@@ -3607,7 +3607,12 @@
             </summary>
             <returns>The session code of the current session</returns>
         </member>
-        <member name="T:Gordon360.Static.Methods.ProfileItem">
+        <member name="T:Gordon360.Static.Methods.ProfileItem`1">
+            <summary>
+            Profile item class contining a single profile datum and privacy flag.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Static.Methods.ProfileItem`1.#ctor(`0,System.Boolean)">
             <summary>
             Profile item class contining a single profile datum and privacy flag.
             </summary>
