@@ -163,6 +163,8 @@ public class PosterService(CCTContext context,
         var serverAddress = serverUtils.GetAddress();
         if (serverAddress is not string) throw new Exception("Could not upload poster: Server Address is null");
 
+        if (serverAddress.Contains("localhost"))
+            serverAddress = "";
         var url = $"{serverAddress}browseable/uploads/posters/images/{filename}";
         return url;
     }
