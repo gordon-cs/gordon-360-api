@@ -26,7 +26,7 @@ namespace Gordon360.Controllers
         }
 
         [HttpGet]
-        [Route("daysleft")]
+        [Route("daysLeft")]
         [AllowAnonymous]
         public async Task<ActionResult<DaysLeftViewModel>> GetDaysLeft()
         {
