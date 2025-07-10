@@ -164,7 +164,11 @@ public class PosterService(CCTContext context,
         if (serverAddress is not string) throw new Exception("Could not upload poster: Server Address is null");
 
         if (serverAddress.Contains("localhost"))
-            serverAddress = "";
+        {
+            // During development, if the UI is on a different machine than the API, you might need to 
+            // change the line below from serverAddress += "/"; to serverAddress = "";
+            serverAddress += "/";
+        }
         var url = $"{serverAddress}browseable/uploads/posters/images/{filename}";
         return url;
     }
