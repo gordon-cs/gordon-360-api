@@ -21,7 +21,10 @@ jobs:
 
       - name: Build
         run: dotnet build
-    
+
+      - name: Run Tests
+        run: dotnet test --no-build --verbosity normal
+
   deploy-train:
     runs-on: windows-latest
     if: ${{ github.ref == 'refs/heads/develop' }}
@@ -44,7 +47,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish
-        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -p:PublishDir=${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+        run: dotnet publish ${{ github.workspace }}\Gordon360.sln -r win-x64 --no-self-contained -p:PublishDir=${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
@@ -75,7 +78,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish
-        run: dotnet publish ${{ github.workspace}}\Gordon360.sln -r win-x64 --no-self-contained -p:PublishDir=${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
+        run: dotnet publish ${{ github.workspace }}\Gordon360.sln -r win-x64 --no-self-contained -p:PublishDir=${{ github.workspace }}\Gordon360\bin\app.publish\ci -p:EnvironmentName=${{ secrets.DEPLOYMENT_ENVIRONMENT }}
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
@@ -83,4 +86,3 @@ jobs:
           name: build-${{ secrets.DEPLOYMENT_ENVIRONMENT }}
           path: ${{ github.workspace }}\Gordon360\bin\app.publish\ci
           if-no-files-found: error
-          
