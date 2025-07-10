@@ -391,8 +391,8 @@ namespace Gordon360.Services
         /// Get all marketplace threads for admin view (one row per thread, including deleted/expired).
         /// </summary>
         public IEnumerable<MarketplaceAdminViewModel> GetAdminThreads(
-            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
-            string? search, string? sortBy, bool desc = false,
+            int? id, int? categoryId, int? statusId, decimal? minPrice, 
+            decimal? maxPrice, string? search, string? sortBy, bool desc = false,
             int page = 1, int pageSize = 20)
         {
             var query = context.PostedItem
@@ -403,6 +403,9 @@ namespace Gordon360.Services
                 .AsQueryable();
 
             // Filtering
+            if (id.HasValue)
+                query = query.Where(x => x.Id == id.Value || x.OriginalPostId == id.Value);
+                
             if (categoryId.HasValue)
                 query = query.Where(x => x.CategoryId == categoryId.Value);
 
