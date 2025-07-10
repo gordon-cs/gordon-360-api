@@ -37,6 +37,89 @@
             <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
             <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
         </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetPosters">
+            <summary>
+            Gets all posters that havent been deleted
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetCurrentPosters">
+            <summary>
+            Gets all non-expired posters
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetCurrentPostersByActivityCode(System.String)">
+            <summary>
+            Gets all non-expired posters by activity code
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetPersonalizedPosters(System.String)">
+            <summary>
+            Get all non-deleted personalized posters based on student's activities
+            </summary>
+            <param name="username"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetActivityPosters(System.String)">
+            <summary>
+            Get all not-deleted posters by activity code
+            </summary>
+            <param name="activityCode"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetPosterStatuses">
+            <summary>
+            Gets all poster statuses
+            </summary>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetPosterByID(System.Int32)">
+            <summary>
+            Gets poster object by ID
+            </summary>
+            <returns>
+            Poster object
+            </returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.CreatePoster(Gordon360.Models.ViewModels.PosterUploadViewModel)">
+            <summary>
+            Creates a poster
+            </summary>
+            <param name="poster"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.UpdatePoster(System.Int32,Gordon360.Models.ViewModels.PosterPatchViewModel)">
+            <summary>
+            Updates specified poster by ID
+            </summary>
+            <param name="posterID"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.DeletePoster(System.Int32)">
+            <summary>
+            Delete specified poster by ID
+            </summary>
+            <param name="posterID"></param>
+            <returns></returns>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.Api.PostersController.HidePoster(System.Int32)">
+             <summary>
+             Changes ExpirationDate to the current moment to effectively 
+            "hide" specific poster from view
+            </summary>
+            <returns></returns>
+             <exception cref="T:System.NotImplementedException"></exception>
+        </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
             Return a list of accounts matching some or all of <c>searchString</c>.
@@ -722,6 +805,121 @@
             <param name="ID"></param>
             <param name="keywords"></param>
             <returns>Int - The number of found items under the provided filters</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetAllListings">
+            <summary>
+            Get all marketplace listings.
+            </summary>
+            <returns>List of all marketplace listings.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetListingById(System.Int32)">
+            <summary>
+            Get a specific marketplace listing by ID.
+            </summary>
+            <param name="listingId">The ID of the listing.</param>
+            <returns>The marketplace listing.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.CreateListing(Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel)">
+            <summary>
+            Create a new marketplace listing.
+            </summary>
+            <param name="newListing">The details of the new listing.</param>
+            <returns>The created listing.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.UpdateListing(System.Int32,Gordon360.Models.ViewModels.MarketplaceListingUpdateViewModel)">
+            <summary>
+            Update an existing marketplace listing.
+            </summary>
+            <param name="listingId">The ID of the listing to update.</param>
+            <param name="updatedListing">The updated listing details.</param>
+            <returns>The updated listing.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.DeleteListing(System.Int32)">
+            <summary>
+            Delete a marketplace listing.
+            </summary>
+            <param name="listingId">The ID of the listing to delete.</param>
+            <returns>Confirmation of deletion.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.ChangeListingStatus(System.Int32,System.String)">
+            <summary>
+            Change the status of a marketplace listing.
+            </summary>
+            <param name="listingId">The ID of the listing.</param>
+            <param name="status">The new status.</param>
+            <returns>The updated listing.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetFilteredListings(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Get marketplace listings filtered by category, status, and price.
+            </summary>
+            <param name="categoryId">Optional category ID.</param>
+            <param name="statusId">Optional status ID.</param>
+            <param name="minPrice">Optional minimum price.</param>
+            <param name="maxPrice">Optional maximum price.</param>
+            <param name="search">Optional search term.</param>
+            <param name="sortBy">Optional sort criteria.</param>
+            <param name="desc">Optional sort order (descending).</param>
+            <param name="page">Optional page number for pagination.</param>
+            <param name="pageSize">Optional page size for pagination.</param>
+            <returns>Filtered marketplace listings.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetMyListings">
+            <summary>
+            Get all listings for the authenticated user.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetConditions(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Get all item conditions.
+            </summary>
+            <returns>List of all item conditions.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetCategories(Gordon360.Models.CCT.Context.CCTContext)">
+            <summary>
+            Get all item categories.
+            </summary>
+            <returns>List of all item categories.</returns>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.AddCategory(System.String)">
+            <summary>
+            Add a new item category.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.AddCondition(System.String)">
+            <summary>
+            Add a new item condition.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.UpdateCategoryVisibility(System.String,System.Boolean)">
+            <summary>
+            Update an existing item category's visibility.
+            Only accessible by SiteAdmin.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.UpdateConditionVisibility(System.String,System.Boolean)">
+            <summary>
+            Update an existing item condition's visibility.
+            Only accessible by SiteAdmin.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Get all marketplace threads for admin view (one row per thread, including deleted/expired).
+            Supports filtering, sorting, and pagination. Only accessible by SiteAdmin.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetThreadEditHistory(System.Int32)">
+            <summary>
+            Get the full edit history for a specific marketplace thread (all versions, including deleted/expired).
+            Only accessible by SiteAdmin.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetAdminThreadsCount(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String)">
+            <summary>
+            Get the count of unique marketplace threads for admin view (after filtering).
+            Used for pagination in the admin view. Only accessible by SiteAdmin.
+            </summary>
         </member>
         <member name="M:Gordon360.Controllers.MembershipsController.GetMemberships(System.String,System.String,System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -2821,6 +3019,51 @@
             <returns>Count of found items after applying filters</returns>
             <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException"></exception>
         </member>
+        <member name="M:Gordon360.Services.MarketplaceService.GetAllListings">
+            <summary>
+            Get all marketplace listings.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.GetListingById(System.Int32)">
+            <summary>
+            Get a specific marketplace listing by ID.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.CreateListingAsync(Gordon360.Models.ViewModels.MarketplaceListingUploadViewModel,System.String)">
+            <summary>
+            Create a new marketplace listing.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.UpdateListingAsync(System.Int32,Gordon360.Models.ViewModels.MarketplaceListingUpdateViewModel)">
+            <summary>
+            Update an existing marketplace listing.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.DeleteListingAsync(System.Int32)">
+            <summary>
+            Delete a marketplace listing.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.ChangeListingStatusAsync(System.Int32,System.String)">
+            <summary>
+            Change the status of a marketplace listing.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.GetFilteredListings(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Get filtered marketplace listings based on criteria.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            Get all marketplace threads for admin view (one row per thread, including deleted/expired).
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.MarketplaceService.GetThreadEditHistory(System.Int32)">
+            <summary>
+            Get the edit history for a thread (all versions, oldest to newest).
+            </summary>
+        </member>
         <member name="T:Gordon360.Services.MembershipRequestService">
             <summary>
             Service class to facilitate data transactions between the MembershipRequestController and the database
@@ -3084,6 +3327,16 @@
             </summary>
             <param name="username">The AD Username of the student</param>
             <returns>true if account exists, ResourceNotFoundException if null</returns>
+        </member>
+        <member name="T:Gordon360.Services.PosterService">
+            <summary>
+            Service Class that facilitates data transactions between the PosterController and the Poster database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.PosterService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService,Gordon360.Services.IMembershipService,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Gordon360.Utilities.ServerUtils)">
+            <summary>
+            Service Class that facilitates data transactions between the PosterController and the Poster database model.
+            </summary>
         </member>
         <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
             <summary>
