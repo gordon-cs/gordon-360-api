@@ -226,7 +226,7 @@ public class AccountService(CCTContext context) : IAccountService
         }
         else if (CanISeeFacstaff(viewerGroups))
         {
-            return (facstaff == null) ? null : (PublicFacultyStaffProfileViewModel)facstaff;
+            return (facstaff == null) ? null : (FacultyStaffProfileViewModel)facstaff;
         }
         return null;
     }
@@ -250,7 +250,7 @@ public class AccountService(CCTContext context) : IAccountService
         }
         else if (CanISeeAlumni(viewerGroups))
         {
-            return (alumni == null) ? null : (PublicAlumniProfileViewModel)alumni;
+            return (alumni == null) ? null : (AlumniProfileViewModel)alumni;
         }
         return null;
     }
