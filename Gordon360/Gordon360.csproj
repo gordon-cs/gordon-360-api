@@ -98,7 +98,6 @@
       del %25tmp%25\date.txt
     </PreBuildEvent>
   </PropertyGroup>
-  <PropertyGroup />
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
