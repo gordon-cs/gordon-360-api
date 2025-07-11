@@ -92,7 +92,7 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     public ActionResult<double[]> GetDaysLeftInSemester()
     {
         var days = sessionService.GetDaysLeft();
-        if (days[1] == 0 && days[2] == 0 || days == null)
+        if (days == null || (days[0] == 0 && days[1] == 0))
         {
             return NotFound();
         }

@@ -26,17 +26,13 @@ namespace Gordon360.Controllers
             return Ok(terms);
         }
 
-        [HttpGet("daysLeft")]
-        public async Task<IActionResult> GetDaysLeft()
+        [HttpGet]
+        [Route("daysLeft")]
+        [AllowAnonymous]
+        public async Task<ActionResult<DaysLeftViewModel>> GetDaysLeft()
         {
-            var days = await service.GetDaysLeftAsync();
-
-            if (days == null || (days[0] == 0 && days[1] == 0))
-            {
-                return NotFound();
-            }
-
-            return Ok(days);
+            var result = await service.GetDaysLeftAsync();
+            return Ok(result);
         }
 
         /// <summary>
