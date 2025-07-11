@@ -15,6 +15,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
+using Microsoft.Extensions.Configuration;
 
 namespace Gordon360.Tests.Integration_Test;
 
@@ -28,6 +29,8 @@ public class ScheduleControllerIntegrationTest : IDisposable
     private readonly AccountService _accountService;
     private readonly SessionService _sessionService;
     private readonly AcademicTermService _academicTermService;
+    private readonly IConfiguration _configuration;
+    private readonly Gordon360.Models.webSQL.Context.webSQLContext _webSQLContext;
 
     public ScheduleControllerIntegrationTest()
     {
@@ -42,6 +45,14 @@ public class ScheduleControllerIntegrationTest : IDisposable
         _context = new CCTContext(options);
         _context.Database.EnsureCreated();
 
+        // Minimal configuration and webSQLContext for ProfileService
+        var configBuilder = new ConfigurationBuilder();
+        _configuration = configBuilder.Build();
+        var webSQLOptions = new DbContextOptionsBuilder<Gordon360.Models.webSQL.Context.webSQLContext>()
+            .UseSqlite(_connection)
+            .Options;
+        _webSQLContext = new Gordon360.Models.webSQL.Context.webSQLContext(webSQLOptions);
+
         // Seed minimal data for integration
         SeedTestData();
 
@@ -49,8 +60,8 @@ public class ScheduleControllerIntegrationTest : IDisposable
         _sessionService = new SessionService(_context);
         _academicTermService = new AcademicTermService(_context);
         _scheduleService = new ScheduleService(_context, _sessionService, _academicTermService);
-        _profileService = new ProfileService(_context);
         _accountService = new AccountService(_context);
+        _profileService = new ProfileService(_context, _configuration, _accountService, _webSQLContext);
 
         _controller = new ScheduleController(_profileService, _scheduleService, _accountService);
     }
@@ -72,28 +83,33 @@ public class ScheduleControllerIntegrationTest : IDisposable
 
     private void SeedTestData()
     {
-        // Add a session and term
-        _context.CM_SESSION_MSTR.Add(new CM_SESSION_MSTR
+        // Add a session
+        _context.CM_SESSION_MSTR.Add(new Gordon360.Models.CCT.CM_SESSION_MSTR
         {
-            SessionCode = "202401",
-            Description = "Spring 2024",
-            BeginDate = new DateTime(2024, 1, 10),
-            EndDate = new DateTime(2024, 5, 10)
+            SESS_CDE = "202401",
+            SESS_DESC = "Spring 2024",
+            SESS_BEGN_DTE = new DateTime(2024, 1, 10),
+            SESS_END_DTE = new DateTime(2024, 5, 10)
         });
-        _context.YearTermTable.Add(new YearTermTableViewModel
+        // Add a term
+        _context.YearTermTable.Add(new Gordon360.Models.CCT.YearTermTable
         {
-            YearCode = "2024",
-            TermCode = "SP",
-            TermDescription = "Spring 2024",
-            TermBeginDate = new DateTime(2024, 1, 10),
-            TermEndDate = new DateTime(2024, 5, 10)
+            YR_CDE = "2024",
+            TRM_CDE = "SP",
+            TRM_BEGIN_DTE = new DateTime(2024, 1, 10),
+            TRM_END_DTE = new DateTime(2024, 5, 10),
+            YR_TRM_DESC = "Spring 2024",
+            PRT_INPROG_ON_TRAN = "Y",
+            ONLINE_ADM_APP_OPEN = "Y",
+            PREREG_STS = "Y",
+            APPROWVERSION = new byte[] { 1 },
+            SHOW_ON_WEB = "Y"
         });
-
-        // Students
-        _context.UserCourses.Add(new UserCoursesViewModel
+        // Add user courses
+        _context.UserCourses.Add(new Gordon360.Models.CCT.UserCourses
         {
             Username = "jdoe",
-            SessionCode = "202401",
+            Role = "Student",
             YR_CDE = "2024",
             TRM_CDE = "SP",
             CRS_CDE = "CS101",
@@ -110,15 +126,12 @@ public class ScheduleControllerIntegrationTest : IDisposable
             END_TIME = new TimeSpan(10, 15, 0),
             BEGIN_DATE = new DateTime(2024, 1, 10),
             END_DATE = new DateTime(2024, 5, 10),
-            SUB_TERM_CDE = "A",
-            Role = "Student"
+            SUBTERM_DESC = "A"
         });
-        _context.Student.Add(new Student { Username = "jdoe", FirstName = "John", LastName = "Doe", ID_NUM = "1234567" });
-
-        _context.UserCourses.Add(new UserCoursesViewModel
+        _context.UserCourses.Add(new Gordon360.Models.CCT.UserCourses
         {
             Username = "student2",
-            SessionCode = "202401",
+            Role = "Student",
             YR_CDE = "2024",
             TRM_CDE = "SP",
             CRS_CDE = "CS102",
@@ -135,16 +148,12 @@ public class ScheduleControllerIntegrationTest : IDisposable
             END_TIME = new TimeSpan(11, 45, 0),
             BEGIN_DATE = new DateTime(2024, 1, 10),
             END_DATE = new DateTime(2024, 5, 10),
-            SUB_TERM_CDE = "A",
-            Role = "Student"
+            SUBTERM_DESC = "A"
         });
-        _context.Student.Add(new Student { Username = "student2", FirstName = "Jane", LastName = "Smith", ID_NUM = "7654321" });
-
-        // Alumni
-        _context.UserCourses.Add(new UserCoursesViewModel
+        _context.UserCourses.Add(new Gordon360.Models.CCT.UserCourses
         {
             Username = "alum1",
-            SessionCode = "202401",
+            Role = "Student",
             YR_CDE = "2024",
             TRM_CDE = "SP",
             CRS_CDE = "HIST101",
@@ -161,16 +170,12 @@ public class ScheduleControllerIntegrationTest : IDisposable
             END_TIME = new TimeSpan(14, 15, 0),
             BEGIN_DATE = new DateTime(2024, 1, 10),
             END_DATE = new DateTime(2024, 5, 10),
-            SUB_TERM_CDE = "A",
-            Role = "Student"
+            SUBTERM_DESC = "A"
         });
-        _context.Alumni.Add(new Alumni { Username = "alum1", FirstName = "Alice", LastName = "Alumni", ID_NUM = "1111111" });
-
-        // Facstaff
-        _context.UserCourses.Add(new UserCoursesViewModel
+        _context.UserCourses.Add(new Gordon360.Models.CCT.UserCourses
         {
             Username = "fac1",
-            SessionCode = "202401",
+            Role = "Student",
             YR_CDE = "2024",
             TRM_CDE = "SP",
             CRS_CDE = "ENG201",
@@ -187,16 +192,12 @@ public class ScheduleControllerIntegrationTest : IDisposable
             END_TIME = new TimeSpan(15, 45, 0),
             BEGIN_DATE = new DateTime(2024, 1, 10),
             END_DATE = new DateTime(2024, 5, 10),
-            SUB_TERM_CDE = "A",
-            Role = "Student"
+            SUBTERM_DESC = "A"
         });
-        _context.FacStaff.Add(new FacStaff { Username = "fac1", FirstName = "Frank", LastName = "Faculty", ID_NUM = "2222222" });
-
-        // Advisor (Facstaff, Advisor)
-        _context.UserCourses.Add(new UserCoursesViewModel
+        _context.UserCourses.Add(new Gordon360.Models.CCT.UserCourses
         {
             Username = "advisor1",
-            SessionCode = "202401",
+            Role = "Student",
             YR_CDE = "2024",
             TRM_CDE = "SP",
             CRS_CDE = "ADV101",
@@ -213,16 +214,12 @@ public class ScheduleControllerIntegrationTest : IDisposable
             END_TIME = new TimeSpan(9, 15, 0),
             BEGIN_DATE = new DateTime(2024, 1, 10),
             END_DATE = new DateTime(2024, 5, 10),
-            SUB_TERM_CDE = "A",
-            Role = "Student"
+            SUBTERM_DESC = "A"
         });
-        _context.FacStaff.Add(new FacStaff { Username = "advisor1", FirstName = "Adrian", LastName = "Advisor", ID_NUM = "3333333" });
-
-        // Hybrid (Student, Faculty, Instructor)
-        _context.UserCourses.Add(new UserCoursesViewModel
+        _context.UserCourses.Add(new Gordon360.Models.CCT.UserCourses
         {
             Username = "hybrid1",
-            SessionCode = "202401",
+            Role = "Instructor",
             YR_CDE = "2024",
             TRM_CDE = "SP",
             CRS_CDE = "MATH301",
@@ -239,12 +236,17 @@ public class ScheduleControllerIntegrationTest : IDisposable
             END_TIME = new TimeSpan(12, 15, 0),
             BEGIN_DATE = new DateTime(2024, 1, 10),
             END_DATE = new DateTime(2024, 5, 10),
-            SUB_TERM_CDE = "A",
-            Role = "Instructor"
+            SUBTERM_DESC = "A"
         });
-        _context.FacStaff.Add(new FacStaff { Username = "hybrid1", FirstName = "Hank", LastName = "Hybrid", ID_NUM = "4444444" });
-        _context.Student.Add(new Student { Username = "hybrid1", FirstName = "Hank", LastName = "Hybrid", ID_NUM = "4444444" });
-
+        // Add students
+        _context.Student.Add(new Gordon360.Models.CCT.Student { ID = "S1234567", FirstName = "John", LastName = "Doe", AD_Username = "jdoe" });
+        _context.Student.Add(new Gordon360.Models.CCT.Student { ID = "S7654321", FirstName = "Jane", LastName = "Smith", AD_Username = "student2" });
+        // Add alumni
+        _context.Alumni.Add(new Gordon360.Models.CCT.Alumni { ID = "A1111111", FirstName = "Alice", LastName = "Alumni", AD_Username = "alum1" });
+        // Add facstaff
+        _context.FacStaff.Add(new Gordon360.Models.CCT.FacStaff { ID = "F2222222", FirstName = "Frank", LastName = "Faculty", AD_Username = "fac1" });
+        _context.FacStaff.Add(new Gordon360.Models.CCT.FacStaff { ID = "F3333333", FirstName = "Adrian", LastName = "Advisor", AD_Username = "advisor1" });
+        _context.FacStaff.Add(new Gordon360.Models.CCT.FacStaff { ID = "F4444444", FirstName = "Hank", LastName = "Hybrid", AD_Username = "hybrid1" });
         _context.SaveChanges();
     }
 
