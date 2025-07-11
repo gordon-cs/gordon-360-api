@@ -206,7 +206,7 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Unassigned_Rooms> Unassigned_Rooms { get; set; }
 
     public virtual DbSet<UserCourses> UserCourses { get; set; }
-    
+
     public virtual DbSet<YearTermTable> YearTermTable { get; set; }
     
     public virtual DbSet<CourseRegistrationDate> CourseRegistrationDates { get; set; }
