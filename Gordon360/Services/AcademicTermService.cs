@@ -34,32 +34,86 @@ public class AcademicTermService(CCTContext context) : IAcademicTermService
         return terms.Select(t => new YearTermTableViewModel(t));
     }
 
-    // Return the days left in the semester, and the total days in the current term
-    public async Task<double[]> GetDaysLeftAsync()
+
+    // The term list is in chronological order with the oldest term first.
+    // In the main loop we search for the term we are currently in, or determine if we are
+    // between terms.
+    //
+    // There are two cases:
+    //   (1) we're in a regular academic term.
+    //   (2) we're in between two existing academic terms.
+    // Once we've found our place we construct the DaysLeftViewModel to display 
+    // total days, days left, and term label of the period we are currently in.
+    public async Task<DaysLeftViewModel> GetDaysLeftAsync()
     {
-        var currentTerm =  await GetCurrentTermAsync();
+        var today = DateTime.Today;
 
-        if (currentTerm == null || currentTerm.EndDate == null || currentTerm.BeginDate == null)
+        // Get all terms from the database
+        var allTerms = await GetAllTermsAsync();
+
+        // Filter terms to only include relevant ones (FA, SP, SU) and sort choronologically
+        var relevantTerms = allTerms
+            .Where(t => t.TermCode is "FA" or "SP" or "SU")
+            .OrderBy(t => t.BeginDate)
+            .ToList();
+
+        // Iterate through the relevant terms to find where today's date fits
+        for (int i = 0; i < relevantTerms.Count; i++)
         {
-            // If no current term or dates are missing, return 0's
-            return new double[] { 0, 0 };
+            var term = relevantTerms[i];
+
+            if (term.BeginDate.HasValue && term.EndDate.HasValue)
+            {
+                var start = term.BeginDate.Value.Date;
+                var end = term.EndDate.Value.Date;
+
+                // Case 1: Today is inside an academic term
+                if (today >= start && today <= end)
+                {
+                    int totalDays = (end - start).Days + 1;
+                    int daysLeft = (end - today).Days + 1;
+                    string label = $"{term.Description}";
+
+                    return new DaysLeftViewModel
+                    {
+                        DaysLeft = daysLeft,
+                        TotalDays = totalDays,
+                        TermLabel = label
+                    };
+                }
+                // Case 2: Today is in between two terms
+                if (i < relevantTerms.Count - 1)
+                {
+                    var nextTerm = relevantTerms[i + 1];
+                    if (term.EndDate.HasValue && nextTerm.BeginDate.HasValue)
+                    {
+                        // Calculate the gap between the current term's end and the next term's start
+                        var gapStart = term.EndDate.Value.Date.AddDays(1);
+                        var gapEnd = nextTerm.BeginDate.Value.Date.AddDays(-1);
+
+                        // If today is within the gap
+                        if (today >= gapStart && today <= gapEnd)
+                        {
+                            int totalDays = (gapEnd - gapStart).Days + 1;
+                            int daysLeft = (gapEnd - today).Days + 1;
+
+                            return new DaysLeftViewModel
+                            {
+                                DaysLeft = daysLeft,
+                                TotalDays = totalDays,
+                                TermLabel = $"Break before {nextTerm.Description}"
+                            };
+                        }
+                    }
+                }
+            }
         }
-
-        DateTime termEnd = currentTerm.EndDate.Value;
-        DateTime termBegin = currentTerm.BeginDate.Value;
-        DateTime startTime = DateTime.Today;
-
-        double daysLeft = (termEnd - startTime).TotalDays;
-        // Account for possible negative value in between sessions
-        daysLeft = daysLeft < 0 ? 0 : daysLeft;
-
-        double daysInTerm = (termEnd - termBegin).TotalDays;
-
-        return new double[2] {
-        // Days left in semester
-        daysLeft,
-        // Total days in the semester
-        daysInTerm
+        // If we reach here, it means today is not within any term, return default break
+        return new DaysLeftViewModel
+        {
+            DaysLeft = 0,
+            TotalDays = 0,
+            TermLabel = "Break"
         };
     }
 }
