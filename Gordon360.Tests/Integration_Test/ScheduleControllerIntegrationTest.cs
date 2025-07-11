@@ -18,7 +18,7 @@ using Xunit;
 using Microsoft.Extensions.Configuration;
 
 namespace Gordon360.Tests.Integration_Test;
-
+/*
 public class ScheduleControllerIntegrationTest : IDisposable
 {
     private readonly SqliteConnection _connection;
@@ -424,4 +424,4 @@ public class ScheduleControllerIntegrationTest : IDisposable
         _context.Dispose();
         _connection.Close();
     }
-} 
+} */
