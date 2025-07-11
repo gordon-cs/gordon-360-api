@@ -3,7 +3,6 @@
 
 using Gordon360.Controllers;
 using Gordon360.Models.CCT.Context;
-using Gordon360.Models.CCT.dbo;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Http;
