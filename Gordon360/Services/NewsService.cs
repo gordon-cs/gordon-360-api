@@ -68,15 +68,17 @@ public class NewsService(MyGordonContext context, CCTContext contextCCT, IWebHos
         return news;
     }
 
+    private static readonly int[] ExcludedCategoryIds = [2, 3];
     public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
     {
-        var excludedCategoryIds = new[] { 2, 3 };
         return context.StudentNewsCategory
-            .Where(c => !excludedCategoryIds.Contains(c.categoryID))
+            .Where(c => !ExcludedCategoryIds.Contains(c.categoryID))
+            .OrderBy(c => c.SortOrder)
             .Select(c => new StudentNewsCategoryViewModel
             {
                 categoryID = c.categoryID,
-                categoryName = c.categoryName
+                categoryName = c.categoryName,
+                SortOrder = c.SortOrder
             })
             .ToList();
     }
