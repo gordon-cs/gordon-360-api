@@ -41,6 +41,7 @@ public static class ServicesExtensions
         services.AddScoped<RecIM.ISportService, RecIM.SportService>();
         services.AddScoped<RecIM.IRecIMService, RecIM.RecIMService>();
         services.AddScoped<RecIM.IAffiliationService, RecIM.AffiliationService>();
+        services.AddScoped<IMarketplaceService, MarketplaceService>();
 
         return services;
     }
