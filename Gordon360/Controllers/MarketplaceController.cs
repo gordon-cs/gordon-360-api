@@ -307,6 +307,7 @@ namespace Gordon360.Controllers
         /// </summary>
         [HttpGet("admin/threads")]
         public ActionResult<IEnumerable<MarketplaceListingViewModel>> GetAdminThreads(
+            [FromQuery] int? id,
             [FromQuery] int? categoryId,
             [FromQuery] int? statusId,
             [FromQuery] decimal? minPrice,
@@ -321,7 +322,8 @@ namespace Gordon360.Controllers
             if (!viewerGroups.Contains(AuthGroup.SiteAdmin))
                 return Forbid();
 
-            var result = marketplaceService.GetAdminThreads(categoryId, statusId, minPrice, maxPrice, search, sortBy, desc, page, pageSize);
+            var result = marketplaceService.GetAdminThreads(
+                id, categoryId, statusId, minPrice, maxPrice, search, sortBy, desc, page, pageSize);
             return Ok(result);
         }
 
