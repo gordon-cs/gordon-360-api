@@ -1,19 +1,20 @@
 using Gordon360.Controllers;
 using Gordon360.Models.CCT.Context;
-using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.dbo;
+using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Gordon360.Tests.Integration_Test;
+namespace Gordon360.Tests.Controllers_Test;
 
 public class ScheduleControllerIntegrationTest : IDisposable
 {
@@ -25,30 +26,30 @@ public class ScheduleControllerIntegrationTest : IDisposable
     private readonly AccountService _accountService;
     private readonly SessionService _sessionService;
     private readonly AcademicTermService _academicTermService;
-    private readonly IConfiguration _configuration;
-    private readonly Gordon360.Models.webSQL.Context.webSQLContext _webSQLContext;
 
     public ScheduleControllerIntegrationTest()
     {
+        // Setup SQLite in-memory
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
+
         var options = new DbContextOptionsBuilder<CCTContext>()
             .UseSqlite(_connection)
             .Options;
+
         _context = new CCTContext(options);
         _context.Database.EnsureCreated();
-        var configBuilder = new ConfigurationBuilder();
-        _configuration = configBuilder.Build();
-        var webSQLOptions = new DbContextOptionsBuilder<Gordon360.Models.webSQL.Context.webSQLContext>()
-            .UseSqlite(_connection)
-            .Options;
-        _webSQLContext = new Gordon360.Models.webSQL.Context.webSQLContext(webSQLOptions);
+
+        // Seed minimal data for integration
         SeedTestData();
+
+        // Setup real services
         _sessionService = new SessionService(_context);
         _academicTermService = new AcademicTermService(_context);
         _scheduleService = new ScheduleService(_context, _sessionService, _academicTermService);
+        _profileService = new ProfileService(_context);
         _accountService = new AccountService(_context);
-        _profileService = new ProfileService(_context, _configuration, _accountService, _webSQLContext);
+
         _controller = new ScheduleController(_profileService, _scheduleService, _accountService);
     }
 
@@ -69,30 +70,30 @@ public class ScheduleControllerIntegrationTest : IDisposable
 
     private void SeedTestData()
     {
+        // Add a session
         _context.CM_SESSION_MSTR.Add(new CM_SESSION_MSTR
         {
-            SESS_CDE = "202401",
-            SESS_DESC = "Spring 2024",
-            SESS_BEGN_DTE = new DateTime(2024, 1, 10),
-            SESS_END_DTE = new DateTime(2024, 5, 10)
+            SessionCode = "202401",
+            Description = "Spring 2024",
+            BeginDate = new DateTime(2024, 1, 10),
+            EndDate = new DateTime(2024, 5, 10)
         });
-        _context.YearTermTable.Add(new YearTermTable
+
+        // Add a term
+        _context.YearTermTable.Add(new YearTermTableViewModel
         {
-            YR_CDE = "2024",
-            TRM_CDE = "SP",
-            TRM_BEGIN_DTE = new DateTime(2024, 1, 10),
-            TRM_END_DTE = new DateTime(2024, 5, 10),
-            YR_TRM_DESC = "Spring 2024",
-            PRT_INPROG_ON_TRAN = "Y",
-            ONLINE_ADM_APP_OPEN = "Y",
-            PREREG_STS = "Y",
-            APPROWVERSION = new byte[] { 1 },
-            SHOW_ON_WEB = "Y"
+            YearCode = "2024",
+            TermCode = "SP",
+            TermDescription = "Spring 2024",
+            TermBeginDate = new DateTime(2024, 1, 10),
+            TermEndDate = new DateTime(2024, 5, 10)
         });
-        _context.UserCourses.Add(new UserCourses
+
+        // Add a user course
+        _context.UserCourses.Add(new UserCoursesViewModel
         {
             Username = "jdoe",
-            Role = "Student",
+            SessionCode = "202401",
             YR_CDE = "2024",
             TRM_CDE = "SP",
             CRS_CDE = "CS101",
@@ -109,20 +110,39 @@ public class ScheduleControllerIntegrationTest : IDisposable
             END_TIME = new TimeSpan(10, 15, 0),
             BEGIN_DATE = new DateTime(2024, 1, 10),
             END_DATE = new DateTime(2024, 5, 10),
-            SUBTERM_DESC = "A"
+            SUB_TERM_CDE = "A",
+            Role = "Student"
         });
-        _context.Student.Add(new Student { ID = "S1234567", FirstName = "John", LastName = "Doe", AD_Username = "jdoe" });
+
+        // Add a student profile
+        _context.Student.Add(new Student
+        {
+            Username = "jdoe",
+            FirstName = "John",
+            LastName = "Doe",
+            ID_NUM = "1234567"
+        });
+
         _context.SaveChanges();
     }
 
     [Fact]
     public async Task GetAllCoursesByTerm_ReturnsCourses_ForSelf()
     {
+        // Arrange
         SetUser("jdoe", "360-Student-SG");
+
+        // Act
         var result = await _controller.GetAllCoursesByTerm("jdoe");
-        var ok = Assert.IsType<OkObjectResult>(result.Result);
-        var data = Assert.IsAssignableFrom<IEnumerable<Gordon360.Models.ViewModels.CoursesByTermViewModel>>(ok.Value);
-        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "CS101");
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(okResult.Value);
+        Assert.Single(returned);
+        Assert.Equal("2024", returned.First().YearCode);
+        Assert.Equal("SP", returned.First().TermCode);
+        Assert.Single(returned.First().AllCourses);
+        Assert.Equal("CS101", returned.First().AllCourses.First().CRS_CDE);
     }
 
     public void Dispose()
