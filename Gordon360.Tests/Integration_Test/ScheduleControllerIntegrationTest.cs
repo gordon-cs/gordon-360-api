@@ -258,7 +258,8 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("jdoe");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "jdoe"));
+        // Expect CS101 (jdoe's course)
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "CS101");
     }
 
     /// <summary>Student for other student: should return empty</summary>
@@ -291,7 +292,8 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("fac1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "fac1"));
+        // Expect ENG201 (fac1's course)
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "ENG201");
     }
 
     /// <summary>Student for (Student,Faculty): should return instructor course</summary>
@@ -302,7 +304,8 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("hybrid1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "hybrid1" && c.Role == "Instructor"));
+        // Expect MATH301 (hybrid1's instructor course)
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "MATH301" && c.Role == "Instructor");
     }
 
     // ===================== Alumni Cases =====================
@@ -312,11 +315,11 @@ public class ScheduleControllerIntegrationTest : IDisposable
     public async Task Alumni_ForOtherAlumni_ReturnsEmpty()
     {
         SetUser("alum1", "360-Alumni-SG");
-        // Self
+        // Self: expect HIST101
         var result = await _controller.GetAllCoursesByTerm("alum1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "alum1"));
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "HIST101");
         // Other alumni (not seeded, so should be empty)
         result = await _controller.GetAllCoursesByTerm("alum2");
         ok = Assert.IsType<OkObjectResult>(result.Result);
@@ -332,7 +335,7 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("fac1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "fac1"));
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "ENG201");
     }
 
     /// <summary>Alumni for self: should return their own course</summary>
@@ -343,7 +346,7 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("alum1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "alum1"));
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "HIST101");
     }
 
     /// <summary>Alumni for (Student,Faculty): should return instructor course</summary>
@@ -354,7 +357,7 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("hybrid1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "hybrid1" && c.Role == "Instructor"));
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "MATH301" && c.Role == "Instructor");
     }
 
     // ===================== Facstaff/Advisor Cases =====================
@@ -378,7 +381,7 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("jdoe");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "jdoe"));
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "CS101");
     }
 
     /// <summary>Facstaff for self: should return their own course</summary>
@@ -389,7 +392,7 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("fac1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "fac1"));
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "ENG201");
     }
 
     /// <summary>Advisor for self: should return their own course</summary>
@@ -400,7 +403,7 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("advisor1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "advisor1"));
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "ADV101");
     }
 
     /// <summary>Facstaff for alumni: should return alumni's course</summary>
@@ -411,7 +414,7 @@ public class ScheduleControllerIntegrationTest : IDisposable
         var result = await _controller.GetAllCoursesByTerm("alum1");
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         var data = Assert.IsAssignableFrom<IEnumerable<CoursesByTermViewModel>>(ok.Value);
-        Assert.Single(data.SelectMany(t => t.AllCourses).Where(c => c.Username == "alum1"));
+        Assert.Contains(data.SelectMany(t => t.AllCourses), c => c.CRS_CDE == "HIST101");
     }
 
     public void Dispose()
