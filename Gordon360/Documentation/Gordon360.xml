@@ -903,7 +903,7 @@
             Only accessible by SiteAdmin.
             </summary>
         </member>
-        <member name="M:Gordon360.Controllers.MarketplaceController.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
             <summary>
             Get all marketplace threads for admin view (one row per thread, including deleted/expired).
             Supports filtering, sorting, and pagination. Only accessible by SiteAdmin.
@@ -3054,7 +3054,7 @@
             Get filtered marketplace listings based on criteria.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MarketplaceService.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
+        <member name="M:Gordon360.Services.MarketplaceService.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
             <summary>
             Get all marketplace threads for admin view (one row per thread, including deleted/expired).
             </summary>
@@ -3550,6 +3550,13 @@
         <member name="M:Gordon360.Services.ScheduleService.GetAllCoursesByTermAsync(System.String)">
             <summary>
             Fetch the term item whose id specified by the parameter
+            </summary>
+            <param name="username">The AD Username of the user</param>
+            <returns>CoursesByTermViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.ScheduleService.GetAllInstructorCoursesByTermAsync(System.String)">
+            <summary>
+            Fetch the classes that are taught by this user
             </summary>
             <param name="username">The AD Username of the user</param>
             <returns>CoursesByTermViewModel if found, null if not found</returns>
