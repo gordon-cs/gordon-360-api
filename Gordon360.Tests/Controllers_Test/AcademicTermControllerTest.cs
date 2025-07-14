@@ -1,14 +1,3 @@
-using Gordon360.Controllers;
-using Gordon360.Models.CCT;
-using Gordon360.Models.ViewModels;
-using Gordon360.Services;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
-
 namespace Gordon360.Tests.Controllers_Test;
 
 public class AcademicTermControllerTest
@@ -108,38 +97,46 @@ public class AcademicTermControllerTest
         var returned = Assert.IsAssignableFrom<IEnumerable<YearTermTableViewModel>>(okResult.Value);
         Assert.Empty(returned);
     }
+    [Fact]
+    public async Task GetDaysLeft_ReturnsOk_WithZeroDays()
+    {
+        var viewModel = new DaysLeftViewModel
+        {
+            DaysLeft = 0,
+            TotalDays = 0,
+            TermLabel = "Break"
+        };
+
+        _mockService.Setup(s => s.GetDaysLeftAsync()).ReturnsAsync(viewModel);
+
+        var result = await _controller.GetDaysLeft();
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsType<DaysLeftViewModel>(okResult.Value);
+        Assert.Equal(0, returned.DaysLeft);
+        Assert.Equal(0, returned.TotalDays);
+        Assert.Equal("Break", returned.TermLabel);
+    }
 
     [Fact]
     public async Task GetDaysLeft_ReturnsOk_WithValidDays()
     {
-        var days = new double[] { 30, 120 };
-        _mockService.Setup(s => s.GetDaysLeftAsync()).ReturnsAsync(days);
+        var viewModel = new DaysLeftViewModel
+        {
+            DaysLeft = 30,
+            TotalDays = 120,
+            TermLabel = "Spring 2024"
+        };
+
+        _mockService.Setup(s => s.GetDaysLeftAsync()).ReturnsAsync(viewModel);
 
         var result = await _controller.GetDaysLeft();
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var returned = Assert.IsType<double[]>(okResult.Value);
-        Assert.Equal(30, returned[0]);
-        Assert.Equal(120, returned[1]);
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsType<DaysLeftViewModel>(okResult.Value);
+        Assert.Equal(30, returned.DaysLeft);
+        Assert.Equal(120, returned.TotalDays);
+        Assert.Equal("Spring 2024", returned.TermLabel);
     }
 
-    [Fact]
-    public async Task GetDaysLeft_ReturnsNotFound_WhenNoDays()
-    {
-        _mockService.Setup(s => s.GetDaysLeftAsync()).ReturnsAsync((double[])null);
-
-        var result = await _controller.GetDaysLeft();
-
-        Assert.IsType<NotFoundResult>(result);
-    }
-
-    [Fact]
-    public async Task GetDaysLeft_ReturnsNotFound_WhenZeroDays()
-    {
-        _mockService.Setup(s => s.GetDaysLeftAsync()).ReturnsAsync(new double[] { 0, 0 });
-
-        var result = await _controller.GetDaysLeft();
-
-        Assert.IsType<NotFoundResult>(result);
-    }
-} 
+}
