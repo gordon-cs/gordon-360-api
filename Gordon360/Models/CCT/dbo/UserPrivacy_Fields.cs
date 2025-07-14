@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT;
 
-[Table("UserPrivacy_Fields", Schema = "dbo")]
 public partial class UserPrivacy_Fields
 {
+    [Key]
     public int ID { get; set; }
 
-    [Key]
+    [Required]
     [StringLength(50)]
     [Unicode(false)]
     public string Field { get; set; }

@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Gordon360.Models.CCT;
 
 [PrimaryKey("gordon_id", "Field")]
-[Table("UserPrivacy_Settings", Schema = "dbo")]
 public partial class UserPrivacy_Settings
 {
     [Key]
@@ -18,14 +17,9 @@ public partial class UserPrivacy_Settings
     public string gordon_id { get; set; }
 
     [Key]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Field { get; set; }
+    public int Field { get; set; }
 
-    [Required]
-    [StringLength(50)]
-    [Unicode(false)]
-    public string Visibility { get; set; }
+    public int Visibility { get; set; }
 
     [ForeignKey("Field")]
     [InverseProperty("UserPrivacy_Settings")]

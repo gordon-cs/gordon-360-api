@@ -892,7 +892,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<UserPrivacy_Fields>(entity =>
         {
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            entity.HasKey(e => e.ID).HasName("PK_UserPrivacy_Fields_1");
         });
 
         modelBuilder.Entity<UserPrivacy_Settings>(entity =>
@@ -908,7 +908,7 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<UserPrivacy_Visibility_Groups>(entity =>
         {
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
+            entity.HasKey(e => e.ID).HasName("PK_UserPrivacy_Visibility_Groups_1");
         });
         
         modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");
