@@ -8,7 +8,6 @@ namespace Gordon360.Models.ViewModels
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public bool IsEligible { get; set; }
-        public bool IsClearedToRegister { get; set; }
         public bool HasHolds { get; set; }
     }
 }
