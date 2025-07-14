@@ -95,14 +95,10 @@ public class AccountService(CCTContext context) : IAccountService
     /// profile information for students, and false otherwise.</returns>
     public bool CanISeeStudents(IEnumerable<AuthGroup> viewerGroups)
     {
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
-            viewerGroups.Contains(AuthGroup.Police) ||
-            viewerGroups.Contains(AuthGroup.FacStaff) ||
-            viewerGroups.Contains(AuthGroup.Student))
-        {
-            return true;
-        }
-        return false;
+        return viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+               viewerGroups.Contains(AuthGroup.Police) ||
+               viewerGroups.Contains(AuthGroup.FacStaff) ||
+               viewerGroups.Contains(AuthGroup.Student);
     }
 
     /// <summary>Indicates whether a user making a request is authorized to see
@@ -230,7 +226,7 @@ public class AccountService(CCTContext context) : IAccountService
         }
         else if (CanISeeFacstaff(viewerGroups))
         {
-            return (facstaff == null) ? null : (PublicFacultyStaffProfileViewModel)facstaff;
+            return (facstaff == null) ? null : (FacultyStaffProfileViewModel)facstaff;
         }
         return null;
     }
@@ -254,7 +250,7 @@ public class AccountService(CCTContext context) : IAccountService
         }
         else if (CanISeeAlumni(viewerGroups))
         {
-            return (alumni == null) ? null : (PublicAlumniProfileViewModel)alumni;
+            return (alumni == null) ? null : (AlumniProfileViewModel)alumni;
         }
         return null;
     }
