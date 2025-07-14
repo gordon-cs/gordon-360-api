@@ -685,10 +685,10 @@ cd path\to\your\repo # Replace with your actual repo path
 //if you are on virtual machine:
 cd C:\Users\User.Name(replace with your username)\Source\Repos\gordon-cs\gordon-360-api>
 
-# 2. Create the pre-commit hook file
+# 2. Find your .git/hooks/pre-commit file locally or Create the pre-commit hook file through terminal
 New-Item -ItemType File -Path .git/hooks/pre-commit 
 
-# 3. Add script to run tests before each commit
+# 3. Add script to your pre-commit file in order run tests before each commit
 #!/bin/sh
 echo "Running build before commit..."
 
