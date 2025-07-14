@@ -689,19 +689,29 @@ cd C:\Users\User.Name(replace with your username)\Source\Repos\gordon-cs\gordon-
 New-Item -ItemType File -Path .git/hooks/pre-commit 
 
 # 3. Add script to run tests before each commit
-@"
 #!/bin/sh
-echo "Running unit tests before commit..."
+echo "Running build before commit..."
 
-dotnet test --no-build --verbosity quiet
+dotnet build --no-restore --verbosity quiet
+BUILD_EXIT_CODE=$?
 
-if [ $? -ne 0 ]; then
-  echo "Unit tests failed. Commit aborted."
+if [ $BUILD_EXIT_CODE -ne 0 ]; then
+  echo " Build failed. Commit aborted."
+  exit 1
+fi
+
+echo "Running tests before commit..."
+
+dotnet test gordon360.Tests/gordon360.Tests.csproj --no-build --verbosity quiet
+TEST_EXIT_CODE=$?
+
+if [ $TEST_EXIT_CODE -ne 0 ]; then
+  echo " Tests failed. Commit aborted."
   exit 1
 else
-  echo "All tests passed. Proceeding with commit."
+  echo " Build and tests passed. Proceeding with commit."
 fi
-"@ | Set-Content .git/hooks/pre-commit
+
 ```
 
 > ⚠️ This only runs locally on your machine. Others won't get it unless shared via tools like Husky.
