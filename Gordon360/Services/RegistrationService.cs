@@ -70,8 +70,7 @@ namespace Gordon360.Services
                 StartTime = record.StartDate ?? DateTime.MinValue,
                 EndTime = record.EndDate ?? DateTime.MinValue,
                 IsEligible = isEligible,
-                IsClearedToRegister = !hasBlockingHolds,
-                HasHolds = hasBlockingHolds // Only report holds that block registration
+                HasHolds = hasBlockingHolds
             };
 
         }
