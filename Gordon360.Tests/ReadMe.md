@@ -680,13 +680,14 @@ You can add a **pre-commit Git hook** that runs your unit tests before any commi
 
 
 1️⃣ Navigate to your repo root
+```bash
 
 cd path/to/your/repo
 
 Example (on Windows Virtual Machine):
 
 C:\Users\Your__UserName\Source\Repos\gordon-cs\gordon-360-api
-
+```
 
 2️⃣ Open .git/hooks/pre-commit 
 
