@@ -676,19 +676,27 @@ After committing and pushing this file, GitHub will automatically run your tests
 
 You can add a **pre-commit Git hook** that runs your unit tests before any commit is finalized.
 
-#### 🛠 Setup Instructions (PowerShell for Windows)
+#### 🛠 Setup Pre-commit Hook (Manual — Recommended)
 
-```powershell
-# 1. Navigate to your repo root
-cd path\to\your\repo # Replace with your actual repo path
 
-//if you are on virtual machine:
-cd C:\Users\User.Name(replace with your username)\Source\Repos\gordon-cs\gordon-360-api>
+1️⃣ Navigate to your repo root
 
-# 2. Find your .git/hooks/pre-commit file locally or Create the pre-commit hook file through terminal
-New-Item -ItemType File -Path .git/hooks/pre-commit 
+cd path/to/your/repo
 
-# 3. Add script to your pre-commit file in order run tests before each commit
+Example (on Windows Virtual Machine):
+
+C:\Users\Your__UserName\Source\Repos\gordon-cs\gordon-360-api
+
+
+2️⃣ Open .git/hooks/pre-commit 
+
+    If the file does not exist, create a new file named pre-commit in .git/hooks/.
+
+
+
+3️⃣ Copy and paste the following script into pre-commit file:
+```bash
+
 #!/bin/sh
 echo "Running build before commit..."
 
