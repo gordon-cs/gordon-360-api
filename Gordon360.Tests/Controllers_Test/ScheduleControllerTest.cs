@@ -1,16 +1,3 @@
-using Gordon360.Controllers;
-using Gordon360.Models.ViewModels;
-using Gordon360.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Xunit;
-
 namespace Gordon360.Tests.Controllers_Test;
 
 public class ScheduleControllerTest
