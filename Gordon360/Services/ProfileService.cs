@@ -336,60 +336,61 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         // are set by HR or the student matriciulation process.  These settings will be used
         // for 360 until the user chooses privacy settings in their profile.
 
-        foreach (UserPrivacy_Fields f in  context.UserPrivacy_Fields) //fields)
+        foreach (int fieldID in context.UserPrivacy_Fields.Select(s => s.ID))
         {
             // Determine the visibility for the current privacy field
-            var visibility = privacy.FirstOrDefault(x => x.Field == f.Field)?.Visibility;
-            if (visibility is null)
+            //var privacy.Where(f => f.Field == )
+            var visibilityID = privacy.Where(x => x.Field == fieldID).FirstOrDefault()?.Visibility;
+            if (visibilityID is null)
             {
                 if (profileIsStudent)
                 {
-                    visibility = ((restricted_profile.KeepPrivate == "Y" || restricted_profile.KeepPrivate == "P")
-                                    || (f.Field == "MobilePhone" && restricted_profile.IsMobilePhonePrivate))
-                        ? "Private"
-                        : "Public";
+                    visibilityID = ((restricted_profile.KeepPrivate == "Y" || restricted_profile.KeepPrivate == "P")
+                                    || (fieldID == UserPrivacyViewModel.MobilePhoneID && restricted_profile.IsMobilePhonePrivate))
+                        ? UserPrivacyViewModel.Private_GroupID
+                        : UserPrivacyViewModel.Public_GroupID;
                 }
                 else if (profileIsFacStaff)
                 {
-                    visibility = restricted_profile.KeepPrivate == "1"
-                        ? "Private"
-                        : "Public";
+                    visibilityID = restricted_profile.KeepPrivate == "1"
+                        ? UserPrivacyViewModel.Private_GroupID
+                        : UserPrivacyViewModel.Public_GroupID;
                 }
                 else if (profileIsAlumni)
                 {
-                    visibility = (restricted_profile.ShareName == "N" 
+                    visibilityID = (restricted_profile.ShareName == "N" 
                                     || restricted_profile.ShareAddress == "N")
-                        ? "Private"
-                        : "Public";
+                        ? UserPrivacyViewModel.Private_GroupID
+                        : UserPrivacyViewModel.Public_GroupID;
                 }
             }
 
             // Enforce the visibility for the current privacy field
-            if ((viewerIsSiteAdmin || viewerIsPolice) && visibility != "Public")
+            if ((viewerIsSiteAdmin || viewerIsPolice) && visibilityID != UserPrivacyViewModel.Public_GroupID)
             {
-                MarkAsPrivate(restricted_profile, f.Field);
+                MarkAsPrivate(restricted_profile, fieldID);
             }
             else if (viewerIsFacStaff)
             {
                 if (profileIsFacStaff)
                 {
-                    if (visibility == "Private")
+                    if (visibilityID == UserPrivacyViewModel.Private_GroupID)
                     {
-                        MakePrivate(restricted_profile, f.Field);
+                        MakePrivate(restricted_profile, fieldID);
                     }
-                    else if (visibility == "FacStaff")
+                    else if (visibilityID == UserPrivacyViewModel.FacStaff_GroupID)
                     {
-                        MarkAsPrivate(restricted_profile, f.Field);
+                        MarkAsPrivate(restricted_profile, fieldID);
                     }
                 }
-                else if ((profileIsStudent || profileIsAlumni) && visibility != "Public")
+                else if ((profileIsStudent || profileIsAlumni) && visibilityID != UserPrivacyViewModel.Public_GroupID)
                 {
-                    MarkAsPrivate(restricted_profile, f.Field);
+                    MarkAsPrivate(restricted_profile, fieldID);
                 }
             } 
-            else if ((viewerIsStudent || viewerIsAlumni) && visibility != "Public")
+            else if ((viewerIsStudent || viewerIsAlumni) && visibilityID != UserPrivacyViewModel.Public_GroupID)
             {
-                MakePrivate(restricted_profile, f.Field);
+                MakePrivate(restricted_profile, fieldID);
             }
         }
 
@@ -697,8 +698,8 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// Change a ProfileItem's privacy setting to true
     /// </summary>
     /// <param name="profile">Combined profile containing element to update</param>
-    /// <param name="field">The profile element to update</param>
-    private static void MarkAsPrivate(CombinedProfileViewModel profile, string field)
+    /// <param name="fieldID">The ID of the profile element of which to update IsPrivate</param>
+    private static void MarkAsPrivate(CombinedProfileViewModel profile, int fieldID)
     {
         // Profile element will be returned to UI, but should be marked as private
         // since the authenticated user is only seeing because they are authorized
@@ -706,7 +707,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         Type cpvm = new CombinedProfileViewModel().GetType();
         try
         {
-            PropertyInfo prop = cpvm.GetProperty(field);
+            PropertyInfo prop = cpvm.GetProperty(fieldID);
             ProfileItem<string> profile_item = (ProfileItem<string>) prop.GetValue(profile);
             if (profile_item != null)
             {
@@ -723,14 +724,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// Change a ProfileItem to be null (remove it from the profile)
     /// </summary>
     /// <param name="profile">Combined profile containing element to make null</param>
-    /// <param name="field">The profile element to make null</param>
-    private static void MakePrivate(CombinedProfileViewModel profile, string field)
+    /// <param name="fieldID">The ID of the profile element to make null</param>
+    private static void MakePrivate(CombinedProfileViewModel profile, int fieldID)
     {
         // remove profile element if it should not be sent to the UI
         try
         {
             Type cpvm = new CombinedProfileViewModel().GetType();
-            cpvm.GetProperty(field).SetValue(profile, null);
+            cpvm.GetProperty(fieldID).SetValue(profile, null);
         }
         catch (Exception e)
         {

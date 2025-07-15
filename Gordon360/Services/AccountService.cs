@@ -412,12 +412,24 @@ public class AccountService(CCTContext context) : IAccountService
         // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
         if (!string.IsNullOrEmpty(homeCity))
         {
+            var homeCityFieldId = context.UserPrivacy_Fields   
+                    .Where(f => f.Field == "HomeCity")
+                    .Select(f => f.ID)
+                    .FirstOrDefault();
+            var privateVisibilityId = context.UserPrivacy_Visibility_Groups
+                    .Where(v => v.Group == "Private")
+                    .Select(v => v.ID)
+                    .FirstOrDefault();
+            var facStaffVisibilityId = context.UserPrivacy_Visibility_Groups
+                    .Where(v => v.Group == "FacStaff")
+                    .Select(v => v.ID)
+                    .FirstOrDefault();
             var homePrivacy = authGroups.Contains(AuthGroup.FacStaff)
-                ? context.UserPrivacy_Settings.Where(a => (a.Field == "HomeCity" && a.Visibility != "Private"))
-                : context.UserPrivacy_Settings.Where(a => (a.Field == "HomeCity" && a.Visibility != "Private" && a.Visibility != "FacStaff"));
+                ? context.UserPrivacy_Settings.Where(a => (a.Field == homeCityFieldId && a.Visibility != privateVisibilityId))
+                : context.UserPrivacy_Settings.Where(a => (a.Field == homeCityFieldId && a.Visibility != privateVisibilityId && a.Visibility != facStaffVisibilityId));
             facstaff = facstaff.Join(homePrivacy,
                 user => user.ID, privs => privs.gordon_id,
-                (user, privs) => user //new { id = user.ID, visibility = privs.Visibility, }
+                (user, privs) => user
             );
             alumni = alumni.Where(a => a.ShareAddress != "N");
         }
