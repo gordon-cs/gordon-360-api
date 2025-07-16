@@ -11,12 +11,12 @@ namespace Gordon360.Models.ViewModels
     //   Currently a subset of Public, FacStaff, or Private
     public class UserPrivacyUpdateViewModel
     {
-        public UserPrivacyUpdateViewModel(IEnumerable<string> field, string group)
+        public UserPrivacyUpdateViewModel(IEnumerable<int> field, int group)
         {
             Field = field;
             VisibilityGroup = group;
         }
-        public IEnumerable<string> Field { get; set; }
-        public string VisibilityGroup { get; set; }
+        public IEnumerable<int> Field { get; set; }
+        public int VisibilityGroup { get; set; }
     }
 }

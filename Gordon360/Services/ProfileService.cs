@@ -365,10 +365,12 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 }
             }
 
+            var field = context.UserPrivacy_Fields.Where(s => s.ID == fieldID).FirstOrDefault()?.Field;
+
             // Enforce the visibility for the current privacy field
             if ((viewerIsSiteAdmin || viewerIsPolice) && visibilityID != UserPrivacyViewModel.Public_GroupID)
             {
-                MarkAsPrivate(restricted_profile, fieldID);
+                MarkAsPrivate(restricted_profile, field);
             }
             else if (viewerIsFacStaff)
             {
@@ -376,21 +378,21 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 {
                     if (visibilityID == UserPrivacyViewModel.Private_GroupID)
                     {
-                        MakePrivate(restricted_profile, fieldID);
+                        MakePrivate(restricted_profile, field);
                     }
                     else if (visibilityID == UserPrivacyViewModel.FacStaff_GroupID)
                     {
-                        MarkAsPrivate(restricted_profile, fieldID);
+                        MarkAsPrivate(restricted_profile, field);
                     }
                 }
                 else if ((profileIsStudent || profileIsAlumni) && visibilityID != UserPrivacyViewModel.Public_GroupID)
                 {
-                    MarkAsPrivate(restricted_profile, fieldID);
+                    MarkAsPrivate(restricted_profile, field);
                 }
             } 
             else if ((viewerIsStudent || viewerIsAlumni) && visibilityID != UserPrivacyViewModel.Public_GroupID)
             {
-                MakePrivate(restricted_profile, fieldID);
+                MakePrivate(restricted_profile, field);
             }
         }
 
@@ -420,7 +422,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel userPrivacy)
     {
         var account = accountService.GetAccountByUsername(username);
-        foreach (string field in userPrivacy.Field)
+        foreach (int field in userPrivacy.Field)
         {
             var user = context.UserPrivacy_Settings.FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == field);
             if (user is null)
@@ -699,7 +701,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="profile">Combined profile containing element to update</param>
     /// <param name="fieldID">The ID of the profile element of which to update IsPrivate</param>
-    private static void MarkAsPrivate(CombinedProfileViewModel profile, int fieldID)
+    private static void MarkAsPrivate(CombinedProfileViewModel profile, string field)
     {
         // Profile element will be returned to UI, but should be marked as private
         // since the authenticated user is only seeing because they are authorized
@@ -707,7 +709,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         Type cpvm = new CombinedProfileViewModel().GetType();
         try
         {
-            PropertyInfo prop = cpvm.GetProperty(fieldID);
+            PropertyInfo prop = cpvm.GetProperty(field);
             ProfileItem<string> profile_item = (ProfileItem<string>) prop.GetValue(profile);
             if (profile_item != null)
             {
@@ -725,13 +727,13 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="profile">Combined profile containing element to make null</param>
     /// <param name="fieldID">The ID of the profile element to make null</param>
-    private static void MakePrivate(CombinedProfileViewModel profile, int fieldID)
+    private static void MakePrivate(CombinedProfileViewModel profile, string field)
     {
         // remove profile element if it should not be sent to the UI
         try
         {
             Type cpvm = new CombinedProfileViewModel().GetType();
-            cpvm.GetProperty(fieldID).SetValue(profile, null);
+            cpvm.GetProperty(field).SetValue(profile, null);
         }
         catch (Exception e)
         {

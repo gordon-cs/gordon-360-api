@@ -897,7 +897,7 @@
             Only accessible by SiteAdmin.
             </summary>
         </member>
-        <member name="M:Gordon360.Controllers.MarketplaceController.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
+        <member name="M:Gordon360.Controllers.MarketplaceController.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
             <summary>
             Get all marketplace threads for admin view (one row per thread, including deleted/expired).
             Supports filtering, sorting, and pagination. Only accessible by SiteAdmin.
@@ -3169,7 +3169,7 @@
             Get filtered marketplace listings based on criteria.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.MarketplaceService.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
+        <member name="M:Gordon360.Services.MarketplaceService.GetAdminThreads(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.String,System.String,System.Boolean,System.Int32,System.Int32)">
             <summary>
             Get all marketplace threads for admin view (one row per thread, including deleted/expired).
             </summary>
@@ -3624,14 +3624,14 @@
             Change a ProfileItem's privacy setting to true
             </summary>
             <param name="profile">Combined profile containing element to update</param>
-            <param name="field">The profile element to update</param>
+            <param name="fieldID">The ID of the profile element of which to update IsPrivate</param>
         </member>
         <member name="M:Gordon360.Services.ProfileService.MakePrivate(Gordon360.Models.ViewModels.CombinedProfileViewModel,System.String)">
             <summary>
             Change a ProfileItem to be null (remove it from the profile)
             </summary>
             <param name="profile">Combined profile containing element to make null</param>
-            <param name="field">The profile element to make null</param>
+            <param name="fieldID">The ID of the profile element to make null</param>
         </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>
