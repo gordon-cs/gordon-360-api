@@ -68,6 +68,12 @@ public class NewsService(MyGordonContext context, CCTContext contextCCT, IWebHos
         return news;
     }
 
+    /// <summary>
+    /// Filters out categories that are not relevant for the student news feed.
+    /// Student News categories are set by fetching their respective ids from the databasase
+    /// in this instance, "2" and "3" are excluded. which relate to "Lost Items" and "Found Items"
+    /// NOTE: the categories are hardcoded here, but could be made more dynamic in the future
+    /// </summary>
     private static readonly int[] ExcludedCategoryIds = [2, 3];
     public IEnumerable<StudentNewsCategoryViewModel> GetNewsCategories()
     {
