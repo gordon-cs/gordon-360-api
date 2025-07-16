@@ -338,6 +338,8 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 
         foreach (int fieldID in context.UserPrivacy_Fields.Select(s => s.ID))
         {
+            var field = context.UserPrivacy_Fields.Where(s => s.ID == fieldID).FirstOrDefault()?.Field;
+
             // Determine the visibility for the current privacy field
             //var privacy.Where(f => f.Field == )
             var visibilityID = privacy.Where(x => x.Field == fieldID).FirstOrDefault()?.Visibility;
@@ -345,8 +347,12 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             {
                 if (profileIsStudent)
                 {
-                    visibilityID = ((restricted_profile.KeepPrivate == "Y" || restricted_profile.KeepPrivate == "P")
-                                    || (fieldID == UserPrivacyViewModel.MobilePhoneID && restricted_profile.IsMobilePhonePrivate))
+                    // honor "semi-private" code: student's home city, state, country and on-off campus status is private
+                    var addressPrivate = restricted_profile.KeepPrivate == "S"
+                                         && (fieldID == UserPrivacyViewModel.HomeCityID || fieldID == UserPrivacyViewModel.HomeStateID
+                                            || fieldID == UserPrivacyViewModel.HomeCountryID || fieldID == UserPrivacyViewModel.CountryID);
+                    var mobilePhonePrivate = restricted_profile.IsMobilePhonePrivate && fieldID == UserPrivacyViewModel.MobilePhoneID;
+                    visibilityID = mobilePhonePrivate || addressPrivate
                         ? UserPrivacyViewModel.Private_GroupID
                         : UserPrivacyViewModel.Public_GroupID;
                 }
@@ -364,8 +370,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                         : UserPrivacyViewModel.Public_GroupID;
                 }
             }
-
-            var field = context.UserPrivacy_Fields.Where(s => s.ID == fieldID).FirstOrDefault()?.Field;
 
             // Enforce the visibility for the current privacy field
             if ((viewerIsSiteAdmin || viewerIsPolice) && visibilityID != UserPrivacyViewModel.Public_GroupID)
@@ -394,6 +398,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             {
                 MakePrivate(restricted_profile, field);
             }
+        }
+
+        // Handle a legacy special case -- if a student has the semi-private flag then
+        // not only do we need to hide their address information (handled above), but
+        // also need to change an entry in their profile
+        if (restricted_profile.KeepPrivate == "S")
+        {
+            restricted_profile.OnOffCampus = "P";
         }
 
         return restricted_profile;
