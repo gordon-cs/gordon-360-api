@@ -676,32 +676,51 @@ After committing and pushing this file, GitHub will automatically run your tests
 
 You can add a **pre-commit Git hook** that runs your unit tests before any commit is finalized.
 
-#### 🛠 Setup Instructions (PowerShell for Windows)
+#### 🛠 Setup Pre-commit Hook (Manual — Recommended)
 
-```powershell
-# 1. Navigate to your repo root
-cd path\to\your\repo # Replace with your actual repo path
 
-//if you are on virtual machine:
-cd C:\Users\User.Name(replace with your username)\Source\Repos\gordon-cs\gordon-360-api>
+1️⃣ Navigate to your repo root
+```bash
 
-# 2. Create the pre-commit hook file
-New-Item -ItemType File -Path .git/hooks/pre-commit 
+cd path/to/your/repo
 
-# 3. Add script to run tests before each commit
-@"
+Example (on Windows Virtual Machine):
+
+C:\Users\Your__UserName\Source\Repos\gordon-cs\gordon-360-api
+```
+
+2️⃣ Open .git/hooks/pre-commit 
+
+    If the file does not exist, create a new file named pre-commit in .git/hooks/.
+
+
+
+3️⃣ Copy and paste the following script into pre-commit file:
+```bash
+
 #!/bin/sh
-echo "Running unit tests before commit..."
+echo "Running build before commit..."
 
-dotnet test --no-build --verbosity quiet
+dotnet build --no-restore --verbosity quiet
+BUILD_EXIT_CODE=$?
 
-if [ $? -ne 0 ]; then
-  echo "Unit tests failed. Commit aborted."
+if [ $BUILD_EXIT_CODE -ne 0 ]; then
+  echo " Build failed. Commit aborted."
+  exit 1
+fi
+
+echo "Running tests before commit..."
+
+dotnet test gordon360.Tests/gordon360.Tests.csproj --no-build --verbosity quiet
+TEST_EXIT_CODE=$?
+
+if [ $TEST_EXIT_CODE -ne 0 ]; then
+  echo " Tests failed. Commit aborted."
   exit 1
 else
-  echo "All tests passed. Proceeding with commit."
+  echo " Build and tests passed. Proceeding with commit."
 fi
-"@ | Set-Content .git/hooks/pre-commit
+
 ```
 
 > ⚠️ This only runs locally on your machine. Others won't get it unless shared via tools like Husky.
