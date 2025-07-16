@@ -426,22 +426,27 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel userPrivacy)
     {
         var account = accountService.GetAccountByUsername(username);
-        foreach (int field in userPrivacy.Field)
+        foreach (string field in userPrivacy.Field)
         {
-            var user = context.UserPrivacy_Settings.FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == field);
+            var fieldID = context.UserPrivacy_Fields.FirstOrDefault(f => f.Field == field).ID;
+            var groupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(v => v.Group == userPrivacy.VisibilityGroup).ID;
+            var user = context.UserPrivacy_Settings
+                .Include(up_s => up_s.FieldNavigation)
+                .Include(up_s => up_s.VisibilityNavigation)
+                .FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == fieldID);
             if (user is null)
             {
                 var privacy = new UserPrivacy_Settings
                 {
                     gordon_id = account.GordonID,
-                    Field = field,
-                    Visibility = userPrivacy.VisibilityGroup
+                    Field = fieldID,
+                    Visibility = groupID
                 };
                 await context.UserPrivacy_Settings.AddAsync(privacy);
             }
             else
             {
-                user.Visibility = userPrivacy.VisibilityGroup;
+                user.Visibility = groupID;
             }
         }
 
