@@ -30,11 +30,11 @@ namespace Gordon360.Models.ViewModels
         {
             return new UserPrivacyViewModel
             {
-                Field = up_s.Field,
-                VisibilityGroup = up_s.Visibility
+                Field = up_s.FieldNavigation.Field,
+                VisibilityGroup = up_s.VisibilityNavigation.Group
             };
         }
-        public int Field { get; set; }
-        public int VisibilityGroup { get; set; }
+        public string Field { get; set; }
+        public string VisibilityGroup { get; set; }
     }
 }

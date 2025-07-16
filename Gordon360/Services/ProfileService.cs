@@ -409,7 +409,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         var account = accountService.GetAccountByUsername(username);
 
         // select all privacy settings
-        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID).Select(up_s => (UserPrivacyViewModel)up_s);
+        var privacy = context.UserPrivacy_Settings
+            .Include(up_s => up_s.VisibilityNavigation)
+            .Include(up_s => up_s.FieldNavigation)
+            .Where(up_s => up_s.gordon_id == account.GordonID)
+            .Select(up_s => (UserPrivacyViewModel)up_s);
 
         return privacy;
     }
@@ -432,7 +436,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                     gordon_id = account.GordonID,
                     Field = field,
                     Visibility = userPrivacy.VisibilityGroup
-                }; ;
+                };
                 await context.UserPrivacy_Settings.AddAsync(privacy);
             }
             else
