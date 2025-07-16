@@ -98,6 +98,12 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<InvolvementOffering> InvolvementOffering { get; set; }
 
+    public virtual DbSet<ItemCategory> ItemCategory { get; set; }
+
+    public virtual DbSet<ItemCondition> ItemCondition { get; set; }
+
+    public virtual DbSet<ItemStatus> ItemStatus { get; set; }
+
     public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
 
     public virtual DbSet<Mailboxes> Mailboxes { get; set; }
@@ -139,6 +145,14 @@ public partial class CCTContext : DbContext
     public virtual DbSet<ParticipantTeam> ParticipantTeam { get; set; }
 
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
+
+    public virtual DbSet<PostImage> PostImage { get; set; }
+
+    public virtual DbSet<PostedItem> PostedItem { get; set; }
+
+    public virtual DbSet<Poster> Poster { get; set; }
+
+    public virtual DbSet<PosterStatus> PosterStatus { get; set; }
 
     public virtual DbSet<PrivType> PrivType { get; set; }
 
@@ -205,6 +219,8 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Unassigned_Rooms> Unassigned_Rooms { get; set; }
 
     public virtual DbSet<UserCourses> UserCourses { get; set; }
+
+    public virtual DbSet<YearTermTable> YearTermTable { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -412,12 +428,9 @@ public partial class CCTContext : DbContext
 
         modelBuilder.Entity<Graduation>(entity =>
         {
-            entity.HasNoKey(); // Graduation is keyless
-            entity.ToView("Graduation", "dbo"); // Map to the correct database view or table
-            entity.Property(e => e.ID_NUM).HasColumnName("ID_NUM");
-            entity.Property(e => e.WHEN_GRAD).HasColumnName("WHEN_GRAD").HasMaxLength(4000).IsUnicode(false);
-            entity.Property(e => e.HAS_GRADUATED).HasColumnName("HAS_GRADUATED").HasMaxLength(1).IsUnicode(false);
-            entity.Property(e => e.GRAD_FLAG).HasColumnName("GRAD_FLAG").HasMaxLength(3).IsUnicode(false);
+            entity.ToView("Graduation", "dbo");
+
+            entity.Property(e => e.GRAD_FLAG).IsFixedLength();
         });
 
         modelBuilder.Entity<GuestUsers>(entity =>
@@ -657,6 +670,30 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
+        modelBuilder.Entity<PostImage>(entity =>
+        {
+            entity.HasOne(d => d.PostedItem).WithMany(p => p.PostImage)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PostImage_PostedItem");
+        });
+
+        modelBuilder.Entity<PostedItem>(entity =>
+        {
+            entity.Property(e => e.PostedAt).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.PostedItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PostedItem_ItemCategory");
+
+            entity.HasOne(d => d.Condition).WithMany(p => p.PostedItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PostedItem_ItemCondition");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.PostedItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PostedItem_ItemStatus");
+        });
+
         modelBuilder.Entity<RA_Assigned_Ranges_View>(entity =>
         {
             entity.ToView("RA_Assigned_Ranges_View", "Housing");
@@ -706,6 +743,19 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.Record_ID).HasName("PK__RD_On_Ca__603A0C605596CACA");
 
             entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
+        });
+
+        modelBuilder.Entity<Poster>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK_Posters");
+
+            entity.Property(e => e.ACT_CDE).IsFixedLength();
+
+            entity.HasOne(d => d.ACT_CDENavigation).WithMany(p => p.Poster).HasConstraintName("FK_Posters_ACT_INFO");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.Poster)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Posters_PosterStatus");
         });
 
         modelBuilder.Entity<REQUEST>(entity =>
