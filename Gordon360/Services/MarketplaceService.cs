@@ -26,38 +26,35 @@ namespace Gordon360.Services
         /// </summary>
         public IEnumerable<MarketplaceListingViewModel> GetAllListings()
         {
-            var listings = context.PostedItem
+            var items = context.PostedItem
                 .Include(x => x.Category)
                 .Include(x => x.Condition)
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
                 .Where(item => item.StatusId != 3)
                 .OrderByDescending(item => item.PostedAt)
-                .Join(
-                    context.ACCOUNT,
-                    item => item.PostedById.ToString(),
-                    acc => acc.gordon_id,
-                    (item, acc) => new { item, acc }
-                )
-                .Select(x => new MarketplaceListingViewModel
-                {
-                    Id = x.item.Id,
-                    PostedAt = x.item.PostedAt,
-                    Name = x.item.Name,
-                    Price = x.item.Price,
-                    CategoryId = x.item.CategoryId,
-                    CategoryName = x.item.Category.CategoryName,
-                    Detail = x.item.Detail,
-                    ConditionId = x.item.ConditionId,
-                    ConditionName = x.item.Condition.ConditionName,
-                    StatusId = x.item.StatusId,
-                    StatusName = x.item.Status.StatusName,
-                    ImagePaths = x.item.PostImage.Select(img => img.ImagePath).ToList(),
-                    PosterUsername = x.acc != null ? x.acc.AD_Username : null
-                })
-                .ToList();
+                .ToList(); // Materialize to memory
 
-            return listings;
+            var accountDict = context.ACCOUNT
+                .Where(a => items.Select(i => i.PostedById.ToString()).Distinct().Contains(a.gordon_id))
+                .ToDictionary(a => a.gordon_id, a => a.AD_Username);
+
+            return items.Select(item => new MarketplaceListingViewModel
+            {
+                Id = item.Id,
+                PostedAt = item.PostedAt,
+                Name = item.Name,
+                Price = item.Price,
+                CategoryId = item.CategoryId,
+                CategoryName = item.Category?.CategoryName,
+                Detail = item.Detail,
+                ConditionId = item.ConditionId,
+                ConditionName = item.Condition?.ConditionName,
+                StatusId = item.StatusId,
+                StatusName = item.Status?.StatusName,
+                ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
+                PosterUsername = accountDict.TryGetValue(item.PostedById.ToString(), out var username) ? username : null
+            }).ToList();
         }
 
         public IEnumerable<MarketplaceListingViewModel> GetUserListings(string username)
@@ -67,38 +64,35 @@ namespace Gordon360.Services
 
             int userId = int.Parse(account.GordonID);
 
-            var listings = context.PostedItem
+            var items = context.PostedItem
                 .Include(x => x.Category)
                 .Include(x => x.Condition)
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
                 .Where(item => item.PostedById == userId && item.StatusId != 3)
                 .OrderByDescending(item => item.PostedAt)
-                .Join(
-                    context.ACCOUNT,
-                    item => item.PostedById.ToString(),
-                    acc => acc.gordon_id,
-                    (item, acc) => new { item, acc }
-                )
-                .Select(x => new MarketplaceListingViewModel
-                {
-                    Id = x.item.Id,
-                    PostedAt = x.item.PostedAt,
-                    Name = x.item.Name,
-                    Price = x.item.Price,
-                    CategoryId = x.item.CategoryId,
-                    CategoryName = x.item.Category.CategoryName,
-                    Detail = x.item.Detail,
-                    ConditionId = x.item.ConditionId,
-                    ConditionName = x.item.Condition.ConditionName,
-                    StatusId = x.item.StatusId,
-                    StatusName = x.item.Status.StatusName,
-                    ImagePaths = x.item.PostImage.Select(img => img.ImagePath).ToList(),
-                    PosterUsername = x.acc != null ? x.acc.AD_Username : null
-                })
                 .ToList();
 
-            return listings;
+            var accountDict = context.ACCOUNT
+                .Where(a => items.Select(i => i.PostedById.ToString()).Distinct().Contains(a.gordon_id))
+                .ToDictionary(a => a.gordon_id, a => a.AD_Username);
+
+            return items.Select(item => new MarketplaceListingViewModel
+            {
+                Id = item.Id,
+                PostedAt = item.PostedAt,
+                Name = item.Name,
+                Price = item.Price,
+                CategoryId = item.CategoryId,
+                CategoryName = item.Category?.CategoryName,
+                Detail = item.Detail,
+                ConditionId = item.ConditionId,
+                ConditionName = item.Condition?.ConditionName,
+                StatusId = item.StatusId,
+                StatusName = item.Status?.StatusName,
+                ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
+                PosterUsername = accountDict.TryGetValue(item.PostedById.ToString(), out var username) ? username : null
+            }).ToList();
         }
 
         /// <summary>
@@ -344,32 +338,28 @@ namespace Gordon360.Services
             // Pagination
             query = query.Skip((page - 1) * pageSize).Take(pageSize);
 
-            var listings = query
-                .Join(
-                    context.ACCOUNT,
-                    item => item.PostedById.ToString(),
-                    acc => acc.gordon_id,
-                    (item, acc) => new { item, acc }
-                )
-                .Select(x => new MarketplaceListingViewModel
-                {
-                    Id = x.item.Id,
-                    PostedAt = x.item.PostedAt,
-                    Name = x.item.Name,
-                    Price = x.item.Price,
-                    CategoryId = x.item.CategoryId,
-                    CategoryName = x.item.Category.CategoryName,
-                    Detail = x.item.Detail,
-                    ConditionId = x.item.ConditionId,
-                    ConditionName = x.item.Condition.ConditionName,
-                    StatusId = x.item.StatusId,
-                    StatusName = x.item.Status.StatusName,
-                    ImagePaths = x.item.PostImage.Select(img => img.ImagePath).ToList(),
-                    PosterUsername = x.acc != null ? x.acc.AD_Username : null
-                })
-                .ToList();
+            var items = query.ToList();
 
-            return listings;
+            var accountDict = context.ACCOUNT
+                .Where(a => items.Select(i => i.PostedById.ToString()).Distinct().Contains(a.gordon_id))
+                .ToDictionary(a => a.gordon_id, a => a.AD_Username);
+
+            return items.Select(item => new MarketplaceListingViewModel
+            {
+                Id = item.Id,
+                PostedAt = item.PostedAt,
+                Name = item.Name,
+                Price = item.Price,
+                CategoryId = item.CategoryId,
+                CategoryName = item.Category?.CategoryName,
+                Detail = item.Detail,
+                ConditionId = item.ConditionId,
+                ConditionName = item.Condition?.ConditionName,
+                StatusId = item.StatusId,
+                StatusName = item.Status?.StatusName,
+                ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
+                PosterUsername = accountDict.TryGetValue(item.PostedById.ToString(), out var username) ? username : null
+            }).ToList();
         }
 
 
@@ -434,37 +424,38 @@ namespace Gordon360.Services
                 query = query.Where(x => x.Name.Contains(search) || x.Detail.Contains(search));
 
             // Group by thread (OriginalPostId or Id if null), select latest version per thread
-            var threads = query
-                .AsEnumerable()
+            var threadList = query
+                .ToList()
                 .GroupBy(x => x.OriginalPostId ?? x.Id)
-                .Select(g => g.OrderByDescending(x => x.Id).First());
+                .Select(g => g.OrderByDescending(x => x.Id).First())
+                .ToList();
 
             // Sorting
             switch (sortBy?.ToLower())
             {
                 case "price":
-                    threads = desc ? threads.OrderByDescending(x => x.Price) : threads.OrderBy(x => x.Price);
+                    threadList = desc ? threadList.OrderByDescending(x => x.Price).ToList() : threadList.OrderBy(x => x.Price).ToList();
                     break;
                 case "date":
-                    threads = desc ? threads.OrderByDescending(x => x.PostedAt) : threads.OrderBy(x => x.PostedAt);
+                    threadList = desc ? threadList.OrderByDescending(x => x.PostedAt).ToList() : threadList.OrderBy(x => x.PostedAt).ToList();
                     break;
                 case "title":
-                    threads = desc ? threads.OrderByDescending(x => x.Name) : threads.OrderBy(x => x.Name);
+                    threadList = desc ? threadList.OrderByDescending(x => x.Name).ToList() : threadList.OrderBy(x => x.Name).ToList();
                     break;
                 default:
-                    threads = threads.OrderByDescending(x => x.PostedAt); // Default: newest first
+                    threadList = threadList.OrderByDescending(x => x.PostedAt).ToList(); // Default: newest first
                     break;
             }
 
             // Pagination
-            threads = threads.Skip((page - 1) * pageSize).Take(pageSize);
+            threadList = threadList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            var userIds = threads.Select(x => x.PostedById.ToString()).Distinct().ToList();
+            var userIds = threadList.Select(x => x.PostedById.ToString()).Distinct().ToList();
             var accountDict = context.ACCOUNT
                 .Where(a => userIds.Contains(a.gordon_id))
                 .ToDictionary(a => a.gordon_id, a => a.AD_Username);
 
-            return threads.Select(item => new MarketplaceAdminViewModel
+            return threadList.Select(item => new MarketplaceAdminViewModel
             {
                 Id = item.Id,
                 PostedAt = item.PostedAt,
@@ -488,38 +479,35 @@ namespace Gordon360.Services
         /// </summary>
         public IEnumerable<MarketplaceListingViewModel> GetThreadEditHistory(int threadId)
         {
-            var history = context.PostedItem
+            var items = context.PostedItem
                 .Include(x => x.Category)
                 .Include(x => x.Condition)
                 .Include(x => x.Status)
                 .Include(x => x.PostImage)
                 .Where(x => x.OriginalPostId == threadId || x.Id == threadId)
                 .OrderByDescending(item => item.Id)
-                .Join(
-                    context.ACCOUNT,
-                    item => item.PostedById.ToString(),
-                    acc => acc.gordon_id,
-                    (item, acc) => new { item, acc }
-                )
-                .Select(x => new MarketplaceListingViewModel
-                {
-                    Id = x.item.Id,
-                    PostedAt = x.item.PostedAt,
-                    Name = x.item.Name,
-                    Price = x.item.Price,
-                    CategoryId = x.item.CategoryId,
-                    CategoryName = x.item.Category.CategoryName,
-                    Detail = x.item.Detail,
-                    ConditionId = x.item.ConditionId,
-                    ConditionName = x.item.Condition.ConditionName,
-                    StatusId = x.item.StatusId,
-                    StatusName = x.item.Status.StatusName,
-                    ImagePaths = x.item.PostImage.Select(img => img.ImagePath).ToList(),
-                    PosterUsername = x.acc != null ? x.acc.AD_Username : null
-                })
                 .ToList();
 
-            return history;
+            var accountDict = context.ACCOUNT
+                .Where(a => items.Select(i => i.PostedById.ToString()).Distinct().Contains(a.gordon_id))
+                .ToDictionary(a => a.gordon_id, a => a.AD_Username);
+
+            return items.Select(item => new MarketplaceListingViewModel
+            {
+                Id = item.Id,
+                PostedAt = item.PostedAt,
+                Name = item.Name,
+                Price = item.Price,
+                CategoryId = item.CategoryId,
+                CategoryName = item.Category?.CategoryName,
+                Detail = item.Detail,
+                ConditionId = item.ConditionId,
+                ConditionName = item.Condition?.ConditionName,
+                StatusId = item.StatusId,
+                StatusName = item.Status?.StatusName,
+                ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
+                PosterUsername = accountDict.TryGetValue(item.PostedById.ToString(), out var username) ? username : null
+            }).ToList();
         }
 
 
