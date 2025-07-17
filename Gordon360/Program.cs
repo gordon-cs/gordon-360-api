@@ -99,7 +99,7 @@ try
     builder.Services.AddHostedService<PosterCleanupService>();
 
     builder.Services.AddScoped<ServerUtils, ServerUtils>();
-
+    builder.Services.AddScoped<RegistrationService>();
     builder.Services.AddMemoryCache();
     builder.Services.AddHttpClient<IEventService, EventService>(client =>
     {
