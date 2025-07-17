@@ -33,10 +33,10 @@ public class ScheduleController(IProfileService profileService,
         // Some users can see schedules of courses taken, as well as taught,
         // so check to see if this user can see all courses for this person.
         if ((AuthUtils.GetUsername(User).EqualsIgnoreCase(username)) ||
-            (accountService.CanISeeStudentSchedule(groups) &&
+            (AuthUtils.CanISeeStudentSchedule(groups) &&
                student != null &&
-               accountService.CanISeeThisStudent(groups, student)) ||
-            (accountService.CanISeeAlumniSchedule(groups) && alumni != null))
+               AuthUtils.CanISeeThisStudent(groups, student)) ||
+            (AuthUtils.CanISeeAlumniSchedule(groups) && alumni != null))
         {
             IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
             return Ok(result);
@@ -65,10 +65,10 @@ public class ScheduleController(IProfileService profileService,
         // Some users can see schedules of courses taken, as well as taught,
         // so check to see if this user can see all courses for this person.
         if ((AuthUtils.GetUsername(User).EqualsIgnoreCase(username)) ||
-            (accountService.CanISeeStudentSchedule(groups) &&
+            (AuthUtils.CanISeeStudentSchedule(groups) &&
                student != null &&
-               accountService.CanISeeThisStudent(groups, student)) ||
-            (accountService.CanISeeAlumniSchedule(groups) && alumni != null))
+               AuthUtils.CanISeeThisStudent(groups, student)) ||
+            (AuthUtils.CanISeeAlumniSchedule(groups) && alumni != null))
         {
             IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesByTermAsync(username);
             return Ok(result);
@@ -89,6 +89,6 @@ public class ScheduleController(IProfileService profileService,
     public async Task<ActionResult<bool>> GetCanReadStudentSchedules()
     {
         var groups = AuthUtils.GetGroups(User);
-        return accountService.CanISeeStudentSchedule(groups);
+        return AuthUtils.CanISeeStudentSchedule(groups);
     }
 }
