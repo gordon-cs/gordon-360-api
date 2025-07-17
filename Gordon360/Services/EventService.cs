@@ -1,5 +1,6 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
+using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static_Classes;
 using Microsoft.Extensions.Caching.Memory;
@@ -10,7 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Gordon360.Models.CCT;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
@@ -21,9 +22,9 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service that allows for event control
 /// </summary>
-public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService) : IEventService
+public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService, IScheduleService scheduleService, ISessionService sessionService, HttpClient httpClient, IAcademicTermService academicTermService) : IEventService
 {
-
+    
     /**
      * URL to retrieve events from the 25Live API. 
      * event_type_id parameter fetches only events of type 14 (Calendar Announcement) and 57 (Event).
@@ -32,8 +33,14 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
      * state parameter fetches only confirmed events
      */
     private static readonly string AllEventsURL = "https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=14+57&state=2&end_after=" + GetFirstEventDate() + "&scope=extended";
-    
+
+
+
+    private readonly HttpClient _httpClient = httpClient;
     private IEnumerable<EventViewModel> Events => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.Events) ?? [];
+    private IEnumerable<EventViewModel> FinalExams => cache.Get<IEnumerable<EventViewModel>>(CacheKeys.FinalExams) ?? [];
+
+    private const string DateFormat = "yyyyMMdd";
 
     /// <summary>
     /// Access the memory stream created by the cached task and parse it into events
@@ -63,6 +70,65 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         return Events.Where(e => e.HasCLAWCredit).OrderBy(e => e.StartDate);
     }
 
+    public async Task<IEnumerable<EventViewModel>> GetFinalExamsForUserByTermAsync(string username, DateTime termStart, DateTime termEnd, string yearCode, string termCode)
+    {
+        var finalExams = await GetFinalExamsForTermAsync(termStart, termEnd, yearCode, termCode);
+
+        var coursesByTerm = await scheduleService.GetAllCoursesByTermAsync(username);
+        var matchingTerms = coursesByTerm
+            .Where(t => t.YearCode == yearCode && t.TermCode == termCode)
+            .ToList();
+
+        var userCourseCodes = matchingTerms
+            .SelectMany(t => t.AllCourses)
+            .Select(c => NormalizeSpaces(c.CRS_CDE))
+            .Distinct()
+            .ToList();
+
+        var userFinalExams = finalExams
+            .Where(exam =>
+                exam.Event_Name != null &&
+                userCourseCodes.Any(code =>
+                    NormalizeSpaces(
+                        exam.Event_Name.Replace("EXAM:", "", StringComparison.OrdinalIgnoreCase))
+                        .StartsWith(code, StringComparison.OrdinalIgnoreCase)
+                )
+            )
+            .OrderBy(e => e.StartDate);
+
+        return userFinalExams;
+    }
+
+    public async Task<IEnumerable<EventViewModel>> GetFinalExamsForInstructorByTermAsync(string username, DateTime termStart, DateTime termEnd, string yearCode, string termCode)
+    {
+        var finalExams = await GetFinalExamsForTermAsync(termStart, termEnd, yearCode, termCode);
+
+        var instructorCoursesByTerm = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
+        var matchingTerms = instructorCoursesByTerm
+            .Where(t => t.YearCode == yearCode && t.TermCode == termCode)
+            .ToList();
+
+        var instructorCourseCodes = matchingTerms
+            .SelectMany(t => t.AllCourses)
+            .Select(c => NormalizeSpaces(c.CRS_CDE))
+            .Distinct()
+            .ToList();
+
+        var instructorFinalExams = finalExams
+            .Where(exam =>
+                exam.Event_Name != null &&
+                instructorCourseCodes.Any(code =>
+                    NormalizeSpaces(
+                        exam.Event_Name.Replace("EXAM:", "", StringComparison.OrdinalIgnoreCase))
+                        .StartsWith(code, StringComparison.OrdinalIgnoreCase)
+                )
+            )
+            .OrderBy(e => e.StartDate);
+
+        return instructorFinalExams;
+    }
+
+
     /// <summary>
     /// Returns all attended events for a student in a specific term
     /// </summary>
@@ -91,7 +157,7 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
         return attendedEvents.OrderBy(e => e.StartDate);
     }
 
-    public static async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
+    public async Task<IEnumerable<EventViewModel>> FetchEventsAsync()
     {
         using var client = new HttpClient();
         client.Timeout = TimeSpan.FromSeconds(200);
@@ -115,7 +181,33 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+        else
+        {
+            throw new ResourceNotFoundException();
+        }
+    }
 
+    private async Task<IEnumerable<EventViewModel>> FetchFinalExamsAsync(string finalExamsUrl)
+    {
+        var response = await _httpClient.GetAsync(finalExamsUrl);
+        if (response != null && response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var eventsXML = XDocument.Parse(content);
+                return eventsXML
+                    .Descendants(EventViewModel.r25 + "event")
+                    .SelectMany(
+                        elem => elem.Element(EventViewModel.r25 + "profile")?.Descendants(EventViewModel.r25 + "reservation"),
+                        (e, o) => new EventViewModel(e, o)
+                    );
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
@@ -148,4 +240,34 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
 
         return firstEventDate.ToString("yyyyMMdd");
     }
+    /// <summary>
+    /// Get the input string and normalize it by removing extra spaces
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns>Removes extra spaces and join the input</returns>
+    private static string NormalizeSpaces(string input)
+    {
+        return string.Join(" ", input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    public async Task<IEnumerable<EventViewModel>> GetFinalExamsForTermAsync(DateTime termStart, DateTime termEnd, string yearCode, string termCode)
+    {
+        string formattedStart = termStart.ToString(DateFormat);
+        string formattedEnd = termEnd.ToString(DateFormat);
+
+        string url = $"https://25live.collegenet.com/25live/data/gordon/run/events.xml?/&event_type_id=55&state=2&start_before={formattedEnd}&end_after={formattedStart}&scope=extended";
+
+        string cacheKey = $"{CacheKeys.FinalExams}_{yearCode}{termCode}";
+
+        if (cache.TryGetValue(cacheKey, out IEnumerable<EventViewModel> cachedExams))
+        {
+            return cachedExams;
+        }
+
+        var finalExams = await FetchFinalExamsAsync(url);
+        cache.Set(cacheKey, finalExams);
+
+        return finalExams;
+    }
+
 }

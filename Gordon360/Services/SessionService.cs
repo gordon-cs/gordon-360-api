@@ -34,6 +34,13 @@ public class SessionService(CCTContext context) : ISessionService
         return context.CM_SESSION_MSTR.Where(s => DateTime.Now > s.SESS_BEGN_DTE).OrderByDescending(s => s.SESS_BEGN_DTE).First();
     }
 
+    public SessionViewModel GetCurrentSessionForFinalExams()
+    {
+        return context.CM_SESSION_MSTR.Where(s => DateTime.Now > s.SESS_BEGN_DTE &&
+                                          (s.YRTRM_CDE_2.EndsWith("SP") || s.YRTRM_CDE_2.EndsWith("FA")))
+                                      .OrderByDescending(s => s.SESS_BEGN_DTE).First();
+    }
+
     // Return the days left in the semester, and the total days in the current session
     public double[] GetDaysLeft()
     {
