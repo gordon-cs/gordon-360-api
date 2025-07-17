@@ -419,6 +419,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[Marketplace].[Post]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[RecIM].[ParticipantView]",
          "ObjectType": 3
       },

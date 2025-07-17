@@ -146,6 +146,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
 
+    public virtual DbSet<Post> Post { get; set; }
+
     public virtual DbSet<PostImage> PostImage { get; set; }
 
     public virtual DbSet<PostedItem> PostedItem { get; set; }
@@ -668,6 +670,11 @@ public partial class CCTContext : DbContext
 
             entity.Property(e => e.Hall).IsFixedLength();
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
+        });
+
+        modelBuilder.Entity<Post>(entity =>
+        {
+            entity.ToView("Post", "Marketplace");
         });
 
         modelBuilder.Entity<PostImage>(entity =>
