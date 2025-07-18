@@ -1164,7 +1164,7 @@
             <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(Gordon360.Models.ViewModels.OfficeLocationPatchViewModel)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(Gordon360.Models.ViewModels.OfficeLocationPatchViewModel,System.String)">
             <summary>
             Update office location (building description and room number)
             </summary>

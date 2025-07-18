@@ -445,9 +445,23 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpPut]
     [Route("office_location")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
+    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation, string? username = null)
     {
-        var username = AuthUtils.GetUsername(User);
+        var authenticatedUsername = AuthUtils.GetUsername(User);
+
+        if (!string.IsNullOrEmpty(username))
+        {
+            var groups = AuthUtils.GetGroups(User);
+            if (!groups.Contains(AuthGroup.OfficeAdmin))
+            {
+                return Forbid();
+            }
+        }
+        else
+        {
+            username = authenticatedUsername;
+        }
+
         var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingCode, officeLocation.RoomNumber);
         return Ok(result);
     }
