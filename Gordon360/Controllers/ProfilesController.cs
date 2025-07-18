@@ -454,7 +454,7 @@ public class ProfilesController(IProfileService profileService,
             var groups = AuthUtils.GetGroups(User);
             if (!groups.Contains(AuthGroup.OfficeAdmin))
             {
-                return Forbid("Only OfficeAdmin can update other users' office locations.");
+                return Forbid();
             }
         }
         else
