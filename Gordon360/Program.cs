@@ -106,7 +106,6 @@ try
         client.Timeout = TimeSpan.FromSeconds(200);
         client.DefaultRequestHeaders.Add("User-Agent", "Gordon360/1.0.0");
     });
-    builder.Services.AddHostedService<EventCacheRefreshService>();
 
     var app = builder.Build();
     
