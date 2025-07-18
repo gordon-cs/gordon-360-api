@@ -37,6 +37,11 @@
             <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
             <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
         </member>
+        <member name="M:Gordon360.Controllers.AcademicTermController.GetCurrentTermForFinalExams">
+            <summary>
+            Gets the most recent academic term that is either Spring or Fall
+            </summary>
+            <returns>The current term used to fetch final exams</returns>
         <member name="M:Gordon360.Controllers.Api.PostersController.GetPosters">
             <summary>
             Gets all posters that havent been deleted
@@ -1790,6 +1795,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Controllers.SessionsController.GetCurrentSessionForFinalExams">
+            <summary>
+            Gets the most recent academic session that is either Spring or Fall
+            </summary>
+            <returns>The current session used to fetch final exams</returns>
+        </member>
         <member name="M:Gordon360.Controllers.SessionsController.GetDaysLeftInSemester">
             <summary>
             Gets the days left in the current session
@@ -2449,7 +2460,7 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService)">
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,Gordon360.Services.ISessionService,System.Net.Http.HttpClient,Gordon360.Services.IAcademicTermService)">
             <summary>
             Service that allows for event control
             </summary>
@@ -2496,6 +2507,13 @@
             During the summer, this the middle of May (roughly the end of the spring term)
             </summary>
             <returns>The first date of events we care about, in 'yyyyMMdd' format (e.g. '20250815' for August 15th, 2025)</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.NormalizeSpaces(System.String)">
+            <summary>
+            Get the input string and normalize it by removing extra spaces
+            </summary>
+            <param name="input"></param>
+            <returns>Removes extra spaces and join the input</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>

@@ -93,15 +93,23 @@ try
     );
 
     builder.Services.Add360Services();
+  
     builder.Services.AddHostedService<EventCacheRefreshService>();
     builder.Services.AddHostedService<MarketplaceCleanupService>();
     builder.Services.AddHostedService<PosterCleanupService>();
-    builder.Services.AddScoped<ServerUtils, ServerUtils>();
 
+    builder.Services.AddScoped<ServerUtils, ServerUtils>();
+    builder.Services.AddScoped<RegistrationService>();
     builder.Services.AddMemoryCache();
+    builder.Services.AddHttpClient<IEventService, EventService>(client =>
+    {
+        client.Timeout = TimeSpan.FromSeconds(200);
+        client.DefaultRequestHeaders.Add("User-Agent", "Gordon360/1.0.0");
+    });
+    builder.Services.AddHostedService<EventCacheRefreshService>();
 
     var app = builder.Build();
-
+    
     // Configure the HTTP request pipeline.
 
     app.UseSwagger();

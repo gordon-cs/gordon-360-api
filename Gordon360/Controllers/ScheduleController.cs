@@ -1,4 +1,4 @@
-﻿using Gordon360.Authorization;
+using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Extensions.System;
 using Gordon360.Models.ViewModels;
@@ -50,9 +50,9 @@ public class ScheduleController(IProfileService profileService,
     }
 
     /// <summary>
-    ///  Gets all visible course objects for a user, for all visible terms
+    /// Gets all term-based course schedules for a user, filtered to only include officially published terms.
     /// </summary>
-    /// <returns>A IEnumerable of term objects as well as the schedules</returns>
+    /// <returns>A list of published term schedule objects</returns>
     [HttpGet]
     [Route("{username}/allcourses-by-term")]
     public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCoursesByTerm(string username)
@@ -78,6 +78,10 @@ public class ScheduleController(IProfileService profileService,
             IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
             return Ok(result);
         }
+        var publishedResult = result
+            .Where(r => string.Equals(r.ShowOnWeb, "B", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        return Ok(publishedResult);
     }
 
     /// <summary>

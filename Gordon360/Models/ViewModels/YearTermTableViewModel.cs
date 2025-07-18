@@ -10,6 +10,7 @@ namespace Gordon360.Models.ViewModels
         public DateTime? BeginDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string Description { get; set; }
+        public string ShowOnWeb { get; set; }
 
         public YearTermTableViewModel(YearTermTable entity)
         {
@@ -18,7 +19,7 @@ namespace Gordon360.Models.ViewModels
             BeginDate = entity.TRM_BEGIN_DTE;
             EndDate = entity.TRM_END_DTE;
             Description = entity.YR_TRM_DESC;
+            ShowOnWeb = entity.SHOW_ON_WEB;
         }
     }
 }
-

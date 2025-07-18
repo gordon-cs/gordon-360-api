@@ -9,6 +9,7 @@ public record CoursesByTermViewModel(
     string TermDescription,
     DateTime? TermBeginDate,
     DateTime? TermEndDate,
+    string ShowOnWeb,
     IEnumerable<UserCoursesViewModel> AllCourses)
 {
     public CoursesByTermViewModel(YearTermTableViewModel term, IEnumerable<UserCoursesViewModel> courses) : this(
@@ -17,6 +18,7 @@ public record CoursesByTermViewModel(
         TermDescription: term.Description,
         TermBeginDate: term.BeginDate,
         TermEndDate: term.EndDate,
+        ShowOnWeb: term.ShowOnWeb,
         AllCourses: courses)
     { }
 }

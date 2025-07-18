@@ -60,6 +60,10 @@ namespace Gordon360.Services
         IEnumerable<EventViewModel> GetAllEvents();
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();
+        Task<IEnumerable<EventViewModel>> GetFinalExamsForUserByTermAsync(string username, DateTime termStart, DateTime termEnd, string yearCode, string termCode);
+        Task<IEnumerable<EventViewModel>> GetFinalExamsForInstructorByTermAsync(string username, DateTime termStart, DateTime termEnd, string yearCode, string termCode);
+        Task<IEnumerable<EventViewModel>> FetchEventsAsync();
+        Task<IEnumerable<EventViewModel>> GetFinalExamsForTermAsync(DateTime termStart, DateTime termEnd, string yearCode, string termCode);
     }
 
     public interface IDiningService
@@ -155,6 +159,7 @@ namespace Gordon360.Services
     {
         SessionViewModel Get(string sessionCode);
         SessionViewModel GetCurrentSession();
+        SessionViewModel GetCurrentSessionForFinalExams();
         double[] GetDaysLeft();
         IEnumerable<SessionViewModel> GetAll();
     }
@@ -368,6 +373,7 @@ namespace Gordon360.Services
     {
         Task<YearTermTableViewModel?> GetCurrentTermAsync();
         Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
+        Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync();
         Task<DaysLeftViewModel> GetDaysLeftAsync();
     }
 
