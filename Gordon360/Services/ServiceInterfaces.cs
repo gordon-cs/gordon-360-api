@@ -345,7 +345,7 @@ namespace Gordon360.Services
     public interface IPosterService
     {
         IEnumerable<PosterViewModel> GetPosters();
-        IEnumerable<PosterViewModel> GetCurrentPosters();
+        IEnumerable<PosterViewModel> GetCurrentPosters(string username);
         IEnumerable<PosterViewModel> GetCurrentPostersByActivityCode(string activityCode);
         IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username);
         IEnumerable<string> GetPosterStatuses();
