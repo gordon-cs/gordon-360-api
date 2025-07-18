@@ -1,8 +1,7 @@
+using Gordon360.Models.CCT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
 
 
 namespace Gordon360.Models.ViewModels
@@ -21,7 +20,7 @@ namespace Gordon360.Models.ViewModels
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public List<string> ImagePaths { get; set; }
-        public string PosterUsername { get; set;  }
+        public string PosterUsername { get; set; }
 
         public static implicit operator MarketplaceListingViewModel(PostedItem item)
         {
@@ -39,6 +38,27 @@ namespace Gordon360.Models.ViewModels
                 StatusId = item.StatusId,
                 StatusName = item.Status?.StatusName,
                 ImagePaths = item.PostImage?.Select(img => img.ImagePath).ToList() ?? new List<string>(),
+            };
+        }
+
+
+        public static MarketplaceListingViewModel From(Post post)
+        {
+            return new MarketplaceListingViewModel
+            {
+                Id = post.Id,
+                PostedAt = post.PostedAt,
+                Name = post.Name,
+                Price = post.Price,
+                CategoryId = post.CategoryId,
+                CategoryName = post.CategoryName,
+                Detail = post.Detail,
+                ConditionId = post.ConditionId,
+                ConditionName = post.ConditionName,
+                StatusId = post.StatusId,
+                StatusName = post.StatusName,
+                ImagePaths = post.ImagePaths?.Split(";")?.ToList() ?? [],
+                PosterUsername = post.PostedByUsername
             };
         }
     }
