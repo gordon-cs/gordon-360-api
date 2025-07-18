@@ -37,11 +37,6 @@
             <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
             <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
         </member>
-        <member name="M:Gordon360.Controllers.AcademicTermController.GetCurrentTermForFinalExams">
-            <summary>
-            Gets the most recent academic term that is either Spring or Fall
-            </summary>
-            <returns>The current term used to fetch final exams</returns>
         <member name="M:Gordon360.Controllers.Api.PostersController.GetPosters">
             <summary>
             Gets all posters that havent been deleted
@@ -124,6 +119,12 @@
             </summary>
             <returns></returns>
              <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.AcademicTermController.GetCurrentTermForFinalExams">
+            <summary>
+            Gets the most recent academic term that is either Spring or Fall
+            </summary>
+            <returns>The current term used to fetch final exams</returns>
         </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
@@ -1163,7 +1164,7 @@
             <param name="value">phoneNumber</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(Gordon360.Models.ViewModels.OfficeLocationPatchViewModel)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeLocation(Gordon360.Models.ViewModels.OfficeLocationPatchViewModel,System.String)">
             <summary>
             Update office location (building description and room number)
             </summary>
@@ -1688,6 +1689,13 @@
             <param name="response"></param>
             <returns>The accepted TeamInviteViewModel</returns>
         </member>
+        <member name="M:Gordon360.Controllers.RegistrationController.GetRegistrationWindow">
+            <summary>
+            Retrieves the registration window data for the currently logged-in user.
+            Returns a 404 if registration info is not found (either missing account or date info).
+            </summary>
+            <returns>A RegistrationPeriodViewModel with eligibility and timing details</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -1754,9 +1762,9 @@
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTerm(System.String)">
             <summary>
-             Gets all term objects for a user
+            Gets all term-based course schedules for a user, filtered to only include officially published terms.
             </summary>
-            <returns>A IEnumerable of term objects as well as the schedules</returns>
+            <returns>A list of published term schedule objects</returns>
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
             <summary>
@@ -3269,6 +3277,14 @@
             <param name="newsID">The SNID (id of news item)</param>
             <returns>The news item</returns>
         </member>
+        <member name="F:Gordon360.Services.NewsService.ExcludedCategoryIds">
+            <summary>
+            Filters out categories that are not relevant for the student news feed.
+            Student News categories are set by fetching their respective ids from the databasase
+            in this instance, "2" and "3" are excluded. which relate to "Lost Items" and "Found Items"
+            NOTE: the categories are hardcoded here, but could be made more dynamic in the future
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.NewsService.GetNewsPersonalUnapprovedAsync(System.String)">
             <summary>
             Gets unapproved unexpired news submitted by user.
@@ -3540,6 +3556,16 @@
             with the context that surfaces need to be booked ahead of time on 25Live
             </summary>
             <returns>Matches created as well as number of teams in the next round</returns>
+        </member>
+        <member name="M:Gordon360.Services.RegistrationService.GetRegistrationWindowAsync(System.String)">
+            <summary>
+            Gets the registration window for a given user and evaluates their eligibility to register.
+            </summary>
+            <param name="username">The AD username of the student.</param>
+            <returns>
+            A RegistrationPeriodViewModel containing registration start/end dates and eligibility status.
+            Returns null if either the account or registration window is missing.
+            </returns>
         </member>
         <member name="T:Gordon360.Services.ScheduleService">
             <summary>
