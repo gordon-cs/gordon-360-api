@@ -1,4 +1,4 @@
-﻿using Gordon360.Authorization;
+using Gordon360.Authorization;
 using Gordon360.Enums;
 using Gordon360.Extensions.System;
 using Gordon360.Models.ViewModels;
@@ -40,9 +40,9 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     }
 
     /// <summary>
-    ///  Gets all term objects for a user — only includes published schedules
+    /// Gets all term-based course schedules for a user, filtered to only include officially published terms.
     /// </summary>
-    /// <returns>A IEnumerable of term objects with their schedules</returns>
+    /// <returns>A list of published term schedule objects</returns>
     [HttpGet]
     [Route("{username}/allcourses-by-term")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.STUDENT_SCHEDULE)]
@@ -61,9 +61,8 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
             result = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
         }
 
-        // Filter only published terms
         var publishedResult = result
-            .Where(r => r.ShowOnWeb?.Equals("Y", StringComparison.OrdinalIgnoreCase) == true)
+            .Where(r => string.Equals(r.ShowOnWeb, "B", StringComparison.OrdinalIgnoreCase))
             .ToList();
         return Ok(publishedResult);
     }
