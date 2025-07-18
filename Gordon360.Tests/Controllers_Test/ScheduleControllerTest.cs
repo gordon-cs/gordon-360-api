@@ -63,7 +63,7 @@ public class ScheduleControllerTest
     {
         var username = "jdoe";
         var courses = new List<UserCoursesViewModel> { GetSampleCourse() };
-        var term = new CoursesByTermViewModel("2024", "SP", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10), courses);
+        var term = new CoursesByTermViewModel("2024", "SP", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10),"B", courses);
         var terms = new List<CoursesByTermViewModel> { term };
         _mockScheduleService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
 
@@ -82,7 +82,7 @@ public class ScheduleControllerTest
     {
         var username = "facstaff";
         var courses = new List<UserCoursesViewModel> { GetSampleCourse() };
-        var term = new CoursesByTermViewModel("2024", "SP", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10), courses);
+        var term = new CoursesByTermViewModel("2024", "SP", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10),"B", courses);
         var terms = new List<CoursesByTermViewModel> { term };
         _mockScheduleService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
 

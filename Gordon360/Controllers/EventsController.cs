@@ -10,7 +10,6 @@ using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Linq;
 using Gordon360.Extensions.System;
 
