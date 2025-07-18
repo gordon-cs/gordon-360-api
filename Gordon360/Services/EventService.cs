@@ -11,8 +11,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-
 // <summary>
 // We use this service to pull data from 25Live as well as parsing it
 // The data is retrieved from the cache maintained by Startup.cs
