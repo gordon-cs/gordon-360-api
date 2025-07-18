@@ -44,9 +44,9 @@
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
         </member>
-        <member name="M:Gordon360.Controllers.Api.PostersController.GetCurrentPosters">
+        <member name="M:Gordon360.Controllers.Api.PostersController.GetCurrentPosters(System.String)">
             <summary>
-            Gets all non-expired posters
+            Gets all non-expired posters in the order based on the username
             </summary>
             <returns></returns>
             <exception cref="T:System.NotImplementedException"></exception>
