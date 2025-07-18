@@ -2,13 +2,21 @@ namespace Gordon360.Tests.Controllers_Test;
 
 public class ScheduleControllerTest
 {
-    private readonly Mock<IScheduleService> _mockService;
+    private readonly Mock<IProfileService> _mockProfileService;
+    private readonly Mock<IScheduleService> _mockScheduleService;
+    private readonly Mock<IAccountService> _mockAccountService;
     private readonly ScheduleController _controller;
 
     public ScheduleControllerTest()
     {
-        _mockService = new Mock<IScheduleService>();
-        _controller = new ScheduleController(_mockService.Object);
+        _mockProfileService = new Mock<IProfileService>();
+        _mockScheduleService = new Mock<IScheduleService>();
+        _mockAccountService = new Mock<IAccountService>();
+        _controller = new ScheduleController(
+            _mockProfileService.Object,
+            _mockScheduleService.Object,
+            _mockAccountService.Object
+        );
     }
 
     private void SetUser(string username, string group)
@@ -57,7 +65,7 @@ public class ScheduleControllerTest
         var courses = new List<UserCoursesViewModel> { GetSampleCourse() };
         var term = new CoursesByTermViewModel("2024", "SP", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10),"B", courses);
         var terms = new List<CoursesByTermViewModel> { term };
-        _mockService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
+        _mockScheduleService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
 
         SetUser(username, "360-Student-SG");
 
@@ -76,7 +84,7 @@ public class ScheduleControllerTest
         var courses = new List<UserCoursesViewModel> { GetSampleCourse() };
         var term = new CoursesByTermViewModel("2024", "SP", "Spring 2024", new DateTime(2024, 1, 10), new DateTime(2024, 5, 10),"B", courses);
         var terms = new List<CoursesByTermViewModel> { term };
-        _mockService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
+        _mockScheduleService.Setup(s => s.GetAllCoursesByTermAsync(username)).ReturnsAsync(terms);
 
         SetUser(username, "360-FacStaff-SG");
 
@@ -96,7 +104,7 @@ public class ScheduleControllerTest
 
         SetUser(requestingUsername, "360-Student-SG");
 
-        _mockService.Setup(s => s.GetAllCoursesByTermAsync(It.IsAny<string>()))
+        _mockScheduleService.Setup(s => s.GetAllCoursesByTermAsync(It.IsAny<string>()))
                     .ReturnsAsync(new List<CoursesByTermViewModel>());
 
         var result = await _controller.GetAllCoursesByTerm(targetUsername);

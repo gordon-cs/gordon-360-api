@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Models.CCT.Context;
 
 namespace Gordon360.Controllers;
 
@@ -23,7 +24,8 @@ namespace Gordon360.Controllers;
 public class ProfilesController(IProfileService profileService,
                                 IAccountService accountService,
                                 IMembershipService membershipService,
-                                IConfiguration config) : GordonControllerBase
+                                IConfiguration config,
+                                CCTContext context) : GordonControllerBase
 {
 
     /// <summary>Get profile info of currently logged in user</summary>
@@ -44,66 +46,37 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
 
-        var profile = profileService.ComposeProfile(student, alumni, faculty, customInfo);
+        var profile = (CombinedProfileViewModel) profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
     }
 
-    /// <summary>Get public profile info for a user</summary>
+    /// <summary>Get another user's profile info.  The info returned depends
+    /// on the permissions of the current user, who is making the request.</summary>
     /// <param name="username">username of the profile info</param>
     /// <returns></returns>
     [HttpGet]
     [Route("{username}")]
-    public ActionResult<ProfileViewModel?> GetUserProfile(string username)
+    public ActionResult<ProfileViewModel?> GetUserProfileAsync(string username)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        var _student = profileService.GetStudentProfileByUsername(username);
-        var _faculty = profileService.GetFacultyStaffProfileByUsername(username);
-        var _alumni = profileService.GetAlumniProfileByUsername(username);
+        StudentProfileViewModel? _student = profileService.GetStudentProfileByUsername(username);
+        FacultyStaffProfileViewModel? _facstaff = profileService.GetFacultyStaffProfileByUsername(username);
+        AlumniProfileViewModel? _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
-        object? student = null;
-        object? faculty = null;
-        object? alumni = null;
+        var student = accountService.VisibleToMeStudent(viewerGroups, _student);
+        var facstaff = accountService.VisibleToMeFacstaff(viewerGroups, _facstaff);
+        var alumni = accountService.VisibleToMeAlumni(viewerGroups, _alumni);
 
-        if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
-        {
-            student = _student;
-            faculty = _faculty;
-            alumni = _alumni;
-        }
-        else if (viewerGroups.Contains(AuthGroup.FacStaff))
-        {
-            student = _student;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
-        }
-        else if (viewerGroups.Contains(AuthGroup.Student))
-        {
-            student = _student == null ? null : (PublicStudentProfileViewModel)_student;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            // If this student is also in Alumni AuthGroup, then s/he can see alumni's
-            // public profile; if not, return null.
-            alumni = (_alumni == null) ? null :
-                     viewerGroups.Contains(AuthGroup.Alumni) ?
-                         (PublicAlumniProfileViewModel)_alumni : null;
-        }
-        else if (viewerGroups.Contains(AuthGroup.Alumni))
-        {
-            student = null;
-            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
-            alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
-        }
-
-        if (student is null && alumni is null && faculty is null)
+        if (student is null && alumni is null && facstaff is null)
         {
             return Ok(null);
         }
-
-        var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
-
-        return Ok(profile);
+        var profile = profileService.ComposeProfile(student, alumni, facstaff, _customInfo);
+        var visible_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
+        return Ok(visible_profile);
     }
 
     ///<summary>Get the advisor(s) of a particular student</summary>
@@ -119,6 +92,20 @@ public class ProfilesController(IProfileService profileService,
         var advisors = await profileService.GetAdvisorsAsync(username);
 
         return Ok(advisors);
+    }
+
+    ///<summary>Get the privacy settings of a particular user</summary>
+    /// <returns>
+    /// All privacy settings of the given user.
+    /// </returns>
+    [HttpGet]
+    [Route("{username}/privacy_settings")]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
+    public ActionResult<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingsAsync(string username)
+    {
+        var privacy = profileService.GetPrivacySettingsAsync(username);
+
+        return Ok(privacy);
     }
 
     /// <summary> Gets the clifton strengths of a particular user </summary>
@@ -464,6 +451,35 @@ public class ProfilesController(IProfileService profileService,
         var username = AuthUtils.GetUsername(User);
         var result = await profileService.UpdateOfficeHoursAsync(username, value);
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Set visibility group for some piece of personal data
+    /// </summary>
+    /// <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyUpdateViewModel)</param>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("user_privacy")]
+    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_PRIVACY)]
+    public async Task<ActionResult<UserPrivacyUpdateViewModel>> UpdateUserPrivacyAsync(UserPrivacyUpdateViewModel userPrivacy)
+    {
+        var authenticatedUserUsername = AuthUtils.GetUsername(User);
+        await profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, userPrivacy);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Return a list visibility groups
+    /// </summary>
+    /// <returns> All visibility groups (Public, FacStaff, Private)</returns>
+    [HttpGet]
+    [Route("visibility_groups")]
+    public ActionResult<IEnumerable<string>> GetVisibilityGroup()
+    {
+        var groups = context.UserPrivacy_Visibility_Groups.Select(up_v_g => up_v_g.Group)
+                               .Distinct()
+                               .Where(g => g != null);
+        return Ok(groups);
     }
 
     /// <summary>

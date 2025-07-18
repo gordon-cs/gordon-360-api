@@ -27,6 +27,7 @@ namespace Gordon360.Services
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username);
         GraduationViewModel? GetGraduationInfo(string username);
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
@@ -36,6 +37,8 @@ namespace Gordon360.Services
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
+        CombinedProfileViewModel ImposePrivacySettings(IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile);
+        Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy);
         Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail);
         Task UpdateMobilePrivacyAsync(string username, string value);
         Task UpdateImagePrivacyAsync(string username, string value);
@@ -74,6 +77,15 @@ namespace Gordon360.Services
         IEnumerable<AccountViewModel> GetAll();
         AccountViewModel GetAccountByEmail(string email);
         AccountViewModel GetAccountByUsername(string username);
+        public bool CanISeeStudents(IEnumerable<AuthGroup> viewerGroups);
+        public bool CanISeeStudentSchedule(IEnumerable<AuthGroup> viewerGroups);
+        public bool CanISeeThisStudent(IEnumerable<AuthGroup> viewerGroups, StudentProfileViewModel? student);
+        public bool CanISeeFacstaff(IEnumerable<AuthGroup> viewerGroups);
+        public bool CanISeeAlumni(IEnumerable<AuthGroup> viewerGroups);
+        public bool CanISeeAlumniSchedule(IEnumerable<AuthGroup> viewerGroups);
+        public object? VisibleToMeStudent(IEnumerable<AuthGroup> viewerGroups, StudentProfileViewModel? student);
+        public object? VisibleToMeFacstaff(IEnumerable<AuthGroup> viewerGroups, FacultyStaffProfileViewModel? facstaff);
+        public object? VisibleToMeAlumni(IEnumerable<AuthGroup> viewerGroups, AlumniProfileViewModel? alumni);
         IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,

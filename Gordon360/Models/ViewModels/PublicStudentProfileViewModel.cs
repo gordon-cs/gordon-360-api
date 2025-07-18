@@ -13,6 +13,7 @@ public class PublicStudentProfileViewModel
     public string NickName { get; set; }
     public string OnOffCampus { get; set; }
     public string Mail_Location { get; set; }
+    public string HomePhone { get; set; }
     public string HomeCity { get; set; }
     public string HomeState { get; set; }
     public string HomeCountry { get; set; }
@@ -77,19 +78,7 @@ public class PublicStudentProfileViewModel
             Minor3Description = stu.Minor3Description ?? "",
             Entrance_Date = stu.Entrance_Date
         };
-        if (vm.IsMobilePhonePrivate)
-        {
-            vm.MobilePhone = "Private as requested.";
-        }
-        if (vm.KeepPrivate.Contains("S"))
-        {
-            vm.HomeCity = "Private as requested.";
-            vm.HomeState = "";
-            vm.HomeCountry = "";
-            vm.Country = "";
-            vm.OnOffCampus = "P"; //Private, as parsed by front end service user.js
-            vm.Hall = "";
-        }
+
         if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
         {
             return null;

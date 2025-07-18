@@ -37,11 +37,6 @@
             <summary> Gets whether the user has checked in or not. True if they have checked in, false if they have not checked in </summary>
             <returns> The HTTP status indicating whether the request was completed and returns the check in status of the student </returns>
         </member>
-        <member name="M:Gordon360.Controllers.AcademicTermController.GetCurrentTermForFinalExams">
-            <summary>
-            Gets the most recent academic term that is either Spring or Fall
-            </summary>
-            <returns>The current term used to fetch final exams</returns>
         <member name="M:Gordon360.Controllers.Api.PostersController.GetPosters">
             <summary>
             Gets all posters that havent been deleted
@@ -124,6 +119,12 @@
             </summary>
             <returns></returns>
              <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:Gordon360.Controllers.AcademicTermController.GetCurrentTermForFinalExams">
+            <summary>
+            Gets the most recent academic term that is either Spring or Fall
+            </summary>
+            <returns>The current term used to fetch final exams</returns>
         </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
@@ -277,12 +278,6 @@
             <returns> All departments</returns>
         </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetBuildingsAsync(Gordon360.Models.webSQL.Context.webSQLContext)">
-            <summary>
-            Return a list of buildings.
-            </summary>
-            <returns> All buildings</returns>
-        </member>
-        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetBuildings">
             <summary>
             Return a list of buildings.
             </summary>
@@ -1083,8 +1078,9 @@
             <summary>Get profile info of currently logged in user</summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfile(System.String)">
-            <summary>Get public profile info for a user</summary>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetUserProfileAsync(System.String)">
+            <summary>Get another user's profile info.  The info returned depends
+            on the permissions of the current user, who is making the request.</summary>
             <param name="username">username of the profile info</param>
             <returns></returns>
         </member>
@@ -1093,6 +1089,12 @@
              <returns>
              All advisors of the given student.  For each advisor,
              provides first name, last name, and username.
+             </returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetPrivacySettingsAsync(System.String)">
+            <summary>Get the privacy settings of a particular user</summary>
+             <returns>
+             All privacy settings of the given user.
              </returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.GetCliftonStrengths_DEPRECATED(System.String)">
@@ -1175,6 +1177,19 @@
             </summary>
             <param name="value">office hours</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateUserPrivacyAsync(Gordon360.Models.ViewModels.UserPrivacyUpdateViewModel)">
+            <summary>
+            Set visibility group for some piece of personal data
+            </summary>
+            <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyUpdateViewModel)</param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.GetVisibilityGroup">
+            <summary>
+            Return a list visibility groups
+            </summary>
+            <returns> All visibility groups (Public, FacStaff, Private)</returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMailStop(System.String)">
             <summary>
@@ -1688,6 +1703,13 @@
             <param name="response"></param>
             <returns>The accepted TeamInviteViewModel</returns>
         </member>
+        <member name="M:Gordon360.Controllers.RegistrationController.GetRegistrationWindow">
+            <summary>
+            Retrieves the registration window data for the currently logged-in user.
+            Returns a 404 if registration info is not found (either missing account or date info).
+            </summary>
+            <returns>A RegistrationPeriodViewModel with eligibility and timing details</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -1754,9 +1776,9 @@
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTerm(System.String)">
             <summary>
-             Gets all term objects for a user
+            Gets all term-based course schedules for a user, filtered to only include officially published terms.
             </summary>
-            <returns>A IEnumerable of term objects as well as the schedules</returns>
+            <returns>A list of published term schedule objects</returns>
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
             <summary>
@@ -2036,12 +2058,24 @@
         </member>
         <member name="T:Gordon360.Services.AccountService">
             <summary>
-            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            Service Class that facilitates data transactions between the AccountsController and 
+            the Account database model.  It also provides methods to enforce access restrictions
+            on user data.
+            
+            The "CanISee..." and "VisibleToMe..." methods encapsulate rules about whether
+            a requesting user can even find a user (CanISee...) and if so, what fields they 
+            are allowed to see (VisibleToMe...).
             </summary>
         </member>
         <member name="M:Gordon360.Services.AccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
             <summary>
-            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            Service Class that facilitates data transactions between the AccountsController and 
+            the Account database model.  It also provides methods to enforce access restrictions
+            on user data.
+            
+            The "CanISee..." and "VisibleToMe..." methods encapsulate rules about whether
+            a requesting user can even find a user (CanISee...) and if so, what fields they 
+            are allowed to see (VisibleToMe...).
             </summary>
         </member>
         <member name="M:Gordon360.Services.AccountService.GetAccountByID(System.String)">
@@ -2070,6 +2104,95 @@
             </summary>
             <param name="username">The AD username associated with the account.</param>
             <returns>the student account information</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeStudents(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for students.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for students, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeStudentSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            course schedule information for students.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            schedule information for students, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeThisStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for this particular student.  Some students are not shown
+            because of FERPA protections.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <param name="student">Profile data for the student whose information
+            is being requested.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for this student, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for faculty and staff (facstaff).</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for facstaff, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for alumni.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for alumni, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.CanISeeAlumniSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            course schedule information for alumni.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            course schedule information for alumni, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Services.AccountService.VisibleToMeStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>Restrict info about a student to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.  Note that 
+            this takes FERPA restrictions into account in determining whether this student
+            is visible to the requesting user.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <param name="student">Profile data for the student whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about students.</returns>
+            
+        </member>
+        <member name="M:Gordon360.Services.AccountService.VisibleToMeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.FacultyStaffProfileViewModel)">
+            <summary>Restrict info about a facstaff person to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <param name="facstaff">Profile data for the facstaff member whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about facstaff.</returns>
+            
+        </member>
+        <member name="M:Gordon360.Services.AccountService.VisibleToMeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
+            <summary>Restrict info about an alumni person to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <param name="viewerGroups">The authentication groups associated with the 
+            user making the request.</param>
+            <param name="alumni">Profile data for the alum whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about alumni.</returns>
+            
         </member>
         <member name="M:Gordon360.Services.AccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
@@ -3269,6 +3392,14 @@
             <param name="newsID">The SNID (id of news item)</param>
             <returns>The news item</returns>
         </member>
+        <member name="F:Gordon360.Services.NewsService.ExcludedCategoryIds">
+            <summary>
+            Filters out categories that are not relevant for the student news feed.
+            Student News categories are set by fetching their respective ids from the databasase
+            in this instance, "2" and "3" are excluded. which relate to "Lost Items" and "Found Items"
+            NOTE: the categories are hardcoded here, but could be made more dynamic in the future
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.NewsService.GetNewsPersonalUnapprovedAsync(System.String)">
             <summary>
             Gets unapproved unexpired news submitted by user.
@@ -3446,6 +3577,28 @@
             <param name="type"></param>
             <param name="content"></param>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.ImposePrivacySettings(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.ProfileViewModel)">
+            <summary>
+            convert combined profile to public profile based on individual privacy settings
+            </summary>
+            <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
+            <param name="profile">combined profile of the person being searched</param>
+            <returns>public profile of the person based on individual privacy settings</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.GetPrivacySettingsAsync(System.String)">
+            <summary>
+            Get profile fields and visibility settings for a specific user
+            </summary>
+            <param name="username">AD username</param>
+            <returns>List of field and visibility privacy settings for a specific user</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.UpdateUserPrivacyAsync(System.String,Gordon360.Models.ViewModels.UserPrivacyUpdateViewModel)">
+            <summary>
+            Set privacy setting of some piece of personal data for user.
+            </summary>
+            <param name="username">AD Username</param>
+            <param name="userPrivacy">User Privacy Update View Model</param>
+        </member>
         <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
             <summary>
             privacy setting of mobile phone.
@@ -3500,6 +3653,20 @@
             <param name="username">The username of the student</param>
             <returns>GraduationViewModel containing graduation details</returns>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.MarkAsPrivate(Gordon360.Models.ViewModels.CombinedProfileViewModel,System.String)">
+            <summary>
+            Change a ProfileItem's privacy setting to true
+            </summary>
+            <param name="profile">Combined profile containing element to update</param>
+            <param name="fieldID">The ID of the profile element of which to update IsPrivate</param>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.MakePrivate(Gordon360.Models.ViewModels.CombinedProfileViewModel,System.String)">
+            <summary>
+            Change a ProfileItem to be null (remove it from the profile)
+            </summary>
+            <param name="profile">Combined profile containing element to make null</param>
+            <param name="fieldID">The ID of the profile element to make null</param>
+        </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>
             this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
@@ -3540,6 +3707,16 @@
             with the context that surfaces need to be booked ahead of time on 25Live
             </summary>
             <returns>Matches created as well as number of teams in the next round</returns>
+        </member>
+        <member name="M:Gordon360.Services.RegistrationService.GetRegistrationWindowAsync(System.String)">
+            <summary>
+            Gets the registration window for a given user and evaluates their eligibility to register.
+            </summary>
+            <param name="username">The AD username of the student.</param>
+            <returns>
+            A RegistrationPeriodViewModel containing registration start/end dates and eligibility status.
+            Returns null if either the account or registration window is missing.
+            </returns>
         </member>
         <member name="T:Gordon360.Services.ScheduleService">
             <summary>
@@ -3633,6 +3810,16 @@
             Helper method that gets the current session we are in.
             </summary>
             <returns>The session code of the current session</returns>
+        </member>
+        <member name="T:Gordon360.Static.Methods.ProfileItem`1">
+            <summary>
+            Profile item class contining a single profile datum and privacy flag.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Static.Methods.ProfileItem`1.#ctor(`0,System.Boolean)">
+            <summary>
+            Profile item class contining a single profile datum and privacy flag.
+            </summary>
         </member>
         <member name="M:Gordon360.Utilities.ImageUtils.DeleteImage(System.String)">
             <summary>
