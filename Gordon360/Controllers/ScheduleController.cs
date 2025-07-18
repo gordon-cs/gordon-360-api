@@ -64,19 +64,18 @@ public class ScheduleController(IProfileService profileService,
 
         // Some users can see schedules of courses taken, as well as taught,
         // so check to see if this user can see all courses for this person.
+        IEnumerable<CoursesByTermViewModel> result;
         if ((AuthUtils.GetUsername(User).EqualsIgnoreCase(username)) ||
             (accountService.CanISeeStudentSchedule(groups) &&
                student != null &&
                accountService.CanISeeThisStudent(groups, student)) ||
             (accountService.CanISeeAlumniSchedule(groups) && alumni != null))
         {
-            IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllCoursesByTermAsync(username);
-            return Ok(result);
+            result = await scheduleService.GetAllCoursesByTermAsync(username);
         } else
         {
             // Everyone can see schedules of courses taught.
-            IEnumerable<CoursesByTermViewModel> result = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
-            return Ok(result);
+            result = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
         }
         var publishedResult = result
             .Where(r => string.Equals(r.ShowOnWeb, "B", StringComparison.OrdinalIgnoreCase))
