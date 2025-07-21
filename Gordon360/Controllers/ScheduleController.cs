@@ -15,31 +15,6 @@ namespace Gordon360.Controllers;
 public class ScheduleController(IScheduleService scheduleService) : GordonControllerBase
 {
     /// <summary>
-    ///  Gets all session objects for a user
-    /// </summary>
-    /// <returns>A IEnumerable of session objects as well as the schedules</returns>
-    [HttpGet]
-    [Route("{username}/allcourses")]
-    [Obsolete("This method is deprecated. Use '/{username}/allcourses-by-term' which is grouped by term.")]
-    public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
-    {
-        var groups = AuthUtils.GetGroups(User);
-        var authenticatedUsername = AuthUtils.GetUsername(User);
-
-        IEnumerable<CoursesBySessionViewModel> result;
-        if (authenticatedUsername.EqualsIgnoreCase(username) || groups.Contains(AuthGroup.FacStaff))
-        {
-            result = await scheduleService.GetAllCoursesAsync(username);
-        }
-        else
-        {
-            result = await scheduleService.GetAllInstructorCoursesAsync(username);
-        }
-
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Gets all term-based course schedules for a user, filtered to only include officially published terms.
     /// </summary>
     /// <returns>A list of published term schedule objects</returns>

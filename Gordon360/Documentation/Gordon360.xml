@@ -1754,12 +1754,6 @@
             <param name="membershipRequestID">The id of the membership request to delete</param>
             <returns>The deleted request as a RequestView</returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
-            <summary>
-             Gets all session objects for a user
-            </summary>
-            <returns>A IEnumerable of session objects as well as the schedules</returns>
-        </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTerm(System.String)">
             <summary>
             Gets all term-based course schedules for a user, filtered to only include officially published terms.
