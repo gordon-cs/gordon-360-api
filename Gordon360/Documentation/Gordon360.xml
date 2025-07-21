@@ -120,6 +120,12 @@
             <returns></returns>
              <exception cref="T:System.NotImplementedException"></exception>
         </member>
+        <member name="M:Gordon360.Controllers.AcademicTermController.GetCurrentTermForFinalExams">
+            <summary>
+            Gets the most recent academic term that is either Spring or Fall
+            </summary>
+            <returns>The current term used to fetch final exams</returns>
+        </member>
         <member name="M:Gordon360.Controllers.AccountsController.SearchAsync(System.String)">
             <summary>
             Return a list of accounts matching some or all of <c>searchString</c>.
@@ -1683,6 +1689,13 @@
             <param name="response"></param>
             <returns>The accepted TeamInviteViewModel</returns>
         </member>
+        <member name="M:Gordon360.Controllers.RegistrationController.GetRegistrationWindow">
+            <summary>
+            Retrieves the registration window data for the currently logged-in user.
+            Returns a 404 if registration info is not found (either missing account or date info).
+            </summary>
+            <returns>A RegistrationPeriodViewModel with eligibility and timing details</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RequestsController.Get">
             <summary>
             Gets all Membership Request Objects
@@ -1741,17 +1754,11 @@
             <param name="membershipRequestID">The id of the membership request to delete</param>
             <returns>The deleted request as a RequestView</returns>
         </member>
-        <member name="M:Gordon360.Controllers.ScheduleController.GetAllCourses(System.String)">
-            <summary>
-             Gets all session objects for a user
-            </summary>
-            <returns>A IEnumerable of session objects as well as the schedules</returns>
-        </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetAllCoursesByTerm(System.String)">
             <summary>
-             Gets all term objects for a user
+            Gets all term-based course schedules for a user, filtered to only include officially published terms.
             </summary>
-            <returns>A IEnumerable of term objects as well as the schedules</returns>
+            <returns>A list of published term schedule objects</returns>
         </member>
         <member name="M:Gordon360.Controllers.ScheduleController.GetCanReadStudentSchedules">
             <summary>
@@ -1775,6 +1782,12 @@
             Gets the current active session
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.SessionsController.GetCurrentSessionForFinalExams">
+            <summary>
+            Gets the most recent academic session that is either Spring or Fall
+            </summary>
+            <returns>The current session used to fetch final exams</returns>
         </member>
         <member name="M:Gordon360.Controllers.SessionsController.GetDaysLeftInSemester">
             <summary>
@@ -2334,7 +2347,7 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService)">
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,Gordon360.Services.ISessionService,System.Net.Http.HttpClient,Gordon360.Services.IAcademicTermService)">
             <summary>
             Service that allows for event control
             </summary>
@@ -2381,6 +2394,13 @@
             During the summer, this the middle of May (roughly the end of the spring term)
             </summary>
             <returns>The first date of events we care about, in 'yyyyMMdd' format (e.g. '20250815' for August 15th, 2025)</returns>
+        </member>
+        <member name="M:Gordon360.Services.EventService.NormalizeSpaces(System.String)">
+            <summary>
+            Get the input string and normalize it by removing extra spaces
+            </summary>
+            <param name="input"></param>
+            <returns>Removes extra spaces and join the input</returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.CheckIfHousingAdmin(System.String)">
             <summary>
@@ -3251,6 +3271,14 @@
             <param name="newsID">The SNID (id of news item)</param>
             <returns>The news item</returns>
         </member>
+        <member name="F:Gordon360.Services.NewsService.ExcludedCategoryIds">
+            <summary>
+            Filters out categories that are not relevant for the student news feed.
+            Student News categories are set by fetching their respective ids from the databasase
+            in this instance, "2" and "3" are excluded. which relate to "Lost Items" and "Found Items"
+            NOTE: the categories are hardcoded here, but could be made more dynamic in the future
+            </summary>
+        </member>
         <member name="M:Gordon360.Services.NewsService.GetNewsPersonalUnapprovedAsync(System.String)">
             <summary>
             Gets unapproved unexpired news submitted by user.
@@ -3522,6 +3550,16 @@
             with the context that surfaces need to be booked ahead of time on 25Live
             </summary>
             <returns>Matches created as well as number of teams in the next round</returns>
+        </member>
+        <member name="M:Gordon360.Services.RegistrationService.GetRegistrationWindowAsync(System.String)">
+            <summary>
+            Gets the registration window for a given user and evaluates their eligibility to register.
+            </summary>
+            <param name="username">The AD username of the student.</param>
+            <returns>
+            A RegistrationPeriodViewModel containing registration start/end dates and eligibility status.
+            Returns null if either the account or registration window is missing.
+            </returns>
         </member>
         <member name="T:Gordon360.Services.ScheduleService">
             <summary>

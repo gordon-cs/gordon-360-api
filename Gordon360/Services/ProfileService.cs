@@ -324,11 +324,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         }
         var digitsOnly = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
         await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, digitsOnly);
-        var student = await context.Student.FirstOrDefaultAsync(x => x.ID == profile.ID);
-        if (student != null)
-        {
-            student.MobilePhone = digitsOnly;
-        }
         return profile;
     }
 

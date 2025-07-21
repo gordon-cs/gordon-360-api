@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT.Context;
@@ -146,6 +147,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
 
+    public virtual DbSet<Post> Post { get; set; }
+
     public virtual DbSet<PostImage> PostImage { get; set; }
 
     public virtual DbSet<PostedItem> PostedItem { get; set; }
@@ -221,7 +224,9 @@ public partial class CCTContext : DbContext
     public virtual DbSet<UserCourses> UserCourses { get; set; }
 
     public virtual DbSet<YearTermTable> YearTermTable { get; set; }
-
+    
+    public virtual DbSet<CourseRegistrationDate> CourseRegistrationDates { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ACCOUNT>(entity =>
@@ -670,6 +675,11 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
+        modelBuilder.Entity<Post>(entity =>
+        {
+            entity.ToView("Post", "Marketplace");
+        });
+
         modelBuilder.Entity<PostImage>(entity =>
         {
             entity.HasOne(d => d.PostedItem).WithMany(p => p.PostImage)
@@ -893,6 +903,12 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Unassigned_Rooms>(entity =>
         {
             entity.ToView("Unassigned_Rooms", "Housing");
+        });
+
+        modelBuilder.Entity<CourseRegistrationDate>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView("CourseRegistrationDates", "dbo");
         });
 
         modelBuilder.Entity<UserCourses>(entity =>
