@@ -7,7 +7,7 @@ namespace Gordon360.Models.CCT
 {
     public partial class FINALIZATION_MARK_AS_CURRENTLY_COMPLETEDResult
     {
-        public string UserID { get; set; }
+        public int UserID { get; set; }
         public string Period { get; set; }
         public bool FinalizationCompleted { get; set; }
         public string RootQuery { get; set; }

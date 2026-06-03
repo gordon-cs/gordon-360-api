@@ -12,6 +12,7 @@ public static class ServicesExtensions
     public static IServiceCollection Add360Services(this IServiceCollection services)
     {
         services.AddScoped<IAcademicCheckInService, AcademicCheckInService>();
+        services.AddScoped<IAcademicTermService, AcademicTermService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IAddressesService, AddressesService>();
@@ -31,6 +32,7 @@ public static class ServicesExtensions
         services.AddScoped<ISessionService, SessionService>();
         services.AddScoped<IStudentEmploymentService, StudentEmploymentService>();
         services.AddScoped<IVictoryPromiseService, VictoryPromiseService>();
+        services.AddScoped<IPosterService, PosterService>();
         services.AddScoped<RecIM.IActivityService, RecIM.ActivityService>();
         services.AddScoped<RecIM.ISeriesService, RecIM.SeriesService>();
         services.AddScoped<RecIM.IMatchService, RecIM.MatchService>();
@@ -39,6 +41,7 @@ public static class ServicesExtensions
         services.AddScoped<RecIM.ISportService, RecIM.SportService>();
         services.AddScoped<RecIM.IRecIMService, RecIM.RecIMService>();
         services.AddScoped<RecIM.IAffiliationService, RecIM.AffiliationService>();
+        services.AddScoped<IMarketplaceService, MarketplaceService>();
 
         return services;
     }

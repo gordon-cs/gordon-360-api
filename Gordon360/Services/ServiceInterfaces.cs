@@ -27,6 +27,7 @@ namespace Gordon360.Services
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        GraduationViewModel? GetGraduationInfo(string username);
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
@@ -56,6 +57,10 @@ namespace Gordon360.Services
         IEnumerable<EventViewModel> GetAllEvents();
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();
+        Task<IEnumerable<EventViewModel>> GetFinalExamsForUserByTermAsync(string username, DateTime termStart, DateTime termEnd, string yearCode, string termCode);
+        Task<IEnumerable<EventViewModel>> GetFinalExamsForInstructorByTermAsync(string username, DateTime termStart, DateTime termEnd, string yearCode, string termCode);
+        Task<IEnumerable<EventViewModel>> FetchEventsAsync();
+        Task<IEnumerable<EventViewModel>> GetFinalExamsForTermAsync(DateTime termStart, DateTime termEnd, string yearCode, string termCode);
     }
 
     public interface IDiningService
@@ -142,6 +147,7 @@ namespace Gordon360.Services
     {
         SessionViewModel Get(string sessionCode);
         SessionViewModel GetCurrentSession();
+        SessionViewModel GetCurrentSessionForFinalExams();
         double[] GetDaysLeft();
         IEnumerable<SessionViewModel> GetAll();
     }
@@ -189,7 +195,12 @@ namespace Gordon360.Services
     public interface IScheduleService
     {
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
+
+        Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
+        Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username);
+        Task<IEnumerable<CoursesByTermViewModel>> GetAllInstructorCoursesByTermAsync(string username);
     }
+
 
     public interface IContentManagementService
     {
@@ -273,12 +284,12 @@ namespace Gordon360.Services
         public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
         public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
         IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
-        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username, 
-                                                                   int? lastId, 
-                                                                   int? pageSize, 
-                                                                   string? status, 
-                                                                   string? color, 
-                                                                   string? category, 
+        IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username,
+                                                                   int? lastId,
+                                                                   int? pageSize,
+                                                                   string? status,
+                                                                   string? color,
+                                                                   string? category,
                                                                    string? keywords,
                                                                    DateTime? lastCheckedDate);
         Task UpdateMissingItemReportAsync(int id, MissingItemReportViewModel reportDetails, string username);
@@ -329,6 +340,29 @@ namespace Gordon360.Services
         Task SetStatusAsync(string id);
         Task<AcademicCheckInViewModel> PutDemographicAsync(string id, AcademicCheckInViewModel data);
         Task<bool> GetStatusAsync(string username);
+    }
+
+    public interface IPosterService
+    {
+        IEnumerable<PosterViewModel> GetPosters();
+        IEnumerable<PosterViewModel> GetCurrentPosters();
+        IEnumerable<PosterViewModel> GetCurrentPostersByActivityCode(string activityCode);
+        IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username);
+        IEnumerable<string> GetPosterStatuses();
+        IEnumerable<PosterViewModel> GetPostersByActivityCode(string activityCode);
+        PosterViewModel GetPosterByID(int posterID);
+        Task<PosterViewModel> PostPosterAsync(PosterUploadViewModel newPoster);
+        Task<PosterViewModel> UpdatePosterAsync(int posterID, PosterPatchViewModel updatedPoster);
+        Task<PosterViewModel> DeletePosterAsync(int posterID);
+        Task<PosterViewModel> HidePosterAsync(int posterID);
+    }
+
+    public interface IAcademicTermService
+    {
+        Task<YearTermTableViewModel?> GetCurrentTermAsync();
+        Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
+        Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync();
+        Task<DaysLeftViewModel> GetDaysLeftAsync();
     }
 
     namespace RecIM
@@ -457,4 +491,33 @@ namespace Gordon360.Services
         }
     }
 
+    public interface IMarketplaceService
+    {
+        IEnumerable<MarketplaceListingViewModel> GetAllListings();
+        IEnumerable<MarketplaceListingViewModel> GetUserListings(string username);
+        MarketplaceListingViewModel? GetListingById(int listingId);
+        Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing, string username);
+        Task<MarketplaceListingViewModel> UpdateListingAsync(int listingId, MarketplaceListingUpdateViewModel updatedListing);
+        Task DeleteListingAsync(int listingId);
+        Task<MarketplaceListingViewModel> ChangeListingStatusAsync(int listingId, string status);
+        IEnumerable<MarketplaceListingViewModel> GetFilteredListings(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string? search, string? sortBy, bool desc = false,
+            int page = 1, int pageSize = 20);
+        int GetFilteredListingsCount(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string? search);
+        Task<ItemCategory> AddCategoryAsync(string categoryName);
+        Task<ItemCondition> AddConditionAsync(string conditionName);
+        Task<ItemCategory> UpdateCategoryVisibilityAsync(string categoryName, bool visibility);
+        Task<ItemCondition> UpdateConditionVisibilityAsync(string conditionName, bool visibility);
+        IEnumerable<MarketplaceAdminViewModel> GetAdminThreads(
+            int? id, int? categoryId, int? statusId, decimal? minPrice,
+            decimal? maxPrice, string? search, string? sortBy, bool desc = false,
+            int page = 1, int pageSize = 20);
+        int GetAdminThreadsCount(
+            int? categoryId, int? statusId, decimal? minPrice, decimal? maxPrice,
+            string? search);
+        IEnumerable<MarketplaceListingViewModel> GetThreadEditHistory(int threadId);
+    }
 }

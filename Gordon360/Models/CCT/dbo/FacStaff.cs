@@ -138,11 +138,14 @@ public partial class FacStaff
     [Unicode(false)]
     public string Type { get; set; }
 
+    [Column(TypeName = "datetime")]
+    public DateTime? FirstHireDt { get; set; }
+
     [StringLength(50)]
     [Unicode(false)]
     public string AD_Username { get; set; }
 
-    [StringLength(75)]
+    [StringLength(8000)]
     [Unicode(false)]
     public string office_hours { get; set; }
 

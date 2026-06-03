@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Gordon360.Models.CCT;
+using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Models.CCT.Context;
@@ -74,6 +75,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<FoundItems> FoundItems { get; set; }
 
+    public virtual DbSet<Graduation> Graduation { get; set; }
+
     public virtual DbSet<GuestUsers> GuestUsers { get; set; }
 
     public virtual DbSet<Hall_Assignment_Ranges> Hall_Assignment_Ranges { get; set; }
@@ -95,6 +98,12 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Information_Change_Request> Information_Change_Request { get; set; }
 
     public virtual DbSet<InvolvementOffering> InvolvementOffering { get; set; }
+
+    public virtual DbSet<ItemCategory> ItemCategory { get; set; }
+
+    public virtual DbSet<ItemCondition> ItemCondition { get; set; }
+
+    public virtual DbSet<ItemStatus> ItemStatus { get; set; }
 
     public virtual DbSet<MEMBERSHIP> MEMBERSHIP { get; set; }
 
@@ -137,6 +146,16 @@ public partial class CCTContext : DbContext
     public virtual DbSet<ParticipantTeam> ParticipantTeam { get; set; }
 
     public virtual DbSet<ParticipantView> ParticipantView { get; set; }
+
+    public virtual DbSet<Post> Post { get; set; }
+
+    public virtual DbSet<PostImage> PostImage { get; set; }
+
+    public virtual DbSet<PostedItem> PostedItem { get; set; }
+
+    public virtual DbSet<Poster> Poster { get; set; }
+
+    public virtual DbSet<PosterStatus> PosterStatus { get; set; }
 
     public virtual DbSet<PrivType> PrivType { get; set; }
 
@@ -204,9 +223,12 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<UserCourses> UserCourses { get; set; }
 
+    public virtual DbSet<YearTermTable> YearTermTable { get; set; }
+    
+    public virtual DbSet<CourseRegistrationDate> CourseRegistrationDates { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
         modelBuilder.Entity<ACCOUNT>(entity =>
         {
             entity.ToView("ACCOUNT", "dbo");
@@ -409,6 +431,13 @@ public partial class CCTContext : DbContext
             entity.HasOne(d => d.matchingMissing).WithMany(p => p.FoundItems).HasConstraintName("FK__FoundItem__match__37510C18");
         });
 
+        modelBuilder.Entity<Graduation>(entity =>
+        {
+            entity.ToView("Graduation", "dbo");
+
+            entity.Property(e => e.GRAD_FLAG).IsFixedLength();
+        });
+
         modelBuilder.Entity<GuestUsers>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__GuestUse__3214EC2774F2F95F");
@@ -567,6 +596,7 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<MissingReports>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__tmp_ms_x__3214EC271C4C78EB");
+
             entity.HasOne(d => d.matchingFound).WithMany(p => p.MissingReports).HasConstraintName("FK__MissingRe__match__38453051");
         });
 
@@ -645,6 +675,35 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.SpecifiedGender).IsFixedLength();
         });
 
+        modelBuilder.Entity<Post>(entity =>
+        {
+            entity.ToView("Post", "Marketplace");
+        });
+
+        modelBuilder.Entity<PostImage>(entity =>
+        {
+            entity.HasOne(d => d.PostedItem).WithMany(p => p.PostImage)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PostImage_PostedItem");
+        });
+
+        modelBuilder.Entity<PostedItem>(entity =>
+        {
+            entity.Property(e => e.PostedAt).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.PostedItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PostedItem_ItemCategory");
+
+            entity.HasOne(d => d.Condition).WithMany(p => p.PostedItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PostedItem_ItemCondition");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.PostedItem)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PostedItem_ItemStatus");
+        });
+
         modelBuilder.Entity<RA_Assigned_Ranges_View>(entity =>
         {
             entity.ToView("RA_Assigned_Ranges_View", "Housing");
@@ -694,6 +753,19 @@ public partial class CCTContext : DbContext
             entity.HasKey(e => e.Record_ID).HasName("PK__RD_On_Ca__603A0C605596CACA");
 
             entity.Property(e => e.Created_Date).HasDefaultValueSql("(getdate())");
+        });
+
+        modelBuilder.Entity<Poster>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK_Posters");
+
+            entity.Property(e => e.ACT_CDE).IsFixedLength();
+
+            entity.HasOne(d => d.ACT_CDENavigation).WithMany(p => p.Poster).HasConstraintName("FK_Posters_ACT_INFO");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.Poster)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Posters_PosterStatus");
         });
 
         modelBuilder.Entity<REQUEST>(entity =>
@@ -831,6 +903,12 @@ public partial class CCTContext : DbContext
         modelBuilder.Entity<Unassigned_Rooms>(entity =>
         {
             entity.ToView("Unassigned_Rooms", "Housing");
+        });
+
+        modelBuilder.Entity<CourseRegistrationDate>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView("CourseRegistrationDates", "dbo");
         });
 
         modelBuilder.Entity<UserCourses>(entity =>

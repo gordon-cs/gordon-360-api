@@ -3,6 +3,7 @@ using Gordon360.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System;
 
 namespace Gordon360.Controllers;
 
@@ -62,6 +63,26 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     }
 
     /// <summary>
+    /// Gets the most recent academic session that is either Spring or Fall
+    /// </summary>
+    /// <returns>The current session used to fetch final exams</returns>
+    [HttpGet]
+    [Route("currentFinals")]
+    [AllowAnonymous]
+    [Obsolete]
+    public ActionResult<SessionViewModel> GetCurrentSessionForFinalExams()
+    {
+        var currentFinalSession = sessionService.GetCurrentSessionForFinalExams();
+        if (currentFinalSession == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(currentFinalSession);
+    }
+
+
+    /// <summary>
     /// Gets the days left in the current session
     /// </summary>
     /// <returns></returns>
@@ -71,7 +92,7 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     public ActionResult<double[]> GetDaysLeftInSemester()
     {
         var days = sessionService.GetDaysLeft();
-        if (days[1] == 0 && days[2] == 0 || days == null)
+        if (days == null || (days[0] == 0 && days[1] == 0))
         {
             return NotFound();
         }

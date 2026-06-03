@@ -256,4 +256,7 @@ public partial class Student
     [StringLength(4)]
     [Unicode(false)]
     public string PlannedGradYear { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime? Entrance_Date { get; set; }
 }
