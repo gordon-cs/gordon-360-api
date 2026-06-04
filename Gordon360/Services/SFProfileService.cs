@@ -232,6 +232,7 @@ LIMIT 1";
     record.Minor3Description__c,
     record.GradDate__c,
     "2027",
+    new DateTime(2023, 5, 15),
     "9787984031",
     true,
     record.ChapelRequired__c,
@@ -257,7 +258,8 @@ LIMIT 1";
     record.Major2Description__c,
     record.grad_student__c,
 
-    record.OnCampusDepartment__c,
+    new DateTime(2027, 5, 15),
+            record.OnCampusDepartment__c,
     record.Type__c,
     record.office_hours__c,
     record.Dept__c,
@@ -274,7 +276,7 @@ LIMIT 1";
     record.OnCampusPrivatePhone__c,
     record.OnCampusFax__c,
     "true",
-
+    
     record.PersonType__c
 );
 
