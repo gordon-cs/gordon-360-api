@@ -1,0 +1,214 @@
+using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Salesforce;
+using Gordon360.Exceptions;
+using Gordon360.Models.ViewModels;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+
+// <summary>
+// We use this service to pull meal data from blackboard and parse it
+// </summary>
+namespace Gordon360.Services;
+
+/// <summary>
+/// Service that allows for meal control
+/// </summary>
+public class SFDiningService : IDiningService
+{
+    private CCTContext _context;
+    private static string issuerID;
+    private static string applicationId;
+    private static string secret;
+    private IConfiguration config;
+    //private static string issuerID = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitIssuerID"];
+    //private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
+    //private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
+    private static readonly string domain = "orgfarm-7c8ce5d310-dev-ed.develop.my.salesforce.com";
+    private static readonly string apiVersion = "v60.0";
+    
+    public SFDiningService(CCTContext context, IConfiguration config)
+    {
+        _context = context;
+        this.config = config;
+        issuerID = config["BonAppetit:IssuerID"];
+        applicationId = config["BonAppetit:ApplicationID"];
+        secret = config["BonAppetit:Secret"];
+    }
+
+    private static string getTimestamp()
+    {
+        DateTime baseDate = new DateTime(1970, 1, 1, 0, 0, 0);
+        TimeSpan diff = DateTime.UtcNow - baseDate;
+        Int64 millis = Convert.ToInt64(diff.TotalMilliseconds);
+        return millis.ToString();
+    }
+
+    private static string getHash(int cardHolderID, string planID, string timestamp)
+    {
+        string hashstring = (secret + issuerID + cardHolderID.ToString() + planID +
+        applicationId + timestamp);
+
+        SHA1 sha1 = SHA1.Create();
+        var hash = sha1.ComputeHash(Encoding.ASCII.GetBytes(hashstring));
+        var sb = new StringBuilder(hash.Length * 2);
+
+        foreach (byte b in hash)
+        {
+            // can be "x2" if you want lowercase
+            sb.Append(b.ToString("x2"));
+        }
+        Console.WriteLine(timestamp);
+        Console.WriteLine(sb.ToString());
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="cardHolderID"></param>
+    /// <param name="planID"></param>
+    /// <returns></returns>
+    public static string GetBalance(int cardHolderID, string planID)
+    {
+        try
+        {
+
+            ServicePointManager.Expect100Continue = false;
+
+            WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
+
+            request.Method = "POST";
+
+            string timestamp = getTimestamp();
+
+            // Create POST data and convert it to a byte array.  
+            string postData = $"issuerId={issuerID}&cardholderId={cardHolderID}&planId={planID}&applicationId={applicationId}&valueCmd=bal&value=0&timestamp={timestamp}&hash={getHash(cardHolderID, planID, timestamp)}";
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentLength = byteArray.Length;
+
+            Stream dataStream = request.GetRequestStream();
+            dataStream.Write(byteArray, 0, byteArray.Length);
+            dataStream.Close();
+
+            // Get the response.  
+            WebResponse response = request.GetResponse();
+            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+
+            // Get the stream containing content returned by the server.  
+            dataStream = response.GetResponseStream();
+
+            // Read the content. 
+            StreamReader reader = new StreamReader(dataStream);
+            string responseFromServer = reader.ReadToEnd();
+            JObject json = JObject.Parse(responseFromServer);
+            string balance = json["balance"].ToString();
+
+            // Display the content.  
+            Console.WriteLine(responseFromServer);
+            Console.WriteLine("Balance: " + balance);
+
+            // Clean up the streams.  
+            reader.Close();
+            dataStream.Close();
+            response.Close();
+            return balance;
+        }
+        catch
+        {
+            return "0";
+        }
+    }
+
+    /// <summary>
+    /// Get information about the selected plan for the student user
+    /// </summary>
+    /// <param name="cardHolderID">Student's Gordon ID</param>
+    /// <param name="sessionCode">Current Session Code</param>
+    /// <returns></returns>
+    public DiningViewModel GetDiningPlanInfo(int cardHolderID, string sessionCode)
+    {
+    
+        System.Diagnostics.Debug.WriteLine("🔐 Getting Salesforce access token...");
+        string clientId = config["Salesforce:ClientId"];
+        string clientSecret = config["Salesforce:ClientSecret"];
+
+        var tokenData = await GetAccessTokenAsync(config);
+        var accessToken = tokenData["access_token"].ToString();
+        var instanceUrl = tokenData["instance_url"].ToString();
+
+        System.Diagnostics.Debug.WriteLine("🔎 Building SOQL query...");
+
+        var soql = $@"
+            SELECT
+                FIELDS(ALL)
+            FROM {SFDiningInfo.SFObjectName} 
+            WHERE {SFDiningInfo.StudentId} = '{cardHolderID}' && {SFDiningInfo.SessionCode} = '{sessionCode}'
+            LIMIT 10
+        ";
+
+        System.Diagnostics.Debug.WriteLine(soql);
+
+        var queryUrl = $"{instanceUrl}/services/data/{apiVersion}/query?q={Uri.EscapeDataString(soql)}";
+        System.Diagnostics.Debug.WriteLine($"🌐 Querying Salesforce: {queryUrl}");
+
+
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+        var response = await client.GetAsync(queryUrl);
+        var json = await response.Content.ReadAsStringAsync();
+
+        System.Diagnostics.Debug.WriteLine($"📥 Raw response JSON: {json.Substring(0, Math.Min(json.Length, 500))}...");
+
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Failed to query records: {response.StatusCode}\n{json}");
+        }
+
+        var results = JsonSerializer.Deserialize<List<DiningTableViewModel>>(json);
+        if (results?.Records == null || results.Records.Count == 0)
+        {
+            System.Diagnostics.Debug.WriteLine("⚠️ No profile found for username: " + username);
+            return null;
+        }
+
+        System.Diagnostics.Debug.WriteLine("✅ Profile record found. Converting to ViewModel...");
+
+        return new DiningViewModel(results);
+    }
+
+
+    public static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
+    {
+        using var client = new HttpClient();
+        var tokenUrl = $"https://{domain}/services/oauth2/token";
+
+        var formContent = new FormUrlEncodedContent(new[]{
+            new KeyValuePair<string, string>("grant_type", "client_credentials"),
+            new KeyValuePair<string, string>("client_id", config["Salesforce:ClientId"]),
+            new KeyValuePair<string, string>("client_secret", config["Salesforce:ClientSecret"])
+        });
+
+        var response = await client.PostAsync(tokenUrl, formContent);
+        var content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Failed to get token: {response.StatusCode}\n{content}");
+        }
+
+        return JsonSerializer.Deserialize<Dictionary<string, object>>(content);
+    }
+
+    
+}
