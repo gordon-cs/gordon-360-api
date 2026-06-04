@@ -45,7 +45,7 @@
             string clientId = config["Salesforce:ClientId"];
             string clientSecret = config["Salesforce:ClientSecret"];
 
-            var tokenData = await GetAccessTokenAsync();
+            var tokenData = await GetAccessTokenAsync(config);
             var accessToken = tokenData["access_token"].ToString();
             var instanceUrl = tokenData["instance_url"].ToString();
 
