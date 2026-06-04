@@ -1,4 +1,4 @@
-﻿namespace Gordon360.Models.ViewModels;
+﻿namespace Gordon360.Models.Salesforce;
 
 public static class SFDiningInfo
 {
@@ -11,5 +11,5 @@ public static class SFDiningInfo
     public const string PlanId = "PlanId__c";
     public const string PlanType = "PlanType__c";
     public const string InitialBalance = "InitialBalance__c";
-    public const string CurrentBalance = "CurrentBalance__c";
+    public const string CurrentBalance = "Current_Balance__c";
 }

@@ -12,7 +12,7 @@ public class MealPlanComponent
     public string PlanId { get; set; }
     public string PlanType { get; set; }
 
-    public int InitialBalance { get; set; }
+    public decimal InitialBalance { get; set; }
 
     public string CurrentBalance { get; set; }
 }

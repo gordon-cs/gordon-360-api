@@ -18,7 +18,7 @@ public class DiningTableViewModel
     public string PlanType { get; set; }
 
     [JsonPropertyName(SFDiningInfo.InitialBalance)]
-    public int InitialBalance { get; set; }
+    public decimal InitialBalance { get; set; }
 
     [JsonPropertyName(SFDiningInfo.CurrentBalance)]
     public string CurrentBalance { get; set; }

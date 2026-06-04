@@ -2255,27 +2255,6 @@
             </summary>
             <returns>The deleted slide</returns>
         </member>
-        <member name="T:Gordon360.Services.DiningService">
-            <summary>
-            Service that allows for meal control
-            </summary>
-        </member>
-        <member name="M:Gordon360.Services.DiningService.GetBalance(System.Int32,System.String)">
-            <summary>
-            
-            </summary>
-            <param name="cardHolderID"></param>
-            <param name="planID"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.DiningService.GetDiningPlanInfo(System.Int32,System.String)">
-            <summary>
-            Get information about the selected plan for the student user
-            </summary>
-            <param name="cardHolderID">Student's Gordon ID</param>
-            <param name="sessionCode">Current Session Code</param>
-            <returns></returns>
-        </member>
         <member name="T:Gordon360.Services.EmailService">
             <summary>
             Service class to facilitate getting emails for members of an activity.
@@ -3628,6 +3607,27 @@
             Fetches all the session records from the database.
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="T:Gordon360.Services.SFDiningService">
+            <summary>
+            Service that allows for meal control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.SFDiningService.GetBalance(System.Int32,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="cardHolderID"></param>
+            <param name="planID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Services.SFDiningService.GetDiningPlanInfo(System.Int32,System.String)">
+            <summary>
+            Get information about the selected plan for the student user
+            </summary>
+            <param name="cardHolderID">Student's Gordon ID</param>
+            <param name="sessionCode">Current Session Code</param>
+            <returns></returns>
         </member>
         <member name="M:Gordon360.Services.StudentEmploymentService.GetEmploymentAsync(System.String)">
             <summary>

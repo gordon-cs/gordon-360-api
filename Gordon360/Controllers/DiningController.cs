@@ -23,7 +23,7 @@ public class DiningController(CCTContext context, IDiningService diningService, 
         var sessionCode = Helpers.GetCurrentSession(context);
         var authenticatedUsername = AuthUtils.GetUsername(User);
         var authenticatedUserId = int.Parse(accountService.GetAccountByUsername(authenticatedUsername).GordonID);
-        var diningInfo = diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
+        var diningInfo = await diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
 
         if (diningInfo == null)
         {
@@ -31,7 +31,7 @@ public class DiningController(CCTContext context, IDiningService diningService, 
         }
         if (diningInfo.ChoiceDescription == "None")
         {
-            var diningBalance = DiningService.GetBalance(authenticatedUserId, FACSTAFF_MEALPLAN_ID);
+            var diningBalance = SFDiningService.GetBalance(authenticatedUserId, FACSTAFF_MEALPLAN_ID);
             if (diningBalance == null)
             {
                 return NotFound();

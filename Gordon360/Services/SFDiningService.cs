@@ -1,16 +1,22 @@
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.Salesforce;
-using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -32,7 +38,16 @@ public class SFDiningService : IDiningService
     //private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
     private static readonly string domain = "orgfarm-7c8ce5d310-dev-ed.develop.my.salesforce.com";
     private static readonly string apiVersion = "v60.0";
-    
+
+    public class SalesforceQueryResult<T>
+    {
+        public int totalSize { get; set; }
+
+        public bool done { get; set; }
+
+        public List<T> records { get; set; } = [];
+    }
+
     public SFDiningService(CCTContext context, IConfiguration config)
     {
         _context = context;
@@ -134,9 +149,9 @@ public class SFDiningService : IDiningService
     /// <param name="cardHolderID">Student's Gordon ID</param>
     /// <param name="sessionCode">Current Session Code</param>
     /// <returns></returns>
-    public DiningViewModel GetDiningPlanInfo(int cardHolderID, string sessionCode)
+    public async Task<DiningViewModel> GetDiningPlanInfo(int cardHolderID, string sessionCode)
     {
-    
+
         System.Diagnostics.Debug.WriteLine("🔐 Getting Salesforce access token...");
         string clientId = config["Salesforce:ClientId"];
         string clientSecret = config["Salesforce:ClientSecret"];
@@ -151,7 +166,7 @@ public class SFDiningService : IDiningService
             SELECT
                 FIELDS(ALL)
             FROM {SFDiningInfo.SFObjectName} 
-            WHERE {SFDiningInfo.StudentId} = '{cardHolderID}' && {SFDiningInfo.SessionCode} = '{sessionCode}'
+            WHERE {SFDiningInfo.StudentId} = {cardHolderID} AND {SFDiningInfo.SessionCode} = '{sessionCode.Trim()}'
             LIMIT 10
         ";
 
@@ -167,7 +182,7 @@ public class SFDiningService : IDiningService
         var response = await client.GetAsync(queryUrl);
         var json = await response.Content.ReadAsStringAsync();
 
-        System.Diagnostics.Debug.WriteLine($"📥 Raw response JSON: {json.Substring(0, Math.Min(json.Length, 500))}...");
+        System.Diagnostics.Debug.WriteLine($"📥 Raw response JSON: {json}...");
 
 
         if (!response.IsSuccessStatusCode)
@@ -175,16 +190,16 @@ public class SFDiningService : IDiningService
             throw new Exception($"Failed to query records: {response.StatusCode}\n{json}");
         }
 
-        var results = JsonSerializer.Deserialize<List<DiningTableViewModel>>(json);
-        if (results?.Records == null || results.Records.Count == 0)
-        {
-            System.Diagnostics.Debug.WriteLine("⚠️ No profile found for username: " + username);
-            return null;
-        }
+        var results =
+            JsonSerializer.Deserialize<
+                SalesforceQueryResult<DiningTableViewModel>
+            >(json);
+
+
 
         System.Diagnostics.Debug.WriteLine("✅ Profile record found. Converting to ViewModel...");
 
-        return new DiningViewModel(results);
+        return new DiningViewModel(results?.records);
     }
 
 
@@ -210,5 +225,5 @@ public class SFDiningService : IDiningService
         return JsonSerializer.Deserialize<Dictionary<string, object>>(content);
     }
 
-    
+
 }
