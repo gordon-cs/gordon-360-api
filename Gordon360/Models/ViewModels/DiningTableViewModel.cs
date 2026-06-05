@@ -3,6 +3,7 @@ using Gordon360.Models.Salesforce;
 
 namespace Gordon360.Models.ViewModels;
 
+[SalesforceObject(SFDiningInfo.SFObjectName)]
 public class DiningTableViewModel
 {
     [JsonPropertyName(SFDiningInfo.ChoiceDescription)]
