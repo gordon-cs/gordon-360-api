@@ -148,7 +148,7 @@ public class SFDiningService : IDiningService
         var records = await _sfContext.Query<DiningTableViewModel>(queryParameter);
         if (records == null || records.Count == 0)
         {
-            throw new ResourceNotFoundException("The plan was not found");
+            throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found" };
         }
         
         return new DiningViewModel(records);

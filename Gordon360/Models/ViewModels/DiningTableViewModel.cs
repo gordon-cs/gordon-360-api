@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Gordon360.Models.Salesforce;
+using Gordon360.Models.Salesforce.Attributes;
 
 namespace Gordon360.Models.ViewModels;
 

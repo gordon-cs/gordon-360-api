@@ -6,7 +6,7 @@ public static class SFDiningInfo
 
     public const string StudentId = "StudentId__c";
     public const string SessionCode = "SessionCode__c";
-    public const string ChoiceDescription = "ChoiceDescription__c";
+    public const string ChoiceDescription = "Choice_Description__c";
     public const string PlanDescriptions = "PlanDescriptions__c";
     public const string PlanId = "PlanId__c";
     public const string PlanType = "PlanType__c";

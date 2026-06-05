@@ -17,6 +17,8 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Gordon360.Models.Salesforce.Attributes;
+using System.Reflection;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -37,11 +39,11 @@ public class SalesforceContext
 
     public class SalesforceQueryResult<T>
     {
-        public int TotalSize { get; set; }
+        public int totalSize { get; set; }
 
-        public bool Done { get; set; }
+        public bool done { get; set; }
 
-        public List<T> Records { get; set; } = new List<T>();
+        public List<T> records { get; set; } = new List<T>();
     }
 
     public SalesforceContext(IConfiguration config)
@@ -122,7 +124,7 @@ public class SalesforceContext
         var results = JsonSerializer.Deserialize<SalesforceQueryResult<T>>(json);
 
 
-        return results?.Records;
+        return results?.records;
     }
 
 

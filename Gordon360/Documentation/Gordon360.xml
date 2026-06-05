@@ -1876,6 +1876,19 @@
             Whether the user wants their strengths to be private (not shown to other users)
             </summary>
         </member>
+        <member name="T:Gordon360.Models.Salesforce.Context.SalesforceContext">
+            <summary>
+            Service that allows for meal control
+            </summary>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.Context.SalesforceContext.Query``1(System.String)">
+            <summary>
+            Generic method to query any salesforce object and return a list of view models
+            </summary>
+            <typeparam name="T">The type of view model to return, must have SalesforceObject and JsonPropertyName attributes</typeparam>
+            <param name="queryParameter">The WHERE clause or other SOQL parameters to filter the query, e.g. "WHERE StudentId__c = '12345'"</param>
+            <returns>A list of view models of type T</returns>
+        </member>
         <member name="M:Gordon360.Models.ViewModels.BasicInfoViewModel.MatchSearch(System.String)">
             <summary>
             Matches basic info fields against <c>search</c>, returning a match key representing the value and precedence of the first match, or <c>null</c>.
