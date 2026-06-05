@@ -21,19 +21,18 @@ using System.Threading.Tasks;
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
 // </summary>
-namespace Gordon360.Services;
+namespace Gordon360.Models.Salesforce.Context;
 
 /// <summary>
 /// Service that allows for meal control
 /// </summary>
 public class SalesforceContext
 {
-    private CCTContext _context;
     private IConfiguration config;
-    private static string clientId;
-    private static string clientSecret;
-    private static string organizationUrl;
-    private static string apiVersion;
+    private static string ClientId;
+    private static string ClientSecret;
+    private static string OrganizationUrl;
+    private static string ApiVersion;
 
 
     public class SalesforceQueryResult<T>
@@ -49,10 +48,10 @@ public class SalesforceContext
     {
         this.config = config;
 
-        clientId = config["Salesforce:ClientId"];
-        clientSecret = config["Salesforce:ClientSecret"];
-        organizationUrl = config["Salesforce:OrganizationUrl"];
-        apiVersion = config["Salesforce:ApiVersion"];
+        ClientId = config["Salesforce:ClientId"];
+        ClientSecret = config["Salesforce:ClientSecret"];
+        OrganizationUrl = config["Salesforce:OrganizationUrl"];
+        ApiVersion = config["Salesforce:ApiVersion"];
     }
     
     private string GetSalesforceObjectName<T>()
@@ -107,7 +106,7 @@ public class SalesforceContext
 
         System.Diagnostics.Debug.WriteLine(soql);
 
-        var queryUrl = $"{instanceUrl}/services/data/{apiVersion}/query?q={Uri.EscapeDataString(soql)}";
+        var queryUrl = $"{instanceUrl}/services/data/{ApiVersion}/query?q={Uri.EscapeDataString(soql)}";
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var response = await client.GetAsync(queryUrl);
@@ -130,7 +129,7 @@ public class SalesforceContext
     public static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
     {
         using var client = new HttpClient();
-        var tokenUrl = $"https://{organizationUrl}/services/oauth2/token";
+        var tokenUrl = $"https://{OrganizationUrl}/services/oauth2/token";
 
         var formContent = new FormUrlEncodedContent(new[]{
             new KeyValuePair<string, string>("grant_type", "client_credentials"),

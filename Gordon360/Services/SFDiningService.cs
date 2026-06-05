@@ -17,6 +17,7 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Gordon360.Models.Salesforce.Context;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -28,7 +29,7 @@ namespace Gordon360.Services;
 /// </summary>
 public class SFDiningService : IDiningService
 {
-    private CCTContext _context;
+    private SalesforceContext _sfContext;
     private static string issuerID;
     private static string applicationId;
     private static string secret;
@@ -36,21 +37,10 @@ public class SFDiningService : IDiningService
     //private static string issuerID = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitIssuerID"];
     //private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
     //private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
-    private static readonly string domain = "orgfarm-7c8ce5d310-dev-ed.develop.my.salesforce.com";
-    private static readonly string apiVersion = "v60.0";
-
-    public class SalesforceQueryResult<T>
+ 
+    public SFDiningService(SalesforceContext sfContext, IConfiguration config)
     {
-        public int totalSize { get; set; }
-
-        public bool done { get; set; }
-
-        public List<T> records { get; set; } = [];
-    }
-
-    public SFDiningService(CCTContext context, IConfiguration config)
-    {
-        _context = context;
+        _sfContext = sfContext;
         this.config = config;
         issuerID = config["BonAppetit:IssuerID"];
         applicationId = config["BonAppetit:ApplicationID"];
@@ -151,79 +141,17 @@ public class SFDiningService : IDiningService
     /// <returns></returns>
     public async Task<DiningViewModel> GetDiningPlanInfo(int cardHolderID, string sessionCode)
     {
-
-        System.Diagnostics.Debug.WriteLine("🔐 Getting Salesforce access token...");
-        string clientId = config["Salesforce:ClientId"];
-        string clientSecret = config["Salesforce:ClientSecret"];
-
-        var tokenData = await GetAccessTokenAsync(config);
-        var accessToken = tokenData["access_token"].ToString();
-        var instanceUrl = tokenData["instance_url"].ToString();
-
-        System.Diagnostics.Debug.WriteLine("🔎 Building SOQL query...");
-
-        var soql = $@"
-            SELECT
-                FIELDS(ALL)
-            FROM {SFDiningInfo.SFObjectName} 
+        var queryParameter = $@"
             WHERE {SFDiningInfo.StudentId} = {cardHolderID} AND {SFDiningInfo.SessionCode} = '{sessionCode.Trim()}'
-            LIMIT 10
-        ";
+            LIMIT 10";
 
-        System.Diagnostics.Debug.WriteLine(soql);
-
-        var queryUrl = $"{instanceUrl}/services/data/{apiVersion}/query?q={Uri.EscapeDataString(soql)}";
-        System.Diagnostics.Debug.WriteLine($"🌐 Querying Salesforce: {queryUrl}");
-
-
-        using var client = new HttpClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-        var response = await client.GetAsync(queryUrl);
-        var json = await response.Content.ReadAsStringAsync();
-
-        System.Diagnostics.Debug.WriteLine($"📥 Raw response JSON: {json}...");
-
-
-        if (!response.IsSuccessStatusCode)
+        var records = await _sfContext.Query<DiningTableViewModel>(queryParameter);
+        if (records == null || records.Count == 0)
         {
-            throw new Exception($"Failed to query records: {response.StatusCode}\n{json}");
+            throw new ResourceNotFoundException("The plan was not found");
         }
-
-        var results =
-            JsonSerializer.Deserialize<
-                SalesforceQueryResult<DiningTableViewModel>
-            >(json);
-
-
-
-        System.Diagnostics.Debug.WriteLine("✅ Profile record found. Converting to ViewModel...");
-
-        return new DiningViewModel(results?.records);
+        
+        return new DiningViewModel(records);
     }
-
-
-    public static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
-    {
-        using var client = new HttpClient();
-        var tokenUrl = $"https://{domain}/services/oauth2/token";
-
-        var formContent = new FormUrlEncodedContent(new[]{
-            new KeyValuePair<string, string>("grant_type", "client_credentials"),
-            new KeyValuePair<string, string>("client_id", config["Salesforce:ClientId"]),
-            new KeyValuePair<string, string>("client_secret", config["Salesforce:ClientSecret"])
-        });
-
-        var response = await client.PostAsync(tokenUrl, formContent);
-        var content = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Failed to get token: {response.StatusCode}\n{content}");
-        }
-
-        return JsonSerializer.Deserialize<Dictionary<string, object>>(content);
-    }
-
 
 }
