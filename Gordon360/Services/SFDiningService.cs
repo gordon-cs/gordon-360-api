@@ -142,10 +142,19 @@ public class SFDiningService : IDiningService
     public async Task<DiningViewModel> GetDiningPlanInfo(int cardHolderID, string sessionCode)
     {
         var queryParameter = $@"
-            WHERE {SFDiningInfo.StudentId} = {cardHolderID} AND {SFDiningInfo.SessionCode} = '{sessionCode.Trim()}'
+            WHERE {SFDiningInfo.FieldNames.StudentId} = {cardHolderID} AND {SFDiningInfo.FieldNames.SessionCode} = '{sessionCode.Trim()}'
             LIMIT 10";
 
-        var records = await _sfContext.Query<DiningTableViewModel>(queryParameter);
+        var records = await _sfContext.Query<SFDiningInfo>(queryParameter)
+            .Select(info => new DiningTableViewModel
+                {
+                    ChoiceDescription = info.ChoiceDescription,
+                    PlanDescriptions = info.PlanDescriptions,
+                    PlanId = info.PlanId,
+                    PlanType = info.PlanType,
+                    InitialBalance = info.InitialBalance ?? 0,
+                    CurrentBalance = GetBalance(cardHolderID, info.PlanId)
+                });
         if (records == null || records.Count == 0)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found" };
