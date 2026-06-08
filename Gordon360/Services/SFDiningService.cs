@@ -145,7 +145,7 @@ public class SFDiningService : IDiningService
             WHERE {SFDiningInfo.FieldNames.StudentId} = {cardHolderID} AND {SFDiningInfo.FieldNames.SessionCode} = '{sessionCode.Trim()}'
             LIMIT 10";
 
-        var records = await _sfContext.Query<SFDiningInfo>(queryParameter)
+        var records = (await _sfContext.Query<SFDiningInfo>(queryParameter))
             .Select(info => new DiningTableViewModel
                 {
                     ChoiceDescription = info.ChoiceDescription,
@@ -155,7 +155,7 @@ public class SFDiningService : IDiningService
                     InitialBalance = info.InitialBalance ?? 0,
                     CurrentBalance = GetBalance(cardHolderID, info.PlanId)
                 });
-        if (records == null || records.Count == 0)
+        if (records == null || !records.Any())
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The plan was not found" };
         }

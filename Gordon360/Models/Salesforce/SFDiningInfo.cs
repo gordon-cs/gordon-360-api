@@ -18,7 +18,7 @@ public class SFDiningInfo
     }
 
     [JsonPropertyName(FieldNames.StudentId)]
-    public int StudentId { get; set; }
+    public decimal StudentId { get; set; }
 
     [JsonPropertyName(FieldNames.SessionCode)]
     public string SessionCode { get; set; }
