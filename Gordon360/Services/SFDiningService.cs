@@ -33,18 +33,17 @@ public class SFDiningService : IDiningService
     private static string issuerID;
     private static string applicationId;
     private static string secret;
-    private IConfiguration config;
+    
     //private static string issuerID = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitIssuerID"];
     //private static string applicationId = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitApplicationID"];
     //private static string secret = System.Web.Configuration.WebConfigurationManager.AppSettings["bonAppetitSecret"];
  
-    public SFDiningService(SalesforceContext sfContext, IConfiguration config)
+    public SFDiningService(SalesforceContext sfContext)
     {
         _sfContext = sfContext;
-        this.config = config;
-        issuerID = config["BonAppetit:IssuerID"];
-        applicationId = config["BonAppetit:ApplicationID"];
-        secret = config["BonAppetit:Secret"];
+        issuerID = sfContext.config["BonAppetit:IssuerID"];
+        applicationId = sfContext.config["BonAppetit:ApplicationID"];
+        secret = sfContext.config["BonAppetit:Secret"];
     }
 
     private static string getTimestamp()

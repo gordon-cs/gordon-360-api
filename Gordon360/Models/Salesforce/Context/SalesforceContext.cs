@@ -30,7 +30,7 @@ namespace Gordon360.Models.Salesforce.Context;
 /// </summary>
 public class SalesforceContext
 {
-    private IConfiguration config;
+    public IConfiguration config;
     private static string ClientId;
     private static string ClientSecret;
     private static string OrganizationUrl;
