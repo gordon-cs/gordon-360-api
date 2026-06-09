@@ -1,11 +1,10 @@
 ﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.Salesforce;
+using Gordon360.Models.Salesforce.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,8 +15,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Gordon360.Models.Salesforce.Context;
+using static System.Net.WebRequestMethods;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -79,38 +80,27 @@ public class SFDiningService : IDiningService
     /// <param name="cardHolderID"></param>
     /// <param name="planID"></param>
     /// <returns></returns>
-    public static string GetBalance(int cardHolderID, string planID)
+    public static async Task<string> GetBalance(int cardHolderID, string planID)
     {
         try
         {
 
             ServicePointManager.Expect100Continue = false;
 
-            WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
-
-            request.Method = "POST";
-
+            var uri = "https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr";
             string timestamp = getTimestamp();
+            string postData = $"issuerId={issuerID}&cardholderId={cardHolderID}&planId={planID}" +
+                $"&applicationId={applicationId}&valueCmd=bal&value=0&timestamp={timestamp}" +
+                $"&hash={getHash(cardHolderID, planID, timestamp)}";
 
-            // Create POST data and convert it to a byte array.  
-            string postData = $"issuerId={issuerID}&cardholderId={cardHolderID}&planId={planID}&applicationId={applicationId}&valueCmd=bal&value=0&timestamp={timestamp}&hash={getHash(cardHolderID, planID, timestamp)}";
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = byteArray.Length;
-
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
-
-            // Get the response.  
-            WebResponse response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+            HttpClient client = new();
+            var content = new StringContent(postData, Encoding.UTF8, "application/x-www-form-urlencoded");
+            using HttpResponseMessage response = await client.PostAsync(uri, content);
 
             // Get the stream containing content returned by the server.  
-            dataStream = response.GetResponseStream();
+            Stream dataStream = response.Content.ReadAsStream();
 
-            // Read the content. 
+            // Read the content.
             StreamReader reader = new StreamReader(dataStream);
             string responseFromServer = reader.ReadToEnd();
             JObject json = JObject.Parse(responseFromServer);
@@ -123,7 +113,6 @@ public class SFDiningService : IDiningService
             // Clean up the streams.  
             reader.Close();
             dataStream.Close();
-            response.Close();
             return balance;
         }
         catch
@@ -152,7 +141,7 @@ public class SFDiningService : IDiningService
                     PlanId = info.PlanId,
                     PlanType = info.PlanType,
                     InitialBalance = info.InitialBalance ?? 0,
-                    CurrentBalance = GetBalance(cardHolderID, info.PlanId)
+                    CurrentBalance = GetBalance(cardHolderID, info.PlanId).Result
                 });
         if (records == null || !records.Any())
         {
