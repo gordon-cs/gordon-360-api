@@ -87,27 +87,6 @@ public class SFDiningService : IDiningService
 
             ServicePointManager.Expect100Continue = false;
 
-            //WebRequest request = WebRequest.Create("https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr");
-
-            //request.Method = "POST";
-
-            //string timestamp = getTimestamp();
-
-            //// Create POST data and convert it to a byte array.  
-            //string postData = $"issuerId={issuerID}&cardholderId={cardHolderID}&planId={planID}&applicationId={applicationId}&valueCmd=bal&value=0&timestamp={timestamp}&hash={getHash(cardHolderID, planID, timestamp)}";
-            //byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-            //request.ContentType = "application/x-www-form-urlencoded";
-            //request.ContentLength = byteArray.Length;
-
-            //Stream dataStream = request.GetRequestStream();
-            //dataStream.Write(byteArray, 0, byteArray.Length);
-            //dataStream.Close();
-
-            //// Get the response.  
-            //WebResponse response = request.GetResponse();
-            //Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
             var uri = "https://bbapi.campuscardcenter.com/cs/api/mealplanDrCr";
             string timestamp = getTimestamp();
             string postData = $"issuerId={issuerID}&cardholderId={cardHolderID}&planId={planID}" +
@@ -162,7 +141,7 @@ public class SFDiningService : IDiningService
                     PlanId = info.PlanId,
                     PlanType = info.PlanType,
                     InitialBalance = info.InitialBalance ?? 0,
-                    CurrentBalance = GetBalance(cardHolderID, info.PlanId)
+                    CurrentBalance = GetBalance(cardHolderID, info.PlanId).Result
                 });
         if (records == null || !records.Any())
         {
