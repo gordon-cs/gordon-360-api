@@ -88,7 +88,7 @@ public class SalesforceContext
     /// <typeparam name="T">The type of view model to return, must have SalesforceObject and JsonPropertyName attributes</typeparam>
     /// <param name="queryParameter">The WHERE clause or other SOQL parameters to filter the query, e.g. "WHERE StudentId__c = '12345'"</param>
     /// <returns>A list of view models of type T</returns>
-    public async Task<List<T>> Query<T>(string queryParameter)
+    public async Task<List<T>> Query<T>(string queryParameter) where T : SalesforceObjectAttribute // TODO: Add JsonPropertyName attribute
     {
 
         var objectName = GetSalesforceObjectName<T>();
