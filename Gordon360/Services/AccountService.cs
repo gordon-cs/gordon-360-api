@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
+// load salesforceContext
+using Gordon360.Models.Salesforce.Context;
 
 namespace Gordon360.Services;
 
@@ -17,7 +19,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
 /// </summary>
-public class AccountService(CCTContext context) : IAccountService
+public class AccountService(CCTContext context, SalesforceContext salesforceContext) : IAccountService
 {
 
     /// <summary>
@@ -271,13 +273,15 @@ public class AccountService(CCTContext context) : IAccountService
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
     {
         var basicInfo = await context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();
-        return basicInfo.Select(
+        var sfBasicInfo = await salesforceContext.Query<SFAccount>("");
+            
+        return sfBasicInfo.Select(
             b => new BasicInfoViewModel
             {
-                FirstName = b.firstname,
-                LastName = b.lastname,
-                Nickname = b.Nickname,
-                UserName = b.Username
+                FirstName = b.FirstName,
+                LastName = b.LastName,
+                Nickname = b.FirstName,
+                UserName = b.Email
             });
     }
 
