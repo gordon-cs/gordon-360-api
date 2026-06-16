@@ -1,22 +1,26 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using System.Linq;
 
 namespace Gordon360.Utilities;
 
-public class ServerUtils
+public class ServerUtils(IServer server, IWebHostEnvironment env)
 {
-    private readonly IServer _server;
-
-    public ServerUtils(IServer server)
-    {
-        _server = server;
-    }
-
     public string? GetAddress()
     {
-        var addresses = _server.Features.Get<IServerAddressesFeature>()?.Addresses;
-        var serverAddress = addresses?.FirstOrDefault(a => a.StartsWith("https")) ?? addresses?.FirstOrDefault();
-        return serverAddress;
+        switch (env.EnvironmentName)
+        {
+            case "Train":
+                return "https://360ApiTrain.gordon.edu/";
+            case "Production":
+                return "https://360Api.gordon.edu/";
+            default:
+                {
+                    var addresses = server.Features.Get<IServerAddressesFeature>()?.Addresses;
+                    var serverAddress = addresses?.FirstOrDefault(a => a.StartsWith("https")) ?? addresses?.FirstOrDefault();
+                    return serverAddress;
+                }
+        }
     }
 }
