@@ -1170,14 +1170,14 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeHours(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeHours(System.String,System.String)">
             <summary>
             Update office hours
             </summary>
             <param name="value">office hours</param>
             <returns></returns>
         </member>
-        <member name="M:Gordon360.Controllers.ProfilesController.UpdateMailStop(System.String)">
+        <member name="M:Gordon360.Controllers.ProfilesController.UpdateMailStop(System.String,System.String)">
             <summary>
             Update mail location
             </summary>

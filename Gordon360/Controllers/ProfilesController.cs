@@ -442,6 +442,8 @@ public class ProfilesController(IProfileService profileService,
     /// <summary>
     /// Update office location (building description and room number)
     /// </summary>
+    /// <param name="officeLocation">location of faculty office</param>
+    /// <param name="username">optional authenticated username</param>
     /// <returns></returns>
     [HttpPut]
     [Route("office_location")]
@@ -452,7 +454,7 @@ public class ProfilesController(IProfileService profileService,
         if (!string.IsNullOrEmpty(username))
         {
             var groups = AuthUtils.GetGroups(User);
-            if (!groups.Contains(AuthGroup.OfficeAdmin))
+            if (!groups.Contains(AuthGroup.OfficeAdmin) && !groups.Contains(AuthGroup.Student))
             {
                 return Forbid();
             }
@@ -470,28 +472,58 @@ public class ProfilesController(IProfileService profileService,
     /// Update office hours
     /// </summary>
     /// <param name="value">office hours</param>
+    /// <param name="username">optional authenticated username</param>
     /// <returns></returns>
     [HttpPut]
     [Route("office_hours")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody] string value)
+    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody] string value, string? username = null)
     {
-        var username = AuthUtils.GetUsername(User);
+        var authenticatedUsername = AuthUtils.GetUsername(User);
+
+        if (!string.IsNullOrEmpty(username))
+        {
+            var groups = AuthUtils.GetGroups(User);
+            if (!groups.Contains(AuthGroup.OfficeAdmin) && !groups.Contains(AuthGroup.Student))
+            {
+                return Forbid();
+            }
+        }
+        else
+        {
+            username = authenticatedUsername;
+        }
+
         var result = await profileService.UpdateOfficeHoursAsync(username, value);
-        return Ok(result);
+        return Ok();
     }
 
     /// <summary>
     /// Update mail location
     /// </summary>
     /// <param name="value">mail location</param>
+    /// <param name="username">optional authenticated username</param>
     /// <returns></returns>
     [HttpPut]
     [Route("mailstop")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody] string value)
+    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody] string value, string? username = null)
     {
-        var username = AuthUtils.GetUsername(User);
+        var authenticatedUsername = AuthUtils.GetUsername(User);
+
+        if (!string.IsNullOrEmpty(username))
+        {
+            var groups = AuthUtils.GetGroups(User);
+            if (!groups.Contains(AuthGroup.OfficeAdmin) && !groups.Contains(AuthGroup.Student))
+            {
+                return Forbid();
+            }
+        }
+        else
+        {
+            username = authenticatedUsername;
+        }
+
         var result = await profileService.UpdateMailStopAsync(username, value);
-        return Ok(result);
+        return Ok();
     }
 
     /// <summary>
