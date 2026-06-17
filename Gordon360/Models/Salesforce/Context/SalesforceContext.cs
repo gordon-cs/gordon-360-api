@@ -129,6 +129,38 @@ public class SalesforceContext
         return results?.records;
     }
 
+    public async Task<string> QueryJson(string queryString)
+    {
+
+        // put proper error handling here if the name is not found
+            
+        var tokenData = await GetAccessTokenAsync(config);
+        var accessToken = tokenData["access_token"].ToString();
+        var instanceUrl = tokenData["instance_url"].ToString();
+
+        System.Diagnostics.Debug.WriteLine($"access token: {accessToken}");
+
+
+        
+
+        System.Diagnostics.Debug.WriteLine(queryString);
+
+        var queryUrl = $"{instanceUrl}/services/data/{ApiVersion}/query?q={Uri.EscapeDataString(queryString)}";
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        var response = await client.GetAsync(queryUrl);
+        var json = await response.Content.ReadAsStringAsync();
+
+        System.Diagnostics.Debug.WriteLine($"📥 Raw response JSON: {json}...");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Failed to query records: {response.StatusCode}\n{json}");
+        }
+
+        return  json;
+    }
+
 
     public static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
     {
