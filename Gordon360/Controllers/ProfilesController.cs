@@ -30,7 +30,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("")]
-    public async Task<ActionResult<ProfileViewModel?>> Get()
+    public ActionResult<ProfileViewModel?> Get()
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
@@ -44,7 +44,7 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
 
-        var profile = await SFProfileService.GetProfileAsync(authenticatedUserUsername, config);
+        var profile = profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
     }
@@ -54,7 +54,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("{username}")]
-    public async Task<ActionResult<ProfileViewModel?>> GetUserProfile(string username)
+    public ActionResult<ProfileViewModel?> GetUserProfile(string username)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
@@ -96,12 +96,12 @@ public class ProfilesController(IProfileService profileService,
             alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
         }
 
+        if (student is null && alumni is null && faculty is null)
+        {
+            return Ok(null);
+        }
 
-        System.Diagnostics.Debug.WriteLine("##############################################################&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
-        var profile = await SFProfileService.GetProfileAsync(username, config);
-        System.Diagnostics.Debug.WriteLine($"Profile for {username} retrieved successfully.");
-        System.Diagnostics.Debug.WriteLine($"Profile ID: {profile.ID}");
+        var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
 
         return Ok(profile);
     }

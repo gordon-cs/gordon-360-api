@@ -2054,7 +2054,7 @@
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.AccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext)">
+        <member name="M:Gordon360.Services.AccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Models.Salesforce.Context.SalesforceContext)">
             <summary>
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>

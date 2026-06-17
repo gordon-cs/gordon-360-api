@@ -99,6 +99,8 @@ public class SalesforceContext
         var accessToken = tokenData["access_token"].ToString();
         var instanceUrl = tokenData["instance_url"].ToString();
 
+        System.Diagnostics.Debug.WriteLine($"access token: {accessToken}");
+
 
         var soql = $@"
             SELECT

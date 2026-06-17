@@ -12,6 +12,7 @@ using Gordon360.Enums;
 using System;
 // load salesforceContext
 using Gordon360.Models.Salesforce.Context;
+using Gordon360.Models.Salesforce;
 
 namespace Gordon360.Services;
 
@@ -274,7 +275,12 @@ public class AccountService(CCTContext context, SalesforceContext salesforceCont
     {
         var basicInfo = await context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();
         var sfBasicInfo = await salesforceContext.Query<SFAccount>("");
-            
+        System.Diagnostics.Debug.WriteLine($"SF Basic Info Count: {sfBasicInfo.Count()}");
+        // print lots of stars
+        System.Diagnostics.Debug.WriteLine(new string('*', 50));
+        // print the first Basic info object
+        System.Diagnostics.Debug.WriteLine(sfBasicInfo[0].ToString());
+
         return sfBasicInfo.Select(
             b => new BasicInfoViewModel
             {
