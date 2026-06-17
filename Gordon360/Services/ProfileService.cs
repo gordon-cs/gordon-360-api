@@ -383,6 +383,9 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         user.mail_server = newMail;
         await webSQLContext.SaveChangesAsync();
 
+        // Get updated profile
+        profile = GetFacultyStaffProfileByUsername(username);
+
         return profile;
     }
 

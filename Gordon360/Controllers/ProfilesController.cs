@@ -476,7 +476,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpPut]
     [Route("office_hours")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody] string value, string? username = null)
+    public async Task<ActionResult<string>> UpdateOfficeHours([FromBody] string value, string? username = null)
     {
         var authenticatedUsername = AuthUtils.GetUsername(User);
 
@@ -494,7 +494,7 @@ public class ProfilesController(IProfileService profileService,
         }
 
         var result = await profileService.UpdateOfficeHoursAsync(username, value);
-        return Ok();
+        return Ok(result.office_hours);
     }
 
     /// <summary>
@@ -505,7 +505,7 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpPut]
     [Route("mailstop")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody] string value, string? username = null)
+    public async Task<ActionResult<string>> UpdateMailStop([FromBody] string value, string? username = null)
     {
         var authenticatedUsername = AuthUtils.GetUsername(User);
 
@@ -523,7 +523,7 @@ public class ProfilesController(IProfileService profileService,
         }
 
         var result = await profileService.UpdateMailStopAsync(username, value);
-        return Ok();
+        return Ok(result.Mail_Description);
     }
 
     /// <summary>
