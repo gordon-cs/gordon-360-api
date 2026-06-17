@@ -443,7 +443,7 @@ public class ProfilesController(IProfileService profileService,
     /// Update office location (building description and room number)
     /// </summary>
     /// <param name="officeLocation">location of faculty office</param>
-    /// <param name="username">optional authenticated username</param>
+    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("office_location")]
@@ -472,7 +472,7 @@ public class ProfilesController(IProfileService profileService,
     /// Update office hours
     /// </summary>
     /// <param name="value">office hours</param>
-    /// <param name="username">optional authenticated username</param>
+    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("office_hours")]
@@ -501,7 +501,7 @@ public class ProfilesController(IProfileService profileService,
     /// Update mail location
     /// </summary>
     /// <param name="value">mail location</param>
-    /// <param name="username">optional authenticated username</param>
+    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("mailstop")]

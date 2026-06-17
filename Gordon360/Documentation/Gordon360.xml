@@ -1168,6 +1168,8 @@
             <summary>
             Update office location (building description and room number)
             </summary>
+            <param name="officeLocation">location of faculty office</param>
+            <param name="username">optional username to be authenticated</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateOfficeHours(System.String,System.String)">
@@ -1175,6 +1177,7 @@
             Update office hours
             </summary>
             <param name="value">office hours</param>
+            <param name="username">optional username to be authenticated</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMailStop(System.String,System.String)">
@@ -1182,6 +1185,7 @@
             Update mail location
             </summary>
             <param name="value">mail location</param>
+            <param name="username">optional username to be authenticated</param>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.ProfilesController.UpdateMobilePrivacyAsync(System.String)">
