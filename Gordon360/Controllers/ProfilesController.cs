@@ -523,7 +523,12 @@ public class ProfilesController(IProfileService profileService,
         }
 
         var result = await profileService.UpdateMailStopAsync(username, value);
-        return Ok(result.Mail_Description);
+        return Ok(new
+        {
+            MailLocation = result.Mail_Location,
+            MailDescription = result.Mail_Description
+        });
+
     }
 
     /// <summary>
