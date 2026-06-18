@@ -454,7 +454,7 @@ public class ProfilesController(IProfileService profileService,
         if (!string.IsNullOrEmpty(username))
         {
             var groups = AuthUtils.GetGroups(User);
-            if (!groups.Contains(AuthGroup.OfficeAdmin) && !groups.Contains(AuthGroup.Student))
+            if (!groups.Contains(AuthGroup.OfficeAdmin))
             {
                 return Forbid();
             }
@@ -483,7 +483,7 @@ public class ProfilesController(IProfileService profileService,
         if (!string.IsNullOrEmpty(username))
         {
             var groups = AuthUtils.GetGroups(User);
-            if (!groups.Contains(AuthGroup.OfficeAdmin) && !groups.Contains(AuthGroup.Student))
+            if (!groups.Contains(AuthGroup.OfficeAdmin))
             {
                 return Forbid();
             }
@@ -512,7 +512,7 @@ public class ProfilesController(IProfileService profileService,
         if (!string.IsNullOrEmpty(username))
         {
             var groups = AuthUtils.GetGroups(User);
-            if (!groups.Contains(AuthGroup.OfficeAdmin) && !groups.Contains(AuthGroup.Student))
+            if (!groups.Contains(AuthGroup.OfficeAdmin))
             {
                 return Forbid();
             }
