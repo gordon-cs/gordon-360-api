@@ -331,14 +331,15 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
         // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
         // privacy settings in profile.
-        
+
         // NOTE: The "old-style" privacy settings in the profile (e.g. IsMobilePhonePrivate)
         // are set by HR or the student matriciulation process.  These settings will be used
         // for 360 until the user chooses privacy settings in their profile.
 
-        foreach (int fieldID in context.UserPrivacy_Fields.Select(s => s.ID))
+        foreach (UserPrivacy_Fields field in context.UserPrivacy_Fields)
         {
-            var field = context.UserPrivacy_Fields.Where(s => s.ID == fieldID).FirstOrDefault()?.Field;
+            int fieldID = field.ID;
+            string fieldName = field.Field;
 
             // Determine the visibility for the current privacy field
             //var privacy.Where(f => f.Field == )
@@ -374,7 +375,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             // Enforce the visibility for the current privacy field
             if ((viewerIsSiteAdmin || viewerIsPolice) && visibilityID != UserPrivacyViewModel.Public_GroupID)
             {
-                MarkAsPrivate(restricted_profile, field);
+                MarkAsPrivate(restricted_profile, fieldName);
             }
             else if (viewerIsFacStaff)
             {
@@ -382,21 +383,21 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 {
                     if (visibilityID == UserPrivacyViewModel.Private_GroupID)
                     {
-                        MakePrivate(restricted_profile, field);
+                        MakePrivate(restricted_profile, fieldName);
                     }
                     else if (visibilityID == UserPrivacyViewModel.FacStaff_GroupID)
                     {
-                        MarkAsPrivate(restricted_profile, field);
+                        MarkAsPrivate(restricted_profile, fieldName);
                     }
                 }
                 else if ((profileIsStudent || profileIsAlumni) && visibilityID != UserPrivacyViewModel.Public_GroupID)
                 {
-                    MarkAsPrivate(restricted_profile, field);
+                    MarkAsPrivate(restricted_profile, fieldName);
                 }
             } 
             else if ((viewerIsStudent || viewerIsAlumni) && visibilityID != UserPrivacyViewModel.Public_GroupID)
             {
-                MakePrivate(restricted_profile, field);
+                MakePrivate(restricted_profile, fieldName);
             }
         }
 

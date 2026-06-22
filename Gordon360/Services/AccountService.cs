@@ -11,6 +11,7 @@ using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
 using Microsoft.Graph;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services;
 
@@ -412,21 +413,13 @@ public class AccountService(CCTContext context) : IAccountService
         // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
         if (!string.IsNullOrEmpty(homeCity))
         {
-            var homeCityFieldId = context.UserPrivacy_Fields   
-                    .Where(f => f.Field == "HomeCity")
-                    .Select(f => f.ID)
-                    .FirstOrDefault();
-            var privateVisibilityId = context.UserPrivacy_Visibility_Groups
-                    .Where(v => v.Group == "Private")
-                    .Select(v => v.ID)
-                    .FirstOrDefault();
-            var facStaffVisibilityId = context.UserPrivacy_Visibility_Groups
-                    .Where(v => v.Group == "FacStaff")
-                    .Select(v => v.ID)
-                    .FirstOrDefault();
+            IQueryable<UserPrivacy_Settings> privacySettings = context.UserPrivacy_Settings;
             var homePrivacy = authGroups.Contains(AuthGroup.FacStaff)
-                ? context.UserPrivacy_Settings.Where(a => (a.Field == homeCityFieldId && a.Visibility != privateVisibilityId))
-                : context.UserPrivacy_Settings.Where(a => (a.Field == homeCityFieldId && a.Visibility != privateVisibilityId && a.Visibility != facStaffVisibilityId));
+                ? privacySettings.Where(a => a.FieldNavigation.Field == "HomeCity"
+                                            && a.VisibilityNavigation.Group != "Private")
+                : privacySettings.Where(a => a.FieldNavigation.Field == "HomeCity"
+                                            && a.VisibilityNavigation.Group != "Private"
+                                            && a.VisibilityNavigation.Group != "FacStaff");
             facstaff = facstaff.Join(homePrivacy,
                 user => user.ID, privs => privs.gordon_id,
                 (user, privs) => user
