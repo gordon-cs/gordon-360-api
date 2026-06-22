@@ -454,7 +454,7 @@ public class ProfilesController(IProfileService profileService,
             username = AuthUtils.GetUsername(User);
         }
 
-        if (!isUserAuthorized(username, AuthGroup.OfficeAdmin))
+        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
         {
             return Forbid();
         }
@@ -481,7 +481,7 @@ public class ProfilesController(IProfileService profileService,
             username = AuthUtils.GetUsername(User);
         }
 
-        if (!isUserAuthorized(username, AuthGroup.OfficeAdmin))
+        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
         {
             return Forbid();
         }
@@ -505,7 +505,7 @@ public class ProfilesController(IProfileService profileService,
             username = AuthUtils.GetUsername(User);
         }
 
-        if (!isUserAuthorized(username, AuthGroup.OfficeAdmin))
+        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
         {
             return Forbid();
         }
@@ -683,7 +683,15 @@ public class ProfilesController(IProfileService profileService,
         return Ok(graduationInfo);
     }
 
-    private bool isUserAuthorized(string username, AuthGroup group)
+    /// <summary>
+    /// Gets whether or not permission to modify a user is granted, based on
+    /// whether the user being modified is the active user or whether the user
+    /// is part of a group that would grant access
+    /// </summary>
+    /// <param name="username">username of the profile being modified</param>
+    /// <param name="group">group that allows current user to modify profile</param>
+    /// <returns>true or false based on whether access is granted</returns>
+    private bool IsUserAuthorized(string username, AuthGroup group)
     {
         if (username != AuthUtils.GetUsername(User))
         {
