@@ -49,11 +49,12 @@ public class SalesforceContext
     public SalesforceContext(IConfiguration config)
     {
         this.config = config;
+        var sf = "Salesforce";
 
-        ClientId = config["Salesforce:ClientId"];
-        ClientSecret = config["Salesforce:ClientSecret"];
-        OrganizationUrl = config["Salesforce:OrganizationUrl"];
-        ApiVersion = config["Salesforce:ApiVersion"];
+        ClientId = config[$"{sf}:ClientId"];
+        ClientSecret = config[$"{sf}:ClientSecret"];
+        OrganizationUrl = config[$"{sf}:OrganizationUrl"];
+        ApiVersion = config[$"{sf}:ApiVersion"];
     }
     
     private string GetSalesforceObjectName<T>()

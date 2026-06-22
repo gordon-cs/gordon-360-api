@@ -274,14 +274,14 @@ public class AccountService(CCTContext context, SalesforceContext salesforceCont
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
     {
         var basicInfo = await context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();
-        var sfBasicInfo = await salesforceContext.Query<SFAccount>("");
+        /*var sfBasicInfo = await salesforceContext.Query<SFAccount>("");
         System.Diagnostics.Debug.WriteLine($"SF Basic Info Count: {sfBasicInfo.Count()}");
         // print lots of stars
         System.Diagnostics.Debug.WriteLine(new string('*', 50));
         // print the first Basic info object
         System.Diagnostics.Debug.WriteLine(sfBasicInfo[0].ToString());
 
-        return sfBasicInfo.Select(
+        return basicInfo.Select(
             b => new BasicInfoViewModel
             {
                 FirstName = b.FirstName,
@@ -289,6 +289,16 @@ public class AccountService(CCTContext context, SalesforceContext salesforceCont
                 Nickname = b.FirstName,
                 UserName = b.Email
             });
+        */
+
+        return basicInfo.Select(
+             b => new BasicInfoViewModel
+             {
+                 FirstName = b.firstname,
+                 LastName = b.lastname,
+                 Nickname = b.Nickname,
+                 UserName = b.Username
+             });
     }
 
     public ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts)

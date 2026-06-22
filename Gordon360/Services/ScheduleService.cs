@@ -1,11 +1,15 @@
-﻿using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.CCT;
+using Gordon360.Models.CCT.Context;
+using Gordon360.Models.Salesforce.Context;
 using Gordon360.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
+// importing to be able to use JObject for parsing salesforce query results
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Gordon360.Models.Salesforce.Context;
 
 namespace Gordon360.Services;
 
@@ -82,10 +86,11 @@ public class ScheduleService(CCTContext context, SalesforceContext salesforceCon
     /// <returns>CoursesByTermViewModel if found, null if not found</returns>
     public async Task<IEnumerable<CoursesByTermViewModel>> GetAllInstructorCoursesByTermAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await context.UserCourses
+        /*List<UserCoursesViewModel> courses = await context.UserCourses
             .Where(x => x.Username == username && x.Role == "Instructor")
             .Select(c => (UserCoursesViewModel)c)
-            .ToListAsync();
+            .ToListAsync();*/
+        List<UserCoursesViewModel> courses = await GetUserCourses(username, "Teacher");
 
         IEnumerable<YearTermTableViewModel> terms = await academicTermService.GetAllTermsAsync();
 
@@ -99,114 +104,161 @@ public class ScheduleService(CCTContext context, SalesforceContext salesforceCon
         return coursesByTerm.OrderByDescending(cbt => cbt.TermBeginDate);
     }
 
-    public async Task<List<UserCoursesViewModel>> GetUserCourses(string username)
+    public async Task<List<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
     {
+        var nameParam = username == "360.StudentTest" ? "woobensky.pierre" : username;
+        var roleCondition = role == "" ? "" : $"AND ParticipantAffiliation = '{role}'";
         var soql = @$"SELECT
-                        Name,
-                        LearningCourse.SubjectAbbreviation,
-                        LearningCourse.CourseNumber,
-                        AcademicSession.AcademicTerm.Name,
+    Name,
+    LearningCourse.SubjectAbbreviation,
+    LearningCourse.CourseNumber,
+    AcademicSession.AcademicTerm.Name,
+    AcademicSession.gc_Jenz_Session_Code__c,
+    AcademicSession.gc_Jenz_Subterm_Code__c,
+    AcademicSession.gc_Jenz_Term_Code__c,
+    AcademicSession.gc_Jenz_Year_Code__c,
 
-                        (
-                            SELECT
-                                ParticipantAffiliation,
-                                ParticipationStatus
-                            FROM CourseOfferingParticipants
-                        ),
+    (
+        SELECT
+            ParticipantAffiliation,
+            ParticipationStatus,
+            ParticipantContact.Name
+            
+        FROM CourseOfferingParticipants
+        WHERE ParticipantContact.Email LIKE '{nameParam}%'
+    ),
 
-                        (
-                            SELECT
-                                Description,
-                                IsSunday,
-                                IsMonday,
-                                IsTuesday,
-                                IsWednesday,
-                                IsThursday,
-                                IsFriday,
-                                IsSaturday,
-                                Location.ExternalReference,
-                                StartDate,
-                                EndDate
-                            FROM CourseOfferingSchedules
-                        )
+    (
+        SELECT
+            Description,
+            IsSunday,
+            IsMonday,
+            IsTuesday,
+            IsWednesday,
+            IsThursday,
+            IsFriday,
+            IsSaturday,
+            Location.ExternalReference,
+            StartDate,
+            EndDate,
+            StartTime,
+            EndTime
+        FROM CourseOfferingSchedules
+    )
 
-                    FROM CourseOffering
-                    WHERE Id IN (
-                        SELECT CourseOfferingId
-                        FROM CourseOfferingParticipant
-                        WHERE ParticipantContact.Name LIKE '%Sophia%'
-                    )";
+FROM CourseOffering
+WHERE Id IN (
+    SELECT CourseOfferingId
+    FROM CourseOfferingParticipant
+    WHERE ParticipantContact.Email LIKE '{nameParam}%'
+        AND (NOT (ParticipationStatus='Dropped' OR ParticipationStatus='Withdrew'))
+        {roleCondition}
+)";
 
         var json = await salesforceContext.QueryJson(soql);
 
         var root = JObject.Parse(json);
+        
 
         var results = new List<UserCoursesViewModel>();
 
         foreach (var course in root["records"]!)
         {
+            var schedules =
+                course["CourseOfferingSchedules"] as JObject
+                ?? new JObject(
+                    new JProperty("records", new JArray())
+                );
+
+            var participants =
+                course["CourseOfferingParticipants"] as JObject
+                ?? new JObject(
+                    new JProperty("records", new JArray())
+                );
+
             var firstSchedule =
-                course["CourseOfferingSchedules"]?["records"]?.FirstOrDefault();
+                schedules["records"]?.FirstOrDefault();
 
             var participant =
-                course["CourseOfferingParticipants"]?["records"]?.FirstOrDefault();
+                participants["records"]?.FirstOrDefault();
 
-            results.Add(new UserCoursesViewModel
+            var academicSession = course["AcademicSession"] as JObject;
+            var academicTerm = academicSession?["AcademicTerm"] as JObject;
+
+            var learningCourse = course["LearningCourse"] as JObject;
+
+            var location = firstSchedule?["Location"] as JObject;
+
+            results.Add(new UserCourses
             {
-                SessionCode =
-                    course["AcademicSession"]?["AcademicTerm"]?["Name"]?.ToString(),
-
-                YR_CDE = "2026",
-
-                TRM_CDE =
-                    course["AcademicSession"]?["AcademicTerm"]?["Name"]?.ToString(),
-
-                CRS_CDE =
-                    $"{course["LearningCourse"]?["SubjectAbbreviation"]}-{course["LearningCourse"]?["CourseNumber"]}",
-
-                CRS_TITLE =
-                    course["Name"]?.ToString() + "SF Test",
-
-                BLDG_CDE =
-                    firstSchedule?["Location"]?["ExternalReference"]?.ToString(),
-
-                ROOM_CDE =
-                    firstSchedule?["Description"]?.ToString(),
-
-                MONDAY_CDE =
-                    firstSchedule?["IsMonday"]?.Value<bool>() == true ? "Y" : "N",
-
-                TUESDAY_CDE =
-                    firstSchedule?["IsTuesday"]?.Value<bool>() == true ? "Y" : "N",
-
-                WEDNESDAY_CDE =
-                    firstSchedule?["IsWednesday"]?.Value<bool>() == true ? "Y" : "N",
-
-                THURSDAY_CDE =
-                    firstSchedule?["IsThursday"]?.Value<bool>() == true ? "Y" : "N",
-
-                FRIDAY_CDE =
-                    firstSchedule?["IsFriday"]?.Value<bool>() == true ? "Y" : "N",
-
-                SATURDAY_CDE =
-                    firstSchedule?["IsSaturday"]?.Value<bool>() == true ? "Y" : "N",
-
-                BEGIN_DATE =
-                    firstSchedule?["StartDate"]?.Value<DateTime>(),
-
-                END_DATE =
-                    firstSchedule?["EndDate"]?.Value<DateTime>(),
-
-                BEGIN_TIME =
-                    new TimeSpan(9, 0, 0), // placeholder
-
-                END_TIME =
-                    new TimeSpan(10, 15, 0), // placeholder
-
-                SUB_TERM_CDE = "MAIN",
+                Username = username,
 
                 Role =
-                    participant?["ParticipantAffiliation"]?.ToString()
+        participant?["ParticipantAffiliation"]?.ToString() ?? "",
+
+                YR_CDE =
+        academicSession?["gc_Jenz_Year_Code__c"]?.ToString() ?? "",
+
+                TRM_CDE =
+        academicSession?["gc_Jenz_Term_Code__c"]?.ToString() ?? "",
+
+                SUBTERM_DESC = academicSession?["gc_Jenz_Subterm_Code__c"]?.ToString() ?? "",
+
+                SUBTERM_SORT_ORDER = null,
+
+                CRS_CDE =
+        $"{learningCourse?["SubjectAbbreviation"]?.ToString() ?? ""}-{learningCourse?["CourseNumber"]?.ToString() ?? ""}",
+
+                CRS_TITLE =
+        course["Name"]?.ToString() ?? "",
+
+                INSTRUCTOR_ID = null,
+
+                BLDG_CDE =
+        location?["ExternalReference"]?.ToString() ?? "",
+
+                ROOM_CDE = "",
+
+                MONDAY_CDE =
+        firstSchedule?["IsMonday"]?.Value<bool?>() == true ? "M" : "",
+
+                TUESDAY_CDE =
+        firstSchedule?["IsTuesday"]?.Value<bool?>() == true ? "T" : "",
+
+                WEDNESDAY_CDE =
+        firstSchedule?["IsWednesday"]?.Value<bool?>() == true ? "W" : "",
+
+                THURSDAY_CDE =
+        firstSchedule?["IsThursday"]?.Value<bool?>() == true ? "R" : "",
+
+                FRIDAY_CDE =
+        firstSchedule?["IsFriday"]?.Value<bool?>() == true ? "F" : "",
+
+                SATURDAY_CDE =
+        firstSchedule?["IsSaturday"]?.Value<bool?>() == true ? "S" : "",
+
+                SUNDAY_CDE =
+        firstSchedule?["IsSunday"]?.Value<bool?>() == true ? "U" : "",
+
+                BEGIN_DATE =
+        firstSchedule?["StartDate"]?.Value<DateTime?>(),
+
+                END_DATE =
+        firstSchedule?["EndDate"]?.Value<DateTime?>(),
+
+                BEGIN_TIME =
+        TimeSpan.TryParse(
+            firstSchedule?["StartTime"]?.ToString()?.Replace("Z", ""),
+            out var beginTime)
+                ? beginTime
+                : null,
+
+                END_TIME =
+        TimeSpan.TryParse(
+            firstSchedule?["EndTime"]?.ToString()?.Replace("Z", ""),
+            out var endTime)
+                ? endTime
+                : null
             });
         }
 
