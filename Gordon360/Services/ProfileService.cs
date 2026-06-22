@@ -342,6 +342,9 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         user.Room = newRoom;
         await webSQLContext.SaveChangesAsync();
 
+        // Get updated profile
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+
         return profile;
     }
 
@@ -353,15 +356,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
     {
-        var profile = GetFacultyStaffProfileByUsername(username);
-        if (profile == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
-        }
-        var acccount = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
-        var user = webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
+        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var acccount = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var user = webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.office_hours = newHours;
         await webSQLContext.SaveChangesAsync();
+
+        // Get updated profile
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
@@ -374,17 +376,13 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail)
     {
-        var profile = GetFacultyStaffProfileByUsername(username);
-        if (profile == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
-        }
-        var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.mail_server = newMail;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = GetFacultyStaffProfileByUsername(username);
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
