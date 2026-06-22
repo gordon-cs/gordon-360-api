@@ -449,19 +449,14 @@ public class ProfilesController(IProfileService profileService,
     [Route("office_location")]
     public async Task<ActionResult> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation, string? username = null)
     {
-        var authenticatedUsername = AuthUtils.GetUsername(User);
-
-        if (!string.IsNullOrEmpty(username))
+        if (string.IsNullOrEmpty(username))
         {
-            var groups = AuthUtils.GetGroups(User);
-            if (!groups.Contains(AuthGroup.OfficeAdmin))
-            {
-                return Forbid();
-            }
+            username = AuthUtils.GetUsername(User);
         }
-        else
+
+        if (!isUserAuthorized(username, AuthGroup.OfficeAdmin))
         {
-            username = authenticatedUsername;
+            return Forbid();
         }
 
         var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingCode, officeLocation.RoomNumber);
@@ -481,19 +476,14 @@ public class ProfilesController(IProfileService profileService,
     [Route("office_hours")]
     public async Task<ActionResult<string>> UpdateOfficeHours([FromBody] string value, string? username = null)
     {
-        var authenticatedUsername = AuthUtils.GetUsername(User);
-
-        if (!string.IsNullOrEmpty(username))
+        if (string.IsNullOrEmpty(username))
         {
-            var groups = AuthUtils.GetGroups(User);
-            if (!groups.Contains(AuthGroup.OfficeAdmin))
-            {
-                return Forbid();
-            }
+            username = AuthUtils.GetUsername(User);
         }
-        else
+
+        if (!isUserAuthorized(username, AuthGroup.OfficeAdmin))
         {
-            username = authenticatedUsername;
+            return Forbid();
         }
 
         var result = await profileService.UpdateOfficeHoursAsync(username, value);
@@ -510,19 +500,14 @@ public class ProfilesController(IProfileService profileService,
     [Route("mailstop")]
     public async Task<ActionResult<string>> UpdateMailStop([FromBody] string value, string? username = null)
     {
-        var authenticatedUsername = AuthUtils.GetUsername(User);
-
-        if (!string.IsNullOrEmpty(username))
+        if (string.IsNullOrEmpty(username))
         {
-            var groups = AuthUtils.GetGroups(User);
-            if (!groups.Contains(AuthGroup.OfficeAdmin))
-            {
-                return Forbid();
-            }
+            username = AuthUtils.GetUsername(User);
         }
-        else
+
+        if (!isUserAuthorized(username, AuthGroup.OfficeAdmin))
         {
-            username = authenticatedUsername;
+            return Forbid();
         }
 
         var result = await profileService.UpdateMailStopAsync(username, value);
@@ -696,5 +681,18 @@ public class ProfilesController(IProfileService profileService,
             return NotFound("Graduation information not found.");
         }
         return Ok(graduationInfo);
+    }
+
+    private bool isUserAuthorized(string username, AuthGroup group)
+    {
+        if (username != AuthUtils.GetUsername(User))
+        {
+            var groups = AuthUtils.GetGroups(User);
+            if (!groups.Contains(group))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
