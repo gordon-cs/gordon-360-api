@@ -13,4 +13,4 @@ public class CourseOffering
     public SFChildCollection<CourseOfferingParticipant> CourseOfferingParticipants { get; set; } = new();
 
     public SFChildCollection<CourseOfferingSchedule> CourseOfferingSchedules { get; set; } = new();
-}s
+}
