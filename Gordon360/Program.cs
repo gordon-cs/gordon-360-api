@@ -17,6 +17,8 @@ using Serilog.Formatting.Compact;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gordon360.Models.Salesforce;
+using Gordon360.
 
 const string CorsPolicy = "360UI";
 
@@ -93,7 +95,9 @@ try
     );
 
     builder.Services.Add360Services();
-  
+    builder.Services.AddScoped<SalesforceContext>();
+    builder.Services.AddScoped<SFUserCourses>();
+
     builder.Services.AddHostedService<EventCacheRefreshService>();
     builder.Services.AddHostedService<MarketplaceCleanupService>();
     builder.Services.AddHostedService<PosterCleanupService>();

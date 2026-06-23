@@ -5,13 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Models.Salesforce;
 
 namespace Gordon360.Services;
 
 /// <summary>
 /// Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
 /// </summary>
-public class ScheduleService(CCTContext context, ISessionService sessionService, IAcademicTermService academicTermService) : IScheduleService
+public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, ISessionService sessionService, IAcademicTermService academicTermService) : IScheduleService
 {
     /// <summary>
     /// Fetch the session item whose id specified by the parameter
@@ -60,10 +61,7 @@ public class ScheduleService(CCTContext context, ISessionService sessionService,
     /// <returns>CoursesByTermViewModel if found, null if not found</returns>
     public async Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await context.UserCourses
-            .Where(x => x.Username == username)
-            .Select(c => (UserCoursesViewModel)c)
-            .ToListAsync();
+        List<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username);
 
         IEnumerable<YearTermTableViewModel> terms = await academicTermService.GetAllTermsAsync();
 
@@ -84,10 +82,7 @@ public class ScheduleService(CCTContext context, ISessionService sessionService,
     /// <returns>CoursesByTermViewModel if found, null if not found</returns>
     public async Task<IEnumerable<CoursesByTermViewModel>> GetAllInstructorCoursesByTermAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await context.UserCourses
-            .Where(x => x.Username == username && x.Role == "Instructor")
-            .Select(c => (UserCoursesViewModel)c)
-            .ToListAsync();
+        List<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username, "Teacher");
 
         IEnumerable<YearTermTableViewModel> terms = await academicTermService.GetAllTermsAsync();
 
