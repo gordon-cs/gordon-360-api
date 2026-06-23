@@ -328,6 +328,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
         bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
 
+        // Get ID for each visibility group
+        var Public_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Public")?.ID;
+        var FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")?.ID;
+        var Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")?.ID;
+
         // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
         // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
         // privacy settings in profile.
@@ -350,30 +355,24 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 {
                     // honor "semi-private" code: student's home city, state, country and on-off campus status is private
                     var addressPrivate = restricted_profile.KeepPrivate == "S"
-                                         && (fieldID == UserPrivacyViewModel.HomeCityID || fieldID == UserPrivacyViewModel.HomeStateID
-                                            || fieldID == UserPrivacyViewModel.HomeCountryID || fieldID == UserPrivacyViewModel.CountryID);
-                    var mobilePhonePrivate = restricted_profile.IsMobilePhonePrivate && fieldID == UserPrivacyViewModel.MobilePhoneID;
-                    visibilityID = mobilePhonePrivate || addressPrivate
-                        ? UserPrivacyViewModel.Private_GroupID
-                        : UserPrivacyViewModel.Public_GroupID;
+                                         && (fieldName == "HomeCity" || fieldName == "HomeState"
+                                            || fieldName == "HomeCountry" || fieldName == "Country");
+                    var mobilePhonePrivate = restricted_profile.IsMobilePhonePrivate && fieldName == "MobilePhone";
+                    visibilityID = mobilePhonePrivate || addressPrivate ? Private_GroupID : Public_GroupID;
                 }
                 else if (profileIsFacStaff)
                 {
-                    visibilityID = restricted_profile.KeepPrivate == "1"
-                        ? UserPrivacyViewModel.Private_GroupID
-                        : UserPrivacyViewModel.Public_GroupID;
+                    visibilityID = restricted_profile.KeepPrivate == "1" ? Private_GroupID : Public_GroupID;
                 }
                 else if (profileIsAlumni)
                 {
                     visibilityID = (restricted_profile.ShareName == "N" 
-                                    || restricted_profile.ShareAddress == "N")
-                        ? UserPrivacyViewModel.Private_GroupID
-                        : UserPrivacyViewModel.Public_GroupID;
+                                    || restricted_profile.ShareAddress == "N") ? Private_GroupID : Public_GroupID;
                 }
             }
 
             // Enforce the visibility for the current privacy field
-            if ((viewerIsSiteAdmin || viewerIsPolice) && visibilityID != UserPrivacyViewModel.Public_GroupID)
+            if ((viewerIsSiteAdmin || viewerIsPolice) && visibilityID != Public_GroupID)
             {
                 MarkAsPrivate(restricted_profile, fieldName);
             }
@@ -381,21 +380,21 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             {
                 if (profileIsFacStaff)
                 {
-                    if (visibilityID == UserPrivacyViewModel.Private_GroupID)
+                    if (visibilityID == Private_GroupID)
                     {
                         MakePrivate(restricted_profile, fieldName);
                     }
-                    else if (visibilityID == UserPrivacyViewModel.FacStaff_GroupID)
+                    else if (visibilityID == FacStaff_GroupID)
                     {
                         MarkAsPrivate(restricted_profile, fieldName);
                     }
                 }
-                else if ((profileIsStudent || profileIsAlumni) && visibilityID != UserPrivacyViewModel.Public_GroupID)
+                else if ((profileIsStudent || profileIsAlumni) && visibilityID != Public_GroupID)
                 {
                     MarkAsPrivate(restricted_profile, fieldName);
                 }
             } 
-            else if ((viewerIsStudent || viewerIsAlumni) && visibilityID != UserPrivacyViewModel.Public_GroupID)
+            else if ((viewerIsStudent || viewerIsAlumni) && visibilityID != Public_GroupID)
             {
                 MakePrivate(restricted_profile, fieldName);
             }

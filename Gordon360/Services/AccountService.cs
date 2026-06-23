@@ -413,7 +413,9 @@ public class AccountService(CCTContext context) : IAccountService
         // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
         if (!string.IsNullOrEmpty(homeCity))
         {
-            IQueryable<UserPrivacy_Settings> privacySettings = context.UserPrivacy_Settings;
+            IQueryable<UserPrivacy_Settings> privacySettings = context.UserPrivacy_Settings
+                .Include(a => a.FieldNavigation)
+                .Include(a => a.VisibilityNavigation);
             var homePrivacy = authGroups.Contains(AuthGroup.FacStaff)
                 ? privacySettings.Where(a => a.FieldNavigation.Field == "HomeCity"
                                             && a.VisibilityNavigation.Group != "Private")
