@@ -283,6 +283,12 @@
             </summary>
             <returns> All buildings</returns>
         </member>
+        <member name="M:Gordon360.Controllers.AdvancedSearchController.GetBuildings">
+            <summary>
+            Return a list of buildings.
+            </summary>
+            <returns> All buildings</returns>
+        </member>
         <member name="M:Gordon360.Controllers.AdvancedSearchController.GetInvolvements">
             <summary>
             Return a list of involvements' descriptions.

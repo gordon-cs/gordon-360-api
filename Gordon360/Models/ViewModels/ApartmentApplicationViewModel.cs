@@ -11,7 +11,7 @@ public class ApartmentApplicationViewModel
     public int? ApplicationID { get; set; } // '?' means Nullable
     public DateTime? DateSubmitted { get; set; }
     public DateTime? DateModified { get; set; }
-    public PublicStudentProfileViewModel EditorProfile { get; set; }
+    public StudentProfileViewModel EditorProfile { get; set; }
     private string _editorUsername;
     public string EditorUsername
     {

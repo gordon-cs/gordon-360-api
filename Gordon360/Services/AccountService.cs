@@ -203,7 +203,7 @@ public class AccountService(CCTContext context) : IAccountService
         }
         else if (CanISeeThisStudent(viewerGroups, student))
         {
-            return (student == null) ? null : (PublicStudentProfileViewModel)student;
+            return (student == null) ? null : student;
         }
         return null;
     }
