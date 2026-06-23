@@ -1,4 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gordon360.Models.Salesforce;
 
@@ -44,7 +48,7 @@ public class SFUserCourses
         var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
 
         var json = await _context.QueryJson(string.Format(SoqlTemplate, name, roleFilter));
-        var response = JsonConvert.DeserializeObject<SFQueryResponse<CourseOffering>>(json);
+        var response = JsonConvert.DeserializeObject<SFQueryResult<CourseOffering>>(json);
 
         return response?.records?
             .Select(c => MapToViewModel(c, username))

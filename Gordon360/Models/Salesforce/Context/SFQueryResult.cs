@@ -1,11 +1,16 @@
-  namespace Gordon360.Models.Salesforce;
+using System;
+using System.Collections.Generic;
 
   
-  public class SFQueryResult<T>
-    {
-        public int totalSize { get; set; }
+namespace Gordon360.Models.Salesforce;
 
-        public bool done { get; set; }
+  
+public class SFQueryResult<T>
+{
+  public int totalSize { get; set; }
 
-        public List<T> records { get; set; } = new List<T>();
-    }
+  public bool done { get; set; }
+
+  public List<T> records { get; set; } = new List<T>();
+    
+}
