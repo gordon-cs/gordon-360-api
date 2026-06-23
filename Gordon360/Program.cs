@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Gordon360.Models.Salesforce;
-using Gordon360.
 
 const string CorsPolicy = "360UI";
 
