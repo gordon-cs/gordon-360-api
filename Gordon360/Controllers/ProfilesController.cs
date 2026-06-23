@@ -66,9 +66,12 @@ public class ProfilesController(IProfileService profileService,
         AlumniProfileViewModel? _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
-        var student = accountService.VisibleToMeStudent(viewerGroups, _student);
-        var facstaff = accountService.VisibleToMeFacstaff(viewerGroups, _facstaff);
-        var alumni = accountService.VisibleToMeAlumni(viewerGroups, _alumni);
+        var student = AuthGroupExtensions.VisibleToMeStudent(viewerGroups, _student);
+        var facstaff = AuthGroupExtensions.VisibleToMeFacstaff(viewerGroups, _facstaff);
+        var alumni = AuthGroupExtensions.VisibleToMeAlumni(viewerGroups, _alumni);
+        //var student = accountService.VisibleToMeStudent(viewerGroups, _student);
+        //var facstaff = accountService.VisibleToMeFacstaff(viewerGroups, _facstaff);
+        //var alumni = accountService.VisibleToMeAlumni(viewerGroups, _alumni);
 
         if (student is null && alumni is null && facstaff is null)
         {
