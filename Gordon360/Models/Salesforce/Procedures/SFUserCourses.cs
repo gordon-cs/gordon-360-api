@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.CCT;
 
 namespace Gordon360.Models.Salesforce;
 
@@ -48,8 +49,7 @@ public class SFUserCourses
         var name = username == "360.StudentTest" ? "woobensky.pierre" : username;
         var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
 
-        var json = await _context.QueryJson(string.Format(SoqlTemplate, name, roleFilter));
-        var response = JsonConvert.DeserializeObject<SFQueryResult<CourseOffering>>(json);
+        var response = await _context.Query<CourseOffering>(string.Format(SoqlTemplate, name, roleFilter));
 
         return response?.records?
             .Select(c => MapToViewModel(c, username))
@@ -61,9 +61,8 @@ public class SFUserCourses
         var schedule = c.CourseOfferingSchedules.records.FirstOrDefault();
         var participant = c.CourseOfferingParticipants.records.FirstOrDefault();
 
-        return new UserCoursesViewModel
+        return new UserCourses
         {
-            Username = username,
             Role = participant?.ParticipantAffiliation ?? "",
 
             YR_CDE = c.AcademicSession.gc_Jenz_Year_Code__c,
@@ -81,7 +80,6 @@ public class SFUserCourses
             THURSDAY_CDE = DayCode(schedule?.IsThursday, "R"),
             FRIDAY_CDE = DayCode(schedule?.IsFriday, "F"),
             SATURDAY_CDE = DayCode(schedule?.IsSaturday, "S"),
-            SUNDAY_CDE = DayCode(schedule?.IsSunday, "U"),
 
             BEGIN_DATE = schedule?.StartDate,
             END_DATE = schedule?.EndDate,

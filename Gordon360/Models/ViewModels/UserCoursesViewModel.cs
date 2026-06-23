@@ -45,6 +45,33 @@ public class UserCoursesViewModel
                 break;
         }
 
+        var subterm = course.SUBTERM_DESC;
+        switch (course.SUBTERM_DESC)
+        {
+            case "1Q":
+                subterm = "Fall 1";
+                break;
+            case "2Q":
+                subterm = "Fall 2";
+                break;
+            case "3Q":
+                subterm = "Spring 1";
+                break;
+            case "4Q":
+                subterm = "Spring 2";
+                break;
+
+            case "5Q":
+                subterm = "Summer 1";
+                break;
+            case "6Q":
+                subterm = "Summer 2";
+                break;
+            default:
+                break;
+
+        }
+
         UserCoursesViewModel vm = new UserCoursesViewModel
         {
             SessionCode = code,
@@ -64,7 +91,7 @@ public class UserCoursesViewModel
             END_TIME = course.END_TIME,
             BEGIN_DATE = course.BEGIN_DATE,
             END_DATE = course.END_DATE,
-            SUB_TERM_CDE = course.SUBTERM_DESC,
+            SUB_TERM_CDE = subterm,
             Role = course.Role
         };
 

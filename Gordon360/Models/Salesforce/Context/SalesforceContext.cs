@@ -49,7 +49,7 @@ public class SalesforceContext
     }
     
 
-    public async Task<List<T>> Query<T>(string queryString)
+    public async Task<SFQueryResult<T>> Query<T>(string queryString)
     {            
         System.Diagnostics.Debug.WriteLine("🔐 Getting Salesforce access token...");
         var tokenData = await GetAccessTokenAsync(config);
