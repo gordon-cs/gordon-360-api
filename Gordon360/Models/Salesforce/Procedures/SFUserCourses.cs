@@ -43,7 +43,7 @@ public class SFUserCourses
 
     public SFUserCourses(SalesforceContext context) => _context = context;
 
-    public async Task<List<UserCourseViewModel>> GetUserCourses(string username, string role = "")
+    public async Task<List<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
     {
         var name = username == "360.StudentTest" ? "woobensky.pierre" : username;
         var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
@@ -53,15 +53,15 @@ public class SFUserCourses
 
         return response?.records?
             .Select(c => MapToViewModel(c, username))
-            .ToList() ?? new List<UserCourseViewModel>();
+            .ToList() ?? new List<UserCoursesViewModel>();
     }
 
-    private static UserCourseViewModel MapToViewModel(CourseOffering c, string username)
+    private static UserCoursesViewModel MapToViewModel(CourseOffering c, string username)
     {
         var schedule = c.CourseOfferingSchedules.records.FirstOrDefault();
         var participant = c.CourseOfferingParticipants.records.FirstOrDefault();
 
-        return new UserCourseViewModel
+        return new UserCoursesViewModel
         {
             Username = username,
             Role = participant?.ParticipantAffiliation ?? "",

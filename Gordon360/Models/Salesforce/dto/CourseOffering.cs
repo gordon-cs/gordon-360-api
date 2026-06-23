@@ -10,7 +10,7 @@ public class CourseOffering
     public AcademicSession AcademicSession { get; set; } = new();
     
 
-    public SalesforceChildCollection<CourseOfferingParticipant> CourseOfferingParticipants { get; set; } = new();
+    public SFChildCollection<CourseOfferingParticipant> CourseOfferingParticipants { get; set; } = new();
 
-    public SalesforceChildCollection<CourseOfferingSchedule> CourseOfferingSchedules { get; set; } = new();
-}
+    public SFChildCollection<CourseOfferingSchedule> CourseOfferingSchedules { get; set; } = new();
+}s
