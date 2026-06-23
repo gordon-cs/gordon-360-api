@@ -461,8 +461,8 @@ public class ProfilesController(IProfileService profileService,
 
         var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingCode, officeLocation.RoomNumber);
         return Ok(new {
-            OnCampusBuilding = result.OnCampusBuilding,
-            OnCampusRoom = result.OnCampusRoom,
+            result.BuildingDescription,
+            result.OnCampusRoom,
         });
     }
 
@@ -513,8 +513,8 @@ public class ProfilesController(IProfileService profileService,
         var result = await profileService.UpdateMailStopAsync(username, value);
         return Ok(new
         {
-            MailLocation = result.Mail_Location,
-            MailDescription = result.Mail_Description
+            result.Mail_Location,
+            result.Mail_Description
         });
 
     }

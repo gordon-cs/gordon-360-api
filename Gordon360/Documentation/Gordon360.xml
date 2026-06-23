@@ -1251,6 +1251,16 @@
             <param name="username"> The username for which to retrieve info </param>
             <returns> Graduation information of the given user. </returns>
         </member>
+        <member name="M:Gordon360.Controllers.ProfilesController.IsUserAuthorized(System.String,Gordon360.Enums.AuthGroup)">
+            <summary>
+            Gets whether or not permission to modify a user is granted, based on
+            whether the user being modified is the active user or whether the user
+            is part of a group that would grant access
+            </summary>
+            <param name="username">username of the profile being modified</param>
+            <param name="group">group that allows current user to modify profile</param>
+            <returns>true or false based on whether access is granted</returns>
+        </member>
         <member name="M:Gordon360.Controllers.RecIM.ActivitiesController.GetActivities(System.Nullable{System.Boolean})">
             <summary>Gets a list of all Activities by parameter </summary>
             <param name="active"> Optional active parameter denoting whether or not an activity has been completed </param>
