@@ -429,28 +429,52 @@ public class ProfilesController(IProfileService profileService,
     /// <summary>
     /// Update office location (building description and room number)
     /// </summary>
+    /// <param name="officeLocation">location of faculty office</param>
+    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("office_location")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
+    public async Task<ActionResult> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation, string? username = null)
     {
-        var username = AuthUtils.GetUsername(User);
+        if (string.IsNullOrEmpty(username))
+        {
+            username = AuthUtils.GetUsername(User);
+        }
+
+        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
+        {
+            return Forbid();
+        }
+
         var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingCode, officeLocation.RoomNumber);
-        return Ok(result);
+        return Ok(new {
+            OnCampusBuilding = result.OnCampusBuilding,
+            OnCampusRoom = result.OnCampusRoom,
+        });
     }
 
     /// <summary>
     /// Update office hours
     /// </summary>
     /// <param name="value">office hours</param>
+    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("office_hours")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody] string value)
+    public async Task<ActionResult<string>> UpdateOfficeHours([FromBody] string value, string? username = null)
     {
-        var username = AuthUtils.GetUsername(User);
+        if (string.IsNullOrEmpty(username))
+        {
+            username = AuthUtils.GetUsername(User);
+        }
+
+        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
+        {
+            return Forbid();
+        }
+
         var result = await profileService.UpdateOfficeHoursAsync(username, value);
-        return Ok(result);
+        return Ok(result.office_hours);
     }
 
     /// <summary>
@@ -486,14 +510,29 @@ public class ProfilesController(IProfileService profileService,
     /// Update mail location
     /// </summary>
     /// <param name="value">mail location</param>
+    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("mailstop")]
-    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody] string value)
+    public async Task<ActionResult<string>> UpdateMailStop([FromBody] string value, string? username = null)
     {
-        var username = AuthUtils.GetUsername(User);
+        if (string.IsNullOrEmpty(username))
+        {
+            username = AuthUtils.GetUsername(User);
+        }
+
+        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
+        {
+            return Forbid();
+        }
+
         var result = await profileService.UpdateMailStopAsync(username, value);
-        return Ok(result);
+        return Ok(new
+        {
+            MailLocation = result.Mail_Location,
+            MailDescription = result.Mail_Description
+        });
+
     }
 
     /// <summary>
@@ -658,5 +697,26 @@ public class ProfilesController(IProfileService profileService,
             return NotFound("Graduation information not found.");
         }
         return Ok(graduationInfo);
+    }
+
+    /// <summary>
+    /// Gets whether or not permission to modify a user is granted, based on
+    /// whether the user being modified is the active user or whether the user
+    /// is part of a group that would grant access
+    /// </summary>
+    /// <param name="username">username of the profile being modified</param>
+    /// <param name="group">group that allows current user to modify profile</param>
+    /// <returns>true or false based on whether access is granted</returns>
+    private bool IsUserAuthorized(string username, AuthGroup group)
+    {
+        if (username != AuthUtils.GetUsername(User))
+        {
+            var groups = AuthUtils.GetGroups(User);
+            if (!groups.Contains(group))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
