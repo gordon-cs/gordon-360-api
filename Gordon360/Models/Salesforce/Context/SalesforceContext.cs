@@ -37,15 +37,6 @@ public class SalesforceContext
     private static string ApiVersion;
 
 
-    public class SalesforceQueryResult<T>
-    {
-        public int totalSize { get; set; }
-
-        public bool done { get; set; }
-
-        public List<T> records { get; set; } = new List<T>();
-    }
-
     public SalesforceContext(IConfiguration config)
     {
         this.config = config;
@@ -124,7 +115,7 @@ public class SalesforceContext
             throw new Exception($"Failed to query records: {response.StatusCode}\n{json}");
         }
 
-        var results = JsonSerializer.Deserialize<SalesforceQueryResult<T>>(json);
+        var results = JsonSerializer.Deserialize<SFQueryResult<T>>(json);
 
 
         return results?.records;
