@@ -1,9 +1,11 @@
 ﻿using Gordon360.Enums;
 using Gordon360.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Gordon360.Authorization;
 public static class AuthGroupExtensions
@@ -32,7 +34,6 @@ public static class AuthGroupExtensions
     {
         return viewerGroups.Contains(AuthGroup.Advisors);
     }
-
 
     /// <summary>Indicates whether a user making a request is authorized to see
     /// profile information for this particular student.  Some students are not shown
@@ -101,6 +102,43 @@ public static class AuthGroupExtensions
                viewerGroups.Contains(AuthGroup.FacStaff);
     }
 
+    /// <summary>Indicates whether a user making a request is authorized to see
+    /// profile information for this particular alum.</summary>
+    /// <param name="viewerGroups">The authentication groups associated with the
+    /// user making the request.</param>
+    /// <param name="alum">Profile data for the alumnus or alumna whose information
+    /// is being requested.</param>
+    /// <returns>True if the user making the request is authorized to see
+    /// profile information for this alum, and false otherwise.</returns>
+    public static bool CanISeeThisAlum(this IEnumerable<AuthGroup> viewerGroups, AlumniProfileViewModel? alum)
+    {
+        if (!CanISeeAlumni(viewerGroups))
+        {
+            return false;
+        }
+
+        // Some users can see all alumni (not sure why police needs to be able to see alumni...)
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) ||
+            viewerGroups.Contains(AuthGroup.Police))
+        {
+            return true;
+        }
+
+        // Faculty and staff can see alumni who have not explicitly requested their
+        // name not be shared
+        if (viewerGroups.Contains(AuthGroup.FacStaff) && alum != null && alum.ShareName != "N")
+        {
+            return true;
+        }
+
+        // Alumni can see alumni who have explicitly given permission for their name to be shared
+        if (viewerGroups.Contains(AuthGroup.Alumni) && alum != null && alum.ShareName == "Y")
+        {
+            return true;
+        }
+        return false;
+    }
+
     /// <summary>Restrict info about a student to those fields which are potentially
     /// viewable by the user making the request.  Actual visibility may also depend
     /// on privacy choices made by the user whose data is being viewed.  Note that 
@@ -123,7 +161,7 @@ public static class AuthGroupExtensions
         }
         else if (CanISeeThisStudent(viewerGroups, student))
         {
-            return (student == null) ? null : student;
+            return (student == null) ? null : (PublicStudentProfileViewModel) student;
         }
         return null;
     }
@@ -147,7 +185,7 @@ public static class AuthGroupExtensions
         }
         else if (CanISeeFacstaff(viewerGroups))
         {
-            return (facstaff == null) ? null : (FacultyStaffProfileViewModel)facstaff;
+            return (facstaff == null) ? null : (PublicFacultyStaffProfileViewModel) facstaff;
         }
         return null;
     }
@@ -169,9 +207,9 @@ public static class AuthGroupExtensions
         {
             return alumni;
         }
-        else if (CanISeeAlumni(viewerGroups))
+        else if (CanISeeAlumni(viewerGroups) && CanISeeThisAlum(viewerGroups, alumni))
         {
-            return (alumni == null) ? null : (AlumniProfileViewModel)alumni;
+            return (alumni == null) ? null : (PublicAlumniProfileViewModel) alumni;
         }
         return null;
     }

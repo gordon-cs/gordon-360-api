@@ -55,6 +55,16 @@
             <returns>True if the user making the request is authorized to see
             course schedule information for alumni, and false otherwise.</returns>
         </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeThisAlum(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for this particular alum.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <param name="alum">Profile data for the alumnus or alumna whose information
+            is being requested.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for this alum, and false otherwise.</returns>
+        </member>
         <member name="M:Gordon360.Authorization.AuthGroupExtensions.VisibleToMeStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
             <summary>Restrict info about a student to those fields which are potentially
             viewable by the user making the request.  Actual visibility may also depend

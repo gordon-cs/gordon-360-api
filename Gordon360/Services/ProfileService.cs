@@ -333,13 +333,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         var FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")?.ID;
         var Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")?.ID;
 
-        // Remove ID and Barcode from profile when viewed by any non-admin & non-police viewer
-        if (!viewerIsSiteAdmin && !viewerIsPolice)
-        {
-            MakePrivate(restricted_profile, "ID");
-            MakePrivate(restricted_profile, "Barcode");
-        }
-
         // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
         // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
         // privacy settings in profile.
@@ -372,7 +365,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 }
                 else if (profileIsAlumni)
                 {
-                    visibilityID = (restricted_profile.ShareName == "N" || restricted_profile.ShareAddress == "N")
+                    visibilityID = (restricted_profile.ShareAddress == "N" && (fieldName.Contains("Home") || fieldName == "Country"))
                         ? Private_GroupID : Public_GroupID;
                 }
             }
@@ -395,7 +388,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                         MarkAsPrivate(restricted_profile, fieldName);
                     }
                 }
-                else if ((profileIsStudent || profileIsAlumni) && visibilityID != Public_GroupID)
+                else if (profileIsAlumni && visibilityID != Public_GroupID)
+                {
+                    MakePrivate(restricted_profile, fieldName);
+                }
+                else if (profileIsStudent && visibilityID != Public_GroupID)
                 {
                     MarkAsPrivate(restricted_profile, fieldName);
                 }
