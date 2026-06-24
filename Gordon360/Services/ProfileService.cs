@@ -318,7 +318,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         var account = accountService.GetAccountByUsername(restricted_profile.AD_Username);
         var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
 
-        // Determing the viewer and profile user types
+        // Determine the viewer and profile user types
         bool viewerIsSiteAdmin = viewerGroups.Contains(AuthGroup.SiteAdmin);
         bool viewerIsPolice = viewerGroups.Contains(AuthGroup.Police);
         bool viewerIsFacStaff = viewerGroups.Contains(AuthGroup.FacStaff);
@@ -328,10 +328,17 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
         bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
 
-        // Get ID for each visibility group
+        // Get visibility group IDs
         var Public_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Public")?.ID;
         var FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")?.ID;
         var Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")?.ID;
+
+        // Remove ID and Barcode from profile when viewed by any non-admin & non-police viewer
+        if (!viewerIsSiteAdmin && !viewerIsPolice)
+        {
+            MakePrivate(restricted_profile, "ID");
+            MakePrivate(restricted_profile, "Barcode");
+        }
 
         // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
         // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
@@ -340,14 +347,13 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         // NOTE: The "old-style" privacy settings in the profile (e.g. IsMobilePhonePrivate)
         // are set by HR or the student matriciulation process.  These settings will be used
         // for 360 until the user chooses privacy settings in their profile.
-
         foreach (UserPrivacy_Fields field in context.UserPrivacy_Fields)
         {
             int fieldID = field.ID;
             string fieldName = field.Field;
 
-            // Determine the visibility for the current privacy field
-            //var privacy.Where(f => f.Field == )
+            // Determine the visibility for the current privacy field and
+            // fall back to profile-based visibility restrictions if needed
             var visibilityID = privacy.Where(x => x.Field == fieldID).FirstOrDefault()?.Visibility;
             if (visibilityID is null)
             {
@@ -366,8 +372,8 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 }
                 else if (profileIsAlumni)
                 {
-                    visibilityID = (restricted_profile.ShareName == "N" 
-                                    || restricted_profile.ShareAddress == "N") ? Private_GroupID : Public_GroupID;
+                    visibilityID = (restricted_profile.ShareName == "N" || restricted_profile.ShareAddress == "N")
+                        ? Private_GroupID : Public_GroupID;
                 }
             }
 
@@ -393,7 +399,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 {
                     MarkAsPrivate(restricted_profile, fieldName);
                 }
-            } 
+            }
             else if ((viewerIsStudent || viewerIsAlumni) && visibilityID != Public_GroupID)
             {
                 MakePrivate(restricted_profile, fieldName);
