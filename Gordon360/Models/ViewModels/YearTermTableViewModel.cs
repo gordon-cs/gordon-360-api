@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.Salesforce;
 using System;
 
 namespace Gordon360.Models.ViewModels
@@ -20,6 +21,15 @@ namespace Gordon360.Models.ViewModels
             EndDate = entity.TRM_END_DTE;
             Description = entity.YR_TRM_DESC;
             ShowOnWeb = entity.SHOW_ON_WEB;
+        }
+        public YearTermTableViewModel(AcademicTerm entity)
+        {
+            YearCode = entity.AcademicYearID.Year;
+            TermCode = entity.CurrentSeason.ToString();
+            BeginDate = entity.StartDate;
+            EndDate = entity.EndDate;
+            Description = entity.Description;
+            ShowOnWeb = entity.ShowOnWeb;
         }
     }
 }
