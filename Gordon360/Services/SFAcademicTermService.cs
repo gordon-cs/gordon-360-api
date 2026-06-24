@@ -1,8 +1,5 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
-using Gordon360.Models.Salesforce;
+﻿using Gordon360.Models.Salesforce;
 using Gordon360.Models.ViewModels;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,14 +50,14 @@ public class SFAcademicTermService(SalesforceContext context) : IAcademicTermSer
     {
         var today = DateTime.Today;
 
-        // Get all terms from the database
-        var allTerms = await GetAllTermsAsync();
+        var soql_query = $@"SELECT Id, Name
+            FROM Academic_Term__c
+            WHERE Season IS Fall OR Spring OR Summer
+            ORDER BY StartDate DESC";
 
-        // Filter terms to only include relevant ones (FA, SP, SU) and sort choronologically
-        var relevantTerms = allTerms
-            .Where(t => t.TermCode is "FA" or "SP" or "SU")
-            .OrderBy(t => t.BeginDate)
-            .ToList();
+        var terms_result = await context.Query<AcademicTerm>(soql_query);
+
+        var relevantTerms = terms_result.records.Select(t => new YearTermTableViewModel(t)).ToList();
 
         // Iterate through the relevant terms to find where today's date fits
         for (int i = 0; i < relevantTerms.Count; i++)
@@ -124,12 +121,10 @@ public class SFAcademicTermService(SalesforceContext context) : IAcademicTermSer
 
     public async Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync()
     {
-        var currentDate = DateTime.Now;
-
         var soql_query = $@"SELECT Id, Name
             FROM Academic_Term__c
-            WHERE AcademicYearId.IsActive = True AND (Season = Fall OR Season = Spring)
-            ORDER BY DESC
+            WHERE TODAY > StartDate AND (Season = Fall OR Season = Spring)
+            ORDER BY StartDate DESC
             LIMIT 1";
 
         var terms = await context.Query<AcademicTerm>(soql_query);
