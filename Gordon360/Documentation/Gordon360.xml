@@ -1890,6 +1890,11 @@
             Whether the user wants their strengths to be private (not shown to other users)
             </summary>
         </member>
+        <member name="T:Gordon360.Models.Salesforce.SalesforceContext">
+            <summary>
+            Service that allows for meal control
+            </summary>
+        </member>
         <member name="M:Gordon360.Models.ViewModels.BasicInfoViewModel.MatchSearch(System.String)">
             <summary>
             Matches basic info fields against <c>search</c>, returning a match key representing the value and precedence of the first match, or <c>null</c>.
@@ -3580,7 +3585,7 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.ISessionService,Gordon360.Services.IAcademicTermService)">
+        <member name="M:Gordon360.Services.ScheduleService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Models.Salesforce.SFUserCourses,Gordon360.Services.ISessionService,Gordon360.Services.IAcademicTermService)">
             <summary>
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>

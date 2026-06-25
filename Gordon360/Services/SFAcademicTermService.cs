@@ -12,9 +12,9 @@ public class SFAcademicTermService(SalesforceContext context) : IAcademicTermSer
     public async Task<YearTermTableViewModel?> GetCurrentTermAsync()
     {
         var soql_query = $@"SELECT Id, Name
-            FROM Academic_Term__c
+            FROM AcademicTerm
             WHERE IsActive = true
-            LIMIT 1";
+            ";
 
         var response = await context.Query<AcademicTerm>(soql_query);
 
@@ -27,9 +27,10 @@ public class SFAcademicTermService(SalesforceContext context) : IAcademicTermSer
 
     public async Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync()
     {
-        var soql_query = $@"SELECT Id, Name
-            FROM Academic_Term__c
-            WHERE AcademicYearId.IsActive = True";
+        var soql_query = $@"SELECT FIELDS(ALL)
+            FROM AcademicTerm
+                LIMIT 30
+           ";
 
         var terms = await context.Query<AcademicTerm>(soql_query);
 
@@ -51,8 +52,7 @@ public class SFAcademicTermService(SalesforceContext context) : IAcademicTermSer
         var today = DateTime.Today;
 
         var soql_query = $@"SELECT Id, Name
-            FROM Academic_Term__c
-            WHERE Season IS Fall OR Spring OR Summer
+            FROM AcademicTerm
             ORDER BY StartDate DESC";
 
         var terms_result = await context.Query<AcademicTerm>(soql_query);
@@ -122,7 +122,7 @@ public class SFAcademicTermService(SalesforceContext context) : IAcademicTermSer
     public async Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync()
     {
         var soql_query = $@"SELECT Id, Name
-            FROM Academic_Term__c
+            FROM AcademicTerm
             WHERE TODAY > StartDate AND (Season = Fall OR Season = Spring)
             ORDER BY StartDate DESC
             LIMIT 1";
