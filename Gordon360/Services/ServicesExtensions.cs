@@ -28,7 +28,7 @@ public static class ServicesExtensions
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<INewsService, NewsService>();
         services.AddScoped<ILostAndFoundService, LostAndFoundService>();
-        services.AddScoped<IScheduleService, ScheduleService>();
+        services.AddScoped<IScheduleService, SFScheduleService>();
         services.AddScoped<ISessionService, SessionService>();
         services.AddScoped<IStudentEmploymentService, StudentEmploymentService>();
         services.AddScoped<IVictoryPromiseService, VictoryPromiseService>();
