@@ -46,7 +46,7 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
 
-        var profile = (CombinedProfileViewModel) profileService.ComposeProfile(student, alumni, faculty, customInfo);
+        var profile = (CombinedProfileViewModel)profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
     }
@@ -66,9 +66,9 @@ public class ProfilesController(IProfileService profileService,
         AlumniProfileViewModel? _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
-        var student = AuthGroupExtensions.VisibleToMeStudent(viewerGroups, _student);
-        var facstaff = AuthGroupExtensions.VisibleToMeFacstaff(viewerGroups, _facstaff);
-        var alumni = AuthGroupExtensions.VisibleToMeAlumni(viewerGroups, _alumni);
+        var student = viewerGroups.VisibleToMeStudent(_student);
+        var facstaff = viewerGroups.VisibleToMeFacstaff(_facstaff);
+        var alumni = viewerGroups.VisibleToMeAlumni(_alumni);
 
         if (student is null && alumni is null && facstaff is null)
         {
@@ -278,29 +278,29 @@ public class ProfilesController(IProfileService profileService,
 
         }
         else
-        if (viewerGroups.Contains(AuthGroup.Student))
-        {
-            if (accountService.GetAccountByUsername(username).show_pic == 1)
+            if (viewerGroups.Contains(AuthGroup.Student))
             {
-                if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
+                if (accountService.GetAccountByUsername(username).show_pic == 1)
                 {
-                    result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
+                    if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
+                    {
+                        result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
+                    }
+                    else
+                    {
+                        result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
+                    }
                 }
                 else
                 {
-                    result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
+                    result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
                 }
+                return Ok(result);
             }
             else
             {
-                result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
+                return Ok();
             }
-            return Ok(result);
-        }
-        else
-        {
-            return Ok();
-        }
     }
 
     /// <summary>
@@ -447,7 +447,8 @@ public class ProfilesController(IProfileService profileService,
         }
 
         var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingCode, officeLocation.RoomNumber);
-        return Ok(new {
+        return Ok(new
+        {
             result.BuildingDescription,
             result.OnCampusRoom,
         });

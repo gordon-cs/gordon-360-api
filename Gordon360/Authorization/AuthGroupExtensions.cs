@@ -8,6 +8,7 @@ using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Gordon360.Authorization;
+
 public static class AuthGroupExtensions
 {
     /// <summary>Indicates whether a user making a request is authorized to see
@@ -16,7 +17,7 @@ public static class AuthGroupExtensions
     /// user making the request.</param>
     /// <returns>True if the user making the request is authorized to see
     /// profile information for students, and false otherwise.</returns>
-    public static bool CanISeeStudents(this IEnumerable<AuthGroup> viewerGroups)
+    public static bool CanSeeStudents(this IEnumerable<AuthGroup> viewerGroups)
     {
         return viewerGroups.Contains(AuthGroup.SiteAdmin) ||
                viewerGroups.Contains(AuthGroup.Police) ||
@@ -30,7 +31,7 @@ public static class AuthGroupExtensions
     /// user making the request.</param>
     /// <returns>True if the user making the request is authorized to see
     /// schedule information for students, and false otherwise.</returns>
-    public static bool CanISeeStudentSchedule(this IEnumerable<AuthGroup> viewerGroups)
+    public static bool CanSeeStudentSchedule(this IEnumerable<AuthGroup> viewerGroups)
     {
         return viewerGroups.Contains(AuthGroup.Advisors);
     }
@@ -44,9 +45,9 @@ public static class AuthGroupExtensions
     /// is being requested.</param>
     /// <returns>True if the user making the request is authorized to see
     /// profile information for this student, and false otherwise.</returns>
-    public static bool CanISeeThisStudent(this IEnumerable<AuthGroup> viewerGroups, StudentProfileViewModel? student)
+    public static bool CanSeeThisStudent(this IEnumerable<AuthGroup> viewerGroups, StudentProfileViewModel? student)
     {
-        if (!CanISeeStudents(viewerGroups))
+        if (!viewerGroups.CanSeeStudents())
         {
             return false;
         }
@@ -70,7 +71,7 @@ public static class AuthGroupExtensions
     /// user making the request.</param>
     /// <returns>True if the user making the request is authorized to see
     /// profile information for facstaff, and false otherwise.</returns>
-    public static bool CanISeeFacstaff(this IEnumerable<AuthGroup> viewerGroups)
+    public static bool CanSeeFacstaff(this IEnumerable<AuthGroup> viewerGroups)
     {
         return true;
     }
@@ -81,7 +82,7 @@ public static class AuthGroupExtensions
     /// user making the request.</param>
     /// <returns>True if the user making the request is authorized to see
     /// profile information for alumni, and false otherwise.</returns>
-    public static bool CanISeeAlumni(this IEnumerable<AuthGroup> viewerGroups)
+    public static bool CanSeeAlumni(this IEnumerable<AuthGroup> viewerGroups)
     {
         return viewerGroups.Contains(AuthGroup.SiteAdmin) ||
                viewerGroups.Contains(AuthGroup.Police) ||
@@ -95,7 +96,7 @@ public static class AuthGroupExtensions
     /// user making the request.</param>
     /// <returns>True if the user making the request is authorized to see
     /// course schedule information for alumni, and false otherwise.</returns>
-    public static bool CanISeeAlumniSchedule(this IEnumerable<AuthGroup> viewerGroups)
+    public static bool CanSeeAlumniSchedule(this IEnumerable<AuthGroup> viewerGroups)
     {
         return viewerGroups.Contains(AuthGroup.SiteAdmin) ||
                viewerGroups.Contains(AuthGroup.Police) ||
@@ -110,9 +111,9 @@ public static class AuthGroupExtensions
     /// is being requested.</param>
     /// <returns>True if the user making the request is authorized to see
     /// profile information for this alum, and false otherwise.</returns>
-    public static bool CanISeeThisAlum(this IEnumerable<AuthGroup> viewerGroups, AlumniProfileViewModel? alum)
+    public static bool CanSeeThisAlum(this IEnumerable<AuthGroup> viewerGroups, AlumniProfileViewModel? alum)
     {
-        if (!CanISeeAlumni(viewerGroups))
+        if (!viewerGroups.CanSeeAlumni())
         {
             return false;
         }
@@ -159,9 +160,9 @@ public static class AuthGroupExtensions
         {
             return student;
         }
-        else if (CanISeeThisStudent(viewerGroups, student))
+        else if (viewerGroups.CanSeeThisStudent(student))
         {
-            return (student == null) ? null : (PublicStudentProfileViewModel) student;
+            return (student == null) ? null : (PublicStudentProfileViewModel)student;
         }
         return null;
     }
@@ -183,9 +184,9 @@ public static class AuthGroupExtensions
         {
             return facstaff;
         }
-        else if (CanISeeFacstaff(viewerGroups))
+        else if (viewerGroups.CanSeeFacstaff())
         {
-            return (facstaff == null) ? null : (PublicFacultyStaffProfileViewModel) facstaff;
+            return (facstaff == null) ? null : (PublicFacultyStaffProfileViewModel)facstaff;
         }
         return null;
     }
@@ -207,9 +208,9 @@ public static class AuthGroupExtensions
         {
             return alumni;
         }
-        else if (CanISeeAlumni(viewerGroups) && CanISeeThisAlum(viewerGroups, alumni))
+        else if (viewerGroups.CanSeeAlumni() && viewerGroups.CanSeeThisAlum(alumni))
         {
-            return (alumni == null) ? null : (PublicAlumniProfileViewModel) alumni;
+            return (alumni == null) ? null : (PublicAlumniProfileViewModel)alumni;
         }
         return null;
     }
