@@ -1,7 +1,4 @@
-﻿using Gordon360.Models.CCT.Context;
-using Gordon360.Models.ViewModels;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
