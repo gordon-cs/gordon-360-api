@@ -23,6 +23,7 @@ public class PublicFacultyStaffProfileViewModel
     public string HomeCity { get; set; }
     public string HomeState { get; set; }
     public string HomeCountry { get; set; }
+    public string MobilePhone { get; set; }
     public string KeepPrivate { get; set; }
     public string JobTitle { get; set; }
     public string SpouseName { get; set; }
@@ -53,8 +54,8 @@ public class PublicFacultyStaffProfileViewModel
             FirstName = fac.FirstName ?? "",
             LastName = fac.LastName ?? "",
             MiddleName = fac.MiddleName ?? "",
-            NickName = fac.NickName ?? "", // Just in case some random record has a null user_name
-            AD_Username = fac.AD_Username ?? "", // Just in case some random record has a null email field
+            NickName = fac.NickName ?? "",
+            AD_Username = fac.AD_Username ?? "",
             OnCampusDepartment = fac.OnCampusDepartment ?? "",
             OnCampusBuilding = fac.OnCampusBuilding ?? "",
             OnCampusRoom = fac.OnCampusRoom ?? "",
@@ -67,6 +68,7 @@ public class PublicFacultyStaffProfileViewModel
             HomeCity = fac.HomeCity ?? "",
             HomeState = fac.HomeState ?? "",
             HomeCountry = fac.HomeCountry ?? "",
+            MobilePhone = fac.MobilePhone ?? "",
             KeepPrivate = fac.KeepPrivate ?? "",
             JobTitle = fac.JobTitle ?? "",
             SpouseName = fac.SpouseName ?? "",
