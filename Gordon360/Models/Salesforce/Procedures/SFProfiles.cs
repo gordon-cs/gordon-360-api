@@ -1,0 +1,95 @@
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Gordon360.Models.ViewModels;
+using Gordon360.Models.CCT;
+
+namespace Gordon360.Models.Salesforce;
+
+public class SFUserCourses
+{
+    private readonly SalesforceContext _context;
+
+    private const string SoqlTemplate = """
+        SELECT
+            FirstName,
+            LastName,
+            MiddleName,
+            (
+                SELECT 
+                    Name,
+                    LearningProgramPlan.LearningProgram.Type__c
+                FROM LearningPrograms
+            )
+            
+        FROM Contact
+        WHERE gc_University_Email__c LIKE '{0}@%'
+        )
+    """;
+
+    public SFUserCourses(SalesforceContext context) => _context = context;
+
+    public async Task<List<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
+    {
+        var name = username == "360.StudentTest" ? "woobensky.pierre" : username;
+        var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
+
+        var response = await _context.Query<CourseOffering>(string.Format(SoqlTemplate, name, roleFilter));
+
+        return response?.records?
+            .Select(c => MapToViewModel(c, username))
+            .ToList() ?? new List<UserCoursesViewModel>();
+    }
+
+    private static UserCoursesViewModel MapToViewModel(CourseOffering c, string username)
+    {
+        var schedule = c.CourseOfferingSchedules.records.FirstOrDefault();
+        var participant = c.CourseOfferingParticipants.records.FirstOrDefault();
+
+        return new UserCourses
+        {
+            Role = participant?.ParticipantAffiliation ?? "",
+
+            YR_CDE = c.AcademicSession.gc_Jenz_Year_Code__c,
+            TRM_CDE = c.AcademicSession.gc_Jenz_Term_Code__c,
+            SUBTERM_DESC = c.AcademicSession.gc_Jenz_Subterm_Code__c,
+
+            CRS_CDE = $"{c.LearningCourse.SubjectAbbreviation}-{c.LearningCourse.CourseNumber}",
+            CRS_TITLE = c.Name,
+
+            BLDG_CDE = schedule?.Location.ExternalReference ?? "",
+
+            MONDAY_CDE = DayCode(schedule?.IsMonday, "M"),
+            TUESDAY_CDE = DayCode(schedule?.IsTuesday, "T"),
+            WEDNESDAY_CDE = DayCode(schedule?.IsWednesday, "W"),
+            THURSDAY_CDE = DayCode(schedule?.IsThursday, "R"),
+            FRIDAY_CDE = DayCode(schedule?.IsFriday, "F"),
+            SATURDAY_CDE = DayCode(schedule?.IsSaturday, "S"),
+
+            BEGIN_DATE = schedule?.StartDate,
+            END_DATE = schedule?.EndDate,
+
+            BEGIN_TIME = ParseTime(schedule?.StartTime),
+            END_TIME = ParseTime(schedule?.EndTime)
+        };
+    }
+
+    private static string DayCode(bool? flag, string code) => flag == true ? code : "";
+
+    private static TimeSpan? ParseTime(string? time)
+    {
+        if (string.IsNullOrWhiteSpace(time))
+        {
+            return null;
+        }
+        else
+        {
+            var cleanedTime = time.Replace("Z", "");
+            var isValid = TimeSpan.TryParse(cleanedTime, out var t);
+
+            return isValid ? t : null;
+        }
+    }
+}
