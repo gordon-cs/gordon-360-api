@@ -17,6 +17,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Gordon360.Models.Salesforce;
 
 namespace Gordon360.Services;
 
@@ -27,9 +28,12 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">username</param>
     /// <returns>StudentProfileViewModel if found, null if not found</returns>
-    public StudentProfileViewModel? GetStudentProfileByUsername(string username)
+    public async Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username)
     {
-        return context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        SalesforceContext sfContext = new SalesforceContext(config);
+        var sfProfiles = new SFProfiles(sfContext);
+        var student = await sfProfiles.GetProfile(username);
+        return student;
     }
 
     /// <summary>
@@ -316,7 +320,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated student profile by there username</returns>
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
-        var profile = GetStudentProfileByUsername(username);
+        var profile = await GetStudentProfileByUsername(username);
         if (profile == null)
         {
             throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
