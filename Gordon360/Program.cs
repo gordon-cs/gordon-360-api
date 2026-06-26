@@ -96,6 +96,7 @@ try
     builder.Services.Add360Services();
     builder.Services.AddScoped<SalesforceContext>();
     builder.Services.AddScoped<SFUserCourses>();
+    builder.Services.AddScoped<AcademicTermProcedures>();
 
     builder.Services.AddHostedService<EventCacheRefreshService>();
     builder.Services.AddHostedService<MarketplaceCleanupService>();

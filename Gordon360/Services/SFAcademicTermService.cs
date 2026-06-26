@@ -7,33 +7,18 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class SFAcademicTermService(SalesforceContext context) : IAcademicTermService
+public class SFAcademicTermService(AcademicTermProcedures academicTermProcedures) : IAcademicTermService
 {
     public async Task<YearTermTableViewModel?> GetCurrentTermAsync()
     {
-        var soql_query = $@"SELECT Id, Name
-            FROM Academic_Term__c
-            WHERE IsActive = true
-            LIMIT 1";
-
-        var response = await context.Query<AcademicTerm>(soql_query);
-
-        AcademicTerm? term = response?.records?.FirstOrDefault();
-
-        return term != null ? new YearTermTableViewModel(term) : null;
+        return await academicTermProcedures.GetCurrentTerm();
 ;
     }
 
 
     public async Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync()
     {
-        var soql_query = $@"SELECT Id, Name
-            FROM Academic_Term__c
-            WHERE AcademicYearId.IsActive = True";
-
-        var terms = await context.Query<AcademicTerm>(soql_query);
-
-        return terms.records.Select(t => new YearTermTableViewModel(t));
+        return await academicTermProcedures.GetAllTerms();
     }
 
 
@@ -49,15 +34,8 @@ public class SFAcademicTermService(SalesforceContext context) : IAcademicTermSer
     public async Task<DaysLeftViewModel> GetDaysLeftAsync()
     {
         var today = DateTime.Today;
-
-        var soql_query = $@"SELECT Id, Name
-            FROM Academic_Term__c
-            WHERE Season IS Fall OR Spring OR Summer
-            ORDER BY StartDate DESC";
-
-        var terms_result = await context.Query<AcademicTerm>(soql_query);
-
-        var relevantTerms = terms_result.records.Select(t => new YearTermTableViewModel(t)).ToList();
+        var relevantTerms = await academicTermProcedures.GetAllTerms();
+        relevantTerms = [.. relevantTerms.Where(t => t.TermCode == "SP" || t.TermCode == "SU" || t.TermCode == "FA" )];
 
         // Iterate through the relevant terms to find where today's date fits
         for (int i = 0; i < relevantTerms.Count; i++)
@@ -121,15 +99,15 @@ public class SFAcademicTermService(SalesforceContext context) : IAcademicTermSer
 
     public async Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync()
     {
-        var soql_query = $@"SELECT Id, Name
-            FROM Academic_Term__c
-            WHERE TODAY > StartDate AND (Season = Fall OR Season = Spring)
-            ORDER BY StartDate DESC
-            LIMIT 1";
+        var currentDate = DateTime.Today;
+        var terms = await academicTermProcedures.GetAllTerms();
+        var finalExamTerm = terms
+            .Where(t =>
+                currentDate > t.BeginDate &&
+                (t.TermCode == "SP" || t.TermCode == "FA"))
+            .OrderByDescending(t => t.BeginDate)
+            .FirstOrDefault();
 
-        var terms = await context.Query<AcademicTerm>(soql_query);
-        var finalExamTerm = terms.records.FirstOrDefault();
-
-        return finalExamTerm != null ? new YearTermTableViewModel(finalExamTerm) : null;
+        return finalExamTerm;
     }
 }

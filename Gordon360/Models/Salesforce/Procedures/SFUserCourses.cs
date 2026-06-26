@@ -6,9 +6,9 @@ using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Models.Salesforce;
 
-public class SFUserCourses
+public class SFUserCourses(SalesforceContext context)
 {
-    private readonly SalesforceContext _context;
+    private readonly SalesforceContext _context = context;
 
     private const string SoqlTemplate = """
         SELECT
@@ -39,8 +39,6 @@ public class SFUserCourses
                 {1}
         )
     """;
-
-    public SFUserCourses(SalesforceContext context) => _context = context;
 
     public async Task<List<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
     {

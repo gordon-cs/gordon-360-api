@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.Salesforce;
+using Microsoft.IdentityModel.Tokens;
 using System;
 
 namespace Gordon360.Models.ViewModels
@@ -24,11 +25,12 @@ namespace Gordon360.Models.ViewModels
         }
         public YearTermTableViewModel(AcademicTerm entity)
         {
-            YearCode = entity.AcademicYearID.Year;
-            TermCode = entity.CurrentSeason.ToString();
-            BeginDate = entity.StartDate;
-            EndDate = entity.EndDate;
-            Description = entity.Description;
+            YearCode = entity.gc_Jenz_Year_Code__c;
+            TermCode = entity.gc_Jenz_Term_Code__c;
+            // Convert ISO 8601 DateTime string to DateTime object
+            BeginDate = entity.StartDate.IsNullOrEmpty() ? null : DateTime.Parse(entity.StartDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            EndDate = entity.EndDate.IsNullOrEmpty() ? null : DateTime.Parse(entity.EndDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            Description = entity.Name;
             ShowOnWeb = entity.ShowOnWeb;
         }
     }
