@@ -12,7 +12,6 @@ public class SFAcademicTermService(AcademicTermProcedures academicTermProcedures
     public async Task<YearTermTableViewModel?> GetCurrentTermAsync()
     {
         return await academicTermProcedures.GetCurrentTerm();
-;
     }
 
 

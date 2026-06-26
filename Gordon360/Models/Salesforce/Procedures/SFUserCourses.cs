@@ -23,7 +23,7 @@ public class SFUserCourses(SalesforceContext context)
             (
                 SELECT ParticipantAffiliation, ParticipationStatus, ParticipantContact.Name
                 FROM CourseOfferingParticipants
-                WHERE ParticipantContact.Email LIKE '{0}%'
+                WHERE ParticipantContact.gc_University_Email__c LIKE '{0}%'
             ),
             (
                 SELECT Description, IsSunday, IsMonday, IsTuesday, IsWednesday, IsThursday, IsFriday, IsSaturday,
@@ -34,8 +34,8 @@ public class SFUserCourses(SalesforceContext context)
         WHERE Id IN (
             SELECT CourseOfferingId
             FROM CourseOfferingParticipant
-            WHERE ParticipantContact.Email LIKE '{0}%'
-                AND NOT (ParticipationStatus='Dropped' OR ParticipationStatus='Withdrew')
+            WHERE ParticipantContact.gc_University_Email__c LIKE '{0}%'
+                AND (NOT (ParticipationStatus='Dropped' OR ParticipationStatus='Withdrew'))
                 {1}
         )
     """;
