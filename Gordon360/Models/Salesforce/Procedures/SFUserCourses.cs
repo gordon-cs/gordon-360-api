@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Models.Salesforce;
@@ -57,18 +58,18 @@ public class SFUserCourses(SalesforceContext context)
         var schedule = c.CourseOfferingSchedules.records.FirstOrDefault();
         var participant = c.CourseOfferingParticipants.records.FirstOrDefault();
 
-        return new UserCoursesViewModel
+        return new UserCourses
         {
             Role = participant?.ParticipantAffiliation ?? "",
 
             YR_CDE = c.AcademicSession.gc_Jenz_Year_Code__c,
             TRM_CDE = c.AcademicSession.gc_Jenz_Term_Code__c,
+            SUBTERM_DESC = c.AcademicSession.gc_Jenz_Subterm_Code__c,
 
             CRS_CDE = $"{c.LearningCourse.SubjectAbbreviation}-{c.LearningCourse.CourseNumber}",
             CRS_TITLE = c.Name,
 
             BLDG_CDE = schedule?.Location.ExternalReference ?? "",
-            ROOM_CDE = schedule?.Location.ExternalReference ?? "",
 
             MONDAY_CDE = DayCode(schedule?.IsMonday, "M"),
             TUESDAY_CDE = DayCode(schedule?.IsTuesday, "T"),
