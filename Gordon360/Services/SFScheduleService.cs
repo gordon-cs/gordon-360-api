@@ -69,7 +69,7 @@ public class SFScheduleService(SFUserCourses sfUserCourses, ISessionService sess
                        term => new { term.YearCode, term.TermCode},
                        course => new { YearCode = course.YR_CDE, TermCode = course.TRM_CDE },
                        (term, matchingCourses) => new CoursesByTermViewModel(term, matchingCourses))
-            .Where(cbt => cbt.AllCourses.Any());
+            .Where(coursesByTerm => coursesByTerm.AllCourses.Any());
 
         return coursesByTerm.OrderByDescending(cbt => cbt.TermBeginDate);
     }

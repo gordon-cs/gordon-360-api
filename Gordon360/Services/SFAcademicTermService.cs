@@ -98,7 +98,7 @@ public class SFAcademicTermService(AcademicTermProcedures academicTermProcedures
 
     public async Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync()
     {
-        var currentDate = DateTime.Today;
+        var currentDate = DateTime.Now;
         var terms = await academicTermProcedures.GetAllTerms();
         var finalExamTerm = terms
             .Where(t =>
