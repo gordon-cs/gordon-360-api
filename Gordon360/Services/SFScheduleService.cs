@@ -39,7 +39,7 @@ public class SFScheduleService(SFUserCourses sfUserCourses, ISessionService sess
     /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
     public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username, "Instructor");
+        List<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username, "Teacher");
         courses = courses.Select(c => (UserCoursesViewModel)c).ToList();
 
         IEnumerable<SessionViewModel> sessions = sessionService.GetAll();

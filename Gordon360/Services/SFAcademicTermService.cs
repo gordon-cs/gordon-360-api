@@ -96,6 +96,7 @@ public class SFAcademicTermService(AcademicTermProcedures academicTermProcedures
         };
     }
 
+    [Obsolete]
     public async Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync()
     {
         var currentDate = DateTime.Now;
