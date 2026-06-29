@@ -31,7 +31,8 @@ namespace Gordon360.Models.ViewModels
             BeginDate = entity.StartDate.IsNullOrEmpty() ? null : DateTime.Parse(entity.StartDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
             EndDate = entity.EndDate.IsNullOrEmpty() ? null : DateTime.Parse(entity.EndDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
             Description = entity.Name;
-            ShowOnWeb = entity.ShowOnWeb;
+            // Show on web by default
+            ShowOnWeb = "B";
         }
     }
 }
