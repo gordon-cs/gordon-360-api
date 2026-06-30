@@ -1,95 +1,174 @@
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Gordon360.Models.ViewModels;
-using Gordon360.Models.CCT;
 
 namespace Gordon360.Models.Salesforce;
 
-public class SFUserCourses
+public class SFProfiles
 {
     private readonly SalesforceContext _context;
 
     private const string SoqlTemplate = """
-        SELECT
+        SELECT 
+            Name,
+            Student_Id__pc,
+            PersonEmail,
+            PersonTitle,
             FirstName,
-            LastName,
             MiddleName,
+            LastName,
+            Suffix__pc,
             (
                 SELECT 
                     Name,
-                    LearningProgramPlan.LearningProgram.Type__c
-                FROM LearningPrograms
+                    LearningProgramPlan.LearningProgram.Type__c,
+                    LearningProgramPlan.LearningProgram.Name,
+                    Status
+                FROM LearnerPrograms
+            ),
+            (
+                SELECT
+                    Name,
+                    Description,
+                    Status,
+                    RoleType
+                FROM Persons
+            ),
+            (
+                SELECT 
+                    Name,
+                    Academic_Term__r.Name,
+                    gc_On_Campus_Location__r.Name,
+                    gc_On_Campus_Location__r.ParentLocation.Name,
+                    gc_On_Campus_Location__r.gc_Jenz_Building_Code__c,
+                    gc_On_Campus_Location__r.Phone,
+                    gc_On_Campus_Location__r.gc_Jenz_Room_Code__c,
+                    gc_Status__c
+                FROM ContactPointAddresses
+                WHERE AddressType = 'On-Campus'
+            ),
+            (
+                SELECT 
+                    Name,
+                    (
+                        SELECT
+                            Name,
+                            PartyRoleRelation.Name,
+                            RelatedContact.Name
+                        FROM CCRContacts
+                    )
+                FROM Contacts
             )
-            
-        FROM Contact
-        WHERE gc_University_Email__c LIKE '{0}@%'
-        )
+        FROM Account
+        WHERE RecordType.Name = 'Person Account'
+            AND Name = '{0}'
     """;
 
-    public SFUserCourses(SalesforceContext context) => _context = context;
-
-    public async Task<List<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
+    public SFProfiles(SalesforceContext context)
     {
-        var name = username == "360.StudentTest" ? "woobensky.pierre" : username;
-        var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
-
-        var response = await _context.Query<CourseOffering>(string.Format(SoqlTemplate, name, roleFilter));
-
-        return response?.records?
-            .Select(c => MapToViewModel(c, username))
-            .ToList() ?? new List<UserCoursesViewModel>();
+        _context = context;
     }
 
-    private static UserCoursesViewModel MapToViewModel(CourseOffering c, string username)
+    public async Task<StudentProfileViewModel> GetProfile(string username)
     {
-        var schedule = c.CourseOfferingSchedules.records.FirstOrDefault();
-        var participant = c.CourseOfferingParticipants.records.FirstOrDefault();
+        var name = username == "360.StudentTest"
+            ? "Jamie Berry"
+            : username;
 
-        return new UserCourses
-        {
-            Role = participant?.ParticipantAffiliation ?? "",
+        var response = await _context.Query<Account>(string.Format(SoqlTemplate, name));
 
-            YR_CDE = c.AcademicSession.gc_Jenz_Year_Code__c,
-            TRM_CDE = c.AcademicSession.gc_Jenz_Term_Code__c,
-            SUBTERM_DESC = c.AcademicSession.gc_Jenz_Subterm_Code__c,
-
-            CRS_CDE = $"{c.LearningCourse.SubjectAbbreviation}-{c.LearningCourse.CourseNumber}",
-            CRS_TITLE = c.Name,
-
-            BLDG_CDE = schedule?.Location.ExternalReference ?? "",
-
-            MONDAY_CDE = DayCode(schedule?.IsMonday, "M"),
-            TUESDAY_CDE = DayCode(schedule?.IsTuesday, "T"),
-            WEDNESDAY_CDE = DayCode(schedule?.IsWednesday, "W"),
-            THURSDAY_CDE = DayCode(schedule?.IsThursday, "R"),
-            FRIDAY_CDE = DayCode(schedule?.IsFriday, "F"),
-            SATURDAY_CDE = DayCode(schedule?.IsSaturday, "S"),
-
-            BEGIN_DATE = schedule?.StartDate,
-            END_DATE = schedule?.EndDate,
-
-            BEGIN_TIME = ParseTime(schedule?.StartTime),
-            END_TIME = ParseTime(schedule?.EndTime)
-        };
+        // first or default
+        return response?.records?.FirstOrDefault() != null ? MapToViewModel(response.records.First()) : null;
     }
 
-    private static string DayCode(bool? flag, string code) => flag == true ? code : "";
-
-    private static TimeSpan? ParseTime(string? time)
+    private static StudentProfileViewModel MapToViewModel(Account account)
     {
-        if (string.IsNullOrWhiteSpace(time))
-        {
-            return null;
-        }
-        else
-        {
-            var cleanedTime = time.Replace("Z", "");
-            var isValid = TimeSpan.TryParse(cleanedTime, out var t);
+        var address =
+            account.ContactPointAddresses?.records?.FirstOrDefault();
 
-            return isValid ? t : null;
-        }
+        var advisor =
+            account.Contacts?.records?
+                .SelectMany(c => c.CCRContacts?.records ?? [])
+                .FirstOrDefault(c => c.PartyRoleRelation?.Name?.Contains("Advisor") == true);
+
+        var majors =
+            account.LearnerPrograms?.records?
+                .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Major")
+                .Take(3)
+                .ToList()
+            ?? [];
+
+        var minors =
+            account.LearnerPrograms?.records?
+                .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Minor")
+                .Take(3)
+                .ToList()
+            ?? [];
+
+        return new StudentProfileViewModel(
+            account.Student_Id__pc ?? "",
+            account.PersonTitle ?? "",
+            account.FirstName ?? "",
+            account.MiddleName ?? "",
+            account.LastName ?? "",
+            account.Suffix__pc ?? "",
+            account.MaidenName ?? "",
+            account.NickName ?? "",
+            account.OnOffCampus ?? "",
+            address?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "",
+            address?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
+            address?.gc_On_Campus_Location__r?.Phone ?? "",
+            account.OnCampusPrivatePhone ?? "",
+            account.OnCampusFax ?? "",
+            account.OffCampusStreet1 ?? "",
+            account.OffCampusStreet2 ?? "",
+            account.OffCampusCity ?? "",
+            account.OffCampusState ?? "",
+            account.OffCampusPostalCode ?? "",
+            account.OffCampusCountry ?? "",
+            account.OffCampusPhone ?? "",
+            account.OffCampusFax ?? "",
+            account.HomeStreet1 ?? "",
+            account.HomeStreet2 ?? "",
+            account.HomeCity ?? "",
+            account.HomeState ?? "",
+            account.HomePostalCode ?? "",
+            account.HomeCountry ?? "",
+            account.HomePhone ?? "",
+            account.HomeFax ?? "",
+            account.Cohort ?? "",
+            account.Class ?? "",
+            account.KeepPrivate ?? "",
+            account.Barcode ?? "",
+            advisor?.RelatedContact?.Name ?? "",
+            account.Married ?? "",
+            account.Commuter ?? "",
+            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            account.PersonEmail ?? "",
+            account.Gender ?? "",
+            account.grad_student ?? "",
+            account.GradDate ?? "",
+            account.PlannedGradYear ?? "",
+            account.Entrance_Date ?? "",
+            account.MobilePhone ?? "",
+            account.IsMobilePhonePrivate ?? "",
+            account.AD_Username ?? "",
+            account.show_pic ?? "",
+            account.preferred_photo ?? "",
+            account.Country ?? "",
+            address?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            majors.ElementAtOrDefault(0)?.Name ?? "",
+            majors.ElementAtOrDefault(1)?.Name ?? "",
+            majors.ElementAtOrDefault(2)?.Name ?? "",
+            minors.ElementAtOrDefault(0)?.Name ?? "",
+            minors.ElementAtOrDefault(1)?.Name ?? "",
+            minors.ElementAtOrDefault(2)?.Name ?? "",
+            account.Mail_Location ?? "",
+            account.ChapelRequired ?? "",
+            account.ChapelAttended ?? ""
+        );
     }
 }

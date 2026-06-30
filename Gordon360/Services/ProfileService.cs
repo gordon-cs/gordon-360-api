@@ -17,6 +17,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Gordon360.Models.Salesforce;
 
 namespace Gordon360.Services;
 
@@ -27,9 +28,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">username</param>
     /// <returns>StudentProfileViewModel if found, null if not found</returns>
-    public StudentProfileViewModel? GetStudentProfileByUsername(string username)
+    public async Task<StudentProfileViewModel?> GetStudentProfileByUsernameAsync(string username)
     {
-        return context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        var sfProfiles = new SFProfiles(context);
+        return await sfProfiles.GetProfile(username);
     }
 
     /// <summary>
