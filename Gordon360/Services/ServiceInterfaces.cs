@@ -20,7 +20,7 @@ namespace Gordon360.Services
 {
     public interface IProfileService
     {
-        StudentProfileViewModel? GetStudentProfileByUsername(string username);
+        Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username);
         FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username);
         AlumniProfileViewModel? GetAlumniProfileByUsername(string username);
         MailboxCombinationViewModel? GetMailboxCombination(string username);

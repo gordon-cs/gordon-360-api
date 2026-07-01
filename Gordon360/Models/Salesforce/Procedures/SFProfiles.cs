@@ -1,4 +1,7 @@
+using Gordon360.Models.ViewModels;
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gordon360.Models.Salesforce;
 
@@ -67,16 +70,17 @@ public class SFProfiles
         _context = context;
     }
 
-    public async Task<StudentProfileViewModel> GetProfile(string username)
+    public async Task<StudentProfileViewModel?> GetProfile(string username)
     {
-        var name = username == "360.StudentTest"
+        var name = (username == "360.StudentTest" || username == "")
             ? "Jamie Berry"
             : username;
 
         var response = await _context.Query<Account>(string.Format(SoqlTemplate, name));
 
-        // first or default
-        return response?.records?.FirstOrDefault() != null ? MapToViewModel(response.records.First()) : null;
+        var account = response?.records?.FirstOrDefault();
+
+        return account == null ? null : MapToViewModel(account);
     }
 
     private static StudentProfileViewModel MapToViewModel(Account account)
@@ -110,37 +114,37 @@ public class SFProfiles
             account.MiddleName ?? "",
             account.LastName ?? "",
             account.Suffix__pc ?? "",
-            account.MaidenName ?? "",
-            account.NickName ?? "",
-            account.OnOffCampus ?? "",
+            "",
+            "",
+            "",
             address?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "",
             address?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
             address?.gc_On_Campus_Location__r?.Phone ?? "",
-            account.OnCampusPrivatePhone ?? "",
-            account.OnCampusFax ?? "",
-            account.OffCampusStreet1 ?? "",
-            account.OffCampusStreet2 ?? "",
-            account.OffCampusCity ?? "",
-            account.OffCampusState ?? "",
-            account.OffCampusPostalCode ?? "",
-            account.OffCampusCountry ?? "",
-            account.OffCampusPhone ?? "",
-            account.OffCampusFax ?? "",
-            account.HomeStreet1 ?? "",
-            account.HomeStreet2 ?? "",
-            account.HomeCity ?? "",
-            account.HomeState ?? "",
-            account.HomePostalCode ?? "",
-            account.HomeCountry ?? "",
-            account.HomePhone ?? "",
-            account.HomeFax ?? "",
-            account.Cohort ?? "",
-            account.Class ?? "",
-            account.KeepPrivate ?? "",
-            account.Barcode ?? "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
             advisor?.RelatedContact?.Name ?? "",
-            account.Married ?? "",
-            account.Commuter ?? "",
+            "",
+            "",
             majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
             majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
             majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
@@ -148,17 +152,17 @@ public class SFProfiles
             minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
             minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
             account.PersonEmail ?? "",
-            account.Gender ?? "",
-            account.grad_student ?? "",
-            account.GradDate ?? "",
-            account.PlannedGradYear ?? "",
-            account.Entrance_Date ?? "",
-            account.MobilePhone ?? "",
-            account.IsMobilePhonePrivate ?? "",
-            account.AD_Username ?? "",
-            account.show_pic ?? "",
-            account.preferred_photo ?? "",
-            account.Country ?? "",
+            "",
+            "",
+            "",
+            "",
+            new DateTime(1900, 1, 1),
+            "",
+            true,
+            "",
+            1,
+            2,
+            "",
             address?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
             majors.ElementAtOrDefault(0)?.Name ?? "",
             majors.ElementAtOrDefault(1)?.Name ?? "",
@@ -166,9 +170,9 @@ public class SFProfiles
             minors.ElementAtOrDefault(0)?.Name ?? "",
             minors.ElementAtOrDefault(1)?.Name ?? "",
             minors.ElementAtOrDefault(2)?.Name ?? "",
-            account.Mail_Location ?? "",
-            account.ChapelRequired ?? "",
-            account.ChapelAttended ?? ""
+            "",
+            20,
+            5
         );
     }
 }

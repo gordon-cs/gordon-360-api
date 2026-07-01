@@ -22,7 +22,7 @@ namespace Gordon360.Models.ViewModels
             Description = entity.YR_TRM_DESC;
             ShowOnWeb = entity.SHOW_ON_WEB;
         }
-        public YearTermTableViewModel(AcademicTerm entity)
+       /* public YearTermTableViewModel(AcademicTerm entity)
         {
             YearCode = entity.AcademicYearID.Year;
             TermCode = entity.CurrentSeason.ToString();
@@ -30,6 +30,6 @@ namespace Gordon360.Models.ViewModels
             EndDate = entity.EndDate;
             Description = entity.Description;
             ShowOnWeb = entity.ShowOnWeb;
-        }
+        }*/
     }
 }

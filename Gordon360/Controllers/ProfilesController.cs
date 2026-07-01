@@ -30,11 +30,11 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("")]
-    public ActionResult<ProfileViewModel?> Get()
+   async public Task<ActionResult<ProfileViewModel?>> Get()
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-        var student = profileService.GetStudentProfileByUsername(authenticatedUserUsername);
+        var student = await profileService.GetStudentProfileByUsername(authenticatedUserUsername);
         var faculty = profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
         var alumni = profileService.GetAlumniProfileByUsername(authenticatedUserUsername);
         var customInfo = profileService.GetCustomUserInfo(authenticatedUserUsername);
@@ -54,11 +54,11 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("{username}")]
-    public ActionResult<ProfileViewModel?> GetUserProfile(string username)
+    public async Task<ActionResult<ProfileViewModel?>> GetUserProfile(string username)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        var _student = profileService.GetStudentProfileByUsername(username);
+        var _student = await profileService.GetStudentProfileByUsername(username);
         var _faculty = profileService.GetFacultyStaffProfileByUsername(username);
         var _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
