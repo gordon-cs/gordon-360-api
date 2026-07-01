@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.Salesforce;
 
 namespace Gordon360.Models.ViewModels;
 
@@ -33,4 +34,20 @@ public class AccountViewModel
 
         return vm;
     }
+
+    public static implicit operator AccountViewModel(Account a)
+    {
+        AccountViewModel vm = new AccountViewModel
+        {
+            GordonID = a.gc_Jenz_ID__c,
+            FirstName = a.FirstName,
+            LastName = a.LastName,
+            Email = a.gc_University_Email__c ?? "", // Some random records have null for an email.
+            // ADUsername should be first part of email
+            ADUserName = a.gc_University_Email__c[..a.gc_University_Email__c.IndexOf('@')] ?? "",
+        };
+
+        return vm;
+    }
+
 }

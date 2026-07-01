@@ -1895,6 +1895,16 @@
             Service that allows for meal control
             </summary>
         </member>
+        <member name="M:Gordon360.Models.Salesforce.SalesforceContext.SoqlQuery``1(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            Constructs a SOQL query
+            </summary>
+            <param name="template">Template string in the form 'SELECT [fields] FROM [table]'</param>
+            <param name="where">SOQL field selectors</param>
+            <param name="order">SOQL ordering</param>
+            <param name="limit_n">SOQL limit on number of records returned</param>
+            <returns></returns>
+        </member>
         <member name="M:Gordon360.Models.Salesforce.AcademicTermProcedures.GetAllTerms">
             <summary>
             </summary>
@@ -1905,14 +1915,35 @@
             </summary>
             <returns>Returns the current academic term, if it exists</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.AcademicTermProcedures.Query(System.String,System.String,System.Int32)">
+        <member name="M:Gordon360.Models.Salesforce.AccountProcedures.GetAllAccountsAsync">
             <summary>
-            Constructs a SOQL query
+            Gets all accounts, sorted alphabetically by last name
             </summary>
-            <param name="where">SOQL field selectors</param>
-            <param name="order">SOQL ordering</param>
-            <param name="limit_n">SOQL limit on number of records returned</param>
             <returns></returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.AccountProcedures.GetAccountByIdAsync(System.String)">
+            <summary>
+            Gets the account associated with a given ID number
+            </summary>
+            <param name="id">8-digit student ID number</param>
+            <returns>Account associated with ID number</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.AccountProcedures.GetAccountByEmailAsync(System.String)">
+            <summary>
+            Gets the account associated with a given email
+            </summary>
+            <param name="email">email address</param>
+            <returns>Account associated with email</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.AccountProcedures.GetAccountByAdUsernameAsync(System.String)">
+            <summary>
+            Gets the account associated with a given email
+            NOTE: This method is the same as GetAccountByEmailAsync,
+            but adds "@gordon.edu" to the end of the username. Behaviour
+            may be strange.
+            </summary>
+            <param name="adUsername">email address</param>
+            <returns>Account associated with email</returns>
         </member>
         <member name="M:Gordon360.Models.ViewModels.BasicInfoViewModel.MatchSearch(System.String)">
             <summary>
@@ -3666,6 +3697,87 @@
             Fetches all the session records from the database.
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="T:Gordon360.Services.SFAccountService">
+            <summary>
+            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Models.Salesforce.AccountProcedures)">
+            <summary>
+            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.GetAccountByID(System.String)">
+            <summary>
+            Fetches a single account record whose id matches the id provided as an argument
+            </summary>
+            <param name="id">The person's gordon id</param>
+            <returns>AccountViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.GetAll">
+            <summary>
+            Fetches all the account records from storage.
+            </summary>
+            <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.GetAccountByEmail(System.String)">
+            <summary>
+            Fetches the account record with the specified email.
+            </summary>
+            <param name="email">The email address associated with the account.</param>
+            <returns>the first account object which matches the email</returns>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.GetAccountByUsername(System.String)">
+            <summary>
+            Fetches the account record with the specified username.
+            </summary>
+            <param name="username">The AD username associated with the account.</param>
+            <returns>the student account information</returns>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Given a list of accounts, and search params, return all the accounts that match those search params.
+            </summary>
+            <param name="accounts">The accounts that should be searched, converted to an AdvancedSearchViewModel</param>
+            <param name="firstname">The firstname search param</param>
+            <param name="lastname">The lastname search param</param>
+            <param name="major">The major search param</param>
+            <param name="minor">The minor search param</param>
+            <param name="hall">The hall search param</param>
+            <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+            <param name="preferredClassYear">The preferred class year search param</param>
+            <param name="initialYear">The initial year range search param</param>
+            <param name="finalYear">The final year range search param</param>
+            <param name="homeCity">The home city search param</param>
+            <param name="state">The state search param</param>
+            <param name="country">The country search param</param>
+            <param name="department">The department search param</param>
+            <param name="building">The building search param</param>
+            <param name="involvement">The involvement search param</param>
+            <param name="gender">The gender search param</param>
+            <returns>The accounts from the provided list that match the given search params</returns>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.GetAccountsToSearch(System.Collections.Generic.List{System.String},System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},System.String)">
+            <summary>
+            Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
+            </summary>
+            <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+            <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
+            <param name="homeCity">The home city search param, since it is considered sensitive info</param>
+            <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.GetAllBasicInfoAsync">
+            <summary>
+            Get basic info for all accounts
+            </summary>
+            <returns>BasicInfoViewModel of all accounts</returns>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.GetAllBasicInfoExceptAlumniAsync">
+            <summary>
+            Get basic info for all accounts except alumni
+            </summary>
+            <returns>BasicInfoViewModel of all accounts except alumni</returns>
         </member>
         <member name="T:Gordon360.Services.SFScheduleService">
             <summary>
