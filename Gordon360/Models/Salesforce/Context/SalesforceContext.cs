@@ -1,24 +1,10 @@
-﻿using Gordon360.Exceptions;
-using Gordon360.Models.CCT.Context;
-using Gordon360.Models.Salesforce;
-using Gordon360.Models.ViewModels;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Configuration;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using Gordon360.Models.Salesforce.Attributes;
-using System.Reflection;
 
 // <summary>
 // We use this service to pull meal data from blackboard and parse it
@@ -31,6 +17,7 @@ namespace Gordon360.Models.Salesforce;
 public class SalesforceContext
 {
     public IConfiguration config;
+    public enum QueryType { SOQL, SOSL }
     private static string ClientId;
     private static string ClientSecret;
     private static string OrganizationUrl;
@@ -49,18 +36,19 @@ public class SalesforceContext
     }
     
 
-    public async Task<SFQueryResult<T>> Query<T>(string queryString)
+    public async Task<SFQueryResult<T>> Query<T>(string queryString, QueryType queryType = QueryType.SOQL)
     {            
         System.Diagnostics.Debug.WriteLine("🔐 Getting Salesforce access token...");
         var tokenData = await GetAccessTokenAsync(config);
         var accessToken = tokenData["access_token"].ToString();
         var instanceUrl = tokenData["instance_url"].ToString();
+        var requestString = queryType == QueryType.SOQL ? "query" : "search";
 
         System.Diagnostics.Debug.WriteLine($"access token: {accessToken}");
 
         System.Diagnostics.Debug.WriteLine(queryString);
 
-        var queryUrl = $"{instanceUrl}/services/data/{ApiVersion}/query?q={Uri.EscapeDataString(queryString)}";
+        var queryUrl = $"{instanceUrl}/services/data/{ApiVersion}/{requestString}?q={Uri.EscapeDataString(queryString)}";
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         var response = await client.GetAsync(queryUrl);
@@ -79,17 +67,16 @@ public class SalesforceContext
         return results;
     }
 
-
     public static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
     {
         using var client = new HttpClient();
         var tokenUrl = $"https://{OrganizationUrl}/services/oauth2/token";
 
-        var formContent = new FormUrlEncodedContent(new[]{
+        var formContent = new FormUrlEncodedContent([
             new KeyValuePair<string, string>("grant_type", "client_credentials"),
             new KeyValuePair<string, string>("client_id", ClientId),
             new KeyValuePair<string, string>("client_secret", ClientSecret)
-        });
+        ]);
 
         var response = await client.PostAsync(tokenUrl, formContent);
         var content = await response.Content.ReadAsStringAsync();
@@ -102,5 +89,25 @@ public class SalesforceContext
         return JsonSerializer.Deserialize<Dictionary<string, object>>(content);
     }
 
+    /// <summary>
+    /// Constructs a SOQL query
+    /// </summary>
+    /// <param name="template">Template string in the form 'SELECT [fields] FROM [table]'</param>
+    /// <param name="where">SOQL field selectors</param>
+    /// <param name="order">SOQL ordering</param>
+    /// <param name="limit_n">SOQL limit on number of records returned</param>
+    /// <returns></returns>
+    public async Task<SFQueryResult<T>> SoqlQuery<T>(string template, string where = "", string order = "", int limit_n = 0)
+    {
+        // Prepare strings for injection
+        template += " {0} {1} {2}";
+        where = string.IsNullOrEmpty(where) ? "" : "WHERE " + where;
+        order = string.IsNullOrEmpty(where) ? "" : "ORDER BY " + order;
+        string limit = limit_n == 0 ? "" : "LIMIT " + limit_n;
+
+        string query = string.Format(template, where, order, limit);
+        var response = await Query<T>(query);
+        return response;
+    }
 
 }

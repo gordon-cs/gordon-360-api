@@ -64,6 +64,7 @@ public class AdvancedSearchController(CCTContext context) : GordonControllerBase
     /// <returns> All states</returns>
     [HttpGet]
     [Route("states")]
+    [Obsolete("Use AddressController instead")]
     public ActionResult<IEnumerable<string>> DEPRECATED_GetStates()
     {
         var studentStates = context.Student.Select(s => s.HomeState).AsEnumerable();
@@ -88,6 +89,7 @@ public class AdvancedSearchController(CCTContext context) : GordonControllerBase
     /// <returns> All countries</returns>
     [HttpGet]
     [Route("countries")]
+    [Obsolete("Use AddressController instead")]
     public ActionResult<IEnumerable<string>> DEPREACTED_GetCountries()
     {
         var studentCountries = context.Student.Select(s => s.Country).AsEnumerable();
