@@ -35,17 +35,18 @@ public class AcademicTermService(CCTContext context) : IAcademicTermService
     }
 
 
-    // The term list is in chronological order with the oldest term first.
-    // In the main loop we search for the term we are currently in, or determine if we are
-    // between terms.
-    //
-    // There are two cases:
-    //   (1) we're in a regular academic term.
-    //   (2) we're in between two existing academic terms.
-    // Once we've found our place we construct the DaysLeftViewModel to display 
-    // total days, days left, and term label of the period we are currently in.
     public async Task<DaysLeftViewModel> GetDaysLeftAsync()
     {
+        // The term list is in chronological order with the oldest term first.
+        // In the main loop we search for the term we are currently in, or determine if we are
+        // between terms.
+        //
+        // There are two cases:
+        //   (1) we're in a regular academic term.
+        //   (2) we're in between two existing academic terms.
+        // Once we've found our place we construct the DaysLeftViewModel to display 
+        // total days, days left, and term label of the period we are currently in.
+
         var today = DateTime.Today;
 
         // Get all terms from the database
