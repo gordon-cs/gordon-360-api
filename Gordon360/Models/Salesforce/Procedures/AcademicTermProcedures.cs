@@ -7,9 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Gordon360.Models.Salesforce;
 
-public class AcademicTermProcedures(SalesforceContext context)
+public class AcademicTermProcedures(ISalesforceContext context)
 {
-    private readonly SalesforceContext context = context;
+    private readonly ISalesforceContext context = context;
 
     private const string SoqlTemplate = @"
         SELECT

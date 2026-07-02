@@ -1,34 +1,14 @@
-﻿using Gordon360.Exceptions;
-using Gordon360.Models.CCT.Context;
-using Gordon360.Models.Salesforce;
-using Gordon360.Models.ViewModels;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Configuration;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using Gordon360.Models.Salesforce.Attributes;
-using System.Reflection;
 
-// <summary>
-// We use this service to pull meal data from blackboard and parse it
-// </summary>
 namespace Gordon360.Models.Salesforce;
 
-/// <summary>
-/// Service that allows for meal control
-/// </summary>
-public class SalesforceContext
+public class SalesforceContext : ISalesforceContext
 {
     public IConfiguration config;
     private static string ClientId;
@@ -47,10 +27,10 @@ public class SalesforceContext
         OrganizationUrl = config[$"{sf}:OrganizationUrl"];
         ApiVersion = config[$"{sf}:ApiVersion"];
     }
-    
+
 
     public async Task<SFQueryResult<T>> Query<T>(string queryString)
-    {            
+    {
         System.Diagnostics.Debug.WriteLine("🔐 Getting Salesforce access token...");
         var tokenData = await GetAccessTokenAsync(config);
         var accessToken = tokenData["access_token"].ToString();
@@ -80,7 +60,7 @@ public class SalesforceContext
     }
 
 
-    public static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
+    static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
     {
         using var client = new HttpClient();
         var tokenUrl = $"https://{OrganizationUrl}/services/oauth2/token";

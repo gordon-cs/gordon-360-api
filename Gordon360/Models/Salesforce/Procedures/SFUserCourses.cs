@@ -7,9 +7,9 @@ using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Models.Salesforce;
 
-public class SFUserCourses(SalesforceContext context)
+public class SFUserCourses(ISalesforceContext context)
 {
-    private readonly SalesforceContext _context = context;
+    private readonly ISalesforceContext _context = context;
 
     private const string SoqlTemplate = """
         SELECT
