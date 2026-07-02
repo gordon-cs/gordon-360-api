@@ -16,6 +16,10 @@ public class Account
     public string MiddleName { get; set; } = "";
     public string LastName { get; set; } = "";
     public string Suffix__pc { get; set; } = "";
+    public string FormerLastName__pc { get; set; } = ""; // maiden name?
+    public string Preferred_First_Name_Formula__pc { get; set; } = ""; // maiden name?
+    public string AD_Username__pc { get; set; } = "";
+    public string PersonGenderIdentity { get; set; } = "";
 
 
     public SFChildCollection<ConstituentRole> Persons { get; set; } = new();
