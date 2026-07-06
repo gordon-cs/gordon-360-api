@@ -1,5 +1,5 @@
 using Gordon360.Models.ViewModels;
-using gordon360.Models.CCT;
+using Gordon360.Models.CCT;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -109,18 +109,7 @@ public class SFProfiles
 
     }
 
-    public async Task<StudentProfileViewModel?> GetProfile(string username)
-    {
-        var name = (username == "360.StudentTest" || username == "")
-            ? "Jamie Berry"
-            : username;
-
-        var response = await _context.Query<Account>(string.Format(SoqlTemplate, name));
-
-        account = response?.records?.FirstOrDefault();
-
-        return account == null ? null : MapToViewModel(account);
-    }
+   
 
 
     public async Task<StudentProfileViewModel?> GetStudentProfile(string username){
@@ -128,7 +117,7 @@ public class SFProfiles
             ? "Jamie Berry"
             : username;
 
-        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusSoql, name); 
+        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusLocationFields, name); 
         
         var response = await _context.Query<Account>(soql);
 
@@ -138,12 +127,16 @@ public class SFProfiles
     }
 
     private static StudentProfileViewModel MapToStudentProfileViewModel(Account account){
-        var student = MapToBaseModel<Student>(account);
+        Student student = MapToBaseModel<Student>(new Student(), account);
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
 
         var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
                                 ?? new ContactPointAddress();
+
+
+        var address =
+            account.ContactPointAddresses?.records?.FirstOrDefault();
 
         var advisorsIds = string.Join(",",
            account.Contacts?.records?
@@ -182,7 +175,7 @@ public class SFProfiles
         student.Minor2 = minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
         student.Minor3 = minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
 
-        student.MajorDescription = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
+        student.Major1Description = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
         student.Major2Description = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
         student.Major3Description = majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
         student.Minor1Description = minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
@@ -195,7 +188,7 @@ public class SFProfiles
         student.PlannedGradYear = ""; // planned grad year
         student.Entrance_Date = new DateTime(1900, 1, 1); // Entrance year
         student.MobilePhone = contact.Phone ?? ""; // mobile phone
-        student.IsMobilePhonePrivate = true; // is mobile private
+        student.IsMobilePhonePrivate = 0; // is mobile private
         student.ChapelRequired = 20; // ChapelRequired
         student.ChapelAttended = 5; // ChapelAttended
         student.Cohort = ""; // cohort
@@ -212,8 +205,8 @@ public class SFProfiles
         student.OnCampusFax = "";
         student.KeepPrivate = ""; // keep private
 
-        //return student;
-
+        return student;
+        /*
         return new T(
             account.Student_Id__pc ?? "",
             account.PersonTitle ?? "",
@@ -280,11 +273,11 @@ public class SFProfiles
             "", // mail location
             20, // ChapelRequired
             5   // ChapelAttended
-        );  
+        );  */
 
     }
 
-    private static T MapToBaseModel<T>(Account account) 
+    private static T MapToBaseModel<T>(T profileObj, Account account) 
     {
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
@@ -292,31 +285,31 @@ public class SFProfiles
         var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home") 
                             ?? new ContactPointAddress();
 
+        dynamic profile = profileObj;
 
-        var specialProfile = new T();
-        specialProfile.ID = account.Student_Id__pc ?? "";
-        specialProfile.Title = account.PersonTitle ?? "";
-        specialProfile.FirstName = account.FirstName ?? "";
-        specialProfile.MiddleName = account.MiddleName ?? "";
-        specialProfile.LastName = account.LastName ?? "";
-        specialProfile.Suffix = account.Suffix__pc ?? "";
-        specialProfile.MaidenName = account.FormerLastName__pc ?? "";
-        specialProfile.Nickname = account.Preferred_First_Name_Formula__pc ?? "";
-        specialProfile.Email = account.PersonEmail ?? "";
-        specialProfile.Gender = account.PersonGenderIdentity ?? "";
-        specialProfile.AD_Username = account.AD_Username__pc ?? "360.StudentTest";
-        specialProfile.HomeStreet1 = "" // It seems like, for a long time, this has represented street2 (in the database, frontend and here) #TODO: we should fix that
-        specialProfile.HomeStreet2 = homeAddress.Street ?? ""; 
-        specialProfile.HomeCity = homeAddress.City ?? "";
-        specialProfile.HomeState = homeAddress.StateCode ?? "";
-        specialProfile.HomePostalCode = homeAddress.PostalCode ?? "";
-        specialProfile.HomeCountry = homeAddress.CountryCode ?? "";
-        specialProfile.HomePhone = homeAddress.PhoneNumber ?? "";   
-        specialProfile.show_pic = 1; // show pic
-        specialProfile.preferred_photo = 2; // preferred photo
-        specialProfile.Country = ""; // country
+        profile.ID = account.Student_Id__pc ?? "";
+        profile.Title = account.PersonTitle ?? "";
+        profile.FirstName = account.FirstName ?? "";
+        profile.MiddleName = account.MiddleName ?? "";
+        profile.LastName = account.LastName ?? "";
+        profile.Suffix = account.Suffix__pc ?? "";
+        profile.MaidenName = account.FormerLastName__pc ?? "";
+        profile.NickName = account.Preferred_First_Name_Formula__pc ?? "";
+        profile.Email = account.PersonEmail ?? "";
+        profile.Gender = account.PersonGenderIdentity ?? "";
+        profile.AD_Username = account.AD_Username__pc ?? "360.StudentTest";
+        profile.HomeStreet1 = ""; // It seems like, for a long time, this has represented street2 (in the database, frontend and here) #TODO: we should fix that
+        profile.HomeStreet2 = homeAddress.Street ?? ""; 
+        profile.HomeCity = homeAddress.City ?? "";
+        profile.HomeState = homeAddress.StateCode ?? "";
+        profile.HomePostalCode = homeAddress.PostalCode ?? "";
+        profile.HomeCountry = homeAddress.CountryCode ?? "";
+        profile.HomePhone = homeAddress.PhoneNumber ?? "";   
+        profile.show_pic = 1; // show pic
+        profile.preferred_photo = 2; // preferred photo
+        profile.Country = ""; // country
 
-        return specialProfile;
+        return profile;
         
     }
 }
