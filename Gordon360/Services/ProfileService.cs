@@ -32,7 +32,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     {
         SalesforceContext sfContext = new SalesforceContext(config);
         var sfProfiles = new SFProfiles(sfContext);
-        var student = await sfProfiles.GetProfile(username);
+        var student = await sfProfiles.GetStudentProfile(username);
         return student;
     }
 
