@@ -21,8 +21,8 @@ namespace Gordon360.Services
     public interface IProfileService
     {
         Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username);
-        FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username);
-        AlumniProfileViewModel? GetAlumniProfileByUsername(string username);
+        Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username);
+        Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username);
         MailboxCombinationViewModel? GetMailboxCombination(string username);
         DateTime GetBirthdate(string username);
         Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);

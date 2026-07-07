@@ -11,16 +11,6 @@ public class SFProfiles
     private readonly SalesforceContext _context;
     private const Account account = null;
 
-    private const string employmentSoql = """
-        (
-            SELECT
-                StartDate
-            FROM PersonEmployment
-            ORDER BY StartDate ASC
-            LIMIT 1
-        ),
-    """;
-
     private const string educationSoql = """
         (
             SELECT 
@@ -30,6 +20,29 @@ public class SFProfiles
                 LearningProgramPlan.LearningProgram.gc_Jenz_Major_Minor_Code__c,
                 Status
             FROM LearnerPrograms
+        ),
+    """; // filter by status and sort by date
+
+    // used to get first Start date
+    private const string facStaffEmploymentSoql = """
+        (
+            SELECT
+                StartDate
+            FROM PersonEmployments
+            ORDER BY StartDate ASC
+            LIMIT 1
+        ),
+    """;
+
+    // used to obtain current job title 
+    private const string alumniEmploymentSoql = """
+        (
+            SELECT
+                Position
+            FROM PersonEmployments
+            WHERE (EmploymentStatus = 'Employed' OR EmploymentStatus = 'Self-Employed')
+            ORDER BY StartDate DESC
+            LIMIT 1
         ),
     """;
 
@@ -89,6 +102,10 @@ public class SFProfiles
                 SELECT 
                     Name,
                     Phone,
+                    gc_Preferred_Class__c,
+        gc_Current_Positions__c,
+    
+                    MaritalStatus,
                     (
                         SELECT
                             Name,
@@ -109,11 +126,168 @@ public class SFProfiles
 
     }
 
+
+     private static T MapToBaseModel<T>(T profileObj, Account account) 
+    {
+
+        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
+        
+        var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home") 
+                            ?? new ContactPointAddress();
+
+        dynamic profile = profileObj;
+
+        profile.ID = account.Student_Id__pc ?? "";
+        profile.Title = account.PersonTitle ?? "";
+        profile.FirstName = account.FirstName ?? "";
+        profile.MiddleName = account.MiddleName ?? "";
+        profile.LastName = account.LastName ?? "";
+        profile.Suffix = account.Suffix__pc ?? "";
+        profile.MaidenName = account.FormerLastName__pc ?? "";
+        //profile.NickName = account.Preferred_First_Name_Formula__pc ?? "";
+        profile.Email = account.PersonEmail ?? "";
+        profile.Gender = account.PersonGenderIdentity ?? "";
+        profile.AD_Username = account.AD_Username__pc ?? "360.StudentTest";
+        profile.HomeStreet1 = ""; // It seems like, for a long time, this has represented street2 (in the database, frontend and here) #TODO: we should fix that
+        profile.HomeStreet2 = homeAddress.Street ?? ""; 
+        profile.HomeCity = homeAddress.City ?? "";
+        profile.HomeState = homeAddress.StateCode ?? "";
+        profile.HomePostalCode = homeAddress.PostalCode ?? "";
+        profile.HomeCountry = homeAddress.CountryCode ?? "";
+        profile.HomePhone = homeAddress.PhoneNumber ?? "";   
+        profile.show_pic = 1; // show pic
+        profile.preferred_photo = 2; // preferred photo
+        profile.Country = ""; // country
+
+        return profile;
+        
+    }
+
+
+    public async Task<FacultyStaffProfileViewModel?> GetFacStaffProfile(string username){
+        var name = (username == "360.StudentTest" || username == "" || username == "Woobensky.Pierre")
+            ? "Jamie Berry"
+            : username;
+
+        var soql = string.Format(SoqlTemplate, "", facStaffEmploymentSoql, onCampusLocationFields, name); 
+        
+        var response = await _context.Query<Account>(soql);
+
+        var account = response?.records?.FirstOrDefault();
+
+        return account == null ? null : MapToFacStaffProfileViewModel(account);
+    }
+
+    private static FacultyStaffProfileViewModel MapToFacStaffProfileViewModel(Account account){
+        FacStaff facStaff = MapToBaseModel<FacStaff>(new FacStaff(), account);
+
+        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
+
+        var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
+                                ?? new ContactPointAddress();
+
+        var address = account.ContactPointAddresses?.records?.FirstOrDefault();
+
+        var firstEmployment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
+
+     
+        facStaff.BuildingDescription = onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "";
+        facStaff.Mail_Location = ""; // mail location
+        facStaff.OnCampusBuilding = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "";
+        facStaff.OnCampusRoom = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "";
+        facStaff.OnCampusPhone = onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "";
+        facStaff.OnCampusPrivatePhone = "";
+        facStaff.OnCampusFax = "";
+        facStaff.KeepPrivate = ""; // keep private
+
+
+        facStaff.FirstHireDt = firstEmployment?.StartDate ?? new DateTime(1900, 1, 1); // FirstHire
+        facStaff.OnCampusDepartment = ""; // OnCampusDepartment
+        facStaff.Type = ""; // Type
+        // office hours
+        facStaff.office_hours = "test test fac staff"; // OfficeHours
+        facStaff.Dept = ""; // Dept
+        facStaff.Mail_Description = ""; // Mail_Description
+
+
+        facStaff.JobTitle = contact.gc_Current_Positions__c ?? ""; // JobTitle
+        facStaff.SpouseName = ""; // SpouseName
+
+        return facStaff;
+    }
+
+    public async Task<AlumniProfileViewModel?> GetAlumniProfile(string username){
+        var name = (username == "360.StudentTest" || username == "" || username == "Woobensky.Pierre")
+            ? "Jamie Berry"
+            : username;
+
+        var soql = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql, "", name); 
+        
+        var response = await _context.Query<Account>(soql);
+
+        var account = response?.records?.FirstOrDefault();
+
+        return account == null ? null : MapToAlumniProfileViewModel(account);
+    }
    
+    
+
+
+    private static AlumniProfileViewModel MapToAlumniProfileViewModel(Account account){
+        Alumni alumn = MapToBaseModel<Alumni>(new Alumni(), account);
+
+        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
+
+        var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
+                                ?? new ContactPointAddress();
+
+        // print onCampusAddress building 
+        System.Console.WriteLine($"On-Campus Address: {onCampusAddress}");
+
+        var address =
+            account.ContactPointAddresses?.records?.FirstOrDefault();
+
+        var majors = account.LearnerPrograms?.records?
+                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Major")
+                         .Take(3)
+                         .ToList()
+                     ?? [];
+
+        var minors = account.LearnerPrograms?.records?
+                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Minor")
+                         .Take(3)
+                         .ToList()
+                     ?? [];
+
+        var currentEmployment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
+
+
+        alumn.Major1 = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
+        alumn.Major2 = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
+
+        alumn.Major1Description = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
+        alumn.Major2Description = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
+
+        alumn.grad_student = ""; // grad student
+        
+        alumn.WebUpdate = 1; // WebUpdate
+        alumn.HomeEmail = ""; // HomeEmail
+        alumn.MaritalStatus = contact.MaritalStatus ?? ""; // MaritalStatus
+        alumn.College = ""; // College
+        alumn.ClassYear = ""; // ClassYear
+        alumn.PreferredClassYear = contact.gc_Preferred_Class__c ?? ""; // PrefferedClassYear
+        alumn.ShareName = ""; // ShareName
+        alumn.ShareAddress = ""; // ShareAddress
+
+        alumn.JobTitle = currentEmployment?.Position ?? ""; // JobTitle
+        alumn.SpouseName = "test test alumni"; // SpouseName
+
+        return alumn;
+    }
 
 
     public async Task<StudentProfileViewModel?> GetStudentProfile(string username){
-        var name = (username == "360.StudentTest" || username == "")
+        var name = (username == "360.StudentTest" || username == "" || username == "Woobensky.Pierre")
             ? "Jamie Berry"
             : username;
 
@@ -134,6 +308,8 @@ public class SFProfiles
         var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
                                 ?? new ContactPointAddress();
 
+        // print onCampusAddress building 
+        System.Console.WriteLine($"On-Campus Address: {onCampusAddress}");
 
         var address =
             account.ContactPointAddresses?.records?.FirstOrDefault();
@@ -277,39 +453,6 @@ public class SFProfiles
 
     }
 
-    private static T MapToBaseModel<T>(T profileObj, Account account) 
-    {
 
-        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
-        
-        var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home") 
-                            ?? new ContactPointAddress();
-
-        dynamic profile = profileObj;
-
-        profile.ID = account.Student_Id__pc ?? "";
-        profile.Title = account.PersonTitle ?? "";
-        profile.FirstName = account.FirstName ?? "";
-        profile.MiddleName = account.MiddleName ?? "";
-        profile.LastName = account.LastName ?? "";
-        profile.Suffix = account.Suffix__pc ?? "";
-        profile.MaidenName = account.FormerLastName__pc ?? "";
-        profile.NickName = account.Preferred_First_Name_Formula__pc ?? "";
-        profile.Email = account.PersonEmail ?? "";
-        profile.Gender = account.PersonGenderIdentity ?? "";
-        profile.AD_Username = account.AD_Username__pc ?? "360.StudentTest";
-        profile.HomeStreet1 = ""; // It seems like, for a long time, this has represented street2 (in the database, frontend and here) #TODO: we should fix that
-        profile.HomeStreet2 = homeAddress.Street ?? ""; 
-        profile.HomeCity = homeAddress.City ?? "";
-        profile.HomeState = homeAddress.StateCode ?? "";
-        profile.HomePostalCode = homeAddress.PostalCode ?? "";
-        profile.HomeCountry = homeAddress.CountryCode ?? "";
-        profile.HomePhone = homeAddress.PhoneNumber ?? "";   
-        profile.show_pic = 1; // show pic
-        profile.preferred_photo = 2; // preferred photo
-        profile.Country = ""; // country
-
-        return profile;
-        
-    }
+   
 }
