@@ -43,7 +43,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
     public FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username)
     {
-        return context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        SalesforceContext sfContext = new SalesforceContext(config);
+        var sfProfiles = new SFProfiles(sfContext);
+        var facStaff = sfProfiles.GetFacultyStaffProfile(username);
+        return facStaff; // context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     /// <summary>
@@ -53,7 +56,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>AlumniProfileViewModel if found, null if not found</returns>
     public AlumniProfileViewModel? GetAlumniProfileByUsername(string username)
     {
-        return context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        SalesforceContext sfContext = new SalesforceContext(config);
+        var sfProfiles = new SFProfiles(sfContext);
+        var alumni = sfProfiles.GetAlumniProfile(username);
+        return alumni; // context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     /// <summary>

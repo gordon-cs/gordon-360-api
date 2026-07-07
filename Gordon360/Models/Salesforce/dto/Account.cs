@@ -26,4 +26,5 @@ public class Account
     public SFChildCollection<LearnerProgram> LearnerPrograms { get; set; } = new();
     public SFChildCollection<ContactPointAddress> ContactPointAddresses { get; set; } = new();
     public SFChildCollection<Contact?>? Contacts { get; set; } = null;
+    public SFChildCollection<PersonEmployment> PersonEmployments { get; set; } = new();
 }
