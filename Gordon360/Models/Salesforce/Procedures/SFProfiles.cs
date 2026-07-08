@@ -25,7 +25,6 @@ public class SFProfiles
 
     // used to get first Start date
     private const string facStaffEmploymentSoql = """
-        gc_Current_Positions__c,
         (
             SELECT
                 StartDate
@@ -104,6 +103,8 @@ public class SFProfiles
                     Name,
                     Phone,
                     gc_Preferred_Class__c,
+        gc_Current_Positions__c,
+    
                     MaritalStatus,
                     (
                         SELECT
@@ -143,7 +144,7 @@ public class SFProfiles
         profile.LastName = account.LastName ?? "";
         profile.Suffix = account.Suffix__pc ?? "";
         profile.MaidenName = account.FormerLastName__pc ?? "";
-        profile.NickName = account.Preferred_First_Name_Formula__pc ?? "";
+        //profile.NickName = account.Preferred_First_Name_Formula__pc ?? "";
         profile.Email = account.PersonEmail ?? "";
         profile.Gender = account.PersonGenderIdentity ?? "";
         profile.AD_Username = account.AD_Username__pc ?? "360.StudentTest";
@@ -193,7 +194,6 @@ public class SFProfiles
         facStaff.BuildingDescription = onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "";
         facStaff.Mail_Location = ""; // mail location
         facStaff.OnCampusBuilding = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "";
-                    onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
         facStaff.OnCampusRoom = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "";
         facStaff.OnCampusPhone = onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "";
         facStaff.OnCampusPrivatePhone = "";
@@ -201,7 +201,7 @@ public class SFProfiles
         facStaff.KeepPrivate = ""; // keep private
 
 
-        facStaff.FirstHire = firstEmployment?.StartDate ?? new DateTime(1900, 1, 1); // FirstHire
+        facStaff.FirstHireDt = firstEmployment?.StartDate ?? new DateTime(1900, 1, 1); // FirstHire
         facStaff.OnCampusDepartment = ""; // OnCampusDepartment
         facStaff.Type = ""; // Type
         // office hours
@@ -262,7 +262,7 @@ public class SFProfiles
         var currentEmployment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
 
 
-        alumn.Major = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
+        alumn.Major1 = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
         alumn.Major2 = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
 
         alumn.Major1Description = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
@@ -270,16 +270,16 @@ public class SFProfiles
 
         alumn.grad_student = ""; // grad student
         
-        alumn.WebUpdate = ""; // WebUpdate
+        alumn.WebUpdate = 1; // WebUpdate
         alumn.HomeEmail = ""; // HomeEmail
         alumn.MaritalStatus = contact.MaritalStatus ?? ""; // MaritalStatus
         alumn.College = ""; // College
         alumn.ClassYear = ""; // ClassYear
-        alumn.PrefferedClassYear = contact.gc_Preferred_Class__c ?? ""; // PrefferedClassYear
+        alumn.PreferredClassYear = contact.gc_Preferred_Class__c ?? ""; // PrefferedClassYear
         alumn.ShareName = ""; // ShareName
         alumn.ShareAddress = ""; // ShareAddress
 
-        alumn.JobTitle = currentEmployment?.Title ?? ""; // JobTitle
+        alumn.JobTitle = currentEmployment?.Position ?? ""; // JobTitle
         alumn.SpouseName = "test test alumni"; // SpouseName
 
         return alumn;
@@ -375,7 +375,6 @@ public class SFProfiles
         student.BuildingDescription = onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "";
         student.Mail_Location = ""; // mail location
         student.OnCampusBuilding = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "";
-                    onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
         student.OnCampusRoom = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "";
         student.OnCampusPhone = onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "";
         student.OnCampusPrivatePhone = "";
