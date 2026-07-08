@@ -109,27 +109,9 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     {
         var account = accountService.GetAccountByUsername(username);
 
-        // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
-        var advisorIDsEnumerable = await context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.GordonID));
-        var advisorIDs = advisorIDsEnumerable.FirstOrDefault();
-
-        if (advisorIDs == null)
-        {
-            return null;
-        }
-
-        List<AdvisorViewModel> resultList = new();
-
-        foreach (var advisorID in new[] { advisorIDs.Advisor1, advisorIDs.Advisor2, advisorIDs.Advisor3 })
-        {
-            if (!string.IsNullOrEmpty(advisorID))
-            {
-                var advisor = accountService.GetAccountByID(advisorID);
-                resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
-            }
-        }
-
-        return resultList;
+        return context.StudentAdvisors
+                .Where(sa => sa.StudentId == int.Parse(account.GordonID))
+                .Select(a => new AdvisorViewModel(a.AdvisorFirstName, a.AdvisorLastName, a.AdvisorADUserName));
     }
 
     /// <summary> Gets the clifton strengths of a particular user </summary>
