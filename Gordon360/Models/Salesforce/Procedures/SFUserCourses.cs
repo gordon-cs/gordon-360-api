@@ -41,9 +41,14 @@ public class SFUserCourses(ISalesforceContext context)
         )
     """;
 
-    public async Task<List<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
+/// <summary>
+/// Fetch IEnumerable of courses taken by the given user
+/// </summary>
+/// <param name="username">Active Directory username</param>
+/// <param name="role">Role of user requesting</param>
+/// <returns>IEnumerable of courses taken by user, or empty if unauthorized</returns>
+    public async Task<IEnumerable<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
     {
-        var name = username == "360.StudentTest" ? "woobensky.pierre" : username;
         var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
 
         var response = await _context.Query<CourseOffering>(string.Format(SoqlTemplate, name, roleFilter));

@@ -7,9 +7,9 @@ public class SFAcademicTermServiceTests
 {
     protected override IAcademicTermService CreateService()
     {
-        var sfContext = new Mock<ISalesforceContext>();
+        var mockContext = new Mock<ISalesforceContext>();
 
-        var procedures = new AcademicTermProcedures(sfContext.Object);
+        var procedures = new AcademicTermProcedures(mockContext.Object);
 
         return new SFAcademicTermService(procedures);
     }
