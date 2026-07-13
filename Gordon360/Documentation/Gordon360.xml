@@ -1914,6 +1914,14 @@
             <param name="limit_n">SOQL limit on number of records returned</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Models.Salesforce.SFUserCourses.GetUserCourses(System.String,System.String)">
+            <summary>
+            Fetch IEnumerable of courses taken by the given user
+            </summary>
+            <param name="username">Active Directory username</param>
+            <param name="role">Role of user requesting</param>
+            <returns>IEnumerable of courses taken by user, or empty if unauthorized</returns>
+        </member>
         <member name="M:Gordon360.Models.ViewModels.BasicInfoViewModel.MatchSearch(System.String)">
             <summary>
             Matches basic info fields against <c>search</c>, returning a match key representing the value and precedence of the first match, or <c>null</c>.

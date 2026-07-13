@@ -46,7 +46,7 @@ public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, IS
 
     public async Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username);
+        IEnumerable<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username);
 
         IEnumerable<YearTermTableViewModel> terms = await academicTermService.GetAllTermsAsync();
 
@@ -62,7 +62,7 @@ public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, IS
 
     public async Task<IEnumerable<CoursesByTermViewModel>> GetAllInstructorCoursesByTermAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username, "Teacher");
+        IEnumerable<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username, "Teacher");
 
         IEnumerable<YearTermTableViewModel> terms = await academicTermService.GetAllTermsAsync();
 
