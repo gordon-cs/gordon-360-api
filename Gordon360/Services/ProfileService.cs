@@ -23,11 +23,6 @@ namespace Gordon360.Services;
 
 public class ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
-    /// <summary>
-    /// get student profile info
-    /// </summary>
-    /// <param name="username">username</param>
-    /// <returns>StudentProfileViewModel if found, null if not found</returns>
     public async Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username)
     {
         SalesforceContext sfContext = new SalesforceContext(config);
@@ -36,11 +31,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return student;
     }
 
-    /// <summary>
-    /// get faculty staff profile info
-    /// </summary>
-    /// <param name="username">username</param>
-    /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
     public async Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username)
     {
         SalesforceContext sfContext = new SalesforceContext(config);
@@ -49,11 +39,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return facStaff; // context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
-    /// <summary>
-    /// get alumni profile info
-    /// </summary>
-    /// <param name="username">username</param>
-    /// <returns>AlumniProfileViewModel if found, null if not found</returns>
     public async Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username)
     {
         SalesforceContext sfContext = new SalesforceContext(config);
@@ -62,11 +47,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return alumni; // context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
-    /// <summary>
-    /// get mailbox information (contains box combination)
-    /// </summary>
-    /// <param name="username">The current user's username</param>
-    /// <returns>MailboxCombinationViewModel with the combination</returns>
     public MailboxCombinationViewModel? GetMailboxCombination(string username)
     {
         return context.Mailboxes
@@ -76,11 +56,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
             .FirstOrDefault();
     }
 
-    /// <summary>
-    /// get a user's birthday
-    /// </summary>
-    /// <param name="username">The username of the person to get the birthdate of</param>
-    /// <returns>Date the user's date of birth, if available, or a default of 1/1/1800.</returns>
     public DateTime GetBirthdate(string username)
     {
         var birthdate = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
@@ -110,12 +85,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         }
     }
 
-    /// <summary>
-    /// get advisors for particular student
-    /// </summary>
-    /// <param name="username">AD username</param>
-    /// <returns></returns>
-    public async Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username)
+    public async Task<IEnumerable<AdvisorViewModel>?> GetAdvisorsAsync(string username)
     {
         var account = accountService.GetAccountByUsername(username);
 
@@ -142,20 +112,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return resultList;
     }
 
-    /// <summary> Gets the clifton strengths of a particular user </summary>
-    /// <param name="id"> The id of the user for which to retrieve info </param>
-    /// <returns> Clifton strengths of the given user. </returns>
     public CliftonStrengthsViewModel? GetCliftonStrengths(int id)
     {
         return context.Clifton_Strengths.FirstOrDefault(c => c.ID_NUM == id);
     }
 
-    /// <summary>
-    /// Toggles the privacy of the Clifton Strengths data associated with the given id
-    /// </summary>
-    /// <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
-    /// <returns>The new privacy value</returns>
-    /// <exception cref="ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
     public async Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id)
     {
         var strengths = context.Clifton_Strengths.FirstOrDefault(cs => cs.ID_NUM == id);
@@ -170,9 +131,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return strengths.Private;
     }
 
-    /// <summary> Gets the emergency contact information of a particular user </summary>
-    /// <param name="username"> The username of the user for which to retrieve info </param>
-    /// <returns> Emergency contact information of the given user. </returns>
     public IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username)
     {
         var result = context.EmergencyContact.Where(x => x.AD_Username == username).Select(x => (EmergencyContactViewModel)x);
@@ -185,11 +143,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return result;
     }
 
-    /// <summary>
-    /// Get photo path for profile
-    /// </summary>
-    /// <param name="username">AD username</param>
-    /// <returns>PhotoPathViewModel if found, null if not found</returns>
     public async Task<PhotoPathViewModel?> GetPhotoPathAsync(string username)
     {
         var account = accountService.GetAccountByUsername(username);
@@ -198,22 +151,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return photoInfoList.Select(p => new PhotoPathViewModel { Img_Name = p.Img_Name, Img_Path = p.Img_Path, Pref_Img_Name = p.Pref_Img_Name, Pref_Img_Path = p.Pref_Img_Path }).FirstOrDefault();
     }
 
-    /// <summary>
-    /// Fetches a single profile whose username matches the username provided as an argument
-    /// </summary>
-    /// <param name="username">The username</param>
-    /// <returns>ProfileViewModel if found, null if not found</returns>
     public ProfileCustomViewModel? GetCustomUserInfo(string username)
     {
         return context.CUSTOM_PROFILE.Find(username);
     }
 
-    /// <summary>
-    /// Sets the path for the profile image.
-    /// </summary>
-    /// <param name="username">AD Username</param>
-    /// <param name="path"></param>
-    /// <param name="name"></param>
     public async Task UpdateProfileImageAsync(string username, string? path, string? name)
     {
         var account = accountService.GetAccountByUsername(username);
@@ -238,12 +180,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     }
 
 
-    /// <summary>
-    /// Sets the component of the Custom_profile.
-    /// </summary>
-    /// <param name="username">The username</param>
-    /// <param name="type"></param>
-    /// <param name="content"></param>
     public async Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content)
     {
         var original = await context.CUSTOM_PROFILE.FindAsync(username);
@@ -299,11 +235,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         await context.SaveChangesAsync();
     }
 
-    /// <summary>
-    /// privacy setting of mobile phone.
-    /// </summary>
-    /// <param name="username">AD Username</param>
-    /// <param name="value">Y or N</param>
     public async Task UpdateMobilePrivacyAsync(string username, string value)
     {
         var account = accountService.GetAccountByUsername(username);
@@ -318,12 +249,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         context.SaveChanges();
     }
 
-    /// <summary>
-    /// Updates mobile phone number 
-    /// </summary>
-    /// <param name="username">The username for the user whose number is updated</param>
-    /// <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
-    /// <returns>updated student profile by there username</returns>
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
         var profile = await GetStudentProfileByUsername(username);
@@ -337,13 +262,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return profile;
     }
 
-    /// <summary>
-    /// office location setting
-    /// </summary>
-    /// <param name="username"> The username for the user whose office location is to be updated </param>
-    /// <param name="newBuilding">The new building location to update the user's office location to</param> 
-    /// <param name="newRoom">The new room to update the user's office room to</param>
-    /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
     {
         var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
@@ -358,12 +276,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return profile;
     }
 
-    /// <summary>
-    /// office hours setting
-    /// </summary>
-    /// <param name="username"> The username for the user whose office hours is to be updated </param>
-    /// <param name="newHours">The new hours to update the user's office hours to</param>
-    /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
     {
         var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
@@ -378,12 +290,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return profile;
     }
 
-    /// <summary>
-    /// mail location setting
-    /// </summary>
-    /// <param name="username"> The username for the user whose mail location is to be updated </param>
-    /// <param name="newMail">The new mail location to update the user's mail location to</param>
-    /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail)
     {
         var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
@@ -397,11 +303,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         return profile;
     }
 
-    /// <summary>
-    /// privacy setting user profile photo.
-    /// </summary>
-    /// <param name="username">AD Username</param>
-    /// <param name="value">Y or N</param>
     public async Task UpdateImagePrivacyAsync(string username, string value)
     {
         var account = accountService.GetAccountByUsername(username);
@@ -427,11 +328,6 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         context.SaveChanges();
     }
 
-    /// <summary>
-    /// Get graduation information for a student
-    /// </summary>
-    /// <param name="username">The username of the student</param>
-    /// <returns>GraduationViewModel containing graduation details</returns>
     public GraduationViewModel? GetGraduationInfo(string username)
     {
         // Find the graduation record directly by AD_Username

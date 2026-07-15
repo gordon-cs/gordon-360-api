@@ -1,4 +1,5 @@
 ﻿using Gordon360.Enums;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
@@ -20,25 +21,129 @@ namespace Gordon360.Services
 {
     public interface IProfileService
     {
+        /// <summary>
+        /// Fetch profile info of a given student
+        /// </summary>
+        /// <param name="username">Active Directory username of student</param>
+        /// <returns>StudentProfileViewModel if found, null if not found</returns>
         Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username);
+        /// <summary>
+        /// Fetch profile info of a given faculty/staff
+        /// </summary>
+        /// <param name="username">Active Directory username of faculty/staff member</param>
+        /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
         Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username);
+        /// <summary>
+        /// Fetch profile info of a given alumni
+        /// </summary>
+        /// <param name="username">Active Directory username of alumni</param>
+        /// <returns>AlumniProfileViewModel if found, null if not found</returns>
         Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username);
+        /// <summary>
+        /// Fetch the given user's mailbox information (contains box combination)
+        /// </summary>
+        /// <param name="username">Active Directory username of current user</param>
+        /// <returns>MailboxCombinationViewModel with the combination, or null if not found</returns>
         MailboxCombinationViewModel? GetMailboxCombination(string username);
+        /// <summary>
+        /// Fetch the given user's birthday
+        /// </summary>
+        /// <param name="username">Active Directory username of the person to get the birthdate of</param>
+        /// <returns>User's date of birth, if available, or a default of 1/1/1800.</returns>
         DateTime GetBirthdate(string username);
-        Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
+        /// <summary>
+        /// Fetch list of advisors for the given student
+        /// </summary>
+        /// <param name="username">Active Directory username of student</param>
+        /// <returns>IEnumerable containing the student's advisors, or null if no advisors are found</returns>
+        Task<IEnumerable<AdvisorViewModel>?> GetAdvisorsAsync(string username);
+        /// <summary> Gets the clifton strengths of the given user </summary>
+        /// <param name="id"> User ID of user with clifton strengths </param>
+        /// <returns> Clifton strengths of the given user </returns>
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        /// <summary>
+        /// Get graduation information for a student
+        /// </summary>
+        /// <param name="username">The username of the student</param>
+        /// <returns>GraduationViewModel containing graduation details</returns>
         GraduationViewModel? GetGraduationInfo(string username);
+        /// <summary>
+        /// Toggles the privacy of the Clifton Strengths data associated with the given id
+        /// </summary>
+        /// <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
+        /// <returns>The new privacy value</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
+        /// <summary> Gets the emergency contact information of a particular user </summary>
+        /// <param name="username"> The username of the user for which to retrieve info </param>
+        /// <returns> Emergency contact information of the given user. </returns>
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
+        /// <summary>
+        /// Fetches a single profile whose username matches the username provided as an argument
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <returns>ProfileViewModel if found, null if not found</returns>
         ProfileCustomViewModel? GetCustomUserInfo(string username);
+        /// <summary>
+        /// Get photo path for profile
+        /// </summary>
+        /// <param name="username">AD username</param>
+        /// <returns>PhotoPathViewModel if found, null if not found</returns>
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
+        /// <summary>
+        /// Sets the component of the Custom_profile.
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="type"></param>
+        /// <param name="content"></param>
         Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content);
+        /// <summary>
+        /// Updates mobile phone number 
+        /// </summary>
+        /// <param name="username">The username for the user whose number is updated</param>
+        /// <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
+        /// <returns>updated student profile by there username</returns>
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
+        /// <summary>
+        /// office location setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose office location is to be updated </param>
+        /// <param name="newBuilding">The new building location to update the user's office location to</param> 
+        /// <param name="newRoom">The new room to update the user's office room to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
+        /// <summary>
+        /// office hours setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose office hours is to be updated </param>
+        /// <param name="newHours">The new hours to update the user's office hours to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
+        /// <summary>
+        /// mail location setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose mail location is to be updated </param>
+        /// <param name="newMail">The new mail location to update the user's mail location to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail);
+        /// <summary>
+        /// privacy setting of mobile phone.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="value">Y or N</param>
         Task UpdateMobilePrivacyAsync(string username, string value);
+        /// <summary>
+        /// privacy setting user profile photo.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="value">Y or N</param>
         Task UpdateImagePrivacyAsync(string username, string value);
+        /// <summary>
+        /// Sets the path for the profile image.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
