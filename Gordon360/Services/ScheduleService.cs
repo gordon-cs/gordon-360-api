@@ -14,11 +14,6 @@ namespace Gordon360.Services;
 /// </summary>
 public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, ISessionService sessionService, IAcademicTermService academicTermService) : IScheduleService
 {
-    /// <summary>
-    /// Fetch the session item whose id specified by the parameter
-    /// </summary>
-    /// <param name="username">The AD Username of the user</param>
-    /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
     public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username)
     {
         List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
@@ -34,11 +29,6 @@ public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, IS
         return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
     }
 
-    /// <summary>
-    /// Fetch the classes that are taught by this user
-    /// </summary>
-    /// <param name="username">The AD Username of the user</param>
-    /// <returns>CoursesBySessionViewModel if found, null if not found</returns>
     public async Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username)
     {
         List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username && x.Role == "Instructor").Select(c => (UserCoursesViewModel)c).ToListAsync();
@@ -54,14 +44,9 @@ public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, IS
         return coursesBySession.OrderByDescending(cbs => cbs.SessionCode);
     }
 
-    /// <summary>
-    /// Fetch the term item whose id specified by the parameter
-    /// </summary>
-    /// <param name="username">The AD Username of the user</param>
-    /// <returns>CoursesByTermViewModel if found, null if not found</returns>
     public async Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username);
+        IEnumerable<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username);
 
         IEnumerable<YearTermTableViewModel> terms = await academicTermService.GetAllTermsAsync();
 
@@ -75,14 +60,9 @@ public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, IS
         return coursesByTerm.OrderByDescending(cbt => cbt.TermBeginDate);
     }
 
-    /// <summary>
-    /// Fetch the classes that are taught by this user
-    /// </summary>
-    /// <param name="username">The AD Username of the user</param>
-    /// <returns>CoursesByTermViewModel if found, null if not found</returns>
     public async Task<IEnumerable<CoursesByTermViewModel>> GetAllInstructorCoursesByTermAsync(string username)
     {
-        List<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username, "Teacher");
+        IEnumerable<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username, "Teacher");
 
         IEnumerable<YearTermTableViewModel> terms = await academicTermService.GetAllTermsAsync();
 

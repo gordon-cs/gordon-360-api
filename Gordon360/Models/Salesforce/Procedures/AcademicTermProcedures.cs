@@ -7,10 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Gordon360.Models.Salesforce;
 
-public class AcademicTermProcedures(SalesforceContext context)
+public class AcademicTermProcedures(ISalesforceContext context)
 {
-    private readonly SalesforceContext context = context;
-
     private const string SoqlTemplate = @"
         SELECT
             gc_Jenz_Term_Code__c,
@@ -51,7 +49,7 @@ public class AcademicTermProcedures(SalesforceContext context)
     /// <param name="order">SOQL ordering</param>
     /// <param name="limit_n">SOQL limit on number of records returned</param>
     /// <returns></returns>
-    private async Task<SFQueryResult<AcademicTerm>> Query(string where = "", string order = "", int limit_n = 0)
+    public async Task<SFQueryResult<AcademicTerm>> Query(string where = "", string order = "", int limit_n = 0)
     {
         where = where.IsNullOrEmpty() ? "" : "WHERE " + where;
         order = order.IsNullOrEmpty() ? "" : "ORDER BY " + order;
