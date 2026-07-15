@@ -20,7 +20,7 @@ public class SalesforceContext : ISalesforceContext
     public SalesforceContext(IConfiguration config)
     {
         this.config = config;
-        var sf = "SalesforceFull2";
+        var sf = "Salesforce";
 
         ClientId = config[$"{sf}:ClientId"];
         ClientSecret = config[$"{sf}:ClientSecret"];
