@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Models.Salesforce;
 
-public class SFProfiles
+public class SFProfiles(ISalesforceContext context)
 {
-    private readonly SalesforceContext _context;
+    private readonly ISalesforceContext _context = context;
     private const Account account = null;
 
     private const string educationSoql = """
@@ -120,14 +120,7 @@ public class SFProfiles
             AND Name = '{3}'
     """;
 
-    public SFProfiles(SalesforceContext context)
-    {
-        _context = context;
-
-    }
-
-
-     private static T MapToBaseModel<T>(T profileObj, Account account) 
+    private static T MapToBaseModel<T>(T profileObj, Account account) 
     {
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
@@ -148,7 +141,8 @@ public class SFProfiles
         profile.Email = account.PersonEmail ?? "";
         profile.Gender = account.PersonGenderIdentity ?? "";
         profile.AD_Username = account.AD_Username__pc ?? "360.StudentTest";
-        profile.HomeStreet1 = ""; // It seems like, for a long time, this has represented street2 (in the database, frontend and here) #TODO: we should fix that
+        // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
+        profile.HomeStreet1 = "";
         profile.HomeStreet2 = homeAddress.Street ?? ""; 
         profile.HomeCity = homeAddress.City ?? "";
         profile.HomeState = homeAddress.StateCode ?? "";
@@ -179,7 +173,7 @@ public class SFProfiles
     }
 
     private static FacultyStaffProfileViewModel MapToFacStaffProfileViewModel(Account account){
-        FacStaff facStaff = MapToBaseModel<FacStaff>(new FacStaff(), account);
+        FacStaff facStaff = MapToBaseModel(new FacStaff(), account);
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
 
@@ -301,7 +295,7 @@ public class SFProfiles
     }
 
     private static StudentProfileViewModel MapToStudentProfileViewModel(Account account){
-        Student student = MapToBaseModel<Student>(new Student(), account);
+        Student student = MapToBaseModel(new Student(), account);
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
 
