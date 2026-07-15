@@ -20,11 +20,6 @@ namespace Gordon360.Services;
 public class AccountService(CCTContext context) : IAccountService
 {
 
-    /// <summary>
-    /// Fetches a single account record whose id matches the id provided as an argument
-    /// </summary>
-    /// <param name="id">The person's gordon id</param>
-    /// <returns>AccountViewModel if found, null if not found</returns>
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public AccountViewModel GetAccountByID(string id)
     {
@@ -38,21 +33,12 @@ public class AccountService(CCTContext context) : IAccountService
         return account;
     }
 
-    /// <summary>
-    /// Fetches all the account records from storage.
-    /// </summary>
-    /// <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
     public IEnumerable<AccountViewModel> GetAll()
     {
         return (IEnumerable<AccountViewModel>)context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
     }
 
-    /// <summary>
-    /// Fetches the account record with the specified email.
-    /// </summary>
-    /// <param name="email">The email address associated with the account.</param>
-    /// <returns>the first account object which matches the email</returns>
     public AccountViewModel GetAccountByEmail(string email)
     {
         var account = context.ACCOUNT.FirstOrDefault(x => x.email == email);
@@ -64,11 +50,6 @@ public class AccountService(CCTContext context) : IAccountService
         return account;
     }
 
-    /// <summary>
-    /// Fetches the account record with the specified username.
-    /// </summary>
-    /// <param name="username">The AD username associated with the account.</param>
-    /// <returns>the student account information</returns>
     public AccountViewModel GetAccountByUsername(string username)
     {
         var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
@@ -80,27 +61,6 @@ public class AccountService(CCTContext context) : IAccountService
         return account;
     }
 
-    /// <summary>
-    /// Given a list of accounts, and search params, return all the accounts that match those search params.
-    /// </summary>
-    /// <param name="accounts">The accounts that should be searched, converted to an AdvancedSearchViewModel</param>
-    /// <param name="firstname">The firstname search param</param>
-    /// <param name="lastname">The lastname search param</param>
-    /// <param name="major">The major search param</param>
-    /// <param name="minor">The minor search param</param>
-    /// <param name="hall">The hall search param</param>
-    /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
-    /// <param name="preferredClassYear">The preferred class year search param</param>
-    /// <param name="initialYear">The initial year range search param</param>
-    /// <param name="finalYear">The final year range search param</param>
-    /// <param name="homeCity">The home city search param</param>
-    /// <param name="state">The state search param</param>
-    /// <param name="country">The country search param</param>
-    /// <param name="department">The department search param</param>
-    /// <param name="building">The building search param</param>
-    /// <param name="involvement">The involvement search param</param>
-    /// <param name="gender">The gender search param</param>
-    /// <returns>The accounts from the provided list that match the given search params</returns>
     public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
         IEnumerable<AdvancedSearchViewModel> accounts,
         string? firstname,
@@ -153,7 +113,7 @@ public class AccountService(CCTContext context) : IAccountService
             accounts = accounts.Where(a =>
                 a.LastName.StartsWithIgnoreCase(lastname)
                 || a.MaidenName.StartsWithIgnoreCase(lastname)
-                || (!string.IsNullOrEmpty(a.Email) && a.Email.IndexOf('.') >= 0 
+                || (!string.IsNullOrEmpty(a.Email) && a.Email.IndexOf('.') >= 0
                     && a.Email.Split('.')[1].StartsWithIgnoreCase(lastname))
             );
         }
@@ -199,13 +159,6 @@ public class AccountService(CCTContext context) : IAccountService
         return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
     }
 
-    /// <summary>
-    /// Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
-    /// </summary>
-    /// <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
-    /// <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
-    /// <param name="homeCity">The home city search param, since it is considered sensitive info</param>
-    /// <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
     public IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
     {
         IEnumerable<Student> students = Enumerable.Empty<Student>();
@@ -246,10 +199,6 @@ public class AccountService(CCTContext context) : IAccountService
             .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username);
     }
 
-    /// <summary>
-    /// Get basic info for all accounts
-    /// </summary>
-    /// <returns>BasicInfoViewModel of all accounts</returns>
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync()
     {
 
@@ -264,10 +213,6 @@ public class AccountService(CCTContext context) : IAccountService
             });
     }
 
-    /// <summary>
-    /// Get basic info for all accounts except alumni
-    /// </summary>
-    /// <returns>BasicInfoViewModel of all accounts except alumni</returns>
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
     {
         var basicInfo = await context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();

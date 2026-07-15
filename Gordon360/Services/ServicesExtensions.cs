@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Gordon360.Models.Salesforce;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Gordon360.Services;
 
@@ -12,7 +13,7 @@ public static class ServicesExtensions
     public static IServiceCollection Add360Services(this IServiceCollection services)
     {
         services.AddScoped<IAcademicCheckInService, AcademicCheckInService>();
-        services.AddScoped<IAcademicTermService, AcademicTermService>();
+        services.AddScoped<IAcademicTermService, SFAcademicTermService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IAddressesService, AddressesService>();
@@ -28,7 +29,7 @@ public static class ServicesExtensions
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<INewsService, NewsService>();
         services.AddScoped<ILostAndFoundService, LostAndFoundService>();
-        services.AddScoped<IScheduleService, ScheduleService>();
+        services.AddScoped<IScheduleService, SFScheduleService>();
         services.AddScoped<ISessionService, SessionService>();
         services.AddScoped<IStudentEmploymentService, StudentEmploymentService>();
         services.AddScoped<IVictoryPromiseService, VictoryPromiseService>();
@@ -43,6 +44,12 @@ public static class ServicesExtensions
         services.AddScoped<RecIM.IAffiliationService, RecIM.AffiliationService>();
         services.AddScoped<IMarketplaceService, MarketplaceService>();
 
+        return services;
+    }
+    public static IServiceCollection AddSalesforceProcedures(this IServiceCollection services)
+    {
+        services.AddScoped<SFUserCourses>();
+        services.AddScoped<AcademicTermProcedures>();
         return services;
     }
 }

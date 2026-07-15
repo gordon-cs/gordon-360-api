@@ -94,8 +94,8 @@ try
     );
 
     builder.Services.Add360Services();
-    builder.Services.AddScoped<SalesforceContext>();
-    builder.Services.AddScoped<SFUserCourses>();
+    builder.Services.AddScoped<ISalesforceContext, SalesforceContext>();
+    builder.Services.AddSalesforceProcedures();
 
     builder.Services.AddHostedService<EventCacheRefreshService>();
     builder.Services.AddHostedService<MarketplaceCleanupService>();
@@ -111,7 +111,7 @@ try
     });
 
     var app = builder.Build();
-    
+
     // Configure the HTTP request pipeline.
 
     app.UseSwagger();

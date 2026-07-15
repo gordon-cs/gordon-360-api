@@ -70,11 +70,58 @@ namespace Gordon360.Services
 
     public interface IAccountService
     {
+        /// <summary>
+        /// Fetches a single account record associated with the id
+        /// </summary>
+        /// <param name="id">The gordon id associated with the account</param>
+        /// <returns>AccountViewModel associated with the id</returns>
         AccountViewModel GetAccountByID(string id);
+        /// <summary>
+        /// Fetches all account records
+        /// </summary>
+        /// <returns>IEnumerable&lt;AccountViewModel&gt; containing all available account records.</returns>
         IEnumerable<AccountViewModel> GetAll();
+        /// <summary>
+        /// Fetches the account record associated with the email.
+        /// </summary>
+        /// <param name="email">The email address associated with the account.</param>
+        /// <returns>AccountViewModel associated with the email</returns>
         AccountViewModel GetAccountByEmail(string email);
+        /// <summary>
+        /// Fetches the account record associated with the specified AD username.
+        /// </summary>
+        /// <param name="username">The AD username associated with the account.</param>
+        /// <returns>AccountViewModel associated with the username</returns>
         AccountViewModel GetAccountByUsername(string username);
+        /// <summary>
+        /// Get the list of accounts the user is authorized search
+        /// </summary>
+        /// <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+        /// <param name="authGroups">The authorization groups of the searching user</param>
+        /// <param name="homeCity">The home city that the user is searching for</param>
+        /// <returns>Unordered list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
         IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
+        /// <summary>
+        /// Given a list of accounts, and search parameters, return all the accounts that match those search params.
+        /// </summary>
+        /// <param name="accounts">IEnumerable&lt;AdvancedSearchViewModel&gt; of accounts to be searched</param>
+        /// <param name="firstname">The firstname search param</param>
+        /// <param name="lastname">The lastname search param</param>
+        /// <param name="major">The major search param</param>
+        /// <param name="minor">The minor search param</param>
+        /// <param name="hall">The hall search param</param>
+        /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+        /// <param name="preferredClassYear">The preferred class year search param</param>
+        /// <param name="initialYear">The initial year range search param</param>
+        /// <param name="finalYear">The final year range search param</param>
+        /// <param name="homeCity">The home city search param</param>
+        /// <param name="state">The state search param</param>
+        /// <param name="country">The country search param</param>
+        /// <param name="department">The department search param</param>
+        /// <param name="building">The building search param</param>
+        /// <param name="involvement">The involvement search param</param>
+        /// <param name="gender">The gender search param</param>
+        /// <returns>The accounts from the provided list that match the given search parameters</returns>
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
             string? firstname,
@@ -93,9 +140,30 @@ namespace Gordon360.Services
             string? building,
             string? involvement,
             string? gender);
+        /// <summary>
+        /// Fetch basic info for all accounts: first name, last name, nickname, and username.
+        /// </summary>
+        /// <returns>BasicInfoViewModel of all accounts</returns>
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
+        /// <summary>
+        /// Fetch first name, last name, nickname, and username for all accounts, excluding alumni
+        /// </summary>
+        /// <returns>BasicInfoViewModel of all accounts excluding alumni</returns>
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
+        /// <summary>
+        /// Fetch accounts with basic info matching a search string.
+        /// </summary>
+        /// <param name="searchString">String that basic info is matched against</param>
+        /// <param name="accounts">Iterator of accounts to search through</param>
+        /// <returns>Iterator of accounts with basic info matching the search string, sorted by closeness of match</returns>
         ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
+        /// <summary>
+        /// Fetch accounts with a given first and last name.
+        /// </summary>
+        /// <param name="firstName">First name to be matched</param>
+        /// <param name="lastName">Last name to be matched</param>
+        /// <param name="accounts">Iterator of accounts to search through</param>
+        /// <returns>Iterator of accounts with the given first and last name, sorted by closeness of match</returns>
         ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts);
 
     }
@@ -192,12 +260,32 @@ namespace Gordon360.Services
         Task<RequestView> SetPendingAsync(int requestID);
         Task<RequestView> DeleteAsync(int requestID);
     }
+
     public interface IScheduleService
     {
+        /// <summary>
+        /// Fetches all courses taken by a given user.
+        /// </summary>
+        /// <param name="username">The Active Directory username of the user</param>
+        /// <returns>Iterator of all terms and their courses for the user, ordered descending by session code.</returns>
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
-
+        /// <summary>
+        /// Fetches all courses taught by a given instructor.
+        /// </summary>
+        /// <param name="username">The Active Directory username of the instructor</param>
+        /// <returns>Iterator of all terms and their courses for the instructor, ordered descending by session code.</returns>
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
+        /// <summary>
+        /// Fetchs all courses taken by a given user, ordered descending by term.
+        /// </summary>
+        /// <param name="username">The Active Directory username of the user</param>
+        /// <returns>Iterator of all terms and their courses for the user, ordered descending by term.</returns>
         Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username);
+        /// <summary>
+        /// Fetches all courses taught by a given instructor, ordered descending by term.
+        /// </summary>
+        /// <param name="username">The Active Directory username of the instructor</param>
+        /// <returns>Iterator of all terms and their courses for the instructor, ordered descending by term.</returns>
         Task<IEnumerable<CoursesByTermViewModel>> GetAllInstructorCoursesByTermAsync(string username);
     }
 
@@ -359,9 +447,25 @@ namespace Gordon360.Services
 
     public interface IAcademicTermService
     {
+        /// <summary>
+        /// Gets the current academic term based on the current date.
+        /// </summary>
+        /// <returns>YearTermTableViewModel of the current term, or null if not found</returns>
         Task<YearTermTableViewModel?> GetCurrentTermAsync();
+        /// <summary>
+        /// Gets all academic terms from the database
+        /// </summary>
+        /// <returns>Iterator of current and past YearTermTableViewModels, ordered by descending start date.</returns>
         Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
+        /// <summary>
+        /// Gets the current spring or fall academic term based on the current date.
+        /// </summary>
+        /// <returns>YearTermTableViewModel of the current term, or null if not found</returns>
         Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync();
+        /// <summary>
+        /// Gets the number of days left in the current academic term, or the number of days until the next term if we are between terms.
+        /// </summary>
+        /// <returns>DaysLeftViewModel containing the days left and total days</returns>
         Task<DaysLeftViewModel> GetDaysLeftAsync();
     }
 

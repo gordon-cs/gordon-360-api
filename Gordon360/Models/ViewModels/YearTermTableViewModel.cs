@@ -1,5 +1,6 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.Salesforce;
+using Microsoft.IdentityModel.Tokens;
 using System;
 
 namespace Gordon360.Models.ViewModels
