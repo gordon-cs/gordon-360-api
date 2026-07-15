@@ -94,7 +94,7 @@ try
     );
 
     builder.Services.Add360Services();
-    builder.Services.AddScoped<SalesforceContext>();
+    builder.Services.AddScoped<ISalesforceContext, SalesforceContext>();
     builder.Services.AddSalesforceProcedures();
 
     builder.Services.AddHostedService<EventCacheRefreshService>();
