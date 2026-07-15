@@ -3341,150 +3341,6 @@
             Service Class that facilitates data transactions between the PosterController and the Poster database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.ProfileService.GetStudentProfileByUsername(System.String)">
-            <summary>
-            get student profile info
-            </summary>
-            <param name="username">username</param>
-            <returns>StudentProfileViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetFacultyStaffProfileByUsername(System.String)">
-            <summary>
-            get faculty staff profile info
-            </summary>
-            <param name="username">username</param>
-            <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetAlumniProfileByUsername(System.String)">
-            <summary>
-            get alumni profile info
-            </summary>
-            <param name="username">username</param>
-            <returns>AlumniProfileViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetMailboxCombination(System.String)">
-            <summary>
-            get mailbox information (contains box combination)
-            </summary>
-            <param name="username">The current user's username</param>
-            <returns>MailboxCombinationViewModel with the combination</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetBirthdate(System.String)">
-            <summary>
-            get a user's birthday
-            </summary>
-            <param name="username">The username of the person to get the birthdate of</param>
-            <returns>Date the user's date of birth, if available, or a default of 1/1/1800.</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetAdvisorsAsync(System.String)">
-            <summary>
-            get advisors for particular student
-            </summary>
-            <param name="username">AD username</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetCliftonStrengths(System.Int32)">
-            <summary> Gets the clifton strengths of a particular user </summary>
-            <param name="id"> The id of the user for which to retrieve info </param>
-            <returns> Clifton strengths of the given user. </returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.ToggleCliftonStrengthsPrivacyAsync(System.Int32)">
-            <summary>
-            Toggles the privacy of the Clifton Strengths data associated with the given id
-            </summary>
-            <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
-            <returns>The new privacy value</returns>
-            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetEmergencyContact(System.String)">
-            <summary> Gets the emergency contact information of a particular user </summary>
-            <param name="username"> The username of the user for which to retrieve info </param>
-            <returns> Emergency contact information of the given user. </returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetPhotoPathAsync(System.String)">
-            <summary>
-            Get photo path for profile
-            </summary>
-            <param name="username">AD username</param>
-            <returns>PhotoPathViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetCustomUserInfo(System.String)">
-            <summary>
-            Fetches a single profile whose username matches the username provided as an argument
-            </summary>
-            <param name="username">The username</param>
-            <returns>ProfileViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateProfileImageAsync(System.String,System.String,System.String)">
-            <summary>
-            Sets the path for the profile image.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="path"></param>
-            <param name="name"></param>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateCustomProfileAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
-            <summary>
-            Sets the component of the Custom_profile.
-            </summary>
-            <param name="username">The username</param>
-            <param name="type"></param>
-            <param name="content"></param>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
-            <summary>
-            privacy setting of mobile phone.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateMobilePhoneNumberAsync(System.String,System.String)">
-            <summary>
-            Updates mobile phone number 
-            </summary>
-            <param name="username">The username for the user whose number is updated</param>
-            <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
-            <returns>updated student profile by there username</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateOfficeLocationAsync(System.String,System.String,System.String)">
-            <summary>
-            office location setting
-            </summary>
-            <param name="username"> The username for the user whose office location is to be updated </param>
-            <param name="newBuilding">The new building location to update the user's office location to</param> 
-            <param name="newRoom">The new room to update the user's office room to</param>
-            <returns>updated fac/staff profile if found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateOfficeHoursAsync(System.String,System.String)">
-            <summary>
-            office hours setting
-            </summary>
-            <param name="username"> The username for the user whose office hours is to be updated </param>
-            <param name="newHours">The new hours to update the user's office hours to</param>
-            <returns>updated fac/staff profile if found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateMailStopAsync(System.String,System.String)">
-            <summary>
-            mail location setting
-            </summary>
-            <param name="username"> The username for the user whose mail location is to be updated </param>
-            <param name="newMail">The new mail location to update the user's mail location to</param>
-            <returns>updated fac/staff profile if found</returns>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.UpdateImagePrivacyAsync(System.String,System.String)">
-            <summary>
-            privacy setting user profile photo.
-            </summary>
-            <param name="username">AD Username</param>
-            <param name="value">Y or N</param>
-        </member>
-        <member name="M:Gordon360.Services.ProfileService.GetGraduationInfo(System.String)">
-            <summary>
-            Get graduation information for a student
-            </summary>
-            <param name="username">The username of the student</param>
-            <returns>GraduationViewModel containing graduation details</returns>
-        </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>
             this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
@@ -3545,6 +3401,150 @@
             <summary>
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetStudentProfileByUsername(System.String)">
+            <summary>
+            Fetch profile info of a given student
+            </summary>
+            <param name="username">Active Directory username of student</param>
+            <returns>StudentProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetFacultyStaffProfileByUsername(System.String)">
+            <summary>
+            Fetch profile info of a given faculty/staff
+            </summary>
+            <param name="username">Active Directory username of faculty/staff member</param>
+            <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetAlumniProfileByUsername(System.String)">
+            <summary>
+            Fetch profile info of a given alumni
+            </summary>
+            <param name="username">Active Directory username of alumni</param>
+            <returns>AlumniProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetMailboxCombination(System.String)">
+            <summary>
+            Fetch the given user's mailbox information (contains box combination)
+            </summary>
+            <param name="username">Active Directory username of current user</param>
+            <returns>MailboxCombinationViewModel with the combination, or null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetBirthdate(System.String)">
+            <summary>
+            Fetch the given user's birthday
+            </summary>
+            <param name="username">Active Directory username of the person to get the birthdate of</param>
+            <returns>User's date of birth, if available, or a default of 1/1/1800.</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetAdvisorsAsync(System.String)">
+            <summary>
+            Fetch list of advisors for the given student
+            </summary>
+            <param name="username">Active Directory username of student</param>
+            <returns>IEnumerable containing the student's advisors, or null if no advisors are found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetCliftonStrengths(System.Int32)">
+            <summary> Gets the clifton strengths of the given user </summary>
+            <param name="id"> User ID of user with clifton strengths </param>
+            <returns> Clifton strengths of the given user </returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetGraduationInfo(System.String)">
+            <summary>
+            Get graduation information for a student
+            </summary>
+            <param name="username">The username of the student</param>
+            <returns>GraduationViewModel containing graduation details</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.ToggleCliftonStrengthsPrivacyAsync(System.Int32)">
+            <summary>
+            Toggles the privacy of the Clifton Strengths data associated with the given id
+            </summary>
+            <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
+            <returns>The new privacy value</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetEmergencyContact(System.String)">
+            <summary> Gets the emergency contact information of a particular user </summary>
+            <param name="username"> The username of the user for which to retrieve info </param>
+            <returns> Emergency contact information of the given user. </returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetCustomUserInfo(System.String)">
+            <summary>
+            Fetches a single profile whose username matches the username provided as an argument
+            </summary>
+            <param name="username">The username</param>
+            <returns>ProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetPhotoPathAsync(System.String)">
+            <summary>
+            Get photo path for profile
+            </summary>
+            <param name="username">AD username</param>
+            <returns>PhotoPathViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.UpdateCustomProfileAsync(System.String,System.String,Gordon360.Models.CCT.CUSTOM_PROFILE)">
+            <summary>
+            Sets the component of the Custom_profile.
+            </summary>
+            <param name="username">The username</param>
+            <param name="type"></param>
+            <param name="content"></param>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.UpdateMobilePhoneNumberAsync(System.String,System.String)">
+            <summary>
+            Updates mobile phone number 
+            </summary>
+            <param name="username">The username for the user whose number is updated</param>
+            <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
+            <returns>updated student profile by there username</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.UpdateOfficeLocationAsync(System.String,System.String,System.String)">
+            <summary>
+            office location setting
+            </summary>
+            <param name="username"> The username for the user whose office location is to be updated </param>
+            <param name="newBuilding">The new building location to update the user's office location to</param> 
+            <param name="newRoom">The new room to update the user's office room to</param>
+            <returns>updated fac/staff profile if found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.UpdateOfficeHoursAsync(System.String,System.String)">
+            <summary>
+            office hours setting
+            </summary>
+            <param name="username"> The username for the user whose office hours is to be updated </param>
+            <param name="newHours">The new hours to update the user's office hours to</param>
+            <returns>updated fac/staff profile if found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.UpdateMailStopAsync(System.String,System.String)">
+            <summary>
+            mail location setting
+            </summary>
+            <param name="username"> The username for the user whose mail location is to be updated </param>
+            <param name="newMail">The new mail location to update the user's mail location to</param>
+            <returns>updated fac/staff profile if found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.UpdateMobilePrivacyAsync(System.String,System.String)">
+            <summary>
+            privacy setting of mobile phone.
+            </summary>
+            <param name="username">AD Username</param>
+            <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.UpdateImagePrivacyAsync(System.String,System.String)">
+            <summary>
+            privacy setting user profile photo.
+            </summary>
+            <param name="username">AD Username</param>
+            <param name="value">Y or N</param>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.UpdateProfileImageAsync(System.String,System.String,System.String)">
+            <summary>
+            Sets the path for the profile image.
+            </summary>
+            <param name="username">AD Username</param>
+            <param name="path"></param>
+            <param name="name"></param>
         </member>
         <member name="M:Gordon360.Services.IAccountService.GetAccountByID(System.String)">
             <summary>

@@ -49,6 +49,7 @@ public static class ServicesExtensions
     public static IServiceCollection AddSalesforceProcedures(this IServiceCollection services)
     {
         services.AddScoped<SFUserCourses>();
+        services.AddScoped<SFProfiles>();
         services.AddScoped<AcademicTermProcedures>();
         return services;
     }

@@ -1,13 +1,9 @@
-﻿using Gordon360.Authorization;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -21,29 +17,23 @@ using Gordon360.Models.Salesforce;
 
 namespace Gordon360.Services;
 
-public class ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
+public class ProfileService(CCTContext context, IConfiguration config, SFProfiles profileProcedures, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
     public async Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username)
     {
-        SalesforceContext sfContext = new SalesforceContext(config);
-        var sfProfiles = new SFProfiles(sfContext);
-        var student = await sfProfiles.GetStudentProfile(username);
+        var student = await profileProcedures.GetStudentProfile(username);
         return student;
     }
 
     public async Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username)
     {
-        SalesforceContext sfContext = new SalesforceContext(config);
-        var sfProfiles = new SFProfiles(sfContext);
-        var facStaff = await sfProfiles.GetFacStaffProfile(username);
+        var facStaff = await profileProcedures.GetFacStaffProfile(username);
         return facStaff; // context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     public async Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username)
     {
-        SalesforceContext sfContext = new SalesforceContext(config);
-        var sfProfiles = new SFProfiles(sfContext);
-        var alumni = await sfProfiles.GetAlumniProfile(username);
+        var alumni = await profileProcedures.GetAlumniProfile(username);
         return alumni; // context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
