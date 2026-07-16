@@ -26,8 +26,7 @@ public class SFProfiles(ISalesforceContext context)
     // used to get first Start date
     private const string facStaffEmploymentSoql = """
         (
-            SELECT
-                StartDate
+            SELECT StartDate
             FROM PersonEmployments
             ORDER BY StartDate ASC
             LIMIT 1
@@ -37,8 +36,7 @@ public class SFProfiles(ISalesforceContext context)
     // used to obtain current job title 
     private const string alumniEmploymentSoql = """
         (
-            SELECT
-                Position
+            SELECT Position
             FROM PersonEmployments
             WHERE (EmploymentStatus = 'Employed' OR EmploymentStatus = 'Self-Employed')
             ORDER BY StartDate DESC
@@ -50,9 +48,9 @@ public class SFProfiles(ISalesforceContext context)
         gc_On_Campus_Location__r.Name,
         gc_On_Campus_Location__r.ParentLocation.Name,
         gc_On_Campus_Location__r.gc_Jenz_Building_Code__c,
-        gc_On_Campus_Location__r.Phone,
         gc_On_Campus_Location__r.gc_Jenz_Room_Code__c,
     """;
+        // gc_On_Campus_Location__r.Phone,
 
     private const string SoqlTemplate = """
         SELECT 
@@ -117,10 +115,17 @@ public class SFProfiles(ISalesforceContext context)
             )
         FROM Account
         WHERE RecordType.Name = 'Person Account'
-            AND Name = '{3}'
+            AND (AD_Username__pc = '{3}' OR Name = '{3}')
     """;
 
-    private static T MapToBaseModel<T>(T profileObj, Account account) 
+    /// <summary>
+    /// Sets values common to all account types
+    /// </summary>
+    /// <typeparam name="T">Profile type to construct, must be FacStaff, Alumni, or Student</typeparam>
+    /// <param name="profileObj">Profile to fill out</param>
+    /// <param name="account">SalesForce Account to fill profile from</param>
+    /// <returns>Facstaff, Alumni, or Student with common fields filled out</returns>
+    private static T MapToBaseModel<T>(T profileObj, Account account) where T: notnull
     {
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
@@ -157,13 +162,13 @@ public class SFProfiles(ISalesforceContext context)
         
     }
 
-
+    /// <summary>
+    /// Get faculty/staff information associated with the given user
+    /// </summary>
+    /// <param name="username">AD username of the given user</param>
+    /// <returns>ViewModel containing information about the given faculty/staff, or null if the request is not authorized or the user does not exist</returns>
     public async Task<FacultyStaffProfileViewModel?> GetFacStaffProfile(string username){
-        var name = (username == "360.StudentTest" || username == "" || username == "Woobensky.Pierre")
-            ? "Jamie Berry"
-            : username;
-
-        var soql = string.Format(SoqlTemplate, "", facStaffEmploymentSoql, onCampusLocationFields, name); 
+        var soql = string.Format(SoqlTemplate, "", facStaffEmploymentSoql, onCampusLocationFields, username); 
         
         var response = await _context.Query<Account>(soql);
 
@@ -172,7 +177,12 @@ public class SFProfiles(ISalesforceContext context)
         return account == null ? null : MapToFacStaffProfileViewModel(account);
     }
 
-    private static FacultyStaffProfileViewModel MapToFacStaffProfileViewModel(Account account){
+    /// <summary>
+    /// Constructs FacultyStaffProfileViewModel based on values in a Salesforce Account
+    /// </summary>
+    /// <param name="account">Salesforce Account to construct ViewModel from</param>
+    /// <returns>Filled-out FacultyStaffProfileViewModel</returns>
+    private static FacultyStaffProfileViewModel MapToFacStaffProfileViewModel(Account? account){
         FacStaff facStaff = MapToBaseModel(new FacStaff(), account);
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
@@ -210,12 +220,13 @@ public class SFProfiles(ISalesforceContext context)
         return facStaff;
     }
 
+    /// <summary>
+    /// Get alumni information associated with the given user
+    /// </summary>
+    /// <param name="username">AD username of the given user</param>
+    /// <returns>ViewModel containing information about the given alumnus, or null if the request is not authorized or the user does not exist</returns>
     public async Task<AlumniProfileViewModel?> GetAlumniProfile(string username){
-        var name = (username == "360.StudentTest" || username == "" || username == "Woobensky.Pierre")
-            ? "Jamie Berry"
-            : username;
-
-        var soql = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql, "", name); 
+        var soql = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql, "", username); 
         
         var response = await _context.Query<Account>(soql);
 
@@ -224,11 +235,13 @@ public class SFProfiles(ISalesforceContext context)
         return account == null ? null : MapToAlumniProfileViewModel(account);
     }
    
-    
-
-
+    /// <summary>
+    /// Constructs AlumniProfileViewModel based on values in a Salesforce Account
+    /// </summary>
+    /// <param name="account">Salesforce Account to construct ViewModel from</param>
+    /// <returns>Filled-out AlumniProfileViewModel</returns>
     private static AlumniProfileViewModel MapToAlumniProfileViewModel(Account account){
-        Alumni alumn = MapToBaseModel<Alumni>(new Alumni(), account);
+        Alumni alumn = MapToBaseModel(new Alumni(), account);
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
 
@@ -280,12 +293,13 @@ public class SFProfiles(ISalesforceContext context)
     }
 
 
+    /// <summary>
+    /// Get student information associated with the given user
+    /// </summary>
+    /// <param name="username">AD username of the given user</param>
+    /// <returns>ViewModel containing information about the given student, or null if the request is not authorized or the user does not exist</returns>
     public async Task<StudentProfileViewModel?> GetStudentProfile(string username){
-        var name = (username == "360.StudentTest" || username == "" || username == "Woobensky.Pierre")
-            ? "Jamie Berry"
-            : username;
-
-        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusLocationFields, name); 
+        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusLocationFields, username); 
         
         var response = await _context.Query<Account>(soql);
 
@@ -294,6 +308,11 @@ public class SFProfiles(ISalesforceContext context)
         return account == null ? null : MapToStudentProfileViewModel(account);
     }
 
+    /// <summary>
+    /// Constructs StudentProfileViewModel based on values in a Salesforce Account
+    /// </summary>
+    /// <param name="account">Salesforce Account to construct ViewModel from</param>
+    /// <returns>Filled-out StudentProfileViewModel</returns>
     private static StudentProfileViewModel MapToStudentProfileViewModel(Account account){
         Student student = MapToBaseModel(new Student(), account);
 

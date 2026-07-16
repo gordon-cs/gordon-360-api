@@ -1914,6 +1914,22 @@
             <param name="limit_n">SOQL limit on number of records returned</param>
             <returns></returns>
         </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToBaseModel``1(``0,Gordon360.Models.Salesforce.Account)">
+            <summary>
+            Sets values common to all account types
+            </summary>
+            <typeparam name="T">Profile type to construct, must be FacStaff, Alumni, or Student</typeparam>
+            <param name="profileObj">Profile to fill out</param>
+            <param name="account">SalesForce Account to fill profile from</param>
+            <returns>Facstaff, Alumni, or Student with commin fields filled out</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToFacStaffProfileViewModel(Gordon360.Models.Salesforce.Account)">
+            <summary>
+            Constructs FacultyStaffProfileViewModel based on values in a Salesforce Account
+            </summary>
+            <param name="account">Salesforce Account to construct ViewModel from</param>
+            <returns>Filled-out FacultyStaffProfileViewModel</returns>
+        </member>
         <member name="M:Gordon360.Models.Salesforce.SFUserCourses.GetUserCourses(System.String,System.String)">
             <summary>
             Fetch IEnumerable of courses taken by the given user
