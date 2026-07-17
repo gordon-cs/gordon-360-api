@@ -47,7 +47,7 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     /// <returns>Whether they can read student schedules</returns>
     [HttpGet]
     [Route("canreadstudent")]
-    public async Task<ActionResult<bool>> GetCanReadStudentSchedules()
+    public ActionResult<bool> GetCanReadStudentSchedules()
     {
         var groups = AuthUtils.GetGroups(User);
         return groups.Contains(AuthGroup.Advisors);

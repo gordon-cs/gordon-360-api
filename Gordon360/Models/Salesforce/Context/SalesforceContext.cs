@@ -46,7 +46,7 @@ public class SalesforceContext : ISalesforceContext
         var response = await client.GetAsync(queryUrl);
         var json = await response.Content.ReadAsStringAsync();
 
-        System.Diagnostics.Debug.WriteLine($"📥 Raw response JSON: {json}...");
+        Console.WriteLine($"📥 Raw response JSON: {json}...");
 
         if (!response.IsSuccessStatusCode)
         {

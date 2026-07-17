@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers;
 
@@ -18,9 +19,9 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     [HttpGet]
     [Route("")]
     [AllowAnonymous]
-    public ActionResult<IEnumerable<SessionViewModel>> Get()
+    public async Task<ActionResult<IEnumerable<SessionViewModel>>> Get()
     {
-        var all = sessionService.GetAll();
+        var all = await sessionService.GetAll();
         return Ok(all);
     }
 
@@ -32,9 +33,9 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     [HttpGet]
     [Route("{id}")]
     [AllowAnonymous]
-    public ActionResult<SessionViewModel> Get(string id)
+    public async Task<ActionResult<SessionViewModel>> Get(string id)
     {
-        var result = sessionService.Get(id);
+        var result = await sessionService.Get(id);
 
         if (result == null)
         {
@@ -51,9 +52,9 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     [HttpGet]
     [Route("current")]
     [AllowAnonymous]
-    public ActionResult<SessionViewModel> GetCurrentSession()
+    public async Task<ActionResult<SessionViewModel>> GetCurrentSession()
     {
-        var currentSession = sessionService.GetCurrentSession();
+        var currentSession = await sessionService.GetCurrentSession();
         if (currentSession == null)
         {
             return NotFound();
@@ -70,9 +71,9 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     [Route("currentFinals")]
     [AllowAnonymous]
     [Obsolete]
-    public ActionResult<SessionViewModel> GetCurrentSessionForFinalExams()
+    public async Task<ActionResult<SessionViewModel>> GetCurrentSessionForFinalExams()
     {
-        var currentFinalSession = sessionService.GetCurrentSessionForFinalExams();
+        var currentFinalSession = await sessionService.GetCurrentSessionForFinalExams();
         if (currentFinalSession == null)
         {
             return NotFound();
@@ -89,9 +90,9 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     [HttpGet]
     [Route("daysLeft")]
     [AllowAnonymous]
-    public ActionResult<double[]> GetDaysLeftInSemester()
+    public async Task<ActionResult<double[]>> GetDaysLeftInSemester()
     {
-        var days = sessionService.GetDaysLeft();
+        var days = await sessionService.GetDaysLeft();
         if (days == null || (days[0] == 0 && days[1] == 0))
         {
             return NotFound();

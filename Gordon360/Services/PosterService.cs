@@ -58,9 +58,10 @@ public class PosterService(CCTContext context,
     // Currently will only get posters if someone is signed up for a club.
     // Can be modified to include all posters but prioritize personalized posters.
     //personalized posters
-    public IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username)
+    public async Task<IEnumerable<PosterViewModel>> GetPersonalizedPostersByUsername(string username)
     {
-        var currentSessionCode = sessionService.GetCurrentSession().SessionCode;
+        var currentSession = (await sessionService.GetCurrentSession()) ?? throw new Exception("No current session!");
+        var currentSessionCode = currentSession.SessionCode;
         var currentMembershipCodes = membershipService.GetMemberships(username: username, sessionCode: currentSessionCode)
             .Select(m => m.ActivityCode);
 

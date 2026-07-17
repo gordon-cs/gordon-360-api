@@ -18,7 +18,7 @@ public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, IS
     {
         List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username).Select(c => (UserCoursesViewModel)c).ToListAsync();
 
-        IEnumerable<SessionViewModel> sessions = sessionService.GetAll();
+        IEnumerable<SessionViewModel> sessions = await sessionService.GetAll();
         IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
             .GroupJoin(courses,
                        s => s.SessionCode,
@@ -33,7 +33,7 @@ public class ScheduleService(CCTContext context, SFUserCourses sfUserCourses, IS
     {
         List<UserCoursesViewModel> courses = await context.UserCourses.Where(x => x.Username == username && x.Role == "Instructor").Select(c => (UserCoursesViewModel)c).ToListAsync();
 
-        IEnumerable<SessionViewModel> sessions = sessionService.GetAll();
+        IEnumerable<SessionViewModel> sessions = await sessionService.GetAll();
         IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
             .GroupJoin(courses,
                        s => s.SessionCode,
