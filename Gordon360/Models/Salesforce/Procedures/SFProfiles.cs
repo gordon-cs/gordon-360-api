@@ -114,9 +114,14 @@ public class SFProfiles(ISalesforceContext context)
                 FROM Contacts
             )
         FROM Account
+        """ +
+        // TODO: We should only check for AD_Username_pc,
+        // but this field is not currently populated in standard.
+        // Remember to take out the Name check.
+        """
         WHERE RecordType.Name = 'Person Account'
             AND (AD_Username__pc = '{3}' OR Name = '{3}')
-    """;
+        """;
 
     private const string BirthdayTemplate = """
         SELECT PersonBirthdate
