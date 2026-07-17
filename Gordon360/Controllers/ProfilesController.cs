@@ -213,11 +213,11 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("birthdate")]
-    public ActionResult<DateTime> GetBirthdate()
+    public async Task<ActionResult<DateTime>> GetBirthdate()
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = profileService.GetBirthdate(username);
+        var result = await profileService.GetBirthdate(username);
         return Ok(result);
     }
 

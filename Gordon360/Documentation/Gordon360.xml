@@ -1921,7 +1921,21 @@
             <typeparam name="T">Profile type to construct, must be FacStaff, Alumni, or Student</typeparam>
             <param name="profileObj">Profile to fill out</param>
             <param name="account">SalesForce Account to fill profile from</param>
-            <returns>Facstaff, Alumni, or Student with commin fields filled out</returns>
+            <returns>Facstaff, Alumni, or Student with common fields filled out</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetFacStaffProfile(System.String)">
+            <summary>
+            Get faculty/staff information associated with the given user
+            </summary>
+            <param name="username">AD username of the given user</param>
+            <returns>ViewModel containing information about the given faculty/staff, or null if the request is not authorized or the user does not exist</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetBirthday(System.String)">
+            <summary>
+            Gets the birthday of the given user
+            </summary>
+            <param name="username">AD username of the desired user</param>
+            <returns>User's birthday, or null if not found or authorized</returns>
         </member>
         <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToFacStaffProfileViewModel(Gordon360.Models.Salesforce.Account)">
             <summary>
@@ -1929,6 +1943,34 @@
             </summary>
             <param name="account">Salesforce Account to construct ViewModel from</param>
             <returns>Filled-out FacultyStaffProfileViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAlumniProfile(System.String)">
+            <summary>
+            Get alumni information associated with the given user
+            </summary>
+            <param name="username">AD username of the given user</param>
+            <returns>ViewModel containing information about the given alumnus, or null if the request is not authorized or the user does not exist</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToAlumniProfileViewModel(Gordon360.Models.Salesforce.Account)">
+            <summary>
+            Constructs AlumniProfileViewModel based on values in a Salesforce Account
+            </summary>
+            <param name="account">Salesforce Account to construct ViewModel from</param>
+            <returns>Filled-out AlumniProfileViewModel</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetStudentProfile(System.String)">
+            <summary>
+            Get student information associated with the given user
+            </summary>
+            <param name="username">AD username of the given user</param>
+            <returns>ViewModel containing information about the given student, or null if the request is not authorized or the user does not exist</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToStudentProfileViewModel(Gordon360.Models.Salesforce.Account)">
+            <summary>
+            Constructs StudentProfileViewModel based on values in a Salesforce Account
+            </summary>
+            <param name="account">Salesforce Account to construct ViewModel from</param>
+            <returns>Filled-out StudentProfileViewModel</returns>
         </member>
         <member name="M:Gordon360.Models.Salesforce.SFUserCourses.GetUserCourses(System.String,System.String)">
             <summary>

@@ -50,7 +50,7 @@ public class SFProfiles(ISalesforceContext context)
         gc_On_Campus_Location__r.gc_Jenz_Building_Code__c,
         gc_On_Campus_Location__r.gc_Jenz_Room_Code__c,
     """;
-        // gc_On_Campus_Location__r.Phone,
+    // gc_On_Campus_Location__r.Phone,
 
     private const string SoqlTemplate = """
         SELECT 
@@ -118,6 +118,13 @@ public class SFProfiles(ISalesforceContext context)
             AND (AD_Username__pc = '{3}' OR Name = '{3}')
     """;
 
+    private const string BirthdayTemplate = """
+        SELECT PersonBirthdate
+        FROM Account
+        WHERE AD_Username__pc = '{0}'
+        LIMIT 1 
+    """;
+
     /// <summary>
     /// Sets values common to all account types
     /// </summary>
@@ -125,12 +132,12 @@ public class SFProfiles(ISalesforceContext context)
     /// <param name="profileObj">Profile to fill out</param>
     /// <param name="account">SalesForce Account to fill profile from</param>
     /// <returns>Facstaff, Alumni, or Student with common fields filled out</returns>
-    private static T MapToBaseModel<T>(T profileObj, Account account) where T: notnull
+    private static T MapToBaseModel<T>(T profileObj, Account account) where T : notnull
     {
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
-        
-        var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home") 
+
+        var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home")
                             ?? new ContactPointAddress();
 
         dynamic profile = profileObj;
@@ -148,18 +155,18 @@ public class SFProfiles(ISalesforceContext context)
         profile.AD_Username = account.AD_Username__pc ?? "360.StudentTest";
         // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
         profile.HomeStreet1 = "";
-        profile.HomeStreet2 = homeAddress.Street ?? ""; 
+        profile.HomeStreet2 = homeAddress.Street ?? "";
         profile.HomeCity = homeAddress.City ?? "";
         profile.HomeState = homeAddress.StateCode ?? "";
         profile.HomePostalCode = homeAddress.PostalCode ?? "";
         profile.HomeCountry = homeAddress.CountryCode ?? "";
-        profile.HomePhone = homeAddress.PhoneNumber ?? "";   
+        profile.HomePhone = homeAddress.PhoneNumber ?? "";
         profile.show_pic = 1; // show pic
         profile.preferred_photo = 2; // preferred photo
         profile.Country = ""; // country
 
         return profile;
-        
+
     }
 
     /// <summary>
@@ -167,9 +174,10 @@ public class SFProfiles(ISalesforceContext context)
     /// </summary>
     /// <param name="username">AD username of the given user</param>
     /// <returns>ViewModel containing information about the given faculty/staff, or null if the request is not authorized or the user does not exist</returns>
-    public async Task<FacultyStaffProfileViewModel?> GetFacStaffProfile(string username){
-        var soql = string.Format(SoqlTemplate, "", facStaffEmploymentSoql, onCampusLocationFields, username); 
-        
+    public async Task<FacultyStaffProfileViewModel?> GetFacStaffProfile(string username)
+    {
+        var soql = string.Format(SoqlTemplate, "", facStaffEmploymentSoql, onCampusLocationFields, username);
+
         var response = await _context.Query<Account>(soql);
 
         var account = response?.records?.FirstOrDefault();
@@ -178,11 +186,28 @@ public class SFProfiles(ISalesforceContext context)
     }
 
     /// <summary>
+    /// Gets the birthday of the given user
+    /// </summary>
+    /// <param name="username">AD username of the desired user</param>
+    /// <returns>User's birthday, or null if not found or authorized</returns>
+    public async Task<DateTime> GetBirthday(string username)
+    {
+        var soql = string.Format(BirthdayTemplate, username);
+
+        var response = await _context.Query<Account>(soql);
+
+        var birthday = response?.records?.FirstOrDefault();
+
+        return birthday == null ? DateTime.Now : DateTime.ParseExact(birthday.PersonBirthdate, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
     /// Constructs FacultyStaffProfileViewModel based on values in a Salesforce Account
     /// </summary>
     /// <param name="account">Salesforce Account to construct ViewModel from</param>
     /// <returns>Filled-out FacultyStaffProfileViewModel</returns>
-    private static FacultyStaffProfileViewModel MapToFacStaffProfileViewModel(Account? account){
+    private static FacultyStaffProfileViewModel MapToFacStaffProfileViewModel(Account? account)
+    {
         FacStaff facStaff = MapToBaseModel(new FacStaff(), account);
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
@@ -194,7 +219,7 @@ public class SFProfiles(ISalesforceContext context)
 
         var firstEmployment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
 
-     
+
         facStaff.BuildingDescription = onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "";
         facStaff.Mail_Location = ""; // mail location
         facStaff.OnCampusBuilding = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "";
@@ -225,22 +250,24 @@ public class SFProfiles(ISalesforceContext context)
     /// </summary>
     /// <param name="username">AD username of the given user</param>
     /// <returns>ViewModel containing information about the given alumnus, or null if the request is not authorized or the user does not exist</returns>
-    public async Task<AlumniProfileViewModel?> GetAlumniProfile(string username){
-        var soql = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql, "", username); 
-        
+    public async Task<AlumniProfileViewModel?> GetAlumniProfile(string username)
+    {
+        var soql = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql, "", username);
+
         var response = await _context.Query<Account>(soql);
 
         var account = response?.records?.FirstOrDefault();
 
         return account == null ? null : MapToAlumniProfileViewModel(account);
     }
-   
+
     /// <summary>
     /// Constructs AlumniProfileViewModel based on values in a Salesforce Account
     /// </summary>
     /// <param name="account">Salesforce Account to construct ViewModel from</param>
     /// <returns>Filled-out AlumniProfileViewModel</returns>
-    private static AlumniProfileViewModel MapToAlumniProfileViewModel(Account account){
+    private static AlumniProfileViewModel MapToAlumniProfileViewModel(Account account)
+    {
         Alumni alumn = MapToBaseModel(new Alumni(), account);
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
@@ -276,7 +303,7 @@ public class SFProfiles(ISalesforceContext context)
         alumn.Major2Description = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
 
         alumn.grad_student = ""; // grad student
-        
+
         alumn.WebUpdate = 1; // WebUpdate
         alumn.HomeEmail = ""; // HomeEmail
         alumn.MaritalStatus = contact.MaritalStatus ?? ""; // MaritalStatus
@@ -298,9 +325,10 @@ public class SFProfiles(ISalesforceContext context)
     /// </summary>
     /// <param name="username">AD username of the given user</param>
     /// <returns>ViewModel containing information about the given student, or null if the request is not authorized or the user does not exist</returns>
-    public async Task<StudentProfileViewModel?> GetStudentProfile(string username){
-        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusLocationFields, username); 
-        
+    public async Task<StudentProfileViewModel?> GetStudentProfile(string username)
+    {
+        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusLocationFields, username);
+
         var response = await _context.Query<Account>(soql);
 
         var account = response?.records?.FirstOrDefault();
@@ -313,7 +341,8 @@ public class SFProfiles(ISalesforceContext context)
     /// </summary>
     /// <param name="account">Salesforce Account to construct ViewModel from</param>
     /// <returns>Filled-out StudentProfileViewModel</returns>
-    private static StudentProfileViewModel MapToStudentProfileViewModel(Account account){
+    private static StudentProfileViewModel MapToStudentProfileViewModel(Account account)
+    {
         Student student = MapToBaseModel(new Student(), account);
 
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
@@ -360,7 +389,7 @@ public class SFProfiles(ISalesforceContext context)
         student.Major = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
         student.Major2 = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
         student.Major3 = majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-        student.Minor1 = minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? ""; 
+        student.Minor1 = minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
         student.Minor2 = minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
         student.Minor3 = minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
 
@@ -467,5 +496,5 @@ public class SFProfiles(ISalesforceContext context)
     }
 
 
-   
+
 }

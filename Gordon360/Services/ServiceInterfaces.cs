@@ -50,7 +50,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">Active Directory username of the person to get the birthdate of</param>
         /// <returns>User's date of birth, if available, or a default of 1/1/1800.</returns>
-        DateTime GetBirthdate(string username);
+        Task<DateTime> GetBirthdate(string username);
         /// <summary>
         /// Fetch list of advisors for the given student
         /// </summary>

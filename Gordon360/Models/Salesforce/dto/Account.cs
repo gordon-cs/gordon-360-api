@@ -20,6 +20,7 @@ public class Account
     public string Preferred_First_Name_Formula__pc { get; set; } = ""; // maiden name?
     public string AD_Username__pc { get; set; } = "";
     public string PersonGenderIdentity { get; set; } = "";
+    public string PersonBirthdate { get; set; } = "";
 
 
     public SFChildCollection<ConstituentRole> Persons { get; set; } = new();
