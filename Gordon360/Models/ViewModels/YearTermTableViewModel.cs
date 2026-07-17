@@ -27,8 +27,8 @@ namespace Gordon360.Models.ViewModels
             YearCode = entity.gc_Jenz_Year_Code__c;
             TermCode = entity.gc_Jenz_Term_Code__c;
             // Convert ISO 8601 DateTime strings to DateTime objects
-            BeginDate = DateTime.Parse(entity.StartDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
-            EndDate = DateTime.Parse(entity.EndDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            BeginDate = (entity.StartDate is null) ? null : DateTime.Parse(entity.StartDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            EndDate = (entity.EndDate is null) ? null : DateTime.Parse(entity.EndDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
             Description = entity.Name;
 
