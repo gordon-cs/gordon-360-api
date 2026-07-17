@@ -21,7 +21,7 @@ public class SFScheduleService(SFUserCourses sfUserCourses, ISessionService sess
         IEnumerable<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username);
         courses = courses.Select((object c) => (UserCoursesViewModel)c).ToList();
 
-        IEnumerable<SessionViewModel> sessions = sessionService.GetAll();
+        IEnumerable<SessionViewModel> sessions = await sessionService.GetAll();
         IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
             .GroupJoin(courses,
                        s => s.SessionCode,
@@ -42,7 +42,7 @@ public class SFScheduleService(SFUserCourses sfUserCourses, ISessionService sess
         IEnumerable<UserCoursesViewModel> courses = await sfUserCourses.GetUserCourses(username, "Teacher");
         courses = [.. courses.Select(c => (UserCoursesViewModel)c)];
 
-        IEnumerable<SessionViewModel> sessions = sessionService.GetAll();
+        IEnumerable<SessionViewModel> sessions = await sessionService.GetAll();
         IEnumerable<CoursesBySessionViewModel> coursesBySession = sessions
             .GroupJoin(courses,
                        s => s.SessionCode,
