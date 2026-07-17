@@ -30,7 +30,7 @@ public static class ServicesExtensions
         services.AddScoped<INewsService, NewsService>();
         services.AddScoped<ILostAndFoundService, LostAndFoundService>();
         services.AddScoped<IScheduleService, SFScheduleService>();
-        services.AddScoped<ISessionService, SessionService>();
+        services.AddScoped<ISessionService, SFSessionService>();
         services.AddScoped<IStudentEmploymentService, StudentEmploymentService>();
         services.AddScoped<IVictoryPromiseService, VictoryPromiseService>();
         services.AddScoped<IPosterService, PosterService>();
@@ -51,6 +51,7 @@ public static class ServicesExtensions
         services.AddScoped<SFUserCourses>();
         services.AddScoped<SFProfiles>();
         services.AddScoped<AcademicTermProcedures>();
+        services.AddScoped<AcademicSessionProcedures>();
         return services;
     }
 }

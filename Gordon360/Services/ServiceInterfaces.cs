@@ -318,11 +318,24 @@ namespace Gordon360.Services
 
     public interface ISessionService
     {
-        SessionViewModel Get(string sessionCode);
-        SessionViewModel GetCurrentSession();
-        SessionViewModel GetCurrentSessionForFinalExams();
-        double[] GetDaysLeft();
-        IEnumerable<SessionViewModel> GetAll();
+        /// <summary>
+        /// Get the session record whose sesssion code matches the parameter.
+        /// </summary>
+        /// <param name="sessionCode">The session code.</param>
+        /// <returns>A SessionViewModel if found, null if not found.</returns>
+        Task<SessionViewModel?> Get(string sessionCode);
+        Task<SessionViewModel?> GetCurrentSession();
+        Task<SessionViewModel?> GetCurrentSessionForFinalExams();
+        /// <summary>
+        /// Return the days left in the semester, and the total days in the current session
+        /// </summary>
+        /// <returns></returns>
+        Task<double[]> GetDaysLeft();
+        /// <summary>
+        /// Fetches all the session records from the database.
+        /// </summary>
+        /// <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        Task<IEnumerable<SessionViewModel>> GetAll();
     }
 
     public interface IMembershipService
@@ -540,7 +553,7 @@ namespace Gordon360.Services
         IEnumerable<PosterViewModel> GetPosters();
         IEnumerable<PosterViewModel> GetCurrentPosters();
         IEnumerable<PosterViewModel> GetCurrentPostersByActivityCode(string activityCode);
-        IEnumerable<PosterViewModel> GetPersonalizedPostersByUsername(string username);
+        Task<IEnumerable<PosterViewModel>> GetPersonalizedPostersByUsername(string username);
         IEnumerable<string> GetPosterStatuses();
         IEnumerable<PosterViewModel> GetPostersByActivityCode(string activityCode);
         PosterViewModel GetPosterByID(int posterID);
