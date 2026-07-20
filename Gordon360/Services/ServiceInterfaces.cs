@@ -180,7 +180,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The gordon id associated with the account</param>
         /// <returns>AccountViewModel associated with the id</returns>
-        AccountViewModel GetAccountByID(string id);
+        AccountViewModel? GetAccountByID(string id);
         /// <summary>
         /// Fetches all account records
         /// </summary>
@@ -191,13 +191,13 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
         /// <returns>AccountViewModel associated with the email</returns>
-        AccountViewModel GetAccountByEmail(string email);
+        AccountViewModel? GetAccountByEmail(string email);
         /// <summary>
         /// Fetches the account record associated with the specified AD username.
         /// </summary>
         /// <param name="username">The AD username associated with the account.</param>
         /// <returns>AccountViewModel associated with the username</returns>
-        AccountViewModel GetAccountByUsername(string username);
+        AccountViewModel? GetAccountByUsername(string username);
         /// <summary>
         /// Get the list of accounts the user is authorized search
         /// </summary>

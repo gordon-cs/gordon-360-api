@@ -11,7 +11,6 @@ namespace Gordon360.Models.Salesforce;
 public class SalesforceContext : ISalesforceContext
 {
     public IConfiguration config;
-    public enum QueryType { SOQL, SOSL }
     private static string ClientId;
     private static string ClientSecret;
     private static string OrganizationUrl;
@@ -30,7 +29,7 @@ public class SalesforceContext : ISalesforceContext
     }
 
 
-    public async Task<SFQueryResult<T>> Query<T>(string queryString, QueryType queryType = QueryType.SOQL)
+    public async Task<SFQueryResult<T>> RawQuery<T>(string queryString, QueryType queryType = QueryType.SOQL)
     {            
         System.Diagnostics.Debug.WriteLine("🔐 Getting Salesforce access token...");
         var tokenData = await GetAccessTokenAsync(config);
@@ -91,7 +90,7 @@ public class SalesforceContext : ISalesforceContext
     /// <param name="where">SOQL field selectors</param>
     /// <param name="order">SOQL ordering</param>
     /// <param name="limit_n">SOQL limit on number of records returned</param>
-    /// <returns></returns>
+    /// <returns>T containing results of query</returns>
     public async Task<SFQueryResult<T>> SoqlQuery<T>(string template, string where = "", string order = "", int limit_n = 0)
     {
         // Prepare strings for injection
@@ -101,7 +100,7 @@ public class SalesforceContext : ISalesforceContext
         string limit = limit_n == 0 ? "" : "LIMIT " + limit_n;
 
         string query = string.Format(template, where, order, limit);
-        var response = await Query<T>(query);
+        var response = await RawQuery<T>(query);
         return response;
     }
 

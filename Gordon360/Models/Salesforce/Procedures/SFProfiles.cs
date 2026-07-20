@@ -3,6 +3,7 @@ using Gordon360.Models.CCT;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Gordon360.Models.Salesforce;
 
@@ -114,13 +115,14 @@ public class SFProfiles(ISalesforceContext context)
                 FROM Contacts
             )
         FROM Account
-        """ +
+        {3}
+        """;
         // TODO: We should only check for AD_Username_pc,
         // but this field is not currently populated in standard.
         // Remember to take out the Name check.
-        """
+        private const string Where = """
         WHERE RecordType.Name = 'Person Account'
-            AND (AD_Username__pc = '{3}' OR Name = '{3}')
+            AND (AD_Username__pc = '{0}' OR Name = '{0}')
         """;
 
     private const string BirthdayTemplate = """
@@ -181,9 +183,10 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>ViewModel containing information about the given faculty/staff, or null if the request is not authorized or the user does not exist</returns>
     public async Task<FacultyStaffProfileViewModel?> GetFacStaffProfile(string username)
     {
-        var soql = string.Format(SoqlTemplate, "", facStaffEmploymentSoql, onCampusLocationFields, username);
+        var whereClause = string.Format(Where, username);
+        var soql = string.Format(SoqlTemplate, "", facStaffEmploymentSoql, onCampusLocationFields, whereClause);
 
-        var response = await _context.Query<Account>(soql);
+        var response = await _context.RawQuery<Account>(soql);
 
         var account = response?.records?.FirstOrDefault();
 
@@ -199,7 +202,7 @@ public class SFProfiles(ISalesforceContext context)
     {
         var soql = string.Format(BirthdayTemplate, username);
 
-        var response = await _context.Query<Account>(soql);
+        var response = await _context.RawQuery<Account>(soql);
 
         var birthday = response?.records?.FirstOrDefault();
 
@@ -257,9 +260,10 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>ViewModel containing information about the given alumnus, or null if the request is not authorized or the user does not exist</returns>
     public async Task<AlumniProfileViewModel?> GetAlumniProfile(string username)
     {
-        var soql = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql, "", username);
+        var whereClause = string.Format(Where, username);
+        var soql = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql, "", whereClause);
 
-        var response = await _context.Query<Account>(soql);
+        var response = await _context.RawQuery<Account>(soql);
 
         var account = response?.records?.FirstOrDefault();
 
@@ -332,9 +336,10 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>ViewModel containing information about the given student, or null if the request is not authorized or the user does not exist</returns>
     public async Task<StudentProfileViewModel?> GetStudentProfile(string username)
     {
-        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusLocationFields, username);
+        var whereClause = string.Format(Where, username);
+        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusLocationFields, whereClause);
 
-        var response = await _context.Query<Account>(soql);
+        var response = await _context.RawQuery<Account>(soql);
 
         var account = response?.records?.FirstOrDefault();
 
@@ -429,77 +434,59 @@ public class SFProfiles(ISalesforceContext context)
         student.KeepPrivate = ""; // keep private
 
         return student;
-        /*
-        return new T(
-            account.Student_Id__pc ?? "",
-            account.PersonTitle ?? "",
-            account.FirstName ?? "",
-            account.MiddleName ?? "",
-            account.LastName ?? "",
-            account.Suffix__pc ?? "",
-            account.FormerLastName__pc,
-            account.Preferred_First_Name_Formula__pc,
-            "", // OnOffCampus
-            onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "",
-            onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
-            onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "",
-            "", // OnCampusPrivatePhone
-            "", // OnCampusFax
-            "", // OffCampusStreet1
-            "", // OffCampusStreet2
-            "", // .........City
-            "", // .........State
-            "", // .........PostalCode
-            "", // .........Country
-            "", // .........Phone
-            "", // .........Fax
-            "", // street1
-            homeAddress.Street ?? "",
-            homeAddress.City ?? "",
-            homeAddress.StateCode ?? "",
-            homeAddress.PostalCode ?? "",
-            homeAddress.CountryCode ?? "",
-            homeAddress.PhoneNumber ?? "",
-            "", // fax
-            "", // cohort
-            "", // class
-            "", // keep private
-            "", // barcode
-            advisorsIds,
-            "", // married
-            "", // commuter
-            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            account.PersonEmail ?? "",
-            account.PersonGenderIdentity ?? "",
-            "", // grad Student
-            "", // grad date
-            "", // planned grad year
-            new DateTime(1900, 1, 1), // Entrance year
-            contact.Phone,
-            true, // is mobile private
-            account.AD_Username__pc ?? "360.StudentTest",
-            1, // show pic
-            2, // preferred photo
-            "", // country
-            onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
-            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            "", // mail location
-            20, // ChapelRequired
-            5   // ChapelAttended
-        );  */
 
     }
 
+    /// <summary>
+    /// Gets all accounts, sorted alphabetically by last name
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IEnumerable<Account>> GetAllAccountsAsync()
+    {
+        var template = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql + facStaffEmploymentSoql, onCampusLocationFields, "");
+        var response = await context.SoqlQuery<Account>(template, order: "LastName DESC NULLS LAST");
+
+        return response.records;
+    }
+
+    /// <summary>
+    /// Gets the account associated with a given ID number
+    /// </summary>
+    /// <param name="id">8-digit student ID number</param>
+    /// <returns>Account associated with ID number</returns>
+    public async Task<Account?> GetAccountByIdAsync(string id)
+    {
+        var template = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql + facStaffEmploymentSoql, onCampusLocationFields, "");
+        var response = await context.SoqlQuery<Account>(template, where: $"gc_Jenz_ID__c = {id}", limit_n: 1);
+        return response.records.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Gets the account associated with a given email
+    /// </summary>
+    /// <param name="email">email address</param>
+    /// <returns>Account associated with email</returns>
+    public async Task<Account?> GetAccountByEmailAsync(string email)
+    {
+        var template = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql + facStaffEmploymentSoql, onCampusLocationFields, "");
+        var response = await context.SoqlQuery<Account>(template, where: $"gc_University_Email__c = {email}", limit_n: 1);
+        return response.records.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Gets the account associated with a given email
+    /// NOTE: This method is the same as GetAccountByEmailAsync,
+    /// but adds "@gordon.edu" to the end of the username. Behaviour
+    /// may be strange.
+    /// </summary>
+    /// <param name="adUsername">email address</param>
+    /// <returns>Account associated with email</returns>
+    public async Task<Account?> GetAccountByAdUsernameAsync(string adUsername)
+    {
+        var template = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql + facStaffEmploymentSoql, onCampusLocationFields, "");
+        var response = await context.SoqlQuery<Account>(template, where: $"gc_University_Email__c = {adUsername}@gordon.edu", limit_n: 1);
+        return response.records.FirstOrDefault();
+    }
 
 
 }

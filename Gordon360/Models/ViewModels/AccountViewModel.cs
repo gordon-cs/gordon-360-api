@@ -35,16 +35,15 @@ public class AccountViewModel
         return vm;
     }
 
-    public static implicit operator AccountViewModel(Account a)
+    public static explicit operator AccountViewModel(Account a)
     {
         AccountViewModel vm = new AccountViewModel
         {
-            GordonID = a.gc_Jenz_ID__c,
+            GordonID = a.Student_Id__pc,
             FirstName = a.FirstName,
             LastName = a.LastName,
             Email = a.gc_University_Email__c ?? "", // Some random records have null for an email.
-            // ADUsername should be first part of email
-            ADUserName = a.gc_University_Email__c[..a.gc_University_Email__c.IndexOf('@')] ?? "",
+            ADUserName = a.AD_Username__pc,
         };
 
         return vm;

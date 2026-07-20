@@ -1,6 +1,5 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
 using Gordon360.Static.Names;
@@ -21,74 +20,31 @@ namespace Gordon360.Services;
 public class SFAccountService(CCTContext context, AccountProcedures sfProcedures) : IAccountService
 {
 
-    /// <summary>
-    /// Fetches a single account record whose id matches the id provided as an argument
-    /// </summary>
-    /// <param name="id">The person's gordon id</param>
-    /// <returns>AccountViewModel if found, null if not found</returns>
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-    public AccountViewModel GetAccountByID(string id)
+    public AccountViewModel? GetAccountByID(string id)
     {
-        // Custom Exception is thrown that will be cauth in the controller Exception filter.
         var account = sfProcedures.GetAccountByIdAsync(id);
-        return account.Result ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };;
+        return (account.Result is null) ? null : (AccountViewModel)account.Result;
     }
 
-    /// <summary>
-    /// Fetches all the account records from storage.
-    /// </summary>
-    /// <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
     public IEnumerable<AccountViewModel> GetAll()
     {
-        return (IEnumerable<AccountViewModel>) sfProcedures.GetAllAccountsAsync().Result;
+        return (IEnumerable<AccountViewModel>)sfProcedures.GetAllAccountsAsync().Result;
     }
 
-    /// <summary>
-    /// Fetches the account record with the specified email.
-    /// </summary>
-    /// <param name="email">The email address associated with the account.</param>
-    /// <returns>the first account object which matches the email</returns>
-    public AccountViewModel GetAccountByEmail(string email)
+    public AccountViewModel? GetAccountByEmail(string email)
     {
-        // Custom Exception is thrown that will be cauth in the controller Exception filter.
         var account = sfProcedures.GetAccountByEmailAsync(email);
-        return account.Result ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };;
+        return (account.Result is null) ? null : (AccountViewModel)account.Result;
     }
 
-    /// <summary>
-    /// Fetches the account record with the specified username.
-    /// </summary>
-    /// <param name="username">The AD username associated with the account.</param>
-    /// <returns>the student account information</returns>
-    public AccountViewModel GetAccountByUsername(string username)
+    public AccountViewModel? GetAccountByUsername(string username)
     {
-        // Custom Exception is thrown that will be cauth in the controller Exception filter.
         var account = sfProcedures.GetAccountByAdUsernameAsync(username);
-        return account.Result ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };;
+        return (account.Result is null) ? null : (AccountViewModel)account.Result;
     }
 
-    /// <summary>
-    /// Given a list of accounts, and search params, return all the accounts that match those search params.
-    /// </summary>
-    /// <param name="accounts">The accounts that should be searched, converted to an AdvancedSearchViewModel</param>
-    /// <param name="firstname">The firstname search param</param>
-    /// <param name="lastname">The lastname search param</param>
-    /// <param name="major">The major search param</param>
-    /// <param name="minor">The minor search param</param>
-    /// <param name="hall">The hall search param</param>
-    /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
-    /// <param name="preferredClassYear">The preferred class year search param</param>
-    /// <param name="initialYear">The initial year range search param</param>
-    /// <param name="finalYear">The final year range search param</param>
-    /// <param name="homeCity">The home city search param</param>
-    /// <param name="state">The state search param</param>
-    /// <param name="country">The country search param</param>
-    /// <param name="department">The department search param</param>
-    /// <param name="building">The building search param</param>
-    /// <param name="involvement">The involvement search param</param>
-    /// <param name="gender">The gender search param</param>
-    /// <returns>The accounts from the provided list that match the given search params</returns>
     public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
         IEnumerable<AdvancedSearchViewModel> accounts,
         string? firstname,
