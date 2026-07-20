@@ -93,11 +93,13 @@ public class SessionsController(ISessionService sessionService) : GordonControll
     public async Task<ActionResult<double[]>> GetDaysLeftInSemester()
     {
         var days = await sessionService.GetDaysLeft();
-        if (days == null || (days[0] == 0 && days[1] == 0))
+        if (days == null || (days.DaysLeft == 0 && days.TotalDays == 0))
         {
             return NotFound();
         }
 
-        return Ok(days);
+        int[] value = [days.DaysLeft, days.TotalDays];
+
+        return Ok(value);
     }
 }

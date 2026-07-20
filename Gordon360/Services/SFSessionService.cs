@@ -34,29 +34,35 @@ public class SFSessionService(AcademicSessionProcedures academicSessionProcedure
         return result;
     }
 
-    public async Task<double[]> GetDaysLeft()
+    public async Task<DaysLeftViewModel> GetDaysLeft()
     {
         var currentSession = await GetCurrentSession();
         if (currentSession is null)
         {
-            return [0, 0];
+            return new DaysLeftViewModel { DaysLeft = 0, TotalDays = 0, TermLabel = "" };
         }
         DateTime sessionEnd = currentSession.SessionEndDate ?? DateTime.Today;
         DateTime sessionBegin = currentSession.SessionBeginDate ?? DateTime.Today;
         DateTime startTime = DateTime.Today;
 
-        double daysLeft = (sessionEnd - startTime).TotalDays;
+        var daysLeft = (int)(sessionEnd - startTime).TotalDays;
         // Account for possible negative value in between sessions
         daysLeft = daysLeft < 0 ? 0 : daysLeft;
 
-        double daysInSemester = (sessionEnd - sessionBegin).TotalDays;
+        var daysInSemester = (int)(sessionEnd - sessionBegin).TotalDays;
 
-        return [
-        // Days left in semester
-        daysLeft,
-        // Total days in the semester
-        daysInSemester
-        ];
+        // return [
+        // // Days left in semester
+        // daysLeft,
+        // // Total days in the semester
+        // daysInSemester
+        // ];
+        return new DaysLeftViewModel
+        {
+            DaysLeft = daysLeft,
+            TotalDays = daysInSemester,
+            TermLabel = currentSession.SessionCode
+        };
     }
 
     public async Task<IEnumerable<SessionViewModel>> GetAll()

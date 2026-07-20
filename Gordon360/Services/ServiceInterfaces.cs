@@ -330,7 +330,7 @@ namespace Gordon360.Services
         /// Return the days left in the semester, and the total days in the current session
         /// </summary>
         /// <returns></returns>
-        Task<double[]> GetDaysLeft();
+        Task<DaysLeftViewModel> GetDaysLeft();
         /// <summary>
         /// Fetches all the session records from the database.
         /// </summary>
