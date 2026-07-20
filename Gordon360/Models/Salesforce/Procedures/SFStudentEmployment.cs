@@ -29,7 +29,7 @@ public class SFStudentEmployment(ISalesforceContext context)
             StartDate,
             EndDate
         FROM PersonEmployment
-        WHERE Account.Email LIKE '{0}%'
+        WHERE Account.Name LIKE '{0}%'
     """;
 
 /// <summary>
@@ -37,24 +37,24 @@ public class SFStudentEmployment(ISalesforceContext context)
 /// </summary>
 /// <param name="username">Active Directory username</param>
 /// <returns>IEnumerable of student employment records for the user, or empty if unauthorized</returns>
-    public async Task<IEnumerable<PersonEmploymentViewModel>> GetStudentEmployment(string username)
+    public async Task<IEnumerable<StudentEmploymentViewModel>> GetStudentEmployment(string username)
     {
-        
-        var response = await _context.Query<PersonEmployment>(string.Format(SoqlTemplate, username));
-
+        var name = "Woobensky";
+        var response = await _context.Query<PersonEmployment>(string.Format(SoqlTemplate, name));
+        System.Diagnostics.Debug.WriteLine(response);
         return response?.records?
             .Select(c => MapToViewModel(c, username))
-            .ToList() ?? new List<PersonEmploymentViewModel>();
+            .ToList() ?? new List<StudentEmploymentViewModel>();
     }
 
-    private static PersonEmploymentViewModel MapToViewModel(PersonEmployment c, string username)
+    private static StudentEmploymentViewModel MapToViewModel(PersonEmployment c, string username)
     {
-        return new PersonEmploymentViewModel
+        return new StudentEmploymentViewModel
         {
-            Position = c.Position,
-            DivisionDepartment__c = c.DivisionDepartment__c,
-            StartDate = c.StartDate,
-            EndDate = c.EndDate
+            Job_Title = c.Position,
+            Job_Department = c.DivisionDepartment__c,
+            Job_Start_Date = c.StartDate,
+            Job_End_Date = c.EndDate
         };
 
     }

@@ -1972,6 +1972,13 @@
             <param name="account">Salesforce Account to construct ViewModel from</param>
             <returns>Filled-out StudentProfileViewModel</returns>
         </member>
+        <member name="M:Gordon360.Models.Salesforce.SFStudentEmployment.GetStudentEmployment(System.String)">
+            <summary>
+            Fetch IEnumerable of student employment records for the given user
+            </summary>
+            <param name="username">Active Directory username</param>
+            <returns>IEnumerable of student employment records for the user, or empty if unauthorized</returns>
+        </member>
         <member name="M:Gordon360.Models.Salesforce.SFUserCourses.GetUserCourses(System.String,System.String)">
             <summary>
             Fetch IEnumerable of courses taken by the given user
