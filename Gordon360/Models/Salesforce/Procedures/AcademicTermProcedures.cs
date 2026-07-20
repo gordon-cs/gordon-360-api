@@ -5,10 +5,8 @@ using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Models.Salesforce;
 
-public class AcademicTermProcedures(SalesforceContext context)
+public class AcademicTermProcedures(ISalesforceContext context)
 {
-    private readonly SalesforceContext context = context;
-
     private const string SoqlTemplate = @"
         SELECT
             gc_Jenz_Term_Code__c,

@@ -108,7 +108,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [HttpPost]
     [Route("apartment/applications")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.HOUSING)]
-    public ActionResult<int> SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
+    public async Task<ActionResult<int>> SaveApplication([FromBody] ApartmentApplicationViewModel applicationDetails)
     {
         string sessionID = Helpers.GetCurrentSession(context);
 
@@ -119,7 +119,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
         {
             if (applicant.Profile == null)
             {
-                applicant.Profile = profileService.GetStudentProfileByUsername(applicant.Username);
+                applicant.Profile = await profileService.GetStudentProfileByUsername(applicant.Username);
             }
         }
 
@@ -135,7 +135,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
     [HttpPut]
     [Route("apartment/applications/{applicationID}")]
     [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.HOUSING)]
-    public ActionResult<int> EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
+    public async Task<ActionResult<int>> EditApplication(int applicationID, [FromBody] ApartmentApplicationViewModel applicationDetails)
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
@@ -148,7 +148,7 @@ public class HousingController(CCTContext context, IProfileService profileServic
         {
             if (applicant.Profile == null)
             {
-                applicant.Profile = profileService.GetStudentProfileByUsername(applicant.Username);
+                applicant.Profile = await profileService.GetStudentProfileByUsername(applicant.Username);
             }
         }
 

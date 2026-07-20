@@ -1,6 +1,5 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.Salesforce;
-using Microsoft.IdentityModel.Tokens;
 using System;
 
 namespace Gordon360.Models.ViewModels
@@ -23,16 +22,18 @@ namespace Gordon360.Models.ViewModels
             Description = entity.YR_TRM_DESC;
             ShowOnWeb = entity.SHOW_ON_WEB;
         }
-        public YearTermTableViewModel(AcademicTerm entity)
+       public YearTermTableViewModel(AcademicTerm entity)
         {
             YearCode = entity.gc_Jenz_Year_Code__c;
             TermCode = entity.gc_Jenz_Term_Code__c;
-            // Convert ISO 8601 DateTime string to DateTime object
-            BeginDate = entity.StartDate.IsNullOrEmpty() ? null : DateTime.Parse(entity.StartDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
-            EndDate = entity.EndDate.IsNullOrEmpty() ? null : DateTime.Parse(entity.EndDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            // Convert ISO 8601 DateTime strings to DateTime objects
+            BeginDate = (entity.StartDate is null) ? null : DateTime.Parse(entity.StartDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            EndDate = (entity.EndDate is null) ? null : DateTime.Parse(entity.EndDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+
             Description = entity.Name;
-            // Show on web by default
-            ShowOnWeb = "B";
+
+            // TODO: Field does not yet exist in SalesForce. Default placeholder value.
+            ShowOnWeb = "y";
         }
     }
 }

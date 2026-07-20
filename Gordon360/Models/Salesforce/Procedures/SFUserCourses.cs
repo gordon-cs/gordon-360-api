@@ -7,9 +7,9 @@ using Gordon360.Models.ViewModels;
 
 namespace Gordon360.Models.Salesforce;
 
-public class SFUserCourses(SalesforceContext context)
+public class SFUserCourses(ISalesforceContext context)
 {
-    private readonly SalesforceContext _context = context;
+    private readonly ISalesforceContext _context = context;
 
     private const string SoqlTemplate = """
         SELECT
@@ -41,12 +41,17 @@ public class SFUserCourses(SalesforceContext context)
         )
     """;
 
-    public async Task<List<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
+/// <summary>
+/// Fetch IEnumerable of courses taken by the given user
+/// </summary>
+/// <param name="username">Active Directory username</param>
+/// <param name="role">Role of user requesting</param>
+/// <returns>IEnumerable of courses taken by user, or empty if unauthorized</returns>
+    public async Task<IEnumerable<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
     {
-        var name = username == "360.StudentTest" ? "woobensky.pierre" : username;
         var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
 
-        var response = await _context.Query<CourseOffering>(string.Format(SoqlTemplate, name, roleFilter));
+        var response = await _context.Query<CourseOffering>(string.Format(SoqlTemplate, username, roleFilter));
 
         return response?.records?
             .Select(c => MapToViewModel(c, username))

@@ -6,15 +6,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-// <summary>
-// We use this service to pull meal data from blackboard and parse it
-// </summary>
 namespace Gordon360.Models.Salesforce;
 
-/// <summary>
-/// Service that allows for meal control
-/// </summary>
-public class SalesforceContext
+public class SalesforceContext : ISalesforceContext
 {
     public IConfiguration config;
     public enum QueryType { SOQL, SOSL }
@@ -34,7 +28,7 @@ public class SalesforceContext
         OrganizationUrl = config[$"{sf}:OrganizationUrl"];
         ApiVersion = config[$"{sf}:ApiVersion"];
     }
-    
+
 
     public async Task<SFQueryResult<T>> Query<T>(string queryString, QueryType queryType = QueryType.SOQL)
     {            
@@ -67,7 +61,8 @@ public class SalesforceContext
         return results;
     }
 
-    public static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
+
+    static async Task<Dictionary<string, object>> GetAccessTokenAsync(IConfiguration config)
     {
         using var client = new HttpClient();
         var tokenUrl = $"https://{OrganizationUrl}/services/oauth2/token";

@@ -1,4 +1,5 @@
 ﻿using Gordon360.Enums;
+using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.MyGordon;
 using Gordon360.Models.ViewModels;
@@ -20,25 +21,129 @@ namespace Gordon360.Services
 {
     public interface IProfileService
     {
-        StudentProfileViewModel? GetStudentProfileByUsername(string username);
-        FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username);
-        AlumniProfileViewModel? GetAlumniProfileByUsername(string username);
+        /// <summary>
+        /// Fetch profile info of a given student
+        /// </summary>
+        /// <param name="username">Active Directory username of student</param>
+        /// <returns>StudentProfileViewModel if found, null if not found</returns>
+        Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username);
+        /// <summary>
+        /// Fetch profile info of a given faculty/staff
+        /// </summary>
+        /// <param name="username">Active Directory username of faculty/staff member</param>
+        /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
+        Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username);
+        /// <summary>
+        /// Fetch profile info of a given alumni
+        /// </summary>
+        /// <param name="username">Active Directory username of alumni</param>
+        /// <returns>AlumniProfileViewModel if found, null if not found</returns>
+        Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username);
+        /// <summary>
+        /// Fetch the given user's mailbox information (contains box combination)
+        /// </summary>
+        /// <param name="username">Active Directory username of current user</param>
+        /// <returns>MailboxCombinationViewModel with the combination, or null if not found</returns>
         MailboxCombinationViewModel? GetMailboxCombination(string username);
-        DateTime GetBirthdate(string username);
-        Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
+        /// <summary>
+        /// Fetch the given user's birthday
+        /// </summary>
+        /// <param name="username">Active Directory username of the person to get the birthdate of</param>
+        /// <returns>User's date of birth, if available, or a default of 1/1/1800.</returns>
+        Task<DateTime> GetBirthdate(string username);
+        /// <summary>
+        /// Fetch list of advisors for the given student
+        /// </summary>
+        /// <param name="username">Active Directory username of student</param>
+        /// <returns>IEnumerable containing the student's advisors, or null if no advisors are found</returns>
+        Task<IEnumerable<AdvisorViewModel>?> GetAdvisorsAsync(string username);
+        /// <summary> Gets the clifton strengths of the given user </summary>
+        /// <param name="id"> User ID of user with clifton strengths </param>
+        /// <returns> Clifton strengths of the given user </returns>
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        /// <summary>
+        /// Get graduation information for a student
+        /// </summary>
+        /// <param name="username">The username of the student</param>
+        /// <returns>GraduationViewModel containing graduation details</returns>
         GraduationViewModel? GetGraduationInfo(string username);
+        /// <summary>
+        /// Toggles the privacy of the Clifton Strengths data associated with the given id
+        /// </summary>
+        /// <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
+        /// <returns>The new privacy value</returns>
+        /// <exception cref="ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
+        /// <summary> Gets the emergency contact information of a particular user </summary>
+        /// <param name="username"> The username of the user for which to retrieve info </param>
+        /// <returns> Emergency contact information of the given user. </returns>
         IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
+        /// <summary>
+        /// Fetches a single profile whose username matches the username provided as an argument
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <returns>ProfileViewModel if found, null if not found</returns>
         ProfileCustomViewModel? GetCustomUserInfo(string username);
+        /// <summary>
+        /// Get photo path for profile
+        /// </summary>
+        /// <param name="username">AD username</param>
+        /// <returns>PhotoPathViewModel if found, null if not found</returns>
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
+        /// <summary>
+        /// Sets the component of the Custom_profile.
+        /// </summary>
+        /// <param name="username">The username</param>
+        /// <param name="type"></param>
+        /// <param name="content"></param>
         Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content);
+        /// <summary>
+        /// Updates mobile phone number 
+        /// </summary>
+        /// <param name="username">The username for the user whose number is updated</param>
+        /// <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
+        /// <returns>updated student profile by there username</returns>
         Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber);
+        /// <summary>
+        /// office location setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose office location is to be updated </param>
+        /// <param name="newBuilding">The new building location to update the user's office location to</param> 
+        /// <param name="newRoom">The new room to update the user's office room to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom);
+        /// <summary>
+        /// office hours setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose office hours is to be updated </param>
+        /// <param name="newHours">The new hours to update the user's office hours to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
+        /// <summary>
+        /// mail location setting
+        /// </summary>
+        /// <param name="username"> The username for the user whose mail location is to be updated </param>
+        /// <param name="newMail">The new mail location to update the user's mail location to</param>
+        /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail);
+        /// <summary>
+        /// privacy setting of mobile phone.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="value">Y or N</param>
         Task UpdateMobilePrivacyAsync(string username, string value);
+        /// <summary>
+        /// privacy setting user profile photo.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="value">Y or N</param>
         Task UpdateImagePrivacyAsync(string username, string value);
+        /// <summary>
+        /// Sets the path for the profile image.
+        /// </summary>
+        /// <param name="username">AD Username</param>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
         Task UpdateProfileImageAsync(string username, string path, string name);
         ProfileViewModel? ComposeProfile(object? student, object? alumni, object? faculty, object? customInfo);
         Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedField);
@@ -70,11 +175,58 @@ namespace Gordon360.Services
 
     public interface IAccountService
     {
+        /// <summary>
+        /// Fetches a single account record associated with the id
+        /// </summary>
+        /// <param name="id">The gordon id associated with the account</param>
+        /// <returns>AccountViewModel associated with the id</returns>
         AccountViewModel GetAccountByID(string id);
+        /// <summary>
+        /// Fetches all account records
+        /// </summary>
+        /// <returns>IEnumerable&lt;AccountViewModel&gt; containing all available account records.</returns>
         IEnumerable<AccountViewModel> GetAll();
+        /// <summary>
+        /// Fetches the account record associated with the email.
+        /// </summary>
+        /// <param name="email">The email address associated with the account.</param>
+        /// <returns>AccountViewModel associated with the email</returns>
         AccountViewModel GetAccountByEmail(string email);
+        /// <summary>
+        /// Fetches the account record associated with the specified AD username.
+        /// </summary>
+        /// <param name="username">The AD username associated with the account.</param>
+        /// <returns>AccountViewModel associated with the username</returns>
         AccountViewModel GetAccountByUsername(string username);
+        /// <summary>
+        /// Get the list of accounts the user is authorized search
+        /// </summary>
+        /// <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
+        /// <param name="authGroups">The authorization groups of the searching user</param>
+        /// <param name="homeCity">The home city that the user is searching for</param>
+        /// <returns>Unordered list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
         IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
+        /// <summary>
+        /// Given a list of accounts, and search parameters, return all the accounts that match those search params.
+        /// </summary>
+        /// <param name="accounts">IEnumerable&lt;AdvancedSearchViewModel&gt; of accounts to be searched</param>
+        /// <param name="firstname">The firstname search param</param>
+        /// <param name="lastname">The lastname search param</param>
+        /// <param name="major">The major search param</param>
+        /// <param name="minor">The minor search param</param>
+        /// <param name="hall">The hall search param</param>
+        /// <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
+        /// <param name="preferredClassYear">The preferred class year search param</param>
+        /// <param name="initialYear">The initial year range search param</param>
+        /// <param name="finalYear">The final year range search param</param>
+        /// <param name="homeCity">The home city search param</param>
+        /// <param name="state">The state search param</param>
+        /// <param name="country">The country search param</param>
+        /// <param name="department">The department search param</param>
+        /// <param name="building">The building search param</param>
+        /// <param name="involvement">The involvement search param</param>
+        /// <param name="gender">The gender search param</param>
+        /// <returns>The accounts from the provided list that match the given search parameters</returns>
         IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
             IEnumerable<AdvancedSearchViewModel> accounts,
             string? firstname,
@@ -93,9 +245,30 @@ namespace Gordon360.Services
             string? building,
             string? involvement,
             string? gender);
+        /// <summary>
+        /// Fetch basic info for all accounts: first name, last name, nickname, and username.
+        /// </summary>
+        /// <returns>BasicInfoViewModel of all accounts</returns>
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync();
+        /// <summary>
+        /// Fetch first name, last name, nickname, and username for all accounts, excluding alumni
+        /// </summary>
+        /// <returns>BasicInfoViewModel of all accounts excluding alumni</returns>
         Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync();
+        /// <summary>
+        /// Fetch accounts with basic info matching a search string.
+        /// </summary>
+        /// <param name="searchString">String that basic info is matched against</param>
+        /// <param name="accounts">Iterator of accounts to search through</param>
+        /// <returns>Iterator of accounts with basic info matching the search string, sorted by closeness of match</returns>
         ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts);
+        /// <summary>
+        /// Fetch accounts with a given first and last name.
+        /// </summary>
+        /// <param name="firstName">First name to be matched</param>
+        /// <param name="lastName">Last name to be matched</param>
+        /// <param name="accounts">Iterator of accounts to search through</param>
+        /// <returns>Iterator of accounts with the given first and last name, sorted by closeness of match</returns>
         ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts);
 
     }
@@ -192,12 +365,32 @@ namespace Gordon360.Services
         Task<RequestView> SetPendingAsync(int requestID);
         Task<RequestView> DeleteAsync(int requestID);
     }
+
     public interface IScheduleService
     {
+        /// <summary>
+        /// Fetches all courses taken by a given user.
+        /// </summary>
+        /// <param name="username">The Active Directory username of the user</param>
+        /// <returns>Iterator of all terms and their courses for the user, ordered descending by session code.</returns>
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllCoursesAsync(string username);
-
+        /// <summary>
+        /// Fetches all courses taught by a given instructor.
+        /// </summary>
+        /// <param name="username">The Active Directory username of the instructor</param>
+        /// <returns>Iterator of all terms and their courses for the instructor, ordered descending by session code.</returns>
         Task<IEnumerable<CoursesBySessionViewModel>> GetAllInstructorCoursesAsync(string username);
+        /// <summary>
+        /// Fetchs all courses taken by a given user, ordered descending by term.
+        /// </summary>
+        /// <param name="username">The Active Directory username of the user</param>
+        /// <returns>Iterator of all terms and their courses for the user, ordered descending by term.</returns>
         Task<IEnumerable<CoursesByTermViewModel>> GetAllCoursesByTermAsync(string username);
+        /// <summary>
+        /// Fetches all courses taught by a given instructor, ordered descending by term.
+        /// </summary>
+        /// <param name="username">The Active Directory username of the instructor</param>
+        /// <returns>Iterator of all terms and their courses for the instructor, ordered descending by term.</returns>
         Task<IEnumerable<CoursesByTermViewModel>> GetAllInstructorCoursesByTermAsync(string username);
     }
 
@@ -359,9 +552,25 @@ namespace Gordon360.Services
 
     public interface IAcademicTermService
     {
+        /// <summary>
+        /// Gets the current academic term based on the current date.
+        /// </summary>
+        /// <returns>YearTermTableViewModel of the current term, or null if not found</returns>
         Task<YearTermTableViewModel?> GetCurrentTermAsync();
+        /// <summary>
+        /// Gets all academic terms from the database
+        /// </summary>
+        /// <returns>Iterator of current and past YearTermTableViewModels, ordered by descending start date.</returns>
         Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync();
+        /// <summary>
+        /// Gets the current spring or fall academic term based on the current date.
+        /// </summary>
+        /// <returns>YearTermTableViewModel of the current term, or null if not found</returns>
         Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync();
+        /// <summary>
+        /// Gets the number of days left in the current academic term, or the number of days until the next term if we are between terms.
+        /// </summary>
+        /// <returns>DaysLeftViewModel containing the days left and total days</returns>
         Task<DaysLeftViewModel> GetDaysLeftAsync();
     }
 

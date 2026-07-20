@@ -30,13 +30,13 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("")]
-    public ActionResult<ProfileViewModel?> Get()
+   async public Task<ActionResult<ProfileViewModel?>> Get()
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-        var student = profileService.GetStudentProfileByUsername(authenticatedUserUsername);
-        var faculty = profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
-        var alumni = profileService.GetAlumniProfileByUsername(authenticatedUserUsername);
+        var student = await profileService.GetStudentProfileByUsername(authenticatedUserUsername);
+        var faculty = await profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
+        var alumni = await profileService.GetAlumniProfileByUsername(authenticatedUserUsername);
         var customInfo = profileService.GetCustomUserInfo(authenticatedUserUsername);
 
         if (student is null && alumni is null && faculty is null)
@@ -54,13 +54,13 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("{username}")]
-    public ActionResult<ProfileViewModel?> GetUserProfile(string username)
+    public async Task<ActionResult<ProfileViewModel?>> GetUserProfile(string username)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        var _student = profileService.GetStudentProfileByUsername(username);
-        var _faculty = profileService.GetFacultyStaffProfileByUsername(username);
-        var _alumni = profileService.GetAlumniProfileByUsername(username);
+        var _student = await profileService.GetStudentProfileByUsername(username);
+        var _faculty = await profileService.GetFacultyStaffProfileByUsername(username);
+        var _alumni = await profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
         object? student = null;
@@ -213,11 +213,11 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("birthdate")]
-    public ActionResult<DateTime> GetBirthdate()
+    public async Task<ActionResult<DateTime>> GetBirthdate()
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = profileService.GetBirthdate(username);
+        var result = await profileService.GetBirthdate(username);
         return Ok(result);
     }
 
