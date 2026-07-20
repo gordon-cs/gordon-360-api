@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class StudentEmploymentService(CCTContext context, IAccountService accountService) : IStudentEmploymentService
+public class StudentEmploymentService(CCTContext context, SFStudentEmployment sfStudentEmployment, IAccountService accountService) : IStudentEmploymentService
 {
 
     /// <summary>
@@ -18,24 +18,18 @@ public class StudentEmploymentService(CCTContext context, IAccountService accoun
     /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
     public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmploymentAsync(string username)
     {
-        var account = accountService.GetAccountByUsername(username);
+        /*var account = accountService.GetAccountByUsername(username);
 
         var result = await context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(account.GordonID));
         if (result == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
         }
-        // Transform the ActivityViewModel (ACT_CLUB_DEF) into ActivityInfoViewModel
-        var studentEmploymentModel = result.Select(x => new StudentEmploymentViewModel
-        {
-            Job_Title = x.Job_Title ?? "",
-            Job_Department = x.Job_Department ?? "",
-            Job_Department_Name = x.Job_Department_Name ?? "",
-            Job_Start_Date = x.Job_Start_Date ?? DateTime.MinValue,
-            Job_End_Date = x.Job_End_Date ?? DateTime.Now,
-            Job_Expected_End_Date = x.Job_Expected_End_Date ?? DateTime.Now,
-        });
-        return studentEmploymentModel;
+        */
+
+        var result = await sfStudentEmployment.GetStudentEmployment(username);
+
+        return result;
 
     }
 }
