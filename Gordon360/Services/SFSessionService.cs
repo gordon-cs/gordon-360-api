@@ -51,12 +51,6 @@ public class SFSessionService(AcademicSessionProcedures academicSessionProcedure
 
         var daysInSemester = (int)(sessionEnd - sessionBegin).TotalDays;
 
-        // return [
-        // // Days left in semester
-        // daysLeft,
-        // // Total days in the semester
-        // daysInSemester
-        // ];
         return new DaysLeftViewModel
         {
             DaysLeft = daysLeft,
@@ -69,6 +63,5 @@ public class SFSessionService(AcademicSessionProcedures academicSessionProcedure
     {
         return await academicSessionProcedures.GetAllSessions();
     }
-
 
 }

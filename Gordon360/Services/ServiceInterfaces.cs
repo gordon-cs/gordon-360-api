@@ -319,20 +319,28 @@ namespace Gordon360.Services
     public interface ISessionService
     {
         /// <summary>
-        /// Get the session record whose sesssion code matches the parameter.
+        /// Get a session record with a matching sesssion code
         /// </summary>
-        /// <param name="sessionCode">The session code.</param>
-        /// <returns>A SessionViewModel if found, null if not found.</returns>
+        /// <param name="sessionCode">Code of desired session</param>
+        /// <returns>A SessionViewModel with matching session if found, null if not found.</returns>
         Task<SessionViewModel?> Get(string sessionCode);
+        /// <summary>
+        /// Get the current session's record
+        /// </summary>
+        /// <returns>A current quarter-length SessionViewModel, or null if not found.</returns>
         Task<SessionViewModel?> GetCurrentSession();
+        /// <summary>
+        /// Get the most recently started spring or fall semester's session
+        /// </summary>
+        /// <returns>A semester-length SessionViewModel, or null if none were found.</returns>
         Task<SessionViewModel?> GetCurrentSessionForFinalExams();
         /// <summary>
         /// Return the days left in the semester, and the total days in the current session
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A DaysLeftViewModel, with days left and total days fields set properly. TermLabel is set to SessionCode. Fields are set to 0 and "" if not found.</returns>
         Task<DaysLeftViewModel> GetDaysLeft();
         /// <summary>
-        /// Fetches all the session records from the database.
+        /// Fetches all session records
         /// </summary>
         /// <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
         Task<IEnumerable<SessionViewModel>> GetAll();
