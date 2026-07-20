@@ -125,7 +125,7 @@ public class SessionsControllerTest
         var result = await _controller.GetDaysLeftInSemester();
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returned = Assert.IsType<double[]>(okResult.Value);
+        var returned = Assert.IsType<int[]>(okResult.Value);
         Assert.Equal(30, returned[0]);
         Assert.Equal(120, returned[1]);
     }

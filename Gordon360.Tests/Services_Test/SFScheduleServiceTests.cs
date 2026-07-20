@@ -65,26 +65,24 @@ public class SFScheduleServiceTests : ScheduleServiceContractTests
 
         var userCourses = new SFUserCourses(mockContext.Object);
 
-        var sessionService = new Mock<ISessionService>();
-        sessionService
-            .Setup(service => service.GetAll())
-            .Returns(new[]
-            {
-                new SessionViewModel
-                {
+        var sessions = (IEnumerable<SessionViewModel>) [
+                new() {
                     SessionCode = "202501",
                     SessionDescription = "Spring 2025",
                     SessionBeginDate = new DateTime(2025, 1, 13),
                     SessionEndDate = new DateTime(2025, 5, 9)
                 },
-                new SessionViewModel
-                {
+                new() {
                     SessionCode = "202509",
                     SessionDescription = "Fall 2025",
                     SessionBeginDate = new DateTime(2025, 8, 25),
                     SessionEndDate = new DateTime(2025, 12, 12)
                 }
-            });
+            ];
+        var sessionService = new Mock<ISessionService>();
+        sessionService
+            .Setup(service => service.GetAll())
+            .ReturnsAsync(sessions);
 
         var academicTermService = new Mock<IAcademicTermService>();
         academicTermService
