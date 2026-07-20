@@ -15,9 +15,9 @@ public class SessionsControllerTest
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Upn, $"{username}@gordon.edu"),
-            new Claim(ClaimTypes.Name, username),
-            new Claim("groups", group)
+            new(ClaimTypes.Upn, $"{username}@gordon.edu"),
+            new(ClaimTypes.Name, username),
+            new("groups", group)
         };
         var identity = new ClaimsIdentity(claims, "TestAuthType");
         var user = new ClaimsPrincipal(identity);
@@ -39,12 +39,12 @@ public class SessionsControllerTest
     }
 
     [Fact]
-    public void Get_ReturnsOk_WithList()
+    public async Task Get_ReturnsOk_WithList()
     {
-        var sessions = new List<SessionViewModel> { GetSampleSession() };
-        _mockService.Setup(s => s.GetAll()).Returns(sessions);
+        var sessions = (IEnumerable<SessionViewModel>)[GetSampleSession()];
+        _mockService.Setup(s => s.GetAll()).Returns(Task.FromResult(sessions));
 
-        var result = _controller.Get();
+        var result = await _controller.Get();
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsAssignableFrom<IEnumerable<SessionViewModel>>(okResult.Value);
@@ -53,11 +53,11 @@ public class SessionsControllerTest
     }
 
     [Fact]
-    public void Get_ReturnsOk_WithEmptyList()
+    public async Task Get_ReturnsOk_WithEmptyList()
     {
-        _mockService.Setup(s => s.GetAll()).Returns(new List<SessionViewModel>());
+        _mockService.Setup(s => s.GetAll()).Returns(Task.FromResult((IEnumerable<SessionViewModel>) []));
 
-        var result = _controller.Get();
+        var result = await _controller.Get();
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsAssignableFrom<IEnumerable<SessionViewModel>>(okResult.Value);
@@ -65,15 +65,15 @@ public class SessionsControllerTest
     }
 
     [Fact]
-    public void Get_ById_ReturnsOk_WhenSessionExists()
+    public async Task Get_ById_ReturnsOk_WhenSessionExists()
     {
         var username = "jdoe";
         var session = GetSampleSession();
-        _mockService.Setup(s => s.Get(username)).Returns(session);
+        _mockService.Setup(s => s.Get(username)).ReturnsAsync(session);
 
         SetUser(username, "360-Student-SG");
 
-        var result = _controller.Get(username);
+        var result = await _controller.Get(username);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsType<SessionViewModel>(okResult.Value);
@@ -81,25 +81,25 @@ public class SessionsControllerTest
     }
 
     [Fact]
-    public void Get_ById_ReturnsNotFound_WhenSessionDoesNotExist()
+    public async Task Get_ById_ReturnsNotFound_WhenSessionDoesNotExist()
     {
         var username = "notfound";
-        _mockService.Setup(s => s.Get(username)).Returns((SessionViewModel)null);
+        _mockService.Setup(s => s.Get(username)).ReturnsAsync((SessionViewModel)null);
 
         SetUser(username, "360-Student-SG");
 
-        var result = _controller.Get(username);
+        var result = await _controller.Get(username);
 
         Assert.IsType<NotFoundResult>(result.Result);
     }
 
     [Fact]
-    public void GetCurrentSession_ReturnsOk_WhenSessionExists()
+    public async Task GetCurrentSession_ReturnsOk_WhenSessionExists()
     {
         var session = GetSampleSession();
-        _mockService.Setup(s => s.GetCurrentSession()).Returns(session);
+        _mockService.Setup(s => s.GetCurrentSession()).ReturnsAsync(session);
 
-        var result = _controller.GetCurrentSession();
+        var result = await _controller.GetCurrentSession();
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsType<SessionViewModel>(okResult.Value);
@@ -107,22 +107,22 @@ public class SessionsControllerTest
     }
 
     [Fact]
-    public void GetCurrentSession_ReturnsNotFound_WhenNoSession()
+    public async Task GetCurrentSession_ReturnsNotFound_WhenNoSession()
     {
-        _mockService.Setup(s => s.GetCurrentSession()).Returns((SessionViewModel)null);
+        _mockService.Setup(s => s.GetCurrentSession()).ReturnsAsync((SessionViewModel)null);
 
-        var result = _controller.GetCurrentSession();
+        var result = await _controller.GetCurrentSession();
 
         Assert.IsType<NotFoundResult>(result.Result);
     }
 
     [Fact]
-    public void GetDaysLeftInSemester_ReturnsOk_WithValidDays()
+    public async Task GetDaysLeftInSemester_ReturnsOk_WithValidDays()
     {
-        var days = new double[] { 30, 120 };
-        _mockService.Setup(s => s.GetDaysLeft()).Returns(days);
+        var days = new DaysLeftViewModel { DaysLeft = 30, TotalDays = 120, TermLabel = "2026FA" };
+        _mockService.Setup(s => s.GetDaysLeft()).Returns(Task.FromResult(days));
 
-        var result = _controller.GetDaysLeftInSemester();
+        var result = await _controller.GetDaysLeftInSemester();
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returned = Assert.IsType<double[]>(okResult.Value);
@@ -131,21 +131,12 @@ public class SessionsControllerTest
     }
 
     [Fact]
-    public void GetDaysLeftInSemester_ReturnsNotFound_WhenNoDays()
+    public async Task GetDaysLeftInSemester_ReturnsNotFound_WhenZeroDays()
     {
-        _mockService.Setup(s => s.GetDaysLeft()).Returns((double[])null);
+        var days = new DaysLeftViewModel { DaysLeft = 0, TotalDays = 0, TermLabel = "" };
+        _mockService.Setup(s => s.GetDaysLeft()).Returns(Task.FromResult(days));
 
-        var result = _controller.GetDaysLeftInSemester();
-
-        Assert.IsType<NotFoundResult>(result.Result);
-    }
-
-    [Fact]
-    public void GetDaysLeftInSemester_ReturnsNotFound_WhenZeroDays()
-    {
-        _mockService.Setup(s => s.GetDaysLeft()).Returns(new double[] { 0, 0 });
-
-        var result = _controller.GetDaysLeftInSemester();
+        var result = await _controller.GetDaysLeftInSemester();
 
         Assert.IsType<NotFoundResult>(result.Result);
     }
