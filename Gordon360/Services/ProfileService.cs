@@ -21,20 +21,20 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 {
     public async Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username)
     {
-        var student = await profileProcedures.GetStudentProfile(username);
+        var student = (StudentProfileViewModel?)await profileProcedures.GetAccountByAdUsernameAsync(username);
         return student;
     }
 
     public async Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username)
     {
-        var facStaff = await profileProcedures.GetFacStaffProfile(username);
-        return facStaff; // context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        var facstaff = (FacultyStaffProfileViewModel?)await profileProcedures.GetAccountByAdUsernameAsync(username);
+        return facstaff;
     }
 
     public async Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username)
     {
-        var alumni = await profileProcedures.GetAlumniProfile(username);
-        return alumni; // context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        var alumni = (AlumniProfileViewModel?)await profileProcedures.GetAccountByAdUsernameAsync(username);
+        return alumni;
     }
 
     public MailboxCombinationViewModel? GetMailboxCombination(string username)
@@ -73,23 +73,22 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
     public async Task<IEnumerable<AdvisorViewModel>?> GetAdvisorsAsync(string username)
     {
         var account = accountService.GetAccountByUsername(username);
+        if (account is null) return null;
 
         // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
         var advisorIDsEnumerable = await context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.GordonID));
         var advisorIDs = advisorIDsEnumerable.FirstOrDefault();
 
-        if (advisorIDs == null)
-        {
-            return null;
-        }
+        if (advisorIDs is null) return null;
 
-        List<AdvisorViewModel> resultList = new();
+        List<AdvisorViewModel> resultList = [];
 
         foreach (var advisorID in new[] { advisorIDs.Advisor1, advisorIDs.Advisor2, advisorIDs.Advisor3 })
         {
             if (!string.IsNullOrEmpty(advisorID))
             {
                 var advisor = accountService.GetAccountByID(advisorID);
+                if (advisor is null) continue;
                 resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
             }
         }
@@ -131,6 +130,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
     public async Task<PhotoPathViewModel?> GetPhotoPathAsync(string username)
     {
         var account = accountService.GetAccountByUsername(username);
+        if (account is null) return null;
 
         var photoInfoList = await context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.GordonID));
         return photoInfoList.Select(p => new PhotoPathViewModel { Img_Name = p.Img_Name, Img_Path = p.Img_Path, Pref_Img_Name = p.Pref_Img_Name, Pref_Img_Path = p.Pref_Img_Path }).FirstOrDefault();
@@ -240,7 +240,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         if (profile == null)
         {
             throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
-        
+
         }
         var digitsOnly = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
         await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, digitsOnly);
