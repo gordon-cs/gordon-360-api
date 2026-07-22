@@ -59,10 +59,7 @@ namespace Gordon360.Services
         /// </summary>
         public async Task<MarketplaceListingViewModel> CreateListingAsync(MarketplaceListingUploadViewModel newListing, string username)
         {
-            var account = accountService.GetAccountByUsername(username);
-            if (account == null)
-                throw new Exception("Account not found");
-
+            var account = await accountService.GetAccountByUsername(username) ?? throw new Exception("Account not found");
             var listing = new PostedItem
             {
                 PostedById = int.Parse(account.GordonID), // Set automatically

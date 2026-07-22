@@ -20,7 +20,7 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service that allows for event control
 /// </summary>
-public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService, IScheduleService scheduleService, ISessionService sessionService, HttpClient httpClient, IAcademicTermService academicTermService) : IEventService
+public class EventService(CCTContext context, IMemoryCache cache, IAccountService accountService, IScheduleService scheduleService, HttpClient httpClient) : IEventService
 {
     
     /**
@@ -133,17 +133,16 @@ public class EventService(CCTContext context, IMemoryCache cache, IAccountServic
     /// <param name="username"> The student's AD Username</param>
     /// <param name="term"> The current term</param>
     /// <returns></returns>
-    public IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string username, string term)
+    public async Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTerm(string username, string term)
     {
-        var account = accountService.GetAccountByUsername(username);
-
+        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };
         var result = context.ChapelEvent
                              .Where(c => c.CHBarcode == account.Barcode && c.CHTermCD == term)
                              .Select<ChapelEvent, ChapelEventViewModel>(c => c);
 
         if (result is not IEnumerable<ChapelEventViewModel> chapelEvents)
         {
-            return Enumerable.Empty<AttendedEventViewModel>();
+            return [];
         }
 
         // Left join to 25Live Events for extra event data when matching 25Live event is found

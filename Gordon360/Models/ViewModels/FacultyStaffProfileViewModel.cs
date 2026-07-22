@@ -144,7 +144,7 @@ public record FacultyStaffProfileViewModel
             "", // TODO: Implement barcode
             account.PersonGenderIdentity ?? "",
             account.PersonEmail ?? "",
-            "", // TODO: Implement type
+            "", // TODO: Implement Type
             firstEmployment?.StartDate ?? new DateTime(1900, 1, 1),
             account.AD_Username__pc ?? "",
             "test test fac staff",

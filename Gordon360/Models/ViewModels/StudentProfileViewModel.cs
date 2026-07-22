@@ -125,7 +125,7 @@ public record StudentProfileViewModel
             stu.Minor2 ?? "",
             stu.Minor3 ?? "",
             stu.Email ?? "",
-            stu.Gender ?? "",       
+            stu.Gender ?? "",
             stu.grad_student ?? "",
             stu.GradDate ?? "",
             stu.PlannedGradYear ?? "",
@@ -238,7 +238,7 @@ public record StudentProfileViewModel
             "", // TODO: implement grad_student
             "", // TODO: implement GradDate
             "", // TODO: implement PlannedGradYear
-            new DateTime(1900, 1, 1),
+            new DateTime(1900, 1, 1), // TODO: implement EntranceDate
             contact.Phone ?? "",
             false, // TODO: implement IsMobilePhonePrivate
             account.AD_Username__pc ?? "", // Just in case some random record has a null email field

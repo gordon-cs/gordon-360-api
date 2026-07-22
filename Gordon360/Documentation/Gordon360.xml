@@ -1903,7 +1903,7 @@
             <param name="where">SOQL field selectors</param>
             <param name="order">SOQL ordering</param>
             <param name="limit_n">SOQL limit on number of records returned</param>
-            <returns></returns>
+            <returns>T containing results of query</returns>
         </member>
         <member name="M:Gordon360.Models.Salesforce.AcademicTermProcedures.GetAllTerms">
             <summary>
@@ -1915,51 +1915,6 @@
             </summary>
             <returns>Returns the current academic term, if it exists</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.AccountProcedures.GetAllAccountsAsync">
-            <summary>
-            Gets all accounts, sorted alphabetically by last name
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Models.Salesforce.AccountProcedures.GetAccountByIdAsync(System.String)">
-            <summary>
-            Gets the account associated with a given ID number
-            </summary>
-            <param name="id">8-digit student ID number</param>
-            <returns>Account associated with ID number</returns>
-        </member>
-        <member name="M:Gordon360.Models.Salesforce.AccountProcedures.GetAccountByEmailAsync(System.String)">
-            <summary>
-            Gets the account associated with a given email
-            </summary>
-            <param name="email">email address</param>
-            <returns>Account associated with email</returns>
-        </member>
-        <member name="M:Gordon360.Models.Salesforce.AccountProcedures.GetAccountByAdUsernameAsync(System.String)">
-            <summary>
-            Gets the account associated with a given email
-            NOTE: This method is the same as GetAccountByEmailAsync,
-            but adds "@gordon.edu" to the end of the username. Behaviour
-            may be strange.
-            </summary>
-            <param name="adUsername">email address</param>
-            <returns>Account associated with email</returns>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToBaseModel``1(``0,Gordon360.Models.Salesforce.Account)">
-            <summary>
-            Sets values common to all account types
-            </summary>
-            <typeparam name="T">Profile type to construct, must be FacStaff, Alumni, or Student</typeparam>
-            <param name="profileObj">Profile to fill out</param>
-            <param name="account">SalesForce Account to fill profile from</param>
-            <returns>Facstaff, Alumni, or Student with common fields filled out</returns>
-        </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetFacStaffProfile(System.String)">
-            <summary>
-            Get faculty/staff information associated with the given user
-            </summary>
-            <param name="username">AD username of the given user</param>
-            <returns>ViewModel containing information about the given faculty/staff, or null if the request is not authorized or the user does not exist</returns>
-        </member>
         <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetBirthday(System.String)">
             <summary>
             Gets the birthday of the given user
@@ -1967,40 +1922,33 @@
             <param name="username">AD username of the desired user</param>
             <returns>User's birthday, or null if not found or authorized</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToFacStaffProfileViewModel(Gordon360.Models.Salesforce.Account)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAllAccountsAsync">
             <summary>
-            Constructs FacultyStaffProfileViewModel based on values in a Salesforce Account
+            Gets all accounts, sorted alphabetically by last name
             </summary>
-            <param name="account">Salesforce Account to construct ViewModel from</param>
-            <returns>Filled-out FacultyStaffProfileViewModel</returns>
+            <returns></returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAlumniProfile(System.String)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByIdAsync(System.String)">
             <summary>
-            Get alumni information associated with the given user
+            Gets the account associated with a given ID number
             </summary>
-            <param name="username">AD username of the given user</param>
-            <returns>ViewModel containing information about the given alumnus, or null if the request is not authorized or the user does not exist</returns>
+            <param name="id">8-digit student ID number</param>
+            <returns>Account associated with ID number</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToAlumniProfileViewModel(Gordon360.Models.Salesforce.Account)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByEmailAsync(System.String)">
             <summary>
-            Constructs AlumniProfileViewModel based on values in a Salesforce Account
+            Gets the account associated with a given email
             </summary>
-            <param name="account">Salesforce Account to construct ViewModel from</param>
-            <returns>Filled-out AlumniProfileViewModel</returns>
+            <param name="email">email address</param>
+            <returns>Account associated with email</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetStudentProfile(System.String)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByAdUsernameAsync(System.String)">
             <summary>
-            Get student information associated with the given user
+            Gets the account associated with a given AD Username
+            TODO: Due to full2 not being fully populated, this method also accepts a person's name
             </summary>
-            <param name="username">AD username of the given user</param>
-            <returns>ViewModel containing information about the given student, or null if the request is not authorized or the user does not exist</returns>
-        </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToStudentProfileViewModel(Gordon360.Models.Salesforce.Account)">
-            <summary>
-            Constructs StudentProfileViewModel based on values in a Salesforce Account
-            </summary>
-            <param name="account">Salesforce Account to construct ViewModel from</param>
-            <returns>Filled-out StudentProfileViewModel</returns>
+            <param name="adUsername">Active Directory username</param>
+            <returns>Account associated with AD username</returns>
         </member>
         <member name="M:Gordon360.Models.Salesforce.SFUserCourses.GetUserCourses(System.String,System.String)">
             <summary>
@@ -2410,7 +2358,7 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,Gordon360.Services.ISessionService,System.Net.Http.HttpClient,Gordon360.Services.IAcademicTermService)">
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,System.Net.Http.HttpClient)">
             <summary>
             Service that allows for event control
             </summary>
@@ -3809,60 +3757,10 @@
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.SFAccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Models.Salesforce.AccountProcedures)">
+        <member name="M:Gordon360.Services.SFAccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Models.Salesforce.SFProfiles)">
             <summary>
             Service Class that facilitates data transactions between the AccountsController and the Account database model.
             </summary>
-        </member>
-        <member name="M:Gordon360.Services.SFAccountService.GetAccountByID(System.String)">
-            <summary>
-            Fetches a single account record whose id matches the id provided as an argument
-            </summary>
-            <param name="id">The person's gordon id</param>
-            <returns>AccountViewModel if found, null if not found</returns>
-        </member>
-        <member name="M:Gordon360.Services.SFAccountService.GetAll">
-            <summary>
-            Fetches all the account records from storage.
-            </summary>
-            <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-        </member>
-        <member name="M:Gordon360.Services.SFAccountService.GetAccountByEmail(System.String)">
-            <summary>
-            Fetches the account record with the specified email.
-            </summary>
-            <param name="email">The email address associated with the account.</param>
-            <returns>the first account object which matches the email</returns>
-        </member>
-        <member name="M:Gordon360.Services.SFAccountService.GetAccountByUsername(System.String)">
-            <summary>
-            Fetches the account record with the specified username.
-            </summary>
-            <param name="username">The AD username associated with the account.</param>
-            <returns>the student account information</returns>
-        </member>
-        <member name="M:Gordon360.Services.SFAccountService.AdvancedSearch(System.Collections.Generic.IEnumerable{Gordon360.Models.ViewModels.AdvancedSearchViewModel},System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            Given a list of accounts, and search params, return all the accounts that match those search params.
-            </summary>
-            <param name="accounts">The accounts that should be searched, converted to an AdvancedSearchViewModel</param>
-            <param name="firstname">The firstname search param</param>
-            <param name="lastname">The lastname search param</param>
-            <param name="major">The major search param</param>
-            <param name="minor">The minor search param</param>
-            <param name="hall">The hall search param</param>
-            <param name="classType">The class type search param, e.g. 'Sophomore', 'Senior', 'Undergraduate Conferred'</param>
-            <param name="preferredClassYear">The preferred class year search param</param>
-            <param name="initialYear">The initial year range search param</param>
-            <param name="finalYear">The final year range search param</param>
-            <param name="homeCity">The home city search param</param>
-            <param name="state">The state search param</param>
-            <param name="country">The country search param</param>
-            <param name="department">The department search param</param>
-            <param name="building">The building search param</param>
-            <param name="involvement">The involvement search param</param>
-            <param name="gender">The gender search param</param>
-            <returns>The accounts from the provided list that match the given search params</returns>
         </member>
         <member name="M:Gordon360.Services.SFAccountService.GetAccountsToSearch(System.Collections.Generic.List{System.String},System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},System.String)">
             <summary>

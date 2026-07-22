@@ -37,6 +37,12 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         return alumni;
     }
 
+    public async Task<ProfileViewModel?> GetProfileByUsername(string username)
+    {
+        var profile = (ProfileViewModel?)await profileProcedures.GetAccountByAdUsernameAsync(username);
+        return profile;
+    }
+
     public MailboxCombinationViewModel? GetMailboxCombination(string username)
     {
         return context.Mailboxes
@@ -72,25 +78,15 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task<IEnumerable<AdvisorViewModel>?> GetAdvisorsAsync(string username)
     {
-        var account = accountService.GetAccountByUsername(username);
-        if (account is null) return null;
-
-        // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
-        var advisorIDsEnumerable = await context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.GordonID));
-        var advisorIDs = advisorIDsEnumerable.FirstOrDefault();
-
-        if (advisorIDs is null) return null;
+        var account = (StudentProfileViewModel?) await profileProcedures.GetAccountByAdUsernameAsync(username);
+        if (account?.AdvisorIDs is null) return null;
 
         List<AdvisorViewModel> resultList = [];
-
-        foreach (var advisorID in new[] { advisorIDs.Advisor1, advisorIDs.Advisor2, advisorIDs.Advisor3 })
+        foreach (var advisorID in account.AdvisorIDs.Split(","))
         {
-            if (!string.IsNullOrEmpty(advisorID))
-            {
-                var advisor = accountService.GetAccountByID(advisorID);
-                if (advisor is null) continue;
-                resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
-            }
+            var advisor = await accountService.GetAccountByID(advisorID);
+            if (advisor is null) continue;
+            resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
         }
 
         return resultList;
@@ -103,12 +99,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id)
     {
-        var strengths = context.Clifton_Strengths.FirstOrDefault(cs => cs.ID_NUM == id);
-        if (strengths is null)
-        {
-            throw new ResourceNotFoundException { ExceptionMessage = "No Strengths found" };
-        }
-
+        var strengths = context.Clifton_Strengths.FirstOrDefault(cs => cs.ID_NUM == id) ?? throw new ResourceNotFoundException { ExceptionMessage = "No Strengths found" };
         strengths.Private = !strengths.Private;
         await context.SaveChangesAsync();
 
@@ -129,7 +120,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task<PhotoPathViewModel?> GetPhotoPathAsync(string username)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
         if (account is null) return null;
 
         var photoInfoList = await context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.GordonID));
@@ -143,8 +134,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task UpdateProfileImageAsync(string username, string? path, string? name)
     {
-        var account = accountService.GetAccountByUsername(username);
-
+        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
         await context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.GordonID), path, name);
         // Update value in cached data
         var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
@@ -222,13 +212,13 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task UpdateMobilePrivacyAsync(string username, string value)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
         await context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
         // Update value in cached data
         var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
         if (student != null)
         {
-            student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
+            student.IsMobilePhonePrivate = value == "Y" ? 1 : 0;
         }
 
         context.SaveChanges();
@@ -236,12 +226,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
-        var profile = await GetStudentProfileByUsername(username);
-        if (profile == null)
-        {
-            throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
-
-        }
+        var profile = await GetStudentProfileByUsername(username) ?? throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
         var digitsOnly = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
         await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, digitsOnly);
         return profile;
@@ -290,7 +275,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task UpdateImagePrivacyAsync(string username, string value)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         await context.Procedures.UPDATE_SHOW_PICAsync(account.account_id, value);
         // Update value in cached data
@@ -299,15 +284,15 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         var alum = context.Alumni.FirstOrDefault(x => x.ID == account.GordonID);
         if (student != null)
         {
-            student.show_pic = (value == "Y" ? 1 : 0);
+            student.show_pic = value == "Y" ? 1 : 0;
         }
         else if (facStaff != null)
         {
-            facStaff.show_pic = (value == "Y" ? 1 : 0);
+            facStaff.show_pic = value == "Y" ? 1 : 0;
         }
         else if (alum != null)
         {
-            alum.show_pic = (value == "Y" ? 1 : 0);
+            alum.show_pic = value == "Y" ? 1 : 0;
         }
 
         context.SaveChanges();
@@ -366,10 +351,10 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
-        string from_email = config["Emails:Sender:Username"];
-        string to_email = config["Emails:AlumniProfileUpdateRequestApprover"];
+        string from_email = config["Emails:Sender:Username"] ?? throw new ResourceNotFoundException() { ExceptionMessage = "Email sender not found" };
+        string to_email = config["Emails:AlumniProfileUpdateRequestApprover"] ?? throw new ResourceNotFoundException() { ExceptionMessage = "Email recipient not found" };
         string messageBody = $"{account.FirstName} {account.LastName} ({account.GordonID}) has requested the following updates: \n\n";
 
         var requestNumber = await context.GetNextValueForSequence(Sequence.InformationChangeRequest);
@@ -394,7 +379,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
                 UserName = from_email,
                 Password = config["Emails:Sender:Password"]
             },
-            Host = config["SmtpHost"],
+            Host = config["SmtpHost"] ?? throw new ResourceNotFoundException() { ExceptionMessage = "SMTP Host not found" },
             EnableSsl = true,
             Port = 587,
         };

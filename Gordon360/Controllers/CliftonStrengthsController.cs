@@ -9,6 +9,7 @@ using System.Linq;
 using System;
 using Gordon360.Models.CCT;
 using Gordon360.Exceptions;
+using System.Threading.Tasks;
 
 namespace Gordon360.Controllers;
 
@@ -18,14 +19,15 @@ public class CliftonStrengthsController(CCTContext context, IAccountService acco
     [HttpPost]
     [Route("")]
     [StateYourBusiness(operation = Operation.ADD, resource = Resource.CLIFTON_STRENGTHS)]
-    public ActionResult<IEnumerable<CliftonStrengthsUploadResultViewModel>> Post([FromBody] CliftonStrengthsViewModel[] csArr)
+    public async Task<ActionResult<IEnumerable<CliftonStrengthsUploadResultViewModel>>> Post([FromBody] CliftonStrengthsViewModel[] csArr)
     {
-        IEnumerable<CliftonStrengthsUploadResultViewModel> uploadResults = csArr.Select(cs =>
+        IEnumerable<CliftonStrengthsUploadResultViewModel> uploadResults = (IEnumerable<CliftonStrengthsUploadResultViewModel>)csArr.Select(async cs =>
         {
             AccountViewModel account;
+            // TODO: Null check instead of Try/Catch once salesforce migration is complete
             try
             {
-                account = accountService.GetAccountByEmail(cs.Email);
+                account = await accountService.GetAccountByEmail(cs.Email) ?? throw new ResourceNotFoundException();
             }
             catch (ResourceNotFoundException e)
             {

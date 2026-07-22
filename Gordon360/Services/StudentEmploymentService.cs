@@ -18,7 +18,7 @@ public class StudentEmploymentService(CCTContext context, IAccountService accoun
     /// <returns>VictoryPromiseViewModel if found, null if not found</returns>
     public async Task<IEnumerable<StudentEmploymentViewModel>> GetEmploymentAsync(string username)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "User not found." };;
 
         var result = await context.Procedures.STUDENT_JOBS_PER_ID_NUMAsync(int.Parse(account.GordonID));
         if (result == null)

@@ -21,43 +21,28 @@ public class AccountService(CCTContext context) : IAccountService
 {
 
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-    public AccountViewModel GetAccountByID(string id)
+    public async Task<AccountViewModel?> GetAccountByID(string id)
     {
-        var account = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
-        if (account == null)
-        {
-            // Custom Exception is thrown that will be cauth in the controller Exception filter.
-            throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
-        }
-
+        // Custom Exception is thrown that will be cauth in the controller Exception filter.
+        var account = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
         return account;
     }
 
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
-    public IEnumerable<AccountViewModel> GetAll()
+    public async Task<IEnumerable<AccountViewModel>> GetAll()
     {
         return (IEnumerable<AccountViewModel>)context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
     }
 
-    public AccountViewModel GetAccountByEmail(string email)
+    public async Task<AccountViewModel?> GetAccountByEmail(string email)
     {
-        var account = context.ACCOUNT.FirstOrDefault(x => x.email == email);
-        if (account == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
-        }
-
+        var account = context.ACCOUNT.FirstOrDefault(x => x.email == email) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
         return account;
     }
 
-    public AccountViewModel GetAccountByUsername(string username)
+    public async Task<AccountViewModel?> GetAccountByUsername(string username)
     {
-        var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username);
-        if (account == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
-        }
-
+        var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
         return account;
     }
 

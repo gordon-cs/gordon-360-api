@@ -35,9 +35,10 @@ public class AccountViewModel
         return vm;
     }
 
-    public static explicit operator AccountViewModel(Account a)
+    public static explicit operator AccountViewModel?(Account? a)
     {
-        AccountViewModel vm = new AccountViewModel
+        if (a is null) return null;
+        AccountViewModel vm = new()
         {
             GordonID = a.Student_Id__pc,
             FirstName = a.FirstName,

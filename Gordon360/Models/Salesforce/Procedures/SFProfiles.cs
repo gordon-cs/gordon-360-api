@@ -4,15 +4,13 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Models.Salesforce;
 
 public class SFProfiles(ISalesforceContext context)
 {
-    private readonly ISalesforceContext _context = context;
-    private const Account account = null;
-    // gc_On_Campus_Location__r.Phone,
-
     private const string SoqlTemplate = """
         SELECT 
             Name,
@@ -92,20 +90,6 @@ public class SFProfiles(ISalesforceContext context)
         FROM Account
         """;
 
-    // TODO: We should only check for AD_Username_pc,
-    // but this field is not currently populated in standard.
-    // Remember to take out the Name check.
-    private const string Where = """
-        RecordType.Name = 'Person Account' AND (AD_Username__pc = '{0}' OR Name = '{0}')
-    """;
-
-    private const string BirthdayTemplate = """
-        SELECT PersonBirthdate
-        FROM Account
-        WHERE AD_Username__pc = '{0}'
-        LIMIT 1 
-    """;
-
     /// <summary>
     /// Gets the birthday of the given user
     /// </summary>
@@ -113,9 +97,9 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>User's birthday, or null if not found or authorized</returns>
     public async Task<DateTime> GetBirthday(string username)
     {
-        var soql = string.Format(BirthdayTemplate, username);
-
-        var response = await _context.RawQuery<Account>(soql);
+        if (username.IsNullOrEmpty()) throw new ResourceNotFoundException() {ExceptionMessage = "No user given!"};
+        var response = await context.SoqlQuery<Account>("SELECT PersonBirthdate FROM Account",
+                where: $"AD_Username__pc = '{username}'", limit_n: 1);
 
         var birthday = response?.records?.FirstOrDefault();
 
@@ -140,6 +124,7 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>Account associated with ID number</returns>
     public async Task<Account?> GetAccountByIdAsync(string id)
     {
+        if (id.IsNullOrEmpty()) throw new ResourceNotFoundException() {ExceptionMessage = "No id given!"};
         var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"gc_Jenz_ID__c = {id}", limit_n: 1);
         return response.records.FirstOrDefault();
     }
@@ -151,6 +136,7 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>Account associated with email</returns>
     public async Task<Account?> GetAccountByEmailAsync(string email)
     {
+        if (email.IsNullOrEmpty()) throw new ResourceNotFoundException() {ExceptionMessage = "No email given!"};
         var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"gc_University_Email__c = {email}", limit_n: 1);
         return response.records.FirstOrDefault();
     }
@@ -163,8 +149,9 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>Account associated with AD username</returns>
     public async Task<Account?> GetAccountByAdUsernameAsync(string adUsername)
     {
-        
-        var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"RecordType.Name = 'Person Account' AND (AD_Username__pc = '{0}' OR Name = '{0}')", limit_n: 1);
+        if (adUsername.IsNullOrEmpty()) throw new ResourceNotFoundException() {ExceptionMessage = "No username given!"};
+        var whereString = $"RecordType.Name = 'Person Account' AND (AD_Username__pc = '{adUsername}' OR Name = '{adUsername}')";
+        var response = await context.SoqlQuery<Account>(SoqlTemplate, where: whereString, limit_n: 1);
         return response.records.FirstOrDefault();
     }
 

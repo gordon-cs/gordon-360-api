@@ -14,7 +14,6 @@ public static class ServicesExtensions
     {
         services.AddScoped<IAcademicCheckInService, AcademicCheckInService>();
         services.AddScoped<IAcademicTermService, SFAcademicTermService>();
-        // services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IAccountService, SFAccountService>();
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IAddressesService, AddressesService>();
@@ -52,7 +51,6 @@ public static class ServicesExtensions
         services.AddScoped<SFUserCourses>();
         services.AddScoped<SFProfiles>();
         services.AddScoped<AcademicTermProcedures>();
-        services.AddScoped<AccountProcedures>();
         return services;
     }
 }

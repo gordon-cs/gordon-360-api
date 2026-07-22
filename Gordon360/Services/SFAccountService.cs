@@ -10,6 +10,7 @@ using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
 using Gordon360.Models.Salesforce;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gordon360.Services;
 
@@ -17,32 +18,35 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
 /// </summary>
-public class SFAccountService(CCTContext context, AccountProcedures sfProcedures) : IAccountService
+public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAccountService
 {
 
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-    public AccountViewModel? GetAccountByID(string id)
+    public async Task<AccountViewModel?> GetAccountByID(string id)
     {
-        var account = sfProcedures.GetAccountByIdAsync(id);
-        return (account.Result is null) ? null : (AccountViewModel)account.Result;
+        if (id.IsNullOrEmpty()) return null;
+        var account = await sfProcedures.GetAccountByIdAsync(id);
+        return (AccountViewModel?)account;
     }
 
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
-    public IEnumerable<AccountViewModel> GetAll()
+    public async Task<IEnumerable<AccountViewModel>> GetAll()
     {
-        return (IEnumerable<AccountViewModel>)sfProcedures.GetAllAccountsAsync().Result;
+        return (IEnumerable<AccountViewModel>)await sfProcedures.GetAllAccountsAsync();
     }
 
-    public AccountViewModel? GetAccountByEmail(string email)
+    public async Task<AccountViewModel?> GetAccountByEmail(string email)
     {
-        var account = sfProcedures.GetAccountByEmailAsync(email);
-        return (account.Result is null) ? null : (AccountViewModel)account.Result;
+        if (email.IsNullOrEmpty()) return null;
+        var account = await sfProcedures.GetAccountByEmailAsync(email);
+        return (AccountViewModel?)account;
     }
 
-    public AccountViewModel? GetAccountByUsername(string username)
+    public async Task<AccountViewModel?> GetAccountByUsername(string username)
     {
-        var account = sfProcedures.GetAccountByAdUsernameAsync(username);
-        return (account.Result is null) ? null : (AccountViewModel)account.Result;
+        if (username.IsNullOrEmpty()) return null;
+        var account = await sfProcedures.GetAccountByAdUsernameAsync(username);
+        return (AccountViewModel?)account;
     }
 
     public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
@@ -236,7 +240,7 @@ public class SFAccountService(CCTContext context, AccountProcedures sfProcedures
 
     public ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts)
     {
-        string Normalize(string name) =>
+        static string Normalize(string name) =>
             new string(name?.Where(char.IsLetterOrDigit).ToArray()).ToLower();
 
 

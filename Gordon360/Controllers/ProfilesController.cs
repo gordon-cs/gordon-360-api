@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Controllers;
 
@@ -126,10 +127,12 @@ public class ProfilesController(IProfileService profileService,
     /// <returns> Clifton strengths of the given user. </returns>
     [HttpGet]
     [Route("clifton/{username}")]
+    [Obsolete]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-    public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
+    public async Task<ActionResult<string[]>> GetCliftonStrengths_DEPRECATED(string username)
     {
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
         var strengths = profileService.GetCliftonStrengths(int.Parse(id));
         if (strengths is null)
         {
@@ -149,9 +152,10 @@ public class ProfilesController(IProfileService profileService,
     [HttpGet]
     [Route("{username}/clifton")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-    public ActionResult<CliftonStrengthsViewModel?> GetCliftonStrengths(string username)
+    public async Task<ActionResult<CliftonStrengthsViewModel?>> GetCliftonStrengths(string username)
     {
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
         var strengths = profileService.GetCliftonStrengths(int.Parse(id));
         if (strengths is null)
         {
@@ -171,7 +175,8 @@ public class ProfilesController(IProfileService profileService,
     public async Task<ActionResult<bool>> ToggleCliftonStrengthsPrivacyAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
         var privacy = await profileService.ToggleCliftonStrengthsPrivacyAsync(int.Parse(id));
 
         return Ok(privacy);
@@ -233,8 +238,8 @@ public class ProfilesController(IProfileService profileService,
 
         if (photoModel == null) //There is no preferred or ID image
         {
-            var unapprovedFileName = username + "_" + accountService.GetAccountByUsername(username).account_id;
-            var unapprovedFilePath = config["DEFAULT_ID_SUBMISSION_PATH"];
+            var unapprovedFileName = username + "_" + (await accountService.GetAccountByUsername(username))?.account_id;
+            var unapprovedFilePath = config["DEFAULT_ID_SUBMISSION_PATH"] ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };;
             string extension = "";
             foreach (var file in Directory.GetFiles(unapprovedFilePath, unapprovedFileName + ".*"))
             {
@@ -293,7 +298,7 @@ public class ProfilesController(IProfileService profileService,
         else
         if (viewerGroups.Contains(AuthGroup.Student))
         {
-            if (accountService.GetAccountByUsername(username).show_pic == 1)
+            if ((await accountService.GetAccountByUsername(username))?.show_pic == 1)
             {
                 if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
                 {
@@ -325,7 +330,8 @@ public class ProfilesController(IProfileService profileService,
     public async Task<ActionResult> PostImageAsync([FromForm] IFormFile image)
     {
         var username = AuthUtils.GetUsername(User);
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
+        if (account is null) return NotFound();
         var pathInfo = await profileService.GetPhotoPathAsync(username);
 
         if (pathInfo == null) // can't upload image if there is no record for this user in the database
@@ -368,7 +374,8 @@ public class ProfilesController(IProfileService profileService,
 
         var username = AuthUtils.GetUsername(User);
         var root = config["DEFAULT_ID_SUBMISSION_PATH"];
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
+        if (account is null) return NotFound();
 
         //delete old image file if it exists.
         DirectoryInfo di = new DirectoryInfo(root);

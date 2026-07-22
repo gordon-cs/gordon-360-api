@@ -24,7 +24,8 @@ public class AcademicCheckInController(IAcademicCheckInService academicCheckInSe
     public async Task<ActionResult<EmergencyContactViewModel>> PutEmergencyContactAsync([FromBody] EmergencyContactViewModel data)
     {
         var username = AuthUtils.GetUsername(User);
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
 
         try
         {
@@ -68,7 +69,8 @@ public class AcademicCheckInController(IAcademicCheckInService academicCheckInSe
     public async Task<ActionResult<AcademicCheckInViewModel>> PutDemographicAsync([FromBody] AcademicCheckInViewModel data)
     {
         var username = AuthUtils.GetUsername(User);
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
 
         try
         {
@@ -90,7 +92,8 @@ public class AcademicCheckInController(IAcademicCheckInService academicCheckInSe
     public async Task<ActionResult<EnrollmentCheckinHolds>> GetHoldsAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
 
         try
         {
@@ -111,7 +114,8 @@ public class AcademicCheckInController(IAcademicCheckInService academicCheckInSe
     public async Task<ActionResult> SetStatusAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
 
         try
         {
@@ -132,7 +136,8 @@ public class AcademicCheckInController(IAcademicCheckInService academicCheckInSe
     public async Task<ActionResult<AcademicCheckInViewModel>> GetStatusAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
 
         try
         {

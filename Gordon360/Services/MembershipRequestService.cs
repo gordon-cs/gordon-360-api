@@ -25,17 +25,18 @@ public class MembershipRequestService(CCTContext context, IMembershipService mem
     public async Task<RequestView> AddAsync(RequestUploadViewModel membershipRequestUpload)
     {
 
-        MembershipUploadViewModel m = (MembershipUploadViewModel) membershipRequestUpload;
+        MembershipUploadViewModel m = (MembershipUploadViewModel)membershipRequestUpload;
         // Validates the memberships request by throwing appropriate exceptions. The exceptions are caugth in the CustomExceptionFilter 
         membershipService.ValidateMembership(m);
         membershipService.IsPersonAlreadyInActivity(m);
-        if (RequestAlreadyExists(membershipRequestUpload))
+        if (await RequestAlreadyExists(membershipRequestUpload))
         {
             throw new ResourceCreationException() { ExceptionMessage = "A request already exists with this activity, session, and user." };
         }
 
-        var request = (REQUEST) membershipRequestUpload;
-        request.ID_NUM = int.Parse(accountService.GetAccountByUsername(membershipRequestUpload.Username).GordonID);
+        var request = (REQUEST)membershipRequestUpload;
+        request.ID_NUM = int.Parse((await accountService.GetAccountByUsername(membershipRequestUpload.Username) ??
+                    throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" }).GordonID);
 
         var addedMembershipRequest = context.REQUEST.Add(request);
         await context.SaveChangesAsync();
@@ -44,11 +45,11 @@ public class MembershipRequestService(CCTContext context, IMembershipService mem
 
     }
 
-    private bool RequestAlreadyExists(RequestUploadViewModel requestUpload)
+    private async Task<bool> RequestAlreadyExists(RequestUploadViewModel requestUpload)
     {
-        var account =accountService.GetAccountByUsername(requestUpload.Username);
+        var account = await accountService.GetAccountByUsername(requestUpload.Username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
         var g_id = Int32.Parse(account.GordonID);
-        return context.REQUEST.Any(r => 
+        return context.REQUEST.Any(r =>
             r.STATUS == Request_Status.PENDING
             && r.ACT_CDE == requestUpload.Activity
             && r.SESS_CDE == requestUpload.Session
@@ -71,10 +72,11 @@ public class MembershipRequestService(CCTContext context, IMembershipService mem
 
         if (request.STATUS == Request_Status.APPROVED)
         {
-            throw new BadInputException() { ExceptionMessage = "The request has already been approved."};
+            throw new BadInputException() { ExceptionMessage = "The request has already been approved." };
         }
 
-        var username = accountService.GetAccountByID(request.ID_NUM.ToString()).ADUserName;
+        var username = (await accountService.GetAccountByID(request.ID_NUM.ToString()) ??
+                throw new ResourceNotFoundException() { ExceptionMessage = "User not found." }).ADUserName;
         MembershipUploadViewModel newMembership = MembershipUploadViewModel.FromRequest(request, username);
 
         var createdMembership = await membershipService.AddAsync(newMembership);
@@ -179,7 +181,7 @@ public class MembershipRequestService(CCTContext context, IMembershipService mem
     {
         RequestView? query = context.RequestView.FirstOrDefault(rv => rv.RequestID == requestID);
 
-        if (query is not RequestView request) throw new ResourceNotFoundException() { ExceptionMessage = "The request was not found"};
+        if (query is not RequestView request) throw new ResourceNotFoundException() { ExceptionMessage = "The request was not found" };
 
         return request;
     }
@@ -241,7 +243,7 @@ public class MembershipRequestService(CCTContext context, IMembershipService mem
         }
 
         // The validate function throws ResourceNotFoundException where needed. The exceptions are caught in my CustomExceptionFilter
-        membershipService.ValidateMembership((MembershipUploadViewModel) membershipRequest);
+        membershipService.ValidateMembership((MembershipUploadViewModel)membershipRequest);
 
         // Only a few fields should be able to be changed through an update.
         original.SESS_CDE = membershipRequest.Session;

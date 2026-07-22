@@ -20,11 +20,11 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult(ID) - An HTTP result code, with the ID of the created report if created successfully</returns>
         [HttpPost]
         [Route("missingitems")]
-        public ActionResult<int> CreateMissingItemReport([FromBody] MissingItemReportViewModel MissingItemDetails)
+        public async Task<ActionResult<int>> CreateMissingItemReport([FromBody] MissingItemReportViewModel MissingItemDetails)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            int ID = lostAndFoundService.CreateMissingItemReport(MissingItemDetails, authenticatedUserUsername);
+            int ID = await lostAndFoundService.CreateMissingItemReport(MissingItemDetails, authenticatedUserUsername);
 
             return Ok(ID);
         }
@@ -36,11 +36,11 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - the http status code result of the action, with the ID of the action taken</returns>
         [HttpPost]
         [Route("missingitems/{missingItemId}/actionstaken")]
-        public ActionResult<int> CreateActionTaken(int missingItemId, [FromBody] ActionsTakenViewModel ActionsTaken)
+        public async Task<ActionResult<int>> CreateActionTaken(int missingItemId, [FromBody] ActionsTakenViewModel ActionsTaken)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            int actionId = lostAndFoundService.CreateActionTaken(missingItemId, ActionsTaken, authenticatedUserUsername);
+            int actionId = await lostAndFoundService.CreateActionTaken(missingItemId, ActionsTaken, authenticatedUserUsername);
 
             return Ok(actionId);
         }
@@ -215,7 +215,7 @@ namespace Gordon360.Controllers
         /// </returns>
         [HttpGet]
         [Route("founditems/owner")]
-        public ActionResult<IEnumerable<FoundItemViewModel>> GetFoundItemsByOwner(string? owner = null)
+        public async Task<ActionResult<IEnumerable<FoundItemViewModel>>> GetFoundItemsByOwner(string? owner = null)
         {
             // Retrieve the username of the currently authenticated user.
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
@@ -224,11 +224,11 @@ namespace Gordon360.Controllers
             // If no owner is specified, default to the authenticated user.
             if (string.IsNullOrWhiteSpace(owner))
             {
-                result = lostAndFoundService.GetFoundItemsByOwner(authenticatedUserUsername, authenticatedUserUsername);
+                result = await lostAndFoundService.GetFoundItemsByOwner(authenticatedUserUsername, authenticatedUserUsername);
             }
             else
             {
-                result = lostAndFoundService.GetFoundItemsByOwner(owner, authenticatedUserUsername);
+                result = await lostAndFoundService.GetFoundItemsByOwner(owner, authenticatedUserUsername);
             }
 
             // Return the result if found, otherwise return a NotFound response.
@@ -250,11 +250,11 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - the http status code result of the action, with the ID of the created found item</returns>
         [HttpPost]
         [Route(("founditems"))]
-        public ActionResult<string> CreateFoundItemReport([FromBody] FoundItemViewModel FoundItemDetails)
+        public async Task<ActionResult<string>> CreateFoundItemReport([FromBody] FoundItemViewModel FoundItemDetails)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            string reportID = lostAndFoundService.CreateFoundItem(FoundItemDetails, authenticatedUserUsername);
+            string reportID = await lostAndFoundService.CreateFoundItem(FoundItemDetails, authenticatedUserUsername);
 
             return Ok(reportID);
         }
@@ -267,11 +267,11 @@ namespace Gordon360.Controllers
         /// <returns>ObjectResult - the http status code result of the action, with the ID of the created action taken</returns>
         [HttpPost]
         [Route("founditems/{foundItemId}/actionstaken")]
-        public ActionResult<int> CreateFoundActionTaken(string foundItemId, [FromBody] FoundActionsTakenViewModel FoundActionsTaken)
+        public async Task<ActionResult<int>> CreateFoundActionTaken(string foundItemId, [FromBody] FoundActionsTakenViewModel FoundActionsTaken)
         {
             var authenticatedUserUsername = AuthUtils.GetUsername(User);
 
-            int actionId = lostAndFoundService.CreateFoundActionTaken(foundItemId, FoundActionsTaken, authenticatedUserUsername);
+            int actionId = await lostAndFoundService.CreateFoundActionTaken(foundItemId, FoundActionsTaken, authenticatedUserUsername);
 
             return Ok(actionId);
         }

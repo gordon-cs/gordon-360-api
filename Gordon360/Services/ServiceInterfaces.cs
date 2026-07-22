@@ -158,7 +158,7 @@ namespace Gordon360.Services
 
     public interface IEventService
     {
-        IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string username, string term);
+        Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTerm(string username, string term);
         IEnumerable<EventViewModel> GetAllEvents();
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();
@@ -180,24 +180,24 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The gordon id associated with the account</param>
         /// <returns>AccountViewModel associated with the id</returns>
-        AccountViewModel? GetAccountByID(string id);
+        Task<AccountViewModel?> GetAccountByID(string id);
         /// <summary>
         /// Fetches all account records
         /// </summary>
         /// <returns>IEnumerable&lt;AccountViewModel&gt; containing all available account records.</returns>
-        IEnumerable<AccountViewModel> GetAll();
+        Task<IEnumerable<AccountViewModel>> GetAll();
         /// <summary>
         /// Fetches the account record associated with the email.
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
         /// <returns>AccountViewModel associated with the email</returns>
-        AccountViewModel? GetAccountByEmail(string email);
+        Task<AccountViewModel?> GetAccountByEmail(string email);
         /// <summary>
         /// Fetches the account record associated with the specified AD username.
         /// </summary>
         /// <param name="username">The AD username associated with the account.</param>
         /// <returns>AccountViewModel associated with the username</returns>
-        AccountViewModel? GetAccountByUsername(string username);
+        Task<AccountViewModel?> GetAccountByUsername(string username);
         /// <summary>
         /// Get the list of accounts the user is authorized search
         /// </summary>
@@ -474,8 +474,8 @@ namespace Gordon360.Services
 
     public interface ILostAndFoundService
     {
-        public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
-        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
+        public Task<int> CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
+        public Task<int> CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
         IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
         IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username,
                                                                    int? lastId,
@@ -497,8 +497,8 @@ namespace Gordon360.Services
             string? category,
             string? keywords
         );
-        public string CreateFoundItem(FoundItemViewModel reportDetails, string username);
-        public int CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
+        public Task<string> CreateFoundItem(FoundItemViewModel reportDetails, string username);
+        public Task<int> CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
         IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
                                                          DateTime? latestDate,
                                                          string? status,
@@ -520,7 +520,7 @@ namespace Gordon360.Services
              string? keywords
          );
 
-        IEnumerable<FoundItemViewModel> GetFoundItemsByOwner(string requestedUsername, string requestorUsername);
+        Task<IEnumerable<FoundItemViewModel>> GetFoundItemsByOwner(string requestedUsername, string requestorUsername);
 
     }
 

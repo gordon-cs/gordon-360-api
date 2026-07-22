@@ -22,7 +22,10 @@ public class DiningController(CCTContext context, IDiningService diningService, 
     {
         var sessionCode = Helpers.GetCurrentSession(context);
         var authenticatedUsername = AuthUtils.GetUsername(User);
-        var authenticatedUserId = int.Parse(accountService.GetAccountByUsername(authenticatedUsername).GordonID);
+        var id = (await accountService.GetAccountByUsername(authenticatedUsername))?.GordonID;
+        if (id is null) return NotFound();
+
+        var authenticatedUserId = int.Parse(id);
         var diningInfo = diningService.GetDiningPlanInfo(authenticatedUserId, sessionCode);
 
         if (diningInfo == null)

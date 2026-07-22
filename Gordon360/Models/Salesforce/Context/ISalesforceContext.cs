@@ -9,5 +9,5 @@ public enum QueryType { SOQL, SOSL }
 public interface ISalesforceContext
 {
     Task<SFQueryResult<T>> SoqlQuery<T>(string template, string where = "", string order = "", int limit_n = 0);
-    Task<SFQueryResult<T>> RawQuery<T>(string queryString, QueryType queryType = QueryType.SOQL);
+    Task<SFQueryResult<T>> RawQuery<T>(string queryString);
 }

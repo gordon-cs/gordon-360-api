@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Gordon360.Models.Salesforce;
+using System;
+using System.Linq;
 
 namespace Gordon360.Models.ViewModels;
 
@@ -106,4 +108,154 @@ public record ProfileViewModel(
 
     // ProfileViewModel Only
     string PersonType
-    );
+    )
+{
+    public static explicit operator ProfileViewModel?(Account? account)
+    {
+        if (account == null)
+        {
+            return null;
+        }
+
+        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
+
+        var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home")
+                            ?? new ContactPointAddress();
+
+        var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
+                                ?? new ContactPointAddress();
+
+        // print onCampusAddress building 
+        System.Console.WriteLine($"On-Campus Address: {onCampusAddress}");
+
+        var address =
+            account.ContactPointAddresses?.records?.FirstOrDefault();
+
+        var advisorsIds = string.Join(",",
+           account.Contacts?.records?
+               .SelectMany(c => c?.CCRContacts?.records ?? [])
+               .Where(c => c.PartyRoleRelation?.Name?.Contains("Advisor") == true)
+               .Select(c => c.RelatedContact.Name)
+               .Where(name => !string.IsNullOrEmpty(name))
+           ?? []);
+
+        var majors = account.LearnerPrograms?.records?
+                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Major")
+                         .Take(3)
+                         .ToList() ?? [];
+
+        var minors = account.LearnerPrograms?.records?
+                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Minor")
+                         .Take(3)
+                         .ToList()
+                     ?? [];
+
+        var employment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
+        
+        return new ProfileViewModel
+        (
+            account.Student_Id__pc ?? "",
+            account.FirstName ?? "",
+            account.MiddleName ?? "",
+            account.LastName ?? "",
+            account.Suffix__pc ?? "",
+            account.Suffix__pc ?? "",
+            account.FormerLastName__pc ?? "",
+            account.Preferred_First_Name_Formula__pc ?? "", // Just in case some random record has a null user_name
+            account.PersonEmail ?? "",
+            account.PersonGenderIdentity ?? "",
+            "", // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
+            homeAddress.Street ?? "",
+            homeAddress.City ?? "",
+            homeAddress.StateCode ?? "",
+            homeAddress.PostalCode ?? "",
+            homeAddress.CountryCode ?? "",
+            homeAddress.PhoneNumber,
+            "", // TODO: implement fax
+            account.AD_Username__pc ?? "", // Just in case some random record has a null email field
+            2, // show_pic
+            1, // preferred_photo
+            "", // TODO: Implement country
+            "", // TODO: Implement barcode
+            "", // Todo: implement Facebook
+            "", // Todo: implement Twitter
+            "", // Todo: implement Instagram
+            "", // Todo: implement LinkedIn
+            "", // Todo: implement Handshake
+            "", // Todo: implement Calendar
+
+            // Student only
+            "", // TODO: implement OnOffCampus
+            "", // TODO: implement OffCampusStreet1
+            "", // TODO: implement OffCampusStreet2
+            "", // TODO: implement OffCampusCity
+            "", // TODO: implement OffCampusState
+            "", // TODO: implement OffCampusPostalCode
+            "", // TODO: implement OffCampusCountry
+            "", // TODO: implement OffCampusPhone
+            "", // TODO: implement OffCampusFax
+            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            "", // TODO: implement GradDate
+            "", // TODO: implement PlannedGradYear
+            new DateTime(1900, 1, 1), // TODO: implement EntranceDate
+            contact.Phone ?? "",
+            false, // TODO: implement IsMobilePhonePrivate
+            20, // TODO: implement ChapelRequired
+            5, // TODO: implement ChapelAttended
+            "", // TODO: implement Cohort
+            "", // TODO: implement Class
+            advisorsIds,
+            "", // TODO: implement Married
+            "", // TODO: implement Commuter
+            
+            // Alumni only
+            "1", // TODO: Implement WebUpdate
+            "", // TODO: Implement HomeEmail
+            contact.MaritalStatus ?? "",
+            "", // TODO: Implement College
+            "", // TODO: Implement ClassYear
+            contact.gc_Preferred_Class__c ?? "",
+            "", // TODO: Implement ShareName
+            "", // TODO: Implement ShareAddress
+            
+            // Student and Alumni only
+            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            "", // TODO: Implement grad_student
+            
+            // FacStaff only
+            employment?.StartDate ?? new DateTime(1900, 1, 1),
+            "", // TODO: Implement OnCampusDepartment
+            "", // TODO: Implement Type
+            "test test fac staff", // TODO: Implement office hours
+            "", // TODO: implement department
+            "", // TODO: Implement mail_description
+            
+            // FacStaff and Alumni only
+            employment?.Position ?? "",
+            "test test profile", // TODO: implement spouse name
+
+            // FacStaff and Student only
+            onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            "", // TODO: implement Mail_Location
+            onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
+            onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "",
+            "", // TODO: implement OnCampusPrivatePhone
+            "", // TODO: Implement OnCampusFax
+            "", // TODO: implement KeepPrivate
+
+            // ProfileViewModel only
+            "" // TODO: Implement PersonType           
+        );
+    }
+}

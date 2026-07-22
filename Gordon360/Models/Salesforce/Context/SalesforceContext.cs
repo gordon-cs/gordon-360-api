@@ -29,8 +29,9 @@ public class SalesforceContext : ISalesforceContext
     }
 
 
-    public async Task<SFQueryResult<T>> RawQuery<T>(string queryString, QueryType queryType = QueryType.SOQL)
+    public async Task<SFQueryResult<T>> RawQuery<T>(string queryString) // QueryType queryType = QueryType.SOQL)
     {            
+        var queryType = QueryType.SOQL;
         System.Diagnostics.Debug.WriteLine("🔐 Getting Salesforce access token...");
         var tokenData = await GetAccessTokenAsync(config);
         var accessToken = tokenData["access_token"].ToString();
@@ -91,13 +92,13 @@ public class SalesforceContext : ISalesforceContext
     /// <param name="order">SOQL ordering</param>
     /// <param name="limit_n">SOQL limit on number of records returned</param>
     /// <returns>T containing results of query</returns>
-    public async Task<SFQueryResult<T>> SoqlQuery<T>(string template, string where = "", string order = "", int limit_n = 0)
+    public async Task<SFQueryResult<T>> SoqlQuery<T>(string template, string? where = null, string? order = null, int limit_n = 0)
     {
         // Prepare strings for injection
         template += " {0} {1} {2}";
-        where = string.IsNullOrEmpty(where) ? "" : "WHERE " + where;
-        order = string.IsNullOrEmpty(where) ? "" : "ORDER BY " + order;
-        string limit = limit_n == 0 ? "" : "LIMIT " + limit_n;
+        where = string.IsNullOrEmpty(where) ? "" : ("WHERE " + where);
+        order = string.IsNullOrEmpty(order) ? "" : ("ORDER BY " + order);
+        string limit = limit_n == 0 ? "" : ("LIMIT " + limit_n);
 
         string query = string.Format(template, where, order, limit);
         var response = await RawQuery<T>(query);
