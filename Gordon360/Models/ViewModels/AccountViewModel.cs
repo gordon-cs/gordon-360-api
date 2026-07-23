@@ -3,7 +3,7 @@ using Gordon360.Models.Salesforce;
 
 namespace Gordon360.Models.ViewModels;
 
-public class AccountViewModel
+public record AccountViewModel
 {
     public string GordonID { get; set; }
     public string FirstName { get; set; }
@@ -35,9 +35,8 @@ public class AccountViewModel
         return vm;
     }
 
-    public static explicit operator AccountViewModel?(Account? a)
+    public static explicit operator AccountViewModel(Account a)
     {
-        if (a is null) return null;
         AccountViewModel vm = new()
         {
             GordonID = a.Student_Id__pc,

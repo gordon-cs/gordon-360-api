@@ -23,22 +23,40 @@ namespace Gordon360.Services
     {
         /// <summary>
         /// Fetch profile info of a given student
-        /// </summary>
+        /// </summary
         /// <param name="username">Active Directory username of student</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user is not found
+        /// </exception>
         /// <returns>StudentProfileViewModel if found, null if not found</returns>
-        Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username);
+        Task<StudentProfileViewModel> GetStudentProfileByUsername(string username);
         /// <summary>
         /// Fetch profile info of a given faculty/staff
         /// </summary>
         /// <param name="username">Active Directory username of faculty/staff member</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user is not found
+        /// </exception>
         /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
-        Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username);
+        Task<FacultyStaffProfileViewModel> GetFacultyStaffProfileByUsername(string username);
         /// <summary>
         /// Fetch profile info of a given alumni
         /// </summary>
         /// <param name="username">Active Directory username of alumni</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user is not found
+        /// </exception>
         /// <returns>AlumniProfileViewModel if found, null if not found</returns>
-        Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username);
+        Task<AlumniProfileViewModel> GetAlumniProfileByUsername(string username);
+        /// <summary>
+        /// Fetch profile info of a given person
+        /// </summary>
+        /// <param name="username">Active Directory username of person</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user is not found
+        /// </exception>
+        /// <returns>ProfileViewModel if found, null if not found</returns>
+        Task<ProfileViewModel> GetProfileByUsername(string username);
         /// <summary>
         /// Fetch the given user's mailbox information (contains box combination)
         /// </summary>
@@ -55,8 +73,11 @@ namespace Gordon360.Services
         /// Fetch list of advisors for the given student
         /// </summary>
         /// <param name="username">Active Directory username of student</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user has no advisors
+        /// </exception>
         /// <returns>IEnumerable containing the student's advisors, or null if no advisors are found</returns>
-        Task<IEnumerable<AdvisorViewModel>?> GetAdvisorsAsync(string username);
+        Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         /// <summary> Gets the clifton strengths of the given user </summary>
         /// <param name="id"> User ID of user with clifton strengths </param>
         /// <returns> Clifton strengths of the given user </returns>
@@ -180,7 +201,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The gordon id associated with the account</param>
         /// <returns>AccountViewModel associated with the id</returns>
-        Task<AccountViewModel?> GetAccountByID(string id);
+        Task<AccountViewModel> GetAccountByID(string id);
         /// <summary>
         /// Fetches all account records
         /// </summary>
@@ -191,13 +212,13 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
         /// <returns>AccountViewModel associated with the email</returns>
-        Task<AccountViewModel?> GetAccountByEmail(string email);
+        Task<AccountViewModel> GetAccountByEmail(string email);
         /// <summary>
         /// Fetches the account record associated with the specified AD username.
         /// </summary>
         /// <param name="username">The AD username associated with the account.</param>
         /// <returns>AccountViewModel associated with the username</returns>
-        Task<AccountViewModel?> GetAccountByUsername(string username);
+        Task<AccountViewModel> GetAccountByUsername(string username);
         /// <summary>
         /// Get the list of accounts the user is authorized search
         /// </summary>

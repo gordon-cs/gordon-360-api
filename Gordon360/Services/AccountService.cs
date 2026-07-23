@@ -21,7 +21,7 @@ public class AccountService(CCTContext context) : IAccountService
 {
 
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-    public async Task<AccountViewModel?> GetAccountByID(string id)
+    public async Task<AccountViewModel> GetAccountByID(string id)
     {
         // Custom Exception is thrown that will be cauth in the controller Exception filter.
         var account = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
@@ -34,13 +34,13 @@ public class AccountService(CCTContext context) : IAccountService
         return (IEnumerable<AccountViewModel>)context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
     }
 
-    public async Task<AccountViewModel?> GetAccountByEmail(string email)
+    public async Task<AccountViewModel> GetAccountByEmail(string email)
     {
         var account = context.ACCOUNT.FirstOrDefault(x => x.email == email) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
         return account;
     }
 
-    public async Task<AccountViewModel?> GetAccountByUsername(string username)
+    public async Task<AccountViewModel> GetAccountByUsername(string username)
     {
         var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
         return account;

@@ -14,33 +14,41 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Gordon360.Models.Salesforce;
+using Gordon360.Extensions.System;
 
 namespace Gordon360.Services;
 
 public class ProfileService(CCTContext context, IConfiguration config, SFProfiles profileProcedures, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
-    public async Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username)
+    public async Task<StudentProfileViewModel> GetStudentProfileByUsername(string username)
     {
-        var student = (StudentProfileViewModel?)await profileProcedures.GetAccountByAdUsernameAsync(username);
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        var student = (StudentProfileViewModel)(await profileProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" });;
+        student = ComposeStudentProfile(student, context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower()));
         return student;
     }
 
-    public async Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username)
+    public async Task<FacultyStaffProfileViewModel> GetFacultyStaffProfileByUsername(string username)
     {
-        var facstaff = (FacultyStaffProfileViewModel?)await profileProcedures.GetAccountByAdUsernameAsync(username);
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        var facstaff = (FacultyStaffProfileViewModel)(await profileProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" });;
+        facstaff = ComposeFacStaffProfile(facstaff, context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower()));
         return facstaff;
     }
 
-    public async Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username)
+    public async Task<AlumniProfileViewModel> GetAlumniProfileByUsername(string username)
     {
-        var alumni = (AlumniProfileViewModel?)await profileProcedures.GetAccountByAdUsernameAsync(username);
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        var alumni = (AlumniProfileViewModel)(await profileProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" });;
+        alumni = ComposeAlumniProfile(alumni, context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower()));
         return alumni;
     }
 
-    public async Task<ProfileViewModel?> GetProfileByUsername(string username)
+    public async Task<ProfileViewModel> GetProfileByUsername(string username)
     {
-        var profile = (ProfileViewModel?)await profileProcedures.GetAccountByAdUsernameAsync(username);
-        return profile;
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        var profile = await profileProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
+        return (ProfileViewModel)profile;
     }
 
     public MailboxCombinationViewModel? GetMailboxCombination(string username)
@@ -76,10 +84,11 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         }
     }
 
-    public async Task<IEnumerable<AdvisorViewModel>?> GetAdvisorsAsync(string username)
+    public async Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username)
     {
-        var account = (StudentProfileViewModel?) await profileProcedures.GetAccountByAdUsernameAsync(username);
-        if (account?.AdvisorIDs is null) return null;
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        var account =  await GetStudentProfileByUsername(username);
+        if (account?.AdvisorIDs is null) throw new ResourceNotFoundException() { ExceptionMessage = "AdvisorIDs missing or empty" };
 
         List<AdvisorViewModel> resultList = [];
         foreach (var advisorID in account.AdvisorIDs.Split(","))
@@ -226,7 +235,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
-        var profile = await GetStudentProfileByUsername(username) ?? throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
+        var profile = await GetStudentProfileByUsername(username);
         var digitsOnly = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
         await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, digitsOnly);
         return profile;
@@ -234,41 +243,41 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
     {
-        var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var profile = await GetFacultyStaffProfileByUsername(username);
         var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The webSQL account was not found" };
         user.Building = newBuilding;
         user.Room = newRoom;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        profile = await GetFacultyStaffProfileByUsername(username);
 
         return profile;
     }
 
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
     {
-        var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var profile = await GetFacultyStaffProfileByUsername(username);
         var acccount = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var user = webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.office_hours = newHours;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        profile = await GetFacultyStaffProfileByUsername(username);
 
         return profile;
     }
 
     public async Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail)
     {
-        var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var profile = await GetFacultyStaffProfileByUsername(username);
         var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.mail_server = newMail;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        profile = await GetFacultyStaffProfileByUsername(username);
 
         return profile;
     }
@@ -411,4 +420,65 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         return webSQLContext.Mailstops.Select(m => m.code)
                        .OrderBy(d => d);
     }
+
+    /// <summary>
+    /// Fill missing data in salesforce profile using CCT account.
+    /// Should become obsolete once migration is complete.
+    /// </summary>
+    /// <param name="viewModel">Salesforce profile</param>
+    /// <param name="dbView">CCT Profile</param>
+    /// <returns>Filled-out profile</returns>
+    private static StudentProfileViewModel ComposeStudentProfile(StudentProfileViewModel viewModel, Student? dbView)
+    {
+        var account = viewModel;
+        if (dbView == null) return account;
+        // cctAccount will only be null if dbView is null
+        StudentProfileViewModel cctAccount = dbView!;
+        foreach (var prop in account.GetType().GetFields())
+        {
+            if (prop.GetValue(account) is null) prop.SetValue(account, prop.GetValue(cctAccount));
+        }
+        return account;
+    }
+
+    /// <summary>
+    /// Fill missing data in salesforce profile using CCT account.
+    /// Should become obsolete once migration is complete.
+    /// </summary>
+    /// <param name="viewModel">Salesforce profile</param>
+    /// <param name="dbView">CCT Profile</param>
+    /// <returns>Filled-out profile</returns>
+    private static FacultyStaffProfileViewModel ComposeFacStaffProfile(FacultyStaffProfileViewModel viewModel, FacStaff? dbView)
+    {
+        var account = viewModel;
+        if (dbView == null) return account;
+        // cctAccount will only be null if dbView is null
+        FacStaff cctAccount = dbView!;
+        foreach (var prop in account.GetType().GetFields())
+        {
+            if (prop.GetValue(account) is null) prop.SetValue(account, prop.GetValue(cctAccount));
+        }
+        return account;
+    }
+
+    /// <summary>
+    /// Fill missing data in salesforce profile using CCT account.
+    /// Should become obsolete once migration is complete.
+    /// </summary>
+    /// <param name="viewModel">Salesforce profile</param>
+    /// <param name="dbView">CCT Profile</param>
+    /// <returns>Filled-out profile</returns>
+    private static AlumniProfileViewModel ComposeAlumniProfile(AlumniProfileViewModel viewModel, Alumni? dbView)
+    {
+        var account = viewModel;
+        if (dbView == null) return account;
+        // cctAccount will only be null if dbView is null
+        AlumniProfileViewModel cctAccount = dbView!;
+        foreach (var prop in account.GetType().GetFields())
+        {
+            if (prop.GetValue(account) is null) prop.SetValue(account, prop.GetValue(cctAccount));
+        }
+        return account;
+    }
+
 }

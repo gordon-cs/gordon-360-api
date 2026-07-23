@@ -2,7 +2,6 @@
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Static.Names;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using Gordon360.Enums;
 using System;
 using Gordon360.Models.Salesforce;
 using Microsoft.IdentityModel.Tokens;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Services;
 
@@ -21,32 +21,50 @@ namespace Gordon360.Services;
 public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAccountService
 {
 
-    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-    public async Task<AccountViewModel?> GetAccountByID(string id)
+    // [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+    public async Task<AccountViewModel> GetAccountByID(string id)
     {
-        if (id.IsNullOrEmpty()) return null;
-        var account = await sfProcedures.GetAccountByIdAsync(id);
-        return (AccountViewModel?)account;
+        if (id.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "id missing or empty" };
+        var sfAccount = await sfProcedures.GetAccountByIdAsync(id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
+        var account = (AccountViewModel) sfAccount;
+
+        var cctAccount = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        account = ComposeProfile(account, cctAccount);
+
+        return account;
     }
 
-    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
+    // [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
     public async Task<IEnumerable<AccountViewModel>> GetAll()
     {
-        return (IEnumerable<AccountViewModel>)await sfProcedures.GetAllAccountsAsync();
+        var allAccounts = (IEnumerable<AccountViewModel>) await sfProcedures.GetAllAccountsAsync();
+        return allAccounts;
     }
 
-    public async Task<AccountViewModel?> GetAccountByEmail(string email)
+    // [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+    public async Task<AccountViewModel> GetAccountByEmail(string email)
     {
-        if (email.IsNullOrEmpty()) return null;
-        var account = await sfProcedures.GetAccountByEmailAsync(email);
-        return (AccountViewModel?)account;
+        if (email.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "email missing or empty" };
+        var sfAccount = await sfProcedures.GetAccountByEmailAsync(email) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
+        var account = (AccountViewModel) sfAccount;
+
+        var cctAccount = context.ACCOUNT.FirstOrDefault(x => x.email == email) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        account = ComposeProfile(account, cctAccount);
+
+        return account;
     }
 
-    public async Task<AccountViewModel?> GetAccountByUsername(string username)
+    // [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+    public async Task<AccountViewModel> GetAccountByUsername(string username)
     {
-        if (username.IsNullOrEmpty()) return null;
-        var account = await sfProcedures.GetAccountByAdUsernameAsync(username);
-        return (AccountViewModel?)account;
+        if (username.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        var sfAccount = await sfProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
+        var account = (AccountViewModel) sfAccount;
+        
+        var cctAccount = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        account = ComposeProfile(account, cctAccount);
+        
+        return account;
     }
 
     public IEnumerable<AdvancedSearchViewModel> AdvancedSearch(
@@ -255,6 +273,24 @@ public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAc
             .Where(pair => pair.matchKey is not null)
             .OrderBy(pair => pair.matchKey)
             .Select(pair => pair.account);
+    }
+
+    /// <summary>
+    /// Fill missing data in salesforce profile using CCT account.
+    /// Should become obsolete once migration is complete.
+    /// </summary>
+    /// <param name="viewModel">Salesforce account</param>
+    /// <param name="dbView">CCT Account</param>
+    /// <returns>Filled-out profile</returns>
+    private static AccountViewModel ComposeProfile(AccountViewModel viewModel, ACCOUNT dbView)
+    {
+        var account = viewModel;
+        var cctAccount = (AccountViewModel) dbView;
+        foreach (var prop in account.GetType().GetFields())
+        {
+            if (prop.GetValue(account) is null) prop.SetValue(account, prop.GetValue(cctAccount));
+        }
+        return account;
     }
 
 

@@ -3377,6 +3377,33 @@
             Service Class that facilitates data transactions between the PosterController and the Poster database model.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.ComposeStudentProfile(Gordon360.Models.ViewModels.StudentProfileViewModel,Gordon360.Models.CCT.Student)">
+            <summary>
+            Fill missing data in salesforce profile using CCT account.
+            Should become obsolete once migration is complete.
+            </summary>
+            <param name="viewModel">Salesforce profile</param>
+            <param name="dbView">CCT Profile</param>
+            <returns>Filled-out profile</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.ComposeFacStaffProfile(Gordon360.Models.ViewModels.FacultyStaffProfileViewModel,Gordon360.Models.CCT.FacStaff)">
+            <summary>
+            Fill missing data in salesforce profile using CCT account.
+            Should become obsolete once migration is complete.
+            </summary>
+            <param name="viewModel">Salesforce profile</param>
+            <param name="dbView">CCT Profile</param>
+            <returns>Filled-out profile</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.ComposeAlumniProfile(Gordon360.Models.ViewModels.AlumniProfileViewModel,Gordon360.Models.CCT.Alumni)">
+            <summary>
+            Fill missing data in salesforce profile using CCT account.
+            Should become obsolete once migration is complete.
+            </summary>
+            <param name="viewModel">Salesforce profile</param>
+            <param name="dbView">CCT Profile</param>
+            <returns>Filled-out profile</returns>
+        </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>
             this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
@@ -3438,18 +3465,15 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.IProfileService.GetStudentProfileByUsername(System.String)">
-            <summary>
-            Fetch profile info of a given student
-            </summary>
-            <param name="username">Active Directory username of student</param>
-            <returns>StudentProfileViewModel if found, null if not found</returns>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.IProfileService.GetStudentProfileByUsername(System.String)" -->
         <member name="M:Gordon360.Services.IProfileService.GetFacultyStaffProfileByUsername(System.String)">
             <summary>
             Fetch profile info of a given faculty/staff
             </summary>
             <param name="username">Active Directory username of faculty/staff member</param>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown when the username is empty, or when the user is not found
+            </exception>
             <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.IProfileService.GetAlumniProfileByUsername(System.String)">
@@ -3457,7 +3481,20 @@
             Fetch profile info of a given alumni
             </summary>
             <param name="username">Active Directory username of alumni</param>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown when the username is empty, or when the user is not found
+            </exception>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetProfileByUsername(System.String)">
+            <summary>
+            Fetch profile info of a given person
+            </summary>
+            <param name="username">Active Directory username of person</param>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown when the username is empty, or when the user is not found
+            </exception>
+            <returns>ProfileViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.IProfileService.GetMailboxCombination(System.String)">
             <summary>
@@ -3478,6 +3515,9 @@
             Fetch list of advisors for the given student
             </summary>
             <param name="username">Active Directory username of student</param>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown when the username is empty, or when the user has no advisors
+            </exception>
             <returns>IEnumerable containing the student's advisors, or null if no advisors are found</returns>
         </member>
         <member name="M:Gordon360.Services.IProfileService.GetCliftonStrengths(System.Int32)">
@@ -3782,6 +3822,15 @@
             Get basic info for all accounts except alumni
             </summary>
             <returns>BasicInfoViewModel of all accounts except alumni</returns>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.ComposeProfile(Gordon360.Models.ViewModels.AccountViewModel,Gordon360.Models.CCT.ACCOUNT)">
+            <summary>
+            Fill missing data in salesforce profile using CCT account.
+            Should become obsolete once migration is complete.
+            </summary>
+            <param name="viewModel">Salesforce account</param>
+            <param name="dbView">CCT Account</param>
+            <returns>Filled-out profile</returns>
         </member>
         <member name="T:Gordon360.Services.SFScheduleService">
             <summary>

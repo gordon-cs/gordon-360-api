@@ -149,13 +149,8 @@ public record StudentProfileViewModel
         );
     }
 
-    public static explicit operator StudentProfileViewModel?(Account? account)
+    public static explicit operator StudentProfileViewModel(Account account)
     {
-        if (account == null)
-        {
-            return null;
-        }
-
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
 
         var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home")

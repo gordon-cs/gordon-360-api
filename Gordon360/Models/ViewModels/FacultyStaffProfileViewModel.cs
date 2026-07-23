@@ -97,13 +97,8 @@ public record FacultyStaffProfileViewModel
         );
     }
 
-    public static explicit operator FacultyStaffProfileViewModel?(Account? account)
+    public static explicit operator FacultyStaffProfileViewModel(Account account)
     {
-        if (account is null)
-        {
-            return null;
-        }
-
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
 
         var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home")

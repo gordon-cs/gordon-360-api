@@ -110,13 +110,8 @@ public record ProfileViewModel(
     string PersonType
     )
 {
-    public static explicit operator ProfileViewModel?(Account? account)
+    public static explicit operator ProfileViewModel(Account account)
     {
-        if (account == null)
-        {
-            return null;
-        }
-
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
 
         var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home")
