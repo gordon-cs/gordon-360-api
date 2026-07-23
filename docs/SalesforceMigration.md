@@ -12,7 +12,7 @@ This guide details the new patterns for data access, including creating Data Tra
 
 In the `Models/Salesforce/dto` directory, we create classes that model the objects in Salesforce that we need. Each DTO class has the fields of the Salesforce object we will need: the field names in a DTO class exactly match the Salesforce object field names.
 
-Salesforce allows us to traverse objects through relationship fields in SOQL. We create relationship fields in the DTOs.
+Salesforce allows us to traverse objects through relationship fields in SOQL. We model relationship fields in the DTOs.
 
 * **Parent relationships:** We use an object of the type of the DTO of the parent with the same name that the relationship has in that object. If you set a default value for a parent object, be on the lookout for recursive relationships. These will create the default value infinitely.
 * **Child relationships:** We use the collection object `SFChildCollection<T>` where `T` is the DTO of the child objects. The name of the field referencing the collection attribute must be the name that the child relationship has in the Salesforce object.
@@ -32,17 +32,15 @@ public class CourseOffering
 }
 ```
 
-*We are almost ready to create the query procedure class. Let’s talk about Salesforce queries first.*
-
 ## SOQL (Standard Object Query Language)
 
-Salesforce’s language for querying data is very similar to traditional SQL. SOQL, however, provides several key features that make data queries very efficient.
+Salesforce’s language for querying data is very similar to traditional SQL. SOQL, however, makes it even easier to traverse complex relationships within a query.
 
 The Jenzabar database has many data views and procedures to get access to specific information that we show in 360. The logic behind those views and procedures allows us to ignore how the data is structured in Jenzabar.
 
 Creating special joiner objects in Salesforce just for Gordon 360 would add unnecessary structural metadata to Salesforce, but with SOQL we can create queries that span multiple parent-child relationships to obtain the data we need. While this requires a deeper understanding of the structure of the data in Salesforce, it brings more flexibility. 
 
-For example, a student was limited to three majors, since there were 3 fields in the student view representing majors. Now we can create a nested query from a Student Contact to get the student’s Learner Programs and show all of their majors and minors. While this will most likely remain less than or equal to 3, the new data model allows for more.
+For example, a student was limited to three majors, since the student view had three fields representing majors. Now we can create a nested query from a Student Contact to get the student’s Learner Programs and show an unlimited number of their majors and minors. While it is rare for students to have more than three majors, the new data model gives us greater flexibility.
 
 This example loads a student’s information:
 
@@ -102,15 +100,15 @@ WHERE RecordType.Name = 'Person Account'
   AND Name = 'Jamie Berry'
 ```
 
-To create SOQL queries, it is worth exploring the structure of Salesforce Education Cloud and the custom objects that the school currently uses.
+To create SOQL queries, it is necessary to know the structure of Salesforce Education Cloud and the custom objects that the school currently uses.
 
-> **Note:** It would be great to have a Lucidchart of the newest customizations.
+> **Note:** It would be great to have a Lucidchart diagram of the newest customizations. A lucidchart diagram of the base Salesforce Education Cloud model can be found [here](https://lucid.app/lucidchart/30cc34ce-f426-43f9-aae2-22f642e24961/edit?invitationId=inv_6b0a377b-f004-4415-82a9-c167c8245d2a&page=0_0#)
 
 ## Procedures
 
 In `Models/Salesforce/Procedures`, we create procedure classes that services use to query the Salesforce data. These replace the old method of querying `CCTContext` directly.
 
-Procedure classes also allow us to query the database much more precisely. Instead of getting all records from a table and filtering them, we can compose queries that yield only the records we want.
+Procedure classes also allow us to query the database much more precisely. Instead of getting all records from a table and filtering them, we can compose smaller queries that yield only the records we want.
 
 ## Services
 
