@@ -62,7 +62,7 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="username">Active Directory username of current user</param>
         /// <returns>MailboxCombinationViewModel with the combination, or null if not found</returns>
-        MailboxCombinationViewModel? GetMailboxCombination(string username);
+        Task<MailboxCombinationViewModel?> GetMailboxCombination(string username);
         /// <summary>
         /// Fetch the given user's birthday
         /// </summary>

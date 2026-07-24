@@ -97,7 +97,7 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>User's birthday, or null if not found or authorized</returns>
     public async Task<DateTime> GetBirthday(string username)
     {
-        if (username.IsNullOrEmpty()) throw new ResourceNotFoundException() {ExceptionMessage = "No user given!"};
+        if (username.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No user given!" };
         var response = await context.SoqlQuery<Account>("SELECT PersonBirthdate FROM Account",
                 where: $"AD_Username__pc = '{username}'", limit_n: 1);
 
@@ -124,7 +124,7 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>Account associated with ID number</returns>
     public async Task<Account?> GetAccountByIdAsync(string id)
     {
-        if (id.IsNullOrEmpty()) throw new ResourceNotFoundException() {ExceptionMessage = "No id given!"};
+        if (id.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No id given!" };
         var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"gc_Jenz_ID__c = {id}", limit_n: 1);
         return response.records.FirstOrDefault();
     }
@@ -136,7 +136,7 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>Account associated with email</returns>
     public async Task<Account?> GetAccountByEmailAsync(string email)
     {
-        if (email.IsNullOrEmpty()) throw new ResourceNotFoundException() {ExceptionMessage = "No email given!"};
+        if (email.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No email given!" };
         var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"gc_University_Email__c = {email}", limit_n: 1);
         return response.records.FirstOrDefault();
     }
@@ -149,11 +149,23 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>Account associated with AD username</returns>
     public async Task<Account?> GetAccountByAdUsernameAsync(string adUsername)
     {
-        if (adUsername.IsNullOrEmpty()) throw new ResourceNotFoundException() {ExceptionMessage = "No username given!"};
+        if (adUsername.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No username given!" };
         var whereString = $"RecordType.Name = 'Person Account' AND (AD_Username__pc = '{adUsername}' OR Name = '{adUsername}')";
         var response = await context.SoqlQuery<Account>(SoqlTemplate, where: whereString, limit_n: 1);
         return response.records.FirstOrDefault();
     }
 
-
+    /// <summary>
+    /// Gets a given account's mailbox combination
+    /// </summary>
+    /// <param name="adUsername">Active Directory username</param>
+    /// <returns>Mailbox__c with only the combination field filled</returns>
+    /// <exception cref="ResourceNotFoundException"></exception>
+    public async Task<Mailbox__c?> GetMailboxCombinationAsync(string adUsername)
+    {
+        if (adUsername.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No username given!" };
+        var whereString = $"gc_Assigned_Person__r.Account.AD_Username__pc  = '{adUsername}'";
+        var response = await context.SoqlQuery<Mailbox__c>("SELECT gc_Combination__c FROM Mailbox__c", where: whereString, limit_n: 1);
+        return response.records.FirstOrDefault();
+    }
 }

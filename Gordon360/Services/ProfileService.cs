@@ -14,7 +14,6 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Gordon360.Models.Salesforce;
-using Gordon360.Extensions.System;
 
 namespace Gordon360.Services;
 
@@ -51,13 +50,12 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         return (ProfileViewModel)profile;
     }
 
-    public MailboxCombinationViewModel? GetMailboxCombination(string username)
+    public async Task<MailboxCombinationViewModel> GetMailboxCombination(string username)
     {
-        return context.Mailboxes
-            .Where(m => m.HolderUsername == username)
-            .Select(m => m.Combination)
-            .Select(MailboxCombinationViewModel.From)
-            .FirstOrDefault();
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        var mailbox = await profileProcedures.GetMailboxCombinationAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
+        if (mailbox.gc_Combination__c is null) throw new ResourceNotFoundException() { ExceptionMessage = "No combination!" };;
+        return new MailboxCombinationViewModel(mailbox.gc_Combination__c);
     }
 
     public async Task<DateTime> GetBirthdate(string username)

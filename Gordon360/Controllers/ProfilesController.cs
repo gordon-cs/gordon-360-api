@@ -227,11 +227,11 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("mailbox-information")]
-    public ActionResult<MailboxCombinationViewModel?> GetMailInfo()
+    public async Task<ActionResult<MailboxCombinationViewModel?>> GetMailInfo()
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = profileService.GetMailboxCombination(username);
+        var result = await profileService.GetMailboxCombination(username);
         return Ok(result);
     }
 
