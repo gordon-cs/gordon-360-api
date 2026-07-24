@@ -2,11 +2,15 @@
 
 
 ## Overview
-This document serves as a technical guide for developers migrating the Gordon 360 application's data source from the legacy Jenzabar database to Salesforce. As part of this transition, we are moving away from querying the `CCTContext` directly via Microsoft Entity Framework and adopting a new architecture tailored to Salesforce Education Cloud. 
+This document serves as a technical guide for developers migrating the Gordon 360 application's data source from the legacy Jenzabar database to Salesforce. As part of this transition, we are moving away from querying the `CCTContext` directly via Microsoft Entity Framework and adopting a new architecture tailored for the Salesforce API 
 
-This guide details the new patterns for data access, including creating Data Transfer Objects (DTOs) that mirror Salesforce models, writing efficient SOQL queries for traversing relationships, establishing Procedure classes for targeted data retrieval, and refactoring existing Service classes to implement the new data flow safely.
+ Most of the data in Salesforce is stored similarly to how it was in the Jenzabar Database. A couple differences twe need to be aware of between working with the Jenzabar SQL database and Salesforce. 
+ One different is that with SQL we could create views that combined the specific data we needed about something into a View, and the View would behaved the same as a table from the 360's perfective. 
+ Another one is that .Net directly supported working with a SQL database through EF Core; so this made it easy to auto generate models of each table in the code. and we could use those to create ModelViews as well. 
+ The actual database connection and query was also abstracted. But with Salesforce since we are working with their API we have to handle all of it. 
+ 
+ Our first goal this summer (2026) was to create a system that abstracts all the steps that are resuable in the process. This document explains how to work with this system:
 
----
 
 ## DTO (Data Transfer Objects)
 
@@ -111,6 +115,106 @@ To create SOQL queries, it is worth exploring the structure of Salesforce Educat
 In `Models/Salesforce/Procedures`, we create procedure classes that services use to query the Salesforce data. These replace the old method of querying `CCTContext` directly.
 
 Procedure classes also allow us to query the database much more precisely. Instead of getting all records from a table and filtering them, we can compose queries that yield only the records we want.
+
+Here's an example, which also includes the SOQL query:
+
+```c#
+public class SFUserCourses(ISalesforceContext context)
+{
+    private readonly ISalesforceContext _context = context;
+
+    private const string SoqlTemplate = """
+        SELECT
+            Name,
+            LearningCourse.SubjectAbbreviation,
+            LearningCourse.CourseNumber,
+            AcademicSession.AcademicTerm.Name,
+            AcademicSession.gc_Jenz_Session_Code__c,
+            AcademicSession.gc_Jenz_Subterm_Code__c,
+            AcademicSession.gc_Jenz_Term_Code__c,
+            AcademicSession.gc_Jenz_Year_Code__c,
+            (
+                SELECT ParticipantAffiliation, ParticipationStatus, ParticipantContact.Name
+                FROM CourseOfferingParticipants
+                WHERE ParticipantContact.gc_University_Email__c LIKE '{0}%'
+            ),
+            (
+                SELECT Description, IsSunday, IsMonday, IsTuesday, IsWednesday, IsThursday, IsFriday, IsSaturday,
+                       Location.ExternalReference, StartDate, EndDate, StartTime, EndTime
+                FROM CourseOfferingSchedules
+            )
+        FROM CourseOffering
+        WHERE Id IN (
+            SELECT CourseOfferingId
+            FROM CourseOfferingParticipant
+            WHERE ParticipantContact.gc_University_Email__c LIKE '{0}%'
+                AND (NOT (ParticipationStatus='Dropped' OR ParticipationStatus='Withdrew'))
+                {1}
+        )
+    """;
+
+    public async Task<IEnumerable<UserCoursesViewModel>> GetUserCourses(string username, string role = "")
+    {
+        var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
+
+        var response = await _context.Query<CourseOffering>(string.Format(SoqlTemplate, username, roleFilter));
+
+        return response?.records?
+            .Select(c => MapToViewModel(c, username))
+            .ToList() ?? new List<UserCoursesViewModel>();
+    }
+
+    private static UserCoursesViewModel MapToViewModel(CourseOffering c, string username)
+    {
+        var schedule = c.CourseOfferingSchedules.records.FirstOrDefault();
+        var participant = c.CourseOfferingParticipants.records.FirstOrDefault();
+
+        return new UserCourses // thi
+        {
+            Role = participant?.ParticipantAffiliation ?? "",
+
+            YR_CDE = c.AcademicSession.gc_Jenz_Year_Code__c,
+            TRM_CDE = c.AcademicSession.gc_Jenz_Term_Code__c,
+            SUBTERM_DESC = c.AcademicSession.gc_Jenz_Subterm_Code__c,
+
+            CRS_CDE = $"{c.LearningCourse.SubjectAbbreviation}-{c.LearningCourse.CourseNumber}",
+            CRS_TITLE = c.Name,
+
+            BLDG_CDE = schedule?.Location.ExternalReference ?? "",
+
+            MONDAY_CDE = DayCode(schedule?.IsMonday, "M"),
+            TUESDAY_CDE = DayCode(schedule?.IsTuesday, "T"),
+            WEDNESDAY_CDE = DayCode(schedule?.IsWednesday, "W"),
+            THURSDAY_CDE = DayCode(schedule?.IsThursday, "R"),
+            FRIDAY_CDE = DayCode(schedule?.IsFriday, "F"),
+            SATURDAY_CDE = DayCode(schedule?.IsSaturday, "S"),
+
+            BEGIN_DATE = schedule?.StartDate,
+            END_DATE = schedule?.EndDate,
+
+            BEGIN_TIME = ParseTime(schedule?.StartTime),
+            END_TIME = ParseTime(schedule?.EndTime)
+        };
+    }
+
+    private static string DayCode(bool? flag, string code) => flag == true ? code : "";
+
+    private static TimeSpan? ParseTime(string? time)
+    {
+        if (string.IsNullOrWhiteSpace(time))
+        {
+            return null;
+        }
+        else
+        {
+            var cleanedTime = time.Replace("Z", "");
+            var isValid = TimeSpan.TryParse(cleanedTime, out var t);
+
+            return isValid ? t : null;
+        }
+    }
+}
+```
 
 ## Services
 
