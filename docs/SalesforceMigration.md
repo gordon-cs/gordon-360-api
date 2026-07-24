@@ -220,6 +220,10 @@ public class SFUserCourses(ISalesforceContext context)
 
 The role of Services classes is essentially unchanged from the Jenzabar era. Those that only depend on other services can remain unchanged, while those that query the database can be changed to use Salesforce procedures.
 
-It is currently preferred to recreate services that need to be changed as classes implementing that service’s interface, calling them `SF<service name>`, and rewriting them to use Salesforce procedures. We then replace the service instantiated in `Services/ServicesExtensions.cs`. This makes it easier to compare the behaviors of the two implementations.
+It is currently preferred to recreate services that need to be changed as classes implementing that service’s interface, calling them `SF<service name>`, and rewriting them to use Salesforce procedures. We then replace the service instantiated in `Services/ServicesExtensions.cs`. This makes it easier to compare the behaviors of the two implementations. If we use an injection to pass the SF Procedure to the service, we need to register it in the `Services/ServicesExtensions.cs` file in the AddSalesforceProcedures method: 
+       
+```services.AddScoped<SFStudentEmployment>();```
+
+
 
 Currently, there are no tests in place for services, as there are no good ways to mock up the Microsoft Entity Framework database model. This makes it difficult to test for differences between implementations. For now, we document expected interface behavior, and fix or document services that rely on undocumented behavior.
