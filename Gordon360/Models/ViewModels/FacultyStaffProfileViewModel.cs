@@ -55,45 +55,45 @@ public record FacultyStaffProfileViewModel
         }
 
         return new FacultyStaffProfileViewModel(
-            fac.ID.Trim(),
-            fac.Title ?? "",
-            fac.FirstName ?? "",
-            fac.MiddleName ?? "",
-            fac.LastName ?? "",
-            fac.Suffix ?? "",
-            fac.MaidenName ?? "",
-            fac.Nickname ?? "",
-            fac.OnCampusDepartment ?? "",
-            fac.OnCampusBuilding ?? "",
-            fac.OnCampusRoom ?? "",
-            fac.OnCampusPhone ?? "",
-            fac.OnCampusPrivatePhone ?? "",
-            fac.OnCampusFax ?? "",
-            fac.HomeStreet1 ?? "",
-            fac.HomeStreet2 ?? "",
-            fac.HomeCity ?? "",
-            fac.HomeState ?? "",
-            fac.HomePostalCode ?? "",
-            fac.HomeCountry ?? "",
-            fac.HomePhone ?? "",
-            fac.HomeFax ?? "",
-            fac.KeepPrivate ?? "",
-            fac.JobTitle ?? "",
-            fac.Dept ?? "",
-            fac.SpouseName ?? "",
-            fac.Barcode ?? "",
-            fac.Gender ?? "",
-            fac.Email ?? "",
-            fac.Type ?? "",
-            fac.FirstHireDt,
-            fac.AD_Username ?? "",
-            fac.office_hours ?? "",
-            fac.preferred_photo,
-            fac.show_pic,
-            fac.BuildingDescription ?? "",
-            fac.Country ?? "",
-            fac.Mail_Location ?? "",
-            fac.Mail_Description ?? ""
+            ID: fac.ID.Trim(),
+            Title: fac.Title ?? "",
+            FirstName: fac.FirstName ?? "",
+            MiddleName: fac.MiddleName ?? "",
+            LastName: fac.LastName ?? "",
+            Suffix: fac.Suffix ?? "",
+            MaidenName: fac.MaidenName ?? "",
+            NickName: fac.Nickname ?? "",
+            OnCampusDepartment: fac.OnCampusDepartment ?? "",
+            OnCampusBuilding: fac.OnCampusBuilding ?? "",
+            OnCampusRoom: fac.OnCampusRoom ?? "",
+            OnCampusPhone: fac.OnCampusPhone ?? "",
+            OnCampusPrivatePhone: fac.OnCampusPrivatePhone ?? "",
+            OnCampusFax: fac.OnCampusFax ?? "",
+            HomeStreet1: fac.HomeStreet1 ?? "",
+            HomeStreet2: fac.HomeStreet2 ?? "",
+            HomeCity: fac.HomeCity ?? "",
+            HomeState: fac.HomeState ?? "",
+            HomePostalCode: fac.HomePostalCode ?? "",
+            HomeCountry: fac.HomeCountry ?? "",
+            HomePhone: fac.HomePhone ?? "",
+            HomeFax: fac.HomeFax ?? "",
+            KeepPrivate: fac.KeepPrivate ?? "",
+            JobTitle: fac.JobTitle ?? "",
+            Dept: fac.Dept ?? "",
+            SpouseName: fac.SpouseName ?? "",
+            Barcode: fac.Barcode ?? "",
+            Gender: fac.Gender ?? "",
+            Email: fac.Email ?? "",
+            Type: fac.Type ?? "",
+            FirstHireDt: fac.FirstHireDt,
+            AD_Username: fac.AD_Username ?? "",
+            office_hours: fac.office_hours ?? "",
+            preferred_photo: fac.preferred_photo,
+            show_pic: fac.show_pic,
+            BuildingDescription: fac.BuildingDescription ?? "",
+            Country: fac.Country ?? "",
+            Mail_Location: fac.Mail_Location ?? "",
+            Mail_Description: fac.Mail_Description ?? ""
         );
     }
 
@@ -110,45 +110,45 @@ public record FacultyStaffProfileViewModel
         var firstEmployment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
 
         return new FacultyStaffProfileViewModel(
-            account.Student_Id__pc ?? "",
-            account.PersonTitle ?? "",
-            account.FirstName ?? "",
-            account.MiddleName ?? "",
-            account.LastName ?? "",
-            account.Suffix__pc ?? "",
-            account.FormerLastName__pc ?? "",
-            account.Preferred_First_Name_Formula__pc ?? "",
-            "", // TODO: Implement OnCampusDepartment
-            onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
-            onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
-            onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "",
-            "", // TODO: Implement private phone
-            "", // TODO: Implement OnCampusFax
-            "", // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
-            homeAddress.Street ?? "",
-            homeAddress.City ?? "",
-            homeAddress.StateCode ?? "",
-            homeAddress.PostalCode ?? "",
-            homeAddress.CountryCode ?? "",
-            homeAddress.PhoneNumber,
-            "", // TODO: implement fax
-            "", // TODO: Implement private faculty profile
-            contact.gc_Current_Positions__c ?? "",
-            "", // TODO: implement department
-            "", // TODO: Implement spouse name
-            "", // TODO: Implement barcode
-            account.PersonGenderIdentity ?? "",
-            account.PersonEmail ?? "",
-            "", // TODO: Implement Type
-            firstEmployment?.StartDate ?? new DateTime(1900, 1, 1),
-            account.AD_Username__pc ?? "",
-            "test test fac staff",
-            2, // show_pic
-            1, // preferred_photo
-            onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
-            "", // TODO: Implement country
-            "", // TODO: Implement mail_location
-            "" // TODO: Implement mail_description
+            ID: account.Student_Id__pc ?? "",
+            Title: account.PersonTitle ?? "",
+            FirstName: account.FirstName ?? "",
+            MiddleName: account.MiddleName ?? "",
+            LastName: account.LastName ?? "",
+            Suffix: account.Suffix__pc ?? "",
+            MaidenName: account.FormerLastName__pc ?? "",
+            NickName: account.Preferred_First_Name_Formula__pc ?? "",
+            OnCampusDepartment: "", // TODO: Implement OnCampusDepartment
+            OnCampusBuilding: onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            OnCampusRoom: onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
+            OnCampusPhone: onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "",
+            OnCampusPrivatePhone: "", // TODO: Implement private phone
+            OnCampusFax: "", // TODO: Implement OnCampusFax
+            HomeStreet1: "", // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
+            HomeStreet2: homeAddress.Street ?? "",
+            HomeCity: homeAddress.City ?? "",
+            HomeState: homeAddress.StateCode ?? "",
+            HomePostalCode: homeAddress.PostalCode ?? "",
+            HomeCountry: homeAddress.CountryCode ?? "",
+            HomePhone: homeAddress.PhoneNumber,
+            HomeFax: "", // TODO: implement fax
+            KeepPrivate: "", // TODO: Implement private faculty profile
+            JobTitle: contact.gc_Current_Positions__c ?? "",
+            Dept: "", // TODO: implement department
+            SpouseName: "", // TODO: Implement spouse name
+            Barcode: "", // TODO: Implement barcode
+            Gender: account.PersonGenderIdentity ?? "",
+            Email: account.PersonEmail ?? "",
+            Type: "", // TODO: Implement Type
+            FirstHireDt: firstEmployment?.StartDate ?? new DateTime(1900, 1, 1),
+            AD_Username: account.AD_Username__pc ?? "",
+            office_hours: "test test fac staff",
+            preferred_photo: 2, // show_pic
+            show_pic: 1, // preferred_photo
+            BuildingDescription: onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            Country: "", // TODO: Implement country
+            Mail_Location: "", // TODO: Implement mail_location
+            Mail_Description: "" // TODO: Implement mail_description
         );
     }
 }

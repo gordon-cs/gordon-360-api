@@ -146,111 +146,111 @@ public record ProfileViewModel(
                      ?? [];
 
         var employment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
-        
+
         return new ProfileViewModel
         (
-            account.Student_Id__pc ?? "",
-            account.FirstName ?? "",
-            account.MiddleName ?? "",
-            account.LastName ?? "",
-            account.Suffix__pc ?? "",
-            account.Suffix__pc ?? "",
-            account.FormerLastName__pc ?? "",
-            account.Preferred_First_Name_Formula__pc ?? "", // Just in case some random record has a null user_name
-            account.PersonEmail ?? "",
-            account.PersonGenderIdentity ?? "",
-            "", // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
-            homeAddress.Street ?? "",
-            homeAddress.City ?? "",
-            homeAddress.StateCode ?? "",
-            homeAddress.PostalCode ?? "",
-            homeAddress.CountryCode ?? "",
-            homeAddress.PhoneNumber,
-            "", // TODO: implement fax
-            account.AD_Username__pc ?? "", // Just in case some random record has a null email field
-            2, // show_pic
-            1, // preferred_photo
-            "", // TODO: Implement country
-            "", // TODO: Implement barcode
-            "", // Todo: implement Facebook
-            "", // Todo: implement Twitter
-            "", // Todo: implement Instagram
-            "", // Todo: implement LinkedIn
-            "", // Todo: implement Handshake
-            "", // Todo: implement Calendar
+            ID: account.Student_Id__pc ?? "",
+            Title: account.FirstName ?? "",
+            FirstName: account.MiddleName ?? "",
+            MiddleName: account.LastName ?? "",
+            LastName: account.Suffix__pc ?? "",
+            Suffix: account.Suffix__pc ?? "",
+            MaidenName: account.FormerLastName__pc ?? "",
+            NickName: account.Preferred_First_Name_Formula__pc ?? "", // Just in case some random record has a null user_name
+            Email: account.PersonEmail ?? "",
+            Gender: account.PersonGenderIdentity ?? "",
+            HomeStreet1: "", // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
+            HomeStreet2: homeAddress.Street ?? "",
+            HomeCity: homeAddress.City ?? "",
+            HomeState: homeAddress.StateCode ?? "",
+            HomePostalCode: homeAddress.PostalCode ?? "",
+            HomeCountry: homeAddress.CountryCode ?? "",
+            HomePhone: homeAddress.PhoneNumber,
+            HomeFax: "", // TODO: implement fax
+            AD_Username: account.AD_Username__pc ?? "", // Just in case some random record has a null email field
+            show_pic: 2, // show_pic
+            preferred_photo: 1, // preferred_photo
+            Country: "", // TODO: Implement country
+            Barcode: "", // TODO: Implement barcode
+            Facebook: "", // Todo: implement Facebook
+            Twitter: "", // Todo: implement Twitter
+            Instagram: "", // Todo: implement Instagram
+            LinkedIn: "", // Todo: implement LinkedIn
+            Handshake: "", // Todo: implement Handshake
+            Calendar: "", // Todo: implement Calendar
 
             // Student only
-            "", // TODO: implement OnOffCampus
-            "", // TODO: implement OffCampusStreet1
-            "", // TODO: implement OffCampusStreet2
-            "", // TODO: implement OffCampusCity
-            "", // TODO: implement OffCampusState
-            "", // TODO: implement OffCampusPostalCode
-            "", // TODO: implement OffCampusCountry
-            "", // TODO: implement OffCampusPhone
-            "", // TODO: implement OffCampusFax
-            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            "", // TODO: implement GradDate
-            "", // TODO: implement PlannedGradYear
-            new DateTime(1900, 1, 1), // TODO: implement EntranceDate
-            contact.Phone ?? "",
-            false, // TODO: implement IsMobilePhonePrivate
-            20, // TODO: implement ChapelRequired
-            5, // TODO: implement ChapelAttended
-            "", // TODO: implement Cohort
-            "", // TODO: implement Class
-            advisorsIds,
-            "", // TODO: implement Married
-            "", // TODO: implement Commuter
-            
+            OnOffCampus: "", // TODO: implement OnOffCampus
+            OffCampusStreet1: "", // TODO: implement OffCampusStreet1
+            OffCampusStreet2: "", // TODO: implement OffCampusStreet2
+            OffCampusCity: "", // TODO: implement OffCampusCity
+            OffCampusState: "", // TODO: implement OffCampusState
+            OffCampusPostalCode: "", // TODO: implement OffCampusPostalCode
+            OffCampusCountry: "", // TODO: implement OffCampusCountry
+            OffCampusPhone: "", // TODO: implement OffCampusPhone
+            OffCampusFax: "", // TODO: implement OffCampusFax
+            Major3: majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Major3Description: majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor1: minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Minor1Description: minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor2: minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Minor2Description: minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor3: minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Minor3Description: minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            GradDate: "", // TODO: implement GradDate
+            PlannedGradYear: "", // TODO: implement PlannedGradYear
+            Entrance_Date: new DateTime(1900, 1, 1), // TODO: implement EntranceDate
+            MobilePhone: contact.Phone ?? "",
+            IsMobilePhonePrivate: false, // TODO: implement IsMobilePhonePrivate
+            ChapelRequired: 20, // TODO: implement ChapelRequired
+            ChapelAttended: 5, // TODO: implement ChapelAttended
+            Cohort: "", // TODO: implement Cohort
+            Class: "", // TODO: implement Class
+            AdvisorIDs: advisorsIds,
+            Married: "", // TODO: implement Married
+            Commuter: "", // TODO: implement Commuter
+
             // Alumni only
-            "1", // TODO: Implement WebUpdate
-            "", // TODO: Implement HomeEmail
-            contact.MaritalStatus ?? "",
-            "", // TODO: Implement College
-            "", // TODO: Implement ClassYear
-            contact.gc_Preferred_Class__c ?? "",
-            "", // TODO: Implement ShareName
-            "", // TODO: Implement ShareAddress
-            
+            WebUpdate: "1", // TODO: Implement WebUpdate
+            HomeEmail: "", // TODO: Implement HomeEmail
+            MaritalStatus: contact.MaritalStatus ?? "",
+            College: "", // TODO: Implement College
+            ClassYear: "", // TODO: Implement ClassYear
+            PreferredClassYear: contact.gc_Preferred_Class__c ?? "",
+            ShareName: "", // TODO: Implement ShareName
+            ShareAddress: "", // TODO: Implement ShareAddress
+
             // Student and Alumni only
-            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            "", // TODO: Implement grad_student
-            
+            Major: majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Major1Description: majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Major2: majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Major2Description: majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            grad_student: "", // TODO: Implement grad_student
+
             // FacStaff only
-            employment?.StartDate ?? new DateTime(1900, 1, 1),
-            "", // TODO: Implement OnCampusDepartment
-            "", // TODO: Implement Type
-            "test test fac staff", // TODO: Implement office hours
-            "", // TODO: implement department
-            "", // TODO: Implement mail_description
-            
+            FirstHireDt: employment?.StartDate ?? new DateTime(1900, 1, 1),
+            OnCampusDepartment: "", // TODO: Implement OnCampusDepartment
+            Type: "", // TODO: Implement Type
+            office_hours: "test test fac staff", // TODO: Implement office hours
+            Dept: "", // TODO: implement department
+            Mail_Description: "", // TODO: Implement mail_description
+
             // FacStaff and Alumni only
-            employment?.Position ?? "",
-            "test test profile", // TODO: implement spouse name
+            JobTitle: employment?.Position ?? "",
+            SpouseName: "test test profile", // TODO: implement spouse name
 
             // FacStaff and Student only
-            onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
-            "", // TODO: implement Mail_Location
-            onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
-            onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
-            onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "",
-            "", // TODO: implement OnCampusPrivatePhone
-            "", // TODO: Implement OnCampusFax
-            "", // TODO: implement KeepPrivate
+            BuildingDescription: onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            Mail_Location: "", // TODO: implement Mail_Location
+            OnCampusBuilding: onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            OnCampusRoom: onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
+            OnCampusPhone: onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "",
+            OnCampusPrivatePhone: "", // TODO: implement OnCampusPrivatePhone
+            OnCampusFax: "", // TODO: Implement OnCampusFax
+            KeepPrivate: "", // TODO: implement KeepPrivate
 
             // ProfileViewModel only
-            "" // TODO: Implement PersonType           
+            PersonType: "" // TODO: Implement PersonType           
         );
     }
 }
