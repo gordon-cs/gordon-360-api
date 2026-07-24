@@ -2076,7 +2076,7 @@
             </summary>
             
         </member>
-        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Services.IProfileService,Gordon360.Services.IAccountService)">
+        <member name="M:Gordon360.Services.AcademicCheckInService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Models.Salesforce.SFHolds,Gordon360.Services.IProfileService,Gordon360.Services.IAccountService)">
             <summary>
             Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
             </summary>

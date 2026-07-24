@@ -1,6 +1,7 @@
 ﻿using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
+using Gordon360.Models.Salesforce;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -51,7 +52,7 @@ namespace Gordon360.Services
             var studentID = account.account_id;
 
             // Step 3: Call stored procedure to get any registration-related holds for the student
-            var hold = await _sFHolds.GetHolds(studentID);
+            var hold = await _sFHolds.GetHolds(studentID.ToString());
 
             // Step 4: Determine if there are any registration-blocking holds (these prevent registration)
             bool hasBlockingHolds = hold != null &&

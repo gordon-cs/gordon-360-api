@@ -4,6 +4,7 @@ using Gordon360.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Gordon360.Models.Salesforce;
 using System.Threading.Tasks;
 
 namespace Gordon360.Services;
@@ -106,12 +107,12 @@ public partial class AcademicCheckInService(CCTContext context, SFHolds sFHolds,
     {
         var result = await sFHolds.GetHolds(id);
 
-        if (result == null || result.Count != 1)
+        if (result == null)
         {
             throw new ResourceNotFoundException() { ExceptionMessage = "The data was not found." };
         }
 
-        return new EnrollmentCheckinHolds(result.Single());
+        return result;
     }
 
     /// <summary> Sets the user as having been checked in </summary>
