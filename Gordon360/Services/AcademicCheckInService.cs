@@ -12,7 +12,7 @@ namespace Gordon360.Services;
 /// Service Class that facilitates data transactions between the AcademicCheckInController and the CheckIn database model.
 /// </summary>
 	/// 
-public partial class AcademicCheckInService(CCTContext context, IProfileService profileService, IAccountService accountService) : IAcademicCheckInService
+public partial class AcademicCheckInService(CCTContext context, SFHolds sFHolds, IProfileService profileService, IAccountService accountService) : IAcademicCheckInService
 {
     /// <summary> Stores the emergency contact information of a particular user </summary>
     /// <param name="data"> The object that stores the contact info </param>
@@ -104,7 +104,7 @@ public partial class AcademicCheckInService(CCTContext context, IProfileService 
     /// <returns>Data about any holds the user has</returns>
     public async Task<EnrollmentCheckinHolds> GetHoldsAsync(string id)
     {
-        var result = await context.Procedures.GetEnrollmentCheckinHoldsAsync(int.Parse(id));
+        var result = await sFHolds.GetHolds(id);
 
         if (result == null || result.Count != 1)
         {

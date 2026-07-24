@@ -50,6 +50,7 @@ public static class ServicesExtensions
     {
         services.AddScoped<SFUserCourses>();
         services.AddScoped<SFProfiles>();
+        services.AddScoped<SFHolds>();
         services.AddScoped<AcademicTermProcedures>();
         return services;
     }
