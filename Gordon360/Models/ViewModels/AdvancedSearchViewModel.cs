@@ -1,4 +1,7 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.Salesforce;
+using System;
+using System.Linq;
 
 namespace Gordon360.Models.ViewModels;
 
@@ -131,6 +134,77 @@ public class AdvancedSearchViewModel
             PreferredClassYear = a.PreferredClassYear ?? "",
             ShareAddress = a.ShareAddress ?? "",
             Gender = a.Gender ?? ""
+        };
+    }
+
+    public static explicit operator AdvancedSearchViewModel(Account account)
+    {
+        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
+
+        var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home")
+                            ?? new ContactPointAddress();
+
+        var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
+                                ?? new ContactPointAddress();
+
+        string personType = (account.gc_Current_Student__c ? "stu" : "") + (account.gc_is_Current_Alumni__c ? "alu" : "") + (account.gc_Current_Faculty__pc ? "fac" : "");
+
+        var address =
+            account.ContactPointAddresses?.records?.FirstOrDefault();
+
+        var advisorsIds = string.Join(",",
+           account.Contacts?.records?
+               .SelectMany(c => c?.CCRContacts?.records ?? [])
+               .Where(c => c.PartyRoleRelation?.Name?.Contains("Advisor") == true)
+               .Select(c => c.RelatedContact.Name)
+               .Where(name => !string.IsNullOrEmpty(name))
+           ?? []);
+
+        var majors = account.LearnerPrograms?.records?
+                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Major")
+                         .Take(3)
+                         .ToList() ?? [];
+
+        var minors = account.LearnerPrograms?.records?
+                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Minor")
+                         .Take(3)
+                         .ToList()
+                     ?? [];
+
+        var employment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
+
+        return new AdvancedSearchViewModel
+        {
+            FirstName = account.FirstName ?? "",
+            LastName = account.LastName ?? "",
+            NickName = account.Preferred_First_Name_Formula__pc ?? "",
+            MaidenName = account.FormerLastName__pc ?? "",
+            HomeCity = homeAddress.City ?? "",
+            HomeState = homeAddress.State ?? "",
+            Country = homeAddress.Country ?? "",
+            Email = account.PersonEmail ?? "",
+            AD_Username = account.AD_Username__pc ?? "",
+            Hall = onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            Class = "", // TODO: Implement Class
+            Major1Description = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Major2Description = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Major3Description = majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor1Description = minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor2Description = minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor3Description = minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            KeepPrivate = "", // TODO: implement KeepPrivate
+            Mail_Location = "", // TODO: implement Mail_Location
+            OnCampusDepartment = "", // TODO: Implement OnCampusDepartment
+            BuildingDescription = onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            JobTitle = employment?.Position ?? "",
+            Type = account.gc_Current_Student__c ? "Student"
+                : account.gc_Current_Staff__pc ? "Staff"
+                : account.gc_is_Current_Alumni__c ? "Alumni"
+                : account.gc_Current_Faculty__pc ? "Faculty" : "",
+            ShareName = "", // TODO: Implement ShareName
+            PreferredClassYear = contact.gc_Preferred_Class__c ?? "",
+            ShareAddress = "", // TODO: Implement ShareAddress
+            Gender = account.PersonGenderIdentity ?? ""
         };
     }
 }

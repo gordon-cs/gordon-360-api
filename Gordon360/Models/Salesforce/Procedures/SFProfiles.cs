@@ -25,6 +25,11 @@ public class SFProfiles(ISalesforceContext context)
             PersonGenderIdentity,
             AD_Username__pc,
             Suffix__pc,
+            gc_Current_Student__c,
+            gc_Current_Faculty__pc,
+            gc_Current_Staff__pc,
+            gc_is_Current_Alumni__c,
+            gc_Resident_Commuter__pc,
             (
                 SELECT 
                     Name,
@@ -89,7 +94,21 @@ public class SFProfiles(ISalesforceContext context)
             )
         FROM Account
         """;
-
+    
+    /// <summary>
+    /// Gets basic info for all accounts for search preview
+    /// </summary>
+    /// <param name="alumni">Whether or not to include alumni in the search</param>
+    /// <returns>Minimal info about all accounts</returns>
+    public async Task<IEnumerable<Account>> GetBasicInfo(bool alumni= true)
+    {
+        var response = await context.SoqlQuery<Account>(
+            "SELECT FirstName, LastName, AD_Username__pc, Preferred_First_Name_Formula__pc, FormerLastName__pc " +
+            "FROM Account",
+            where: alumni ? "" : "gc_is_Current_Alumni__c = false");
+        return response.records;
+    }
+     
     /// <summary>
     /// Gets the birthday of the given user
     /// </summary>

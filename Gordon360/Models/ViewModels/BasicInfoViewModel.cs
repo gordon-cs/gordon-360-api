@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gordon360.Models.Salesforce;
+using System;
 using System.Linq;
 
 namespace Gordon360.Models.ViewModels;
@@ -224,5 +225,17 @@ public class BasicInfoViewModel
         var keyBase = $"{firstnameMatch}1${lastnameMatch}";
 
         return string.Concat(Enumerable.Repeat("z", totalPrecedence)) + keyBase;
+    }
+
+    public static explicit operator BasicInfoViewModel(Account account)
+    {
+        return new BasicInfoViewModel
+        {
+            FirstName = account.FirstName,
+            LastName = account.LastName,
+            Nickname = account.Preferred_First_Name_Formula__pc,
+            UserName = account.AD_Username__pc,
+            MaidenName = account.FormerLastName__pc
+        };
     }
 }

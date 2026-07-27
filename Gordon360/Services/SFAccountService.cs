@@ -11,6 +11,7 @@ using System;
 using Gordon360.Models.Salesforce;
 using Microsoft.IdentityModel.Tokens;
 using Gordon360.Exceptions;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Services;
 
@@ -21,7 +22,7 @@ namespace Gordon360.Services;
 public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAccountService
 {
 
-    // [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public async Task<AccountViewModel> GetAccountByID(string id)
     {
         if (id.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "id missing or empty" };
@@ -34,14 +35,14 @@ public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAc
         return account;
     }
 
-    // [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
+    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
     public async Task<IEnumerable<AccountViewModel>> GetAll()
     {
         var allAccounts = (IEnumerable<AccountViewModel>) await sfProcedures.GetAllAccountsAsync();
         return allAccounts;
     }
 
-    // [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public async Task<AccountViewModel> GetAccountByEmail(string email)
     {
         if (email.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "email missing or empty" };
@@ -54,7 +55,7 @@ public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAc
         return account;
     }
 
-    // [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public async Task<AccountViewModel> GetAccountByUsername(string username)
     {
         if (username.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
@@ -165,86 +166,49 @@ public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAc
         return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
     }
 
-    /// <summary>
-    /// Get the list of accounts a user can search, based on the types of accounts they want to search, their authorization, and whether they're searching sensitive info.
-    /// </summary>
-    /// <param name="accountTypes">A list of account types that will be searched: 'student', 'alumni', and/or 'facstaff'</param>
-    /// <param name="authGroups">The authorization groups of the searching user, to decide what accounts they are permitted to search</param>
-    /// <param name="homeCity">The home city search param, since it is considered sensitive info</param>
-    /// <returns>The list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
-    public IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
+    public async Task<IEnumerable<AdvancedSearchViewModel>> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
     {
-        IEnumerable<Student> students = [];
-        if (accountTypes.Contains("student")
+        var accounts = (IEnumerable<AdvancedSearchViewModel>)await sfProcedures.GetAllAccountsAsync();
+        if (!accountTypes.Contains("student")
             // Only students and FacStaff are authorized to search for students
-            && (authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
+            || !(authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
         {
-            students = context.Student;
+            accounts = accounts.Where(acc => acc.Type != "Student");
         }
-
         // Only Faculy and Staff can see Private students
         if (!authGroups.Contains(AuthGroup.FacStaff))
         {
-            students = students.Where(s => s.KeepPrivate != "P");
+            accounts = accounts.Where(acc => acc.KeepPrivate != "P");
         }
-
-        IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
-        if (accountTypes.Contains("facstaff"))
-        {
-            facstaff = context.FacStaff.Where(fs => fs.ActiveAccount == true);
-        }
-
-        IEnumerable<Alumni> alumni = Enumerable.Empty<Alumni>();
+        // TODO: Implement
+        // if (accountTypes.Contains("facstaff"))
+        // {
+        //     accounts = accounts.Where(acc => acc.ActiveAccount == true);
+        // }
         if (accountTypes.Contains("alumni"))
         {
-            alumni = context.Alumni.Where(a => a.ShareName != "N");
+            accounts = accounts.Where(acc => acc.ShareName != "N");
         }
-
         // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
         if (!string.IsNullOrEmpty(homeCity))
         {
-            facstaff = facstaff.Where(a => a.KeepPrivate == "0");
-            alumni = alumni.Where(a => a.ShareAddress != "N");
+            accounts = accounts.Where(acc => acc.KeepPrivate == "0");
+            accounts = accounts.Where(acc => acc.ShareAddress != "N");
         }
 
-        return students.Select<Student, AdvancedSearchViewModel>(s => s)
-            .UnionBy(facstaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs), a => a.AD_Username)
-            .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username);
+        return accounts;
     }
 
-    /// <summary>
-    /// Get basic info for all accounts
-    /// </summary>
-    /// <returns>BasicInfoViewModel of all accounts</returns>
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync()
     {
-
-        var basicInfo = await context.Procedures.ALL_BASIC_INFOAsync();
-        return basicInfo.Select(
-            b => new BasicInfoViewModel
-            {
-                FirstName = b.FirstName,
-                LastName = b.LastName,
-                Nickname = b.Nickname,
-                UserName = b.UserName
-            });
+        var allAccounts = await sfProcedures.GetBasicInfo() ?? throw new ResourceNotFoundException() {ExceptionMessage = "No accounts found!"};
+        return (IEnumerable<BasicInfoViewModel>)allAccounts;
     }
 
-    /// <summary>
-    /// Get basic info for all accounts except alumni
-    /// </summary>
-    /// <returns>BasicInfoViewModel of all accounts except alumni</returns>
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
     {
-        var basicInfo = await context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();
-        return basicInfo.Select(
-            b => new BasicInfoViewModel
-            {
-                FirstName = b.firstname,
-                LastName = b.lastname,
-                Nickname = b.Nickname,
-                UserName = b.Username
-            });
+        var allAccountsExceptAlumni = await sfProcedures.GetBasicInfo(alumni: false) ?? throw new ResourceNotFoundException() {ExceptionMessage = "No accounts found!"};
+        return (IEnumerable<BasicInfoViewModel>)allAccountsExceptAlumni;
     }
 
     public ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts)

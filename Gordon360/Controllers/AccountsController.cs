@@ -131,7 +131,7 @@ public class AccountsController(IAccountService accountService) : GordonControll
 
         IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
-        var accounts = accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
+        var accounts = await accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
 
         var searchResults = accountService.AdvancedSearch(
             accounts,

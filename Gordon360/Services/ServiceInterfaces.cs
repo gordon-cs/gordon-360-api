@@ -226,7 +226,7 @@ namespace Gordon360.Services
         /// <param name="authGroups">The authorization groups of the searching user</param>
         /// <param name="homeCity">The home city that the user is searching for</param>
         /// <returns>Unordered list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
-        IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
+        Task<IEnumerable<AdvancedSearchViewModel>> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
         /// <summary>
         /// Given a list of accounts, and search parameters, return all the accounts that match those search params.
         /// </summary>

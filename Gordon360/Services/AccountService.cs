@@ -144,7 +144,7 @@ public class AccountService(CCTContext context) : IAccountService
         return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
     }
 
-    public IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
+    public Task<IEnumerable<AdvancedSearchViewModel>> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
     {
         IEnumerable<Student> students = Enumerable.Empty<Student>();
         if (accountTypes.Contains("student")
@@ -179,9 +179,9 @@ public class AccountService(CCTContext context) : IAccountService
             alumni = alumni.Where(a => a.ShareAddress != "N");
         }
 
-        return students.Select<Student, AdvancedSearchViewModel>(s => s)
+        return Task.FromResult(students.Select<Student, AdvancedSearchViewModel>(s => s)
             .UnionBy(facstaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs), a => a.AD_Username)
-            .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username);
+            .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username));
     }
 
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync()

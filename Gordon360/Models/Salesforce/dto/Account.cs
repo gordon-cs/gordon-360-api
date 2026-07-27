@@ -21,6 +21,11 @@ public class Account
     public string AD_Username__pc { get; set; } = "";
     public string PersonGenderIdentity { get; set; } = "";
     public string PersonBirthdate { get; set; } = "";
+    public bool gc_Current_Student__c { get; set; } = false;
+    public bool gc_Current_Faculty__pc { get; set; } = false;
+    public bool gc_Current_Staff__pc { get; set; } = false;
+    public bool gc_is_Current_Alumni__c { get; set; } = false;
+    public string gc_Resident_Commuter__pc  { get; set; } = "";
 
 
     public SFChildCollection<ConstituentRole> Persons { get; set; } = new();

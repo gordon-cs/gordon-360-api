@@ -119,9 +119,11 @@ public record ProfileViewModel(
 
         var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
                                 ?? new ContactPointAddress();
+        
+        string personType = (account.gc_Current_Student__c ? "stu" : "") + (account.gc_is_Current_Alumni__c ? "alu" : "") + (account.gc_Current_Faculty__pc ? "fac" : "");
 
         // print onCampusAddress building 
-        System.Console.WriteLine($"On-Campus Address: {onCampusAddress}");
+        Console.WriteLine($"On-Campus Address: {onCampusAddress}");
 
         var address =
             account.ContactPointAddresses?.records?.FirstOrDefault();
@@ -180,7 +182,7 @@ public record ProfileViewModel(
             Calendar: "", // Todo: implement Calendar
 
             // Student only
-            OnOffCampus: "", // TODO: implement OnOffCampus
+            OnOffCampus: account.gc_Resident_Commuter__pc, // TODO: implement OnOffCampus
             OffCampusStreet1: "", // TODO: implement OffCampusStreet1
             OffCampusStreet2: "", // TODO: implement OffCampusStreet2
             OffCampusCity: "", // TODO: implement OffCampusCity
@@ -250,7 +252,7 @@ public record ProfileViewModel(
             KeepPrivate: "", // TODO: implement KeepPrivate
 
             // ProfileViewModel only
-            PersonType: "" // TODO: Implement PersonType           
+            PersonType: personType
         );
     }
 }
