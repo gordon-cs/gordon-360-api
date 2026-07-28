@@ -202,13 +202,13 @@ public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAc
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync()
     {
         var allAccounts = await sfProcedures.GetBasicInfo() ?? throw new ResourceNotFoundException() {ExceptionMessage = "No accounts found!"};
-        return (IEnumerable<BasicInfoViewModel>)allAccounts;
+        return allAccounts.Select(account => (BasicInfoViewModel) account);
     }
 
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
     {
         var allAccountsExceptAlumni = await sfProcedures.GetBasicInfo(alumni: false) ?? throw new ResourceNotFoundException() {ExceptionMessage = "No accounts found!"};
-        return (IEnumerable<BasicInfoViewModel>)allAccountsExceptAlumni;
+        return allAccountsExceptAlumni.Select(account => (BasicInfoViewModel) account);
     }
 
     public ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts)

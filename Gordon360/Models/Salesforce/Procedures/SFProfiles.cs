@@ -105,7 +105,8 @@ public class SFProfiles(ISalesforceContext context)
         var response = await context.SoqlQuery<Account>(
             "SELECT FirstName, LastName, AD_Username__pc, Preferred_First_Name_Formula__pc, FormerLastName__pc " +
             "FROM Account",
-            where: alumni ? "" : "gc_is_Current_Alumni__c = false");
+            where: "IsPersonAccount = true" + (alumni ? "" : " AND gc_is_Current_Alumni__c = false"),
+            limit_n: 50);
         return response.records;
     }
      
