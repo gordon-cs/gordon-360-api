@@ -10,12 +10,20 @@ using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
+using Microsoft.Graph;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services;
 
 
 /// <summary>
-/// Service Class that facilitates data transactions between the AccountsController and the Account database model.
+/// Service Class that facilitates data transactions between the AccountsController and 
+/// the Account database model.  It also provides methods to enforce access restrictions
+/// on user data.
+/// 
+/// The "CanISee..." and "VisibleToMe..." methods encapsulate rules about whether
+/// a requesting user can even find a user (CanISee...) and if so, what fields they 
+/// are allowed to see (VisibleToMe...).
 /// </summary>
 public class AccountService(CCTContext context) : IAccountService
 {
@@ -25,7 +33,7 @@ public class AccountService(CCTContext context) : IAccountService
     /// </summary>
     /// <param name="id">The person's gordon id</param>
     /// <returns>AccountViewModel if found, null if not found</returns>
-    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
+    [StateYourBusiness(operation = Static.Names.Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public AccountViewModel GetAccountByID(string id)
     {
         var account = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id);
@@ -42,7 +50,7 @@ public class AccountService(CCTContext context) : IAccountService
     /// Fetches all the account records from storage.
     /// </summary>
     /// <returns>AccountViewModel IEnumerable. If no records were found, an empty IEnumerable is returned.</returns>
-    [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
+    [StateYourBusiness(operation = Static.Names.Operation.READ_ALL, resource = Resource.ACCOUNT)]
     public IEnumerable<AccountViewModel> GetAll()
     {
         return (IEnumerable<AccountViewModel>)context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
@@ -216,10 +224,10 @@ public class AccountService(CCTContext context) : IAccountService
             students = context.Student;
         }
 
-        // Only Faculy and Staff can see Private students
+        // Only Faculty and Staff can see Private students
         if (!authGroups.Contains(AuthGroup.FacStaff))
         {
-            students = students.Where(s => s.KeepPrivate != "P");
+            students = students.Where(s => (s.KeepPrivate != "Y" && s.KeepPrivate != "P"));
         }
 
         IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
@@ -237,7 +245,19 @@ public class AccountService(CCTContext context) : IAccountService
         // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
         if (!string.IsNullOrEmpty(homeCity))
         {
-            facstaff = facstaff.Where(a => a.KeepPrivate == "0");
+            IQueryable<UserPrivacy_Settings> privacySettings = context.UserPrivacy_Settings
+                .Include(a => a.FieldNavigation)
+                .Include(a => a.VisibilityNavigation);
+            var homePrivacy = authGroups.Contains(AuthGroup.FacStaff)
+                ? privacySettings.Where(a => a.FieldNavigation.Field == "HomeCity"
+                                            && a.VisibilityNavigation.Group != "Private")
+                : privacySettings.Where(a => a.FieldNavigation.Field == "HomeCity"
+                                            && a.VisibilityNavigation.Group != "Private"
+                                            && a.VisibilityNavigation.Group != "FacStaff");
+            facstaff = facstaff.Join(homePrivacy,
+                user => user.ID, privs => privs.gordon_id,
+                (user, privs) => user
+            );
             alumni = alumni.Where(a => a.ShareAddress != "N");
         }
 
