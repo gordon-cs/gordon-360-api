@@ -35,6 +35,6 @@ public class SFAcademicTermServiceTests
 
         var procedures = new AcademicTermProcedures(mockContext.Object);
 
-        return new SFAcademicTermService(procedures);
+        return new AcademicTermService(procedures);
     }
 }

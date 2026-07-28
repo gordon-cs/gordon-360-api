@@ -1,7 +1,5 @@
-﻿using Gordon360.Models.CCT;
-using Gordon360.Models.CCT.Context;
+﻿using Gordon360.Models.Salesforce;
 using Gordon360.Models.ViewModels;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,54 +7,34 @@ using System.Threading.Tasks;
 
 namespace Gordon360.Services;
 
-public class AcademicTermService(CCTContext context) : IAcademicTermService
+public class AcademicTermService(AcademicTermProcedures academicTermProcedures) : IAcademicTermService
 {
-
     public async Task<YearTermTableViewModel?> GetCurrentTermAsync()
     {
-        var terms = await context.YearTermTable
-            .FromSqlRaw("EXEC dbo.GetCurrentTerm")
-            .AsNoTracking()
-            .ToListAsync();
-
-        var currentTerm = terms.FirstOrDefault();
-
-        return currentTerm != null ? new YearTermTableViewModel(currentTerm) : null;
+        return await academicTermProcedures.GetCurrentTerm();
     }
 
 
     public async Task<IEnumerable<YearTermTableViewModel>> GetAllTermsAsync()
     {
-        var terms = await context.YearTermTable
-            .OrderByDescending(t => t.TRM_BEGIN_DTE)
-            .ToListAsync();
-
-        return terms.Select(t => new YearTermTableViewModel(t));
+        return await academicTermProcedures.GetAllTerms();
     }
 
 
+    // The term list is in chronological order with the oldest term first.
+    // In the main loop we search for the term we are currently in, or determine if we are
+    // between terms.
+    //
+    // There are two cases:
+    //   (1) we're in a regular academic term.
+    //   (2) we're in between two existing academic terms.
+    // Once we've found our place we construct the DaysLeftViewModel to display 
+    // total days, days left, and term label of the period we are currently in.
     public async Task<DaysLeftViewModel> GetDaysLeftAsync()
     {
-        // The term list is in chronological order with the oldest term first.
-        // In the main loop we search for the term we are currently in, or determine if we are
-        // between terms.
-        //
-        // There are two cases:
-        //   (1) we're in a regular academic term.
-        //   (2) we're in between two existing academic terms.
-        // Once we've found our place we construct the DaysLeftViewModel to display 
-        // total days, days left, and term label of the period we are currently in.
-
         var today = DateTime.Today;
-
-        // Get all terms from the database
-        var allTerms = await GetAllTermsAsync();
-
-        // Filter terms to only include relevant ones (FA, SP, SU) and sort choronologically
-        var relevantTerms = allTerms
-            .Where(t => t.TermCode is "FA" or "SP" or "SU")
-            .OrderBy(t => t.BeginDate)
-            .ToList();
+        var relevantTerms = await academicTermProcedures.GetAllTerms();
+        relevantTerms = [.. relevantTerms.Where(t => t.TermCode == "SP" || t.TermCode == "SU" || t.TermCode == "FA" )];
 
         // Iterate through the relevant terms to find where today's date fits
         for (int i = 0; i < relevantTerms.Count; i++)
@@ -118,17 +96,18 @@ public class AcademicTermService(CCTContext context) : IAcademicTermService
         };
     }
 
+    [Obsolete]
     public async Task<YearTermTableViewModel?> GetCurrentTermForFinalExamsAsync()
     {
         var currentDate = DateTime.Now;
-
-        var finalExamTerm = await context.YearTermTable
+        var terms = await academicTermProcedures.GetAllTerms();
+        var finalExamTerm = terms
             .Where(t =>
-                currentDate > t.TRM_BEGIN_DTE &&
-                (t.TRM_CDE == "SP" || t.TRM_CDE == "FA"))
-            .OrderByDescending(t => t.TRM_BEGIN_DTE)
-            .FirstOrDefaultAsync();
+                currentDate > t.BeginDate &&
+                (t.TermCode == "SP" || t.TermCode == "FA"))
+            .OrderByDescending(t => t.BeginDate)
+            .FirstOrDefault();
 
-        return finalExamTerm != null ? new YearTermTableViewModel(finalExamTerm) : null;
+        return finalExamTerm;
     }
 }

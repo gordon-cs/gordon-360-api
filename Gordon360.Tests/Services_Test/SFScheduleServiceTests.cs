@@ -113,6 +113,6 @@ public class SFScheduleServiceTests : ScheduleServiceContractTests
                     })
             });
 
-        return new SFScheduleService(userCourses, sessionService.Object, academicTermService.Object);
+        return new ScheduleService(userCourses, sessionService.Object, academicTermService.Object);
     }
 }
