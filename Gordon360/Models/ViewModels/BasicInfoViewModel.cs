@@ -141,7 +141,7 @@ public record BasicInfoViewModel
         return string.Concat(Enumerable.Repeat("z", totalPrecedence)) + keyBase;
     }
 
-    public static explicit operator BasicInfoViewModel(Account account)
+    public static BasicInfoViewModel FromAccount(Account account)
     {
         return new BasicInfoViewModel
         {

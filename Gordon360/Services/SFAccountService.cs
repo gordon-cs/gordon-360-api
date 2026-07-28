@@ -168,7 +168,8 @@ public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAc
 
     public async Task<IEnumerable<AdvancedSearchViewModel>> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
     {
-        var accounts = (IEnumerable<AdvancedSearchViewModel>)await sfProcedures.GetAllAccountsAsync();
+        var accounts = (await sfProcedures.GetAllAccountsAsync())
+            .Select(AdvancedSearchViewModel.FromAccount);
         if (!accountTypes.Contains("student")
             // Only students and FacStaff are authorized to search for students
             || !(authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
@@ -202,13 +203,15 @@ public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAc
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync()
     {
         var allAccounts = await sfProcedures.GetBasicInfo() ?? throw new ResourceNotFoundException() {ExceptionMessage = "No accounts found!"};
-        return allAccounts.Select(account => (BasicInfoViewModel) account);
+        var result = allAccounts.Select(BasicInfoViewModel.FromAccount);
+        return result;
     }
 
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
     {
         var allAccountsExceptAlumni = await sfProcedures.GetBasicInfo(alumni: false) ?? throw new ResourceNotFoundException() {ExceptionMessage = "No accounts found!"};
-        return allAccountsExceptAlumni.Select(account => (BasicInfoViewModel) account);
+        var result = allAccountsExceptAlumni.Select(BasicInfoViewModel.FromAccount);
+        return result;
     }
 
     public ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts)

@@ -137,7 +137,7 @@ public class AdvancedSearchViewModel
         };
     }
 
-    public static explicit operator AdvancedSearchViewModel(Account account)
+    public static AdvancedSearchViewModel FromAccount(Account account)
     {
         var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
 
