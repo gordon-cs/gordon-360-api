@@ -4,19 +4,22 @@ The backend of Gordon 360, a Web API consumed by [gordon-360-ui](https://github.
 
 ## Table of Contents
 
-- [The Code](#the-code)
-  - [Introduction](#introduction)
-- [Running the API locally](#running-the-api-locally)
-  - [Preliminary setup](#preliminary-setup)
-  - [Building and running](#building-and-running)
-- [API Maintenance](#api-maintenance)
-  - [Continuous Integration](#continuous-integration)
-  - [Continuous Deployment](#continuous-deployment)
-  - [Deploying Manually](#deploying-manually)
+- [Gordon 360 API](#gordon-360-api)
+  - [Table of Contents](#table-of-contents)
+  - [The Code](#the-code)
+    - [Introduction](#introduction)
+  - [Running the API locally](#running-the-api-locally)
+    - [Preliminary setup](#preliminary-setup)
+    - [Building and running](#building-and-running)
+  - [API Maintenance](#api-maintenance)
+    - [Continuous Integration](#continuous-integration)
+    - [Continuous Deployment](#continuous-deployment)
+    - [Deploying Manually](#deploying-manually)
+  - [Additional Documentation](#additional-documentation)
+
 
 
 **[Salesforce Migration Nodes](/docs/SalesforceMigration.md)**
-
 
 ## The Code
 
