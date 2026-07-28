@@ -95,6 +95,8 @@ public class SFProfiles(ISalesforceContext context)
 
     /// <summary>
     /// Gets basic info for all accounts for search preview
+    /// WARNING: This method is slow to execute (15+ seconds) due to the large number of records it pulls.
+    /// Seek alternatives if at all possible.
     /// </summary>
     /// <param name="alumni">Whether or not to include alumni in the search</param>
     /// <returns>Minimal info about all accounts</returns>
@@ -134,6 +136,8 @@ public class SFProfiles(ISalesforceContext context)
 
     /// <summary>
     /// Gets all accounts, sorted alphabetically by last name
+    /// WARNING: This method is *extremely* slow to execute (150+ seconds) due to the large number of records it pulls.
+    /// Seek alternatives if at all possible.
     /// </summary>
     /// <returns></returns>
     public async Task<IEnumerable<Account>> GetAllAccountsAsync()
@@ -159,7 +163,7 @@ public class SFProfiles(ISalesforceContext context)
     {
         if (id.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No id given!" };
         var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"gc_Jenz_ID__c = {id}", limit_n: 1);
-        return response.records.FirstOrDefault();
+        return response?.records.FirstOrDefault();
     }
 
     /// <summary>
@@ -171,7 +175,7 @@ public class SFProfiles(ISalesforceContext context)
     {
         if (email.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No email given!" };
         var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"gc_University_Email__c = {email}", limit_n: 1);
-        return response.records.FirstOrDefault();
+        return response?.records.FirstOrDefault();
     }
 
     /// <summary>
@@ -185,7 +189,7 @@ public class SFProfiles(ISalesforceContext context)
         if (adUsername.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No username given!" };
         var whereString = $"RecordType.Name = 'Person Account' AND (AD_Username__pc = '{adUsername}' OR Name = '{adUsername}')";
         var response = await context.SoqlQuery<Account>(SoqlTemplate, where: whereString, limit_n: 1);
-        return response.records.FirstOrDefault();
+        return response?.records.FirstOrDefault();
     }
 
     /// <summary>
@@ -199,6 +203,6 @@ public class SFProfiles(ISalesforceContext context)
         if (adUsername.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No username given!" };
         var whereString = $"gc_Assigned_Person__r.Account.AD_Username__pc  = '{adUsername}'";
         var response = await context.SoqlQuery<Mailbox__c>("SELECT gc_Combination__c FROM Mailbox__c", where: whereString, limit_n: 1);
-        return response.records.FirstOrDefault();
+        return response?.records.FirstOrDefault();
     }
 }
