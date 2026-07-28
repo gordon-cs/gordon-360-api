@@ -1,5 +1,3 @@
-using Gordon360.Models.ViewModels;
-using Gordon360.Models.CCT;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,22 +92,30 @@ public class SFProfiles(ISalesforceContext context)
             )
         FROM Account
         """;
-    
+
     /// <summary>
     /// Gets basic info for all accounts for search preview
     /// </summary>
     /// <param name="alumni">Whether or not to include alumni in the search</param>
     /// <returns>Minimal info about all accounts</returns>
-    public async Task<IEnumerable<Account>> GetBasicInfo(bool alumni= true)
+    public async Task<IEnumerable<Account>> GetBasicInfo(bool alumni = true)
     {
-        var response = await context.SoqlQuery<Account>(
-            "SELECT FirstName, LastName, AD_Username__pc, Preferred_First_Name_Formula__pc, FormerLastName__pc " +
-            "FROM Account",
-            where: "IsPersonAccount = true" + (alumni ? "" : " AND gc_is_Current_Alumni__c = false"),
-            limit_n: 50);
-        return response.records;
+        List<Account> result = [];
+
+        SFQueryResult<Account>? response = await context.SoqlQuery<Account>(
+           "SELECT FirstName, LastName, AD_Username__pc, Preferred_First_Name_Formula__pc, FormerLastName__pc " +
+           "FROM Account",
+           where: "IsPersonAccount = true" + (alumni ? "" : " AND gc_is_Current_Alumni__c = false"));
+
+        while (!(response?.done ?? true) && response?.nextRecordsUrl is not null)
+        {
+            response = await context.GetNext<Account>(response!.nextRecordsUrl);
+            result.AddRange(response?.records ?? []);
+        }
+
+        return result;
     }
-     
+
     /// <summary>
     /// Gets the birthday of the given user
     /// </summary>
@@ -132,9 +138,16 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns></returns>
     public async Task<IEnumerable<Account>> GetAllAccountsAsync()
     {
+        List<Account> result = [];
         var response = await context.SoqlQuery<Account>(SoqlTemplate, order: "LastName DESC NULLS LAST");
 
-        return response.records;
+        while (!(response?.done ?? true) && response?.nextRecordsUrl is not null)
+        {
+            response = await context.GetNext<Account>(response!.nextRecordsUrl);
+            result.AddRange(response?.records ?? []);
+        }
+
+        return result;
     }
 
     /// <summary>

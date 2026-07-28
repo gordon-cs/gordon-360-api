@@ -1895,7 +1895,7 @@
             Interface to SalesforceContext. Makes testing quite a bit easier.
             </summary>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SalesforceContext.SoqlQuery``1(System.String,System.String,System.String,System.Int32)">
+        <member name="M:Gordon360.Models.Salesforce.SalesforceContext.SoqlQuery``1(System.String,System.String,System.String,System.Int32,System.Int32)">
             <summary>
             Constructs a SOQL query
             </summary>
@@ -1903,6 +1903,7 @@
             <param name="where">SOQL field selectors</param>
             <param name="order">SOQL ordering</param>
             <param name="limit_n">SOQL limit on number of records returned</param>
+            <param name="offset_n">SOQL offset of records returned</param>
             <returns>T containing results of query</returns>
         </member>
         <member name="M:Gordon360.Models.Salesforce.AcademicTermProcedures.GetAllTerms">

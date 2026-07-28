@@ -8,6 +8,7 @@ public enum QueryType { SOQL, SOSL }
 /// </summary>
 public interface ISalesforceContext
 {
-    Task<SFQueryResult<T>> SoqlQuery<T>(string template, string where = "", string order = "", int limit_n = 0);
-    Task<SFQueryResult<T>> RawQuery<T>(string queryString);
+    Task<SFQueryResult<T>?> SoqlQuery<T>(string template, string where = "", string order = "", int limit_n = 0, int offset_n = 0);
+    Task<SFQueryResult<T>?> RawQuery<T>(string queryString);
+    Task<SFQueryResult<T>?> GetNext<T>(string nextRecordsUrl);
 }
