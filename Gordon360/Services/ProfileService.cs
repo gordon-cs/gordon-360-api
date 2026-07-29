@@ -3,6 +3,8 @@ using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
+using Gordon360.Static.Methods;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,62 +13,85 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Gordon360.Models.Salesforce;
+using Gordon360.Enums;
 
 namespace Gordon360.Services;
 
-public class ProfileService(CCTContext context, IConfiguration config, SFProfiles profileProcedures, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
+public class ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
-    public async Task<StudentProfileViewModel> GetStudentProfileByUsername(string username)
+    // These three-character strings are valid substrings for the PersonType
+    // field in the profile. These are used in the UI and so cannot be changed
+    // here unless the corresponding change is made in the UI.
+    const string FACSTAFF_PROFILE = "fac";
+    const string STUDENT_PROFILE = "stu";
+    const string ALUMNI_PROFILE = "alu";
+
+    /// <summary>
+    /// get student profile info
+    /// </summary>
+    /// <param name="username">username</param>
+    /// <returns>StudentProfileViewModel if found, null if not found</returns>
+    public StudentProfileViewModel? GetStudentProfileByUsername(string username)
     {
-        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        var student = (StudentProfileViewModel)(await profileProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" });;
-        student = ComposeStudentProfile(student, context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower()));
-        return student;
+        return context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
-    public async Task<FacultyStaffProfileViewModel> GetFacultyStaffProfileByUsername(string username)
+    /// <summary>
+    /// get faculty staff profile info
+    /// </summary>
+    /// <param name="username">username</param>
+    /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
+    public FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username)
     {
-        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        var facstaff = (FacultyStaffProfileViewModel)(await profileProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" });;
-        facstaff = ComposeFacStaffProfile(facstaff, context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower()));
-        return facstaff;
+        return context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
-    public async Task<AlumniProfileViewModel> GetAlumniProfileByUsername(string username)
+    /// <summary>
+    /// get alumni profile info
+    /// </summary>
+    /// <param name="username">username</param>
+    /// <returns>AlumniProfileViewModel if found, null if not found</returns>
+    public AlumniProfileViewModel? GetAlumniProfileByUsername(string username)
     {
-        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        var alumni = (AlumniProfileViewModel)(await profileProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" });;
-        alumni = ComposeAlumniProfile(alumni, context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower()));
-        return alumni;
+        return context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
-    public async Task<ProfileViewModel> GetProfileByUsername(string username)
+    /// <summary>
+    /// get mailbox information (contains box combination)
+    /// </summary>
+    /// <param name="username">The current user's username</param>
+    /// <returns>MailboxCombinationViewModel with the combination</returns>
+    public MailboxCombinationViewModel? GetMailboxCombination(string username)
     {
-        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        var profile = await profileProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
-        return (ProfileViewModel)profile;
+        return context.Mailboxes
+            .Where(m => m.HolderUsername == username)
+            .Select(m => m.Combination)
+            .Select(MailboxCombinationViewModel.From)
+            .FirstOrDefault();
     }
 
-    public async Task<MailboxCombinationViewModel> GetMailboxCombination(string username)
+    /// <summary>
+    /// get a user's birthday
+    /// </summary>
+    /// <param name="username">The username of the person to get the birthdate of</param>
+    /// <returns>Date the user's date of birth, if available, or a default of 1/1/1800.</returns>
+    public DateTime GetBirthdate(string username)
     {
-        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        var mailbox = await profileProcedures.GetMailboxCombinationAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
-        if (mailbox.gc_Combination__c is null) throw new ResourceNotFoundException() { ExceptionMessage = "No combination!" };;
-        return new MailboxCombinationViewModel(mailbox.gc_Combination__c);
-    }
-
-    public async Task<DateTime> GetBirthdate(string username)
-    {
-        var birthdate = await profileProcedures.GetBirthday(username);
+        var birthdate = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
         var impossible_birthdate = new DateTime(1800, 1, 1);
+
+        if (birthdate == null)
+        {
+            return impossible_birthdate;
+        }
 
         // Test accounts always have current date and time as birthday, so
         // treat this the same as no birthday
         // Comment this out to see "happy birthday" banner in test accounts
-        var lifetime = DateTime.Now - birthdate;
+        var lifetime = DateTime.Now - (DateTime)birthdate;
         if (lifetime.Days < 1) // no valid user was born within the last 24 hours
         {
             return impossible_birthdate;
@@ -74,7 +99,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
         try
         {
-            return birthdate;
+            return (DateTime)(birthdate);
         }
         catch
         {
@@ -82,37 +107,51 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         }
     }
 
+    /// <summary>
+    /// get advisors for particular student
+    /// </summary>
+    /// <param name="username">AD username</param>
+    /// <returns></returns>
     public async Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username)
     {
-        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        var account =  await GetStudentProfileByUsername(username);
-        if (account?.AdvisorIDs is null) throw new ResourceNotFoundException() { ExceptionMessage = "AdvisorIDs missing or empty" };
+        var account = accountService.GetAccountByUsername(username);
 
-        List<AdvisorViewModel> resultList = [];
-        foreach (var advisorID in account.AdvisorIDs.Split(","))
-        {
-            var advisor = await accountService.GetAccountByID(advisorID);
-            if (advisor is null) continue;
-            resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
-        }
-
-        return resultList;
+        return context.StudentAdvisors
+                .Where(sa => sa.StudentId == int.Parse(account.GordonID))
+                .Select(a => new AdvisorViewModel(a.AdvisorFirstName, a.AdvisorLastName, a.AdvisorADUserName));
     }
 
+    /// <summary> Gets the clifton strengths of a particular user </summary>
+    /// <param name="id"> The id of the user for which to retrieve info </param>
+    /// <returns> Clifton strengths of the given user. </returns>
     public CliftonStrengthsViewModel? GetCliftonStrengths(int id)
     {
         return context.Clifton_Strengths.FirstOrDefault(c => c.ID_NUM == id);
     }
 
+    /// <summary>
+    /// Toggles the privacy of the Clifton Strengths data associated with the given id
+    /// </summary>
+    /// <param name="id">ID of the user whose Clifton Strengths privacy is toggled</param>
+    /// <returns>The new privacy value</returns>
+    /// <exception cref="ResourceNotFoundException">Thrown when the given ID doesn't match any Clifton Strengths rows</exception>
     public async Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id)
     {
-        var strengths = context.Clifton_Strengths.FirstOrDefault(cs => cs.ID_NUM == id) ?? throw new ResourceNotFoundException { ExceptionMessage = "No Strengths found" };
+        var strengths = context.Clifton_Strengths.FirstOrDefault(cs => cs.ID_NUM == id);
+        if (strengths is null)
+        {
+            throw new ResourceNotFoundException { ExceptionMessage = "No Strengths found" };
+        }
+
         strengths.Private = !strengths.Private;
         await context.SaveChangesAsync();
 
         return strengths.Private;
     }
 
+    /// <summary> Gets the emergency contact information of a particular user </summary>
+    /// <param name="username"> The username of the user for which to retrieve info </param>
+    /// <returns> Emergency contact information of the given user. </returns>
     public IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username)
     {
         var result = context.EmergencyContact.Where(x => x.AD_Username == username).Select(x => (EmergencyContactViewModel)x);
@@ -125,23 +164,39 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         return result;
     }
 
+    /// <summary>
+    /// Get photo path for profile
+    /// </summary>
+    /// <param name="username">AD username</param>
+    /// <returns>PhotoPathViewModel if found, null if not found</returns>
     public async Task<PhotoPathViewModel?> GetPhotoPathAsync(string username)
     {
-        var account = await accountService.GetAccountByUsername(username);
-        if (account is null) return null;
+        var account = accountService.GetAccountByUsername(username);
 
         var photoInfoList = await context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.GordonID));
         return photoInfoList.Select(p => new PhotoPathViewModel { Img_Name = p.Img_Name, Img_Path = p.Img_Path, Pref_Img_Name = p.Pref_Img_Name, Pref_Img_Path = p.Pref_Img_Path }).FirstOrDefault();
     }
 
+    /// <summary>
+    /// Fetches a single profile whose username matches the username provided as an argument
+    /// </summary>
+    /// <param name="username">The username</param>
+    /// <returns>ProfileViewModel if found, null if not found</returns>
     public ProfileCustomViewModel? GetCustomUserInfo(string username)
     {
         return context.CUSTOM_PROFILE.Find(username);
     }
 
+    /// <summary>
+    /// Sets the path for the profile image.
+    /// </summary>
+    /// <param name="username">AD Username</param>
+    /// <param name="path"></param>
+    /// <param name="name"></param>
     public async Task UpdateProfileImageAsync(string username, string? path, string? name)
     {
-        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
+        var account = accountService.GetAccountByUsername(username);
+
         await context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.GordonID), path, name);
         // Update value in cached data
         var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
@@ -162,6 +217,12 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
     }
 
 
+    /// <summary>
+    /// Sets the component of the Custom_profile.
+    /// </summary>
+    /// <param name="username">The username</param>
+    /// <param name="type"></param>
+    /// <param name="content"></param>
     public async Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content)
     {
         var original = await context.CUSTOM_PROFILE.FindAsync(username);
@@ -217,72 +278,285 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         await context.SaveChangesAsync();
     }
 
-    public async Task UpdateMobilePrivacyAsync(string username, string value)
+
+    /// <summary>
+    /// convert combined profile to public profile based on individual privacy settings
+    /// </summary>
+    /// <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
+    /// <param name="profile">combined profile of the person being searched</param>
+    /// <returns>public profile of the person based on individual privacy settings</returns>
+    public CombinedProfileViewModel ImposePrivacySettings
+        (IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
     {
-        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
-        await context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
-        // Update value in cached data
-        var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
-        if (student != null)
+        // Convert profile from record to class so we can modify its elements
+        CombinedProfileViewModel restricted_profile = (CombinedProfileViewModel) profile;
+
+        // Privacy settings are generally heirarchical from bypassing all privacy settings
+        // to honoring all privacy settings:
+        //   SiteAdmin & Police -> FacStaff -> Students -> Alumni
+
+        // Find the account belonging to person whose profile we are accessing and get their
+        // privacy settings
+        var account = accountService.GetAccountByUsername(restricted_profile.AD_Username);
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+
+        // Determine the viewer and profile user types
+        bool viewerIsSiteAdmin = viewerGroups.Contains(AuthGroup.SiteAdmin);
+        bool viewerIsPolice = viewerGroups.Contains(AuthGroup.Police);
+        bool viewerIsFacStaff = viewerGroups.Contains(AuthGroup.FacStaff);
+        bool viewerIsStudent = viewerGroups.Contains(AuthGroup.Student);
+        bool viewerIsAlumni = viewerGroups.Contains(AuthGroup.Alumni);
+        bool profileIsFacStaff = restricted_profile.PersonType.Contains(FACSTAFF_PROFILE);
+        bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
+        bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
+
+        // Get visibility group IDs
+        var Public_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Public")?.ID;
+        var FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")?.ID;
+        var Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")?.ID;
+
+        // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
+        // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
+        // privacy settings in profile.
+
+        // NOTE: The "old-style" privacy settings in the profile (e.g. IsMobilePhonePrivate)
+        // are set by HR or the student matriciulation process.  These settings will be used
+        // for 360 until the user chooses privacy settings in their profile.
+        foreach (UserPrivacy_Fields field in context.UserPrivacy_Fields)
         {
-            student.IsMobilePhonePrivate = value == "Y" ? 1 : 0;
+            int fieldID = field.ID;
+            string fieldName = field.Field;
+
+            // Determine the visibility for the current privacy field and
+            // fall back to profile-based visibility restrictions if needed
+            var visibilityID = privacy.Where(x => x.Field == fieldID).FirstOrDefault()?.Visibility;
+            if (visibilityID is null)
+            {
+                if (profileIsStudent)
+                {
+                    // honor "semi-private" code: student's home city, state, country and on-off campus status is private
+                    var addressPrivate = restricted_profile.KeepPrivate == "S"
+                                         && (fieldName == "HomeCity" || fieldName == "HomeState"
+                                            || fieldName == "HomeCountry" || fieldName == "Country");
+                    var mobilePhonePrivate = restricted_profile.IsMobilePhonePrivate && fieldName == "MobilePhone";
+                    visibilityID = mobilePhonePrivate || addressPrivate ? Private_GroupID : Public_GroupID;
+                }
+                else if (profileIsFacStaff)
+                {
+                    visibilityID = restricted_profile.KeepPrivate == "1" ? Private_GroupID : Public_GroupID;
+                }
+                else if (profileIsAlumni)
+                {
+                    visibilityID = (restricted_profile.ShareAddress == "N" && (fieldName.Contains("Home") || fieldName == "Country"))
+                        ? Private_GroupID : Public_GroupID;
+                }
+            }
+
+            // Enforce the visibility for the current privacy field
+            if ((viewerIsSiteAdmin || viewerIsPolice) && visibilityID != Public_GroupID)
+            {
+                MarkAsPrivate(restricted_profile, fieldName);
+            }
+            else if (viewerIsFacStaff)
+            {
+                if (profileIsFacStaff)
+                {
+                    if (visibilityID == Private_GroupID)
+                    {
+                        MakePrivate(restricted_profile, fieldName);
+                    }
+                    else if (visibilityID == FacStaff_GroupID)
+                    {
+                        MarkAsPrivate(restricted_profile, fieldName);
+                    }
+                }
+                else if (profileIsAlumni && visibilityID != Public_GroupID)
+                {
+                    MakePrivate(restricted_profile, fieldName);
+                }
+                else if (profileIsStudent && visibilityID != Public_GroupID)
+                {
+                    MarkAsPrivate(restricted_profile, fieldName);
+                }
+            }
+            else if ((viewerIsStudent || viewerIsAlumni) && visibilityID != Public_GroupID)
+            {
+                MakePrivate(restricted_profile, fieldName);
+            }
+        }
+
+        // Handle a legacy special case -- if a student has the semi-private flag then
+        // not only do we need to hide their address information (handled above), but
+        // also need to change an entry in their profile
+        if (restricted_profile.KeepPrivate == "S")
+        {
+            restricted_profile.OnOffCampus = "P";
+        }
+
+        return restricted_profile;
+    }
+
+    /// <summary>
+    /// Get profile fields and visibility settings for a specific user
+    /// </summary>
+    /// <param name="username">AD username</param>
+    /// <returns>List of field and visibility privacy settings for a specific user</returns>
+    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username)
+    {
+        var account = accountService.GetAccountByUsername(username);
+
+        // select all privacy settings
+        var privacy = context.UserPrivacy_Settings
+            .Include(up_s => up_s.VisibilityNavigation)
+            .Include(up_s => up_s.FieldNavigation)
+            .Where(up_s => up_s.gordon_id == account.GordonID)
+            .Select(up_s => (UserPrivacyViewModel)up_s);
+
+        return privacy;
+    }
+
+    /// <summary>
+    /// Set privacy setting of some piece of personal data for user.
+    /// </summary>
+    /// <param name="username">AD Username</param>
+    /// <param name="userPrivacy">User Privacy Update View Model</param>
+    public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel userPrivacy)
+    {
+        var account = accountService.GetAccountByUsername(username);
+        foreach (string field in userPrivacy.Field)
+        {
+            var fieldID = context.UserPrivacy_Fields.FirstOrDefault(f => f.Field == field).ID;
+            var groupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(v => v.Group == userPrivacy.VisibilityGroup).ID;
+            var user = context.UserPrivacy_Settings
+                .Include(up_s => up_s.FieldNavigation)
+                .Include(up_s => up_s.VisibilityNavigation)
+                .FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == fieldID);
+            if (user is null)
+            {
+                var privacy = new UserPrivacy_Settings
+                {
+                    gordon_id = account.GordonID,
+                    Field = fieldID,
+                    Visibility = groupID
+                };
+                await context.UserPrivacy_Settings.AddAsync(privacy);
+            }
+            else
+            {
+                user.Visibility = groupID;
+            }
         }
 
         context.SaveChanges();
     }
 
+
+    /// <summary>
+    /// privacy setting of mobile phone.
+    /// </summary>
+    /// <param name="username">AD Username</param>
+    /// <param name="value">Y or N</param>
+    public async Task UpdateMobilePrivacyAsync(string username, string value)
+    {
+        var account = accountService.GetAccountByUsername(username);
+        await context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
+        // Update value in cached data
+        var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
+        if (student != null)
+        {
+            student.IsMobilePhonePrivate = (value == "Y" ? 1 : 0);
+        }
+
+        context.SaveChanges();
+    }
+
+    /// <summary>
+    /// Updates mobile phone number 
+    /// </summary>
+    /// <param name="username">The username for the user whose number is updated</param>
+    /// <param name="newMobilePhoneNumber">The new mobile phone number to update for the user's phone number</param>
+    /// <returns>updated student profile by there username</returns>
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
-        var profile = await GetStudentProfileByUsername(username);
+        var profile = GetStudentProfileByUsername(username);
+        if (profile == null)
+        {
+            throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
+        
+        }
         var digitsOnly = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
         await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, digitsOnly);
         return profile;
     }
 
+    /// <summary>
+    /// office location setting
+    /// </summary>
+    /// <param name="username"> The username for the user whose office location is to be updated </param>
+    /// <param name="newBuilding">The new building location to update the user's office location to</param> 
+    /// <param name="newRoom">The new room to update the user's office room to</param>
+    /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
     {
-        var profile = await GetFacultyStaffProfileByUsername(username);
+        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The webSQL account was not found" };
         user.Building = newBuilding;
         user.Room = newRoom;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = await GetFacultyStaffProfileByUsername(username);
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
 
+    /// <summary>
+    /// office hours setting
+    /// </summary>
+    /// <param name="username"> The username for the user whose office hours is to be updated </param>
+    /// <param name="newHours">The new hours to update the user's office hours to</param>
+    /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
     {
-        var profile = await GetFacultyStaffProfileByUsername(username);
+        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var acccount = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var user = webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.office_hours = newHours;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = await GetFacultyStaffProfileByUsername(username);
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
 
+    /// <summary>
+    /// mail location setting
+    /// </summary>
+    /// <param name="username"> The username for the user whose mail location is to be updated </param>
+    /// <param name="newMail">The new mail location to update the user's mail location to</param>
+    /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail)
     {
-        var profile = await GetFacultyStaffProfileByUsername(username);
+        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.mail_server = newMail;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = await GetFacultyStaffProfileByUsername(username);
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
 
+    /// <summary>
+    /// privacy setting user profile photo.
+    /// </summary>
+    /// <param name="username">AD Username</param>
+    /// <param name="value">Y or N</param>
     public async Task UpdateImagePrivacyAsync(string username, string value)
     {
-        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var account = accountService.GetAccountByUsername(username);
 
         await context.Procedures.UPDATE_SHOW_PICAsync(account.account_id, value);
         // Update value in cached data
@@ -291,20 +565,25 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         var alum = context.Alumni.FirstOrDefault(x => x.ID == account.GordonID);
         if (student != null)
         {
-            student.show_pic = value == "Y" ? 1 : 0;
+            student.show_pic = (value == "Y" ? 1 : 0);
         }
         else if (facStaff != null)
         {
-            facStaff.show_pic = value == "Y" ? 1 : 0;
+            facStaff.show_pic = (value == "Y" ? 1 : 0);
         }
         else if (alum != null)
         {
-            alum.show_pic = value == "Y" ? 1 : 0;
+            alum.show_pic = (value == "Y" ? 1 : 0);
         }
 
         context.SaveChanges();
     }
 
+    /// <summary>
+    /// Get graduation information for a student
+    /// </summary>
+    /// <param name="username">The username of the student</param>
+    /// <returns>GraduationViewModel containing graduation details</returns>
     public GraduationViewModel? GetGraduationInfo(string username)
     {
         // Find the graduation record directly by AD_Username
@@ -331,19 +610,19 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
         if (student != null)
         {
             MergeProfile(profile, JObject.FromObject(student));
-            personType += "stu";
+            personType += STUDENT_PROFILE;
         }
 
         if (alumni != null)
         {
             MergeProfile(profile, JObject.FromObject(alumni));
-            personType += "alu";
+            personType += ALUMNI_PROFILE;
         }
 
         if (faculty != null)
         {
             MergeProfile(profile, JObject.FromObject(faculty));
-            personType += "fac";
+            personType += FACSTAFF_PROFILE;
         }
 
         if (customInfo != null)
@@ -358,10 +637,10 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
 
     public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
     {
-        var account = await accountService.GetAccountByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var account = accountService.GetAccountByUsername(username);
 
-        string from_email = config["Emails:Sender:Username"] ?? throw new ResourceNotFoundException() { ExceptionMessage = "Email sender not found" };
-        string to_email = config["Emails:AlumniProfileUpdateRequestApprover"] ?? throw new ResourceNotFoundException() { ExceptionMessage = "Email recipient not found" };
+        string from_email = config["Emails:Sender:Username"];
+        string to_email = config["Emails:AlumniProfileUpdateRequestApprover"];
         string messageBody = $"{account.FirstName} {account.LastName} ({account.GordonID}) has requested the following updates: \n\n";
 
         var requestNumber = await context.GetNextValueForSequence(Sequence.InformationChangeRequest);
@@ -386,7 +665,7 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
                 UserName = from_email,
                 Password = config["Emails:Sender:Password"]
             },
-            Host = config["SmtpHost"] ?? throw new ResourceNotFoundException() { ExceptionMessage = "SMTP Host not found" },
+            Host = config["SmtpHost"],
             EnableSsl = true,
             Port = 587,
         };
@@ -420,63 +699,47 @@ public class ProfileService(CCTContext context, IConfiguration config, SFProfile
     }
 
     /// <summary>
-    /// Fill missing data in salesforce profile using CCT account.
-    /// Should become obsolete once migration is complete.
+    /// Change a ProfileItem's privacy setting to true
     /// </summary>
-    /// <param name="viewModel">Salesforce profile</param>
-    /// <param name="dbView">CCT Profile</param>
-    /// <returns>Filled-out profile</returns>
-    private static StudentProfileViewModel ComposeStudentProfile(StudentProfileViewModel viewModel, Student? dbView)
+    /// <param name="profile">Combined profile containing element to update</param>
+    /// <param name="fieldID">The ID of the profile element of which to update IsPrivate</param>
+    private static void MarkAsPrivate(CombinedProfileViewModel profile, string field)
     {
-        var account = viewModel;
-        if (dbView == null) return account;
-        // cctAccount will only be null if dbView is null
-        StudentProfileViewModel cctAccount = dbView!;
-        foreach (var prop in account.GetType().GetFields())
+        // Profile element will be returned to UI, but should be marked as private
+        // since the authenticated user is only seeing because they are authorized
+        // to do so.
+        Type cpvm = new CombinedProfileViewModel().GetType();
+        try
         {
-            if (prop.GetValue(account) is null) prop.SetValue(account, prop.GetValue(cctAccount));
+            PropertyInfo prop = cpvm.GetProperty(field);
+            ProfileItem<string> profile_item = (ProfileItem<string>) prop.GetValue(profile);
+            if (profile_item != null)
+            {
+                prop.SetValue(profile, new ProfileItem<string>(profile_item.Value, true));
+            }
         }
-        return account;
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Message);
+        }
     }
 
     /// <summary>
-    /// Fill missing data in salesforce profile using CCT account.
-    /// Should become obsolete once migration is complete.
+    /// Change a ProfileItem to be null (remove it from the profile)
     /// </summary>
-    /// <param name="viewModel">Salesforce profile</param>
-    /// <param name="dbView">CCT Profile</param>
-    /// <returns>Filled-out profile</returns>
-    private static FacultyStaffProfileViewModel ComposeFacStaffProfile(FacultyStaffProfileViewModel viewModel, FacStaff? dbView)
+    /// <param name="profile">Combined profile containing element to make null</param>
+    /// <param name="fieldID">The ID of the profile element to make null</param>
+    private static void MakePrivate(CombinedProfileViewModel profile, string field)
     {
-        var account = viewModel;
-        if (dbView == null) return account;
-        // cctAccount will only be null if dbView is null
-        FacStaff cctAccount = dbView!;
-        foreach (var prop in account.GetType().GetFields())
+        // remove profile element if it should not be sent to the UI
+        try
         {
-            if (prop.GetValue(account) is null) prop.SetValue(account, prop.GetValue(cctAccount));
+            Type cpvm = new CombinedProfileViewModel().GetType();
+            cpvm.GetProperty(field).SetValue(profile, null);
         }
-        return account;
-    }
-
-    /// <summary>
-    /// Fill missing data in salesforce profile using CCT account.
-    /// Should become obsolete once migration is complete.
-    /// </summary>
-    /// <param name="viewModel">Salesforce profile</param>
-    /// <param name="dbView">CCT Profile</param>
-    /// <returns>Filled-out profile</returns>
-    private static AlumniProfileViewModel ComposeAlumniProfile(AlumniProfileViewModel viewModel, Alumni? dbView)
-    {
-        var account = viewModel;
-        if (dbView == null) return account;
-        // cctAccount will only be null if dbView is null
-        AlumniProfileViewModel cctAccount = dbView!;
-        foreach (var prop in account.GetType().GetFields())
+        catch (Exception e)
         {
-            if (prop.GetValue(account) is null) prop.SetValue(account, prop.GetValue(cctAccount));
+            System.Diagnostics.Debug.WriteLine(e.Message);
         }
-        return account;
     }
-
 }
