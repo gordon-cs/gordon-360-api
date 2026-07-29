@@ -77,7 +77,23 @@ public class PublicStudentProfileViewModel
             Minor3Description = stu.Minor3Description ?? "",
             Entrance_Date = stu.Entrance_Date
         };
-
+        if (vm.IsMobilePhonePrivate)
+        {
+            vm.MobilePhone = "Private as requested.";
+        }
+        if (vm.KeepPrivate.Contains("S"))
+        {
+            vm.HomeCity = "Private as requested.";
+            vm.HomeState = "";
+            vm.HomeCountry = "";
+            vm.Country = "";
+            vm.OnOffCampus = "P"; //Private, as parsed by front end service user.js
+            vm.Hall = "";
+        }
+        if (vm.KeepPrivate.Contains("Y") || vm.KeepPrivate.Contains("P"))
+        {
+            return null;
+        }
         return vm;
     }
 }

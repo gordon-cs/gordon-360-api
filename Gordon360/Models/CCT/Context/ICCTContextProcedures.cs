@@ -14,6 +14,7 @@ namespace Gordon360.Models.CCT.Context
     public partial interface ICCTContextProcedures
     {
         Task<List<ACTIVE_CLUBS_PER_SESS_IDResult>> ACTIVE_CLUBS_PER_SESS_IDAsync(string SESS_CDE, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<ADVISOR_SEPARATEResult>> ADVISOR_SEPARATEAsync(int? STUDENT_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<ALL_BASIC_INFOResult>> ALL_BASIC_INFOAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<ALL_BASIC_INFO_NOT_ALUMNIResult>> ALL_BASIC_INFO_NOT_ALUMNIAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> CREATE_SOCIAL_LINKSAsync(string USERNAME, string FACEBOOK, string TWITTER, string INSTAGRAM, string LINKEDIN, string HANDSHAKE, string CALENDAR, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);

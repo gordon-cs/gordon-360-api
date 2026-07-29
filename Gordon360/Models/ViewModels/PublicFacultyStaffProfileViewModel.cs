@@ -17,13 +17,10 @@ public class PublicFacultyStaffProfileViewModel
     public string OnCampusPhone { get; set; }
     public string OnCampusPrivatePhone { get; set; }
     public string OnCampusFax { get; set; }
-    public string HomeStreet1 { get; set; }
-    public string HomeStreet2 { get; set; }
     public string HomePhone { get; set; }
     public string HomeCity { get; set; }
     public string HomeState { get; set; }
     public string HomeCountry { get; set; }
-    public string MobilePhone { get; set; }
     public string KeepPrivate { get; set; }
     public string JobTitle { get; set; }
     public string SpouseName { get; set; }
@@ -54,8 +51,8 @@ public class PublicFacultyStaffProfileViewModel
             FirstName = fac.FirstName ?? "",
             LastName = fac.LastName ?? "",
             MiddleName = fac.MiddleName ?? "",
-            NickName = fac.NickName ?? "",
-            AD_Username = fac.AD_Username ?? "",
+            NickName = fac.NickName ?? "", // Just in case some random record has a null user_name
+            AD_Username = fac.AD_Username ?? "", // Just in case some random record has a null email field
             OnCampusDepartment = fac.OnCampusDepartment ?? "",
             OnCampusBuilding = fac.OnCampusBuilding ?? "",
             OnCampusRoom = fac.OnCampusRoom ?? "",
@@ -63,12 +60,9 @@ public class PublicFacultyStaffProfileViewModel
             OnCampusPrivatePhone = fac.OnCampusPrivatePhone ?? "",
             OnCampusFax = fac.OnCampusFax ?? "",
             HomePhone = fac.HomePhone ?? "",
-            HomeStreet1 = fac.HomeStreet1 ?? "",
-            HomeStreet2 = fac.HomeStreet2 ?? "",
             HomeCity = fac.HomeCity ?? "",
             HomeState = fac.HomeState ?? "",
             HomeCountry = fac.HomeCountry ?? "",
-            MobilePhone = fac.MobilePhone ?? "",
             KeepPrivate = fac.KeepPrivate ?? "",
             JobTitle = fac.JobTitle ?? "",
             SpouseName = fac.SpouseName ?? "",
@@ -85,7 +79,15 @@ public class PublicFacultyStaffProfileViewModel
             Mail_Location = fac.Mail_Location ?? "",
             Mail_Description = fac.Mail_Description ?? ""
         };
-
+        if (vm.KeepPrivate.Contains('1'))
+        {
+            vm.HomeCity = "Private as requested.";
+            vm.HomeState = "";
+            vm.HomeCountry = "";
+            vm.SpouseName = "Private as requested.";
+            vm.Country = "";
+            vm.HomePhone = "";
+        }
         return vm;
     }
 }
