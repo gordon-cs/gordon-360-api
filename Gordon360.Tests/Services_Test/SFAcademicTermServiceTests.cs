@@ -27,7 +27,7 @@ public class SFAcademicTermServiceTests
 
         var mockContext = new Mock<ISalesforceContext>();
         mockContext
-            .Setup(context => context.Query<AcademicTerm>(It.IsAny<string>()))
+            .Setup(context => context.RawQuery<AcademicTerm>(It.IsAny<string>()))
             .ReturnsAsync(new SFQueryResult<AcademicTerm>
             {
                 records = [currentTerm, previousTerm]

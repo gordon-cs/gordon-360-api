@@ -8,7 +8,7 @@ public class SFScheduleServiceTests : ScheduleServiceContractTests
     {
         var mockContext = new Mock<ISalesforceContext>();
         mockContext
-            .Setup(context => context.Query<CourseOffering>(It.IsAny<string>()))
+            .Setup(context => context.RawQuery<CourseOffering>(It.IsAny<string>()))
             .ReturnsAsync(new SFQueryResult<CourseOffering>
             {
                 records =

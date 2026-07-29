@@ -360,13 +360,13 @@ public class TeamService(CCTContext context,
         return team;
     }
 
-    private void SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername, bool isCustom)
+    private async Task SendInviteEmail(int teamID, string inviteeUsername, string inviterUsername, bool isCustom)
     {
         var team = context.Team
             .Include(t => t.Activity)
             .FirstOrDefault(t => t.ID == teamID);
         var invitee = participantSerivce.GetParticipantByUsername(inviteeUsername);
-        var inviter = accountService.GetAccountByUsername(inviterUsername);
+        var inviter = await accountService.GetAccountByUsername(inviterUsername);
         var password = config["Emails:RecIM:Password"];
         string from_email = config["Emails:RecIM:Username"];
         string to_email = invitee.Email;
@@ -425,7 +425,7 @@ public class TeamService(CCTContext context,
         if (participant.RoleTypeID == 2 && inviterUsername is not null) //if this is an invite, send an email
         {
             if (context.Participant.Find(participant.Username)?.AllowEmails ?? true)
-                SendInviteEmail(teamID, participant.Username, inviterUsername, isCustom);
+                await SendInviteEmail(teamID, participant.Username, inviterUsername, isCustom);
         }
         return participantTeam;
     }

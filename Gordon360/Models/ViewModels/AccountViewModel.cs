@@ -1,8 +1,9 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.Salesforce;
 
 namespace Gordon360.Models.ViewModels;
 
-public class AccountViewModel
+public record AccountViewModel
 {
     public string GordonID { get; set; }
     public string FirstName { get; set; }
@@ -33,4 +34,19 @@ public class AccountViewModel
 
         return vm;
     }
+
+    public static explicit operator AccountViewModel(Account a)
+    {
+        AccountViewModel vm = new()
+        {
+            GordonID = a.Student_Id__pc,
+            FirstName = a.FirstName,
+            LastName = a.LastName,
+            Email = a.gc_University_Email__c ?? "", // Some random records have null for an email.
+            ADUserName = a.AD_Username__pc,
+        };
+
+        return vm;
+    }
+
 }

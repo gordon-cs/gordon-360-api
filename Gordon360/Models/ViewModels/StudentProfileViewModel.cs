@@ -1,5 +1,7 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.Salesforce;
 using System;
+using System.Linq;
 
 namespace Gordon360.Models.ViewModels;
 
@@ -69,7 +71,8 @@ public record StudentProfileViewModel
     string Minor3Description,
     string Mail_Location,
     int? ChapelRequired,
-    int? ChapelAttended)
+    int? ChapelAttended
+    )
 {
     public static implicit operator StudentProfileViewModel?(Student? stu)
     {
@@ -79,71 +82,175 @@ public record StudentProfileViewModel
         }
 
         return new StudentProfileViewModel(
-            stu.ID.Trim(),
-            stu.Title ?? "",
-            stu.FirstName ?? "",
-            stu.MiddleName ?? "",
-            stu.LastName ?? "",
-            stu.Suffix ?? "",
-            stu.MaidenName ?? "",
-            stu.NickName ?? "", // Just in case some random record has a null user_name 
-            stu.OnOffCampus ?? "",
-            stu.OnCampusBuilding ?? "",
-            stu.OnCampusRoom ?? "",
-            stu.OnCampusPhone ?? "",
-            stu.OnCampusPrivatePhone ?? "",
-            stu.OnCampusFax ?? "",
-            stu.OffCampusStreet1 ?? "",
-            stu.OffCampusStreet2 ?? "",
-            stu.OffCampusCity ?? "",
-            stu.OffCampusState ?? "",
-            stu.OffCampusPostalCode ?? "",
-            stu.OffCampusCountry ?? "",
-            stu.OffCampusPhone ?? "",
-            stu.OffCampusFax ?? "",
-            stu.HomeStreet1 ?? "",
-            stu.HomeStreet2 ?? "",
-            stu.HomeCity ?? "",
-            stu.HomeState ?? "",
-            stu.HomePostalCode ?? "",
-            stu.HomeCountry ?? "",
-            stu.HomePhone ?? "",
-            stu.HomeFax ?? "",
-            stu.Cohort ?? "",
-            stu.Class ?? "",
-            stu.KeepPrivate ?? "",
-            stu.Barcode ?? "",
-            stu.AdvisorIDs ?? "",
-            stu.Married ?? "",
-            stu.Commuter ?? "",
-            stu.Major ?? "",
-            stu.Major2 ?? "",
-            stu.Major3 ?? "",
-            stu.Minor1 ?? "",
-            stu.Minor2 ?? "",
-            stu.Minor3 ?? "",
-            stu.Email ?? "",
-            stu.Gender ?? "",       
-            stu.grad_student ?? "",
-            stu.GradDate ?? "",
-            stu.PlannedGradYear ?? "",
-            stu.Entrance_Date,
-            stu.MobilePhone ?? "",
-            stu.IsMobilePhonePrivate == 1 ? true : false,
-            stu.AD_Username ?? "", // Just in case some random record has a null email field
-            stu.show_pic,
-            stu.preferred_photo,
-            stu.Country ?? "",
-            stu.BuildingDescription ?? "",
-            stu.Major1Description ?? "",
-            stu.Major2Description ?? "",
-            stu.Major3Description ?? "",
-            stu.Minor1Description ?? "",
-            stu.Minor2Description ?? "",
-            stu.Minor3Description ?? "",
-            stu.Mail_Location ?? "",
-            stu.ChapelRequired ?? 0,
-            stu.ChapelAttended ?? 0
+            ID: stu.ID.Trim(),
+            Title: stu.Title ?? "",
+            FirstName: stu.FirstName ?? "",
+            MiddleName: stu.MiddleName ?? "",
+            LastName: stu.LastName ?? "",
+            Suffix: stu.Suffix ?? "",
+            MaidenName: stu.MaidenName ?? "",
+            NickName: stu.NickName ?? "", // Just in case some random record has a null user_name 
+            OnOffCampus: stu.OnOffCampus ?? "",
+            OnCampusBuilding: stu.OnCampusBuilding ?? "",
+            OnCampusRoom: stu.OnCampusRoom ?? "",
+            OnCampusPhone: stu.OnCampusPhone ?? "",
+            OnCampusPrivatePhone: stu.OnCampusPrivatePhone ?? "",
+            OnCampusFax: stu.OnCampusFax ?? "",
+            OffCampusStreet1: stu.OffCampusStreet1 ?? "",
+            OffCampusStreet2: stu.OffCampusStreet2 ?? "",
+            OffCampusCity: stu.OffCampusCity ?? "",
+            OffCampusState: stu.OffCampusState ?? "",
+            OffCampusPostalCode: stu.OffCampusPostalCode ?? "",
+            OffCampusCountry: stu.OffCampusCountry ?? "",
+            OffCampusPhone: stu.OffCampusPhone ?? "",
+            OffCampusFax: stu.OffCampusFax ?? "",
+            HomeStreet1: stu.HomeStreet1 ?? "",
+            HomeStreet2: stu.HomeStreet2 ?? "",
+            HomeCity: stu.HomeCity ?? "",
+            HomeState: stu.HomeState ?? "",
+            HomePostalCode: stu.HomePostalCode ?? "",
+            HomeCountry: stu.HomeCountry ?? "",
+            HomePhone: stu.HomePhone ?? "",
+            HomeFax: stu.HomeFax ?? "",
+            Cohort: stu.Cohort ?? "",
+            Class: stu.Class ?? "",
+            KeepPrivate: stu.KeepPrivate ?? "",
+            Barcode: stu.Barcode ?? "",
+            AdvisorIDs: stu.AdvisorIDs ?? "",
+            Married: stu.Married ?? "",
+            Commuter: stu.Commuter ?? "",
+            Major: stu.Major ?? "",
+            Major2: stu.Major2 ?? "",
+            Major3: stu.Major3 ?? "",
+            Minor1: stu.Minor1 ?? "",
+            Minor2: stu.Minor2 ?? "",
+            Minor3: stu.Minor3 ?? "",
+            Email: stu.Email ?? "",
+            Gender: stu.Gender ?? "",
+            grad_student: stu.grad_student ?? "",
+            GradDate: stu.GradDate ?? "",
+            PlannedGradYear: stu.PlannedGradYear ?? "",
+            Entrance_Date: stu.Entrance_Date,
+            MobilePhone: stu.MobilePhone ?? "",
+            IsMobilePhonePrivate: stu.IsMobilePhonePrivate == 1 ? true : false,
+            AD_Username: stu.AD_Username ?? "", // Just in case some random record has a null email field
+            show_pic: stu.show_pic,
+            preferred_photo: stu.preferred_photo,
+            Country: stu.Country ?? "",
+            BuildingDescription: stu.BuildingDescription ?? "",
+            Major1Description: stu.Major1Description ?? "",
+            Major2Description: stu.Major2Description ?? "",
+            Major3Description: stu.Major3Description ?? "",
+            Minor1Description: stu.Minor1Description ?? "",
+            Minor2Description: stu.Minor2Description ?? "",
+            Minor3Description: stu.Minor3Description ?? "",
+            Mail_Location: stu.Mail_Location ?? "",
+            ChapelRequired: stu.ChapelRequired ?? 0,
+            ChapelAttended: stu.ChapelAttended ?? 0
+        );
+    }
+
+    public static explicit operator StudentProfileViewModel(Account account)
+    {
+        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
+
+        var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home")
+                            ?? new ContactPointAddress();
+
+        var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
+                                ?? new ContactPointAddress();
+
+        // print onCampusAddress building 
+        System.Console.WriteLine($"On-Campus Address: {onCampusAddress}");
+
+        var address =
+            account.ContactPointAddresses?.records?.FirstOrDefault();
+
+        var advisorsIds = string.Join(",",
+           account.Contacts?.records?
+               .SelectMany(c => c?.CCRContacts?.records ?? [])
+               .Where(c => c.PartyRoleRelation?.Name?.Contains("Advisor") == true)
+               .Select(c => c.RelatedContact.Name)
+               .Where(name => !string.IsNullOrEmpty(name))
+           ?? []);
+
+        var majors = account.LearnerPrograms?.records?
+                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Major")
+                         .Take(3)
+                         .ToList() ?? [];
+
+        var minors = account.LearnerPrograms?.records?
+                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Minor")
+                         .Take(3)
+                         .ToList()
+                     ?? [];
+
+        return new StudentProfileViewModel(
+            ID: account.Student_Id__pc ?? "",
+            Title: account.PersonTitle ?? "",
+            FirstName: account.FirstName ?? "",
+            MiddleName: account.MiddleName ?? "",
+            LastName: account.LastName ?? "",
+            Suffix: account.Suffix__pc ?? "",
+            MaidenName: account.FormerLastName__pc ?? "",
+            NickName: account.Preferred_First_Name_Formula__pc ?? "", // Just in case some random record has a null user_name 
+            OnOffCampus: "", // TODO: implement OnOffCampus
+            OnCampusBuilding: onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "",
+            OnCampusRoom: onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
+            OnCampusPhone: onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "",
+            OnCampusPrivatePhone: "", // TODO: implement OnCampusPrivatePhone
+            OnCampusFax: "", // TODO: implement OnCampusFax
+            OffCampusStreet1: "", // TODO: implement OffCampusStreet1
+            OffCampusStreet2: "", // TODO: implement OffCampusStreet2
+            OffCampusCity: "", // TODO: implement OffCampusCity
+            OffCampusState: "", // TODO: implement OffCampusState
+            OffCampusPostalCode: "", // TODO: implement OffCampusPostalCode
+            OffCampusCountry: "", // TODO: implement OffCampusCountry
+            OffCampusPhone: "", // TODO: implement OffCampusPhone
+            OffCampusFax: "", // TODO: implement OffCampusFax
+            HomeStreet1: "", // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
+            HomeStreet2: homeAddress.Street ?? "",
+            HomeCity: homeAddress.City ?? "",
+            HomeState: homeAddress.StateCode ?? "",
+            HomePostalCode: homeAddress.PostalCode ?? "",
+            HomeCountry: homeAddress.CountryCode ?? "",
+            HomePhone: homeAddress.PhoneNumber,
+            HomeFax: "", // TODO: implement fax
+            Cohort: "", // TODO: implement Cohort
+            Class: "", // TODO: implement Class
+            KeepPrivate: "", // TODO: implement KeepPrivate
+            Barcode: "", // TODO: implement Barcode
+            AdvisorIDs: advisorsIds,
+            Married: "", // TODO: implement Married
+            Commuter: "", // TODO: implement Commuter
+            Major: majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Major2: majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Major3: majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Minor1: minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Minor2: minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Minor3: minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
+            Email: account.PersonEmail ?? "",
+            Gender: account.PersonGenderIdentity ?? "",
+            grad_student: "", // TODO: implement grad_student
+            GradDate: "", // TODO: implement GradDate
+            PlannedGradYear: "", // TODO: implement PlannedGradYear
+            Entrance_Date: new DateTime(1900, 1, 1), // TODO: implement EntranceDate
+            MobilePhone: contact.Phone ?? "",
+            IsMobilePhonePrivate: false, // TODO: implement IsMobilePhonePrivate
+            AD_Username: account.AD_Username__pc ?? "", // Just in case some random record has a null email field
+            show_pic: 2, // show_pic
+            preferred_photo: 1, // preferred_photo
+            Country: "", // TODO: implement Country
+            BuildingDescription: onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
+            Major1Description: majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Major2Description: majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Major3Description: majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor1Description: minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor2Description: minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Minor3Description: minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
+            Mail_Location: "", // TODO: implement Mail_Location
+            ChapelRequired: 20, // TODO: implement ChapelRequired
+            ChapelAttended: 5 // TODO: implement ChapelAttended
         );
     }
 }

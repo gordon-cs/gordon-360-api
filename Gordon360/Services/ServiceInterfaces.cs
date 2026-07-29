@@ -23,28 +23,46 @@ namespace Gordon360.Services
     {
         /// <summary>
         /// Fetch profile info of a given student
-        /// </summary>
+        /// </summary
         /// <param name="username">Active Directory username of student</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user is not found
+        /// </exception>
         /// <returns>StudentProfileViewModel if found, null if not found</returns>
-        Task<StudentProfileViewModel?> GetStudentProfileByUsername(string username);
+        Task<StudentProfileViewModel> GetStudentProfileByUsername(string username);
         /// <summary>
         /// Fetch profile info of a given faculty/staff
         /// </summary>
         /// <param name="username">Active Directory username of faculty/staff member</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user is not found
+        /// </exception>
         /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
-        Task<FacultyStaffProfileViewModel?> GetFacultyStaffProfileByUsername(string username);
+        Task<FacultyStaffProfileViewModel> GetFacultyStaffProfileByUsername(string username);
         /// <summary>
         /// Fetch profile info of a given alumni
         /// </summary>
         /// <param name="username">Active Directory username of alumni</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user is not found
+        /// </exception>
         /// <returns>AlumniProfileViewModel if found, null if not found</returns>
-        Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username);
+        Task<AlumniProfileViewModel> GetAlumniProfileByUsername(string username);
+        /// <summary>
+        /// Fetch profile info of a given person
+        /// </summary>
+        /// <param name="username">Active Directory username of person</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user is not found
+        /// </exception>
+        /// <returns>ProfileViewModel if found, null if not found</returns>
+        Task<ProfileViewModel> GetProfileByUsername(string username);
         /// <summary>
         /// Fetch the given user's mailbox information (contains box combination)
         /// </summary>
         /// <param name="username">Active Directory username of current user</param>
         /// <returns>MailboxCombinationViewModel with the combination, or null if not found</returns>
-        MailboxCombinationViewModel? GetMailboxCombination(string username);
+        Task<MailboxCombinationViewModel?> GetMailboxCombination(string username);
         /// <summary>
         /// Fetch the given user's birthday
         /// </summary>
@@ -55,8 +73,11 @@ namespace Gordon360.Services
         /// Fetch list of advisors for the given student
         /// </summary>
         /// <param name="username">Active Directory username of student</param>
+        /// <exception cref="ResourceNotFoundException">
+        /// Thrown when the username is empty, or when the user has no advisors
+        /// </exception>
         /// <returns>IEnumerable containing the student's advisors, or null if no advisors are found</returns>
-        Task<IEnumerable<AdvisorViewModel>?> GetAdvisorsAsync(string username);
+        Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username);
         /// <summary> Gets the clifton strengths of the given user </summary>
         /// <param name="id"> User ID of user with clifton strengths </param>
         /// <returns> Clifton strengths of the given user </returns>
@@ -158,7 +179,7 @@ namespace Gordon360.Services
 
     public interface IEventService
     {
-        IEnumerable<AttendedEventViewModel> GetEventsForStudentByTerm(string username, string term);
+        Task<IEnumerable<AttendedEventViewModel>> GetEventsForStudentByTerm(string username, string term);
         IEnumerable<EventViewModel> GetAllEvents();
         IEnumerable<EventViewModel> GetPublicEvents();
         IEnumerable<EventViewModel> GetCLAWEvents();
@@ -180,24 +201,24 @@ namespace Gordon360.Services
         /// </summary>
         /// <param name="id">The gordon id associated with the account</param>
         /// <returns>AccountViewModel associated with the id</returns>
-        AccountViewModel GetAccountByID(string id);
+        Task<AccountViewModel> GetAccountByID(string id);
         /// <summary>
         /// Fetches all account records
         /// </summary>
         /// <returns>IEnumerable&lt;AccountViewModel&gt; containing all available account records.</returns>
-        IEnumerable<AccountViewModel> GetAll();
+        Task<IEnumerable<AccountViewModel>> GetAll();
         /// <summary>
         /// Fetches the account record associated with the email.
         /// </summary>
         /// <param name="email">The email address associated with the account.</param>
         /// <returns>AccountViewModel associated with the email</returns>
-        AccountViewModel GetAccountByEmail(string email);
+        Task<AccountViewModel> GetAccountByEmail(string email);
         /// <summary>
         /// Fetches the account record associated with the specified AD username.
         /// </summary>
         /// <param name="username">The AD username associated with the account.</param>
         /// <returns>AccountViewModel associated with the username</returns>
-        AccountViewModel GetAccountByUsername(string username);
+        Task<AccountViewModel> GetAccountByUsername(string username);
         /// <summary>
         /// Get the list of accounts the user is authorized search
         /// </summary>
@@ -205,7 +226,7 @@ namespace Gordon360.Services
         /// <param name="authGroups">The authorization groups of the searching user</param>
         /// <param name="homeCity">The home city that the user is searching for</param>
         /// <returns>Unordered list of accounts that may be searched, converted to AdvancedSearchViewModels.</returns>
-        IEnumerable<AdvancedSearchViewModel> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
+        Task<IEnumerable<AdvancedSearchViewModel>> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity);
         /// <summary>
         /// Given a list of accounts, and search parameters, return all the accounts that match those search params.
         /// </summary>
@@ -474,8 +495,8 @@ namespace Gordon360.Services
 
     public interface ILostAndFoundService
     {
-        public int CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
-        public int CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
+        public Task<int> CreateMissingItemReport(MissingItemReportViewModel reportDetails, string username);
+        public Task<int> CreateActionTaken(int id, ActionsTakenViewModel ActionsTaken, string username);
         IEnumerable<MissingItemReportViewModel> GetMissingItems(string requestedUsername, string requestorUsername);
         IEnumerable<MissingItemReportViewModel> GetMissingItemsAll(string username,
                                                                    int? lastId,
@@ -497,8 +518,8 @@ namespace Gordon360.Services
             string? category,
             string? keywords
         );
-        public string CreateFoundItem(FoundItemViewModel reportDetails, string username);
-        public int CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
+        public Task<string> CreateFoundItem(FoundItemViewModel reportDetails, string username);
+        public Task<int> CreateFoundActionTaken(string foundItemId, FoundActionsTakenViewModel FoundActionsTaken, string username);
         IEnumerable<FoundItemViewModel> GetFoundItemsAll(string username,
                                                          DateTime? latestDate,
                                                          string? status,
@@ -520,7 +541,7 @@ namespace Gordon360.Services
              string? keywords
          );
 
-        IEnumerable<FoundItemViewModel> GetFoundItemsByOwner(string requestedUsername, string requestorUsername);
+        Task<IEnumerable<FoundItemViewModel>> GetFoundItemsByOwner(string requestedUsername, string requestorUsername);
 
     }
 

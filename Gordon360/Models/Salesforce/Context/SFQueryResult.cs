@@ -10,7 +10,9 @@ public class SFQueryResult<T>
   public int totalSize { get; set; }
 
   public bool done { get; set; }
+  
+  public string? nextRecordsUrl { get; set; }
 
-  public List<T> records { get; set; } = new List<T>();
+  public List<T> records { get; set; } = [];
     
 }

@@ -1,57 +1,14 @@
-using Gordon360.Models.ViewModels;
-using Gordon360.Models.CCT;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Models.Salesforce;
 
 public class SFProfiles(ISalesforceContext context)
 {
-    private readonly ISalesforceContext _context = context;
-    private const Account account = null;
-
-    private const string educationSoql = """
-        (
-            SELECT 
-                Name,
-                LearningProgramPlan.LearningProgram.Type__c,
-                LearningProgramPlan.LearningProgram.Name,
-                LearningProgramPlan.LearningProgram.gc_Jenz_Major_Minor_Code__c,
-                Status
-            FROM LearnerPrograms
-        ),
-    """; // filter by status and sort by date
-
-    // used to get first Start date
-    private const string facStaffEmploymentSoql = """
-        (
-            SELECT StartDate
-            FROM PersonEmployments
-            ORDER BY StartDate ASC
-            LIMIT 1
-        ),
-    """;
-
-    // used to obtain current job title 
-    private const string alumniEmploymentSoql = """
-        (
-            SELECT Position
-            FROM PersonEmployments
-            WHERE (EmploymentStatus = 'Employed' OR EmploymentStatus = 'Self-Employed')
-            ORDER BY StartDate DESC
-            LIMIT 1
-        ),
-    """;
-
-    private const string onCampusLocationFields = """
-        gc_On_Campus_Location__r.Name,
-        gc_On_Campus_Location__r.ParentLocation.Name,
-        gc_On_Campus_Location__r.gc_Jenz_Building_Code__c,
-        gc_On_Campus_Location__r.gc_Jenz_Room_Code__c,
-    """;
-    // gc_On_Campus_Location__r.Phone,
-
     private const string SoqlTemplate = """
         SELECT 
             Name,
@@ -66,8 +23,25 @@ public class SFProfiles(ISalesforceContext context)
             PersonGenderIdentity,
             AD_Username__pc,
             Suffix__pc,
-            {0}
-            {1}
+            gc_Current_Student__c,
+            gc_Current_Faculty__pc,
+            gc_Current_Staff__pc,
+            gc_is_Current_Alumni__c,
+            gc_Resident_Commuter__pc,
+            (
+                SELECT 
+                    Name,
+                    LearningProgramPlan.LearningProgram.Type__c,
+                    LearningProgramPlan.LearningProgram.Name,
+                    LearningProgramPlan.LearningProgram.gc_Jenz_Major_Minor_Code__c,
+                    Status
+                FROM LearnerPrograms
+            ),
+            (
+                SELECT StartDate, Position, EmploymentStatus
+                FROM PersonEmployments
+                ORDER BY StartDate DESC
+            ),
             (
                 SELECT
                     Name,
@@ -90,7 +64,10 @@ public class SFProfiles(ISalesforceContext context)
                     Country,
                     StateCode,
                     CountryCode,
-                    {2}
+                    gc_On_Campus_Location__r.Name,
+                    gc_On_Campus_Location__r.ParentLocation.Name,
+                    gc_On_Campus_Location__r.gc_Jenz_Building_Code__c,
+                    gc_On_Campus_Location__r.gc_Jenz_Room_Code__c,
                     gc_Status__c,
                     AddressType
                 FROM ContactPointAddresses
@@ -101,7 +78,7 @@ public class SFProfiles(ISalesforceContext context)
                     Name,
                     Phone,
                     gc_Preferred_Class__c,
-        gc_Current_Positions__c,
+                    gc_Current_Positions__c,
     
                     MaritalStatus,
                     (
@@ -114,80 +91,31 @@ public class SFProfiles(ISalesforceContext context)
                 FROM Contacts
             )
         FROM Account
-        """ +
-        // TODO: We should only check for AD_Username_pc,
-        // but this field is not currently populated in standard.
-        // Remember to take out the Name check.
-        """
-        WHERE RecordType.Name = 'Person Account'
-            AND (AD_Username__pc = '{3}' OR Name = '{3}')
         """;
 
-    private const string BirthdayTemplate = """
-        SELECT PersonBirthdate
-        FROM Account
-        WHERE AD_Username__pc = '{0}'
-        LIMIT 1 
-    """;
-
     /// <summary>
-    /// Sets values common to all account types
+    /// Gets basic info for all accounts for search preview
+    /// WARNING: This method is slow to execute (15+ seconds) due to the large number of records it pulls.
+    /// Seek alternatives if at all possible.
     /// </summary>
-    /// <typeparam name="T">Profile type to construct, must be FacStaff, Alumni, or Student</typeparam>
-    /// <param name="profileObj">Profile to fill out</param>
-    /// <param name="account">SalesForce Account to fill profile from</param>
-    /// <returns>Facstaff, Alumni, or Student with common fields filled out</returns>
-    private static T MapToBaseModel<T>(T profileObj, Account account) where T : notnull
+    /// <param name="alumni">Whether or not to include alumni in the search</param>
+    /// <returns>Minimal info about all accounts</returns>
+    public async Task<IEnumerable<Account>> GetBasicInfo(bool alumni = true)
     {
+        List<Account> result = [];
 
-        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
+        SFQueryResult<Account>? response = await context.SoqlQuery<Account>(
+           "SELECT FirstName, LastName, AD_Username__pc, Preferred_First_Name_Formula__pc, FormerLastName__pc " +
+           "FROM Account",
+           where: "IsPersonAccount = true" + (alumni ? "" : " AND gc_is_Current_Alumni__c = false"));
 
-        var homeAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "Home")
-                            ?? new ContactPointAddress();
+        while (!(response?.done ?? true) && response?.nextRecordsUrl is not null)
+        {
+            response = await context.GetNext<Account>(response!.nextRecordsUrl);
+            result.AddRange(response?.records ?? []);
+        }
 
-        dynamic profile = profileObj;
-
-        profile.ID = account.Student_Id__pc ?? "";
-        profile.Title = account.PersonTitle ?? "";
-        profile.FirstName = account.FirstName ?? "";
-        profile.MiddleName = account.MiddleName ?? "";
-        profile.LastName = account.LastName ?? "";
-        profile.Suffix = account.Suffix__pc ?? "";
-        profile.MaidenName = account.FormerLastName__pc ?? "";
-        //profile.NickName = account.Preferred_First_Name_Formula__pc ?? "";
-        profile.Email = account.PersonEmail ?? "";
-        profile.Gender = account.PersonGenderIdentity ?? "";
-        profile.AD_Username = account.AD_Username__pc ?? "360.StudentTest";
-        // TODO: It seems like, for a long time, street1 has represented street2 (in the database, frontend and here). We should fix that.
-        profile.HomeStreet1 = "";
-        profile.HomeStreet2 = homeAddress.Street ?? "";
-        profile.HomeCity = homeAddress.City ?? "";
-        profile.HomeState = homeAddress.StateCode ?? "";
-        profile.HomePostalCode = homeAddress.PostalCode ?? "";
-        profile.HomeCountry = homeAddress.CountryCode ?? "";
-        profile.HomePhone = homeAddress.PhoneNumber ?? "";
-        profile.show_pic = 1; // show pic
-        profile.preferred_photo = 2; // preferred photo
-        profile.Country = ""; // country
-
-        return profile;
-
-    }
-
-    /// <summary>
-    /// Get faculty/staff information associated with the given user
-    /// </summary>
-    /// <param name="username">AD username of the given user</param>
-    /// <returns>ViewModel containing information about the given faculty/staff, or null if the request is not authorized or the user does not exist</returns>
-    public async Task<FacultyStaffProfileViewModel?> GetFacStaffProfile(string username)
-    {
-        var soql = string.Format(SoqlTemplate, "", facStaffEmploymentSoql, onCampusLocationFields, username);
-
-        var response = await _context.Query<Account>(soql);
-
-        var account = response?.records?.FirstOrDefault();
-
-        return account == null ? null : MapToFacStaffProfileViewModel(account);
+        return result;
     }
 
     /// <summary>
@@ -197,9 +125,9 @@ public class SFProfiles(ISalesforceContext context)
     /// <returns>User's birthday, or null if not found or authorized</returns>
     public async Task<DateTime> GetBirthday(string username)
     {
-        var soql = string.Format(BirthdayTemplate, username);
-
-        var response = await _context.Query<Account>(soql);
+        if (username.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No user given!" };
+        var response = await context.SoqlQuery<Account>("SELECT PersonBirthdate FROM Account",
+                where: $"AD_Username__pc = '{username}'", limit_n: 1);
 
         var birthday = response?.records?.FirstOrDefault();
 
@@ -207,299 +135,74 @@ public class SFProfiles(ISalesforceContext context)
     }
 
     /// <summary>
-    /// Constructs FacultyStaffProfileViewModel based on values in a Salesforce Account
+    /// Gets all accounts, sorted alphabetically by last name
+    /// WARNING: This method is *extremely* slow to execute (150+ seconds) due to the large number of records it pulls.
+    /// Seek alternatives if at all possible.
     /// </summary>
-    /// <param name="account">Salesforce Account to construct ViewModel from</param>
-    /// <returns>Filled-out FacultyStaffProfileViewModel</returns>
-    private static FacultyStaffProfileViewModel MapToFacStaffProfileViewModel(Account? account)
+    /// <returns></returns>
+    public async Task<IEnumerable<Account>> GetAllAccountsAsync()
     {
-        FacStaff facStaff = MapToBaseModel(new FacStaff(), account);
+        List<Account> result = [];
+        var response = await context.SoqlQuery<Account>(SoqlTemplate, order: "LastName DESC NULLS LAST");
 
-        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
+        while (!(response?.done ?? true) && response?.nextRecordsUrl is not null)
+        {
+            response = await context.GetNext<Account>(response!.nextRecordsUrl);
+            result.AddRange(response?.records ?? []);
+        }
 
-        var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
-                                ?? new ContactPointAddress();
-
-        var address = account.ContactPointAddresses?.records?.FirstOrDefault();
-
-        var firstEmployment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
-
-
-        facStaff.BuildingDescription = onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "";
-        facStaff.Mail_Location = ""; // mail location
-        facStaff.OnCampusBuilding = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "";
-        facStaff.OnCampusRoom = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "";
-        facStaff.OnCampusPhone = onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "";
-        facStaff.OnCampusPrivatePhone = "";
-        facStaff.OnCampusFax = "";
-        facStaff.KeepPrivate = ""; // keep private
-
-
-        facStaff.FirstHireDt = firstEmployment?.StartDate ?? new DateTime(1900, 1, 1); // FirstHire
-        facStaff.OnCampusDepartment = ""; // OnCampusDepartment
-        facStaff.Type = ""; // Type
-        // office hours
-        facStaff.office_hours = "test test fac staff"; // OfficeHours
-        facStaff.Dept = ""; // Dept
-        facStaff.Mail_Description = ""; // Mail_Description
-
-
-        facStaff.JobTitle = contact.gc_Current_Positions__c ?? ""; // JobTitle
-        facStaff.SpouseName = ""; // SpouseName
-
-        return facStaff;
+        return result;
     }
 
     /// <summary>
-    /// Get alumni information associated with the given user
+    /// Gets the account associated with a given ID number
     /// </summary>
-    /// <param name="username">AD username of the given user</param>
-    /// <returns>ViewModel containing information about the given alumnus, or null if the request is not authorized or the user does not exist</returns>
-    public async Task<AlumniProfileViewModel?> GetAlumniProfile(string username)
+    /// <param name="id">8-digit student ID number</param>
+    /// <returns>Account associated with ID number</returns>
+    public async Task<Account?> GetAccountByIdAsync(string id)
     {
-        var soql = string.Format(SoqlTemplate, educationSoql, alumniEmploymentSoql, "", username);
-
-        var response = await _context.Query<Account>(soql);
-
-        var account = response?.records?.FirstOrDefault();
-
-        return account == null ? null : MapToAlumniProfileViewModel(account);
+        if (id.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No id given!" };
+        var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"gc_Jenz_ID__c = {id}", limit_n: 1);
+        return response?.records.FirstOrDefault();
     }
 
     /// <summary>
-    /// Constructs AlumniProfileViewModel based on values in a Salesforce Account
+    /// Gets the account associated with a given email
     /// </summary>
-    /// <param name="account">Salesforce Account to construct ViewModel from</param>
-    /// <returns>Filled-out AlumniProfileViewModel</returns>
-    private static AlumniProfileViewModel MapToAlumniProfileViewModel(Account account)
+    /// <param name="email">email address</param>
+    /// <returns>Account associated with email</returns>
+    public async Task<Account?> GetAccountByEmailAsync(string email)
     {
-        Alumni alumn = MapToBaseModel(new Alumni(), account);
-
-        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
-
-        var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
-                                ?? new ContactPointAddress();
-
-        // print onCampusAddress building 
-        System.Console.WriteLine($"On-Campus Address: {onCampusAddress}");
-
-        var address =
-            account.ContactPointAddresses?.records?.FirstOrDefault();
-
-        var majors = account.LearnerPrograms?.records?
-                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Major")
-                         .Take(3)
-                         .ToList()
-                     ?? [];
-
-        var minors = account.LearnerPrograms?.records?
-                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Minor")
-                         .Take(3)
-                         .ToList()
-                     ?? [];
-
-        var currentEmployment = account.PersonEmployments?.records?.FirstOrDefault() ?? new PersonEmployment();
-
-
-        alumn.Major1 = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-        alumn.Major2 = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-
-        alumn.Major1Description = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
-        alumn.Major2Description = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
-
-        alumn.grad_student = ""; // grad student
-
-        alumn.WebUpdate = 1; // WebUpdate
-        alumn.HomeEmail = ""; // HomeEmail
-        alumn.MaritalStatus = contact.MaritalStatus ?? ""; // MaritalStatus
-        alumn.College = ""; // College
-        alumn.ClassYear = ""; // ClassYear
-        alumn.PreferredClassYear = contact.gc_Preferred_Class__c ?? ""; // PrefferedClassYear
-        alumn.ShareName = ""; // ShareName
-        alumn.ShareAddress = ""; // ShareAddress
-
-        alumn.JobTitle = currentEmployment?.Position ?? ""; // JobTitle
-        alumn.SpouseName = "test test alumni"; // SpouseName
-
-        return alumn;
-    }
-
-
-    /// <summary>
-    /// Get student information associated with the given user
-    /// </summary>
-    /// <param name="username">AD username of the given user</param>
-    /// <returns>ViewModel containing information about the given student, or null if the request is not authorized or the user does not exist</returns>
-    public async Task<StudentProfileViewModel?> GetStudentProfile(string username)
-    {
-        var soql = string.Format(SoqlTemplate, educationSoql, "", onCampusLocationFields, username);
-
-        var response = await _context.Query<Account>(soql);
-
-        var account = response?.records?.FirstOrDefault();
-
-        return account == null ? null : MapToStudentProfileViewModel(account);
+        if (email.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No email given!" };
+        var response = await context.SoqlQuery<Account>(SoqlTemplate, where: $"gc_University_Email__c = {email}", limit_n: 1);
+        return response?.records.FirstOrDefault();
     }
 
     /// <summary>
-    /// Constructs StudentProfileViewModel based on values in a Salesforce Account
+    /// Gets the account associated with a given AD Username
+    /// TODO: Due to full2 not being fully populated, this method also accepts a person's name
     /// </summary>
-    /// <param name="account">Salesforce Account to construct ViewModel from</param>
-    /// <returns>Filled-out StudentProfileViewModel</returns>
-    private static StudentProfileViewModel MapToStudentProfileViewModel(Account account)
+    /// <param name="adUsername">Active Directory username</param>
+    /// <returns>Account associated with AD username</returns>
+    public async Task<Account?> GetAccountByAdUsernameAsync(string adUsername)
     {
-        Student student = MapToBaseModel(new Student(), account);
-
-        var contact = account.Contacts?.records?.FirstOrDefault() ?? new Contact();
-
-        var onCampusAddress = account.ContactPointAddresses?.records?.FirstOrDefault(c => c.AddressType == "On-Campus")
-                                ?? new ContactPointAddress();
-
-        // print onCampusAddress building 
-        System.Console.WriteLine($"On-Campus Address: {onCampusAddress}");
-
-        var address =
-            account.ContactPointAddresses?.records?.FirstOrDefault();
-
-        var advisorsIds = string.Join(",",
-           account.Contacts?.records?
-               .SelectMany(c => c.CCRContacts?.records ?? [])
-               .Where(c => c.PartyRoleRelation?.Name?.Contains("Advisor") == true)
-               .Select(c => c.RelatedContact.Name)
-               .Where(name => !string.IsNullOrEmpty(name))
-           ?? []);
-
-        var majors = account.LearnerPrograms?.records?
-                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Major")
-                         .Take(3)
-                         .ToList()
-                     ?? [];
-
-        var minors = account.LearnerPrograms?.records?
-                         .Where(x => x.LearningProgramPlan?.LearningProgram?.Type__c == "Minor")
-                         .Take(3)
-                         .ToList()
-                     ?? [];
-
-
-        student.OnOffCampus = ""; // OnOffCampus
-        student.OffCampusStreet1 = ""; // OffCampusStreet1
-        student.OffCampusStreet2 = ""; // OffCampusStreet2
-        student.OffCampusCity = ""; // OffCampusCity
-        student.OffCampusState = ""; // OffCampusState
-        student.OffCampusPostalCode = ""; // OffCampusPostalCode
-        student.OffCampusCountry = ""; // OffCampusCountry
-        student.OffCampusPhone = ""; // OffCampusPhone
-        student.OffCampusFax = ""; // OffCampusFax  
-        student.Major = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-        student.Major2 = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-        student.Major3 = majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-        student.Minor1 = minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-        student.Minor2 = minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-        student.Minor3 = minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "";
-
-        student.Major1Description = majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
-        student.Major2Description = majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
-        student.Major3Description = majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
-        student.Minor1Description = minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
-        student.Minor2Description = minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
-        student.Minor3Description = minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "";
-        student.AdvisorIDs = advisorsIds; // advisor ids
-
-        student.GradDate = ""; // grad date
-        student.grad_student = ""; // grad student
-        student.PlannedGradYear = ""; // planned grad year
-        student.Entrance_Date = new DateTime(1900, 1, 1); // Entrance year
-        student.MobilePhone = contact.Phone ?? ""; // mobile phone
-        student.IsMobilePhonePrivate = 0; // is mobile private
-        student.ChapelRequired = 20; // ChapelRequired
-        student.ChapelAttended = 5; // ChapelAttended
-        student.Cohort = ""; // cohort
-        student.Class = ""; // class
-        student.Married = ""; // married
-        student.Commuter = ""; // commuter
-
-        student.BuildingDescription = onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "";
-        student.Mail_Location = ""; // mail location
-        student.OnCampusBuilding = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "";
-        student.OnCampusRoom = onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "";
-        student.OnCampusPhone = onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "";
-        student.OnCampusPrivatePhone = "";
-        student.OnCampusFax = "";
-        student.KeepPrivate = ""; // keep private
-
-        return student;
-        /*
-        return new T(
-            account.Student_Id__pc ?? "",
-            account.PersonTitle ?? "",
-            account.FirstName ?? "",
-            account.MiddleName ?? "",
-            account.LastName ?? "",
-            account.Suffix__pc ?? "",
-            account.FormerLastName__pc,
-            account.Preferred_First_Name_Formula__pc,
-            "", // OnOffCampus
-            onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Building_Code__c ?? "",
-            onCampusAddress?.gc_On_Campus_Location__r?.gc_Jenz_Room_Code__c ?? "",
-            onCampusAddress?.gc_On_Campus_Location__r?.Phone ?? "",
-            "", // OnCampusPrivatePhone
-            "", // OnCampusFax
-            "", // OffCampusStreet1
-            "", // OffCampusStreet2
-            "", // .........City
-            "", // .........State
-            "", // .........PostalCode
-            "", // .........Country
-            "", // .........Phone
-            "", // .........Fax
-            "", // street1
-            homeAddress.Street ?? "",
-            homeAddress.City ?? "",
-            homeAddress.StateCode ?? "",
-            homeAddress.PostalCode ?? "",
-            homeAddress.CountryCode ?? "",
-            homeAddress.PhoneNumber ?? "",
-            "", // fax
-            "", // cohort
-            "", // class
-            "", // keep private
-            "", // barcode
-            advisorsIds,
-            "", // married
-            "", // commuter
-            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.gc_Jenz_Major_Minor_Code__c ?? "",
-            account.PersonEmail ?? "",
-            account.PersonGenderIdentity ?? "",
-            "", // grad Student
-            "", // grad date
-            "", // planned grad year
-            new DateTime(1900, 1, 1), // Entrance year
-            contact.Phone,
-            true, // is mobile private
-            account.AD_Username__pc ?? "360.StudentTest",
-            1, // show pic
-            2, // preferred photo
-            "", // country
-            onCampusAddress?.gc_On_Campus_Location__r?.ParentLocation?.Name ?? "",
-            majors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            majors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            majors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(0)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(1)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            minors.ElementAtOrDefault(2)?.LearningProgramPlan?.LearningProgram?.Name ?? "",
-            "", // mail location
-            20, // ChapelRequired
-            5   // ChapelAttended
-        );  */
-
+        if (adUsername.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No username given!" };
+        var whereString = $"RecordType.Name = 'Person Account' AND (AD_Username__pc = '{adUsername}' OR Name = '{adUsername}')";
+        var response = await context.SoqlQuery<Account>(SoqlTemplate, where: whereString, limit_n: 1);
+        return response?.records.FirstOrDefault();
     }
 
-
-
+    /// <summary>
+    /// Gets a given account's mailbox combination
+    /// </summary>
+    /// <param name="adUsername">Active Directory username</param>
+    /// <returns>Mailbox__c with only the combination field filled</returns>
+    /// <exception cref="ResourceNotFoundException"></exception>
+    public async Task<Mailbox__c?> GetMailboxCombinationAsync(string adUsername)
+    {
+        if (adUsername.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "No username given!" };
+        var whereString = $"gc_Assigned_Person__r.Account.AD_Username__pc  = '{adUsername}'";
+        var response = await context.SoqlQuery<Mailbox__c>("SELECT gc_Combination__c FROM Mailbox__c", where: whereString, limit_n: 1);
+        return response?.records.FirstOrDefault();
+    }
 }

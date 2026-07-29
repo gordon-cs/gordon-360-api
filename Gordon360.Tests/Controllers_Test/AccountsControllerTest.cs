@@ -31,7 +31,7 @@ public class AccountsControllerTest
     public void GetByAccountEmail_ReturnsOk_WhenAccountExists()
     {
         var account = new AccountViewModel { Email = "test@gordon.edu", GordonID = "1" };
-        _mockAccountService.Setup(s => s.GetAccountByEmail("test@gordon.edu")).Returns(account);
+        _mockAccountService.Setup(s => s.GetAccountByEmail("test@gordon.edu")).ReturnsAsync(account);
 
         var result = _controller.GetByAccountEmail("test@gordon.edu");
 
@@ -42,7 +42,7 @@ public class AccountsControllerTest
     [Fact]
     public void GetByAccountEmail_ReturnsNotFound_WhenAccountDoesNotExist()
     {
-        _mockAccountService.Setup(s => s.GetAccountByEmail("notfound@gordon.edu")).Returns((AccountViewModel)null);
+        _mockAccountService.Setup(s => s.GetAccountByEmail("notfound@gordon.edu")).ReturnsAsync((AccountViewModel)null);
 
         var result = _controller.GetByAccountEmail("notfound@gordon.edu");
 
@@ -53,7 +53,7 @@ public class AccountsControllerTest
     public void GetByAccountUsername_ReturnsOk_WhenAccountExists()
     {
         var account = new AccountViewModel { ADUserName = "jdoe", GordonID = "2" };
-        _mockAccountService.Setup(s => s.GetAccountByUsername("jdoe")).Returns(account);
+        _mockAccountService.Setup(s => s.GetAccountByUsername("jdoe")).ReturnsAsync(account);
 
         var result = _controller.GetByAccountUsername("jdoe");
 
@@ -64,7 +64,7 @@ public class AccountsControllerTest
     [Fact]
     public void GetByAccountUsername_ReturnsNotFound_WhenAccountDoesNotExist()
     {
-        _mockAccountService.Setup(s => s.GetAccountByUsername("nouser")).Returns((AccountViewModel)null);
+        _mockAccountService.Setup(s => s.GetAccountByUsername("nouser")).ReturnsAsync((AccountViewModel)null);
 
         var result = _controller.GetByAccountUsername("nouser");
 

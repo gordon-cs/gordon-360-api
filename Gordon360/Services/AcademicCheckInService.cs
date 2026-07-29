@@ -76,7 +76,7 @@ public partial class AcademicCheckInService(CCTContext context, IProfileService 
     {
         await profileService.UpdateCustomProfileAsync(username, "SMSOptedIn", new Models.CCT.CUSTOM_PROFILE { username = username, SMSOptedIn = data.SMSOptedIn });
 
-        string id = accountService.GetAccountByUsername(username).GordonID;
+        string id = (await accountService.GetAccountByUsername(username))?.GordonID ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found." };
         var result = await context.Procedures.FINALIZATION_UPDATECELLPHONEAsync(id, FormatNumber(data.PersonalPhone), data.MakePrivate, NoneProvided: false);
 
         if (result == null || result.Any(r => r.Success != true))

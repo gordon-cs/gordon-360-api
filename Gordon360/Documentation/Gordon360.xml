@@ -1895,6 +1895,17 @@
             Interface to SalesforceContext. Makes testing quite a bit easier.
             </summary>
         </member>
+        <member name="M:Gordon360.Models.Salesforce.SalesforceContext.SoqlQuery``1(System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Constructs a SOQL query
+            </summary>
+            <param name="template">Template string in the form 'SELECT [fields] FROM [table]'</param>
+            <param name="where">SOQL field selectors</param>
+            <param name="order">SOQL ordering</param>
+            <param name="limit_n">SOQL limit on number of records returned</param>
+            <param name="offset_n">SOQL offset of records returned</param>
+            <returns>T containing results of query</returns>
+        </member>
         <member name="M:Gordon360.Models.Salesforce.AcademicTermProcedures.GetAllTerms">
             <summary>
             </summary>
@@ -1905,30 +1916,14 @@
             </summary>
             <returns>Returns the current academic term, if it exists</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.AcademicTermProcedures.Query(System.String,System.String,System.Int32)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetBasicInfo(System.Boolean)">
             <summary>
-            Constructs a SOQL query
+            Gets basic info for all accounts for search preview
+            WARNING: This method is slow to execute (15+ seconds) due to the large number of records it pulls.
+            Seek alternatives if at all possible.
             </summary>
-            <param name="where">SOQL field selectors</param>
-            <param name="order">SOQL ordering</param>
-            <param name="limit_n">SOQL limit on number of records returned</param>
-            <returns></returns>
-        </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToBaseModel``1(``0,Gordon360.Models.Salesforce.Account)">
-            <summary>
-            Sets values common to all account types
-            </summary>
-            <typeparam name="T">Profile type to construct, must be FacStaff, Alumni, or Student</typeparam>
-            <param name="profileObj">Profile to fill out</param>
-            <param name="account">SalesForce Account to fill profile from</param>
-            <returns>Facstaff, Alumni, or Student with common fields filled out</returns>
-        </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetFacStaffProfile(System.String)">
-            <summary>
-            Get faculty/staff information associated with the given user
-            </summary>
-            <param name="username">AD username of the given user</param>
-            <returns>ViewModel containing information about the given faculty/staff, or null if the request is not authorized or the user does not exist</returns>
+            <param name="alumni">Whether or not to include alumni in the search</param>
+            <returns>Minimal info about all accounts</returns>
         </member>
         <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetBirthday(System.String)">
             <summary>
@@ -1937,40 +1932,43 @@
             <param name="username">AD username of the desired user</param>
             <returns>User's birthday, or null if not found or authorized</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToFacStaffProfileViewModel(Gordon360.Models.Salesforce.Account)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAllAccountsAsync">
             <summary>
-            Constructs FacultyStaffProfileViewModel based on values in a Salesforce Account
+            Gets all accounts, sorted alphabetically by last name
+            WARNING: This method is *extremely* slow to execute (150+ seconds) due to the large number of records it pulls.
+            Seek alternatives if at all possible.
             </summary>
-            <param name="account">Salesforce Account to construct ViewModel from</param>
-            <returns>Filled-out FacultyStaffProfileViewModel</returns>
+            <returns></returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAlumniProfile(System.String)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByIdAsync(System.String)">
             <summary>
-            Get alumni information associated with the given user
+            Gets the account associated with a given ID number
             </summary>
-            <param name="username">AD username of the given user</param>
-            <returns>ViewModel containing information about the given alumnus, or null if the request is not authorized or the user does not exist</returns>
+            <param name="id">8-digit student ID number</param>
+            <returns>Account associated with ID number</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToAlumniProfileViewModel(Gordon360.Models.Salesforce.Account)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByEmailAsync(System.String)">
             <summary>
-            Constructs AlumniProfileViewModel based on values in a Salesforce Account
+            Gets the account associated with a given email
             </summary>
-            <param name="account">Salesforce Account to construct ViewModel from</param>
-            <returns>Filled-out AlumniProfileViewModel</returns>
+            <param name="email">email address</param>
+            <returns>Account associated with email</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetStudentProfile(System.String)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByAdUsernameAsync(System.String)">
             <summary>
-            Get student information associated with the given user
+            Gets the account associated with a given AD Username
+            TODO: Due to full2 not being fully populated, this method also accepts a person's name
             </summary>
-            <param name="username">AD username of the given user</param>
-            <returns>ViewModel containing information about the given student, or null if the request is not authorized or the user does not exist</returns>
+            <param name="adUsername">Active Directory username</param>
+            <returns>Account associated with AD username</returns>
         </member>
-        <member name="M:Gordon360.Models.Salesforce.SFProfiles.MapToStudentProfileViewModel(Gordon360.Models.Salesforce.Account)">
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetMailboxCombinationAsync(System.String)">
             <summary>
-            Constructs StudentProfileViewModel based on values in a Salesforce Account
+            Gets a given account's mailbox combination
             </summary>
-            <param name="account">Salesforce Account to construct ViewModel from</param>
-            <returns>Filled-out StudentProfileViewModel</returns>
+            <param name="adUsername">Active Directory username</param>
+            <returns>Mailbox__c with only the combination field filled</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException"></exception>
         </member>
         <member name="M:Gordon360.Models.Salesforce.SFUserCourses.GetUserCourses(System.String,System.String)">
             <summary>
@@ -2380,7 +2378,7 @@
             Service that allows for event control
             </summary>
         </member>
-        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,Gordon360.Services.ISessionService,System.Net.Http.HttpClient,Gordon360.Services.IAcademicTermService)">
+        <member name="M:Gordon360.Services.EventService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Microsoft.Extensions.Caching.Memory.IMemoryCache,Gordon360.Services.IAccountService,Gordon360.Services.IScheduleService,System.Net.Http.HttpClient)">
             <summary>
             Service that allows for event control
             </summary>
@@ -3399,6 +3397,33 @@
             Service Class that facilitates data transactions between the PosterController and the Poster database model.
             </summary>
         </member>
+        <member name="M:Gordon360.Services.ProfileService.ComposeStudentProfile(Gordon360.Models.ViewModels.StudentProfileViewModel,Gordon360.Models.CCT.Student)">
+            <summary>
+            Fill missing data in salesforce profile using CCT account.
+            Should become obsolete once migration is complete.
+            </summary>
+            <param name="viewModel">Salesforce profile</param>
+            <param name="dbView">CCT Profile</param>
+            <returns>Filled-out profile</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.ComposeFacStaffProfile(Gordon360.Models.ViewModels.FacultyStaffProfileViewModel,Gordon360.Models.CCT.FacStaff)">
+            <summary>
+            Fill missing data in salesforce profile using CCT account.
+            Should become obsolete once migration is complete.
+            </summary>
+            <param name="viewModel">Salesforce profile</param>
+            <param name="dbView">CCT Profile</param>
+            <returns>Filled-out profile</returns>
+        </member>
+        <member name="M:Gordon360.Services.ProfileService.ComposeAlumniProfile(Gordon360.Models.ViewModels.AlumniProfileViewModel,Gordon360.Models.CCT.Alumni)">
+            <summary>
+            Fill missing data in salesforce profile using CCT account.
+            Should become obsolete once migration is complete.
+            </summary>
+            <param name="viewModel">Salesforce profile</param>
+            <param name="dbView">CCT Profile</param>
+            <returns>Filled-out profile</returns>
+        </member>
         <member name="M:Gordon360.Services.RecIM.MatchService.GetMatchForTeamByMatchID(System.Int32)">
             <summary>
             this function is used because ASP somehow refuses to cast IEnumerables or recognize IEnumerables
@@ -3460,18 +3485,15 @@
             Service Class that facilitates data transactions between the SchedulesController and the Schedule part of the database model.
             </summary>
         </member>
-        <member name="M:Gordon360.Services.IProfileService.GetStudentProfileByUsername(System.String)">
-            <summary>
-            Fetch profile info of a given student
-            </summary>
-            <param name="username">Active Directory username of student</param>
-            <returns>StudentProfileViewModel if found, null if not found</returns>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:Gordon360.Services.IProfileService.GetStudentProfileByUsername(System.String)" -->
         <member name="M:Gordon360.Services.IProfileService.GetFacultyStaffProfileByUsername(System.String)">
             <summary>
             Fetch profile info of a given faculty/staff
             </summary>
             <param name="username">Active Directory username of faculty/staff member</param>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown when the username is empty, or when the user is not found
+            </exception>
             <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.IProfileService.GetAlumniProfileByUsername(System.String)">
@@ -3479,7 +3501,20 @@
             Fetch profile info of a given alumni
             </summary>
             <param name="username">Active Directory username of alumni</param>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown when the username is empty, or when the user is not found
+            </exception>
             <returns>AlumniProfileViewModel if found, null if not found</returns>
+        </member>
+        <member name="M:Gordon360.Services.IProfileService.GetProfileByUsername(System.String)">
+            <summary>
+            Fetch profile info of a given person
+            </summary>
+            <param name="username">Active Directory username of person</param>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown when the username is empty, or when the user is not found
+            </exception>
+            <returns>ProfileViewModel if found, null if not found</returns>
         </member>
         <member name="M:Gordon360.Services.IProfileService.GetMailboxCombination(System.String)">
             <summary>
@@ -3500,6 +3535,9 @@
             Fetch list of advisors for the given student
             </summary>
             <param name="username">Active Directory username of student</param>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException">
+            Thrown when the username is empty, or when the user has no advisors
+            </exception>
             <returns>IEnumerable containing the student's advisors, or null if no advisors are found</returns>
         </member>
         <member name="M:Gordon360.Services.IProfileService.GetCliftonStrengths(System.Int32)">
@@ -3773,6 +3811,25 @@
             Fetches all the session records from the database.
             </summary>
             <returns>A SessionViewModel IEnumerable. If nothing is found, an empty IEnumerable is returned.</returns>
+        </member>
+        <member name="T:Gordon360.Services.SFAccountService">
+            <summary>
+            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.#ctor(Gordon360.Models.CCT.Context.CCTContext,Gordon360.Models.Salesforce.SFProfiles)">
+            <summary>
+            Service Class that facilitates data transactions between the AccountsController and the Account database model.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Services.SFAccountService.ComposeProfile(Gordon360.Models.ViewModels.AccountViewModel,Gordon360.Models.CCT.ACCOUNT)">
+            <summary>
+            Fill missing data in salesforce profile using CCT account.
+            Should become obsolete once migration is complete.
+            </summary>
+            <param name="viewModel">Salesforce account</param>
+            <param name="dbView">CCT Account</param>
+            <returns>Filled-out profile</returns>
         </member>
         <member name="T:Gordon360.Services.SFScheduleService">
             <summary>

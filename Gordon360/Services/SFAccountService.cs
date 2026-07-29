@@ -1,15 +1,17 @@
 ﻿using Gordon360.Authorization;
 using Gordon360.Models.CCT.Context;
-using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.ViewModels;
-using Gordon360.Static.Names;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
+using Gordon360.Models.Salesforce;
+using Microsoft.IdentityModel.Tokens;
+using Gordon360.Exceptions;
+using Gordon360.Static.Names;
 
 namespace Gordon360.Services;
 
@@ -17,32 +19,52 @@ namespace Gordon360.Services;
 /// <summary>
 /// Service Class that facilitates data transactions between the AccountsController and the Account database model.
 /// </summary>
-public class AccountService(CCTContext context) : IAccountService
+public class SFAccountService(CCTContext context, SFProfiles sfProcedures) : IAccountService
 {
 
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public async Task<AccountViewModel> GetAccountByID(string id)
     {
-        // Custom Exception is thrown that will be cauth in the controller Exception filter.
-        var account = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        if (id.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "id missing or empty" };
+        var sfAccount = await sfProcedures.GetAccountByIdAsync(id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
+        var account = (AccountViewModel) sfAccount;
+
+        var cctAccount = context.ACCOUNT.FirstOrDefault(x => x.gordon_id == id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        account = ComposeProfile(account, cctAccount);
+
         return account;
     }
 
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ACCOUNT)]
     public async Task<IEnumerable<AccountViewModel>> GetAll()
     {
-        return (IEnumerable<AccountViewModel>)context.ACCOUNT; //Map the database model to a more presentable version (a ViewModel)
+        var allAccounts = (IEnumerable<AccountViewModel>) await sfProcedures.GetAllAccountsAsync();
+        return allAccounts;
     }
 
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public async Task<AccountViewModel> GetAccountByEmail(string email)
     {
-        var account = context.ACCOUNT.FirstOrDefault(x => x.email == email) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        if (email.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "email missing or empty" };
+        var sfAccount = await sfProcedures.GetAccountByEmailAsync(email) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
+        var account = (AccountViewModel) sfAccount;
+
+        var cctAccount = context.ACCOUNT.FirstOrDefault(x => x.email == email) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        account = ComposeProfile(account, cctAccount);
+
         return account;
     }
 
+    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
     public async Task<AccountViewModel> GetAccountByUsername(string username)
     {
-        var account = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        if (username.IsNullOrEmpty()) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        var sfAccount = await sfProcedures.GetAccountByAdUsernameAsync(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found" };;
+        var account = (AccountViewModel) sfAccount;
+        
+        var cctAccount = context.ACCOUNT.FirstOrDefault(x => x.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The Account was not found." };
+        account = ComposeProfile(account, cctAccount);
+        
         return account;
     }
 
@@ -144,71 +166,52 @@ public class AccountService(CCTContext context) : IAccountService
         return accounts.OrderBy(a => a.LastName).ThenBy(a => a.FirstName);
     }
 
-    public Task<IEnumerable<AdvancedSearchViewModel>> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
+    public async Task<IEnumerable<AdvancedSearchViewModel>> GetAccountsToSearch(List<string> accountTypes, IEnumerable<AuthGroup> authGroups, string? homeCity)
     {
-        IEnumerable<Student> students = Enumerable.Empty<Student>();
-        if (accountTypes.Contains("student")
+        var accounts = (await sfProcedures.GetAllAccountsAsync())
+            .Select(AdvancedSearchViewModel.FromAccount);
+        if (!accountTypes.Contains("student")
             // Only students and FacStaff are authorized to search for students
-            && (authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
+            || !(authGroups.Contains(AuthGroup.FacStaff) || authGroups.Contains(AuthGroup.Student)))
         {
-            students = context.Student;
+            accounts = accounts.Where(acc => acc.Type != "Student");
         }
-
         // Only Faculy and Staff can see Private students
         if (!authGroups.Contains(AuthGroup.FacStaff))
         {
-            students = students.Where(s => s.KeepPrivate != "P");
+            accounts = accounts.Where(acc => acc.KeepPrivate != "P");
         }
-
-        IEnumerable<FacStaff> facstaff = Enumerable.Empty<FacStaff>();
-        if (accountTypes.Contains("facstaff"))
-        {
-            facstaff = context.FacStaff.Where(fs => fs.ActiveAccount == true);
-        }
-
-        IEnumerable<Alumni> alumni = Enumerable.Empty<Alumni>();
+        // TODO: Implement
+        // if (accountTypes.Contains("facstaff"))
+        // {
+        //     accounts = accounts.Where(acc => acc.ActiveAccount == true);
+        // }
         if (accountTypes.Contains("alumni"))
         {
-            alumni = context.Alumni.Where(a => a.ShareName != "N");
+            accounts = accounts.Where(acc => acc.ShareName != "N");
         }
-
         // Do not indirectly reveal the address of facstaff and alumni who have requested to keep it private.
         if (!string.IsNullOrEmpty(homeCity))
         {
-            facstaff = facstaff.Where(a => a.KeepPrivate == "0");
-            alumni = alumni.Where(a => a.ShareAddress != "N");
+            accounts = accounts.Where(acc => acc.KeepPrivate == "0");
+            accounts = accounts.Where(acc => acc.ShareAddress != "N");
         }
 
-        return Task.FromResult(students.Select<Student, AdvancedSearchViewModel>(s => s)
-            .UnionBy(facstaff.Select<FacStaff, AdvancedSearchViewModel>(fs => fs), a => a.AD_Username)
-            .UnionBy(alumni.Select<Alumni, AdvancedSearchViewModel>(a => a), a => a.AD_Username));
+        return accounts;
     }
 
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoAsync()
     {
-
-        var basicInfo = await context.Procedures.ALL_BASIC_INFOAsync();
-        return basicInfo.Select(
-            b => new BasicInfoViewModel
-            {
-                FirstName = b.FirstName,
-                LastName = b.LastName,
-                Nickname = b.Nickname,
-                UserName = b.UserName
-            });
+        var allAccounts = await sfProcedures.GetBasicInfo() ?? throw new ResourceNotFoundException() {ExceptionMessage = "No accounts found!"};
+        var result = allAccounts.Select(BasicInfoViewModel.FromAccount);
+        return result;
     }
 
     public async Task<IEnumerable<BasicInfoViewModel>> GetAllBasicInfoExceptAlumniAsync()
     {
-        var basicInfo = await context.Procedures.ALL_BASIC_INFO_NOT_ALUMNIAsync();
-        return basicInfo.Select(
-            b => new BasicInfoViewModel
-            {
-                FirstName = b.firstname,
-                LastName = b.lastname,
-                Nickname = b.Nickname,
-                UserName = b.Username
-            });
+        var allAccountsExceptAlumni = await sfProcedures.GetBasicInfo(alumni: false) ?? throw new ResourceNotFoundException() {ExceptionMessage = "No accounts found!"};
+        var result = allAccountsExceptAlumni.Select(BasicInfoViewModel.FromAccount);
+        return result;
     }
 
     public ParallelQuery<BasicInfoViewModel> Search(string searchString, IEnumerable<BasicInfoViewModel> accounts)
@@ -222,7 +225,7 @@ public class AccountService(CCTContext context) : IAccountService
 
     public ParallelQuery<BasicInfoViewModel> Search(string firstName, string lastName, IEnumerable<BasicInfoViewModel> accounts)
     {
-        string Normalize(string name) =>
+        static string Normalize(string name) =>
             new string(name?.Where(char.IsLetterOrDigit).ToArray()).ToLower();
 
 
@@ -237,6 +240,24 @@ public class AccountService(CCTContext context) : IAccountService
             .Where(pair => pair.matchKey is not null)
             .OrderBy(pair => pair.matchKey)
             .Select(pair => pair.account);
+    }
+
+    /// <summary>
+    /// Fill missing data in salesforce profile using CCT account.
+    /// Should become obsolete once migration is complete.
+    /// </summary>
+    /// <param name="viewModel">Salesforce account</param>
+    /// <param name="dbView">CCT Account</param>
+    /// <returns>Filled-out profile</returns>
+    private static AccountViewModel ComposeProfile(AccountViewModel viewModel, ACCOUNT dbView)
+    {
+        var account = viewModel;
+        var cctAccount = (AccountViewModel) dbView;
+        foreach (var prop in account.GetType().GetFields())
+        {
+            if (prop.GetValue(account) is null) prop.SetValue(account, prop.GetValue(cctAccount));
+        }
+        return account;
     }
 
 

@@ -1,12 +1,12 @@
 using Gordon360.Authorization;
 using Gordon360.Enums;
+using Gordon360.Exceptions;
 using Gordon360.Models.ViewModels;
 using Gordon360.Services;
 using Gordon360.Static.Names;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gordon360.Controllers;
@@ -17,11 +17,14 @@ public class AccountsController(IAccountService accountService) : GordonControll
     [HttpGet]
     [Route("email/{email}")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-    public ActionResult<AccountViewModel> GetByAccountEmail(string email)
+    public async Task<ActionResult<AccountViewModel>> GetByAccountEmail(string email)
     {
-        var result = accountService.GetAccountByEmail(email);
-
-        if (result == null)
+        AccountViewModel result;
+        try
+        {
+            result = await accountService.GetAccountByEmail(email);
+        }
+        catch (ResourceNotFoundException)
         {
             return NotFound();
         }
@@ -32,11 +35,14 @@ public class AccountsController(IAccountService accountService) : GordonControll
     [HttpGet]
     [Route("username/{username}")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.ACCOUNT)]
-    public ActionResult<AccountViewModel> GetByAccountUsername(string username)
+    public async Task<ActionResult<AccountViewModel>> GetByAccountUsername(string username)
     {
-        var result = accountService.GetAccountByUsername(username);
-
-        if (result == null)
+        AccountViewModel result;
+        try
+        {
+            result = await accountService.GetAccountByUsername(username);
+        }
+        catch (ResourceNotFoundException)
         {
             return NotFound();
         }
@@ -125,7 +131,7 @@ public class AccountsController(IAccountService accountService) : GordonControll
 
         IEnumerable<AuthGroup> viewerGroups = AuthUtils.GetGroups(User);
 
-        var accounts = accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
+        var accounts = await accountService.GetAccountsToSearch(accountTypes, viewerGroups, homeCity);
 
         var searchResults = accountService.AdvancedSearch(
             accounts,

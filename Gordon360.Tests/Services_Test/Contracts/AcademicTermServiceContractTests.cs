@@ -33,7 +33,7 @@ public abstract class AcademicTermServiceContractTests
         var currentTerm = await service.GetCurrentTermAsync();
 
         Assert.NotNull(currentTerm);
-        Assert.NotNull(currentTerm!.BeginDate);
+        Assert.NotNull(currentTerm.BeginDate);
         Assert.NotNull(currentTerm.EndDate);
         Assert.True(currentTerm.BeginDate <= DateTime.Today);
         Assert.True(currentTerm.EndDate >= DateTime.Today);

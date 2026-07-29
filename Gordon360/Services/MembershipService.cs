@@ -91,7 +91,7 @@ public class MembershipService(CCTContext context, IAccountService accountServic
             .Where(x => x.SESS_CDE.Equals(membershipUpload.Session))
             .FirstOrDefault()?.SESS_BEGN_DTE ?? DateTime.Now;
 
-        int gordonId = int.Parse(accountService.GetAccountByUsername(membershipUpload.Username).GordonID);
+        int gordonId = int.Parse((await accountService.GetAccountByUsername(membershipUpload.Username) ?? throw new ResourceNotFoundException() {ExceptionMessage = "User not found"}).GordonID);
 
         MEMBERSHIP m = membershipUpload.ToMembership(gordonId, sessionBeginDate);
         var payload = await context.MEMBERSHIP.AddAsync(m);

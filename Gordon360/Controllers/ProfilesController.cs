@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Gordon360.Exceptions;
 
 namespace Gordon360.Controllers;
 
@@ -30,13 +31,22 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("")]
-   async public Task<ActionResult<ProfileViewModel?>> Get()
+    async public Task<ActionResult<ProfileViewModel?>> Get()
     {
         var authenticatedUserUsername = AuthUtils.GetUsername(User);
+        StudentProfileViewModel? student;
+        FacultyStaffProfileViewModel? faculty;
+        AlumniProfileViewModel? alumni;
 
-        var student = await profileService.GetStudentProfileByUsername(authenticatedUserUsername);
-        var faculty = await profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername);
-        var alumni = await profileService.GetAlumniProfileByUsername(authenticatedUserUsername);
+        try { student = await profileService.GetStudentProfileByUsername(authenticatedUserUsername); }
+        catch (ResourceNotFoundException) { student = null; }
+
+        try { faculty = await profileService.GetFacultyStaffProfileByUsername(authenticatedUserUsername); }
+        catch (ResourceNotFoundException) { faculty = null; }
+
+        try { alumni = await profileService.GetAlumniProfileByUsername(authenticatedUserUsername); }
+        catch (ResourceNotFoundException) { alumni = null; }
+
         var customInfo = profileService.GetCustomUserInfo(authenticatedUserUsername);
 
         if (student is null && alumni is null && faculty is null)
@@ -48,7 +58,7 @@ public class ProfilesController(IProfileService profileService,
 
         return Ok(profile);
     }
-
+    
     /// <summary>Get public profile info for a user</summary>
     /// <param name="username">username of the profile info</param>
     /// <returns></returns>
@@ -58,9 +68,19 @@ public class ProfilesController(IProfileService profileService,
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        var _student = await profileService.GetStudentProfileByUsername(username);
-        var _faculty = await profileService.GetFacultyStaffProfileByUsername(username);
-        var _alumni = await profileService.GetAlumniProfileByUsername(username);
+        StudentProfileViewModel? _student;
+        FacultyStaffProfileViewModel? _faculty;
+        AlumniProfileViewModel? _alumni;
+
+        try { _student = await profileService.GetStudentProfileByUsername(username); }
+        catch (ResourceNotFoundException) { _student = null; }
+
+        try { _faculty = await profileService.GetFacultyStaffProfileByUsername(username); }
+        catch (ResourceNotFoundException) { _faculty = null; }
+
+        try { _alumni = await profileService.GetAlumniProfileByUsername(username); }
+        catch (ResourceNotFoundException) { _alumni = null; }
+
         var _customInfo = profileService.GetCustomUserInfo(username);
 
         object? student = null;
@@ -116,7 +136,9 @@ public class ProfilesController(IProfileService profileService,
     [StateYourBusiness(operation = Operation.READ_ALL, resource = Resource.ADVISOR)]
     public async Task<ActionResult<IEnumerable<AdvisorViewModel>>> GetAdvisorsAsync(string username)
     {
-        var advisors = await profileService.GetAdvisorsAsync(username);
+        IEnumerable<AdvisorViewModel> advisors;
+        try { advisors = await profileService.GetAdvisorsAsync(username); }
+        catch (ResourceNotFoundException) { return NotFound(); }
 
         return Ok(advisors);
     }
@@ -126,10 +148,12 @@ public class ProfilesController(IProfileService profileService,
     /// <returns> Clifton strengths of the given user. </returns>
     [HttpGet]
     [Route("clifton/{username}")]
+    [Obsolete]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-    public ActionResult<string[]> GetCliftonStrengths_DEPRECATED(string username)
+    public async Task<ActionResult<string[]>> GetCliftonStrengths_DEPRECATED(string username)
     {
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
         var strengths = profileService.GetCliftonStrengths(int.Parse(id));
         if (strengths is null)
         {
@@ -149,9 +173,10 @@ public class ProfilesController(IProfileService profileService,
     [HttpGet]
     [Route("{username}/clifton")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-    public ActionResult<CliftonStrengthsViewModel?> GetCliftonStrengths(string username)
+    public async Task<ActionResult<CliftonStrengthsViewModel?>> GetCliftonStrengths(string username)
     {
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
         var strengths = profileService.GetCliftonStrengths(int.Parse(id));
         if (strengths is null)
         {
@@ -171,7 +196,8 @@ public class ProfilesController(IProfileService profileService,
     public async Task<ActionResult<bool>> ToggleCliftonStrengthsPrivacyAsync()
     {
         var username = AuthUtils.GetUsername(User);
-        var id = accountService.GetAccountByUsername(username).GordonID;
+        var id = (await accountService.GetAccountByUsername(username))?.GordonID;
+        if (id is null) return NotFound();
         var privacy = await profileService.ToggleCliftonStrengthsPrivacyAsync(int.Parse(id));
 
         return Ok(privacy);
@@ -201,11 +227,11 @@ public class ProfilesController(IProfileService profileService,
     /// <returns></returns>
     [HttpGet]
     [Route("mailbox-information")]
-    public ActionResult<MailboxCombinationViewModel?> GetMailInfo()
+    public async Task<ActionResult<MailboxCombinationViewModel?>> GetMailInfo()
     {
         var username = AuthUtils.GetUsername(User);
 
-        var result = profileService.GetMailboxCombination(username);
+        var result = await profileService.GetMailboxCombination(username);
         return Ok(result);
     }
 
@@ -233,8 +259,8 @@ public class ProfilesController(IProfileService profileService,
 
         if (photoModel == null) //There is no preferred or ID image
         {
-            var unapprovedFileName = username + "_" + accountService.GetAccountByUsername(username).account_id;
-            var unapprovedFilePath = config["DEFAULT_ID_SUBMISSION_PATH"];
+            var unapprovedFileName = username + "_" + (await accountService.GetAccountByUsername(username))?.account_id;
+            var unapprovedFilePath = config["DEFAULT_ID_SUBMISSION_PATH"] ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" }; ;
             string extension = "";
             foreach (var file in Directory.GetFiles(unapprovedFilePath, unapprovedFileName + ".*"))
             {
@@ -291,29 +317,29 @@ public class ProfilesController(IProfileService profileService,
 
         }
         else
-        if (viewerGroups.Contains(AuthGroup.Student))
-        {
-            if (accountService.GetAccountByUsername(username).show_pic == 1)
+            if (viewerGroups.Contains(AuthGroup.Student))
             {
-                if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
+                if ((await accountService.GetAccountByUsername(username))?.show_pic == 1)
                 {
-                    result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
+                    if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
+                    {
+                        result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
+                    }
+                    else
+                    {
+                        result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
+                    }
                 }
                 else
                 {
-                    result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
+                    result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
                 }
+                return Ok(result);
             }
             else
             {
-                result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
+                return Ok();
             }
-            return Ok(result);
-        }
-        else
-        {
-            return Ok();
-        }
     }
 
     /// <summary>
@@ -325,7 +351,8 @@ public class ProfilesController(IProfileService profileService,
     public async Task<ActionResult> PostImageAsync([FromForm] IFormFile image)
     {
         var username = AuthUtils.GetUsername(User);
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
+        if (account is null) return NotFound();
         var pathInfo = await profileService.GetPhotoPathAsync(username);
 
         if (pathInfo == null) // can't upload image if there is no record for this user in the database
@@ -368,7 +395,8 @@ public class ProfilesController(IProfileService profileService,
 
         var username = AuthUtils.GetUsername(User);
         var root = config["DEFAULT_ID_SUBMISSION_PATH"];
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
+        if (account is null) return NotFound();
 
         //delete old image file if it exists.
         DirectoryInfo di = new DirectoryInfo(root);
@@ -460,7 +488,8 @@ public class ProfilesController(IProfileService profileService,
         }
 
         var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingCode, officeLocation.RoomNumber);
-        return Ok(new {
+        return Ok(new
+        {
             result.BuildingDescription,
             result.OnCampusRoom,
         });

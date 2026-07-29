@@ -200,12 +200,12 @@ public class StateYourBusiness : ActionFilterAttribute
                 return true;
             case Resource.STUDENT_SCHEDULE:
                 if (context.ActionArguments["username"] is string viewed_username)
-                    return user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(viewed_username).AccountType.EqualsIgnoreCase("FACULTY");
+                    return user_groups.Contains(AuthGroup.Advisors) || viewed_username.EqualsIgnoreCase(user_name) || ((await _accountService.GetAccountByUsername(viewed_username))?.AccountType.EqualsIgnoreCase("FACULTY") ?? false);
                 return false;
             case Resource.GRADUATION:
                 {
                     if (context.ActionArguments["username"] is string username)
-                        return user_groups.Contains(AuthGroup.Advisors) || username.EqualsIgnoreCase(user_name) || _accountService.GetAccountByUsername(username).AccountType.EqualsIgnoreCase("FACULTY");
+                        return user_groups.Contains(AuthGroup.Advisors) || username.EqualsIgnoreCase(user_name) || ((await _accountService.GetAccountByUsername(username))?.AccountType.EqualsIgnoreCase("FACULTY") ?? false);
                     return false;
                 }
             default: return false;

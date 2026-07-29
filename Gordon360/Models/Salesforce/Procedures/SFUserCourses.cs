@@ -51,7 +51,7 @@ public class SFUserCourses(ISalesforceContext context)
     {
         var roleFilter = string.IsNullOrWhiteSpace(role) ? "" : $"AND ParticipantAffiliation = '{role}'";
 
-        var response = await _context.Query<CourseOffering>(string.Format(SoqlTemplate, username, roleFilter));
+        var response = await _context.SoqlQuery<CourseOffering>(string.Format(SoqlTemplate, username, roleFilter));
 
         return response?.records?
             .Select(c => MapToViewModel(c, username))
