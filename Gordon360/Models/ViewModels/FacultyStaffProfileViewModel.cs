@@ -28,7 +28,7 @@ public record FacultyStaffProfileViewModel
     string HomePostalCode,
     string HomeCountry,
     string HomePhone,
-    string HomeFax,
+    string MobilePhone,
     string KeepPrivate,
     string JobTitle,
     string Dept,
@@ -76,7 +76,7 @@ public record FacultyStaffProfileViewModel
             HomePostalCode: fac.HomePostalCode ?? "",
             HomeCountry: fac.HomeCountry ?? "",
             HomePhone: fac.HomePhone ?? "",
-            HomeFax: fac.HomeFax ?? "",
+            MobilePhone: fac.MobilePhone ?? "",
             KeepPrivate: fac.KeepPrivate ?? "",
             JobTitle: fac.JobTitle ?? "",
             Dept: fac.Dept ?? "",
@@ -131,7 +131,7 @@ public record FacultyStaffProfileViewModel
             HomePostalCode: homeAddress.PostalCode ?? "",
             HomeCountry: homeAddress.CountryCode ?? "",
             HomePhone: homeAddress.PhoneNumber,
-            HomeFax: "", // TODO: implement fax
+            MobilePhone: "", // TODO: implement fax
             KeepPrivate: "", // TODO: Implement private faculty profile
             JobTitle: contact.gc_Current_Positions__c ?? "",
             Dept: "", // TODO: implement department

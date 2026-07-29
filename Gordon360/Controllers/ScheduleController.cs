@@ -12,8 +12,43 @@ using System.Threading.Tasks;
 namespace Gordon360.Controllers;
 
 [Route("api/[controller]")]
-public class ScheduleController(IScheduleService scheduleService) : GordonControllerBase
+public class ScheduleController(IProfileService profileService,
+                                IScheduleService scheduleService,
+                                IAccountService accountService) : GordonControllerBase
 {
+    /// <summary>
+    ///  Gets all session objects for a user
+    /// </summary>
+    /// <returns>A IEnumerable of session objects as well as the schedules</returns>
+    [HttpGet]
+    [Route("{username}/allcourses")]
+    [Obsolete("This method is deprecated. Use '/{username}/allcourses-by-term' which is grouped by term.")]
+    public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
+    {
+        var groups = AuthUtils.GetGroups(User);
+        FacultyStaffProfileViewModel? fac = profileService.GetFacultyStaffProfileByUsername(username);
+        StudentProfileViewModel? student = profileService.GetStudentProfileByUsername(username);
+        AlumniProfileViewModel? alumni = profileService.GetAlumniProfileByUsername(username);
+
+        // Some users can see schedules of courses taken, as well as taught,
+        // so check to see if this user can see all courses for this person.
+        if ((AuthUtils.GetUsername(User).EqualsIgnoreCase(username)) ||
+            (groups.CanSeeStudentSchedule() &&
+               student != null &&
+               groups.CanSeeThisStudent(student)) ||
+            (groups.CanSeeAlumniSchedule() && alumni != null))
+        {
+            IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllCoursesAsync(username);
+            return Ok(result);
+        }
+        else
+        {
+            // Everyone can see schedules of courses taught.
+            IEnumerable<CoursesBySessionViewModel> result = await scheduleService.GetAllInstructorCoursesAsync(username);
+            return Ok(result);
+        }
+    }
+
     /// <summary>
     /// Gets all term-based course schedules for a user, filtered to only include officially published terms.
     /// </summary>
@@ -23,18 +58,25 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     public async Task<ActionResult<IEnumerable<CoursesByTermViewModel>>> GetAllCoursesByTerm(string username)
     {
         var groups = AuthUtils.GetGroups(User);
-        var authenticatedUsername = AuthUtils.GetUsername(User);
+        FacultyStaffProfileViewModel? fac = profileService.GetFacultyStaffProfileByUsername(username);
+        StudentProfileViewModel? student = profileService.GetStudentProfileByUsername(username);
+        AlumniProfileViewModel? alumni = profileService.GetAlumniProfileByUsername(username);
 
+        // Some users can see schedules of courses taken, as well as taught,
+        // so check to see if this user can see all courses for this person.
         IEnumerable<CoursesByTermViewModel> result;
-        if (authenticatedUsername.EqualsIgnoreCase(username) || groups.Contains(AuthGroup.FacStaff))
+        if ((AuthUtils.GetUsername(User).EqualsIgnoreCase(username)) ||
+            (groups.CanSeeStudentSchedule() &&
+               student != null &&
+               groups.CanSeeThisStudent(student)) ||
+            (groups.CanSeeAlumniSchedule() && alumni != null))
         {
             result = await scheduleService.GetAllCoursesByTermAsync(username);
-        }
-        else
+        } else
         {
+            // Everyone can see schedules of courses taught.
             result = await scheduleService.GetAllInstructorCoursesByTermAsync(username);
         }
-
         var publishedResult = result
             .Where(r => string.Equals(r.ShowOnWeb, "B", StringComparison.OrdinalIgnoreCase))
             .ToList();
@@ -50,6 +92,6 @@ public class ScheduleController(IScheduleService scheduleService) : GordonContro
     public async Task<ActionResult<bool>> GetCanReadStudentSchedules()
     {
         var groups = AuthUtils.GetGroups(User);
-        return groups.Contains(AuthGroup.Advisors);
+        return groups.CanSeeStudentSchedule();
     }
 }

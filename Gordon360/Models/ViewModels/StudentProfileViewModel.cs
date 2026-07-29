@@ -36,7 +36,6 @@ public record StudentProfileViewModel
     string HomePostalCode,
     string HomeCountry,
     string HomePhone,
-    string HomeFax,
     string Cohort,
     string Class,
     string KeepPrivate,
@@ -111,7 +110,6 @@ public record StudentProfileViewModel
             HomePostalCode: stu.HomePostalCode ?? "",
             HomeCountry: stu.HomeCountry ?? "",
             HomePhone: stu.HomePhone ?? "",
-            HomeFax: stu.HomeFax ?? "",
             Cohort: stu.Cohort ?? "",
             Class: stu.Class ?? "",
             KeepPrivate: stu.KeepPrivate ?? "",
@@ -215,7 +213,6 @@ public record StudentProfileViewModel
             HomePostalCode: homeAddress.PostalCode ?? "",
             HomeCountry: homeAddress.CountryCode ?? "",
             HomePhone: homeAddress.PhoneNumber,
-            HomeFax: "", // TODO: implement fax
             Cohort: "", // TODO: implement Cohort
             Class: "", // TODO: implement Class
             KeepPrivate: "", // TODO: implement KeepPrivate

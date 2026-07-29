@@ -82,6 +82,7 @@ namespace Gordon360.Services
         /// <param name="id"> User ID of user with clifton strengths </param>
         /// <returns> Clifton strengths of the given user </returns>
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
+        IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username);
         /// <summary>
         /// Get graduation information for a student
         /// </summary>
@@ -140,6 +141,8 @@ namespace Gordon360.Services
         /// <param name="newHours">The new hours to update the user's office hours to</param>
         /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
+        CombinedProfileViewModel ImposePrivacySettings(IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile);
+        Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy);
         /// <summary>
         /// mail location setting
         /// </summary>
