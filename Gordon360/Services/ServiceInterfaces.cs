@@ -119,6 +119,8 @@ namespace Gordon360.Services
         /// <param name="newHours">The new hours to update the user's office hours to</param>
         /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
+        CombinedProfileViewModel ImposePrivacySettings(IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile);
+        Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy);
         /// <summary>
         /// mail location setting
         /// </summary>
