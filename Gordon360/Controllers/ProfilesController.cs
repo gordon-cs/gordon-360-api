@@ -16,7 +16,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Gordon360.Models.CCT.Context;
 
 namespace Gordon360.Controllers;
 
@@ -24,8 +23,7 @@ namespace Gordon360.Controllers;
 public class ProfilesController(IProfileService profileService,
                                 IAccountService accountService,
                                 IMembershipService membershipService,
-                                IConfiguration config,
-                                CCTContext context) : GordonControllerBase
+                                IConfiguration config) : GordonControllerBase
 {
 
     /// <summary>Get profile info of currently logged in user</summary>
@@ -46,37 +44,66 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
 
-        var profile = (CombinedProfileViewModel)profileService.ComposeProfile(student, alumni, faculty, customInfo);
+        var profile = profileService.ComposeProfile(student, alumni, faculty, customInfo);
 
         return Ok(profile);
     }
 
-    /// <summary>Get another user's profile info.  The info returned depends
-    /// on the permissions of the current user, who is making the request.</summary>
+    /// <summary>Get public profile info for a user</summary>
     /// <param name="username">username of the profile info</param>
     /// <returns></returns>
     [HttpGet]
     [Route("{username}")]
-    public ActionResult<ProfileViewModel?> GetUserProfileAsync(string username)
+    public ActionResult<ProfileViewModel?> GetUserProfile(string username)
     {
         var viewerGroups = AuthUtils.GetGroups(User);
 
-        StudentProfileViewModel? _student = profileService.GetStudentProfileByUsername(username);
-        FacultyStaffProfileViewModel? _facstaff = profileService.GetFacultyStaffProfileByUsername(username);
-        AlumniProfileViewModel? _alumni = profileService.GetAlumniProfileByUsername(username);
+        var _student = profileService.GetStudentProfileByUsername(username);
+        var _faculty = profileService.GetFacultyStaffProfileByUsername(username);
+        var _alumni = profileService.GetAlumniProfileByUsername(username);
         var _customInfo = profileService.GetCustomUserInfo(username);
 
-        var student = viewerGroups.VisibleToMeStudent(_student);
-        var facstaff = viewerGroups.VisibleToMeFacstaff(_facstaff);
-        var alumni = viewerGroups.VisibleToMeAlumni(_alumni);
+        object? student = null;
+        object? faculty = null;
+        object? alumni = null;
 
-        if (student is null && alumni is null && facstaff is null)
+        if (viewerGroups.Contains(AuthGroup.SiteAdmin) || viewerGroups.Contains(AuthGroup.Police))
+        {
+            student = _student;
+            faculty = _faculty;
+            alumni = _alumni;
+        }
+        else if (viewerGroups.Contains(AuthGroup.FacStaff))
+        {
+            student = _student;
+            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+            alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
+        }
+        else if (viewerGroups.Contains(AuthGroup.Student))
+        {
+            student = _student == null ? null : (PublicStudentProfileViewModel)_student;
+            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+            // If this student is also in Alumni AuthGroup, then s/he can see alumni's
+            // public profile; if not, return null.
+            alumni = (_alumni == null) ? null :
+                     viewerGroups.Contains(AuthGroup.Alumni) ?
+                         (PublicAlumniProfileViewModel)_alumni : null;
+        }
+        else if (viewerGroups.Contains(AuthGroup.Alumni))
+        {
+            student = null;
+            faculty = _faculty == null ? null : (PublicFacultyStaffProfileViewModel)_faculty;
+            alumni = _alumni == null ? null : (PublicAlumniProfileViewModel)_alumni;
+        }
+
+        if (student is null && alumni is null && faculty is null)
         {
             return Ok(null);
         }
-        var profile = profileService.ComposeProfile(student, alumni, facstaff, _customInfo);
-        var visible_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
-        return Ok(visible_profile);
+
+        var profile = profileService.ComposeProfile(student, alumni, faculty, _customInfo);
+
+        return Ok(profile);
     }
 
     ///<summary>Get the advisor(s) of a particular student</summary>
@@ -92,20 +119,6 @@ public class ProfilesController(IProfileService profileService,
         var advisors = await profileService.GetAdvisorsAsync(username);
 
         return Ok(advisors);
-    }
-
-    ///<summary>Get the privacy settings of a particular user</summary>
-    /// <returns>
-    /// All privacy settings of the given user.
-    /// </returns>
-    [HttpGet]
-    [Route("{username}/privacy_settings")]
-    [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-    public ActionResult<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingsAsync(string username)
-    {
-        var privacy = profileService.GetPrivacySettingsAsync(username);
-
-        return Ok(privacy);
     }
 
     /// <summary> Gets the clifton strengths of a particular user </summary>
@@ -278,29 +291,29 @@ public class ProfilesController(IProfileService profileService,
 
         }
         else
-            if (viewerGroups.Contains(AuthGroup.Student))
+        if (viewerGroups.Contains(AuthGroup.Student))
+        {
+            if (accountService.GetAccountByUsername(username).show_pic == 1)
             {
-                if (accountService.GetAccountByUsername(username).show_pic == 1)
+                if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
                 {
-                    if (preferredImagePath is not null && System.IO.File.Exists(preferredImagePath))
-                    {
-                        result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
-                    }
-                    else
-                    {
-                        result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
-                    }
+                    result.Add("pref", await GetProfileImageOrDefault(preferredImagePath));
                 }
                 else
                 {
-                    result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
+                    result.Add("def", await GetProfileImageOrDefault(defaultImagePath));
                 }
-                return Ok(result);
             }
             else
             {
-                return Ok();
+                result.Add("def", await ImageUtils.DownloadImageFromURL(config["DEFAULT_PROFILE_IMAGE_PATH"]));
             }
+            return Ok(result);
+        }
+        else
+        {
+            return Ok();
+        }
     }
 
     /// <summary>
@@ -429,111 +442,42 @@ public class ProfilesController(IProfileService profileService,
     /// <summary>
     /// Update office location (building description and room number)
     /// </summary>
-    /// <param name="officeLocation">location of faculty office</param>
-    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("office_location")]
-    public async Task<ActionResult> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation, string? username = null)
+    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeLocation(OfficeLocationPatchViewModel officeLocation)
     {
-        if (string.IsNullOrEmpty(username))
-        {
-            username = AuthUtils.GetUsername(User);
-        }
-
-        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
-        {
-            return Forbid();
-        }
-
+        var username = AuthUtils.GetUsername(User);
         var result = await profileService.UpdateOfficeLocationAsync(username, officeLocation.BuildingCode, officeLocation.RoomNumber);
-        return Ok(new
-        {
-            result.BuildingDescription,
-            result.OnCampusRoom,
-        });
+        return Ok(result);
     }
 
     /// <summary>
     /// Update office hours
     /// </summary>
     /// <param name="value">office hours</param>
-    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("office_hours")]
-    public async Task<ActionResult<string>> UpdateOfficeHours([FromBody] string value, string? username = null)
+    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateOfficeHours([FromBody] string value)
     {
-        if (string.IsNullOrEmpty(username))
-        {
-            username = AuthUtils.GetUsername(User);
-        }
-
-        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
-        {
-            return Forbid();
-        }
-
+        var username = AuthUtils.GetUsername(User);
         var result = await profileService.UpdateOfficeHoursAsync(username, value);
-        return Ok(result.office_hours);
-    }
-
-    /// <summary>
-    /// Set visibility group for some piece of personal data
-    /// </summary>
-    /// <param name="userPrivacy">Faculty Staff Privacy Decisions (see UserPrivacyUpdateViewModel)</param>
-    /// <returns></returns>
-    [HttpPut]
-    [Route("user_privacy")]
-    [StateYourBusiness(operation = Operation.UPDATE, resource = Resource.PROFILE_PRIVACY)]
-    public async Task<ActionResult<UserPrivacyUpdateViewModel>> UpdateUserPrivacyAsync(UserPrivacyUpdateViewModel userPrivacy)
-    {
-        var authenticatedUserUsername = AuthUtils.GetUsername(User);
-        await profileService.UpdateUserPrivacyAsync(authenticatedUserUsername, userPrivacy);
-        return Ok();
-    }
-
-    /// <summary>
-    /// Return a list visibility groups
-    /// </summary>
-    /// <returns> All visibility groups (Public, FacStaff, Private)</returns>
-    [HttpGet]
-    [Route("visibility_groups")]
-    public ActionResult<IEnumerable<string>> GetVisibilityGroup()
-    {
-        var groups = context.UserPrivacy_Visibility_Groups.Select(up_v_g => up_v_g.Group)
-                               .Distinct()
-                               .Where(g => g != null);
-        return Ok(groups);
+        return Ok(result);
     }
 
     /// <summary>
     /// Update mail location
     /// </summary>
     /// <param name="value">mail location</param>
-    /// <param name="username">optional username to be authenticated</param>
     /// <returns></returns>
     [HttpPut]
     [Route("mailstop")]
-    public async Task<ActionResult<string>> UpdateMailStop([FromBody] string value, string? username = null)
+    public async Task<ActionResult<FacultyStaffProfileViewModel>> UpdateMailStop([FromBody] string value)
     {
-        if (string.IsNullOrEmpty(username))
-        {
-            username = AuthUtils.GetUsername(User);
-        }
-
-        if (!IsUserAuthorized(username, AuthGroup.OfficeAdmin))
-        {
-            return Forbid();
-        }
-
+        var username = AuthUtils.GetUsername(User);
         var result = await profileService.UpdateMailStopAsync(username, value);
-        return Ok(new
-        {
-            result.Mail_Location,
-            result.Mail_Description
-        });
-
+        return Ok(result);
     }
 
     /// <summary>
@@ -698,26 +642,5 @@ public class ProfilesController(IProfileService profileService,
             return NotFound("Graduation information not found.");
         }
         return Ok(graduationInfo);
-    }
-
-    /// <summary>
-    /// Gets whether or not permission to modify a user is granted, based on
-    /// whether the user being modified is the active user or whether the user
-    /// is part of a group that would grant access
-    /// </summary>
-    /// <param name="username">username of the profile being modified</param>
-    /// <param name="group">group that allows current user to modify profile</param>
-    /// <returns>true or false based on whether access is granted</returns>
-    private bool IsUserAuthorized(string username, AuthGroup group)
-    {
-        if (username != AuthUtils.GetUsername(User))
-        {
-            var groups = AuthUtils.GetGroups(User);
-            if (!groups.Contains(group))
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }
