@@ -95,7 +95,7 @@ public class ProfilesController(IProfileService profileService,
             return Ok(null);
         }
         var profile = profileService.ComposeProfile(student, alumni, facstaff, _customInfo);
-        var visible_profile = profileService.ImposePrivacySettings(viewerGroups, profile);
+        var visible_profile = await profileService.ImposePrivacySettings(viewerGroups, profile);
         return Ok(visible_profile);
     }
 
@@ -123,9 +123,9 @@ public class ProfilesController(IProfileService profileService,
     [HttpGet]
     [Route("{username}/privacy_settings")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.PROFILE)]
-    public ActionResult<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingsAsync(string username)
+    public async Task<ActionResult<IEnumerable<UserPrivacyViewModel>>> GetPrivacySettingsAsync(string username)
     {
-        var privacy = profileService.GetPrivacySettingsAsync(username);
+        var privacy = await profileService.GetPrivacySettingsAsync(username);
 
         return Ok(privacy);
     }

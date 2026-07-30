@@ -480,12 +480,12 @@ public class SFProfileService(CCTContext context, IConfiguration config, SFProfi
         return account;
     }
 
-    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username)
+    public async Task<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingsAsync(string username)
     {
         throw new NotImplementedException();
     }
 
-    public CombinedProfileViewModel ImposePrivacySettings(IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
+    public async Task<CombinedProfileViewModel> ImposePrivacySettings(IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
     {
         throw new NotImplementedException();
     }

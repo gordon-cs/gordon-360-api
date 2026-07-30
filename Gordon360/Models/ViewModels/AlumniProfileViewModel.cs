@@ -134,7 +134,6 @@ public record AlumniProfileViewModel
             HomePostalCode: homeAddress.PostalCode ?? "",
             HomeCountry: homeAddress.CountryCode ?? "",
             HomePhone: homeAddress.PhoneNumber,
-            HomeFax: "", // TODO: implement fax
             HomeEmail: "", // TODO: Implement home email
             JobTitle: currentEmployment?.Position ?? "",
             MaritalStatus: contact.MaritalStatus ?? "",

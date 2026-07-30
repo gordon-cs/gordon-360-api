@@ -37,7 +37,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     public async Task<StudentProfileViewModel> GetStudentProfileByUsername(string username)
     {
         if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        StudentProfileViewModel user = context.Student.FirstOrDefault(x => x.AD_Username.Equals(username, StringComparison.CurrentCultureIgnoreCase))
+        StudentProfileViewModel user = context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
             ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
         return user;
     }
@@ -47,10 +47,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">username</param>
     /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
-    public FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username)
+    public async Task<FacultyStaffProfileViewModel> GetFacultyStaffProfileByUsername(string username)
     {
         if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        FacultyStaffProfileViewModel user = context.FacStaff.FirstOrDefault(x => x.AD_Username.Equals(username, StringComparison.CurrentCultureIgnoreCase))
+        FacultyStaffProfileViewModel user = context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
             ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
         return user;
     }
@@ -60,10 +60,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">username</param>
     /// <returns>AlumniProfileViewModel if found, null if not found</returns>
-    public AlumniProfileViewModel? GetAlumniProfileByUsername(string username)
+    public async Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username)
     {
         if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        AlumniProfileViewModel user = context.Alumni.FirstOrDefault(x => x.AD_Username.Equals(username, StringComparison.CurrentCultureIgnoreCase))
+        AlumniProfileViewModel user = context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
             ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
         return user;
     }
@@ -73,7 +73,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">The current user's username</param>
     /// <returns>MailboxCombinationViewModel with the combination</returns>
-    public MailboxCombinationViewModel? GetMailboxCombination(string username)
+    public async Task<MailboxCombinationViewModel?> GetMailboxCombination(string username)
     {
         return context.Mailboxes
             .Where(m => m.HolderUsername == username)
@@ -87,7 +87,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">The username of the person to get the birthdate of</param>
     /// <returns>Date the user's date of birth, if available, or a default of 1/1/1800.</returns>
-    public DateTime GetBirthdate(string username)
+    public async Task<DateTime> GetBirthdate(string username)
     {
         var birthdate = context.ACCOUNT.FirstOrDefault(a => a.AD_Username == username)?.Birth_Date;
         var impossible_birthdate = new DateTime(1800, 1, 1);
@@ -123,7 +123,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns></returns>
     public async Task<IEnumerable<AdvisorViewModel>> GetAdvisorsAsync(string username)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
 
         return context.StudentAdvisors
                 .Where(sa => sa.StudentId == int.Parse(account.GordonID))
@@ -507,14 +507,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeLocationAsync(string username, string newBuilding, string newRoom)
     {
-        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The webSQL account was not found" };
         user.Building = newBuilding;
         user.Room = newRoom;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
@@ -527,14 +527,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
     {
-        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var acccount = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var user = webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.office_hours = newHours;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
@@ -547,13 +547,13 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail)
     {
-        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
         var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.mail_server = newMail;
         await webSQLContext.SaveChangesAsync();
 
         // Get updated profile
-        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        profile = await GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }

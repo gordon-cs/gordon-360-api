@@ -56,12 +56,12 @@ namespace Gordon360.Services
         /// Thrown when the username is empty, or when the user is not found
         /// </exception>
         /// <returns>ProfileViewModel if found, null if not found</returns>
-        Task<ProfileViewModel> GetProfileByUsername(string username);
-        /// <summary>
-        /// Fetch the given user's mailbox information (contains box combination)
-        /// </summary>
-        /// <param name="username">Active Directory username of current user</param>
-        /// <returns>MailboxCombinationViewModel with the combination, or null if not found</returns>
+        // Task<ProfileViewModel> GetProfileByUsername(string username);
+        // /// <summary>
+        // /// Fetch the given user's mailbox information (contains box combination)
+        // /// </summary>
+        // /// <param name="username">Active Directory username of current user</param>
+        // /// <returns>MailboxCombinationViewModel with the combination, or null if not found</returns>
         Task<MailboxCombinationViewModel?> GetMailboxCombination(string username);
         /// <summary>
         /// Fetch the given user's birthday
@@ -82,7 +82,7 @@ namespace Gordon360.Services
         /// <param name="id"> User ID of user with clifton strengths </param>
         /// <returns> Clifton strengths of the given user </returns>
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
-        IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username);
+        Task<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingsAsync(string username);
         /// <summary>
         /// Get graduation information for a student
         /// </summary>
@@ -141,7 +141,7 @@ namespace Gordon360.Services
         /// <param name="newHours">The new hours to update the user's office hours to</param>
         /// <returns>updated fac/staff profile if found</returns>
         Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours);
-        CombinedProfileViewModel ImposePrivacySettings(IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile);
+        Task<CombinedProfileViewModel> ImposePrivacySettings(IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile);
         Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy);
         /// <summary>
         /// mail location setting
