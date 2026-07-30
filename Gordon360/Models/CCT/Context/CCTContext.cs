@@ -211,6 +211,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Student> Student { get; set; }
 
+    public virtual DbSet<StudentAdvisors> StudentAdvisors { get; set; }
+
     public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
 
     public virtual DbSet<Surface> Surface { get; set; }
@@ -877,6 +879,11 @@ public partial class CCTContext : DbContext
             entity.ToView("Student", "dbo");
 
             entity.Property(e => e.BuildingDescription).IsFixedLength();
+        });
+
+        modelBuilder.Entity<StudentAdvisors>(entity =>
+        {
+            entity.ToView("StudentAdvisors");
         });
 
         modelBuilder.Entity<StudentNewsExpiration>(entity =>

@@ -371,6 +371,10 @@
          "ObjectType": 3
       },
       {
+         "Name": "[dbo].[StudentAdvisors]",
+         "ObjectType": 3
+      },
+      {
          "Name": "[dbo].[UserCourses]",
          "ObjectType": 3
       },
