@@ -14,7 +14,7 @@ public static class ServicesExtensions
     {
         services.AddScoped<IAcademicCheckInService, AcademicCheckInService>();
         services.AddScoped<IAcademicTermService, SFAcademicTermService>();
-        services.AddScoped<IAccountService, SFAccountService>();
+        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IActivityService, ActivityService>();
         services.AddScoped<IAddressesService, AddressesService>();
         services.AddScoped<IContentManagementService, ContentManagementService>();

@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Enums;
 using System;
-using Microsoft.Graph;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gordon360.Services;

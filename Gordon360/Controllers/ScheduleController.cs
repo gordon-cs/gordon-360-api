@@ -26,7 +26,7 @@ public class ScheduleController(IProfileService profileService,
     public async Task<ActionResult<CoursesBySessionViewModel>> GetAllCourses(string username)
     {
         var groups = AuthUtils.GetGroups(User);
-        FacultyStaffProfileViewModel? fac = await profileService.GetFacultyStaffProfileByUsername(username);
+        // FacultyStaffProfileViewModel? fac = await profileService.GetFacultyStaffProfileByUsername(username);
         StudentProfileViewModel? student = await profileService.GetStudentProfileByUsername(username);
         AlumniProfileViewModel? alumni = await profileService.GetAlumniProfileByUsername(username);
 
@@ -65,7 +65,7 @@ public class ScheduleController(IProfileService profileService,
         // Some users can see schedules of courses taken, as well as taught,
         // so check to see if this user can see all courses for this person.
         IEnumerable<CoursesByTermViewModel> result;
-        if ((AuthUtils.GetUsername(User).EqualsIgnoreCase(username)) ||
+        if (AuthUtils.GetUsername(User).EqualsIgnoreCase(username) ||
             (groups.CanSeeStudentSchedule() &&
                student != null &&
                groups.CanSeeThisStudent(student)) ||

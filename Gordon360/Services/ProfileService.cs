@@ -37,9 +37,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     public async Task<StudentProfileViewModel> GetStudentProfileByUsername(string username)
     {
         if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        StudentProfileViewModel user = context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
-            ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
-        return user;
+        return (StudentProfileViewModel) context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     /// <summary>
@@ -50,9 +48,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     public async Task<FacultyStaffProfileViewModel> GetFacultyStaffProfileByUsername(string username)
     {
         if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        FacultyStaffProfileViewModel user = context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
-            ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
-        return user;
+        return (FacultyStaffProfileViewModel) context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     /// <summary>
@@ -63,9 +59,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     public async Task<AlumniProfileViewModel?> GetAlumniProfileByUsername(string username)
     {
         if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
-        AlumniProfileViewModel user = context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower())
-            ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
-        return user;
+        return (AlumniProfileViewModel) context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
     }
 
     /// <summary>
