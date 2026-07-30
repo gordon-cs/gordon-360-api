@@ -17,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Gordon360.Exceptions;
+using Gordon360.Models.CCT.Context;
 
 namespace Gordon360.Controllers;
 
@@ -86,7 +87,7 @@ public class ProfilesController(IProfileService profileService,
         var _customInfo = profileService.GetCustomUserInfo(username);
 
         var student = viewerGroups.VisibleToMeStudent(_student);
-        var facstaff = viewerGroups.VisibleToMeFacstaff(_facstaff);
+        var facstaff = viewerGroups.VisibleToMeFacstaff(_faculty);
         var alumni = viewerGroups.VisibleToMeAlumni(_alumni);
 
         if (student is null && alumni is null && facstaff is null)

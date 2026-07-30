@@ -34,9 +34,12 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">username</param>
     /// <returns>StudentProfileViewModel if found, null if not found</returns>
-    public StudentProfileViewModel? GetStudentProfileByUsername(string username)
+    public async Task<StudentProfileViewModel> GetStudentProfileByUsername(string username)
     {
-        return context.Student.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        StudentProfileViewModel user = context.Student.FirstOrDefault(x => x.AD_Username.Equals(username, StringComparison.CurrentCultureIgnoreCase))
+            ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
+        return user;
     }
 
     /// <summary>
@@ -46,7 +49,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>FacultyStaffProfileViewModel if found, null if not found</returns>
     public FacultyStaffProfileViewModel? GetFacultyStaffProfileByUsername(string username)
     {
-        return context.FacStaff.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        FacultyStaffProfileViewModel user = context.FacStaff.FirstOrDefault(x => x.AD_Username.Equals(username, StringComparison.CurrentCultureIgnoreCase))
+            ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
+        return user;
     }
 
     /// <summary>
@@ -56,7 +62,10 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>AlumniProfileViewModel if found, null if not found</returns>
     public AlumniProfileViewModel? GetAlumniProfileByUsername(string username)
     {
-        return context.Alumni.FirstOrDefault(x => x.AD_Username.ToLower() == username.ToLower());
+        if (string.IsNullOrEmpty(username)) throw new ResourceNotFoundException() { ExceptionMessage = "username missing or empty" };
+        AlumniProfileViewModel user = context.Alumni.FirstOrDefault(x => x.AD_Username.Equals(username, StringComparison.CurrentCultureIgnoreCase))
+            ?? throw new ResourceNotFoundException() { ExceptionMessage = "Account not found!" };
+        return user;
     }
 
     /// <summary>
@@ -171,7 +180,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>PhotoPathViewModel if found, null if not found</returns>
     public async Task<PhotoPathViewModel?> GetPhotoPathAsync(string username)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
 
         var photoInfoList = await context.Procedures.PHOTO_INFO_PER_USER_NAMEAsync(int.Parse(account.GordonID));
         return photoInfoList.Select(p => new PhotoPathViewModel { Img_Name = p.Img_Name, Img_Path = p.Img_Path, Pref_Img_Name = p.Pref_Img_Name, Pref_Img_Path = p.Pref_Img_Path }).FirstOrDefault();
@@ -195,7 +204,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <param name="name"></param>
     public async Task UpdateProfileImageAsync(string username, string? path, string? name)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
 
         await context.Procedures.UPDATE_PHOTO_PATHAsync(int.Parse(account.GordonID), path, name);
         // Update value in cached data
@@ -285,11 +294,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
     /// <param name="profile">combined profile of the person being searched</param>
     /// <returns>public profile of the person based on individual privacy settings</returns>
-    public CombinedProfileViewModel ImposePrivacySettings
+    public async Task<CombinedProfileViewModel> ImposePrivacySettings
         (IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
     {
         // Convert profile from record to class so we can modify its elements
-        CombinedProfileViewModel restricted_profile = (CombinedProfileViewModel) profile;
+        CombinedProfileViewModel restricted_profile = (CombinedProfileViewModel)profile;
 
         // Privacy settings are generally heirarchical from bypassing all privacy settings
         // to honoring all privacy settings:
@@ -297,7 +306,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 
         // Find the account belonging to person whose profile we are accessing and get their
         // privacy settings
-        var account = accountService.GetAccountByUsername(restricted_profile.AD_Username);
+        var account = await accountService.GetAccountByUsername(restricted_profile.AD_Username);
         var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
 
         // Determine the viewer and profile user types
@@ -401,9 +410,9 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// </summary>
     /// <param name="username">AD username</param>
     /// <returns>List of field and visibility privacy settings for a specific user</returns>
-    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username)
+    public async Task<IEnumerable<UserPrivacyViewModel>> GetPrivacySettingsAsync(string username)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
 
         // select all privacy settings
         var privacy = context.UserPrivacy_Settings
@@ -422,7 +431,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <param name="userPrivacy">User Privacy Update View Model</param>
     public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel userPrivacy)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
         foreach (string field in userPrivacy.Field)
         {
             var fieldID = context.UserPrivacy_Fields.FirstOrDefault(f => f.Field == field).ID;
@@ -458,7 +467,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <param name="value">Y or N</param>
     public async Task UpdateMobilePrivacyAsync(string username, string value)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
         await context.Procedures.UPDATE_PHONE_PRIVACYAsync(int.Parse(account.GordonID), value);
         // Update value in cached data
         var student = context.Student.FirstOrDefault(x => x.ID == account.GordonID);
@@ -478,11 +487,11 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated student profile by there username</returns>
     public async Task<StudentProfileViewModel> UpdateMobilePhoneNumberAsync(string username, string newMobilePhoneNumber)
     {
-        var profile = GetStudentProfileByUsername(username);
+        var profile = await GetStudentProfileByUsername(username);
         if (profile == null)
         {
             throw new ResourceNotFoundException { ExceptionMessage = "The account was not found" };
-        
+
         }
         var digitsOnly = Regex.Replace(newMobilePhoneNumber, @"[^\d]", "");
         await context.Procedures.UPDATE_CELL_PHONEAsync(profile.ID, digitsOnly);
@@ -556,7 +565,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <param name="value">Y or N</param>
     public async Task UpdateImagePrivacyAsync(string username, string value)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
 
         await context.Procedures.UPDATE_SHOW_PICAsync(account.account_id, value);
         // Update value in cached data
@@ -637,7 +646,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
 
     public async Task InformationChangeRequest(string username, ProfileFieldViewModel[] updatedFields)
     {
-        var account = accountService.GetAccountByUsername(username);
+        var account = await accountService.GetAccountByUsername(username);
 
         string from_email = config["Emails:Sender:Username"];
         string to_email = config["Emails:AlumniProfileUpdateRequestApprover"];
@@ -712,7 +721,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         try
         {
             PropertyInfo prop = cpvm.GetProperty(field);
-            ProfileItem<string> profile_item = (ProfileItem<string>) prop.GetValue(profile);
+            ProfileItem<string> profile_item = (ProfileItem<string>)prop.GetValue(profile);
             if (profile_item != null)
             {
                 prop.SetValue(profile, new ProfileItem<string>(profile_item.Value, true));

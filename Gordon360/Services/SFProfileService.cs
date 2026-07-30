@@ -14,6 +14,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Gordon360.Models.Salesforce;
+using Gordon360.Enums;
 
 namespace Gordon360.Services;
 
@@ -479,4 +480,18 @@ public class SFProfileService(CCTContext context, IConfiguration config, SFProfi
         return account;
     }
 
+    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username)
+    {
+        throw new NotImplementedException();
+    }
+
+    public CombinedProfileViewModel ImposePrivacySettings(IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel facultyStaffPrivacy)
+    {
+        throw new NotImplementedException();
+    }
 }
