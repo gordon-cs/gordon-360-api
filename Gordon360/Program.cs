@@ -17,6 +17,7 @@ using Serilog.Formatting.Compact;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gordon360.Models.Salesforce;
 
 const string CorsPolicy = "360UI";
 
@@ -93,7 +94,10 @@ try
     );
 
     builder.Services.Add360Services();
-  
+    builder.Services.AddHttpClient<SalesforceContext>();
+    builder.Services.AddScoped<ISalesforceContext, SalesforceContext>();
+    builder.Services.AddSalesforceProcedures();
+
     builder.Services.AddHostedService<EventCacheRefreshService>();
     builder.Services.AddHostedService<MarketplaceCleanupService>();
     builder.Services.AddHostedService<PosterCleanupService>();
@@ -108,7 +112,7 @@ try
     });
 
     var app = builder.Build();
-    
+
     // Configure the HTTP request pipeline.
 
     app.UseSwagger();

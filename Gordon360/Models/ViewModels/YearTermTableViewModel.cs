@@ -1,4 +1,5 @@
 ﻿using Gordon360.Models.CCT;
+using Gordon360.Models.Salesforce;
 using System;
 
 namespace Gordon360.Models.ViewModels
@@ -20,6 +21,19 @@ namespace Gordon360.Models.ViewModels
             EndDate = entity.TRM_END_DTE;
             Description = entity.YR_TRM_DESC;
             ShowOnWeb = entity.SHOW_ON_WEB;
+        }
+       public YearTermTableViewModel(AcademicTerm entity)
+        {
+            YearCode = entity.gc_Jenz_Year_Code__c;
+            TermCode = entity.gc_Jenz_Term_Code__c;
+            // Convert ISO 8601 DateTime strings to DateTime objects
+            BeginDate = (entity.StartDate is null) ? null : DateTime.Parse(entity.StartDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+            EndDate = (entity.EndDate is null) ? null : DateTime.Parse(entity.EndDate, null, System.Globalization.DateTimeStyles.RoundtripKind);
+
+            Description = entity.Name;
+
+            // TODO: Field does not yet exist in SalesForce. Default placeholder value.
+            ShowOnWeb = "y";
         }
     }
 }

@@ -4,7 +4,7 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeStudents(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeStudents(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for students.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -12,7 +12,7 @@
             <returns>True if the user making the request is authorized to see
             profile information for students, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeStudentSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeStudentSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             course schedule information for students.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -20,7 +20,7 @@
             <returns>True if the user making the request is authorized to see
             schedule information for students, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeThisStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeThisStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for this particular student.  Some students are not shown
             because of FERPA protections.</summary>
@@ -31,7 +31,7 @@
             <returns>True if the user making the request is authorized to see
             profile information for this student, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for faculty and staff (facstaff).</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -39,7 +39,7 @@
             <returns>True if the user making the request is authorized to see
             profile information for facstaff, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for alumni.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -47,7 +47,7 @@
             <returns>True if the user making the request is authorized to see
             profile information for alumni, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeAlumniSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeAlumniSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             course schedule information for alumni.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -55,7 +55,7 @@
             <returns>True if the user making the request is authorized to see
             course schedule information for alumni, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeThisAlum(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeThisAlum(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for this particular alum.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -2014,6 +2014,47 @@
             <summary>
             Whether the user wants their strengths to be private (not shown to other users)
             </summary>
+        </member>
+        <member name="T:Gordon360.Models.Salesforce.ISalesforceContext">
+            <summary>
+            Interface to SalesforceContext. Makes testing quite a bit easier.
+            </summary>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SalesforceContext.SoqlQuery``1(System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Constructs a SOQL query
+            </summary>
+            <param name="template">Template string in the form 'SELECT [fields] FROM [table]'</param>
+            <param name="where">SOQL field selectors</param>
+            <param name="order">SOQL ordering</param>
+            <param name="limit_n">SOQL limit on number of records returned</param>
+            <param name="offset_n">SOQL offset of records returned</param>
+            <returns>T containing results of query</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.AcademicTermProcedures.GetAllTerms">
+            <summary>
+            </summary>
+            <returns>Returns list of all available academic terms, ordered descending by start date</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.AcademicTermProcedures.GetCurrentTerm">
+            <summary>
+            </summary>
+            <returns>Returns the current academic term, if it exists</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFStudentEmployment.GetStudentEmployment(System.String)">
+            <summary>
+            Fetch IEnumerable of student employment records for the given user
+            </summary>
+            <param name="username">Active Directory username</param>
+            <returns>IEnumerable of student employment records for the user, or empty if unauthorized</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFUserCourses.GetUserCourses(System.String,System.String)">
+            <summary>
+            Fetch IEnumerable of courses taken by the given user
+            </summary>
+            <param name="username">Active Directory username</param>
+            <param name="role">Role of user requesting</param>
+            <returns>IEnumerable of courses taken by user, or empty if unauthorized</returns>
         </member>
         <member name="M:Gordon360.Models.ViewModels.BasicInfoViewModel.MatchSearch(System.String)">
             <summary>

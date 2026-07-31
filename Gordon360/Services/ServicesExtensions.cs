@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Gordon360.Models.Salesforce;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Gordon360.Services;
 
@@ -43,6 +44,14 @@ public static class ServicesExtensions
         services.AddScoped<RecIM.IAffiliationService, RecIM.AffiliationService>();
         services.AddScoped<IMarketplaceService, MarketplaceService>();
 
+        return services;
+    }
+    public static IServiceCollection AddSalesforceProcedures(this IServiceCollection services)
+    {
+        services.AddScoped<SFUserCourses>();
+        services.AddScoped<AcademicTermProcedures>();
+        services.AddScoped<SFHolds>();
+        services.AddScoped<SFUserCourses>();
         return services;
     }
 }
