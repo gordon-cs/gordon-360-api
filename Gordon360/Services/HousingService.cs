@@ -54,6 +54,13 @@ public class HousingService(CCTContext context) : IHousingService
     }
 
     /// <summary>
+    /// Gets all halls
+    /// </summary>
+    /// <returns> An array of halls </returns>
+    public IQueryable<HallViewModel> GetAllHalls() => context.Halls.Select(h => new HallViewModel(h.HallName, h.BuildingCode.TrimEnd()));
+
+
+    /// <summary>
     /// Gets all names of apartment halls
     /// </summary>
     /// <returns> AN array of hall names </returns>
