@@ -79,18 +79,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[UserPrivacy_Fields]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[UserPrivacy_Settings]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[UserPrivacy_Visibility_Groups]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[Housing].[Hall_Assignment_Ranges]",
          "ObjectType": 0
       },
@@ -368,10 +356,6 @@
       },
       {
          "Name": "[dbo].[Student]",
-         "ObjectType": 3
-      },
-      {
-         "Name": "[dbo].[StudentAdvisors]",
          "ObjectType": 3
       },
       {

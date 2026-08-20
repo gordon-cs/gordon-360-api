@@ -19,7 +19,7 @@ public record ProfileViewModel(
     string HomeCity,
     string HomeState,
     string HomePostalCode,
-    string HomeCountry, // Abbreviation of Country
+    string HomeCountry,
     string HomePhone,
     string HomeFax,
     string AD_Username,
