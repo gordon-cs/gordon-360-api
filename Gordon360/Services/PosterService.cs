@@ -36,11 +36,16 @@ public class PosterService(CCTContext context,
         return context.Poster.Include(p => p.Status).Select(p => (PosterViewModel)p);
     }
 
-    public IEnumerable<PosterViewModel> GetCurrentPosters()
+    public IEnumerable<PosterViewModel> GetCurrentPosters(string username)
     {
+        var currentSessionCode = sessionService.GetCurrentSession().SessionCode;
+        var currentMembershipCodes = membershipService.GetMemberships(username: username, sessionCode: currentSessionCode)
+            .Select(m => m.ActivityCode);
+
         return GetPosters()
             .Where(p => p.ExpirationDate > DateTime.Now && p.Status == "Visible" && p.VisibleDate < DateTime.Now)
             .OrderByDescending(p => p.Priority)
+            .ThenByDescending(p => currentMembershipCodes.Contains(p.ClubCode))
             .ThenBy(p => p.ExpirationDate);
     }
 
@@ -64,7 +69,7 @@ public class PosterService(CCTContext context,
         var currentMembershipCodes = membershipService.GetMemberships(username: username, sessionCode: currentSessionCode)
             .Select(m => m.ActivityCode);
 
-        var res = GetCurrentPosters().Where(p => currentMembershipCodes.Contains(p.ClubCode));
+        var res = GetCurrentPosters(username).Where(p => currentMembershipCodes.Contains(p.ClubCode));
    
         return res;
     }
