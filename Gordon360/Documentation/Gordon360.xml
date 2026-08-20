@@ -4,7 +4,7 @@
         <name>Gordon360</name>
     </assembly>
     <members>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeStudents(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeStudents(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for students.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -12,7 +12,7 @@
             <returns>True if the user making the request is authorized to see
             profile information for students, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeStudentSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeStudentSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             course schedule information for students.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -20,7 +20,7 @@
             <returns>True if the user making the request is authorized to see
             schedule information for students, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeThisStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeThisStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for this particular student.  Some students are not shown
             because of FERPA protections.</summary>
@@ -31,7 +31,7 @@
             <returns>True if the user making the request is authorized to see
             profile information for this student, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for faculty and staff (facstaff).</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -39,7 +39,7 @@
             <returns>True if the user making the request is authorized to see
             profile information for facstaff, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for alumni.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -47,7 +47,7 @@
             <returns>True if the user making the request is authorized to see
             profile information for alumni, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeAlumniSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeAlumniSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
             <summary>Indicates whether a user making a request is authorized to see
             course schedule information for alumni.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -55,7 +55,7 @@
             <returns>True if the user making the request is authorized to see
             course schedule information for alumni, and false otherwise.</returns>
         </member>
-        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanISeeThisAlum(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeThisAlum(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
             <summary>Indicates whether a user making a request is authorized to see
             profile information for this particular alum.</summary>
             <param name="viewerGroups">The authentication groups associated with the
@@ -429,6 +429,12 @@
             Delete an application (and consequently all rows that reference it)
             </summary>
             <param name="applicationID"> The id of the application to remove </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllHalls">
+            <summary>
+            Get a list of all residence halls
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetApartmentHalls">
@@ -2568,6 +2574,12 @@
             </summary>
             <param name="applicationID"> The id of the application to delete </param>
             <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllHalls">
+            <summary>
+            Gets all halls
+            </summary>
+            <returns> An array of halls </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllApartmentHalls">
             <summary>
