@@ -38,6 +38,25 @@ public class HousingController(CCTContext context, IProfileService profileServic
 
 
     /// <summary>
+    /// Get a list of all residence halls
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("halls")]
+    public ActionResult<IQueryable<HallViewModel>> GetAllHalls()
+    {
+        var result = housingService.GetAllHalls();
+        if (result != null)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return NotFound();
+        }
+    }
+
+    /// <summary>
     /// Get a list of the apartment-style halls
     /// </summary>
     /// <returns></returns>

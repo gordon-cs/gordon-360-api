@@ -228,6 +228,8 @@ namespace Gordon360.Services
     {
         bool CheckIfHousingAdmin(string username);
         bool DeleteApplication(int applicationID);
+
+        IQueryable<HallViewModel> GetAllHalls();
         string[] GetAllApartmentHalls();
         string GetEditorUsername(int applicationID);
         int? GetApplicationID(string username, string sess_cde);

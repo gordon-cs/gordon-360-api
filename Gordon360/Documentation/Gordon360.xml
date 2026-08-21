@@ -4,6 +4,105 @@
         <name>Gordon360</name>
     </assembly>
     <members>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeStudents(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for students.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for students, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeStudentSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            course schedule information for students.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            schedule information for students, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeThisStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for this particular student.  Some students are not shown
+            because of FERPA protections.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <param name="student">Profile data for the student whose information
+            is being requested.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for this student, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for faculty and staff (facstaff).</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for facstaff, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for alumni.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for alumni, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeAlumniSchedule(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup})">
+            <summary>Indicates whether a user making a request is authorized to see
+            course schedule information for alumni.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <returns>True if the user making the request is authorized to see
+            course schedule information for alumni, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.CanSeeThisAlum(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
+            <summary>Indicates whether a user making a request is authorized to see
+            profile information for this particular alum.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <param name="alum">Profile data for the alumnus or alumna whose information
+            is being requested.</param>
+            <returns>True if the user making the request is authorized to see
+            profile information for this alum, and false otherwise.</returns>
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.VisibleToMeStudent(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.StudentProfileViewModel)">
+            <summary>Restrict info about a student to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.  Note that 
+            this takes FERPA restrictions into account in determining whether this student
+            is visible to the requesting user.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <param name="student">Profile data for the student whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about students.</returns>
+            
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.VisibleToMeFacstaff(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.FacultyStaffProfileViewModel)">
+            <summary>Restrict info about a facstaff person to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <param name="facstaff">Profile data for the facstaff member whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about facstaff.</returns>
+            
+        </member>
+        <member name="M:Gordon360.Authorization.AuthGroupExtensions.VisibleToMeAlumni(System.Collections.Generic.IEnumerable{Gordon360.Enums.AuthGroup},Gordon360.Models.ViewModels.AlumniProfileViewModel)">
+            <summary>Restrict info about an alumni person to those fields which are potentially
+            viewable by the user making the request.  Actual visibility may also depend
+            on privacy choices made by the user whose data is being viewed.</summary>
+            <param name="viewerGroups">The authentication groups associated with the
+            user making the request.</param>
+            <param name="alumni">Profile data for the alum whose information
+            is being requested.</param>
+            <returns>Information the requesting user is potentially authorized to see.
+            Null if the requesting user is never allowed to see data about alumni.</returns>
+            
+        </member>
         <member name="M:Gordon360.Authorization.AuthUtils.GetUsername(System.Security.Claims.ClaimsPrincipal)">
             <summary>
             Get the username of the authenticated user
@@ -330,6 +429,12 @@
             Delete an application (and consequently all rows that reference it)
             </summary>
             <param name="applicationID"> The id of the application to remove </param>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Controllers.HousingController.GetAllHalls">
+            <summary>
+            Get a list of all residence halls
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Gordon360.Controllers.HousingController.GetApartmentHalls">
@@ -2417,6 +2522,12 @@
             </summary>
             <param name="applicationID"> The id of the application to delete </param>
             <returns> Whether or not this was successful </returns>
+        </member>
+        <member name="M:Gordon360.Services.HousingService.GetAllHalls">
+            <summary>
+            Gets all halls
+            </summary>
+            <returns> An array of halls </returns>
         </member>
         <member name="M:Gordon360.Services.HousingService.GetAllApartmentHalls">
             <summary>
