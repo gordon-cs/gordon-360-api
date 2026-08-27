@@ -170,18 +170,13 @@ public class ProfilesController(IProfileService profileService,
     [HttpGet]
     [Route("emergency-contact/{username}")]
     [StateYourBusiness(operation = Operation.READ_ONE, resource = Resource.EMERGENCY_CONTACT)]
-    public ActionResult<EmergencyContactViewModel> GetEmergencyContact(string username)
+    public ActionResult<GetEmergencyContactViewModel> GetEmergencyContact(string username)
     {
-        try
-        {
+        
             var emrg = profileService.GetEmergencyContact(username);
+
             return Ok(emrg);
-        }
-        catch (Exception e)
-        {
-            System.Diagnostics.Debug.WriteLine(e.Message);
-            return NotFound();
-        }
+        
     }
 
     /// <summary>Gets the mailbox information of currently logged in user</summary>
