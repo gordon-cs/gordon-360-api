@@ -29,7 +29,7 @@ namespace Gordon360.Services
         CliftonStrengthsViewModel? GetCliftonStrengths(int id);
         GraduationViewModel? GetGraduationInfo(string username);
         Task<bool> ToggleCliftonStrengthsPrivacyAsync(int id);
-        IEnumerable<EmergencyContactViewModel> GetEmergencyContact(string username);
+        IEnumerable<GetEmergencyContactViewModel> GetEmergencyContact(string username);
         ProfileCustomViewModel? GetCustomUserInfo(string username);
         Task<PhotoPathViewModel?> GetPhotoPathAsync(string username);
         Task UpdateCustomProfileAsync(string username, string type, CUSTOM_PROFILE content);
