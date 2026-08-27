@@ -10,7 +10,6 @@ public class EmergencyContactViewModel
     {
         EmergencyContactViewModel vm = new EmergencyContactViewModel()
         {
-            APPID = emrg.APPID,
             SEQ_NUMBER = emrg.SEQ_NUM,
             AD_Username = emrg.AD_Username ?? "",
             LastName = emrg.lastname ?? "",
@@ -25,7 +24,6 @@ public class EmergencyContactViewModel
         return vm;
     }
 
-    public Nullable<int> APPID { get; set; }
     public int SEQ_NUMBER { get; set; }
     public string AD_Username { get; set; }
     public string LastName { get; set; }

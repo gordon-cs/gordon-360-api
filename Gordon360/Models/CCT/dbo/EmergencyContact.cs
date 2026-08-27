@@ -11,8 +11,6 @@ namespace Gordon360.Models.CCT;
 [Keyless]
 public partial class EmergencyContact
 {
-    public int APPID { get; set; }
-
     [StringLength(50)]
     [Unicode(false)]
     public string AD_Username { get; set; }
@@ -27,15 +25,15 @@ public partial class EmergencyContact
     [Unicode(false)]
     public string prefix { get; set; }
 
-    [StringLength(30)]
+    [StringLength(50)]
     [Unicode(false)]
     public string lastname { get; set; }
 
-    [StringLength(15)]
+    [StringLength(50)]
     [Unicode(false)]
     public string firstname { get; set; }
 
-    [StringLength(15)]
+    [StringLength(50)]
     [Unicode(false)]
     public string middlename { get; set; }
 
@@ -43,7 +41,7 @@ public partial class EmergencyContact
     [Unicode(false)]
     public string suffix { get; set; }
 
-    [StringLength(20)]
+    [StringLength(25)]
     [Unicode(false)]
     public string HomePhone { get; set; }
 
@@ -51,7 +49,7 @@ public partial class EmergencyContact
     [Unicode(false)]
     public string HomeExt { get; set; }
 
-    [StringLength(20)]
+    [StringLength(25)]
     [Unicode(false)]
     public string WorkPhone { get; set; }
 
@@ -59,7 +57,7 @@ public partial class EmergencyContact
     [Unicode(false)]
     public string WorkExr { get; set; }
 
-    [StringLength(20)]
+    [StringLength(25)]
     [Unicode(false)]
     public string MobilePhone { get; set; }
 
@@ -71,19 +69,19 @@ public partial class EmergencyContact
     [Unicode(false)]
     public string notes { get; set; }
 
-    [StringLength(60)]
+    [StringLength(100)]
     [Unicode(false)]
     public string EmailAddress { get; set; }
 
-    [StringLength(4)]
+    [StringLength(10)]
     [Unicode(false)]
     public string HomeAddrCode { get; set; }
 
-    [StringLength(4)]
+    [StringLength(10)]
     [Unicode(false)]
     public string WorkAddrCode { get; set; }
 
-    [StringLength(4)]
+    [StringLength(10)]
     [Unicode(false)]
     public string MobileAddrCode { get; set; }
 
@@ -95,11 +93,11 @@ public partial class EmergencyContact
     [Unicode(false)]
     public string AddressAddrCode { get; set; }
 
-    [StringLength(60)]
+    [StringLength(200)]
     [Unicode(false)]
     public string relationship { get; set; }
 
-    public int EMRG_PRIORITY { get; set; }
+    public int? EMRG_PRIORITY { get; set; }
 
     [StringLength(60)]
     [Unicode(false)]
@@ -109,33 +107,19 @@ public partial class EmergencyContact
     [Unicode(false)]
     public string addr_2 { get; set; }
 
-    [StringLength(25)]
+    [StringLength(50)]
     [Unicode(false)]
     public string city { get; set; }
 
-    [StringLength(2)]
+    [StringLength(70)]
     [Unicode(false)]
     public string EMRG_STATE { get; set; }
 
-    [StringLength(12)]
+    [StringLength(25)]
     [Unicode(false)]
     public string zip { get; set; }
 
-    [StringLength(3)]
+    [StringLength(70)]
     [Unicode(false)]
     public string country { get; set; }
-
-    [Required]
-    public byte[] ApprowVersion { get; set; }
-
-    [StringLength(513)]
-    [Unicode(false)]
-    public string UserName { get; set; }
-
-    [StringLength(30)]
-    [Unicode(false)]
-    public string JobName { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public DateTime? JobTime { get; set; }
 }

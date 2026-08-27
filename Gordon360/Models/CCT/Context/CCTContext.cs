@@ -386,9 +386,6 @@ public partial class CCTContext : DbContext
             entity.ToView("EmergencyContact", "dbo");
 
             entity.Property(e => e.AddressAddrCode).IsFixedLength();
-            entity.Property(e => e.ApprowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken();
             entity.Property(e => e.EmailAddrCode).IsFixedLength();
             entity.Property(e => e.HomeAddrCode).IsFixedLength();
             entity.Property(e => e.HomeExt).IsFixedLength();
