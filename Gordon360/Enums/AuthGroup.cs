@@ -21,6 +21,7 @@ public enum AuthGroup
     LostAndFoundAdmin,
     LostAndFoundAssist,
     LostAndFoundDevelopers,
+    OfficeAdmin,
 }
 
 public static class AuthGroupEnum
@@ -46,6 +47,7 @@ public static class AuthGroupEnum
         "360-LostAndFoundAdmins-SG" => AuthGroup.LostAndFoundAdmin,
         "360-LostAndFoundAssist-SG" => AuthGroup.LostAndFoundAssist,
         "360-LostAndFound-Developers-SG" => AuthGroup.LostAndFoundDevelopers,
+        "360-OfficeAdmin-SG" => AuthGroup.OfficeAdmin,
         _ => null
     };
 }

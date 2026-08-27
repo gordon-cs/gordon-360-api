@@ -211,6 +211,8 @@ public partial class CCTContext : DbContext
 
     public virtual DbSet<Student> Student { get; set; }
 
+    public virtual DbSet<StudentAdvisors> StudentAdvisors { get; set; }
+
     public virtual DbSet<StudentNewsExpiration> StudentNewsExpiration { get; set; }
 
     public virtual DbSet<Surface> Surface { get; set; }
@@ -222,6 +224,12 @@ public partial class CCTContext : DbContext
     public virtual DbSet<Unassigned_Rooms> Unassigned_Rooms { get; set; }
 
     public virtual DbSet<UserCourses> UserCourses { get; set; }
+
+    public virtual DbSet<UserPrivacy_Fields> UserPrivacy_Fields { get; set; }
+
+    public virtual DbSet<UserPrivacy_Settings> UserPrivacy_Settings { get; set; }
+
+    public virtual DbSet<UserPrivacy_Visibility_Groups> UserPrivacy_Visibility_Groups { get; set; }
 
     public virtual DbSet<YearTermTable> YearTermTable { get; set; }
     
@@ -873,6 +881,11 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.BuildingDescription).IsFixedLength();
         });
 
+        modelBuilder.Entity<StudentAdvisors>(entity =>
+        {
+            entity.ToView("StudentAdvisors");
+        });
+
         modelBuilder.Entity<StudentNewsExpiration>(entity =>
         {
             entity.HasKey(e => e.SNID).HasName("PK_StudentNewsExpiration_SNID");
@@ -930,6 +943,28 @@ public partial class CCTContext : DbContext
             entity.Property(e => e.WEDNESDAY_CDE).IsFixedLength();
             entity.Property(e => e.YR_CDE).IsFixedLength();
         });
+
+        modelBuilder.Entity<UserPrivacy_Fields>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK_UserPrivacy_Fields_1");
+        });
+
+        modelBuilder.Entity<UserPrivacy_Settings>(entity =>
+        {
+            entity.HasOne(d => d.FieldNavigation).WithMany(p => p.UserPrivacy_Settings)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserPrivacy_Settings_UserPrivacy_Fields");
+
+            entity.HasOne(d => d.VisibilityNavigation).WithMany(p => p.UserPrivacy_Settings)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_UserPrivacy_Settings_UserPrivacy_Visibility_Groups");
+        });
+
+        modelBuilder.Entity<UserPrivacy_Visibility_Groups>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK_UserPrivacy_Visibility_Groups_1");
+        });
+        
         modelBuilder.HasSequence("Information_Change_Request_Seq", "dbo");
 
         OnModelCreatingPartial(modelBuilder);
