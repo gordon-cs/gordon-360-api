@@ -70,32 +70,6 @@ namespace Gordon360.Models.CCT.Context
             return _;
         }
 
-        public virtual async Task<List<ADVISOR_SEPARATEResult>> ADVISOR_SEPARATEAsync(int? STUDENT_ID, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
-        {
-            var parameterreturnValue = new SqlParameter
-            {
-                ParameterName = "returnValue",
-                Direction = System.Data.ParameterDirection.Output,
-                SqlDbType = System.Data.SqlDbType.Int,
-            };
-
-            var sqlParameters = new []
-            {
-                new SqlParameter
-                {
-                    ParameterName = "STUDENT_ID",
-                    Value = STUDENT_ID ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                parameterreturnValue,
-            };
-            var _ = await _context.SqlQueryAsync<ADVISOR_SEPARATEResult>("EXEC @returnValue = [dbo].[ADVISOR_SEPARATE] @STUDENT_ID = @STUDENT_ID", sqlParameters, cancellationToken);
-
-            returnValue?.SetValue(parameterreturnValue.Value);
-
-            return _;
-        }
-
         public virtual async Task<List<ALL_BASIC_INFOResult>> ALL_BASIC_INFOAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter

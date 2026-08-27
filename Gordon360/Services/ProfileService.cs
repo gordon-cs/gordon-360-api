@@ -1,13 +1,11 @@
-﻿using Gordon360.Authorization;
-using Gordon360.Exceptions;
+﻿using Gordon360.Exceptions;
 using Gordon360.Models.CCT;
 using Gordon360.Models.CCT.Context;
 using Gordon360.Models.ViewModels;
 using Gordon360.Models.webSQL.Context;
-using Microsoft.AspNetCore.Mvc;
+using Gordon360.Static.Methods;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Graph;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -15,13 +13,22 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Gordon360.Enums;
 
 namespace Gordon360.Services;
 
 public class ProfileService(CCTContext context, IConfiguration config, IAccountService accountService, webSQLContext webSQLContext) : IProfileService
 {
+    // These three-character strings are valid substrings for the PersonType
+    // field in the profile. These are used in the UI and so cannot be changed
+    // here unless the corresponding change is made in the UI.
+    const string FACSTAFF_PROFILE = "fac";
+    const string STUDENT_PROFILE = "stu";
+    const string ALUMNI_PROFILE = "alu";
+
     /// <summary>
     /// get student profile info
     /// </summary>
@@ -109,27 +116,9 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     {
         var account = accountService.GetAccountByUsername(username);
 
-        // Stored procedure returns row containing advisor1 ID, advisor2 ID, advisor3 ID 
-        var advisorIDsEnumerable = await context.Procedures.ADVISOR_SEPARATEAsync(int.Parse(account.GordonID));
-        var advisorIDs = advisorIDsEnumerable.FirstOrDefault();
-
-        if (advisorIDs == null)
-        {
-            return null;
-        }
-
-        List<AdvisorViewModel> resultList = new();
-
-        foreach (var advisorID in new[] { advisorIDs.Advisor1, advisorIDs.Advisor2, advisorIDs.Advisor3 })
-        {
-            if (!string.IsNullOrEmpty(advisorID))
-            {
-                var advisor = accountService.GetAccountByID(advisorID);
-                resultList.Add(new AdvisorViewModel(advisor.FirstName, advisor.LastName, advisor.ADUserName));
-            }
-        }
-
-        return resultList;
+        return context.StudentAdvisors
+                .Where(sa => sa.StudentId == int.Parse(account.GordonID))
+                .Select(a => new AdvisorViewModel(a.AdvisorFirstName, a.AdvisorLastName, a.AdvisorADUserName));
     }
 
     /// <summary> Gets the clifton strengths of a particular user </summary>
@@ -282,6 +271,179 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         await context.SaveChangesAsync();
     }
 
+
+    /// <summary>
+    /// convert combined profile to public profile based on individual privacy settings
+    /// </summary>
+    /// <param name="viewerGroups">list of AuthGroups the logged-in user belongs to</param>
+    /// <param name="profile">combined profile of the person being searched</param>
+    /// <returns>public profile of the person based on individual privacy settings</returns>
+    public CombinedProfileViewModel ImposePrivacySettings
+        (IEnumerable<AuthGroup> viewerGroups, ProfileViewModel profile)
+    {
+        // Convert profile from record to class so we can modify its elements
+        CombinedProfileViewModel restricted_profile = (CombinedProfileViewModel) profile;
+
+        // Privacy settings are generally heirarchical from bypassing all privacy settings
+        // to honoring all privacy settings:
+        //   SiteAdmin & Police -> FacStaff -> Students -> Alumni
+
+        // Find the account belonging to person whose profile we are accessing and get their
+        // privacy settings
+        var account = accountService.GetAccountByUsername(restricted_profile.AD_Username);
+        var privacy = context.UserPrivacy_Settings.Where(up_s => up_s.gordon_id == account.GordonID);
+
+        // Determine the viewer and profile user types
+        bool viewerIsSiteAdmin = viewerGroups.Contains(AuthGroup.SiteAdmin);
+        bool viewerIsPolice = viewerGroups.Contains(AuthGroup.Police);
+        bool viewerIsFacStaff = viewerGroups.Contains(AuthGroup.FacStaff);
+        bool viewerIsStudent = viewerGroups.Contains(AuthGroup.Student);
+        bool viewerIsAlumni = viewerGroups.Contains(AuthGroup.Alumni);
+        bool profileIsFacStaff = restricted_profile.PersonType.Contains(FACSTAFF_PROFILE);
+        bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
+        bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
+
+        // Get visibility group IDs
+        var Public_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Public")?.ID;
+        var FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")?.ID;
+        var Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")?.ID;
+
+        // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
+        // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
+        // privacy settings in profile.
+
+        // NOTE: The "old-style" privacy settings in the profile (e.g. IsMobilePhonePrivate)
+        // are set by HR or the student matriciulation process.  These settings will be used
+        // for 360 until the user chooses privacy settings in their profile.
+        foreach (UserPrivacy_Fields field in context.UserPrivacy_Fields)
+        {
+            int fieldID = field.ID;
+            string fieldName = field.Field;
+
+            // Determine the visibility for the current privacy field and
+            // fall back to profile-based visibility restrictions if needed
+            var visibilityID = privacy.Where(x => x.Field == fieldID).FirstOrDefault()?.Visibility;
+            if (visibilityID is null)
+            {
+                if (profileIsStudent)
+                {
+                    // honor "semi-private" code: student's home city, state, country and on-off campus status is private
+                    var addressPrivate = restricted_profile.KeepPrivate == "S"
+                                         && (fieldName == "HomeCity" || fieldName == "HomeState"
+                                            || fieldName == "HomeCountry" || fieldName == "Country");
+                    var mobilePhonePrivate = restricted_profile.IsMobilePhonePrivate && fieldName == "MobilePhone";
+                    visibilityID = mobilePhonePrivate || addressPrivate ? Private_GroupID : Public_GroupID;
+                }
+                else if (profileIsFacStaff)
+                {
+                    visibilityID = restricted_profile.KeepPrivate == "1" ? Private_GroupID : Public_GroupID;
+                }
+                else if (profileIsAlumni)
+                {
+                    visibilityID = (restricted_profile.ShareAddress == "N" && (fieldName.Contains("Home") || fieldName == "Country"))
+                        ? Private_GroupID : Public_GroupID;
+                }
+            }
+
+            // Enforce the visibility for the current privacy field
+            if ((viewerIsSiteAdmin || viewerIsPolice) && visibilityID != Public_GroupID)
+            {
+                MarkAsPrivate(restricted_profile, fieldName);
+            }
+            else if (viewerIsFacStaff)
+            {
+                if (profileIsFacStaff)
+                {
+                    if (visibilityID == Private_GroupID)
+                    {
+                        MakePrivate(restricted_profile, fieldName);
+                    }
+                    else if (visibilityID == FacStaff_GroupID)
+                    {
+                        MarkAsPrivate(restricted_profile, fieldName);
+                    }
+                }
+                else if (profileIsAlumni && visibilityID != Public_GroupID)
+                {
+                    MakePrivate(restricted_profile, fieldName);
+                }
+                else if (profileIsStudent && visibilityID != Public_GroupID)
+                {
+                    MarkAsPrivate(restricted_profile, fieldName);
+                }
+            }
+            else if ((viewerIsStudent || viewerIsAlumni) && visibilityID != Public_GroupID)
+            {
+                MakePrivate(restricted_profile, fieldName);
+            }
+        }
+
+        // Handle a legacy special case -- if a student has the semi-private flag then
+        // not only do we need to hide their address information (handled above), but
+        // also need to change an entry in their profile
+        if (restricted_profile.KeepPrivate == "S")
+        {
+            restricted_profile.OnOffCampus = "P";
+        }
+
+        return restricted_profile;
+    }
+
+    /// <summary>
+    /// Get profile fields and visibility settings for a specific user
+    /// </summary>
+    /// <param name="username">AD username</param>
+    /// <returns>List of field and visibility privacy settings for a specific user</returns>
+    public IEnumerable<UserPrivacyViewModel> GetPrivacySettingsAsync(string username)
+    {
+        var account = accountService.GetAccountByUsername(username);
+
+        // select all privacy settings
+        var privacy = context.UserPrivacy_Settings
+            .Include(up_s => up_s.VisibilityNavigation)
+            .Include(up_s => up_s.FieldNavigation)
+            .Where(up_s => up_s.gordon_id == account.GordonID)
+            .Select(up_s => (UserPrivacyViewModel)up_s);
+
+        return privacy;
+    }
+
+    /// <summary>
+    /// Set privacy setting of some piece of personal data for user.
+    /// </summary>
+    /// <param name="username">AD Username</param>
+    /// <param name="userPrivacy">User Privacy Update View Model</param>
+    public async Task UpdateUserPrivacyAsync(string username, UserPrivacyUpdateViewModel userPrivacy)
+    {
+        var account = accountService.GetAccountByUsername(username);
+        foreach (string field in userPrivacy.Field)
+        {
+            var fieldID = context.UserPrivacy_Fields.FirstOrDefault(f => f.Field == field).ID;
+            var groupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(v => v.Group == userPrivacy.VisibilityGroup).ID;
+            var user = context.UserPrivacy_Settings
+                .Include(up_s => up_s.FieldNavigation)
+                .Include(up_s => up_s.VisibilityNavigation)
+                .FirstOrDefault(up_s => up_s.gordon_id == account.GordonID && up_s.Field == fieldID);
+            if (user is null)
+            {
+                var privacy = new UserPrivacy_Settings
+                {
+                    gordon_id = account.GordonID,
+                    Field = fieldID,
+                    Visibility = groupID
+                };
+                await context.UserPrivacy_Settings.AddAsync(privacy);
+            }
+            else
+            {
+                user.Visibility = groupID;
+            }
+        }
+
+        context.SaveChanges();
+    }
+
+
     /// <summary>
     /// privacy setting of mobile phone.
     /// </summary>
@@ -335,6 +497,9 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         user.Room = newRoom;
         await webSQLContext.SaveChangesAsync();
 
+        // Get updated profile
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+
         return profile;
     }
 
@@ -346,15 +511,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateOfficeHoursAsync(string username, string newHours)
     {
-        var profile = GetFacultyStaffProfileByUsername(username);
-        if (profile == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
-        }
-        var acccount = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
-        var user = webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id);
+        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var acccount = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var user = webSQLContext.account_profiles.FirstOrDefault(a => a.account_id == acccount.account_id) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.office_hours = newHours;
         await webSQLContext.SaveChangesAsync();
+
+        // Get updated profile
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
@@ -367,14 +531,13 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     /// <returns>updated fac/staff profile if found</returns>
     public async Task<FacultyStaffProfileViewModel> UpdateMailStopAsync(string username, string newMail)
     {
-        var profile = GetFacultyStaffProfileByUsername(username);
-        if (profile == null)
-        {
-            throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
-        }
-        var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username);
+        var profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
+        var user = webSQLContext.accounts.FirstOrDefault(a => a.AD_Username == username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The user was not found" };
         user.mail_server = newMail;
         await webSQLContext.SaveChangesAsync();
+
+        // Get updated profile
+        profile = GetFacultyStaffProfileByUsername(username) ?? throw new ResourceNotFoundException() { ExceptionMessage = "The account was not found" };
 
         return profile;
     }
@@ -440,19 +603,19 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         if (student != null)
         {
             MergeProfile(profile, JObject.FromObject(student));
-            personType += "stu";
+            personType += STUDENT_PROFILE;
         }
 
         if (alumni != null)
         {
             MergeProfile(profile, JObject.FromObject(alumni));
-            personType += "alu";
+            personType += ALUMNI_PROFILE;
         }
 
         if (faculty != null)
         {
             MergeProfile(profile, JObject.FromObject(faculty));
-            personType += "fac";
+            personType += FACSTAFF_PROFILE;
         }
 
         if (customInfo != null)
@@ -526,5 +689,50 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
     {
         return webSQLContext.Mailstops.Select(m => m.code)
                        .OrderBy(d => d);
+    }
+
+    /// <summary>
+    /// Change a ProfileItem's privacy setting to true
+    /// </summary>
+    /// <param name="profile">Combined profile containing element to update</param>
+    /// <param name="fieldID">The ID of the profile element of which to update IsPrivate</param>
+    private static void MarkAsPrivate(CombinedProfileViewModel profile, string field)
+    {
+        // Profile element will be returned to UI, but should be marked as private
+        // since the authenticated user is only seeing because they are authorized
+        // to do so.
+        Type cpvm = new CombinedProfileViewModel().GetType();
+        try
+        {
+            PropertyInfo prop = cpvm.GetProperty(field);
+            ProfileItem<string> profile_item = (ProfileItem<string>) prop.GetValue(profile);
+            if (profile_item != null)
+            {
+                prop.SetValue(profile, new ProfileItem<string>(profile_item.Value, true));
+            }
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Change a ProfileItem to be null (remove it from the profile)
+    /// </summary>
+    /// <param name="profile">Combined profile containing element to make null</param>
+    /// <param name="fieldID">The ID of the profile element to make null</param>
+    private static void MakePrivate(CombinedProfileViewModel profile, string field)
+    {
+        // remove profile element if it should not be sent to the UI
+        try
+        {
+            Type cpvm = new CombinedProfileViewModel().GetType();
+            cpvm.GetProperty(field).SetValue(profile, null);
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Message);
+        }
     }
 }
