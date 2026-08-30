@@ -224,7 +224,7 @@ public class SeriesController(ISeriesService seriesService) : GordonControllerBa
     /// <param name="seriesID"></param>
     [HttpGet]
     [Route("{seriesID}/bracket")]
-    public ActionResult<IEnumerable<MatchBracketViewModel>> GetBracket(int seriesID)
+    public ActionResult<IEnumerable<MatchBracketExportViewModel>> GetBracket(int seriesID)
     {
         var res = seriesService.GetSeriesBracketInformation(seriesID);
         return Ok(res);

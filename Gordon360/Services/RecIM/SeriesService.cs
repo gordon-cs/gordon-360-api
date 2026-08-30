@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gordon360.Extensions.System;
 using Gordon360.Static.Names;
+using Microsoft.Graph;
 
 namespace Gordon360.Services.RecIM;
 
@@ -1679,12 +1680,199 @@ public class SeriesService(CCTContext context, IMatchService matchService, IAffi
         return res;
     }
 
-    public IEnumerable<MatchBracketViewModel> GetSeriesBracketInformation(int seriesID)
+    public IEnumerable<MatchBracketExportViewModel> GetSeriesBracketInformation(int seriesID)
     {
-        return context.Match
+        /**
+         * Match stores StartTime and Series information needed to handle calculations
+         */
+        var match = context.Match
             .Include(m => m.MatchBracket)
             .Where(m => m.SeriesID == seriesID && m.StatusID != 0)
-            .Select(m => (MatchBracketViewModel) m.MatchBracket);
+            .Select(m => new MatchBracketViewModel
+            {
+                MatchID = m.MatchBracket.MatchID,
+                RoundNumber = m.MatchBracket.RoundNumber,
+                RoundOf = m.MatchBracket.RoundOf,
+                SeedIndex = m.MatchBracket.SeedIndex,
+                IsLosers = m.MatchBracket.IsLosers,
+                StartTime = m.StartTime
+            })
+            .AsEnumerable()
+            .OrderBy(mb => mb.RoundNumber)
+            .ThenBy(mb => mb.SeedIndex);
+
+        /* 
+         * fill out each of round level:
+         * round of 64 needs 32 matches (64 teams), 32/16...
+         * (empty spots happen when there are bye rounds and are typically an issue in the first 2 rounds)
+         */
+        var combinedList = Enumerable.Empty<MatchBracketExtendedViewModel>().ToList();
+        var fakeMatchID = -1;
+        var i = 0;
+        while (i < match.Count())
+        {
+            var j = 0;
+            var currentRoundOf = match.ElementAt(i).RoundOf;
+            var currentRoundNum = match.ElementAt(i).RoundNumber;
+
+            while (j < currentRoundOf / 2) //roundOf is a term based on number of teams, matches are per 2 teams
+            {
+                var m = match.ElementAt(i);
+                /**
+                 *     Round 0 |  1  |  2  | ... n-1 (finals)
+                 *  s      0 - 
+                 *  e          \ _ 0
+                 *  e          /     \
+                 *  d      1 -        \ _ 0
+                 *                    /     \
+                 *  i      2 -       /       \
+                 *  n          \ _ 1           .
+                 *  d          /      .        .
+                 *  e    n-1 -        .        .
+                 *  x
+                 *  
+                 *  Each bracket has has an associated RoundOf which declares how many matches should exist in each
+                 *  round: roundOf64 = 32 matches, roundOf32 = 16 matches ...
+                 *  Each match in the bracket has an associated index. If there are "missing" indicies, we know a bye 
+                 *  match needs to be filled in. 
+                 *  
+                 *  Check each element (sorted), if the index is incrementing by 1, if not, then we make a pseudo match
+                 *  to be displayed on the UI.
+                 */
+                if (j == match.ElementAt(i).SeedIndex)
+                {
+                    var state = "SCHEDULED";
+                    var teams = context.MatchTeam.Where(mt => mt.MatchID == m.MatchID && mt.StatusID != 0);
+
+                    var teamList = Enumerable.Empty<TeamBracketExtendedViewModel>().ToList();
+                    if (teams.Count() != 0)
+                    {
+                        foreach (var team in teams)
+                            teamList.Add(new TeamBracketExtendedViewModel
+                            {
+                                TeamID = team.TeamID,
+                                Score = team.Score.ToString(),
+                                IsWinner = false,
+                                TeamName = context.Team.Find(team.TeamID)?.Name ?? ""
+                            });
+
+                        if (teams.Count() == 2)
+                        {
+                            if (teams.ElementAt(0).Score != 0 || teams.ElementAt(1).Score != 0) state = "SCORE_DONE";
+
+                            if (Convert.ToInt32(teamList.ElementAt(0).Score) > Convert.ToInt32(teamList.ElementAt(1).Score))
+                                teamList.ElementAt(0).IsWinner = true;
+                            if (Convert.ToInt32(teamList.ElementAt(0).Score) < Convert.ToInt32(teamList.ElementAt(1).Score))
+                                teamList.ElementAt(1).IsWinner = true;
+                        }
+                    }
+
+                    combinedList.Add(new MatchBracketExtendedViewModel
+                    {
+                        MatchID = m.MatchID,
+                        NextMatchID = null,
+                        RoundNumber = m.RoundNumber,
+                        RoundOf = m.RoundOf,
+                        State = state,
+                        SeedIndex = m.SeedIndex,
+                        IsLosers = m.IsLosers,
+                        StartTime = m.StartTime,
+                        Team = teamList
+                    });
+                    i++;
+                }
+                else
+                {
+                    combinedList.Add(new MatchBracketExtendedViewModel
+                    {
+                        MatchID = fakeMatchID--,
+                        NextMatchID = null,
+                        RoundNumber = currentRoundNum,
+                        RoundOf = m.RoundOf,
+                        State = "WALK_OVER",
+                        SeedIndex = j,
+                        IsLosers = m.IsLosers,
+                        StartTime = m.StartTime,
+                        Team = Enumerable.Empty<TeamBracketExtendedViewModel>()
+                    });
+                }
+                j++;
+            }
+        }
+
+        i = 0;
+        foreach (var _match in combinedList)
+        {
+            var nextMatchSeedIndex = _match.SeedIndex >> 1;
+            var nextMatch = combinedList.FirstOrDefault(m => m.RoundNumber == _match.RoundNumber + 1 && m.SeedIndex == nextMatchSeedIndex);
+            _match.NextMatchID = nextMatch?.MatchID;
+
+            if (_match.MatchID < 0)
+            {
+                /**
+                 * 2 conditions
+                 * 1) Match i is the only bye match
+                 *      - Inherit the team in the next match that is not i+1
+                 * 2) Both are bye matches
+                 *      - Inherit Team at index 0,1 respectively
+                 */
+                var bye = nextMatch?.Team;
+                if (_match.SeedIndex % 2 == 0)
+                {
+                    bye = nextMatch?.Team
+                        .Where(t => !combinedList[i+1].Team.Any(t_ => t_.TeamID == t.TeamID));
+                }
+                else
+                {
+                    bye = nextMatch?.Team
+                        .Where(t => !combinedList[i-1].Team.Any(t_ => t_.TeamID == t.TeamID));
+
+                }
+                combinedList[i].Team = [new TeamBracketExtendedViewModel()
+                {
+                    TeamID = bye.First().TeamID,
+                    Score = "BYE",
+                    IsWinner = true,
+                    Status = "WALK_OVER",
+                    TeamName = bye.First().TeamName
+                }];
+            }
+            i++;
+        }
+      
+
+        //final conversion to exact UI shape (more efficient than letting the UI handle the key/pair changes
+        //concious decision to not make all the conversions in the extended viewmodel as it would disrupt our 
+        //current api styling and naming.
+        //I want to minimize style disruptions albeit at the cost of a tiny bit of performance
+        var res = Enumerable.Empty<MatchBracketExportViewModel>().ToList();
+        foreach( var m in combinedList )
+        {
+            var teams = Enumerable.Empty<TeamBracketExportViewModel>().ToList();
+            foreach (var t in m.Team)
+                teams.Add(new TeamBracketExportViewModel
+                {
+                    id = t.TeamID,
+                    resultText = t.Score,
+                    isWinner = t.IsWinner,
+                    status = t.Status,
+                    name = t.TeamName
+                });
+            res.Add(new MatchBracketExportViewModel
+            {
+                id = m.MatchID,
+                name = null, //unused currently
+                nextMatchId = m.NextMatchID,
+                tournamentRoundText = $"{m.RoundNumber + 1}", //start at round 1 instead of 0 for UI readability
+                state = m.State,
+                startTime = m.StartTime,
+                participants = teams,
+                seedIndex = m.SeedIndex,
+                isLosers = m.IsLosers
+            });
+        }
+
+        return res;
     }
 
     public async Task<EliminationRound> ScheduleElimRoundAsync(IEnumerable<Match>? matches)
