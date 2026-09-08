@@ -339,16 +339,53 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                                          && (fieldName == "HomeCity" || fieldName == "HomeState"
                                             || fieldName == "HomeCountry" || fieldName == "Country");
                     var mobilePhonePrivate = restricted_profile.IsMobilePhonePrivate && fieldName == "MobilePhone";
-                    visibilityID = mobilePhonePrivate || addressPrivate ? Private_GroupID : Public_GroupID;
+                    if (mobilePhonePrivate || addressPrivate)
+                    {
+                        visibilityID = Private_GroupID;
+                        context.UserPrivacy_Settings.Add(new UserPrivacy_Settings()
+                        {
+                            gordon_id = account.GordonID,
+                            Field = fieldID,
+                            Visibility = Private_GroupID
+                        });
+                    }
+                    else
+                    {
+                        visibilityID = Public_GroupID;
+                    }
                 }
                 else if (profileIsFacStaff)
                 {
-                    visibilityID = restricted_profile.KeepPrivate == "1" ? Private_GroupID : Public_GroupID;
+                    if (restricted_profile.KeepPrivate == "1" )
+                    {
+                        visibilityID = Private_GroupID;
+                        context.UserPrivacy_Settings.Add(new UserPrivacy_Settings()
+                        {
+                            gordon_id = account.GordonID,
+                            Field = fieldID,
+                            Visibility = Private_GroupID
+                        });
+                    } else
+                    {
+                        visibilityID = Public_GroupID;
+                    }
                 }
                 else if (profileIsAlumni)
                 {
-                    visibilityID = (restricted_profile.ShareAddress == "N" && (fieldName.Contains("Home") || fieldName == "Country"))
-                        ? Private_GroupID : Public_GroupID;
+                    if ((restricted_profile.ShareAddress == "N" && (fieldName.Contains("Home") || fieldName == "Country")))
+                    {
+                        visibilityID = Private_GroupID;
+                        context.UserPrivacy_Settings.Add(new UserPrivacy_Settings()
+                        {
+                            gordon_id = account.GordonID,
+                            Field = fieldID,
+                            Visibility = Private_GroupID
+                        });
+                    }
+                    else
+                    {
+                        visibilityID = Public_GroupID;
+                    }
                 }
             }
 
@@ -384,6 +421,8 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 MakePrivate(restricted_profile, fieldName);
             }
         }
+
+        context.SaveChanges();
 
         // Handle a legacy special case -- if a student has the semi-private flag then
         // not only do we need to hide their address information (handled above), but
