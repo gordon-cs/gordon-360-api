@@ -31,15 +31,15 @@ public class PostersController(IPosterService posterService) : GordonControllerB
     }
 
     /// <summary>
-    /// Gets all non-expired posters
+    /// Gets all non-expired posters in the order based on the username
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     [HttpGet]
-    [Route("")]
-    public ActionResult<IEnumerable<PosterViewModel>> GetCurrentPosters()
+    [Route("current/{username}")]
+    public ActionResult<IEnumerable<PosterViewModel>> GetCurrentPosters(string username)
     {
-        var res = posterService.GetCurrentPosters();
+        var res = posterService.GetCurrentPosters(username);
         return Ok(res);
     }
 
