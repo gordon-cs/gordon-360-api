@@ -306,14 +306,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         bool viewerIsFacStaff = viewerGroups.Contains(AuthGroup.FacStaff);
         bool viewerIsStudent = viewerGroups.Contains(AuthGroup.Student);
         bool viewerIsAlumni = viewerGroups.Contains(AuthGroup.Alumni);
-        bool profileIsFacStaff = restricted_profile.PersonType.Contains(FACSTAFF_PROFILE);
-        bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
-        bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
+        bool profileIsFacStaff = restricted_profile.PersonType?.Contains(FACSTAFF_PROFILE) ?? false;
+        bool profileIsStudent = restricted_profile.PersonType?.Contains(STUDENT_PROFILE) ?? false;
+        bool profileIsAlumni = restricted_profile.PersonType?.Contains(ALUMNI_PROFILE) ?? false;
 
         // Get visibility group IDs
-        var Public_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Public")?.ID;
-        var FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")?.ID;
-        var Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")?.ID;
+        int Public_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Public")!.ID;
+        int FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")!.ID;
+        int Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")!.ID;
 
         // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
         // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
