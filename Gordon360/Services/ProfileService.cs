@@ -356,7 +356,7 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 }
                 else if (profileIsFacStaff)
                 {
-                    if (restricted_profile.KeepPrivate == "1" )
+                    if (restricted_profile.KeepPrivate == "1" || fieldName == "MobilePhone" || fieldName == "HomePhone" || fieldName == "HomeStreet1" || fieldName == "HomeStreet2")
                     {
                         visibilityID = Private_GroupID;
                         context.UserPrivacy_Settings.Add(new UserPrivacy_Settings()
