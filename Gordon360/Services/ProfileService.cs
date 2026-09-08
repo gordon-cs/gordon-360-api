@@ -299,14 +299,14 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
         bool viewerIsFacStaff = viewerGroups.Contains(AuthGroup.FacStaff);
         bool viewerIsStudent = viewerGroups.Contains(AuthGroup.Student);
         bool viewerIsAlumni = viewerGroups.Contains(AuthGroup.Alumni);
-        bool profileIsFacStaff = restricted_profile.PersonType.Contains(FACSTAFF_PROFILE);
-        bool profileIsStudent = restricted_profile.PersonType.Contains(STUDENT_PROFILE);
-        bool profileIsAlumni = restricted_profile.PersonType.Contains(ALUMNI_PROFILE);
+        bool profileIsFacStaff = restricted_profile.PersonType?.Contains(FACSTAFF_PROFILE) ?? false;
+        bool profileIsStudent = restricted_profile.PersonType?.Contains(STUDENT_PROFILE) ?? false;
+        bool profileIsAlumni = restricted_profile.PersonType?.Contains(ALUMNI_PROFILE) ?? false;
 
         // Get visibility group IDs
-        var Public_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Public")?.ID;
-        var FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")?.ID;
-        var Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")?.ID;
+        int Public_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Public")!.ID;
+        int FacStaff_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "FacStaff")!.ID;
+        int Private_GroupID = context.UserPrivacy_Visibility_Groups.FirstOrDefault(up_g => up_g.Group == "Private")!.ID;
 
         // Loop over all privacy fields (MobilePhone, HomePhone, HomeCity, etc.) and use
         // visibility data in UserPrivacy_Settings table if exists otherwise use old-style
@@ -332,16 +332,53 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                                          && (fieldName == "HomeCity" || fieldName == "HomeState"
                                             || fieldName == "HomeCountry" || fieldName == "Country");
                     var mobilePhonePrivate = restricted_profile.IsMobilePhonePrivate && fieldName == "MobilePhone";
-                    visibilityID = mobilePhonePrivate || addressPrivate ? Private_GroupID : Public_GroupID;
+                    if (mobilePhonePrivate || addressPrivate)
+                    {
+                        visibilityID = Private_GroupID;
+                        context.UserPrivacy_Settings.Add(new UserPrivacy_Settings()
+                        {
+                            gordon_id = account.GordonID,
+                            Field = fieldID,
+                            Visibility = Private_GroupID
+                        });
+                    }
+                    else
+                    {
+                        visibilityID = Public_GroupID;
+                    }
                 }
                 else if (profileIsFacStaff)
                 {
-                    visibilityID = restricted_profile.KeepPrivate == "1" ? Private_GroupID : Public_GroupID;
+                    if (restricted_profile.KeepPrivate == "1" || fieldName == "MobilePhone" || fieldName == "HomePhone" || fieldName == "HomeStreet1" || fieldName == "HomeStreet2")
+                    {
+                        visibilityID = Private_GroupID;
+                        context.UserPrivacy_Settings.Add(new UserPrivacy_Settings()
+                        {
+                            gordon_id = account.GordonID,
+                            Field = fieldID,
+                            Visibility = Private_GroupID
+                        });
+                    } else
+                    {
+                        visibilityID = Public_GroupID;
+                    }
                 }
                 else if (profileIsAlumni)
                 {
-                    visibilityID = (restricted_profile.ShareAddress == "N" && (fieldName.Contains("Home") || fieldName == "Country"))
-                        ? Private_GroupID : Public_GroupID;
+                    if ((restricted_profile.ShareAddress == "N" && (fieldName.Contains("Home") || fieldName == "Country")))
+                    {
+                        visibilityID = Private_GroupID;
+                        context.UserPrivacy_Settings.Add(new UserPrivacy_Settings()
+                        {
+                            gordon_id = account.GordonID,
+                            Field = fieldID,
+                            Visibility = Private_GroupID
+                        });
+                    }
+                    else
+                    {
+                        visibilityID = Public_GroupID;
+                    }
                 }
             }
 
@@ -377,6 +414,8 @@ public class ProfileService(CCTContext context, IConfiguration config, IAccountS
                 MakePrivate(restricted_profile, fieldName);
             }
         }
+
+        context.SaveChanges();
 
         // Handle a legacy special case -- if a student has the semi-private flag then
         // not only do we need to hide their address information (handled above), but
