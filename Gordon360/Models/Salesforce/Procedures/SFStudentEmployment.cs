@@ -29,7 +29,7 @@ public class SFStudentEmployment(ISalesforceContext context)
     public async Task<IEnumerable<StudentEmploymentViewModel>> GetStudentEmployment(string username)
     {
         var name = "Woobensky";
-        var response = await _context.SoqlQuery<PersonEmployment>(string.Format(SoqlTemplate, name));
+        var response = await _context.RawQuery<PersonEmployment>(string.Format(SoqlTemplate, name));
         System.Diagnostics.Debug.WriteLine(response);
         return response?.records?
             .Select(c => MapToViewModel(c, username))
@@ -46,22 +46,5 @@ public class SFStudentEmployment(ISalesforceContext context)
             Job_End_Date = c.EndDate
         };
 
-    }
-
-    private static string DayCode(bool? flag, string code) => flag == true ? code : "";
-
-    private static TimeSpan? ParseTime(string? time)
-    {
-        if (string.IsNullOrWhiteSpace(time))
-        {
-            return null;
-        }
-        else
-        {
-            var cleanedTime = time.Replace("Z", "");
-            var isValid = TimeSpan.TryParse(cleanedTime, out var t);
-
-            return isValid ? t : null;
-        }
     }
 }
