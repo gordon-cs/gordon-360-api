@@ -22,6 +22,7 @@ public class SalesforceContext : ISalesforceContext
     public SalesforceContext(IConfiguration config, HttpClient client)
     {
         this.config = config;
+        this.httpClient = client;
         var sf = "SalesforceStandard";
 
         ClientId = config[$"{sf}:ClientId"];
