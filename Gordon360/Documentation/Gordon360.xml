@@ -2041,6 +2041,60 @@
             </summary>
             <returns>Returns the current academic term, if it exists</returns>
         </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetBasicInfo(System.Boolean)">
+            <summary>
+            Gets basic info for all accounts for search preview
+            WARNING: This method is slow to execute (15+ seconds) due to the large number of records it pulls.
+            Seek alternatives if at all possible.
+            </summary>
+            <param name="alumni">Whether or not to include alumni in the search</param>
+            <returns>Minimal info about all accounts</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetBirthday(System.String)">
+            <summary>
+            Gets the birthday of the given user
+            </summary>
+            <param name="username">AD username of the desired user</param>
+            <returns>User's birthday, or null if not found or authorized</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAllAccountsAsync">
+            <summary>
+            Gets all accounts, sorted alphabetically by last name
+            WARNING: This method is *extremely* slow to execute (150+ seconds) due to the large number of records it pulls.
+            Seek alternatives if at all possible.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByIdAsync(System.String)">
+            <summary>
+            Gets the account associated with a given ID number
+            </summary>
+            <param name="id">8-digit student ID number</param>
+            <returns>Account associated with ID number</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByEmailAsync(System.String)">
+            <summary>
+            Gets the account associated with a given email
+            </summary>
+            <param name="email">email address</param>
+            <returns>Account associated with email</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetAccountByAdUsernameAsync(System.String)">
+            <summary>
+            Gets the account associated with a given AD Username
+            TODO: Due to full2 not being fully populated, this method also accepts a person's name
+            </summary>
+            <param name="adUsername">Active Directory username</param>
+            <returns>Account associated with AD username</returns>
+        </member>
+        <member name="M:Gordon360.Models.Salesforce.SFProfiles.GetMailboxCombinationAsync(System.String)">
+            <summary>
+            Gets a given account's mailbox combination
+            </summary>
+            <param name="adUsername">Active Directory username</param>
+            <returns>Mailbox__c with only the combination field filled</returns>
+            <exception cref="T:Gordon360.Exceptions.ResourceNotFoundException"></exception>
+        </member>
         <member name="M:Gordon360.Models.Salesforce.SFStudentEmployment.GetStudentEmployment(System.String)">
             <summary>
             Fetch IEnumerable of student employment records for the given user
